@@ -192,7 +192,7 @@
      (let ((x (/ 1 10000000 100000000)))
       (if (zero? x) 1 x)))
 
-    (define (predicate expression)
+    (define (maybe-car expression)
      (and (pair? expression) (car expression)))
 
     (define (count-parameters parameters)
@@ -224,45 +224,44 @@
 
     (define library-symbol-separator #\%)
 
-    (define (parse-import-set set qualify)
-     (define (parse qualify)
-      (parse-import-set (cadr set) qualify))
+    (define (parse-import-set set)
+     (let loop ((set set) (qualify (lambda (name) name)))
+      (let ((loop (lambda (qualify) (loop (cadr set) qualify))))
+       (case (maybe-car set)
+        ((except)
+         (loop
+          (let ((names (cddr set)))
+           (lambda (name)
+            (if (memq name names)
+             #f
+             (qualify name))))))
 
-     (case (predicate set)
-      ((except)
-       (let ((names (cddr set)))
-        (parse
-         (lambda (name)
-          (if (memq name names)
-           #f
-           (qualify name))))))
+        ((only)
+         (loop
+          (let ((names (cddr set)))
+           (lambda (name)
+            (if (memq name names)
+             (qualify name)
+             #f)))))
 
-      ((only)
-       (let ((names (cddr set)))
-        (parse
-         (lambda (name)
-          (if (memq name names)
-           (qualify name)
-           #f)))))
+        ((prefix)
+         (loop
+          (lambda (name)
+           (qualify (symbol-append (caddr set) name)))))
 
-      ((prefix)
-       (parse
-        (lambda (name)
-         (qualify (symbol-append (caddr set) name)))))
+        ((rename)
+         (loop
+          (lambda (name)
+           (qualify
+            (cond
+             ((assq name (cddr set)) =>
+              cadr)
 
-      ((rename)
-       (parse
-        (lambda (name)
-         (qualify
-          (cond
-           ((assq name (cddr set)) =>
-            cadr)
+             (else
+              name))))))
 
-           (else
-            name))))))
-
-      (else
-       (values set qualify))))
+        (else
+         (cons set qualify))))))
 
     ; Macro system
 
@@ -524,7 +523,7 @@
 
     (define (make-transformer definition-context transformer)
      (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
-      (case (resolve-denotation definition-context (predicate transformer))
+      (case (resolve-denotation definition-context (maybe-car transformer))
        (($$syntax-rules)
         (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
                (literals (caddr transformer))
@@ -974,19 +973,17 @@
     ;; Types
 
     (define-record-type library
-     (make-library name exports imports body)
+     (make-library exports imports body)
      library?
-     (name library-name)
      (exports library-exports)
      (imports library-imports)
      (body library-body))
 
     (define-record-type library-context
-     (make-library-context libraries imported name-maps)
+     (make-library-context libraries imported)
      library-context?
      (libraries library-context-libraries library-context-set-libraries!)
-     (imported library-context-imported library-context-set-imported!)
-     (name-maps library-context-name-maps library-context-set-name-maps!))
+     (imported library-context-imported library-context-set-imported!))
 
     (define (library-context-id context)
      (length (library-context-libraries context)))
@@ -995,16 +992,13 @@
      (cond
       ((assoc name (library-context-libraries context)) =>
        cdr)
-
       (else
        (error "unknown library" name))))
 
-    (define (library-context-add! context library)
+    (define (library-context-add! context name library)
      (library-context-set-libraries!
       context
-      (cons
-       (cons (library-name library) library)
-       (library-context-libraries context))))
+      (cons (cons name library) (library-context-libraries context))))
 
     (define (library-context-import! context name)
      (let* ((names (library-context-imported context))
@@ -1028,57 +1022,35 @@
       (list->string (list library-symbol-separator))
       (symbol->string name)))
 
-    (define (rename-library-symbol context id name)
-     (if (built-in-symbol? name)
-      name
-      (let* ((maps (library-context-name-maps context))
-             (pair (or (assq id maps) (cons id '())))
-             (names (cdr pair)))
-       (when (null? names)
-        (library-context-set-name-maps! context (cons pair maps)))
-       (cond
-        ((assq name names) =>
-         cdr)
-        (else
-         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
-          (set-cdr! pair (cons (cons name renamed) names))
-          renamed))))))
-
-    (define (expand-library-bodies context sets)
+    (define (expand-library-bodies context names)
      (flat-map
-      (lambda (set)
-       (let-values (((set _) (parse-import-set set (lambda (name) name))))
-        (if (library-context-import! context set)
-         (let ((library (library-context-find context set)))
-          (append
-           (expand-library-bodies context (library-imports library))
-           (library-body library)))
-         '())))
+      (lambda (name)
+       (if (library-context-import! context name)
+        (let ((library (library-context-find context name)))
+         (append
+          (expand-library-bodies context (library-imports library))
+          (library-body library)))
+        '()))
+      names))
+
+    (define (collect-imported-names context sets)
+     (flat-map
+      (lambda (pair)
+       (flat-map
+        (lambda (names)
+         (let ((name ((cdr pair) (car names))))
+          (if name
+           (list (cons name (cdr names)))
+           '())))
+        (library-exports (library-context-find context (car pair)))))
       sets))
 
-    (define (parse-import-sets context sets)
-     (flat-map
-      (lambda (set)
-       (let-values (((set qualify) (parse-import-set set (lambda (name) name))))
-        (flat-map
-         (lambda (names)
-          (let ((name (qualify (car names))))
-           (if name
-            (list (cons name (cdr names)))
-            '())))
-         (library-exports (library-context-find context set)))))
-      sets))
-
-    (define (expand-library-expression names rename expression)
+    (define (expand-library-expression rename expression)
      (relaxed-deep-map
       (lambda (value)
-       (cond
-        ((not (symbol? value))
-         value)
-        ((assq value names) =>
-         cdr)
-        (else
-         (rename value))))
+       (if (symbol? value)
+        (rename value)
+        value))
       expression))
 
     (define (add-library-definition! context expression)
@@ -1089,61 +1061,70 @@
         (lambda (body) (eq? (car body) predicate))
         (cddr expression))))
 
-     (let ((id (library-context-id context))
-           (exports (collect-bodies 'export))
-           (bodies (collect-bodies 'begin))
-           (imported-names (parse-import-sets context (collect-bodies 'import))))
-      (library-context-add!
-       context
-       (make-library
-        (cadr expression)
+     (define id (library-context-id context))
+     (define sets (map parse-import-set (collect-bodies 'import)))
+     (define names (collect-imported-names context sets))
+
+     (define (resolve-symbol name)
+      (cond
+       ((built-in-symbol? name)
+        name)
+       ((assq name names) =>
+        cdr)
+       (else
+        (let ((renamed (string->uninterned-symbol (build-library-name id name))))
+         (set! names (cons (cons name renamed) names))
+         renamed))))
+
+     (library-context-add!
+      context
+      (cadr expression)
+      (make-library
+       (map-values
+        resolve-symbol
         (map
          (lambda (name)
-          (let ((pair
-                 (if (eq? (predicate name) 'rename)
-                  (cons (caddr name) (cadr name))
-                  (cons name name))))
-           (cons
-            (car pair)
-            (cond
-             ((assq (cdr pair) imported-names) =>
-              cdr)
-             (else
-              (rename-library-symbol context id (cdr pair)))))))
-         exports)
-        (collect-bodies 'import)
-        (expand-library-expression
-         imported-names
-         (lambda (name) (rename-library-symbol context id name))
-         bodies)))))
+          (if (eq? (maybe-car name) 'rename)
+           (cons (caddr name) (cadr name))
+           (cons name name)))
+         (collect-bodies 'export)))
+       (map car sets)
+       (expand-library-expression resolve-symbol (collect-bodies 'begin)))))
 
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '() '()))
+     (let* ((context (make-library-context '() '()))
             (expressions (cdr expression))
-            (import-sets
-             (flat-map
-              (lambda (expression)
-               (if (eq? (predicate expression) 'import)
-                (cdr expression)
-                '()))
-              expressions)))
+            (sets
+             (map
+              parse-import-set
+              (flat-map
+               (lambda (expression)
+                (if (eq? (maybe-car expression) 'import)
+                 (cdr expression)
+                 '()))
+               expressions))))
       (for-each
        (lambda (expression)
-        (when (eq? (predicate expression) 'define-library)
+        (when (eq? (maybe-car expression) 'define-library)
          (add-library-definition! context expression)))
        expressions)
       (values
        (cons
         (car expression)
         (append
-         (expand-library-bodies context import-sets)
+         (expand-library-bodies context (map car sets))
          (expand-library-expression
-          (parse-import-sets context import-sets)
-          (lambda (name) name)
+          (let ((names (collect-imported-names context sets)))
+           (lambda (name)
+            (cond
+             ((assq name names) =>
+              cdr)
+             (else
+              name))))
           (filter
-           (lambda (expression) (not (memq (predicate expression) library-predicates)))
+           (lambda (expression) (not (memq (maybe-car expression) library-predicates)))
            expressions))))
        (map-values library-exports (library-context-libraries context)))))
 
@@ -1733,18 +1714,19 @@
            (let ((names
                   (flat-map
                    (lambda (set)
-                    (let-values (((set qualify)
-                                  (parse-import-set set (lambda (name) name))))
-                     (let ((pair (assoc set libraries)))
-                      (unless pair
-                       (error "unknown library" set))
-                      (flat-map
-                       (lambda (pair)
-                        (let ((name (qualify (car pair))))
-                         (if name
-                          (list (cons name (cdr pair)))
-                          '())))
-                       (cdr pair)))))
+                    (let* ((pair (parse-import-set set))
+                           (name (car pair))
+                           (qualify (cdr pair))
+                           (pair (assoc name libraries)))
+                     (unless pair
+                      (error "unknown library" name))
+                     (flat-map
+                      (lambda (pair)
+                       (let ((name (qualify (car pair))))
+                        (if name
+                         (list (cons name (cdr pair)))
+                         '())))
+                      (cdr pair))))
                    (environment-imports environment))))
             (relaxed-deep-map
              (lambda (value)
