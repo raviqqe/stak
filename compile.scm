@@ -1797,7 +1797,6 @@
         '(scheme base)
         '(scheme cxr)
         '(scheme inexact)
-        '(scheme lazy)
         '(scheme write))))
 
   (let ((arguments (command-line)))
