@@ -7,7 +7,7 @@ use rustix::{
 
 macro_rules! fd {
     ($fd:ident) => {
-        cfg_elif::expr::feature!(if ("std") {
+        cfg_elif::expr::feature!(if ("rustix/std") {
             $fd()
         } else {
             // SAFETY: We do not modify the file descriptor.
