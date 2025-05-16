@@ -17200,11 +17200,8 @@
       - inexact
     - constant list
       - scheme
-      - lazy
-    - constant list
-      - scheme
       - write
-    - call 5 #f ||
+    - call 4 #f ||
     - call 2 #f ||
     - set 1
     - constant procedure 1 #f
