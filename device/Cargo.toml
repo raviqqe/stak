@@ -13,7 +13,7 @@ version.workspace = true
 async = ["stak-vm/async", "winter-maybe-async/async"]
 libc = ["dep:rustix"]
 # TODO Remove `rustix/std`.
-# Currently, `cargo --all-features` enables all features in both main and dependency crates.
+# The current implementation of `cargo --all-features` enables all features in both main and dependency crates.
 std = ["rustix/std"]
 
 [dependencies]
