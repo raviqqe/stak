@@ -5,6 +5,17 @@ use rustix::{
     stdio::{stderr, stdin, stdout},
 };
 
+macro_rules! fd {
+    ($fd:ident) => {
+        // SAFETY: We do not modify the file descriptor.
+        #[allow(unused_unsafe)]
+        #[expect(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            $fd()
+        }
+    };
+}
+
 /// A stdin.
 #[derive(Debug, Default)]
 pub struct Stdin {}
@@ -23,18 +34,7 @@ impl Read for Stdin {
         let mut bytes = [0];
 
         Ok(
-            if io::read(
-                // SAFETY: We do not modify the file descriptor of `stdin`.
-                #[allow(unused_unsafe)]
-                #[expect(clippy::undocumented_unsafe_blocks)]
-                unsafe {
-                    stdin()
-                },
-                &mut bytes,
-            )
-            .map_err(|_| LibcError::Stdin)?
-                == 1
-            {
+            if io::read(fd!(stdin), &mut bytes).map_err(|_| LibcError::Stdin)? == 1 {
                 Some(bytes[0])
             } else {
                 None
@@ -58,16 +58,7 @@ impl Write for Stdout {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(
-            // SAFETY: We do not modify the file descriptor of `stdout`.
-            #[allow(unused_unsafe)]
-            #[expect(clippy::undocumented_unsafe_blocks)]
-            unsafe {
-                stdout()
-            },
-            byte,
-            LibcError::Stdout,
-        )
+        write(fd!(stdout), byte, LibcError::Stdout)
     }
 }
 
@@ -86,16 +77,7 @@ impl Write for Stderr {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(
-            // SAFETY: We do not modify the file descriptor of `stderr`.
-            #[allow(unused_unsafe)]
-            #[expect(clippy::undocumented_unsafe_blocks)]
-            unsafe {
-                stderr()
-            },
-            byte,
-            LibcError::Stderr,
-        )
+        write(fd!(stderr), byte, LibcError::Stderr)
     }
 }
 
