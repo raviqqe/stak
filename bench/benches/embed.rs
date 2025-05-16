@@ -1,4 +1,4 @@
-#![allow(missing_docs)]
+#!allow(missing_docs)]
 
 use criterion::{Bencher, Criterion, black_box, criterion_group, criterion_main};
 use mlua::Lua;

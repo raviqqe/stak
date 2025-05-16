@@ -68,6 +68,7 @@ fn run(
     vm.run()
 }
 
+#[expect(clippy::result_large_err)]
 fn decode_buffer(buffer: Vec<u8>) -> response::Result<String> {
     Ok(String::from_utf8(buffer).map_err(|error| error.to_string())?)
 }
