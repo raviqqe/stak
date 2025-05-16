@@ -2,15 +2,14 @@
 ;
 ; All compiler-internal variables contain at least one `$` or `%` character in their names.
 
-; TODO Use `only` directives for libraries other than `(scheme base)` and `(scheme eval)`.
 (import
   (scheme base)
-  (scheme cxr)
+  (only (scheme cxr))
   (scheme eval)
-  (scheme inexact)
+  (only (scheme inexact))
   (scheme process-context)
   (scheme read)
-  (scheme write))
+  (only (scheme write)))
 
 (define frontend
   '(
@@ -1797,7 +1796,6 @@
         '(scheme base)
         '(scheme cxr)
         '(scheme inexact)
-        '(scheme lazy)
         '(scheme write))))
 
   (let ((arguments (command-line)))
