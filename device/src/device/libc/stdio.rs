@@ -26,6 +26,7 @@ impl Read for Stdin {
             if io::read(
                 // SAFETY: We do not modify the file descriptor of `stdin`.
                 #[allow(unused_unsafe)]
+                #[expect(clippy::undocumented_unsafe_blocks)]
                 unsafe {
                     stdin()
                 },
@@ -60,6 +61,7 @@ impl Write for Stdout {
         write(
             // SAFETY: We do not modify the file descriptor of `stdout`.
             #[allow(unused_unsafe)]
+            #[expect(clippy::undocumented_unsafe_blocks)]
             unsafe {
                 stdout()
             },
@@ -87,6 +89,7 @@ impl Write for Stderr {
         write(
             // SAFETY: We do not modify the file descriptor of `stderr`.
             #[allow(unused_unsafe)]
+            #[expect(clippy::undocumented_unsafe_blocks)]
             unsafe {
                 stderr()
             },

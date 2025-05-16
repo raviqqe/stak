@@ -2,7 +2,6 @@ use crate::{Guard, HotReloadGuard, HotReloadModule, Module, StaticGuard, StaticM
 use core::ops::Deref;
 
 /// A universal module.
-#[allow(clippy::large_enum_variant)]
 pub enum UniversalModule {
     /// A hot-reloaded module.
     HotReload(&'static HotReloadModule),
