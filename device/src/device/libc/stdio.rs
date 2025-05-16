@@ -10,7 +10,7 @@ macro_rules! fd {
         cfg_elif::expr::feature!(if ("std") {
             $fd()
         } else {
-            // SAFETY: We do not modify the file descriptor of `stdin`.
+            // SAFETY: We do not modify the file descriptor.
             unsafe { $fd() }
         })
     };
