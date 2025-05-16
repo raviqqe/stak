@@ -1462,6 +1462,7 @@ dependencies = [
 name = "stak-device"
 version = "0.10.23"
 dependencies = [
+ "cfg-elif",
  "rustix",
  "stak-util",
  "stak-vm",
