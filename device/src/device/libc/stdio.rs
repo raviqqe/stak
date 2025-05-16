@@ -7,12 +7,12 @@ use rustix::{
 
 macro_rules! fd {
     ($fd:ident) => {
-        cfg_elif::expr::feature!(if ("rustix/std") {
+        // SAFETY: We do not modify the file descriptor.
+        #[allow(unused_unsafe)]
+        #[expect(clippy::undocumented_unsafe_blocks)]
+        unsafe {
             $fd()
-        } else {
-            // SAFETY: We do not modify the file descriptor.
-            unsafe { $fd() }
-        })
+        }
     };
 }
 
