@@ -15,7 +15,6 @@ libc = ["dep:rustix"]
 std = []
 
 [dependencies]
-cfg-elif = "0.6.3"
 rustix = { version = "1.0.7", default-features = false, features = [
   "stdio",
 ], optional = true }
