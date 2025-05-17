@@ -1714,6 +1714,7 @@
 
           ; Library system
 
+          ; TODO Set libraries in macro contexts dynamically.
           (define libraries ($$libraries))
 
           (define expand-libraries
