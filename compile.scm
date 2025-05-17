@@ -1324,7 +1324,8 @@
       (make-marshal-context
        (append
         (metadata-symbols metadata)
-        (flat-map (lambda (pair) (map cdr (cdr pair)))
+        (flat-map
+         (lambda (pair) (map cdr (cdr pair)))
          (metadata-libraries metadata)))
        '()
        '())
