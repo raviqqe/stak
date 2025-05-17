@@ -221,6 +221,45 @@
 
     ; Library system
 
+    ;; Types
+
+    (define-record-type library
+     (make-library exports imports body)
+     library?
+     (exports library-exports)
+     (imports library-imports)
+     (body library-body))
+
+    (define-record-type library-context
+     (make-library-context libraries imported)
+     library-context?
+     (libraries library-context-libraries library-context-set-libraries!)
+     (imported library-context-imported library-context-set-imported!))
+
+    (define (library-context-id context)
+     (length (library-context-libraries context)))
+
+    (define (library-context-find context name)
+     (cond
+      ((assoc name (library-context-libraries context)) =>
+       cdr)
+      (else
+       (error "unknown library" name))))
+
+    (define (library-context-add! context name library)
+     (library-context-set-libraries!
+      context
+      (cons (cons name library) (library-context-libraries context))))
+
+    (define (library-context-import! context name)
+     (let* ((names (library-context-imported context))
+            (imported (member name names)))
+      (unless imported
+       (library-context-set-imported! context (cons name names)))
+      (not imported)))
+
+    ;; Procedures
+
     (define library-symbol-separator #\%)
 
     (define (parse-import-set set)
@@ -976,45 +1015,6 @@
 (define backend
   '(
     ; Library system
-
-    ;; Types
-
-    (define-record-type library
-     (make-library exports imports body)
-     library?
-     (exports library-exports)
-     (imports library-imports)
-     (body library-body))
-
-    (define-record-type library-context
-     (make-library-context libraries imported)
-     library-context?
-     (libraries library-context-libraries library-context-set-libraries!)
-     (imported library-context-imported library-context-set-imported!))
-
-    (define (library-context-id context)
-     (length (library-context-libraries context)))
-
-    (define (library-context-find context name)
-     (cond
-      ((assoc name (library-context-libraries context)) =>
-       cdr)
-      (else
-       (error "unknown library" name))))
-
-    (define (library-context-add! context name library)
-     (library-context-set-libraries!
-      context
-      (cons (cons name library) (library-context-libraries context))))
-
-    (define (library-context-import! context name)
-     (let* ((names (library-context-imported context))
-            (imported (member name names)))
-      (unless imported
-       (library-context-set-imported! context (cons name names)))
-      (not imported)))
-
-    ;; Procedures
 
     (define (library-symbol? name)
      (memv library-symbol-separator (string->list (symbol->string name))))
