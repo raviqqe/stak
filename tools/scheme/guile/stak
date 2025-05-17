@@ -2,4 +2,14 @@
 
 set -e
 
-guile "$@"
+while getopts l: option; do
+  case $option in
+  l)
+    cp $OPTARG ${OPTARG%.scm}.sld
+    ;;
+  esac
+done
+
+shift $(expr $OPTIND - 1)
+
+guile -L . "$@"

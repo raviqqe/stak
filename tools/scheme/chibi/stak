@@ -12,7 +12,4 @@ done
 
 shift $(expr $OPTIND - 1)
 
-main_file=$1
-shift 1
-
-chibi-scheme -I . $main_file "$@"
+chibi-scheme "$@"
