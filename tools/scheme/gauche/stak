@@ -2,4 +2,19 @@
 
 set -e
 
-gosh "$@"
+while getopts l: option; do
+  case $option in
+  l)
+    libraries="$libraries $OPTARG"
+    ;;
+  esac
+done
+
+shift $(expr $OPTIND - 1)
+
+main_file=$1
+shift 1
+
+cat $libraries $main_file >gosh.scm
+
+gosh gosh.scm "$@"
