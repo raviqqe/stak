@@ -382,7 +382,7 @@
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
     (define-record-type macro-context
-     (make-macro-context* state environment)
+     (make-macro-context state environment)
      macro-context?
      (state macro-context-state)
      (environment macro-context-environment macro-context-set-environment!))
