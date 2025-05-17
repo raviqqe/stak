@@ -305,7 +305,7 @@
         (else
          (cons set qualify))))))
 
-    (define (resolve-library-symbols resolve expression)
+    (define (resolve-environment-symbols resolve expression)
      (relaxed-deep-map
       (lambda (value)
        (if (symbol? value)
@@ -376,7 +376,7 @@
            (cons name name)))
          (collect-bodies 'export)))
        (map car sets)
-       (resolve-library-symbols resolve-symbol (collect-bodies 'begin)))))
+       (resolve-environment-symbols resolve-symbol (collect-bodies 'begin)))))
 
     ; Macro system
 
@@ -1112,7 +1112,7 @@
         (car expression)
         (append
          (expand-library-bodies context (map car sets))
-         (resolve-library-symbols
+         (resolve-environment-symbols
           (let ((names (collect-imported-names context sets)))
            (lambda (name)
             (cond
@@ -1723,7 +1723,7 @@
                          '())))
                       (cdr pair))))
                    (environment-imports environment))))
-            (resolve-library-symbols
+            (resolve-environment-symbols
              (lambda (name)
               (cond
                ((assq name names) =>

@@ -2217,7 +2217,7 @@
   - flat-map
   - qualify
   - environment-imports
-  - resolve-library-symbols
+  - resolve-environment-symbols
   - names
   - name
   - environment-symbol-table
@@ -11890,7 +11890,7 @@
   - list
     - define
     - list
-      - resolve-library-symbols
+      - resolve-environment-symbols
       - resolve
       - expression
     - list
@@ -12158,7 +12158,7 @@
           - car
           - sets
         - list
-          - resolve-library-symbols
+          - resolve-environment-symbols
           - resolve-symbol
           - list
             - collect-bodies
@@ -14718,7 +14718,7 @@
                 - car
                 - sets
             - list
-              - resolve-library-symbols
+              - resolve-environment-symbols
               - list
                 - let
                 - list
@@ -17141,7 +17141,7 @@
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
-    - constant resolve-library-symbols
+    - constant resolve-environment-symbols
     - constant lambda
     - constant name
     - constant ()
