@@ -1686,8 +1686,6 @@
         (eq? (caar expression) '$$compiler))
       (cons
         `(let ()
-          ; Compiler frontend
-
           (define cons-rib cons)
           (define rib-car car)
           (define rib-cdr cdr)
