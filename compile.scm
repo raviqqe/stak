@@ -464,6 +464,7 @@
           (if position
            (string-copy string (+ position 1))
            string))))
+       ; TODO Remove this clause.
        ((assq name (cdar libraries)) =>
         cdr)
        (else
