@@ -10730,7 +10730,7 @@
     - constant "The Stak Scheme interpreter.\n\n"
     - call 1 #f write-string
     - set 0
-    - constant "Usage: stak SOURCE_FILE [ARGUMENTS]...\n"
+    - constant "Usage: stak [-l LIBRARY_FILE] SCRIPT_FILE ARGUMENT...\n"
     - call 1 #f write-string
     - set 0
     - call 0 #f exit
