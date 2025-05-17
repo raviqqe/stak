@@ -1701,6 +1701,17 @@
             (set! macro-state-set-dynamic-symbols! set-nothing)
             (set! optimization-context-set-literals! set-nothing)))
 
+          (define (environment-append-imports! environment imports)
+           (environment-set-imports!
+            environment
+            (fold-left
+             (lambda (names name)
+              (if (member name names)
+               names
+               (cons name names)))
+             (environment-imports environment)
+             imports)))
+
           ; Library system
 
           (define libraries ($$libraries))
@@ -1711,27 +1722,31 @@
                    (map-values (lambda (exports) (make-library exports '() '())) libraries)
                    '())))
             (lambda (environment expression)
-             (if (eq? (maybe-car expression) 'define-library)
-              (begin
+             (case (maybe-car expression)
+              ((define-library)
                (add-library-definition! context expression)
                #f)
-              (let ((sets (map parse-import-set (environment-imports environment))))
-               (cons
-                '$$begin
-                (append
-                 (expand-library-bodies context (map car sets))
-                 (list
-                  (resolve-environment-symbols
-                   (let ((names (collect-imported-names context sets)))
-                    (lambda (name)
-                     (cond
-                      ((assq name names) =>
-                       cdr)
-                      (else
-                       (string->symbol
-                        (symbol->string name)
-                        (environment-symbol-table environment))))))
-                   expression)))))))))
+              ((import)
+               (environment-append-imports! environment (cdr expression))
+               #f)
+              (else
+               (let ((sets (map parse-import-set (environment-imports environment))))
+                (cons
+                 '$$begin
+                 (append
+                  (expand-library-bodies context (map car sets))
+                  (list
+                   (resolve-environment-symbols
+                    (let ((names (collect-imported-names context sets)))
+                     (lambda (name)
+                      (cond
+                       ((assq name names) =>
+                        cdr)
+                       (else
+                        (string->symbol
+                         (symbol->string name)
+                         (environment-symbol-table environment))))))
+                    expression))))))))))
 
           ; Macro system
 
