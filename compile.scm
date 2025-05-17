@@ -378,9 +378,8 @@
     ;; Types
 
     (define-record-type macro-state
-     (make-macro-state id literals static-symbols dynamic-symbols)
+     (make-macro-state literals static-symbols dynamic-symbols)
      macro-state?
-     (id macro-state-id macro-state-set-id!)
      (literals macro-state-literals macro-state-set-literals!)
      (static-symbols macro-state-static-symbols macro-state-set-static-symbols!)
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
@@ -425,12 +424,6 @@
        (if (null? environment)
         (macro-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
-
-    (define (macro-context-generate-id! context)
-     (let* ((state (macro-context-state context))
-            (id (macro-state-id state)))
-      (macro-state-set-id! state (+ id 1))
-      id))
 
     (define (macro-context-append-literal! context name syntax)
      (define state (macro-context-state context))
@@ -488,12 +481,7 @@
        expression)))
 
     (define (rename-variable context name)
-     ; Share tails when appending strings.
-     (string->uninterned-symbol
-      (string-append
-       (id->string (macro-context-generate-id! context))
-       "$"
-       (symbol->string name))))
+     (string->uninterned-symbol (symbol->string name)))
 
     (define (find-pattern-variables ellipsis bound-variables pattern)
      (define excluded-variables (cons ellipsis bound-variables))
@@ -1123,7 +1111,7 @@
     ; Macro system
 
     (define (expand-macros libraries expression)
-     (let* ((context (make-macro-context (make-macro-state 0 '() '() '()) '() libraries))
+     (let* ((context (make-macro-context (make-macro-state '() '() '()) '() libraries))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -1752,7 +1740,7 @@
           ; Macro system
 
           (define expand-macros
-           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '() libraries)))
+           (let ((context (make-macro-context (make-macro-state '() '() '()) '() libraries)))
             (for-each
              (lambda (pair)
               (macro-context-set-last!
