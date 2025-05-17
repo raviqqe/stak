@@ -3,7 +3,7 @@ Feature: AA tree
   Background:
     Given I run the following script:
       """sh
-      cp $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm .
+      cp $STAK_ROOT/aa-tree.scm .
       """
     And the exit status should be 0
 
@@ -14,11 +14,7 @@ Feature: AA tree
 
       (aa-tree-empty <)
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
 
   Scenario: Check if a value is a tree
@@ -28,11 +24,7 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree? (aa-tree-empty <)) 65 66))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
@@ -45,11 +37,7 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree-find tree 1) 65 66))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "B"
 
@@ -64,11 +52,7 @@ Feature: AA tree
 
       (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
@@ -87,11 +71,7 @@ Feature: AA tree
           (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
@@ -110,11 +90,7 @@ Feature: AA tree
           (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
@@ -130,11 +106,7 @@ Feature: AA tree
 
       (write-u8 (if (eq? (aa-tree-find tree 1) 1) 65 66))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
@@ -157,11 +129,7 @@ Feature: AA tree
 
       (for-each check '(<values>))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
 
@@ -194,11 +162,7 @@ Feature: AA tree
 
       (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
       """
-    When I run the following script:
-      """sh
-      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
-      stak-interpret main.bc
-      """
+    When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
