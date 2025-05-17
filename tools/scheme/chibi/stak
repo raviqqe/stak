@@ -5,7 +5,7 @@ set -e
 while getopts l: option; do
   case $option in
   l)
-    libraries="$libraries -m ${OPTARG%.scm}"
+    cp $OPTARG ${OPTARG%.scm}.sld
     ;;
   esac
 done
@@ -15,4 +15,4 @@ shift $(expr $OPTIND - 1)
 main_file=$1
 shift 1
 
-chibi-scheme -I . $libraries $main_file "$@"
+chibi-scheme -I . $main_file "$@"
