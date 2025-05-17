@@ -216,9 +216,6 @@
     (define (symbol-append . xs)
      (string->symbol (apply string-append (map symbol->string xs))))
 
-    (define (id->string id)
-     (number->string id 32))
-
     ; Library system
 
     ;; Types
@@ -1642,7 +1639,7 @@
 
       (define (string->uninterned-symbol name)
        (set! symbol-id (+ symbol-id 1))
-       (string->symbol (string-append (number->string symbol-id 16) name)))))
+       (string->symbol (string-append (number->string symbol-id 32) name)))))
 
     ,@frontend
     ,@backend))
