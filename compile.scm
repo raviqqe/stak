@@ -1703,10 +1703,12 @@
 
           ; Library system
 
+          (define libraries ($$libraries))
+
           (define expand-libraries
            (let ((context
                   (make-library-context
-                   (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
+                   (map-values (lambda (exports) (make-library exports '() '())) libraries)
                    '())))
             (lambda (environment expression)
              (if (eq? (maybe-car expression) 'define-library)
@@ -1715,8 +1717,7 @@
                (cons
                 '$$begin
                 (append
-                 ; TODO
-                 ; (expand-library-bodies context (map car sets))
+                 (expand-library-bodies context (map car sets))
                  (list
                   (resolve-environment-symbols
                    (let ((names (collect-imported-names context sets)))
