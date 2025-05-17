@@ -1,4 +1,4 @@
-(define-library (stak aa-tree)
+(define-library (aa-tree)
   (export
     aa-tree-empty
     aa-tree?
