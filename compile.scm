@@ -1703,36 +1703,32 @@
 
           ; Library system
 
-          (define libraries ($$libraries))
-
-          (define (expand-libraries environment expression)
-           (let ((names
-                  (flat-map
-                   (lambda (set)
-                    (let* ((pair (parse-import-set set))
-                           (name (car pair))
-                           (qualify (cdr pair))
-                           (pair (assoc name libraries)))
-                     (unless pair
-                      (error "unknown library" name))
-                     (flat-map
-                      (lambda (pair)
-                       (let ((name (qualify (car pair))))
-                        (if name
-                         (list (cons name (cdr pair)))
-                         '())))
-                      (cdr pair))))
-                   (environment-imports environment))))
-            (resolve-environment-symbols
-             (lambda (name)
-              (cond
-               ((assq name names) =>
-                cdr)
-               (else
-                (string->symbol
-                 (symbol->string name)
-                 (environment-symbol-table environment)))))
-             expression)))
+          (define expand-libraries
+           (let ((context
+                  (make-library-context
+                   (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
+                   '())))
+            (lambda (environment expression)
+             (if (eq? (maybe-car expression) 'define-library)
+              (add-library-definition! context expression)
+              (let ((sets (map parse-import-set (environment-imports environment))))
+               (cons
+                '$$begin
+                (append
+                 ; TODO
+                 ; (expand-library-bodies context (map car sets))
+                 (list
+                  (resolve-environment-symbols
+                   (let ((names (collect-imported-names context sets)))
+                    (lambda (name)
+                     (cond
+                      ((assq name names) =>
+                       cdr)
+                      (else
+                       (string->symbol
+                        (symbol->string name)
+                        (environment-symbol-table environment))))))
+                   expression)))))))))
 
           ; Macro system
 
