@@ -4,8 +4,18 @@ set -e
 
 directory=$(dirname $0)/../../..
 
+while getopts l: option; do
+  case $option in
+  l)
+    libraries="$libraries $OPTARG"
+    ;;
+  esac
+done
+
+shift $(expr $OPTIND - 1)
+
 script=$1
 shift 1
 
-cat $directory/prelude.scm $script | stak-compile >main.bc
+cat $directory/prelude.scm $libraries $script | stak-compile >main.bc
 stak-interpret main.bc "$@"

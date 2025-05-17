@@ -1701,38 +1701,54 @@
             (set! macro-state-set-dynamic-symbols! set-nothing)
             (set! optimization-context-set-literals! set-nothing)))
 
+          (define (environment-append-imports! environment imports)
+           (environment-set-imports!
+            environment
+            (fold-left
+             (lambda (names name)
+              (if (member name names)
+               names
+               (cons name names)))
+             (environment-imports environment)
+             imports)))
+
           ; Library system
 
+          ; TODO Set libraries in macro contexts dynamically.
           (define libraries ($$libraries))
 
-          (define (expand-libraries environment expression)
-           (let ((names
-                  (flat-map
-                   (lambda (set)
-                    (let* ((pair (parse-import-set set))
-                           (name (car pair))
-                           (qualify (cdr pair))
-                           (pair (assoc name libraries)))
-                     (unless pair
-                      (error "unknown library" name))
-                     (flat-map
-                      (lambda (pair)
-                       (let ((name (qualify (car pair))))
-                        (if name
-                         (list (cons name (cdr pair)))
-                         '())))
-                      (cdr pair))))
-                   (environment-imports environment))))
-            (resolve-environment-symbols
-             (lambda (name)
-              (cond
-               ((assq name names) =>
-                cdr)
-               (else
-                (string->symbol
-                 (symbol->string name)
-                 (environment-symbol-table environment)))))
-             expression)))
+          (define expand-libraries
+           (let ((context
+                  (make-library-context
+                   (map-values (lambda (exports) (make-library exports '() '())) libraries)
+                   '())))
+            (lambda (environment expression)
+             (define (import-sets)
+              (map parse-import-set (environment-imports environment)))
+
+             (case (maybe-car expression)
+              ((define-library)
+               (add-library-definition! context expression)
+               #f)
+              ((import)
+               (environment-append-imports! environment (cdr expression))
+               (cons
+                '$$begin
+                (append
+                 (expand-library-bodies context (map car (import-sets)))
+                 (list #f))))
+              (else
+               (resolve-environment-symbols
+                (let ((names (collect-imported-names context (import-sets))))
+                 (lambda (name)
+                  (cond
+                   ((assq name names) =>
+                    cdr)
+                   (else
+                    (string->symbol
+                     (symbol->string name)
+                     (environment-symbol-table environment))))))
+                expression))))))
 
           ; Macro system
 
