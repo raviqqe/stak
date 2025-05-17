@@ -2046,8 +2046,6 @@
   - compilation-context-metadata
   - compile-call
   - constant-rib
-  - id->string
-  - library-symbol-separator
   - library-context-import!
   - library-imports
   - library-body
@@ -2055,8 +2053,9 @@
   - body
   - predicate
   - library-context-id
-  - build-library-name
+  - id->string
   - id
+  - library-symbol-separator
   - renamed
   - library-context-add!
   - make-library
@@ -14186,25 +14185,6 @@
   - list
     - define
     - list
-      - build-library-name
-      - id
-      - name
-    - list
-      - string-append
-      - list
-        - id->string
-        - id
-      - list
-        - list->string
-        - list
-          - list
-          - library-symbol-separator
-      - list
-        - symbol->string
-        - name
-  - list
-    - define
-    - list
       - expand-library-bodies
       - context
       - names
@@ -14379,9 +14359,18 @@
                 - list
                   - string->uninterned-symbol
                   - list
-                    - build-library-name
-                    - id
-                    - name
+                    - string-append
+                    - list
+                      - id->string
+                      - id
+                    - list
+                      - list->string
+                      - list
+                        - list
+                        - library-symbol-separator
+                    - list
+                      - symbol->string
+                      - name
             - list
               - set!
               - names

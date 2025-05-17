@@ -1023,12 +1023,6 @@
      (let ((name (symbol->string name)))
       (equal? (substring name 0 (min 2 (string-length name))) "$$")))
 
-    (define (build-library-name id name)
-     (string-append
-      (id->string id)
-      (list->string (list library-symbol-separator))
-      (symbol->string name)))
-
     (define (expand-library-bodies context names)
      (flat-map
       (lambda (name)
@@ -1071,7 +1065,11 @@
        ((assq name names) =>
         cdr)
        (else
-        (let ((renamed (string->uninterned-symbol (build-library-name id name))))
+        (let ((renamed (string->uninterned-symbol
+                        (string-append
+                         (id->string id)
+                         (list->string (list library-symbol-separator))
+                         (symbol->string name)))))
          (set! names (cons (cons name renamed) names))
          renamed))))
 
