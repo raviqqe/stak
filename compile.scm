@@ -256,6 +256,13 @@
 
     (define library-symbol-separator #\%)
 
+    (define (resolve-symbol-string name)
+     (let* ((string (symbol->string name))
+            (position (memv-position library-symbol-separator (string->list string))))
+      (if position
+       (string-copy string (+ position 1))
+       string)))
+
     (define (built-in-symbol? name)
      (let ((name (symbol->string name)))
       (equal? (substring name 0 (min 2 (string-length name))) "$$")))
@@ -437,14 +444,6 @@
      (literals rule-context-literals))
 
     ;; Procedures
-
-    (define (resolve-data-symbol name)
-     (let* ((string (symbol->string name))
-            (position (memv-position library-symbol-separator (string->list string))))
-      (string->symbol
-       (if position
-        (string-copy string (+ position 1))
-        string))))
 
     (define (resolve-denotation context expression)
      (cond
@@ -732,7 +731,7 @@
           (relaxed-deep-map
            (lambda (value)
             (if (symbol? value)
-             (resolve-data-symbol value)
+             (string->symbol (resolve-symbol-string value))
              value))
            (cdr expression))))
 
@@ -1182,17 +1181,15 @@
      (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
 
      (make-metadata
-      (unique
+      (filter
+       (lambda (symbol)
+        (not (library-symbol? symbol)))
        (append
+        (find-symbols expression)
         (find-quoted-symbols libraries)
-        (filter
-         (lambda (symbol)
-          (not (library-symbol? symbol)))
-         (append
-          (find-symbols expression)
-          (find-quoted-symbols macros)
-          (find-quoted-symbols optimizers)
-          (find-quoted-symbols dynamic-symbols)))))
+        (find-quoted-symbols macros)
+        (find-quoted-symbols optimizers)
+        (find-quoted-symbols dynamic-symbols)))
       libraries
       macros
       optimizers
@@ -1236,7 +1233,7 @@
         (marshal #f)
         (marshal
          (if (memq value (marshal-context-symbols context))
-          (symbol->string value)
+          (resolve-symbol-string value)
           ""))))
 
       ((char? value)
@@ -1322,7 +1319,16 @@
         (rib-tag value)))))
 
     (define (marshal metadata codes)
-     (marshal-rib (make-marshal-context (metadata-symbols metadata) '() '()) codes #f))
+     (marshal-rib
+      (make-marshal-context
+       (append
+        (metadata-symbols metadata)
+        (flat-map (lambda (pair) (map cdr (cdr pair)))
+         (metadata-libraries metadata)))
+       '()
+       '())
+      codes
+      #f))
 
     ; Encoding
 
