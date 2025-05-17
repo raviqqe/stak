@@ -14634,7 +14634,6 @@
     - define
     - list
       - expand-macros
-      - libraries
       - expression
     - list
       - let\*
@@ -14657,7 +14656,9 @@
             - list
               - quote
               - ()
-            - libraries
+            - list
+              - quote
+              - ()
         - list
           - expression
           - list
@@ -16499,7 +16500,6 @@
         - dynamic-symbols
       - list
         - expand-macros
-        - libraries
         - expression1
     - list
       - define-values

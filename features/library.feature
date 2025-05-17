@@ -21,7 +21,7 @@ Feature: Library system
     Given a file named "foo.scm" with:
       """scheme
       (define-library (foo)
-        (import (scheme base) (scheme write))
+        (import (scheme base))
 
         (begin
           (write-u8 65)))
@@ -364,7 +364,7 @@ Feature: Library system
       """
     And a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write) (foo))
+      (import (scheme base) (foo))
 
       (define (foo x)
         (write-u8 66))
@@ -393,7 +393,7 @@ Feature: Library system
       """
     And a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write) (foo))
+      (import (scheme base) (foo))
 
       (foo 65)
       (bar 65)
@@ -406,3 +406,33 @@ Feature: Library system
     When I successfully run `stak -l foo.scm main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "AABB"
+
+  Scenario: Display a symbol from a standard library
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write))
+
+      (display 'define)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "define"
+
+  Scenario: Display a symbol from an external library
+    Given a file named "foo.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define foo 42)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write) (foo))
+
+      (display 'foo)
+      """
+    When I successfully run `stak -l foo.scm main.scm`
+    Then the stdout should contain exactly "foo"

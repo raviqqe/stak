@@ -464,6 +464,7 @@
           (if position
            (string-copy string (+ position 1))
            string))))
+       ; TODO Remove this clause.
        ((assq name (cdar libraries)) =>
         cdr)
        (else
@@ -1107,8 +1108,8 @@
 
     ; Macro system
 
-    (define (expand-macros libraries expression)
-     (let* ((context (make-macro-context (make-macro-state '() '() '()) '() libraries))
+    (define (expand-macros expression)
+     (let* ((context (make-macro-context (make-macro-state '() '() '()) '() '()))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -1596,7 +1597,7 @@
 
     (define (main source)
      (define-values (expression1 libraries) (expand-libraries source))
-     (define-values (expression2 macros dynamic-symbols) (expand-macros libraries expression1))
+     (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
      (define-values (expression3 optimizers) (optimize expression2))
      (define features (detect-features expression3))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
