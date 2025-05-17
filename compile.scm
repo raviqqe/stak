@@ -1184,12 +1184,13 @@
       (filter
        (lambda (symbol)
         (not (library-symbol? symbol)))
-       (append
-        (find-symbols expression)
-        (find-quoted-symbols libraries)
-        (find-quoted-symbols macros)
-        (find-quoted-symbols optimizers)
-        (find-quoted-symbols dynamic-symbols)))
+       (unique
+        (append
+         (find-symbols expression)
+         (find-quoted-symbols libraries)
+         (find-quoted-symbols macros)
+         (find-quoted-symbols optimizers)
+         (find-quoted-symbols dynamic-symbols))))
       libraries
       macros
       optimizers
