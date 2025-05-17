@@ -236,9 +236,6 @@
      (libraries library-context-libraries library-context-set-libraries!)
      (imported library-context-imported library-context-set-imported!))
 
-    (define (library-context-id context)
-     (length (library-context-libraries context)))
-
     (define (library-context-find context name)
      (cond
       ((assoc name (library-context-libraries context)) =>
@@ -344,7 +341,6 @@
         (lambda (body) (eq? (car body) predicate))
         (cddr expression))))
 
-     (define id (library-context-id context))
      (define sets (map parse-import-set (collect-bodies 'import)))
      (define names (collect-imported-names context sets))
 
@@ -357,7 +353,6 @@
        (else
         (let ((renamed (string->uninterned-symbol
                         (string-append
-                         (id->string id)
                          (list->string (list library-symbol-separator))
                          (symbol->string name)))))
          (set! names (cons (cons name renamed) names))
@@ -1655,7 +1650,11 @@
       (define (target-procedure? value)
        (and (rib? value) (eq? (rib-tag value) procedure-type)))
 
-      (define string->uninterned-symbol string->symbol)))
+      (define symbol-id 0)
+
+      (define (string->uninterned-symbol name)
+       (set! symbol-id (+ symbol-id 1))
+       (string->symbol (string-append (number->string symbol-id 16) name)))))
 
     ,@frontend
     ,@backend))
