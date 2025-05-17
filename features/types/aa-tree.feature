@@ -1,4 +1,3 @@
-@library
 Feature: AA tree
   Background:
     Given I run the following script:
