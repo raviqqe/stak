@@ -407,7 +407,17 @@ Feature: Library system
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "AABB"
 
-  Scenario: Display a symbol from a library
+  Scenario: Display a symbol from a standard library
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write))
+
+      (display 'define)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "define"
+
+  Scenario: Display a symbol from an external library
     Given a file named "foo.scm" with:
       """scheme
       (define-library (foo)
