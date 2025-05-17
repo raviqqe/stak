@@ -382,31 +382,15 @@
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
     (define-record-type macro-context
-     (make-macro-context* state environment libraries)
+     (make-macro-context state environment)
      macro-context?
      (state macro-context-state)
-     (environment macro-context-environment macro-context-set-environment!)
-     (libraries macro-context-libraries))
-
-    (define (make-macro-context state environment libraries)
-     (make-macro-context*
-      state
-      environment
-      (map
-       (lambda (library)
-        (cons
-         (car library)
-         (map
-          (lambda (pair)
-           (cons (cdr pair) (car pair)))
-          (cdr library))))
-       libraries)))
+     (environment macro-context-environment macro-context-set-environment!))
 
     (define (macro-context-append context pairs)
-     (make-macro-context*
+     (make-macro-context
       (macro-context-state context)
-      (append pairs (macro-context-environment context))
-      (macro-context-libraries context)))
+      (append pairs (macro-context-environment context))))
 
     (define (macro-context-set! context name denotation)
      (let* ((environment (macro-context-environment context))
@@ -454,21 +438,13 @@
 
     ;; Procedures
 
-    (define (resolve-data-symbol libraries name)
-     (let loop ((libraries libraries))
-      (cond
-       ((null? libraries)
-        (let* ((string (symbol->string name))
-               (position (memv-position library-symbol-separator (string->list string))))
-         (string->symbol
-          (if position
-           (string-copy string (+ position 1))
-           string))))
-       ; TODO Remove this clause.
-       ((assq name (cdar libraries)) =>
-        cdr)
-       (else
-        (loop (cdr libraries))))))
+    (define (resolve-data-symbol name)
+     (let* ((string (symbol->string name))
+            (position (memv-position library-symbol-separator (string->list string))))
+      (string->symbol
+       (if position
+        (string-copy string (+ position 1))
+        string))))
 
     (define (resolve-denotation context expression)
      (cond
@@ -756,7 +732,7 @@
           (relaxed-deep-map
            (lambda (value)
             (if (symbol? value)
-             (resolve-data-symbol (macro-context-libraries context) value)
+             (resolve-data-symbol value)
              value))
            (cdr expression))))
 
@@ -1109,7 +1085,7 @@
     ; Macro system
 
     (define (expand-macros expression)
-     (let* ((context (make-macro-context (make-macro-state '() '() '()) '() '()))
+     (let* ((context (make-macro-context (make-macro-state '() '() '()) '()))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -1206,16 +1182,17 @@
      (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
 
      (make-metadata
-      (filter
-       (lambda (symbol)
-        (not (library-symbol? symbol)))
-       (unique
-        (append
-         (find-symbols expression)
-         (find-quoted-symbols libraries)
-         (find-quoted-symbols macros)
-         (find-quoted-symbols optimizers)
-         (find-quoted-symbols dynamic-symbols))))
+      (unique
+       (append
+        (find-quoted-symbols libraries)
+        (filter
+         (lambda (symbol)
+          (not (library-symbol? symbol)))
+         (append
+          (find-symbols expression)
+          (find-quoted-symbols macros)
+          (find-quoted-symbols optimizers)
+          (find-quoted-symbols dynamic-symbols)))))
       libraries
       macros
       optimizers
@@ -1699,13 +1676,10 @@
 
           ; Library system
 
-          ; TODO Set libraries in macro contexts dynamically.
-          (define libraries ($$libraries))
-
           (define expand-libraries
            (let ((context
                   (make-library-context
-                   (map-values (lambda (exports) (make-library exports '() '())) libraries)
+                   (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
                    '())))
             (lambda (environment expression)
              (define (import-sets)
@@ -1738,7 +1712,7 @@
           ; Macro system
 
           (define expand-macros
-           (let ((context (make-macro-context (make-macro-state '() '() '()) '() libraries)))
+           (let ((context (make-macro-context (make-macro-state '() '() '()) '())))
             (for-each
              (lambda (pair)
               (macro-context-set-last!
