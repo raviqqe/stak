@@ -1722,31 +1722,32 @@
                    (map-values (lambda (exports) (make-library exports '() '())) libraries)
                    '())))
             (lambda (environment expression)
+             (define (import-sets)
+              (map parse-import-set (environment-imports environment)))
+
              (case (maybe-car expression)
               ((define-library)
                (add-library-definition! context expression)
                #f)
               ((import)
                (environment-append-imports! environment (cdr expression))
-               #f)
+               (cons
+                '$$begin
+                (append
+                 (expand-library-bodies context (map car (import-sets)))
+                 (list #f))))
               (else
-               (let ((sets (map parse-import-set (environment-imports environment))))
-                (cons
-                 '$$begin
-                 (append
-                  (expand-library-bodies context (map car sets))
-                  (list
-                   (resolve-environment-symbols
-                    (let ((names (collect-imported-names context sets)))
-                     (lambda (name)
-                      (cond
-                       ((assq name names) =>
-                        cdr)
-                       (else
-                        (string->symbol
-                         (symbol->string name)
-                         (environment-symbol-table environment))))))
-                    expression))))))))))
+               (resolve-environment-symbols
+                (let ((names (collect-imported-names context (import-sets))))
+                 (lambda (name)
+                  (cond
+                   ((assq name names) =>
+                    cdr)
+                   (else
+                    (string->symbol
+                     (symbol->string name)
+                     (environment-symbol-table environment))))))
+                expression))))))
 
           ; Macro system
 
