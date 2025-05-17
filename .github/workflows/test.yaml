@@ -76,7 +76,7 @@ jobs:
               - gc_always
             tags: not @long
           - name: chibi
-            tags: (not @stak or @chibi) and not @library
+            tags: not @stak or @chibi
           - name: gauche
             tags: not @stak or @gauche
           - name: guile
