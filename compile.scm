@@ -1182,16 +1182,17 @@
      (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
 
      (make-metadata
-      (filter
-       (lambda (symbol)
-        (not (library-symbol? symbol)))
-       (unique
-        (append
-         (find-symbols expression)
-         (find-quoted-symbols libraries)
-         (find-quoted-symbols macros)
-         (find-quoted-symbols optimizers)
-         (find-quoted-symbols dynamic-symbols))))
+      (unique
+       (append
+        (find-quoted-symbols libraries)
+        (filter
+         (lambda (symbol)
+          (not (library-symbol? symbol)))
+         (append
+          (find-symbols expression)
+          (find-quoted-symbols macros)
+          (find-quoted-symbols optimizers)
+          (find-quoted-symbols dynamic-symbols)))))
       libraries
       macros
       optimizers
