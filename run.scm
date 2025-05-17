@@ -15,15 +15,21 @@
   (only (scheme time))
   (only (scheme write)))
 
-(define (main)
-  (define program (open-input-file (list-ref (command-line) 1)))
+(define (run path)
+  (define file (open-input-file path))
 
   (do ()
-    ((eof-object? (peek-char program))
+    ((eof-object? (peek-char file))
       #f)
-    (if (char-whitespace? (peek-char program))
-      (read-char program)
-      (eval (read program) (interaction-environment)))))
+    (if (char-whitespace? (peek-char file))
+      (read-char file)
+      (eval (read file) (interaction-environment)))))
+
+(define (main)
+  (do ((arguments (cdr (command-line)) (cddr arguments)))
+    ((not (equal? (car arguments) "-l"))
+      (run (car arguments)))
+    (run (cadr arguments))))
 
 (let ((arguments (command-line)))
   (when (or
