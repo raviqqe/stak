@@ -1712,7 +1712,9 @@
                    '())))
             (lambda (environment expression)
              (if (eq? (maybe-car expression) 'define-library)
-              (add-library-definition! context expression)
+              (begin
+               (add-library-definition! context expression)
+               #f)
               (let ((sets (map parse-import-set (environment-imports environment))))
                (cons
                 '$$begin
