@@ -15448,11 +15448,6 @@
             - list-tail
             - dictionary
             - index
-        - list
-          - value
-          - list
-            - cadr
-            - pair
       - list
         - set-cdr!
         - pair
@@ -15465,7 +15460,6 @@
         - list
           - cdr
           - dictionary
-      - value
   - list
     - define
     - list
