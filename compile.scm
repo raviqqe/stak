@@ -1350,11 +1350,9 @@
 
     (define (encode-context-remove! context index)
      (let* ((dictionary (cons #f (encode-context-dictionary context)))
-            (pair (list-tail dictionary index))
-            (value (cadr pair)))
+            (pair (list-tail dictionary index)))
       (set-cdr! pair (cddr pair))
-      (encode-context-set-dictionary! context (cdr dictionary))
-      value))
+      (encode-context-set-dictionary! context (cdr dictionary))))
 
     (define (encode-context-position context value)
      (memq-position value (encode-context-dictionary context)))
