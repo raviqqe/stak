@@ -15448,11 +15448,6 @@
             - list-tail
             - dictionary
             - index
-        - list
-          - value
-          - list
-            - cadr
-            - pair
       - list
         - set-cdr!
         - pair
@@ -15465,7 +15460,6 @@
         - list
           - cdr
           - dictionary
-      - value
   - list
     - define
     - list
@@ -16068,12 +16062,10 @@
                         - list
                           - cdr
                           - entry
-                    - list
-                      - value
-                      - list
-                        - encode-context-remove!
-                        - context
-                        - index
+                  - list
+                    - encode-context-remove!
+                    - context
+                    - index
                   - list
                     - unless
                     - removed
