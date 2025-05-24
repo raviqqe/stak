@@ -16120,61 +16120,55 @@
             - list
               - else
               - list
-                - let
+                - encode-rib
+                - context
                 - list
-                  - list
-                    - tag
-                    - list
-                      - rib-tag
-                      - value
+                  - rib-car
+                  - value
+              - list
+                - encode-rib
+                - context
                 - list
-                  - encode-rib
-                  - context
-                  - list
-                    - rib-car
-                    - value
+                  - rib-cdr
+                  - value
+              - list
+                - let-values
                 - list
-                  - encode-rib
-                  - context
-                  - list
-                    - rib-cdr
-                    - value
-                - list
-                  - let-values
                   - list
                     - list
+                      - head
+                      - tail
+                    - list
+                      - encode-integer-parts
                       - list
-                        - head
-                        - tail
-                      - list
-                        - encode-integer-parts
-                        - tag
-                        - tag-base
+                        - rib-tag
+                        - value
+                      - tag-base
+                - list
+                  - write-u8
                   - list
-                    - write-u8
+                    - -
+                    - 3
                     - list
                       - -
-                      - 3
-                      - list
-                        - -
-                        - 8
-                        - head
-                  - list
-                    - encode-integer-tail
-                    - tail
+                      - 8
+                      - head
                 - list
-                  - when
+                  - encode-integer-tail
+                  - tail
+              - list
+                - when
+                - entry
+                - list
+                  - encode-context-push!
+                  - context
+                  - value
+                - list
+                  - decrement-count!
                   - entry
-                  - list
-                    - encode-context-push!
-                    - context
-                    - value
-                  - list
-                    - decrement-count!
-                    - entry
-                  - list
-                    - write-u8
-                    - 1
+                - list
+                  - write-u8
+                  - 1
       - list
         - else
         - list
