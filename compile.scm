@@ -1520,18 +1520,17 @@
              (encode-integer-tail tail)))))
 
          (else
-          (let ((tag (rib-tag value)))
-           (encode-rib context (rib-car value))
-           (encode-rib context (rib-cdr value))
+          (encode-rib context (rib-car value))
+          (encode-rib context (rib-cdr value))
 
-           (let-values (((head tail) (encode-integer-parts tag tag-base)))
-            (write-u8 (+ 3 (* 8 head)))
-            (encode-integer-tail tail))
+          (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
+           (write-u8 (+ 3 (* 8 head)))
+           (encode-integer-tail tail))
 
-           (when entry
-            (encode-context-push! context value)
-            (decrement-count! entry)
-            (write-u8 1)))))))
+          (when entry
+           (encode-context-push! context value)
+           (decrement-count! entry)
+           (write-u8 1))))))
 
       (else
        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
