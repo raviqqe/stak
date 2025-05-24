@@ -1508,8 +1508,8 @@
          ((and entry (encode-context-position context value)) =>
           (lambda (index)
            (decrement-count! entry)
-           (let ((removed (zero? (cdr entry)))
-                 (value (encode-context-remove! context index)))
+           (let ((removed (zero? (cdr entry))))
+            (encode-context-remove! context index)
             (unless removed
              (encode-context-push! context value))
             (let-values (((head tail)
