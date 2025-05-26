@@ -5,7 +5,7 @@ publish = false
 edition.workspace = true
 
 [dependencies]
-mlua = { version = "0.10.4", features = ["lua54"] }
+mlua = { version = "0.10.5", features = ["lua54"] }
 stak = { version = "0.10.24", path = "../root" }
 stak-compiler = { version = "0.10.24", path = "../compiler" }
 
