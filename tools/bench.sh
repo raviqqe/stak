@@ -16,7 +16,7 @@ setup() {
 
   feature=$1
 
-  brew install chibi-scheme gambit-scheme gauche guile micropython
+  brew install chibi-scheme gambit-scheme gauche guile lua micropython
   cargo install hyperfine
 
   case $feature in
