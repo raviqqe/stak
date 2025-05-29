@@ -16,7 +16,7 @@ setup() {
 
   feature=$1
 
-  brew install chibi-scheme gambit-scheme gauche guile micropython
+  brew install chibi-scheme gambit-scheme gauche guile lua micropython
   cargo install hyperfine
 
   case $feature in
@@ -76,7 +76,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
 
   if [ -r $base.py ]; then
     reference="python3 $base.py"
-    scripts="micropython $base.py,$scripts"
+    scripts="micropython $base.py,lua $base.lua,$scripts"
   fi
 
   hyperfine \
