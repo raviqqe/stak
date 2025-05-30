@@ -61,6 +61,7 @@
     "mlua",
     "mmap",
     "mmaps",
+    "mruby",
     "mrun",
     "mstak",
     "munmap",
