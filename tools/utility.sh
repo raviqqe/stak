@@ -1,9 +1,9 @@
-log() {
+log() (
   echo '>>>' "$@" >&2
   "$@"
-}
+)
 
-list_scheme_files() {
+list_scheme_files() (
   [ $# -eq 0 ]
 
   for file in $(git ls-files '*.scm' | grep -v prelude); do
@@ -13,7 +13,7 @@ list_scheme_files() {
 
     echo $file
   done
-}
+)
 
 build_binary() (
   cd $1
