@@ -25,15 +25,18 @@ setup_bench
 
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
-result_directory=$PWD/tmp/bench/space
-mkdir -p $result_directory
+output_directory=$PWD/tmp/bench/space
+mkdir -p $output_directory
 
 cd bench/src
 
-for file in $(ls */main.scm | sort); do
+for file in $(ls */main.scm | sort | grep -v eval); do
   base=${file%.scm}
+  directory=$output_directory/$(dirname $base)
 
-  for interpreter in stak mstak chibi-scheme gosh guile; do
-    profile $result_directory/$(dirname $base)/$interpreter $interpreter $file
+  profile $directory/stak-interpret stak-interpret --heap-size 16384 $base.bc
+
+  for command in chibi-scheme gosh guile; do
+    profile $directory/$command $command $file
   done
 done
