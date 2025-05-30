@@ -56,7 +56,7 @@ for file in $(ls */main.scm | sort | grep -v eval); do
     profile $directory/$command $command $file
   done
 
-  if $base.py; then
+  if [ -r $base.py ]; then
     for command in python3 micropython; do
       profile $directory/$command $command $base.py
     done
