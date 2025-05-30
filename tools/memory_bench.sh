@@ -2,52 +2,23 @@
 
 set -ex
 
-feature=
-
-while getopts f: option; do
-  case $option in
-  f)
-    feature=$OPTARG
-    ;;
-  esac
-done
-
-shift $(expr $OPTIND - 1)
-
 [ $# -eq 0 ]
 
 cd $(dirname $0)/..
 
 . tools/utility.sh
 
-setup_bench $feature
+setup_bench
 
 result_directory=$PWD/tmp/bench/space
 mkdir -p $result_directory
 
 cd bench/src
 
-for file in $(ls */main.scm | sort | grep $filter); do
+for file in $(ls */main.scm | sort); do
   base=${file%.scm}
 
-  scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,chibi-scheme $file,gosh $file,guile $file"
-  reference=
-
-  if [ $(dirname $base) != eval ]; then
-    scripts="$scripts,gsi $file"
-  fi
-
-  if [ -r $base.py ]; then
-    reference="python3 $base.py"
-    scripts="micropython $base.py,ruby $base.rb,mruby $base.rb,lua $base.lua,$scripts"
-  fi
-
-  hyperfine \
-    --shell none \
-    --warmup 5 \
-    --export-markdown $result_directory/$(dirname $base).md \
-    --input ../../compile.scm \
-    ${reference:+--reference "$reference"} \
-    -L script "$scripts" \
-    "{script}"
+  for interpreter in stak mstak chibi-scheme gosh guile; do
+    /usr/bin/time -v $interpreter $file
+  done
 done
