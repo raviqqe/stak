@@ -13,6 +13,22 @@ profile() (
   ms_print $out_file | tee ${out_file%.out}.txt
 )
 
+heap_size() (
+  bytecode_file=$1
+  size=8192
+
+  for _ in $(seq 8); do
+    if stak-interpret --heap-size $size $bytecode_file; then
+      echo $size
+      return
+    fi
+
+    size=$(expr $size '*' 2)
+  done
+
+  return 1
+)
+
 [ $# -eq 0 -a $(uname) = Linux ]
 
 cd $(dirname $0)/..
@@ -34,7 +50,7 @@ for file in $(ls */main.scm | sort | grep -v eval); do
   base=${file%.scm}
   directory=$output_directory/$(dirname $base)
 
-  profile $directory/stak-interpret stak-interpret --heap-size 16384 $base.bc
+  profile $directory/stak-interpret stak-interpret --heap-size $(heap_size $base.bc) $base.bc
 
   for command in chibi-scheme gosh guile; do
     profile $directory/$command $command $file
