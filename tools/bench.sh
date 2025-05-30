@@ -28,8 +28,8 @@ setup_bench $feature
 
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
-result_directory=$PWD/tmp/bench/time
-mkdir -p $result_directory
+output_directory=$PWD/tmp/bench/time
+mkdir -p $output_directory
 
 cd bench/src
 
@@ -51,7 +51,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
   hyperfine \
     --shell none \
     --warmup 5 \
-    --export-markdown $result_directory/$(dirname $base).md \
+    --export-markdown $output_directory/$(dirname $base).md \
     --input ../../compile.scm \
     ${reference:+--reference "$reference"} \
     -L script "$scripts" \
