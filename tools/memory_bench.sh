@@ -22,7 +22,7 @@ cd $(dirname $0)/..
 
 setup_bench $feature
 
-result_directory=$PWD/tmp/bench
+result_directory=$PWD/tmp/bench/space
 mkdir -p $result_directory
 
 cd bench/src
