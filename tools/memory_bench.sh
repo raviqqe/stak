@@ -56,13 +56,15 @@ for file in $(ls */main.scm | sort | grep -v eval); do
     profile $directory/$command $command $file
   done
 
-  for command in python3 micropython; do
-    profile $directory/$command $command $base.py
-  done
+  if $base.py; then
+    for command in python3 micropython; do
+      profile $directory/$command $command $base.py
+    done
 
-  for command in ruby mruby; do
-    profile $directory/$command $command $base.rb
-  done
+    for command in ruby mruby; do
+      profile $directory/$command $command $base.rb
+    done
 
-  profile $directory/lua lua $base.lua
+    profile $directory/lua lua $base.lua
+  fi
 done
