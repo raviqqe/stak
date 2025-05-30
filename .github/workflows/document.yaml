@@ -26,10 +26,6 @@ jobs:
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
-      - uses: actions/upload-artifact@v4
-        with:
-          name: document
-          path: doc/dist
       - uses: actions/upload-pages-artifact@v3
         with:
           path: doc/dist

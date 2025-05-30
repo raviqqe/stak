@@ -62,6 +62,9 @@ cd $(dirname $0)/..
 
 setup $feature
 
+result_directory=$PWD/tmp/bench
+mkdir -p $result_directory
+
 cd bench/src
 
 for file in $(ls */main.scm | sort | grep $filter); do
@@ -80,7 +83,9 @@ for file in $(ls */main.scm | sort | grep $filter); do
   fi
 
   hyperfine \
-    -N \
+    --shell none \
+    --warmup 5 \
+    --export-markdown $result_directory/$(dirname $base).md \
     --input ../../compile.scm \
     ${reference:+--reference "$reference"} \
     -L script "$scripts" \
