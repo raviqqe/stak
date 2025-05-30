@@ -25,7 +25,7 @@ setup_bench
 
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
-output_directory=$PWD/tmp/bench/space
+output_directory=$PWD/tmp/bench/memory
 mkdir -p $output_directory
 
 cd bench/src

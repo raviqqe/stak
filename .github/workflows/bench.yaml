@@ -33,7 +33,7 @@ jobs:
       - run: tools/bench.sh ${{ matrix.options }}
       - uses: actions/upload-artifact@v4
         with:
-          name: command ${{ matrix.options }}
+          name: time ${{ matrix.options }}
           path: tmp/bench/time
   command_memory:
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: memory
-          path: tmp/bench/space
+          path: tmp/bench/memory
   rust:
     strategy:
       fail-fast: false
