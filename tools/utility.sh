@@ -43,6 +43,8 @@ setup_bench() (
   build_binary . -p stak -p stak-interpret $build_options
   build_binary cmd/minimal -p mstak -p mstak-interpret
 
+  export PATH=$PWD/target/release:$PATH
+
   for file in bench/src/*/main.scm; do
     cat prelude.scm $file | stak-compile >${file%.scm}.bc
   done
