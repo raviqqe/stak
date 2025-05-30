@@ -84,5 +84,6 @@ for file in $(ls */main.scm | sort | grep $filter); do
     --input ../../compile.scm \
     ${reference:+--reference "$reference"} \
     -L script "$scripts" \
+    --export-markdown "bench-${base}.md" \
     "{script}"
 done
