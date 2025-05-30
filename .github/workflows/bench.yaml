@@ -33,7 +33,7 @@ jobs:
       - run: tools/bench.sh ${{ matrix.options }}
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.options }}
+          name: command ${{ matrix.options }}
           path: tmp/bench
   rust:
     strategy:
