@@ -87,6 +87,6 @@ for file in $(ls */main.scm | sort | grep $filter); do
     --input ../../compile.scm \
     ${reference:+--reference "$reference"} \
     -L script "$scripts" \
-    --export-markdown $result_directory/$base.md \
+    --export-markdown $result_directory/$(dirname $base).md \
     "{script}"
 done
