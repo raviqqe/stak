@@ -2,11 +2,13 @@
 
 set -ex
 
-[ $# -eq 0 ]
+[ $# -eq 0 -a $(uname) = Linux ]
 
 cd $(dirname $0)/..
 
 . tools/utility.sh
+
+brew install valgrind
 
 setup_bench
 
@@ -21,6 +23,9 @@ for file in $(ls */main.scm | sort); do
   base=${file%.scm}
 
   for interpreter in stak mstak chibi-scheme gosh guile; do
-    /usr/bin/time -v $interpreter $file
+    out_file=$result_directory/$(dirname $base).out
+
+    valgrind --tool massif --massif-out-file $out_file $interpreter $file
+    ms_print $out_file | tee ${out_file%.out}.txt
   done
 done
