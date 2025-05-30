@@ -10,6 +10,8 @@ cd $(dirname $0)/..
 
 setup_bench
 
+export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
+
 result_directory=$PWD/tmp/bench/space
 mkdir -p $result_directory
 
