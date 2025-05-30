@@ -50,11 +50,7 @@ done
 
 shift $(expr $OPTIND - 1)
 
-filter=.
-
-if [ $# -gt 0 ]; then
-  filter="$@"
-fi
+[ $# -eq 0 ]
 
 cd $(dirname $0)/..
 
