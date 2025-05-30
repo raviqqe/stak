@@ -10,7 +10,7 @@ concurrency:
 env:
   GUILE_AUTO_COMPILE: 0
 jobs:
-  command:
+  command_time:
     strategy:
       fail-fast: false
       matrix:
@@ -35,7 +35,7 @@ jobs:
         with:
           name: command ${{ matrix.options }}
           path: tmp/bench/time
-  memory:
+  command_memory:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
       - run: tools/memory_bench.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: command ${{ matrix.options }}
+          name: memory
           path: tmp/bench/space
   rust:
     strategy:
@@ -85,7 +85,8 @@ jobs:
       - run: tools/rust_loc_bench.sh
   bench:
     needs:
-      - command
+      - command_time
+      - command_memory
       - rust
       - bytecode_size
       - rust_loc
