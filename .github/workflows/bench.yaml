@@ -10,7 +10,7 @@ concurrency:
 env:
   GUILE_AUTO_COMPILE: 0
 jobs:
-  interpret:
+  command:
     strategy:
       fail-fast: false
       matrix:
@@ -31,6 +31,10 @@ jobs:
         with:
           python-version: "3.13"
       - run: tools/bench.sh ${{ matrix.options }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark
+          path: tmp/bench
   rust:
     strategy:
       fail-fast: false
@@ -68,7 +72,7 @@ jobs:
       - run: tools/rust_loc_bench.sh
   bench:
     needs:
-      - interpret
+      - command
       - rust
       - bytecode_size
       - rust_loc
