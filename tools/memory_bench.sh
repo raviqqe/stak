@@ -25,7 +25,7 @@ for file in $(ls */main.scm | sort); do
   for interpreter in stak mstak chibi-scheme gosh guile; do
     out_file=$result_directory/$(dirname $base).out
 
-    valgrind --tool massif --massif-out-file $out_file $interpreter $file
+    valgrind --tool=massif --massif-out-file=$out_file $interpreter $file
     ms_print $out_file | tee ${out_file%.out}.txt
   done
 done
