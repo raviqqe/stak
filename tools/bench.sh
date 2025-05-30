@@ -83,10 +83,11 @@ for file in $(ls */main.scm | sort | grep $filter); do
   fi
 
   hyperfine \
-    -N \
+    --shell none \
+    --warmup 5 \
+    --export-markdown $result_directory/$(dirname $base).md \
     --input ../../compile.scm \
     ${reference:+--reference "$reference"} \
     -L script "$scripts" \
-    --export-markdown $result_directory/$(dirname $base).md \
     "{script}"
 done
