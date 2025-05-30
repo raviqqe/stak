@@ -18,7 +18,7 @@ heap_size() (
   size=8192
 
   for _ in $(seq 8); do
-    if stak-interpret --heap-size $size $bytecode_file; then
+    if stak-interpret --heap-size $size $bytecode_file >/dev/null; then
       echo $size
       return
     fi
