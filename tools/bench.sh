@@ -52,6 +52,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
     --shell none \
     --warmup 5 \
     --export-markdown $output_directory/$(dirname $base).md \
+    --export-json $output_directory/$(dirname $base).json \
     --input ../../compile.scm \
     ${reference:+--reference "$reference"} \
     -L script "$scripts" \
