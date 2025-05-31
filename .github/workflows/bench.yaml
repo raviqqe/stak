@@ -33,7 +33,7 @@ jobs:
       - run: tools/bench.sh ${{ matrix.options }}
       - uses: actions/upload-artifact@v4
         with:
-          name: time ${{ matrix.options }}
+          name: time ${{ matrix.os }} ${{ matrix.options }}
           path: tmp/bench/time
   command_memory:
     runs-on: ubuntu-latest
