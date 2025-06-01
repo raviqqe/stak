@@ -77,7 +77,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: tools/bytecode_size_bench.sh
-  rust_loc:
+  loc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +89,7 @@ jobs:
       - command_memory
       - rust
       - bytecode_size
-      - rust_loc
+      - loc
     if: always()
     runs-on: ubuntu-latest
     steps:
