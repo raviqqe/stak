@@ -43,6 +43,10 @@ for file in $(ls */main.scm | sort | grep $filter); do
     scripts="$scripts,gsi $file"
   fi
 
+  if which tr7i; then
+    scripts="$scripts,tr7i $file"
+  fi
+
   if [ -r $base.py ]; then
     reference="python3 $base.py"
     scripts="micropython $base.py,ruby $base.rb,mruby $base.rb,lua $base.lua,$scripts"
