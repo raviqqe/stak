@@ -7,9 +7,9 @@ cargo install stak
 
 echo LD_LIBRARY_PATH=$(brew --prefix lua@5.4)/lib:$LD_LIBRARY_PATH >>$GITHUB_ENV
 
-git clone https://gitlab.com/jobol/tr7
+git clone https://gitlab.com/jobol/tr7 /tmp/tr7
 (
-  cd tr7
+  cd /tmp/tr7
   mkdir -p /usr/local/share
   make install
 )
