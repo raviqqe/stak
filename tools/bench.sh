@@ -43,7 +43,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
     scripts="$scripts,gsi $file"
   fi
 
-  if [ -x $(locate tr7i) ]; then
+  if which tr7i; then
     scripts="$scripts,tr7i $file"
   fi
 
