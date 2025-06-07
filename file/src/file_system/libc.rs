@@ -39,7 +39,7 @@ impl LibcFileSystem {
         Self::default()
     }
 
-    fn file(&mut self, descriptor: FileDescriptor) -> Result<BorrowedFd, FileError> {
+    fn file(&mut self, descriptor: FileDescriptor) -> Result<BorrowedFd<'_>, FileError> {
         Ok(self
             .files
             .get(&descriptor)
