@@ -2007,7 +2007,7 @@
           (else
             (let ((byte (quotient integer (* sub-byte sub-byte sub-byte))))
               (write-u8 (+ 240 byte) port)
-              (write-sub-bytes (- integer (* byte sub-byte sub-byte sub-byte))))))))
+              (write-sub-bytes (- integer (* byte sub-byte sub-byte sub-byte)) port))))))
 
     (define (write-string x . rest)
       (parameterize ((current-output-port (get-output-port rest)))
