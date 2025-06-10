@@ -9,6 +9,7 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @gauche @stak
   Scenario Outline: Write a character
     Given a file named "main.scm" with:
       """scheme
