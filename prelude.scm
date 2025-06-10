@@ -1992,6 +1992,7 @@
           ((zero? (quotient integer 128))
             (write-u8 integer port))
           ((zero? (quotient integer (* 32 sub-byte)))
+            ; TODO Use `floor/`.
             (write-u8 (+ 192 (quotient integer sub-byte)) port)
             (write-u8 (+ 128 (remainder integer sub-byte)) port))
           ((zero? (remainder integer (* 16 sub-byte sub-byte)))
