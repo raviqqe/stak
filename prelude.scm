@@ -1989,7 +1989,7 @@
       (let ((upper (quotient integer sub-byte)))
         (unless (zero? upper)
           (write-sub-bytes upper port))
-        (write-u8 (+ 128(remainder integer sub-byte)) port)))
+        (write-u8 (+ 128 (remainder integer sub-byte)) port)))
 
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
