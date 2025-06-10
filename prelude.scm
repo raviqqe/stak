@@ -1985,6 +1985,12 @@
 
     (define sub-byte 64)
 
+    (define (write-sub-bytes integer port)
+      (let ((upper (quotient integer sub-byte)))
+        (unless (zero? upper)
+          (write-sub-bytes upper port))
+        (write-u8 (+ 128(remainder integer sub-byte)) port)))
+
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
             (integer (char->integer x)))
@@ -1992,23 +1998,16 @@
           ((zero? (quotient integer 128))
             (write-u8 integer port))
           ((zero? (quotient integer (* 32 sub-byte)))
-            ; TODO Use `floor/`.
             (write-u8 (+ 192 (quotient integer sub-byte)) port)
-            (write-u8 (+ 128 (remainder integer sub-byte)) port))
+            (write-sub-bytes (remainder integer sub-byte) port))
           ((zero? (quotient integer (* 16 sub-byte sub-byte)))
-            ; TODO Use `floor/`.
             (let ((byte (quotient integer (* sub-byte sub-byte))))
               (write-u8 (+ 224 byte) port)
-              (let ((integer (- integer (* byte sub-byte sub-byte))))
-                (write-u8 (+ 128 (quotient integer sub-byte)) port)
-                (write-u8 (+ 128 (remainder integer sub-byte)) port))))
+              (write-sub-bytes (- integer (* byte sub-byte sub-byte)) port)))
           (else
-            ; TODO Use `floor/`.
-            (let ((byte (quotient integer (* sub-byte sub-byte))))
+            (let ((byte (quotient integer (* sub-byte sub-byte sub-byte))))
               (write-u8 (+ 240 byte) port)
-              (let ((integer (- integer (* byte sub-byte sub-byte))))
-                (write-u8 (+ 128 (quotient integer sub-byte)) port)
-                (write-u8 (+ 128 (remainder integer sub-byte)) port)))))))
+              (write-sub-bytes (- integer (* byte sub-byte sub-byte sub-byte))))))))
 
     (define (write-string x . rest)
       (parameterize ((current-output-port (get-output-port rest)))
