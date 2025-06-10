@@ -17,7 +17,7 @@ Feature: Write
       (write-char #\<value>)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
       | value |
