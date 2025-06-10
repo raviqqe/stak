@@ -1983,10 +1983,10 @@
           (error "cannot write to port"))
         (write byte)))
 
-    (define (write-sub-bytes integer port)
+    (define (write-trailing-bytes integer port)
       (let ((upper (quotient integer 64)))
         (unless (zero? upper)
-          (write-sub-bytes upper port))
+          (write-trailing-bytes upper port))
         (write-u8 (+ 128 (remainder integer 64)) port)))
 
     (define (write-char x . rest)
@@ -1999,7 +1999,7 @@
               (begin
                 ; TODO Use `floor/`.
                 (write-u8 (+ mask (quotient integer offset)) port)
-                (write-sub-bytes (remainder integer offset) port))
+                (write-trailing-bytes (remainder integer offset) port))
               (loop (/ head 2) (* offset 64) (+ mask head)))))))
 
     (define (write-string x . rest)
