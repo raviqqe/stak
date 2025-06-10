@@ -2967,12 +2967,93 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set write-u8
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 0
+    - constant 0
+    - call 2 #f eq?
+    - constant #f
+    - call 2 #f eq?
+    - if
+      - get 0
+      - get 3
+      - call 2 #f ||
+      - continue
+    - constant #f
+    - set 0
+    - constant 128
+    - get 4
+    - constant 64
+    - call 2 #f remainder
+    - call 2 #f ||
+    - get 3
+    - call 2 #f write-u8
+  - call 1 #f $$close
+  - get 2
+  - constant 64
+  - call 2 #f quotient
+  - call 1 #f 1
+- call 1 #f $$close
+- set ||
 - constant procedure 1 #t
-  - get 1
-  - call 1 #f char->integer
+  - constant procedure 2 #f
+    - get 0
+    - constant 128
+    - call 2 #f quotient
+    - constant 0
+    - call 2 #f eq?
+    - if
+      - get 0
+      - get 2
+      - call 2 #f write-u8
+    - constant procedure 1 #f
+      - constant procedure 3 #f
+        - get 6
+        - get 3
+        - get 3
+        - call 2 #f ||
+        - call 2 #f quotient
+        - constant 0
+        - call 2 #f eq?
+        - if
+          - get 0
+          - get 7
+          - get 3
+          - call 2 #f quotient
+          - call 2 #f ||
+          - get 8
+          - call 2 #f write-u8
+          - set 0
+          - get 6
+          - get 2
+          - call 2 #f remainder
+          - get 8
+          - call 2 #f ||
+        - get 2
+        - constant 2
+        - call 2 #f ||
+        - get 2
+        - constant 64
+        - call 2 #f ||
+        - get 2
+        - get 5
+        - call 2 #f ||
+        - call 3 #f 7
+      - call 1 #f $$close
+      - set 1
+      - constant 32
+      - constant 64
+      - constant 192
+      - call 3 #f 3
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
   - get 1
   - call 1 #f ||
-  - call 2 #f write-u8
+  - get 3
+  - call 1 #f char->integer
+  - call 2 #f 2
 - call 1 #f $$close
 - set write-char
 - constant procedure 1 #t
