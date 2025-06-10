@@ -9,7 +9,6 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
   Scenario Outline: Write a character
     Given a file named "main.scm" with:
       """scheme
@@ -25,6 +24,20 @@ Feature: Write
       | a     |
       | A     |
       | ~     |
+
+  @gauche @stak
+  Scenario Outline: Write a multi-byte character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-char #\<value>)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value |
       | д     |
       | ∰     |
       | 😄     |
