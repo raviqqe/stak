@@ -24,7 +24,7 @@ Feature: Write
       | a     |
       | A     |
       | ~     |
-      | ~     |
+      | 😄     |
 
   Scenario Outline: Write an escaped character
     Given a file named "main.scm" with:
