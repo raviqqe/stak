@@ -1983,13 +1983,11 @@
           (error "cannot write to port"))
         (write byte)))
 
-    (define sub-byte 64)
-
     (define (write-sub-bytes integer port)
-      (let ((upper (quotient integer sub-byte)))
+      (let ((upper (quotient integer 64)))
         (unless (zero? upper)
           (write-sub-bytes upper port))
-        (write-u8 (+ 128 (remainder integer sub-byte)) port)))
+        (write-u8 (+ 128 (remainder integer 64)) port)))
 
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
