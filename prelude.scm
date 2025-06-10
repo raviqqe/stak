@@ -1998,7 +1998,7 @@
             (if (zero? (quotient integer (* head offset)))
               (let ((byte (quotient integer offset)))
                 (write-u8 (+ mask byte) port)
-                (write-sub-bytes (- integer (* byte offset)) port))
+                (write-sub-bytes (remainder integer offset) port))
               (loop (/ head 2) (* offset 64) (+ mask head)))))))
 
     (define (write-string x . rest)
