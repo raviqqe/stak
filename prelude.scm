@@ -1996,8 +1996,9 @@
           (write-u8 integer port)
           (let loop ((head 32) (offset 64) (mask 192))
             (if (zero? (quotient integer (* head offset)))
-              (let ((byte (quotient integer offset)))
-                (write-u8 (+ mask byte) port)
+              (begin
+                ; TODO Use `floor/`.
+                (write-u8 (+ mask (quotient integer offset)) port)
                 (write-sub-bytes (remainder integer offset) port))
               (loop (/ head 2) (* offset 64) (+ mask head)))))))
 
