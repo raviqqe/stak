@@ -13,7 +13,7 @@ The other "full" implementations of [the R7RS-small standard](https://small.r7rs
 
 ## The order of computation times
 
-Computation times of some operations against collections are suboptimal compared to other Scheme implementations.
+Computation times of some operations against collections in Stak Scheme are suboptimal compared to other Scheme implementations.
 Such collection operations are listed below.
 
 - `vector-ref`, `vector-set!`, and `bytevector-u8-ref` have computation times of the order `O(n)` instead of `O(1)` because the underlying representations are lists.
