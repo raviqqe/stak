@@ -1996,9 +1996,16 @@
             (write-u8 (+ 192 (quotient integer sub-byte)) port)
             (write-u8 (+ 128 (remainder integer sub-byte)) port))
           ((zero? (remainder integer (* 16 sub-byte sub-byte)))
-            (write-u8 (div integer 128) port))
+            ; TODO Use `floor/`.
+            (let ((byte (quotient integer (* sub-byte sub-byte))))
+              (write-u8 (+ 224 byte) port)
+              (let ((integer (- integer (* byte sub-byte sub-byte))))
+                (write-u8 (+ 128 (quotient integer sub-byte)) port)
+                (write-u8 (+ 128 (remainder integer sub-byte)) port))))
           (else
-            foo))))
+            ; TODO Use `floor/`.
+            (write-u8 (+ 192 (quotient integer sub-byte)) port)
+            (write-u8 (+ 128 (remainder integer sub-byte)) port)))))
 
     (define (write-string x . rest)
       (parameterize ((current-output-port (get-output-port rest)))
