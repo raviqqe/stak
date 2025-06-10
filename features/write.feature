@@ -24,6 +24,7 @@ Feature: Write
       | a     |
       | A     |
       | ~     |
+      | д     |
       | 😄     |
 
   Scenario Outline: Write an escaped character
