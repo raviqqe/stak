@@ -9,15 +9,22 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Write a character
+  Scenario Outline: Write a character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (write-char #\A)
+      (write-char #\<value>)
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+    Examples:
+      | value |
+      | a     |
+      | A     |
+      | ~     |
+      | ~     |
 
   Scenario Outline: Write an escaped character
     Given a file named "main.scm" with:
