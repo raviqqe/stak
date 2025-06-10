@@ -10,3 +10,10 @@ This page describes the limitations on the current implementation of Stak Scheme
 Number representation in Stak Scheme is either [a 64-bit floating point number (IEEE 754)](https://en.wikipedia.org/wiki/IEEE_754) or a 63-bit integer.
 
 The other "full" implementations of [the R7RS-small standard](https://small.r7rs.org/), such as [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/), often come with [the full numeric tower](https://en.wikipedia.org/wiki/Numerical_tower).
+
+## The order of computation times
+
+Computation times of some operations against collections are suboptimal compared to other Scheme implementations.
+Such collection operations are listed below.
+
+- `vector-ref`, `vector-set!`, and `bytevector-ref` have the computation time of the order `O(n)` instead of `O(1)` because the underlying representations are lists.
