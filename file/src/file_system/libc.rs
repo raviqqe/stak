@@ -102,6 +102,12 @@ impl FileSystem for LibcFileSystem {
         Ok(())
     }
 
+    fn flush(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+        fs::fsync(self.file(descriptor)?).map_err(|_| FileError::Flush)?;
+
+        Ok(())
+    }
+
     fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error> {
         fs::unlink(path).map_err(|_| FileError::Delete)
     }
