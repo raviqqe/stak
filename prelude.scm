@@ -2050,6 +2050,14 @@
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
 
+    ; Flush
+
+    (define (flush-output-port . rest)
+      (let* ((port (get-output-port rest))
+             (flush (port-flush port)))
+        (when flush
+          (flush))))
+
     ; Dummy implementation
     (define (write-value value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
