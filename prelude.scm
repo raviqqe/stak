@@ -1922,8 +1922,8 @@
       (make-port #f write flush close))
 
     (define current-input-port (make-parameter (make-input-port $read-input #f)))
-    (define current-output-port (make-parameter (make-output-port $write-output #f)))
-    (define current-error-port (make-parameter (make-output-port $write-error #f)))
+    (define current-output-port (make-parameter (make-output-port $write-output $flush-output #f)))
+    (define current-error-port (make-parameter (make-output-port $write-error $flush-error #f)))
 
     ; Close
 
