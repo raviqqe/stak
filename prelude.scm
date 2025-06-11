@@ -1945,9 +1945,6 @@
     (define (get-input-port rest)
       (if (null? rest) (current-input-port) (car rest)))
 
-    (define (input->char x)
-      (if (number? x) (integer->char x) x))
-
     (define (read-u8 . rest)
       (let* ((port (get-input-port rest))
              (buffer (port-buffer port)))
@@ -1972,6 +1969,8 @@
 
       (let ((byte (read)))
         (cond
+          ((eof-object? byte)
+            '())
           ((zero? (quotient byte 128))
             (list byte))
           ((= (quotient byte 32) 6)
@@ -1982,7 +1981,20 @@
             (list byte (read) (read) (read))))))
 
     (define (parse-char-bytes bytes)
-      (input->char (car bytes)))
+      (cond
+        ((null? bytes)
+          (eof-object))
+        ((null? (cdr bytes))
+          (integer->char (car bytes)))
+        (else
+          (integer->char
+            (let loop ((bytes (cdr bytes)) (code (car bytes)) (size 64))
+              (if (null? bytes)
+                (remainder code size)
+                (loop
+                  (cdr bytes)
+                  (+ (* 64 code) (- (car bytes) 128))
+                  (* size 32))))))))
 
     (define (read-char . rest)
       (parse-char-bytes (read-char-bytes (get-input-port rest))))
