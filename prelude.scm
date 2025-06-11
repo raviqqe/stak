@@ -2056,8 +2056,9 @@
 
     (define (flush-output-port . rest)
       (let ((flush (port-flush (get-output-port rest))))
-        (when flush
-          (flush))))
+        (unless write
+          (error "cannot flush port"))
+        (write)))
 
     ; Dummy implementation
     (define (write-value value . rest)
