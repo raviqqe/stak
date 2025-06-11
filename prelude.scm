@@ -1627,6 +1627,8 @@
     write-bytevector
     newline
 
+    flush-output-port
+
     write-value)
 
   (import (stak base))
