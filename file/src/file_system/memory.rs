@@ -94,6 +94,10 @@ impl FileSystem for MemoryFileSystem<'_> {
         Err(FileError::Delete)
     }
 
+    fn flush(&mut self, _: FileDescriptor) -> Result<(), Self::Error> {
+        Err(FileError::Flush)
+    }
+
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
         for (file_path, _) in self.files {
             if &path == file_path {
