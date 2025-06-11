@@ -1899,12 +1899,12 @@
 
     ; TODO Support multiple bytes.
     (define-record-type port
-      (make-port* read write close last-byte)
+      (make-port* read write close buffer)
       port?
       (read port-read)
       (write port-write)
       (close port-close)
-      (last-byte port-last-byte port-set-last-byte!))
+      (buffer port-buffer port-set-buffer!))
 
     (define input-port? port-read)
     (define output-port? port-write)
@@ -1945,15 +1945,15 @@
     (define (get-input-port rest)
       (if (null? rest) (current-input-port) (car rest)))
 
-    (define (input-byte->char x)
+    (define (input->char x)
       (if (number? x) (integer->char x) x))
 
     (define (read-u8 . rest)
       (let* ((port (get-input-port rest))
-             (x (port-last-byte port)))
+             (x (port-buffer port)))
         (if x
           (begin
-            (port-set-last-byte! port #f)
+            (port-set-buffer! port #f)
             x)
           (let ((read (port-read port)))
             (unless read
@@ -1963,7 +1963,7 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (port-set-last-byte! port x)
+        (port-set-buffer! port (vector-append (vector x)))
         x))
 
     (define (read-char . rest)
