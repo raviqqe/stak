@@ -1636,8 +1636,6 @@
     (define $read-input (primitive 100))
     (define $write-output (primitive 101))
     (define $write-error (primitive 102))
-    (define $flush-output (primitive 103))
-    (define $flush-error (primitive 104))
 
     ; Symbol table
 
@@ -1924,8 +1922,8 @@
       (make-port #f write flush close))
 
     (define current-input-port (make-parameter (make-input-port $read-input #f)))
-    (define current-output-port (make-parameter (make-output-port $write-output $flush-output #f)))
-    (define current-error-port (make-parameter (make-output-port $write-error $flush-error #f)))
+    (define current-output-port (make-parameter (make-output-port $write-output #f #f)))
+    (define current-error-port (make-parameter (make-output-port $write-error #f #f)))
 
     ; Close
 
