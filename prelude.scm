@@ -1899,12 +1899,12 @@
 
     ; TODO Support multiple bytes.
     (define-record-type port
-      (make-port* read write close last-byte)
+      (make-port* read write close buffer)
       port?
       (read port-read)
       (write port-write)
       (close port-close)
-      (last-byte port-last-byte port-set-last-byte!))
+      (buffer port-buffer port-set-buffer!))
 
     (define input-port? port-read)
     (define output-port? port-write)
@@ -1912,7 +1912,7 @@
     (define binary-port? port?)
 
     (define (make-port read write close)
-      (make-port* read write close #f))
+      (make-port* read write close '()))
 
     (define (make-input-port read close)
       (make-port read #f close))
@@ -1945,16 +1945,16 @@
     (define (get-input-port rest)
       (if (null? rest) (current-input-port) (car rest)))
 
-    (define (input-byte->char x)
+    (define (input->char x)
       (if (number? x) (integer->char x) x))
 
     (define (read-u8 . rest)
       (let* ((port (get-input-port rest))
-             (x (port-last-byte port)))
-        (if x
+             (buffer (port-buffer port)))
+        (if (pair? buffer)
           (begin
-            (port-set-last-byte! port #f)
-            x)
+            (port-set-buffer! port (cdr buffer))
+            (car buffer))
           (let ((read (port-read port)))
             (unless read
               (error "cannot read from port"))
@@ -1963,14 +1963,14 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (port-set-last-byte! port x)
+        (port-set-buffer! port (append (port-buffer port) (list x)))
         x))
 
     (define (read-char . rest)
-      (input-byte->char (read-u8 (get-input-port rest))))
+      (input->char (read-u8 (get-input-port rest))))
 
     (define (peek-char . rest)
-      (input-byte->char (peek-u8 (get-input-port rest))))
+      (input->char (peek-u8 (get-input-port rest))))
 
     ; Write
 
