@@ -1945,9 +1945,6 @@
     (define (get-input-port rest)
       (if (null? rest) (current-input-port) (car rest)))
 
-    (define (input->char x)
-      (if (number? x) (integer->char x) x))
-
     (define (read-u8 . rest)
       (let* ((port (get-input-port rest))
              (buffer (port-buffer port)))
@@ -1966,11 +1963,47 @@
         (port-set-buffer! port (append (port-buffer port) (list x)))
         x))
 
+    (define (read-char-bytes port)
+      (define (read)
+        (read-u8 port))
+
+      (let ((byte (read)))
+        (cond
+          ((eof-object? byte)
+            '())
+          ((zero? (quotient byte 128))
+            (list byte))
+          ((= (quotient byte 32) 6)
+            (list byte (read)))
+          ((= (quotient byte 16) 14)
+            (list byte (read) (read)))
+          (else
+            (list byte (read) (read) (read))))))
+
+    (define (parse-char-bytes bytes)
+      (cond
+        ((null? bytes)
+          (eof-object))
+        ((null? (cdr bytes))
+          (integer->char (car bytes)))
+        (else
+          (integer->char
+            (let loop ((bytes (cdr bytes)) (code (car bytes)) (size 64))
+              (if (null? bytes)
+                (remainder code size)
+                (loop
+                  (cdr bytes)
+                  (+ (* 64 code) (- (car bytes) 128))
+                  (* size 32))))))))
+
     (define (read-char . rest)
-      (input->char (read-u8 (get-input-port rest))))
+      (parse-char-bytes (read-char-bytes (get-input-port rest))))
 
     (define (peek-char . rest)
-      (input->char (peek-u8 (get-input-port rest))))
+      (let* ((port (get-input-port rest))
+             (bytes (read-char-bytes port)))
+        (port-set-buffer! port (append (port-buffer port) bytes))
+        (parse-char-bytes bytes)))
 
     ; Write
 
@@ -1983,8 +2016,24 @@
           (error "cannot write to port"))
         (write byte)))
 
+    (define (write-trailing-bytes integer port)
+      (let ((upper (quotient integer 64)))
+        (unless (zero? upper)
+          (write-trailing-bytes upper port))
+        (write-u8 (+ 128 (remainder integer 64)) port)))
+
     (define (write-char x . rest)
-      (write-u8 (char->integer x) (get-output-port rest)))
+      (let ((port (get-output-port rest))
+            (integer (char->integer x)))
+        (if (zero? (quotient integer 128))
+          (write-u8 integer port)
+          (let loop ((head 32) (offset 64) (mask 192))
+            (if (zero? (quotient integer (* head offset)))
+              (begin
+                ; TODO Use `floor/`.
+                (write-u8 (+ mask (quotient integer offset)) port)
+                (write-trailing-bytes (remainder integer offset) port))
+              (loop (/ head 2) (* offset 64) (+ mask head)))))))
 
     (define (write-string x . rest)
       (parameterize ((current-output-port (get-output-port rest)))

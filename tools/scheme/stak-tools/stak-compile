@@ -4,6 +4,9 @@ set -e
 
 directory=$(dirname $0)/../../..
 
+# For Guile, whose default locale is not always Unicode compatible,
+export LC_ALL=en_US.UTF-8
+
 if [ -n "$STAK_HOST_INTERPRETER" ]; then
   $STAK_HOST_INTERPRETER $directory/compile.scm
 else
