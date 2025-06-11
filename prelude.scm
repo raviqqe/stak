@@ -2613,7 +2613,7 @@
           (make-port
             (lambda () ($read-file descriptor))
             (lambda (byte) ($write-file descriptor byte))
-            (lambda (byte) ($flush-file descriptor byte))
+            (lambda () ($flush-file descriptor))
             (lambda () ($close-file descriptor))))))
 
     (define open-input-file (open-file #f))
