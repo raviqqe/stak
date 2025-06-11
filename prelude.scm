@@ -1912,7 +1912,7 @@
     (define binary-port? port?)
 
     (define (make-port read write close)
-      (make-port* read write close #f))
+      (make-port* read write close '()))
 
     (define (make-input-port read close)
       (make-port read #f close))
