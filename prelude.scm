@@ -1899,10 +1899,11 @@
 
     ; TODO Support multiple bytes.
     (define-record-type port
-      (make-port* read write close buffer)
+      (make-port* read write flush close buffer)
       port?
       (read port-read)
       (write port-write)
+      (flush port-flush)
       (close port-close)
       (buffer port-buffer port-set-buffer!))
 
@@ -1911,14 +1912,14 @@
     (define textual-port? port?)
     (define binary-port? port?)
 
-    (define (make-port read write close)
-      (make-port* read write close '()))
+    (define (make-port read write flush close)
+      (make-port* read write flush close '()))
 
     (define (make-input-port read close)
-      (make-port read #f close))
+      (make-port read #f #f close))
 
-    (define (make-output-port write close)
-      (make-port #f write close))
+    (define (make-output-port write flush close)
+      (make-port #f write flush close))
 
     (define current-input-port (make-parameter (make-input-port $read-input #f)))
     (define current-output-port (make-parameter (make-output-port $write-output #f)))
