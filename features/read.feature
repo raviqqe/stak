@@ -110,6 +110,26 @@ Feature: Read
       | A     |
       | a     |
       | ~     |
+
+  @chibi @gauche @stak
+  Scenario Outline: Read a multi-byte character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-char (read-char))
+      """
+    And a file named "input.txt" with:
+      """text
+      <value>
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "<value>"
+
+    Examples:
+      | value |
       | д     |
       | ∰     |
       | 😄     |
@@ -135,6 +155,26 @@ Feature: Read
       | A     |
       | a     |
       | ~     |
+
+  @chibi @gauche @stak
+  Scenario Outline: Peek a multi-byte character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-char (peek-char))
+      """
+    And a file named "input.txt" with:
+      """text
+      <value>
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "<value>"
+
+    Examples:
+      | value |
       | д     |
       | ∰     |
       | 😄     |
