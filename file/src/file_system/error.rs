@@ -16,6 +16,8 @@ pub enum FileError {
     Read,
     /// A write failure.
     Write,
+    /// A flush failure.
+    Flush,
     /// A deletion failure.
     Delete,
     /// A existence check failure.
@@ -34,6 +36,7 @@ impl Display for FileError {
             Self::InvalidFileDescriptor => write!(formatter, "invalid file descriptor"),
             Self::Read => write!(formatter, "cannot read file"),
             Self::Write => write!(formatter, "cannot write file"),
+            Self::Flush => write!(formatter, "cannot flush file"),
             Self::Delete => write!(formatter, "cannot delete file"),
             Self::Exists => write!(formatter, "cannot check file existence"),
             Self::PathDecode => write!(formatter, "cannot decode path"),
