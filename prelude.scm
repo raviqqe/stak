@@ -2593,6 +2593,7 @@
     (define $write-file (primitive 203))
     (define $delete-file (primitive 204))
     (define $exists-file (primitive 205))
+    (define $flush-file (primitive 206))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))
@@ -2612,6 +2613,7 @@
           (make-port
             (lambda () ($read-file descriptor))
             (lambda (byte) ($write-file descriptor byte))
+            (lambda (byte) ($flush-file descriptor byte))
             (lambda () ($close-file descriptor))))))
 
     (define open-input-file (open-file #f))
