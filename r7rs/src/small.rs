@@ -159,7 +159,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             | Primitive::READ_FILE
             | Primitive::WRITE_FILE
             | Primitive::DELETE_FILE
-            | Primitive::EXISTS_FILE => {
+            | Primitive::EXISTS_FILE
+            | Primitive::FLUSH_FILE => {
                 maybe_await!(self.file.operate(memory, primitive - Primitive::OPEN_FILE))?
             }
             Primitive::COMMAND_LINE | Primitive::ENVIRONMENT_VARIABLES => maybe_await!(

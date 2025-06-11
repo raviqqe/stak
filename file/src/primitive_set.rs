@@ -88,6 +88,15 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                         .into(),
                 )?;
             }
+            Primitive::FLUSH_FILE => {
+                let [descriptor] = memory.pop_numbers();
+
+                self.file_system
+                    .flush(descriptor.to_i64() as _)
+                    .map_err(|_| FileError::Flush)?;
+
+                memory.push(memory.boolean(false).into())?;
+            }
             _ => return Err(Error::IllegalPrimitive.into()),
         }
 

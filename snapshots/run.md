@@ -1903,6 +1903,7 @@
   - irritants
   - runtime
   - port
+  - flush
   - buffer
   - symbol-table
   - $$rib
@@ -2116,6 +2117,7 @@
   - write-string
   - write-bytevector
   - newline
+  - flush-output-port
   - write-value
   - syntax-rules
   - define-syntax
@@ -2737,6 +2739,7 @@
 - constant list
   - read
   - write
+  - flush
   - close
   - buffer
 - call 2 #f cons
@@ -2753,6 +2756,10 @@
 - set ||
 - get ||
 - constant write
+- call 2 #f ||
+- set ||
+- get ||
+- constant flush
 - call 2 #f ||
 - set ||
 - get ||
@@ -2775,26 +2782,29 @@
 - set textual-port?
 - get port?
 - set binary-port?
-- constant procedure 3 #f
-  - get 2
-  - get 2
-  - get 2
+- constant procedure 4 #f
+  - get 3
+  - get 3
+  - get 3
+  - get 3
   - constant ()
-  - call 4 #f ||
+  - call 5 #f ||
 - call 1 #f $$close
 - set make-port
 - constant procedure 2 #f
   - get 1
   - constant #f
-  - get 2
-  - call 3 #f make-port
+  - constant #f
+  - get 3
+  - call 4 #f make-port
 - call 1 #f $$close
 - set make-input-port
-- constant procedure 2 #f
+- constant procedure 3 #f
   - constant #f
-  - get 2
-  - get 2
-  - call 3 #f make-port
+  - get 3
+  - get 3
+  - get 3
+  - call 4 #f make-port
 - call 1 #f $$close
 - set make-output-port
 - get ||
@@ -2803,13 +2813,19 @@
 - call 1 #f make-parameter
 - set current-input-port
 - get ||
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f $$close
 - constant #f
-- call 2 #f make-output-port
+- call 3 #f make-output-port
 - call 1 #f make-parameter
 - set current-output-port
 - get ||
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f $$close
 - constant #f
-- call 2 #f make-output-port
+- call 3 #f make-output-port
 - call 1 #f make-parameter
 - set current-error-port
 - constant procedure 1 #f
@@ -3251,6 +3267,25 @@
   - call 2 #f write-char
 - call 1 #f $$close
 - set newline
+- constant procedure 0 #t
+  - constant procedure 1 #f
+    - get 0
+    - constant #f
+    - call 2 #f eq?
+    - if
+      - constant "cannot flush port"
+      - call 1 #f error
+      - continue
+    - constant #f
+    - set 0
+    - call 0 #f 0
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f 1
+- call 1 #f $$close
+- set flush-output-port
 - constant procedure 1 #t
   - constant "<unknown>"
   - get 1
@@ -6892,6 +6927,7 @@
                                             - (write-string . write-string)
                                             - (write-bytevector . write-bytevector)
                                             - (newline . newline)
+                                            - (flush-output-port . flush-output-port)
                                             - (write-value . write-value)
                                           - list
                                             - list
@@ -9772,6 +9808,9 @@
 - constant 205
 - call 1 #f primitive
 - set ||
+- constant 206
+- call 1 #f primitive
+- set ||
 - constant procedure 2 #f
   - get 1
   - call 1 #f open-input-file
@@ -9814,7 +9853,11 @@
         - get 3
         - call 1 #f ||
       - call 1 #f $$close
-      - call 3 #f make-port
+      - constant procedure 0 #f
+        - get 4
+        - call 1 #f ||
+      - call 1 #f $$close
+      - call 4 #f make-port
     - call 1 #f $$close
     - get 1
     - call 1 #f string->code-points

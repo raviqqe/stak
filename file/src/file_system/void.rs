@@ -33,6 +33,10 @@ impl FileSystem for VoidFileSystem {
         Err(FileError::Write)
     }
 
+    fn flush(&mut self, _: FileDescriptor) -> Result<(), Self::Error> {
+        Err(FileError::Flush)
+    }
+
     fn delete(&mut self, _: &Self::Path) -> Result<(), Self::Error> {
         Err(FileError::Delete)
     }

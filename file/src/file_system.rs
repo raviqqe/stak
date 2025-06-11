@@ -43,6 +43,9 @@ pub trait FileSystem {
     /// Writes a file.
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error>;
 
+    /// Flushes a file.
+    fn flush(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error>;
+
     /// Deletes a file.
     fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error>;
 

@@ -350,3 +350,13 @@ Feature: Write
       | #(#(#\\a))     | #(#(a))   |
       | #(#(#\\space)) | #(#( ))   |
       | #(#("foo"))    | #(#(foo)) |
+
+  Scenario: Flush a port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (flush-output-port)
+      """
+    When I successfully run `stak main.scm`
+    Then the exit status should be 0

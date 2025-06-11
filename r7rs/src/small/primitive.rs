@@ -34,6 +34,7 @@ pub(super) enum Primitive {
     WriteFile,
     DeleteFile,
     ExistsFile,
+    FlushFile,
     CommandLine = 300,
     EnvironmentVariables,
     CurrentJiffy = 400,
@@ -74,6 +75,7 @@ impl Primitive {
     pub const WRITE_FILE: usize = Self::WriteFile as _;
     pub const DELETE_FILE: usize = Self::DeleteFile as _;
     pub const EXISTS_FILE: usize = Self::ExistsFile as _;
+    pub const FLUSH_FILE: usize = Self::FlushFile as _;
     pub const COMMAND_LINE: usize = Self::CommandLine as _;
     pub const ENVIRONMENT_VARIABLES: usize = Self::EnvironmentVariables as _;
     pub const CURRENT_JIFFY: usize = Self::CurrentJiffy as _;

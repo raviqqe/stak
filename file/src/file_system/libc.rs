@@ -102,6 +102,12 @@ impl FileSystem for LibcFileSystem {
         Ok(())
     }
 
+    fn flush(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+        fs::fsync(self.file(descriptor)?).map_err(|_| FileError::Flush)?;
+
+        Ok(())
+    }
+
     fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error> {
         fs::unlink(path).map_err(|_| FileError::Delete)
     }
@@ -174,6 +180,19 @@ mod tests {
 
         let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
+        file_system.close(descriptor).unwrap();
+    }
+
+    #[test]
+    fn flush() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("foo");
+
+        let mut file_system = LibcFileSystem::new();
+
+        let descriptor = file_system.open(&decode_c_str(&path), true).unwrap();
+
+        file_system.flush(descriptor).unwrap();
         file_system.close(descriptor).unwrap();
     }
 

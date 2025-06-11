@@ -160,3 +160,13 @@ Feature: File
       | path    | output |
       | foo.txt | A      |
       | bar.txt | B      |
+
+  Scenario: Flush a file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (flush-output-port (open-output-file "foo.txt"))
+      """
+    When I successfully run `stak main.scm`
+    Then the exit status should be 0

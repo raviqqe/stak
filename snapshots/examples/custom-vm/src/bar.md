@@ -1909,6 +1909,7 @@
   - port
   - read
   - write
+  - flush
   - close
   - buffer
 - call 1 #f ||
@@ -2338,6 +2339,7 @@
 - constant list
   - read
   - write
+  - flush
   - close
   - buffer
 - call 2 #f ||
@@ -2354,6 +2356,10 @@
 - set ||
 - get ||
 - constant write
+- call 2 #f ||
+- set ||
+- get ||
+- constant flush
 - call 2 #f ||
 - set ||
 - get ||
@@ -2376,26 +2382,29 @@
 - set ||
 - get ||
 - set ||
-- constant procedure 3 #f
-  - get 2
-  - get 2
-  - get 2
+- constant procedure 4 #f
+  - get 3
+  - get 3
+  - get 3
+  - get 3
   - constant ()
-  - call 4 #f ||
+  - call 5 #f ||
 - call 1 #f ||
 - set ||
 - constant procedure 2 #f
   - get 1
   - constant #f
-  - get 2
-  - call 3 #f ||
-- call 1 #f ||
-- set ||
-- constant procedure 2 #f
   - constant #f
-  - get 2
-  - get 2
-  - call 3 #f ||
+  - get 3
+  - call 4 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 3 #f
+  - constant #f
+  - get 3
+  - get 3
+  - get 3
+  - call 4 #f ||
 - call 1 #f ||
 - set ||
 - get ||
@@ -2404,13 +2413,19 @@
 - call 1 #f ||
 - set ||
 - get ||
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f ||
 - constant #f
-- call 2 #f ||
+- call 3 #f ||
 - call 1 #f ||
 - set ||
 - get ||
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f ||
 - constant #f
-- call 2 #f ||
+- call 3 #f ||
 - call 1 #f ||
 - set ||
 - constant procedure 1 #f
@@ -2850,6 +2865,25 @@
   - get 1
   - call 1 #f ||
   - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 0 #t
+  - constant procedure 1 #f
+    - get 0
+    - constant #f
+    - call 2 #f ||
+    - if
+      - constant "cannot flush port"
+      - call 1 #f ||
+      - continue
+    - constant #f
+    - set 0
+    - call 0 #f 0
+  - call 1 #f ||
+  - get 1
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f 1
 - call 1 #f ||
 - set ||
 - constant procedure 1 #t

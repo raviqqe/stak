@@ -13,6 +13,8 @@ pub enum Primitive {
     DeleteFile,
     /// Check if a file exists.
     ExistsFile,
+    /// Flush a file.
+    FlushFile,
 }
 
 impl Primitive {
@@ -22,4 +24,5 @@ impl Primitive {
     pub(super) const WRITE_FILE: usize = Self::WriteFile as _;
     pub(super) const DELETE_FILE: usize = Self::DeleteFile as _;
     pub(super) const EXISTS_FILE: usize = Self::ExistsFile as _;
+    pub(super) const FLUSH_FILE: usize = Self::FlushFile as _;
 }

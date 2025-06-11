@@ -1627,6 +1627,8 @@
     write-bytevector
     newline
 
+    flush-output-port
+
     write-value)
 
   (import (stak base))
@@ -1899,10 +1901,11 @@
 
     ; TODO Support multiple bytes.
     (define-record-type port
-      (make-port* read write close buffer)
+      (make-port* read write flush close buffer)
       port?
       (read port-read)
       (write port-write)
+      (flush port-flush)
       (close port-close)
       (buffer port-buffer port-set-buffer!))
 
@@ -1911,18 +1914,18 @@
     (define textual-port? port?)
     (define binary-port? port?)
 
-    (define (make-port read write close)
-      (make-port* read write close '()))
+    (define (make-port read write flush close)
+      (make-port* read write flush close '()))
 
     (define (make-input-port read close)
-      (make-port read #f close))
+      (make-port read #f #f close))
 
-    (define (make-output-port write close)
-      (make-port #f write close))
+    (define (make-output-port write flush close)
+      (make-port #f write flush close))
 
     (define current-input-port (make-parameter (make-input-port $read-input #f)))
-    (define current-output-port (make-parameter (make-output-port $write-output #f)))
-    (define current-error-port (make-parameter (make-output-port $write-error #f)))
+    (define current-output-port (make-parameter (make-output-port $write-output (lambda () #f) #f)))
+    (define current-error-port (make-parameter (make-output-port $write-error (lambda () #f) #f)))
 
     ; Close
 
@@ -2048,6 +2051,14 @@
 
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
+
+    ; Flush
+
+    (define (flush-output-port . rest)
+      (let ((flush (port-flush (get-output-port rest))))
+        (unless flush
+          (error "cannot flush port"))
+        (flush)))
 
     ; Dummy implementation
     (define (write-value value . rest)
@@ -2592,6 +2603,7 @@
     (define $write-file (primitive 203))
     (define $delete-file (primitive 204))
     (define $exists-file (primitive 205))
+    (define $flush-file (primitive 206))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))
@@ -2611,6 +2623,7 @@
           (make-port
             (lambda () ($read-file descriptor))
             (lambda (byte) ($write-file descriptor byte))
+            (lambda () ($flush-file descriptor))
             (lambda () ($close-file descriptor))))))
 
     (define open-input-file (open-file #f))
