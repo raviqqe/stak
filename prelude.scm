@@ -1966,11 +1966,32 @@
         (port-set-buffer! port (append (port-buffer port) (list x)))
         x))
 
+    (define (read-char-bytes port)
+      (define (read)
+        (read-u8 port))
+
+      (let ((byte (read)))
+        (cond
+          ((zero? (quotient byte 128))
+            (list byte))
+          ((= (quotient byte 32) 6)
+            (list byte (read)))
+          ((= (quotient byte 16) 14)
+            (list byte (read) (read)))
+          (else
+            (list byte (read) (read) (read))))))
+
+    (define (parse-char-bytes bytes)
+      (input->char (car bytes)))
+
     (define (read-char . rest)
-      (input->char (read-u8 (get-input-port rest))))
+      (parse-char-bytes (read-char-bytes (get-input-port rest))))
 
     (define (peek-char . rest)
-      (input->char (peek-u8 (get-input-port rest))))
+      (let* ((port (get-input-port rest))
+             (bytes (read-char-bytes port)))
+        (port-set-buffer! port (append (port-buffer port) bytes))
+        (parse-char-bytes bytes)))
 
     ; Write
 
