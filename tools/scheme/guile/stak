@@ -12,4 +12,4 @@ done
 
 shift $(expr $OPTIND - 1)
 
-guile -L . "$@"
+LC_ALL=en_US.UTF-8 guile -L . "$@"
