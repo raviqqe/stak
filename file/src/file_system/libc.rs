@@ -184,6 +184,19 @@ mod tests {
     }
 
     #[test]
+    fn flush() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("foo");
+
+        let mut file_system = LibcFileSystem::new();
+
+        let descriptor = file_system.open(&decode_c_str(&path), true).unwrap();
+
+        file_system.flush(descriptor).unwrap();
+        file_system.close(descriptor).unwrap();
+    }
+
+    #[test]
     fn delete() {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
