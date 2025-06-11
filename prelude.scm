@@ -1950,11 +1950,11 @@
 
     (define (read-u8 . rest)
       (let* ((port (get-input-port rest))
-             (x (port-buffer port)))
-        (if x
+             (buffer (port-buffer port)))
+        (if (pair? buffer)
           (begin
-            (port-set-buffer! port #f)
-            x)
+            (port-set-buffer! port (cdr buffer))
+            (car buffer))
           (let ((read (port-read port)))
             (unless read
               (error "cannot read from port"))
@@ -1963,7 +1963,7 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (port-set-buffer! port (vector-append (vector x)))
+        (port-set-buffer! port (append (port-buffer port) (list x)))
         x))
 
     (define (read-char . rest)
