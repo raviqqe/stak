@@ -72,6 +72,13 @@ impl FileSystem for OsFileSystem {
         Ok(())
     }
 
+    fn flush(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+        let file = self.file_mut(descriptor)?;
+        file.flush()?;
+
+        Ok(())
+    }
+
     fn delete(&mut self, path: &Path) -> Result<(), Self::Error> {
         remove_file(path)
     }
