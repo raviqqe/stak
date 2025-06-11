@@ -89,7 +89,7 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
-  Scenario: Read a character
+  Scenario Outline: Read a character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -98,14 +98,23 @@ Feature: Read
       """
     And a file named "input.txt" with:
       """text
-      A
+      <value>
       """
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly "A"
+    And the stdout should contain exactly "<value>"
 
-  Scenario: Peek a character
+    Examples:
+      | value |
+      | A     |
+      | a     |
+      | ~     |
+      | д     |
+      | ∰     |
+      | 😄     |
+
+  Scenario Outline: Peek a character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -114,12 +123,21 @@ Feature: Read
       """
     And a file named "input.txt" with:
       """text
-      A
+      <value>
       """
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly "A"
+    And the stdout should contain exactly "<value>"
+
+    Examples:
+      | value |
+      | A     |
+      | a     |
+      | ~     |
+      | д     |
+      | ∰     |
+      | 😄     |
 
   Scenario: Peek a character multiple times
     Given a file named "main.scm" with:
