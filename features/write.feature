@@ -25,7 +25,7 @@ Feature: Write
       | A     |
       | ~     |
 
-  @gauche @stak
+  @gauche @guile @stak
   Scenario Outline: Write a multi-byte character
     Given a file named "main.scm" with:
       """scheme
