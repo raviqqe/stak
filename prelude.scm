@@ -1967,10 +1967,10 @@
         x))
 
     (define (read-char . rest)
-      (input-byte->char (read-u8 (get-input-port rest))))
+      (input->char (read-u8 (get-input-port rest))))
 
     (define (peek-char . rest)
-      (input-byte->char (peek-u8 (get-input-port rest))))
+      (input->char (peek-u8 (get-input-port rest))))
 
     ; Write
 
