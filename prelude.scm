@@ -2053,8 +2053,7 @@
     ; Flush
 
     (define (flush-output-port . rest)
-      (let* ((port (get-output-port rest))
-             (flush (port-flush port)))
+      (let ((flush (port-flush (get-output-port rest))))
         (when flush
           (flush))))
 
