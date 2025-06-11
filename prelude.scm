@@ -1636,6 +1636,8 @@
     (define $read-input (primitive 100))
     (define $write-output (primitive 101))
     (define $write-error (primitive 102))
+    (define $flush-output (primitive 103))
+    (define $flush-error (primitive 104))
 
     ; Symbol table
 
