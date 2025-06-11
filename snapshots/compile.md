@@ -1901,7 +1901,7 @@
   - irritants
   - runtime
   - port
-  - last-byte
+  - buffer
   - symbol-table
   - $$rib
   - $$<
@@ -3027,7 +3027,7 @@
   - read
   - write
   - close
-  - last-byte
+  - buffer
 - call 2 #f cons
 - set ||
 - get ||
@@ -3049,11 +3049,11 @@
 - call 2 #f ||
 - set ||
 - get ||
-- constant last-byte
+- constant buffer
 - call 2 #f ||
 - set ||
 - get ||
-- constant last-byte
+- constant buffer
 - call 2 #f ||
 - set ||
 - get ||
@@ -3068,7 +3068,7 @@
   - get 2
   - get 2
   - get 2
-  - constant #f
+  - constant ()
   - call 4 #f ||
 - call 1 #f $$close
 - set make-port
@@ -3157,12 +3157,15 @@
   - constant procedure 1 #f
     - constant procedure 1 #f
       - get 0
+      - call 1 #f pair?
       - if
         - get 2
-        - constant #f
+        - get 1
+        - call 1 #f cdr
         - call 2 #f ||
         - set 0
         - get 0
+        - call 1 #f car
       - constant procedure 1 #f
         - get 0
         - constant #f
@@ -3199,7 +3202,11 @@
   - constant procedure 1 #f
     - constant procedure 1 #f
       - get 2
-      - get 1
+      - get 3
+      - call 1 #f ||
+      - get 2
+      - call 1 #f list
+      - call 2 #f append
       - call 2 #f ||
       - set 0
       - get 0
