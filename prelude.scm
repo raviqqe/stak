@@ -2165,7 +2165,13 @@
     char-ci>?
     char-ci<=?
     char-ci>=?
+    char-alphabetic?
+    char-numeric?
     char-whitespace?
+    char-lower-case?
+    char-upper-case?
+    char-upcase
+    char-downcase
     special-chars)
 
   (import (scheme base))
@@ -2216,18 +2222,18 @@
     (define (char-lower-case? x)
       (char<=? #\a x #\z))
 
-    (define (char-upper-case? ch)
+    (define (char-upper-case? x)
       (char<=? #\A x #\Z))
 
-    (define (char-upcase ch)
-      (if (char-lower-case? ch)
-        (integer->char (##- (##field0 ch) 32)) ; (- (##field0 #\A) (##field0 #\a))
-        ch))
+    (define (char-upcase x)
+      (if (char-lower-case? x)
+        (integer->char (- (char->integer x) 32))
+        x))
 
     (define (char-downcase ch)
-      (if (char-upper-case? ch)
-        (integer->char (##+ (##field0 ch) 32)) ; (- (##field0 #\a) (##field0 #\A))
-        ch))))
+      (if (char-upper-case? x)
+        (integer->char (+ (char->integer x) 32))
+        x))))
 
 (define-library (scheme read)
   (export read)
