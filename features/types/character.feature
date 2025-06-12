@@ -80,3 +80,8 @@ Feature: Character
       | char<?    | #\\B #\\A      | B      |
       | char<?    | #\\A #\\B #\\C | A      |
       | char<?    | #\\A #\\B #\\B | B      |
+      | char<=?   | #\\A #\\B      | A      |
+      | char<=?   | #\\A #\\A      | A      |
+      | char<=?   | #\\B #\\A      | B      |
+      | char<=?   | #\\A #\\B #\\C | A      |
+      | char<=?   | #\\A #\\B #\\B | A      |
