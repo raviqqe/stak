@@ -15,27 +15,6 @@ Feature: Character
       | #\\newline         |
       | (integer->char 65) |
 
-  Scenario Outline: Compare characters
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme char))
-
-      (write-u8 (if (<predicate> <lhs> <rhs>) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<output>"
-
-    Examples:
-      | predicate | lhs  | rhs  | output |
-      | char=?    | #\\A | #\\A | A      |
-      | char=?    | #\\A | #\\B | B      |
-      | char<?    | #\\A | #\\B | A      |
-      | char<?    | #\\A | #\\A | B      |
-      | char<?    | #\\B | #\\A | B      |
-      | char>?    | #\\A | #\\B | B      |
-      | char>?    | #\\A | #\\A | B      |
-      | char>?    | #\\B | #\\A | A      |
-
   Scenario Outline: Check if a value is a whitespace
     Given a file named "main.scm" with:
       """scheme
@@ -98,5 +77,6 @@ Feature: Character
       | char=?    | #\\A #\\A #\\B | B      |
       | char<?    | #\\A #\\B      | A      |
       | char<?    | #\\A #\\A      | B      |
+      | char<?    | #\\B #\\A      | B      |
       | char<?    | #\\A #\\B #\\C | A      |
       | char<?    | #\\A #\\B #\\B | B      |
