@@ -206,6 +206,7 @@ Feature: Read
       | x               |
       | foo             |
       | #\\A            |
+      | #\\0            |
       | #\\newline      |
       | ""              |
       | "foo"           |
