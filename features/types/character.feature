@@ -30,7 +30,11 @@ Feature: Character
       | char=?    | #\\A | #\\A | A      |
       | char=?    | #\\A | #\\B | B      |
       | char<?    | #\\A | #\\B | A      |
-      | char<?    | #\\B | #\\A | A      |
+      | char<?    | #\\A | #\\A | B      |
+      | char<?    | #\\B | #\\A | B      |
+      | char>?    | #\\A | #\\B | B      |
+      | char>?    | #\\A | #\\A | B      |
+      | char>?    | #\\B | #\\A | A      |
 
   Scenario Outline: Check if a value is a whitespace
     Given a file named "main.scm" with:
