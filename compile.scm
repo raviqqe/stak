@@ -1686,33 +1686,34 @@
                   (make-library-context
                    (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
                    '())))
-            (lambda (environment expression)
+            (lambda (imports symbol-table expression)
              (define (import-sets)
-              (map parse-import-set (environment-imports environment)))
+              (map parse-import-set imports))
 
              (case (maybe-car expression)
               ((define-library)
                (add-library-definition! context expression)
-               #f)
+               (values #f '()))
               ((import)
-               (environment-append-imports! environment (cdr expression))
-               (cons
-                '$$begin
-                (append
-                 (expand-library-bodies context (map car (import-sets)))
-                 (list #f))))
+               (values
+                (cons
+                 '$$begin
+                 (append
+                  (expand-library-bodies context (map car (import-sets)))
+                  (list #f)))
+                (cdr expression)))
               (else
-               (resolve-environment-symbols
-                (let ((names (collect-imported-names context (import-sets))))
-                 (lambda (name)
-                  (cond
-                   ((assq name names) =>
-                    cdr)
-                   (else
-                    (string->symbol
-                     (symbol->string name)
-                     (environment-symbol-table environment))))))
-                expression))))))
+               (values
+                (resolve-environment-symbols
+                 (let ((names (collect-imported-names context (import-sets))))
+                  (lambda (name)
+                   (cond
+                    ((assq name names) =>
+                     cdr)
+                    (else
+                     (string->symbol (symbol->string name) symbol-table)))))
+                 expression)
+                '()))))))
 
           ; Macro system
 
@@ -1748,14 +1749,16 @@
           (define (compile expression)
            (compile-expression (make-compilation-context '() #f) expression '()))
 
-          (lambda (expression environment)
-           (make-procedure
-            (compile-arity 0 #f)
-            (compile
-             (optimize
-              (expand-macros
-               (expand-libraries environment expression))))
-            '())))
+          (lambda (imports symbol-table expression)
+           (let-values (((expression imports) (expand-libraries imports symbol-table expression)))
+            (values
+             (make-procedure
+              (compile-arity 0 #f)
+              (compile
+               (optimize
+                (expand-macros expression)))
+              '())
+             imports))))
         (cdr expression)))
     (else
       (cons
