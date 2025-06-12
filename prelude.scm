@@ -2154,7 +2154,14 @@
                 (clause (parameters outer-body ...) ...)))))))))
 
 (define-library (scheme char)
-  (export char-whitespace? special-chars)
+  (export
+    char=?
+    char<?
+    char>?
+    char<=?
+    char>=?
+    char-whitespace?
+    special-chars)
 
   (import (scheme base))
 
@@ -2170,11 +2177,15 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define (char=? ch1 ch2) (eqv? ch1 ch2))
-    (define (char<? ch1 ch2) (##< (##field0 ch1) (##field0 ch2)))
-    (define (char>? ch1 ch2) (##< (##field0 ch2) (##field0 ch1)))
-    (define (char<=? ch1 ch2) (not (char>? ch1 ch2)))
-    (define (char>=? ch1 ch2) (not (char<? ch1 ch2)))
+    (define char=? eqv?)
+    (define (char<? x y)
+      (< (char->integer x) (char->integer y)))
+    (define (char>? x y)
+      (> (char->integer x) (char->integer y)))
+    (define (char<=? x y)
+      (<= (char->integer x) (char->integer y)))
+    (define (char<? x y)
+      (<= (char->integer x) (char->integer y)))
 
     (define (char-ci=? ch1 ch2) (char=? (char-upcase ch1) (char-upcase ch2)))
     (define (char-ci<? ch1 ch2) (char<? (char-upcase ch1) (char-upcase ch2)))
