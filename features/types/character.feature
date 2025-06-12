@@ -85,3 +85,6 @@ Feature: Character
       | char<=?   | #\\B #\\A      | B      |
       | char<=?   | #\\A #\\B #\\C | A      |
       | char<=?   | #\\A #\\B #\\B | A      |
+      | char-ci=? | #\\A #\\A      | A      |
+      | char-ci=? | #\\a #\\A      | A      |
+      | char-ci=? | #\\A #\\B      | B      |
