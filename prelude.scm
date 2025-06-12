@@ -2674,13 +2674,30 @@
       (symbol-table environment-symbol-table)
       (imports environment-imports environment-set-imports!))
 
+    (define (environment-append-imports! environment imports)
+      (environment-set-imports!
+        environment
+        (fold-left
+          (lambda (names name)
+            (if (member name names)
+              names
+              (cons name names)))
+          (environment-imports environment)
+          imports)))
+
     (define (environment . imports)
       (make-environment (make-symbol-table '()) imports))
 
     (define eval
       (let ((compile ($$compiler)))
         (lambda (expression environment)
-          ((compile expression environment)))))))
+          (let-values (((thunk imports)
+                         (compile
+                           (environment-imports environment)
+                           (environment-symbol-table environment)
+                           expression)))
+            (environment-append-imports! environment imports)
+            (thunk)))))))
 
 (define-library (scheme repl)
   (export interaction-environment)
