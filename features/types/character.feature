@@ -107,14 +107,14 @@ Feature: Character
       """scheme
       (import (scheme base) (scheme char))
 
-      (write-u8 (if (eqv? (<predicate> <characters>) <result>) 65 66))
+      (write-u8 (if (eqv? (<predicate> <input>) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
-      | predicate     | character | result |
-      | char-downcase | #\\A      | #\\a   |
-      | char-downcase | #\\a      | #\\a   |
-      | char-upcase   | #\\a      | #\\A   |
-      | char-upcase   | #\\A      | #\\A   |
+      | predicate     | input | output |
+      | char-downcase | #\\A  | #\\a   |
+      | char-downcase | #\\a  | #\\a   |
+      | char-upcase   | #\\a  | #\\A   |
+      | char-upcase   | #\\A  | #\\A   |
