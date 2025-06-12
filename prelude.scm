@@ -2160,6 +2160,11 @@
     char>?
     char<=?
     char>=?
+    char-ci=?
+    char-ci<?
+    char-ci>?
+    char-ci<=?
+    char-ci>=?
     char-whitespace?
     special-chars)
 
@@ -2177,21 +2182,27 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define char=? eqv?)
-    (define (char<? x y)
-      (< (char->integer x) (char->integer y)))
-    (define (char>? x y)
-      (> (char->integer x) (char->integer y)))
-    (define (char<=? x y)
-      (<= (char->integer x) (char->integer y)))
-    (define (char<? x y)
-      (<= (char->integer x) (char->integer y)))
+    (define (compare-char compare)
+      (lambda (x y)
+        (compare (char->integer x) (char->integer y))))
 
-    (define (char-ci=? ch1 ch2) (char=? (char-upcase ch1) (char-upcase ch2)))
-    (define (char-ci<? ch1 ch2) (char<? (char-upcase ch1) (char-upcase ch2)))
-    (define (char-ci>? ch1 ch2) (char>? (char-upcase ch1) (char-upcase ch2)))
-    (define (char-ci<=? ch1 ch2) (not (char-ci>? ch1 ch2)))
-    (define (char-ci>=? ch1 ch2) (not (char-ci<? ch1 ch2)))
+    (define char=? (compare-char =))
+    (define char<? (compare-char <))
+    (define char>? (compare-char >))
+    (define char<=? (compare-char <=))
+    (define char>=? (compare-char >=))
+
+    (define (compare-char-ci compare)
+      (lambda (x y)
+        (compare
+          (char->integer (char-downcase x))
+          (char->integer (char-downcase y)))))
+
+    (define char-ci=? (compare-char-ci =))
+    (define char-ci<? (compare-char-ci <))
+    (define char-ci>? (compare-char-ci >))
+    (define char-ci<=? (compare-char-ci <=))
+    (define char-ci>=? (compare-char-ci >=))
 
     (define (char-alphabetic? ch)
       (or (char-lower-case? ch)
