@@ -2213,7 +2213,7 @@
         (integer->char (- (char->integer x) 32))
         x))
 
-    (define (char-downcase ch)
+    (define (char-downcase x)
       (if (char-upper-case? x)
         (integer->char (+ (char->integer x) 32))
         x))))

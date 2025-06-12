@@ -85,6 +85,36 @@ Feature: Character
       | char<=?   | #\\B #\\A      | B      |
       | char<=?   | #\\A #\\B #\\C | A      |
       | char<=?   | #\\A #\\B #\\B | A      |
-      | char-ci=? | #\\A #\\A      | A      |
-      | char-ci=? | #\\a #\\A      | A      |
-      | char-ci=? | #\\A #\\B      | B      |
+
+  Scenario Outline: Compare case-insensitive characters
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (<predicate> <characters>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | characters | output |
+      | char-ci=? | #\\A #\\A  | A      |
+      | char-ci=? | #\\a #\\A  | A      |
+      | char-ci=? | #\\A #\\B  | B      |
+
+  Scenario Outline: Convert a character case
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (eqv? (<predicate> <characters>) <result>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | predicate     | character | result |
+      | char-downcase | #\\A      | #\\a   |
+      | char-downcase | #\\a      | #\\a   |
+      | char-upcase   | #\\a      | #\\A   |
+      | char-upcase   | #\\A      | #\\A   |
