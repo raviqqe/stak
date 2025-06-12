@@ -2204,9 +2204,8 @@
     (define char-ci<=? (compare-char-ci <=))
     (define char-ci>=? (compare-char-ci >=))
 
-    (define (char-alphabetic? ch)
-      (or (char-lower-case? ch)
-        (char-upper-case? ch)))
+    (define (char-alphabetic? x)
+      (or (char-lower-case? x) (char-upper-case? x)))
 
     (define (char-numeric? ch)
       (and (##< 47 (##field0 ch)) ;; #\0
