@@ -2155,11 +2155,6 @@
 
 (define-library (scheme char)
   (export
-    char=?
-    char<?
-    char>?
-    char<=?
-    char>=?
     char-ci=?
     char-ci<?
     char-ci>?
@@ -2188,27 +2183,15 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define (compare-char compare)
-      (lambda (x y)
-        (compare (char->integer x) (char->integer y))))
+    (define (char-compare-ci compare)
+      (lambda xs
+        (apply compare (map char-downcase xs))))
 
-    (define char=? (compare-char =))
-    (define char<? (compare-char <))
-    (define char>? (compare-char >))
-    (define char<=? (compare-char <=))
-    (define char>=? (compare-char >=))
-
-    (define (compare-char-ci compare)
-      (lambda (x y)
-        (compare
-          (char->integer (char-downcase x))
-          (char->integer (char-downcase y)))))
-
-    (define char-ci=? (compare-char-ci =))
-    (define char-ci<? (compare-char-ci <))
-    (define char-ci>? (compare-char-ci >))
-    (define char-ci<=? (compare-char-ci <=))
-    (define char-ci>=? (compare-char-ci >=))
+    (define char-ci=? (char-compare-ci char=?))
+    (define char-ci<? (char-compare-ci char<?))
+    (define char-ci>? (char-compare-ci char>?))
+    (define char-ci<=? (char-compare-ci char<=?))
+    (define char-ci>=? (char-compare-ci char>=?))
 
     (define (char-alphabetic? x)
       (or (char-lower-case? x) (char-upper-case? x)))
