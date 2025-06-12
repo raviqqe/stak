@@ -1668,17 +1668,6 @@
             (set! macro-state-set-dynamic-symbols! set-nothing)
             (set! optimization-context-set-literals! set-nothing)))
 
-          (define (environment-append-imports! environment imports)
-           (environment-set-imports!
-            environment
-            (fold-left
-             (lambda (names name)
-              (if (member name names)
-               names
-               (cons name names)))
-             (environment-imports environment)
-             imports)))
-
           ; Library system
 
           (define expand-libraries
