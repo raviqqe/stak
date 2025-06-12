@@ -1929,7 +1929,6 @@
   - imported
   - position
   - except
-  - only
   - prefix
   - symbol-append
   - set
@@ -1942,7 +1941,6 @@
   - renamed
   - library-context-add!
   - rename
-  - export
   - resolve-symbol
   - collect-bodies
   - macro-state
@@ -2185,6 +2183,8 @@
   - value
   - symbol-id
   - $$compiler
+  - export
+  - only
   - cons-rib
   - rib-car
   - rib-cdr
@@ -2233,7 +2233,6 @@
   - symbol-table
   - make-procedure
   - compile-arity
-  - compile
   - optimize
   - expand-macros
   - expression
@@ -2280,6 +2279,7 @@
   - environment
   - eval
   - make-environment
+  - compile
   - time
   - current-jiffy
   - current-second
@@ -3724,62 +3724,6 @@
   - call 1 #f cdr
 - call 1 #f $$close
 - set cddddr
-- constant environment
-- constant list
-  - symbol-table
-  - imports
-- call 2 #f cons
-- set environment
-- get environment
-- call 1 #f ||
-- set make-environment
-- get environment
-- call 1 #f ||
-- set ||
-- get environment
-- constant symbol-table
-- call 2 #f ||
-- set ||
-- get environment
-- constant imports
-- call 2 #f ||
-- set ||
-- get environment
-- constant imports
-- call 2 #f ||
-- set ||
-- constant procedure 0 #t
-  - constant ()
-  - call 1 #f make-symbol-table
-  - get 1
-  - call 2 #f make-environment
-- call 1 #f $$close
-- set environment
-- constant procedure 1 #f
-  - constant procedure 2 #f
-    - constant procedure 0 #f
-      - get 1
-      - call 1 #f ||
-      - get 2
-      - call 1 #f ||
-      - get 4
-      - call 3 #f 7
-    - call 1 #f $$close
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - get 7
-        - get 1
-        - call 2 #f ||
-        - set 0
-        - call 0 #f 1
-      - call 1 #f $$close
-      - get 2
-      - get 2
-      - call 2 #f 2
-    - call 1 #f $$close
-    - call 2 #f call-with-values
-  - call 1 #f $$close
-- call 1 #f $$close
 - constant procedure 0 #f
   - constant procedure 50 #f
     - get cons
@@ -6896,6 +6840,11 @@
                                             - (make-environment . make-environment)
                                           - list
                                             - list
+                                              - stak
+                                              - compile
+                                            - (compile . compile)
+                                          - list
+                                            - list
                                               - scheme
                                               - time
                                             - (current-jiffy . current-jiffy)
@@ -10009,8 +9958,61 @@
 - call 1 #f $$close
 - call 0 #f 0
 - set 1
-- call 1 #f 1
-- set 1
+- set compile
+- constant environment
+- constant list
+  - symbol-table
+  - imports
+- call 2 #f cons
+- set environment
+- get environment
+- call 1 #f ||
+- set make-environment
+- get environment
+- call 1 #f ||
+- set ||
+- get environment
+- constant symbol-table
+- call 2 #f ||
+- set ||
+- get environment
+- constant imports
+- call 2 #f ||
+- set ||
+- get environment
+- constant imports
+- call 2 #f ||
+- set ||
+- constant procedure 0 #t
+  - constant ()
+  - call 1 #f make-symbol-table
+  - get 1
+  - call 2 #f make-environment
+- call 1 #f $$close
+- set environment
+- constant procedure 2 #f
+  - constant procedure 0 #f
+    - get 1
+    - call 1 #f ||
+    - get 2
+    - call 1 #f ||
+    - get 4
+    - call 3 #f compile
+  - call 1 #f $$close
+  - constant procedure 2 #f
+    - constant procedure 2 #f
+      - get 7
+      - get 1
+      - call 2 #f ||
+      - set 0
+      - call 0 #f 1
+    - call 1 #f $$close
+    - get 2
+    - get 2
+    - call 2 #f 2
+  - call 1 #f $$close
+  - call 2 #f call-with-values
+- call 1 #f $$close
 - set eval
 - constant procedure 1 #f
   - call 0 #f 0
@@ -16988,6 +16990,51 @@
     - continue
   - constant #f
   - if
+    - constant define-library
+    - constant stak
+    - constant compile
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant export
+    - constant compile
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant import
+    - constant scheme
+    - constant base
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant scheme
+    - constant cxr
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant only
+    - constant stak
+    - constant base
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant fold-left
+    - constant rib
+    - constant string->uninterned-symbol
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant begin
+    - constant define
+    - constant compile
     - constant let
     - constant ()
     - constant define
@@ -17694,6 +17741,19 @@
     - call 2 #f cons
     - call 2 #f cons
     - call 2 #f append
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant ()
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant ()
     - call 2 #f cons
     - call 2 #f cons
     - call 2 #f cons
