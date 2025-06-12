@@ -15,23 +15,31 @@ Feature: Character
       | #\\newline         |
       | (integer->char 65) |
 
-  Scenario Outline: Check if a value is a whitespace
+  Scenario Outline: Check a character category
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
 
-      (write-u8 (if (char-whitespace? <value>) 65 66))
+      (write-u8 (if (<predicate> <value>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value      | output |
-      | #\\A       | B      |
-      | #\\newline | A      |
-      | #\\return  | A      |
-      | #\\space   | A      |
-      | #\\tab     | A      |
+      | predicate        | value      | output |
+      | char-alphabetic? | #\\a       | A      |
+      | char-alphabetic? | #\\A       | A      |
+      | char-alphabetic? | #\\z       | A      |
+      | char-alphabetic? | #\\Z       | A      |
+      | char-alphabetic? | #\\0       | B      |
+      | char-numeric?    | #\\0       | A      |
+      | char-numeric?    | #\\9       | A      |
+      | char-numeric?    | #\\A       | B      |
+      | char-whitespace? | #\\newline | A      |
+      | char-whitespace? | #\\return  | A      |
+      | char-whitespace? | #\\space   | A      |
+      | char-whitespace? | #\\tab     | A      |
+      | char-whitespace? | #\\A       | B      |
 
   Scenario: Write a character
     Given a file named "main.scm" with:
