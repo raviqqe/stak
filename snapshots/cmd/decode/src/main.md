@@ -3039,6 +3039,51 @@
   - ("tab" . #\tab)
 - set ||
 - constant procedure 1 #f
+  - constant procedure 0 #t
+    - get 2
+    - get ||
+    - get 2
+    - call 2 #f ||
+    - call 2 #f ||
+  - call 1 #f ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - call 1 #f ||
+  - call 1 #f ||
+  - get 1
+  - call 1 #f ||
+  - call 1 #f 1
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant #\0
+  - get 1
+  - constant #\9
+  - call 3 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
   - get 0
   - constant list
     - #\newline
@@ -3046,6 +3091,44 @@
     - #\space
     - #\tab
   - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant #\a
+  - get 1
+  - constant #\z
+  - call 3 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant #\A
+  - get 1
+  - constant #\Z
+  - call 3 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - if
+    - get 0
+    - call 1 #f ||
+    - constant 32
+    - call 2 #f ||
+    - call 1 #f ||
+  - get 0
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - if
+    - get 0
+    - call 1 #f ||
+    - constant 32
+    - call 2 #f ||
+    - call 1 #f ||
+  - get 0
 - call 1 #f ||
 - set ||
 - constant procedure 1 #f
