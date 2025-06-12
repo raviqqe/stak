@@ -22,11 +22,11 @@ async = [
 ]
 
 [dependencies]
-stak-device = { version = "0.10.25", path = "../device" }
-stak-file = { version = "0.10.25", path = "../file" }
-stak-inexact = { version = "0.10.25", path = "../inexact" }
-stak-native = { version = "0.10.25", path = "../native" }
-stak-process-context = { version = "0.10.25", path = "../process_context" }
-stak-time = { version = "0.10.25", path = "../time" }
-stak-vm = { version = "0.10.25", path = "../vm" }
+stak-device = { version = "0.10.26", path = "../device" }
+stak-file = { version = "0.10.26", path = "../file" }
+stak-inexact = { version = "0.10.26", path = "../inexact" }
+stak-native = { version = "0.10.26", path = "../native" }
+stak-process-context = { version = "0.10.26", path = "../process_context" }
+stak-time = { version = "0.10.26", path = "../time" }
+stak-vm = { version = "0.10.26", path = "../vm" }
 winter-maybe-async = "0.12.0"
