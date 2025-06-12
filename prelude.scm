@@ -2207,20 +2207,17 @@
     (define (char-alphabetic? x)
       (or (char-lower-case? x) (char-upper-case? x)))
 
-    (define (char-numeric? ch)
-      (and (##< 47 (##field0 ch)) ;; #\0
-        (##< (##field0 ch) 58))) ;; #\9
+    (define (char-numeric? x)
+      (char<=? #\0 x #\9))
 
     (define (char-whitespace? x)
       (memv x '(#\newline #\return #\space #\tab)))
 
-    (define (char-lower-case? ch)
-      (and (##< 96 (##field0 ch)) ;; #\a
-        (##< (##field0 ch) 123))) ;; #\z
+    (define (char-lower-case? x)
+      (char<=? #\a x #\z))
 
     (define (char-upper-case? ch)
-      (and (##< 64 (##field0 ch)) ;; #\A
-        (##< (##field0 ch) 91))) ;; #\Z
+      (char<=? #\A x #\Z))
 
     (define (char-upcase ch)
       (if (char-lower-case? ch)
