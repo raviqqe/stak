@@ -2704,12 +2704,15 @@
     (define (current-second)
       (/ (current-jiffy) (jiffies-per-second)))))
 
+($$compiler)
+
 (define-library (scheme eval)
   (export environment eval make-environment)
 
   (import
     (scheme base)
     (scheme cxr)
+    (stak compile)
     (only (stak base) fold-left rib string->uninterned-symbol))
 
   (begin
@@ -2723,15 +2726,14 @@
       (make-environment (make-symbol-table '()) imports))
 
     (define eval
-      (let ((compile ($$compiler)))
-        (lambda (expression environment)
-          (let-values (((thunk imports)
-                         (compile
-                           (environment-imports environment)
-                           (environment-symbol-table environment)
-                           expression)))
-            (environment-set-imports! environment imports)
-            (thunk)))))))
+      (lambda (expression environment)
+        (let-values (((thunk imports)
+                       (compile
+                         (environment-imports environment)
+                         (environment-symbol-table environment)
+                         expression)))
+          (environment-set-imports! environment imports)
+          (thunk))))))
 
 (define-library (scheme repl)
   (export interaction-environment)
