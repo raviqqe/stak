@@ -2244,18 +2244,7 @@
   - angle
   - asin
   - atan
-  - char-alphabetic?
-  - char-ci<=?
-  - char-ci<?
-  - char-ci=?
-  - char-ci>=?
-  - char-ci>?
-  - char-downcase
-  - char-lower-case?
-  - char-numeric?
   - char-ready?
-  - char-upcase
-  - char-upper-case?
   - cos
   - denominator
   - exact->inexact
@@ -2322,7 +2311,18 @@
   - write
   - read
   - char
+  - char-ci=?
+  - char-ci<?
+  - char-ci>?
+  - char-ci<=?
+  - char-ci>=?
+  - char-alphabetic?
+  - char-numeric?
   - char-whitespace?
+  - char-lower-case?
+  - char-upper-case?
+  - char-upcase
+  - char-downcase
   - special-chars
   - case-lambda
   - cxr
@@ -6948,7 +6948,18 @@
                                             - list
                                               - scheme
                                               - char
+                                            - (char-ci=? . char-ci=?)
+                                            - (char-ci<? . char-ci<?)
+                                            - (char-ci>? . char-ci>?)
+                                            - (char-ci<=? . char-ci<=?)
+                                            - (char-ci>=? . char-ci>=?)
+                                            - (char-alphabetic? . char-alphabetic?)
+                                            - (char-numeric? . char-numeric?)
                                             - (char-whitespace? . char-whitespace?)
+                                            - (char-lower-case? . char-lower-case?)
+                                            - (char-upper-case? . char-upper-case?)
+                                            - (char-upcase . char-upcase)
+                                            - (char-downcase . char-downcase)
                                             - (special-chars . special-chars)
                                           - list
                                             - list
@@ -10139,6 +10150,51 @@
   - ("tab" . #\tab)
 - set special-chars
 - constant procedure 1 #f
+  - constant procedure 0 #t
+    - get 2
+    - get char-downcase
+    - get 2
+    - call 2 #f map
+    - call 2 #f apply
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- get char=?
+- call 1 #f ||
+- set char-ci=?
+- get char<?
+- call 1 #f ||
+- set char-ci<?
+- get char>?
+- call 1 #f ||
+- set char-ci>?
+- get char<=?
+- call 1 #f ||
+- set char-ci<=?
+- get char>=?
+- call 1 #f ||
+- set char-ci>=?
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - call 1 #f char-upper-case?
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f char-lower-case?
+  - call 1 #f 1
+- call 1 #f $$close
+- set char-alphabetic?
+- constant procedure 1 #f
+  - constant #\0
+  - get 1
+  - constant #\9
+  - call 3 #f char<=?
+- call 1 #f $$close
+- set char-numeric?
+- constant procedure 1 #f
   - get 0
   - constant list
     - #\newline
@@ -10148,6 +10204,44 @@
   - call 2 #f memv
 - call 1 #f $$close
 - set char-whitespace?
+- constant procedure 1 #f
+  - constant #\a
+  - get 1
+  - constant #\z
+  - call 3 #f char<=?
+- call 1 #f $$close
+- set char-lower-case?
+- constant procedure 1 #f
+  - constant #\A
+  - get 1
+  - constant #\Z
+  - call 3 #f char<=?
+- call 1 #f $$close
+- set char-upper-case?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f char-lower-case?
+  - if
+    - get 0
+    - call 1 #f char->integer
+    - constant 32
+    - call 2 #f ||
+    - call 1 #f integer->char
+  - get 0
+- call 1 #f $$close
+- set char-upcase
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f char-upper-case?
+  - if
+    - get 0
+    - call 1 #f char->integer
+    - constant 32
+    - call 2 #f ||
+    - call 1 #f integer->char
+  - get 0
+- call 1 #f $$close
+- set char-downcase
 - constant procedure 0 #t
   - constant procedure 6 #f
     - constant procedure 0 #f

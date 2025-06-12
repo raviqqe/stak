@@ -2154,7 +2154,20 @@
                 (clause (parameters outer-body ...) ...)))))))))
 
 (define-library (scheme char)
-  (export char-whitespace? special-chars)
+  (export
+    char-ci=?
+    char-ci<?
+    char-ci>?
+    char-ci<=?
+    char-ci>=?
+    char-alphabetic?
+    char-numeric?
+    char-whitespace?
+    char-lower-case?
+    char-upper-case?
+    char-upcase
+    char-downcase
+    special-chars)
 
   (import (scheme base))
 
@@ -2170,8 +2183,40 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
+    (define (char-compare-ci compare)
+      (lambda xs
+        (apply compare (map char-downcase xs))))
+
+    (define char-ci=? (char-compare-ci char=?))
+    (define char-ci<? (char-compare-ci char<?))
+    (define char-ci>? (char-compare-ci char>?))
+    (define char-ci<=? (char-compare-ci char<=?))
+    (define char-ci>=? (char-compare-ci char>=?))
+
+    (define (char-alphabetic? x)
+      (or (char-lower-case? x) (char-upper-case? x)))
+
+    (define (char-numeric? x)
+      (char<=? #\0 x #\9))
+
     (define (char-whitespace? x)
-      (memv x '(#\newline #\return #\space #\tab)))))
+      (memv x '(#\newline #\return #\space #\tab)))
+
+    (define (char-lower-case? x)
+      (char<=? #\a x #\z))
+
+    (define (char-upper-case? x)
+      (char<=? #\A x #\Z))
+
+    (define (char-upcase x)
+      (if (char-lower-case? x)
+        (integer->char (- (char->integer x) 32))
+        x))
+
+    (define (char-downcase x)
+      (if (char-upper-case? x)
+        (integer->char (+ (char->integer x) 32))
+        x))))
 
 (define-library (scheme read)
   (export read)
