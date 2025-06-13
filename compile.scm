@@ -1137,6 +1137,22 @@
 
     ; Tree shaking
 
+    (define (collect-global-symbols globals locals expression)
+     (case (car expression)
+      (($$begin)
+       ; TODO
+       expression)
+      (($$lambda)
+       ; TODO
+       expression)
+      (($$quote)
+       ; TODO
+       expression)
+      (else
+       (if (built-in-symbol? (car expression))
+        expression
+        expression))))
+
     (define (shake-tree expression)
      expression)
 
