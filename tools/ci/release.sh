@@ -2,9 +2,9 @@
 
 set -ex
 
-bytecode_file=compiler/src/compile.bc
-
 update_bytecode() (
+  bytecode_file=compiler/src/compile.bc
+
   cat prelude.scm compile.scm | stak compile.scm >$bytecode_file
 
   git add -f $bytecode_file
