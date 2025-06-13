@@ -17,9 +17,9 @@ run_stage() (
   fi
 )
 
-artifact_path() {
+artifact_path() (
   echo tmp/stage$1.$2
-}
+)
 
 cd $(dirname $0)/..
 
