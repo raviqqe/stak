@@ -1135,6 +1135,11 @@
       (else
        '())))
 
+    ; Tree shaking
+
+    (define (shake-tree expression)
+     expression)
+
     ; Metadata
 
     (define-record-type metadata
