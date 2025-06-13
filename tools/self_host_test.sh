@@ -9,13 +9,13 @@ stage_count=3
 profile=release_test
 target=target/$profile
 
-run_stage() {
+run_stage() (
   if [ $1 -eq 0 ]; then
     log stak compile.scm
   else
     log $target/stak-interpret stage$1.bc
   fi
-}
+)
 
 artifact_path() {
   echo tmp/stage$1.$2
