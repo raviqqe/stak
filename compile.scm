@@ -1586,8 +1586,9 @@
      (define-values (expression1 libraries) (expand-libraries source))
      (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
      (define-values (expression3 optimizers) (optimize expression2))
-     (define features (detect-features expression3))
-     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
+     (define expression4 (shake-tree expression3))
+     (define features (detect-features expression4))
+     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
 
      (encode
       (marshal
@@ -1596,7 +1597,7 @@
         #f
         (build-primitives
          primitives
-         (compile metadata expression3))))))
+         (compile metadata expression4))))))
 
     main))
 
