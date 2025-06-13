@@ -2163,6 +2163,8 @@
   - source
   - expression1
   - expression2
+  - shake-tree
+  - expression3
   - detect-features
   - compile-metadata
   - features
@@ -2175,7 +2177,7 @@
   - build-primitives
   - primitives
   - metadata
-  - expression3
+  - expression4
   - main
   - _rib_
   - tag
@@ -15041,6 +15043,12 @@
           - quote
           - ()
   - list
+    - define
+    - list
+      - shake-tree
+      - expression
+    - expression
+  - list
     - define-record-type
     - metadata
     - list
@@ -16718,10 +16726,16 @@
         - expression2
     - list
       - define
+      - expression4
+      - list
+        - shake-tree
+        - expression3
+    - list
+      - define
       - features
       - list
         - detect-features
-        - expression3
+        - expression4
     - list
       - define
       - metadata
@@ -16732,7 +16746,7 @@
         - macros
         - optimizers
         - dynamic-symbols
-        - expression3
+        - expression4
     - list
       - encode
       - list
@@ -16747,7 +16761,7 @@
             - list
               - compile
               - metadata
-              - expression3
+              - expression4
   - main
 - set ||
 - constant let
