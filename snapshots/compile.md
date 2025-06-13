@@ -2059,13 +2059,16 @@
   - macro-context-state
   - macro-state-literals
   - macro-state-static-symbols
-  - built-in-symbol?
   - macro-state-dynamic-symbols
   - state
   - optimization-context-literals
   - $$dynamic-symbols
   - $$symbols
   - loop
+  - collect-global-symbols
+  - globals
+  - locals
+  - built-in-symbol?
   - metadata?
   - metadata-macros
   - metadata-optimizers
@@ -15042,6 +15045,41 @@
         - list
           - quote
           - ()
+  - list
+    - define
+    - list
+      - collect-global-symbols
+      - globals
+      - locals
+      - expression
+    - list
+      - case
+      - list
+        - car
+        - expression
+      - list
+        - list
+          - $$begin
+        - expression
+      - list
+        - list
+          - $$lambda
+        - expression
+      - list
+        - list
+          - $$quote
+        - expression
+      - list
+        - else
+        - list
+          - if
+          - list
+            - built-in-symbol?
+            - list
+              - car
+              - expression
+          - expression
+          - expression
   - list
     - define
     - list
