@@ -2,9 +2,7 @@
 
 set -ex
 
-epoch() {
-  date +%s
-}
+alias epoch='date +%s'
 
 features=,
 interpreter=stak
