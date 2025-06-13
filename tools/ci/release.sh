@@ -4,11 +4,11 @@ set -ex
 
 bytecode_file=compiler/src/compile.bc
 
-update_bytecode() {
+update_bytecode() (
   cat prelude.scm compile.scm | stak compile.scm >$bytecode_file
 
   git add -f $bytecode_file
-}
+)
 
 update_cargo_toml() {
   for main_file in $(git ls-files '*/src/main.rs'); do
