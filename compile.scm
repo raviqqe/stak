@@ -1139,33 +1139,6 @@
             (expression (optimize-expression context expression)))
       (values expression (optimization-context-literals context))))
 
-    ; Feature detection
-
-    (define features
-     '(($$dynamic-symbols . dynamic-symbols)
-       ($$libraries . libraries)
-       ($$macros . macros)
-       ($$optimizers . optimizers)
-       ($$symbols . symbols)))
-
-    (define (detect-features expression)
-     (cond
-      ((and
-        (pair? expression)
-        (null? (cdr expression))
-        (assq (car expression) features))
-       =>
-       (lambda (pair)
-        (list (cdr pair))))
-      ((pair? expression)
-       (let loop ((expression expression) (features '()))
-        (let ((features (unique (append features (detect-features (car expression))))))
-         (if (pair? (cdr expression))
-          (loop (cdr expression) features)
-          features))))
-      (else
-       '())))
-
     ; Tree shaking
 
     (define (find-library-symbols expression)
@@ -1237,6 +1210,33 @@
     (define (shake-tree expression)
      (let ((dependencies (find-symbol-dependencies expression)))
       expression))
+
+    ; Feature detection
+
+    (define features
+     '(($$dynamic-symbols . dynamic-symbols)
+       ($$libraries . libraries)
+       ($$macros . macros)
+       ($$optimizers . optimizers)
+       ($$symbols . symbols)))
+
+    (define (detect-features expression)
+     (cond
+      ((and
+        (pair? expression)
+        (null? (cdr expression))
+        (assq (car expression) features))
+       =>
+       (lambda (pair)
+        (list (cdr pair))))
+      ((pair? expression)
+       (let loop ((expression expression) (features '()))
+        (let ((features (unique (append features (detect-features (car expression))))))
+         (if (pair? (cdr expression))
+          (loop (cdr expression) features)
+          features))))
+      (else
+       '())))
 
     ; Metadata
 
