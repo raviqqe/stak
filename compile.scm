@@ -1199,37 +1199,6 @@
          #f
          (find-library-symbols expression))))))
 
-    (define (find-shaken-symbols expression)
-     (cond
-      ((symbol? expression)
-       (list expression))
-
-      ((pair? expression)
-       (append
-        (find-shaken-symbols (car expression))
-        (find-shaken-symbols (cdr expression))))
-
-      (else
-       '())))
-
-    (define (find-live-globals locals expression)
-     (case (maybe-car expression)
-      (($$lambda)
-       (find-live-globals
-        (append
-         (find-shaken-symbols (cadr expression))
-         locals)
-        expression))
-      (($$quote)
-       ; TODO
-       expression)
-      (else
-       (if (symbol? expression)
-        (list expression)
-        (flat-map
-         (lambda (expression) (find-live-globals locals expression))
-         (cdr expression))))))
-
     (define (shake-sequence locals expressions)
      (if (null? expressions)
       (values '() '())
