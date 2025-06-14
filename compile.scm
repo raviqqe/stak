@@ -1173,14 +1173,13 @@
       (values '() '())
       (let ((first (car expression)))
        (let-values (((expressions globals) (shake-sequence (cdr expressions))))
-        (let ((predicate (maybe-car first)))
-         (if (and
-              (eq? predicate '$$set!)
-              (library-symbol? (cadr first))
-              (not (memq (cadr first) globals)))
-          expressions
-          (let-values (((expression first-globals) (shake-expression locals first)))
-           (cons expression expressions))))))))
+        (if (and
+             (eq? (maybe-car first) '$$set!)
+             (library-symbol? (cadr first))
+             (not (memq (cadr first) globals)))
+         expressions
+         (let-values (((expression first-globals) (shake-expression locals first)))
+          (cons expression expressions)))))))
 
     (define (shake-expression locals expression)
      (case (maybe-car expression)
