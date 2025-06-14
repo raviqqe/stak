@@ -194,6 +194,29 @@
     (define (filter-values f xs)
      (filter (lambda (pair) (f (cdr pair))) xs))
 
+    (define (append-multi-map key values xs)
+     (cons
+      (cons
+       key
+       (unique
+        (append
+         values
+         (cond
+          ((assq key xs) =>
+           cdr)
+          (else
+           '())))))
+      (filter
+       (lambda (pair) (not (eq? (car pair) key)))
+       xs)))
+
+    (define (merge-multi-maps xs ys)
+     (fold-left
+      (lambda (ys pair)
+       (append-multi-map (car pair) (cdr pair) ys))
+      ys
+      xs))
+
     ; TODO Set a true machine epsilon.
     (define epsilon
      (let ((x (/ 1 10000000 100000000)))
@@ -1221,29 +1244,6 @@
        (list expression))
       (else
        '())))
-
-    (define (append-multi-map key values xs)
-     (cons
-      (cons
-       key
-       (unique
-        (append
-         values
-         (cond
-          ((assq key xs) =>
-           cdr)
-          (else
-           '())))))
-      (filter
-       (lambda (pair) (not (eq? (car pair) key)))
-       xs)))
-
-    (define (merge-multi-maps xs ys)
-     (fold-left
-      (lambda (ys pair)
-       (append-multi-map (car pair) (cdr pair) ys))
-      ys
-      xs))
 
     (define (find-symbol-relations expression)
      (case (maybe-car expression)
