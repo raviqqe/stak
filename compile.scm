@@ -1141,6 +1141,12 @@
 
     ; Tree shaking
 
+    (define-record-type tree-shake-context
+     (make-tree-shake-context dependencies symbols)
+     tree-shake-context?
+     (dependencies tree-shake-context-dependencies)
+     (symbols tree-shake-context-symbols tree-shake-context-set-symbols))
+
     (define (find-library-symbols expression)
      (cond
       ((pair? expression)
@@ -1172,27 +1178,28 @@
          #f
          (find-library-symbols expression))))))
 
-    (define (shake-sequence expressions)
+    (define (shake-sequence context expressions)
      (if (null? expressions)
-      (values '() '())
+      '()
       (let ((first (car expressions)))
-       (let-values (((expressions globals) (shake-sequence (cdr expressions))))
-        (let-values (((expression first-globals) (shake-expression first)))
+       (let-values (((expressions globals) (shake-sequence context (cdr expressions))))
+        (let-values (((expression first-globals) (shake-expression context first)))
          (values
           (cons
            (if (and
                 (eq? (maybe-car first) '$$set!)
                 (library-symbol? (cadr first))
-                (not (memq (cadr first) globals)))
+                (not (memq (cadr first) (tree-shake-context-symbols context))))
             #f
             expression)
            expressions)
           (unique (append first-globals globals))))))))
 
-    (define (shake-expression expression)
+    (define (shake-expression context expression)
      (case (maybe-car expression)
       (($$lambda)
-       (let-values (((expressions globals) (shake-sequence (cddr expression))))
+       (let-values (((expressions globals)
+                     (shake-sequence context (cddr expression))))
         (values
          (cons '$$lambda (cons (cadr expression) expressions))
          globals)))
@@ -1203,13 +1210,17 @@
         ((symbol? expression)
          (values expression (list expression)))
         ((pair? expression)
-         (shake-sequence expression))
+         (shake-sequence context expression))
         (else
          (values expression '()))))))
 
     (define (shake-tree expression)
      (let ((dependencies (find-symbol-dependencies expression)))
-      expression))
+      (shake-expression
+       (make-tree-shake-context
+        dependencies
+        (or (assq #f dependencies) '()))
+       expression)))
 
     ; Feature detection
 
