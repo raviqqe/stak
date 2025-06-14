@@ -1192,9 +1192,13 @@
       (($$set!)
        expression)
       (else
-       (if (symbol? expression)
-        expression
-        expression))))
+       (cond
+        ((symbol? expression)
+         expression)
+        ((pair? expression)
+         (shake-sequence (cdr expression)))
+        (else
+         expression)))))
 
     (define (shake-tree expression)
      (let-values (((expression globals) (shake-expression '() expression)))
