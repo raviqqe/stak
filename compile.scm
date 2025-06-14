@@ -1171,9 +1171,9 @@
     (define (shake-sequence expressions)
      (if (null? expressions)
       (values '() '())
-      (let-values (((expressions globals) (shake-sequence (cdr expression))))
+      (let-values (((expressions globals) (shake-sequence (cdr expressions))))
        (cons
-        (shake-expression globals locals expression)
+        (shake-expression globals locals (car expressions))
         expression))))
 
     (define (shake-expression locals expression)
