@@ -1171,11 +1171,13 @@
     (define (shake-sequence expressions)
      (if (null? expressions)
       (values '() '())
-      (let-values (((expressions globals) (shake-sequence expression)))
-       foo)))
+      (let-values (((expressions globals) (shake-sequence (cdr expression))))
+       (cons
+        (shake-expression globals locals expression)
+        expression))))
 
     (define (shake-expression locals expression)
-     (case (car expression)
+     (case (maybe-car expression)
       (($$begin)
        (values
         (cons
@@ -1184,13 +1186,11 @@
           expressions))
         globals))
       (($$lambda)
-       ; TODO
        expression)
       (($$quote)
-       ; TODO
        expression)
       (else
-       (if (built-in-symbol? (car expression))
+       (if (symbol? expression)
         expression
         expression))))
 
