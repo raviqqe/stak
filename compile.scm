@@ -1238,7 +1238,7 @@
        (lambda (pair) (not (eq? (car pair) key)))
        xs)))
 
-    (define (merge-multi-map xs ys)
+    (define (merge-multi-maps xs ys)
      (fold-left
       (lambda (ys pair)
        (append-multi-map (car pair) (cdr pair) ys))
@@ -1249,9 +1249,8 @@
      (case (maybe-car expression)
       (($$begin)
        (fold-left
-        (lambda (map expression)
-         (append-multi-map key values map)
-         foo)
+        (lambda (xs expression)
+         (merge-multi-maps (find-symbol-relations expression) xs))
         '()
         (cdr expression)))
       (($$set!)
