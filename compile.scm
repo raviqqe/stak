@@ -1230,7 +1230,7 @@
         (append
          values
          (cond
-          ((assq key xs)
+          ((assq key xs) =>
            cdr)
           (else
            '())))))
