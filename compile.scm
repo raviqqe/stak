@@ -1245,12 +1245,12 @@
       (else
        '())))
 
-    (define (find-symbol-relations expression)
+    (define (find-symbol-dependencies expression)
      (case (maybe-car expression)
       (($$begin)
        (fold-left
         (lambda (xs expression)
-         (merge-multi-maps (find-symbol-relations expression) xs))
+         (merge-multi-maps (find-symbol-dependencies expression) xs))
         '()
         (cdr expression)))
       (($$set!)
@@ -1266,7 +1266,7 @@
          (find-library-symbols expression))))))
 
     (define (shake-tree expression)
-     (let ((relations (find-symbol-relations expression)))
+     (let ((dependencies (find-symbol-dependencies expression)))
       expression))
 
     ; Metadata
