@@ -1137,7 +1137,39 @@
 
     ; Tree shaking
 
-    (define (collect-global-symbols globals locals expression)
+    (define (find-shaken-symbols expression)
+     (cond
+      ((symbol? expression)
+       (list expression))
+
+      ((pair? expression)
+       (append
+        (find-shaken-symbols (car expression))
+        (find-shaken-symbols (cdr expression))))
+
+      (else
+       '())))
+
+    (define (find-globals locals expression)
+     (case (maybe-car expression)
+      (($$begin)
+       ; TODO
+       expression)
+      (($$lambda)
+       (find-globals
+        (append
+         (find-shaken-symbols (cadr expression))
+         locals)
+        expression))
+      (($$quote)
+       ; TODO
+       expression)
+      (else
+       (if (symbol? expression)
+        (list expression)
+        '()))))
+
+    (define (shake-expression globals locals expression)
      (case (car expression)
       (($$begin)
        ; TODO
@@ -1154,7 +1186,7 @@
         expression))))
 
     (define (shake-tree expression)
-     expression)
+     (shake-expression '() expression))
 
     ; Metadata
 
