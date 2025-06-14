@@ -1190,16 +1190,16 @@
           $$begin
           expressions)
          globals)))
-      (($$lambda)
-       expression)
       (($$quote)
-       expression)
-      (($$set!)
-       expression)
+       (values expression '()))
+      ; (($$lambda)
+      ;  (values expression '()))
+      ; (($$set!)
+      ;  (values expression '()))
       (else
        (cond
         ((symbol? expression)
-         expression)
+         (values expression (list expression)))
         ((pair? expression)
          (shake-sequence (cdr expression)))
         (else
