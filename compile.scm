@@ -1245,7 +1245,6 @@
       ys
       xs))
 
-    ; The false key is for symbols always required.
     (define (find-symbol-relations expression)
      (case (maybe-car expression)
       (($$begin)
@@ -1261,6 +1260,7 @@
          (cadr expression)
          (find-library-symbols (caddr expression)))))
       (else
+       ; The false key is for symbols always required.
        (list
         (cons
          #f
