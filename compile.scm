@@ -1199,12 +1199,12 @@
          #f
          (find-library-symbols expression))))))
 
-    (define (shake-sequence locals expressions)
+    (define (shake-sequence expressions)
      (if (null? expressions)
       (values '() '())
       (let ((first (car expressions)))
-       (let-values (((expressions globals) (shake-sequence locals (cdr expressions))))
-        (let-values (((expression first-globals) (shake-expression locals first)))
+       (let-values (((expressions globals) (shake-sequence (cdr expressions))))
+        (let-values (((expression first-globals) (shake-expression first)))
          (values
           (cons
            (if (and
@@ -1216,10 +1216,10 @@
            expressions)
           (unique (append first-globals globals))))))))
 
-    (define (shake-expression locals expression)
+    (define (shake-expression expression)
      (case (maybe-car expression)
       (($$lambda)
-       (let-values (((expressions globals) (shake-sequence locals (cddr expression))))
+       (let-values (((expressions globals) (shake-sequence (cddr expression))))
         (values
          (cons '$$lambda (cons (cadr expression) expressions))
          globals)))
@@ -1230,7 +1230,7 @@
         ((symbol? expression)
          (values expression (list expression)))
         ((pair? expression)
-         (shake-sequence locals expression))
+         (shake-sequence expression))
         (else
          (values expression '()))))))
 
