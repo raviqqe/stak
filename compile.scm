@@ -1177,10 +1177,12 @@
     (define (shake-expression locals expression)
      (case (car expression)
       (($$begin)
-       (cons
-        $$begin
-        (let-values (((expressions globals) (shake-sequence (cdr expression))))
-         expressions)))
+       (values
+        (cons
+         $$begin
+         (let-values (((expressions globals) (shake-sequence (cdr expression))))
+          expressions))
+        globals))
       (($$lambda)
        ; TODO
        expression)
@@ -1193,7 +1195,8 @@
         expression))))
 
     (define (shake-tree expression)
-     (shake-expression '() expression))
+     (let-values (((expression globals) (shake-expression '() expression)))
+      expression))
 
     ; Metadata
 
