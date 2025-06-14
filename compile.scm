@@ -1173,22 +1173,27 @@
       (values '() '())
       (let ((first (car expressions)))
        (let-values (((expressions globals) (shake-sequence locals (cdr expressions))))
-        (if (and
-             (eq? (maybe-car first) '$$set!)
-             (library-symbol? (cadr first))
-             (not (memq (cadr first) globals)))
-         (values expressions globals)
-         (let-values (((expression first-globals) (shake-expression locals first)))
-          (values
-           (cons expression expressions)
-           (unique (append first-globals globals)))))))))
+        (let-values (((expression first-globals) (shake-expression locals first)))
+         (values
+          (cons
+           (if (and
+                (eq? (maybe-car first) '$$set!)
+                (library-symbol? (cadr first))
+                (not (memq (cadr first) globals)))
+            #f
+            expression)
+           expressions)
+          (unique (append first-globals globals))))))))
 
     (define (shake-expression locals expression)
      (case (maybe-car expression)
+      (($$lambda)
+       (let-values (((expressions globals) (shake-sequence locals (cddr expression))))
+        (values
+         (cons '$$lambda (cons (cadr expression) expressions))
+         globals)))
       (($$quote)
        (values expression '()))
-      (($$lambda)
-       (shake-sequence locals (cddr expression)))
       (else
        (cond
         ((symbol? expression)
