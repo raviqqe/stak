@@ -180,11 +180,42 @@
       (else
        '())))
 
+    (define (fold-left f y xs)
+     (if (null? xs)
+      y
+      (fold-left
+       f
+       (f y (car xs))
+       (cdr xs))))
+
     (define (map-values f xs)
      (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
     (define (filter-values f xs)
      (filter (lambda (pair) (f (cdr pair))) xs))
+
+    (define (append-multi-map key values xs)
+     (cons
+      (cons
+       key
+       (unique
+        (append
+         values
+         (cond
+          ((assq key xs) =>
+           cdr)
+          (else
+           '())))))
+      (filter
+       (lambda (pair) (not (eq? (car pair) key)))
+       xs)))
+
+    (define (merge-multi-maps xs ys)
+     (fold-left
+      (lambda (ys pair)
+       (append-multi-map (car pair) (cdr pair) ys))
+      ys
+      xs))
 
     ; TODO Set a true machine epsilon.
     (define epsilon
@@ -1108,6 +1139,78 @@
             (expression (optimize-expression context expression)))
       (values expression (optimization-context-literals context))))
 
+    ; Tree shaking
+
+    (define (find-library-symbols expression)
+     (cond
+      ((pair? expression)
+       (append
+        (find-library-symbols (car expression))
+        (find-library-symbols (cdr expression))))
+      ((and (symbol? expression) (library-symbol? expression))
+       (list expression))
+      (else
+       '())))
+
+    (define (find-symbol-dependencies expression)
+     (case (maybe-car expression)
+      (($$begin)
+       (fold-left
+        (lambda (xs expression)
+         (merge-multi-maps (find-symbol-dependencies expression) xs))
+        '()
+        (cdr expression)))
+      (($$set!)
+       (list
+        (cons
+         (cadr expression)
+         (find-library-symbols (caddr expression)))))
+      (else
+       ; The false key is for symbols always required.
+       (list
+        (cons
+         #f
+         (find-library-symbols expression))))))
+
+    (define (shake-sequence expressions)
+     (if (null? expressions)
+      (values '() '())
+      (let ((first (car expressions)))
+       (let-values (((expressions globals) (shake-sequence (cdr expressions))))
+        (let-values (((expression first-globals) (shake-expression first)))
+         (values
+          (cons
+           (if (and
+                (eq? (maybe-car first) '$$set!)
+                (library-symbol? (cadr first))
+                (not (memq (cadr first) globals)))
+            #f
+            expression)
+           expressions)
+          (unique (append first-globals globals))))))))
+
+    (define (shake-expression expression)
+     (case (maybe-car expression)
+      (($$lambda)
+       (let-values (((expressions globals) (shake-sequence (cddr expression))))
+        (values
+         (cons '$$lambda (cons (cadr expression) expressions))
+         globals)))
+      (($$quote)
+       (values expression '()))
+      (else
+       (cond
+        ((symbol? expression)
+         (values expression (list expression)))
+        ((pair? expression)
+         (shake-sequence expression))
+        (else
+         (values expression '()))))))
+
+    (define (shake-tree expression)
+     (let ((dependencies (find-symbol-dependencies expression)))
+      expression))
+
     ; Feature detection
 
     (define features
@@ -1581,8 +1684,9 @@
      (define-values (expression1 libraries) (expand-libraries source))
      (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
      (define-values (expression3 optimizers) (optimize expression2))
-     (define features (detect-features expression3))
-     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
+     (define expression4 (shake-tree expression3))
+     (define features (detect-features expression4))
+     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
 
      (encode
       (marshal
@@ -1591,7 +1695,7 @@
         #f
         (build-primitives
          primitives
-         (compile metadata expression3))))))
+         (compile metadata expression4))))))
 
     main))
 
@@ -1658,7 +1762,7 @@
           (import
            (scheme base)
            (scheme cxr)
-           (only (stak base) fold-left rib string->uninterned-symbol))
+           (only (stak base) rib string->uninterned-symbol))
 
           (begin
            (define compile
