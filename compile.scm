@@ -1168,6 +1168,37 @@
 
     ; Tree shaking
 
+    (define (find-library-symbols expression)
+     (cond
+      ((pair? expression)
+       (append
+        (find-library-symbols (car expression))
+        (find-library-symbols (cdr expression))))
+      ((and (symbol? expression) (library-symbol? expression))
+       (list expression))
+      (else
+       '())))
+
+    (define (find-symbol-dependencies expression)
+     (case (maybe-car expression)
+      (($$begin)
+       (fold-left
+        (lambda (xs expression)
+         (merge-multi-maps (find-symbol-dependencies expression) xs))
+        '()
+        (cdr expression)))
+      (($$set!)
+       (list
+        (cons
+         (cadr expression)
+         (find-library-symbols (caddr expression)))))
+      (else
+       ; The false key is for symbols always required.
+       (list
+        (cons
+         #f
+         (find-library-symbols expression))))))
+
     (define (find-shaken-symbols expression)
      (cond
       ((symbol? expression)
@@ -1233,37 +1264,6 @@
          (shake-sequence locals expression))
         (else
          (values expression '()))))))
-
-    (define (find-library-symbols expression)
-     (cond
-      ((pair? expression)
-       (append
-        (find-library-symbols (car expression))
-        (find-library-symbols (cdr expression))))
-      ((and (symbol? expression) (library-symbol? expression))
-       (list expression))
-      (else
-       '())))
-
-    (define (find-symbol-dependencies expression)
-     (case (maybe-car expression)
-      (($$begin)
-       (fold-left
-        (lambda (xs expression)
-         (merge-multi-maps (find-symbol-dependencies expression) xs))
-        '()
-        (cdr expression)))
-      (($$set!)
-       (list
-        (cons
-         (cadr expression)
-         (find-library-symbols (caddr expression)))))
-      (else
-       ; The false key is for symbols always required.
-       (list
-        (cons
-         #f
-         (find-library-symbols expression))))))
 
     (define (shake-tree expression)
      (let ((dependencies (find-symbol-dependencies expression)))
