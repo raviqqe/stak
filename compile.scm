@@ -180,6 +180,14 @@
       (else
        '())))
 
+    (define (fold-left f y xs)
+     (if (null? xs)
+      y
+      (fold-left
+       f
+       (f y (car xs))
+       (cdr xs))))
+
     (define (map-values f xs)
      (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
@@ -1203,6 +1211,61 @@
         (else
          (values expression '()))))))
 
+    (define (find-library-symbols expression)
+     (cond
+      ((pair? expression)
+       (append
+        (find-library-symbols (car expression))
+        (find-library-symbols (cdr expression))))
+      ((and (symbol? expression) (library-symbol? expression))
+       (list expression))
+      (else
+       '())))
+
+    (define (append-multi-map key values xs)
+     (cons
+      (cons
+       key
+       (unique
+        (append
+         values
+         (cond
+          ((assq key xs)
+           cdr)
+          (else
+           '())))))
+      (filter
+       (lambda (pair) (not (eq? (car pair) key)))
+       xs)))
+
+    (define (merge-multi-map xs ys)
+     (fold-left
+      (lambda (ys pair)
+       (append-multi-map (car pair) (cdr pair) ys))
+      ys
+      xs))
+
+    ; The false key is for symbols always required.
+    (define (find-symbol-relations expression)
+     (case (maybe-car expression)
+      (($$begin)
+       (fold-left
+        (lambda (map expression)
+         (append-multi-map key values map)
+         foo)
+        '()
+        (cdr expression)))
+      (($$set!)
+       (list
+        (cons
+         (cadr expression)
+         (find-library-symbols (caddr expression)))))
+      (else
+       (list
+        (cons
+         #f
+         (find-library-symbols expression))))))
+
     (define (shake-tree expression)
      (let-values (((expression globals) (shake-expression '() expression)))
       expression))
@@ -1731,7 +1794,7 @@
           (import
            (scheme base)
            (scheme cxr)
-           (only (stak base) fold-left rib string->uninterned-symbol))
+           (only (stak base) rib string->uninterned-symbol))
 
           (begin
            (define compile
