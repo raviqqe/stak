@@ -1189,6 +1189,8 @@
        expression)
       (($$quote)
        expression)
+      (($$set!)
+       expression)
       (else
        (if (symbol? expression)
         expression
