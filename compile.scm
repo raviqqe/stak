@@ -1150,13 +1150,10 @@
       (else
        '())))
 
-    (define (find-globals locals expression)
+    (define (find-live-globals locals expression)
      (case (maybe-car expression)
-      (($$begin)
-       ; TODO
-       expression)
       (($$lambda)
-       (find-globals
+       (find-live-globals
         (append
          (find-shaken-symbols (cadr expression))
          locals)
@@ -1167,13 +1164,23 @@
       (else
        (if (symbol? expression)
         (list expression)
-        '()))))
+        (flat-map
+         (lambda (expression) (find-live-globals locals expression))
+         (cdr expression))))))
 
-    (define (shake-expression globals locals expression)
+    (define (shake-sequence expressions)
+     (if (null? expressions)
+      (values '() '())
+      (let-values (((expressions globals) (shake-sequence expression)))
+       foo)))
+
+    (define (shake-expression locals expression)
      (case (car expression)
       (($$begin)
-       ; TODO
-       expression)
+       (cons
+        $$begin
+        (let-values (((expressions globals) (shake-sequence (cdr expression))))
+         expressions)))
       (($$lambda)
        ; TODO
        expression)
