@@ -1184,12 +1184,12 @@
     (define (shake-expression locals expression)
      (case (maybe-car expression)
       (($$begin)
-       (values
-        (cons
-         $$begin
-         (let-values (((expressions globals) (shake-sequence (cdr expression))))
-          expressions))
-        globals))
+       (let-values (((expressions globals) (shake-sequence (cdr expression))))
+        (values
+         (cons
+          $$begin
+          expressions)
+         globals)))
       (($$lambda)
        expression)
       (($$quote)
