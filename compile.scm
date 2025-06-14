@@ -1266,7 +1266,7 @@
          (find-library-symbols expression))))))
 
     (define (shake-tree expression)
-     (let-values (((expression globals) (shake-expression '() expression)))
+     (let ((relations (find-symbol-relations expression)))
       expression))
 
     ; Metadata
