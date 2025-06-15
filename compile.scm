@@ -1162,14 +1162,14 @@
 
     (define (find-library-symbols locals expression)
      (cond
+      ((eq? (maybe-car expression) '$$lambda)
+       (find-library-symbols
+        (append (parameter-names (cadr expression)) locals)
+        (cddr expression)))
       ((pair? expression)
-       (if (eq? (car expression) '$$lambda)
-        (find-library-symbols
-         (append (parameter-names (cadr expression)) locals)
-         (cddr expression))
-        (append
-         (find-library-symbols locals (car expression))
-         (find-library-symbols locals (cdr expression)))))
+       (append
+        (find-library-symbols locals (car expression))
+        (find-library-symbols locals (cdr expression))))
       ((and
         (symbol? expression)
         (library-symbol? expression)

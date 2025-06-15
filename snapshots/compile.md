@@ -15195,45 +15195,44 @@
       - cond
       - list
         - list
-          - pair?
-          - expression
+          - eq?
+          - list
+            - maybe-car
+            - expression
+          - list
+            - quote
+            - $$lambda
         - list
-          - if
-          - list
-            - eq?
-            - list
-              - car
-              - expression
-            - list
-              - quote
-              - $$lambda
-          - list
-            - find-library-symbols
-            - list
-              - append
-              - list
-                - parameter-names
-                - list
-                  - cadr
-                  - expression
-              - locals
-            - list
-              - cddr
-              - expression
+          - find-library-symbols
           - list
             - append
             - list
-              - find-library-symbols
-              - locals
+              - parameter-names
               - list
-                - car
+                - cadr
                 - expression
+            - locals
+          - list
+            - cddr
+            - expression
+      - list
+        - list
+          - pair?
+          - expression
+        - list
+          - append
+          - list
+            - find-library-symbols
+            - locals
             - list
-              - find-library-symbols
-              - locals
-              - list
-                - cdr
-                - expression
+              - car
+              - expression
+          - list
+            - find-library-symbols
+            - locals
+            - list
+              - cdr
+              - expression
       - list
         - list
           - and
