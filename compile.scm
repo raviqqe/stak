@@ -1178,6 +1178,7 @@
       (else
        '())))
 
+    ; The false key is for symbols always required.
     (define (find-symbol-dependencies expression)
      (case (maybe-car expression)
       (($$begin)
@@ -1187,12 +1188,13 @@
         '()
         (cdr expression)))
       (($$set!)
-       (list
-        (cons
-         (cadr expression)
-         (find-library-symbols '() (caddr expression)))))
+       (let ((symbol (cadr expression)))
+        (append
+         (if (library-symbol? symbol)
+          '()
+          (list (cons #f (list symbol))))
+         (list (cons symbol (find-library-symbols '() (caddr expression)))))))
       (else
-       ; The false key is for symbols always required.
        (list
         (cons
          #f
@@ -1221,15 +1223,11 @@
       (($$quote)
        expression)
       (($$set!)
-       (let* ((symbol (cadr expression))
-              (from-library (library-symbol? symbol))
-              (local (memq symbol locals)))
-        (unless (or from-library local)
-         (tree-shake-context-append! context (list symbol)))
-        (if (and
-             from-library
-             (not local)
-             (not (memq symbol (tree-shake-context-symbols context))))
+       (let ((symbol (cadr expression)))
+        (if (not
+             (or
+              (memq symbol locals)
+              (memq symbol (tree-shake-context-symbols context))))
          #f
          expression)))
       (else

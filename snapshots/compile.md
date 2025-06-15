@@ -2071,8 +2071,6 @@
   - expressions
   - parameter-names
   - parameters
-  - from-library
-  - local
   - tree-shake-context-symbols
   - shake-sequence
   - locals
@@ -15292,20 +15290,44 @@
         - list
           - $$set!
         - list
+          - let
           - list
+            - list
+              - symbol
+              - list
+                - cadr
+                - expression
           - list
-            - cons
+            - append
             - list
-              - cadr
-              - expression
-            - list
-              - find-library-symbols
+              - if
+              - list
+                - library-symbol?
+                - symbol
               - list
                 - quote
                 - ()
               - list
-                - caddr
-                - expression
+                - list
+                - list
+                  - cons
+                  - #f
+                  - list
+                    - list
+                    - symbol
+            - list
+              - list
+              - list
+                - cons
+                - symbol
+                - list
+                  - find-library-symbols
+                  - list
+                    - quote
+                    - ()
+                  - list
+                    - caddr
+                    - expression
       - list
         - else
         - list
@@ -15416,46 +15438,23 @@
         - list
           - $$set!
         - list
-          - let\*
+          - let
           - list
             - list
               - symbol
               - list
                 - cadr
                 - expression
-            - list
-              - from-library
-              - list
-                - library-symbol?
-                - symbol
-            - list
-              - local
-              - list
-                - memq
-                - symbol
-                - locals
-          - list
-            - unless
-            - list
-              - or
-              - from-library
-              - local
-            - list
-              - tree-shake-context-append!
-              - context
-              - list
-                - list
-                - symbol
           - list
             - if
             - list
-              - and
-              - from-library
+              - not
               - list
-                - not
-                - local
-              - list
-                - not
+                - or
+                - list
+                  - memq
+                  - symbol
+                  - locals
                 - list
                   - memq
                   - symbol
