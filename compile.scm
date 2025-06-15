@@ -180,11 +180,42 @@
       (else
        '())))
 
+    (define (fold-left f y xs)
+     (if (null? xs)
+      y
+      (fold-left
+       f
+       (f y (car xs))
+       (cdr xs))))
+
     (define (map-values f xs)
      (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
     (define (filter-values f xs)
      (filter (lambda (pair) (f (cdr pair))) xs))
+
+    (define (append-multi-map key values xs)
+     (cons
+      (cons
+       key
+       (unique
+        (append
+         values
+         (cond
+          ((assq key xs) =>
+           cdr)
+          (else
+           '())))))
+      (filter
+       (lambda (pair) (not (eq? (car pair) key)))
+       xs)))
+
+    (define (merge-multi-maps xs ys)
+     (fold-left
+      (lambda (ys pair)
+       (append-multi-map (car pair) (cdr pair) ys))
+      ys
+      xs))
 
     ; TODO Set a true machine epsilon.
     (define epsilon
@@ -1108,6 +1139,110 @@
             (expression (optimize-expression context expression)))
       (values expression (optimization-context-literals context))))
 
+    ; Tree shaking
+
+    (define-record-type tree-shake-context
+     (make-tree-shake-context dependencies symbols)
+     tree-shake-context?
+     (dependencies tree-shake-context-dependencies)
+     (symbols tree-shake-context-symbols tree-shake-context-set-symbols!))
+
+    (define (tree-shake-context-append! context symbols)
+     (for-each
+      (lambda (symbol)
+       (let ((symbols (tree-shake-context-symbols context)))
+        (unless (memq symbol symbols)
+         (tree-shake-context-set-symbols! context (cons symbol symbols))
+         (tree-shake-context-append!
+          context
+          (or
+           (assq symbol (tree-shake-context-dependencies context))
+           '())))))
+      symbols))
+
+    (define (find-library-symbols locals expression)
+     (cond
+      ((eq? (maybe-car expression) '$$lambda)
+       (find-library-symbols
+        (append (parameter-names (cadr expression)) locals)
+        (cddr expression)))
+      ((pair? expression)
+       (append
+        (find-library-symbols locals (car expression))
+        (find-library-symbols locals (cdr expression))))
+      ((and
+        (symbol? expression)
+        (library-symbol? expression)
+        (not (memq expression locals)))
+       (list expression))
+      (else
+       '())))
+
+    ; The false key is for symbols always required.
+    (define (find-symbol-dependencies expression)
+     (case (maybe-car expression)
+      (($$begin)
+       (fold-left
+        (lambda (xs expression)
+         (merge-multi-maps (find-symbol-dependencies expression) xs))
+        '()
+        (cdr expression)))
+      (($$set!)
+       (let ((symbol (cadr expression)))
+        (append
+         (if (library-symbol? symbol)
+          '()
+          (list (cons #f (list symbol))))
+         (list (cons symbol (find-library-symbols '() (caddr expression)))))))
+      (else
+       (list
+        (cons
+         #f
+         (find-library-symbols '() expression))))))
+
+    (define (shake-sequence context locals expressions)
+     (if (null? expressions)
+      '()
+      (let ((first (car expressions)))
+       (let* ((expressions (shake-sequence context locals (cdr expressions)))
+              (expression (shake-expression context locals first)))
+        (cons expression expressions)))))
+
+    (define (shake-expression context locals expression)
+     (case (maybe-car expression)
+      (($$lambda)
+       (let ((parameters (cadr expression)))
+        (cons
+         '$$lambda
+         (cons
+          parameters
+          (shake-sequence
+           context
+           (append (parameter-names parameters) locals)
+           (cddr expression))))))
+      (($$quote)
+       expression)
+      (($$set!)
+       (let ((symbol (cadr expression)))
+        (if (not
+             (or
+              (memq symbol locals)
+              (memq symbol (tree-shake-context-symbols context))))
+         #f
+         expression)))
+      (else
+       (if (pair? expression)
+        (shake-sequence context locals expression)
+        expression))))
+
+    (define (shake-tree features expression)
+     (if (memq 'libraries features)
+      expression
+      (let* ((dependencies (find-symbol-dependencies expression))
+             (context (make-tree-shake-context dependencies '())))
+       (tree-shake-context-append! context (or (assq #f dependencies) '()))
+       (shake-expression context '() expression))))
+
     ; Feature detection
 
     (define features
@@ -1580,8 +1715,8 @@
     (define (main source)
      (define-values (expression1 libraries) (expand-libraries source))
      (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
-     (define-values (expression3 optimizers) (optimize expression2))
-     (define features (detect-features expression3))
+     (define features (detect-features expression2))
+     (define-values (expression3 optimizers) (optimize (shake-tree features expression2)))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
 
      (encode
@@ -1658,7 +1793,7 @@
           (import
            (scheme base)
            (scheme cxr)
-           (only (stak base) fold-left rib string->uninterned-symbol))
+           (only (stak base) rib string->uninterned-symbol))
 
           (begin
            (define compile
