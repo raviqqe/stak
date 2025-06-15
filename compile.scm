@@ -1216,6 +1216,16 @@
          (shake-sequence context (cddr expression)))))
       (($$quote)
        expression)
+      (($$set)
+       (let* ((symbol (cadr expression))
+              (from-library (library-symbol? symbol)))
+        (unless from-library
+         (tree-shake-context-append! context (list symbol)))
+        (if (and
+             from-library
+             (not (memq symbol (tree-shake-context-symbols context))))
+         #f
+         expression)))
       (else
        (if (pair? expression)
         (shake-sequence context expression)
