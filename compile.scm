@@ -1209,7 +1209,7 @@
          (shake-sequence context (cddr expression)))))
       (($$quote)
        expression)
-      (($$set)
+      (($$set!)
        (let* ((symbol (cadr expression))
               (from-library (library-symbol? symbol)))
         (unless from-library
