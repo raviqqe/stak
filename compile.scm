@@ -1145,10 +1145,15 @@
      (make-tree-shake-context dependencies symbols)
      tree-shake-context?
      (dependencies tree-shake-context-dependencies)
-     (symbols tree-shake-context-symbols tree-shake-context-set-symbols))
+     (symbols tree-shake-context-symbols tree-shake-context-set-symbols!))
 
-    (define (append-record-types foo)
-     foo)
+    (define (tree-shake-context-append! context symbols)
+     (tree-shake-context-set-symbols!
+      context
+      (unique
+       (append
+        symbols
+        (tree-shake-context-symbols context)))))
 
     (define (find-library-symbols expression)
      (cond
@@ -1207,7 +1212,7 @@
          (cadr expression)
          (shake-sequence context (cddr expression)))))
       (($$quote)
-       (values expression '()))
+       expression)
       (else
        (cond
         ((symbol? expression)
