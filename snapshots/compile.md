@@ -2041,8 +2041,6 @@
   - last-cdr
   - compile-sequence
   - compilation-context-append-locals
-  - parameter-names
-  - parameters
   - call-rib
   - $$close
   - compilation-context-resolve
@@ -2071,9 +2069,12 @@
   - find-library-symbols
   - first
   - expressions
+  - parameter-names
+  - parameters
   - from-library
   - tree-shake-context-symbols
   - shake-sequence
+  - locals
   - find-symbol-dependencies
   - make-tree-shake-context
   - tree-shake-context-append!
@@ -15285,6 +15286,7 @@
     - list
       - shake-sequence
       - context
+      - locals
       - expressions
     - list
       - if
@@ -15310,6 +15312,7 @@
               - list
                 - shake-sequence
                 - context
+                - locals
                 - list
                   - cdr
                   - expressions
@@ -15318,6 +15321,7 @@
               - list
                 - shake-expression
                 - context
+                - locals
                 - first
           - list
             - cons
@@ -15328,6 +15332,7 @@
     - list
       - shake-expression
       - context
+      - locals
       - expression
     - list
       - case
@@ -15338,21 +15343,30 @@
         - list
           - $$lambda
         - list
-          - cons
+          - let
           - list
-            - quote
-            - $$lambda
+            - list
+              - parameters
+              - list
+                - cadr
+                - expression
           - list
             - cons
             - list
-              - cadr
-              - expression
+              - quote
+              - $$lambda
             - list
-              - shake-sequence
-              - context
+              - cons
+              - parameters
               - list
-                - cddr
-                - expression
+                - shake-sequence
+                - context
+                - list
+                  - parameter-names
+                  - parameters
+                - list
+                  - cddr
+                  - expression
       - list
         - list
           - $$quote
@@ -15375,7 +15389,13 @@
                 - symbol
           - list
             - unless
-            - from-library
+            - list
+              - or
+              - from-library
+              - list
+                - memq
+                - symbol
+                - locals
             - list
               - tree-shake-context-append!
               - context
@@ -15407,6 +15427,7 @@
           - list
             - shake-sequence
             - context
+            - locals
             - expression
           - expression
   - list
@@ -15455,6 +15476,9 @@
         - list
           - shake-expression
           - context
+          - list
+            - quote
+            - ()
           - expression
   - list
     - define

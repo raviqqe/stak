@@ -1191,28 +1191,32 @@
          #f
          (find-library-symbols expression))))))
 
-    (define (shake-sequence context expressions)
+    (define (shake-sequence context locals expressions)
      (if (null? expressions)
       '()
       (let ((first (car expressions)))
-       (let* ((expressions (shake-sequence context (cdr expressions)))
-              (expression (shake-expression context first)))
+       (let* ((expressions (shake-sequence context locals (cdr expressions)))
+              (expression (shake-expression context locals first)))
         (cons expression expressions)))))
 
-    (define (shake-expression context expression)
+    (define (shake-expression context locals expression)
      (case (maybe-car expression)
       (($$lambda)
-       (cons
-        '$$lambda
+       (let ((parameters (cadr expression)))
         (cons
-         (cadr expression)
-         (shake-sequence context (cddr expression)))))
+         '$$lambda
+         (cons
+          parameters
+          (shake-sequence
+           context
+           (parameter-names parameters)
+           (cddr expression))))))
       (($$quote)
        expression)
       (($$set!)
        (let* ((symbol (cadr expression))
               (from-library (library-symbol? symbol)))
-        (unless from-library
+        (unless (or from-library (memq symbol locals))
          (tree-shake-context-append! context (list symbol)))
         (if (and
              from-library
@@ -1221,7 +1225,7 @@
          expression)))
       (else
        (if (pair? expression)
-        (shake-sequence context expression)
+        (shake-sequence context locals expression)
         expression))))
 
     (define (shake-tree features expression)
@@ -1230,7 +1234,7 @@
       (let* ((dependencies (find-symbol-dependencies expression))
              (context (make-tree-shake-context dependencies '())))
        (tree-shake-context-append! context (or (assq #f dependencies) '()))
-       (shake-expression context expression))))
+       (shake-expression context '() expression))))
 
     ; Feature detection
 
