@@ -1147,13 +1147,14 @@
      (dependencies tree-shake-context-dependencies)
      (symbols tree-shake-context-symbols tree-shake-context-set-symbols!))
 
-    (define (tree-shake-context-append! context symbols)
-     (tree-shake-context-set-symbols!
-      context
-      (unique
-       (append
-        symbols
-        (tree-shake-context-symbols context)))))
+    (define (tree-shake-context-append! context symbol)
+     (for-each
+      (lambda (symbol)
+       (let ((symbols (tree-shake-context-symbols context)))
+        (unless (memq symbol symbols)
+         (tree-shake-context-set-symbols! context (cons symbol symbols))
+         (tree-shake-context-append! context (or (assq #f dependencies) '())))))
+      symbols))
 
     (define (find-library-symbols expression)
      (cond
@@ -1225,7 +1226,7 @@
     (define (shake-tree expression)
      (let* ((dependencies (find-symbol-dependencies expression))
             (context (make-tree-shake-context dependencies '())))
-      (tree-shake-context-append! (or (assq #f dependencies) '()))
+      (tree-shake-context-append! context (or (assq #f dependencies) '()))
       (shake-expression context expression)))
 
     ; Feature detection
