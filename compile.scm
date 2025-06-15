@@ -1147,6 +1147,9 @@
      (dependencies tree-shake-context-dependencies)
      (symbols tree-shake-context-symbols tree-shake-context-set-symbols))
 
+    (define (append-record-types foo)
+     foo)
+
     (define (find-library-symbols expression)
      (cond
       ((pair? expression)
@@ -1198,11 +1201,11 @@
     (define (shake-expression context expression)
      (case (maybe-car expression)
       (($$lambda)
-       (let-values (((expressions globals)
-                     (shake-sequence context (cddr expression))))
-        (values
-         (cons '$$lambda (cons (cadr expression) expressions))
-         globals)))
+       (cons
+        '$$lambda
+        (cons
+         (cadr expression)
+         (shake-sequence context (cddr expression)))))
       (($$quote)
        (values expression '()))
       (else
@@ -1215,12 +1218,10 @@
          (values expression '()))))))
 
     (define (shake-tree expression)
-     (let ((dependencies (find-symbol-dependencies expression)))
-      (shake-expression
-       (make-tree-shake-context
-        dependencies
-        (or (assq #f dependencies) '()))
-       expression)))
+     (let* ((dependencies (find-symbol-dependencies expression))
+            (context (make-tree-shake-context dependencies '())))
+      (tree-shake-context-append! (or (assq #f dependencies) '()))
+      (shake-expression context expression)))
 
     ; Feature detection
 
