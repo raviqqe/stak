@@ -1224,11 +1224,13 @@
         (shake-sequence context expression)
         expression))))
 
-    (define (shake-tree expression)
-     (let* ((dependencies (find-symbol-dependencies expression))
-            (context (make-tree-shake-context dependencies '())))
-      (tree-shake-context-append! context (or (assq #f dependencies) '()))
-      (shake-expression context expression)))
+    (define (shake-tree features expression)
+     (if (memq 'libraries features)
+      expression
+      (let* ((dependencies (find-symbol-dependencies expression))
+             (context (make-tree-shake-context dependencies '())))
+       (tree-shake-context-append! context (or (assq #f dependencies) '()))
+       (shake-expression context expression))))
 
     ; Feature detection
 
@@ -1702,8 +1704,8 @@
     (define (main source)
      (define-values (expression1 libraries) (expand-libraries source))
      (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
-     (define-values (expression3 optimizers) (optimize (shake-tree expression2)))
-     (define features (detect-features expression3))
+     (define features (detect-features expression2))
+     (define-values (expression3 optimizers) (optimize (shake-tree features expression2)))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
 
      (encode
