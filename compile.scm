@@ -1160,13 +1160,20 @@
            '())))))
       symbols))
 
-    (define (find-library-symbols expression)
+    (define (find-library-symbols locals expression)
      (cond
       ((pair? expression)
-       (append
-        (find-library-symbols (car expression))
-        (find-library-symbols (cdr expression))))
-      ((and (symbol? expression) (library-symbol? expression))
+       (if (eq? (car expression) '$$lambda)
+        (find-library-symbols
+         (append (parameter-names (cadr expression)) locals)
+         (cddr expression))
+        (append
+         (find-library-symbols locals (car expression))
+         (find-library-symbols locals (cdr expression)))))
+      ((and
+        (symbol? expression)
+        (library-symbol? expression)
+        (not (memq expression locals)))
        (list expression))
       (else
        '())))
@@ -1183,13 +1190,13 @@
        (list
         (cons
          (cadr expression)
-         (find-library-symbols (caddr expression)))))
+         (find-library-symbols '() (caddr expression)))))
       (else
        ; The false key is for symbols always required.
        (list
         (cons
          #f
-         (find-library-symbols expression))))))
+         (find-library-symbols '() expression))))))
 
     (define (shake-sequence context locals expressions)
      (if (null? expressions)
@@ -1209,17 +1216,19 @@
           parameters
           (shake-sequence
            context
-           (parameter-names parameters)
+           (append (parameter-names parameters) locals)
            (cddr expression))))))
       (($$quote)
        expression)
       (($$set!)
        (let* ((symbol (cadr expression))
-              (from-library (library-symbol? symbol)))
-        (unless (or from-library (memq symbol locals))
+              (from-library (library-symbol? symbol))
+              (local (memq symbol locals)))
+        (unless (or from-library local)
          (tree-shake-context-append! context (list symbol)))
         (if (and
              from-library
+             (not local)
              (not (memq symbol (tree-shake-context-symbols context))))
          #f
          expression)))

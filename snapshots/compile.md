@@ -2072,6 +2072,7 @@
   - parameter-names
   - parameters
   - from-library
+  - local
   - tree-shake-context-symbols
   - shake-sequence
   - locals
@@ -15188,6 +15189,7 @@
     - define
     - list
       - find-library-symbols
+      - locals
       - expression
     - list
       - cond
@@ -15196,17 +15198,42 @@
           - pair?
           - expression
         - list
-          - append
+          - if
           - list
-            - find-library-symbols
+            - eq?
             - list
               - car
               - expression
+            - list
+              - quote
+              - $$lambda
           - list
             - find-library-symbols
             - list
-              - cdr
+              - append
+              - list
+                - parameter-names
+                - list
+                  - cadr
+                  - expression
+              - locals
+            - list
+              - cddr
               - expression
+          - list
+            - append
+            - list
+              - find-library-symbols
+              - locals
+              - list
+                - car
+                - expression
+            - list
+              - find-library-symbols
+              - locals
+              - list
+                - cdr
+                - expression
       - list
         - list
           - and
@@ -15216,6 +15243,12 @@
           - list
             - library-symbol?
             - expression
+          - list
+            - not
+            - list
+              - memq
+              - expression
+              - locals
         - list
           - list
           - expression
@@ -15269,6 +15302,9 @@
             - list
               - find-library-symbols
               - list
+                - quote
+                - ()
+              - list
                 - caddr
                 - expression
       - list
@@ -15280,6 +15316,9 @@
             - #f
             - list
               - find-library-symbols
+              - list
+                - quote
+                - ()
               - expression
   - list
     - define
@@ -15362,8 +15401,11 @@
                 - shake-sequence
                 - context
                 - list
-                  - parameter-names
-                  - parameters
+                  - append
+                  - list
+                    - parameter-names
+                    - parameters
+                  - locals
                 - list
                   - cddr
                   - expression
@@ -15387,15 +15429,18 @@
               - list
                 - library-symbol?
                 - symbol
+            - list
+              - local
+              - list
+                - memq
+                - symbol
+                - locals
           - list
             - unless
             - list
               - or
               - from-library
-              - list
-                - memq
-                - symbol
-                - locals
+              - local
             - list
               - tree-shake-context-append!
               - context
@@ -15407,6 +15452,9 @@
             - list
               - and
               - from-library
+              - list
+                - not
+                - local
               - list
                 - not
                 - list
