@@ -1147,13 +1147,17 @@
      (dependencies tree-shake-context-dependencies)
      (symbols tree-shake-context-symbols tree-shake-context-set-symbols!))
 
-    (define (tree-shake-context-append! context symbol)
+    (define (tree-shake-context-append! context symbols)
      (for-each
       (lambda (symbol)
        (let ((symbols (tree-shake-context-symbols context)))
         (unless (memq symbol symbols)
          (tree-shake-context-set-symbols! context (cons symbol symbols))
-         (tree-shake-context-append! context (or (assq #f dependencies) '())))))
+         (tree-shake-context-append!
+          context
+          (or
+           (assq symbol (tree-shake-context-dependencies context))
+           '())))))
       symbols))
 
     (define (find-library-symbols expression)
@@ -1215,13 +1219,9 @@
       (($$quote)
        expression)
       (else
-       (cond
-        ((symbol? expression)
-         (values expression (list expression)))
-        ((pair? expression)
-         (shake-sequence context expression))
-        (else
-         (values expression '()))))))
+       (if (pair? expression)
+        (shake-sequence context expression)
+        expression))))
 
     (define (shake-tree expression)
      (let* ((dependencies (find-symbol-dependencies expression))
