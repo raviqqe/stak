@@ -2071,7 +2071,6 @@
   - find-library-symbols
   - first
   - expressions
-  - $$set
   - from-library
   - tree-shake-context-symbols
   - shake-sequence
@@ -2179,10 +2178,9 @@
   - counts
   - source
   - expression1
-  - expression2
-  - shake-tree
-  - expression3
   - detect-features
+  - shake-tree
+  - expression2
   - compile-metadata
   - features
   - libraries
@@ -2194,7 +2192,7 @@
   - build-primitives
   - primitives
   - metadata
-  - expression4
+  - expression3
   - main
   - _rib_
   - tag
@@ -15361,7 +15359,7 @@
         - expression
       - list
         - list
-          - $$set
+          - $$set!
         - list
           - let\*
           - list
@@ -15415,39 +15413,49 @@
     - define
     - list
       - shake-tree
+      - features
       - expression
     - list
-      - let\*
+      - if
       - list
+        - memq
         - list
-          - dependencies
+          - quote
+          - libraries
+        - features
+      - expression
+      - list
+        - let\*
+        - list
           - list
-            - find-symbol-dependencies
-            - expression
+            - dependencies
+            - list
+              - find-symbol-dependencies
+              - expression
+          - list
+            - context
+            - list
+              - make-tree-shake-context
+              - dependencies
+              - list
+                - quote
+                - ()
         - list
+          - tree-shake-context-append!
           - context
           - list
-            - make-tree-shake-context
-            - dependencies
+            - or
+            - list
+              - assq
+              - #f
+              - dependencies
             - list
               - quote
               - ()
-      - list
-        - tree-shake-context-append!
-        - context
         - list
-          - or
-          - list
-            - assq
-            - #f
-            - dependencies
-          - list
-            - quote
-            - ()
-      - list
-        - shake-expression
-        - context
-        - expression
+          - shake-expression
+          - context
+          - expression
   - list
     - define
     - features
@@ -17212,25 +17220,22 @@
         - expand-macros
         - expression1
     - list
+      - define
+      - features
+      - list
+        - detect-features
+        - expression2
+    - list
       - define-values
       - list
         - expression3
         - optimizers
       - list
         - optimize
-        - expression2
-    - list
-      - define
-      - expression4
-      - list
-        - shake-tree
-        - expression3
-    - list
-      - define
-      - features
-      - list
-        - detect-features
-        - expression4
+        - list
+          - shake-tree
+          - features
+          - expression2
     - list
       - define
       - metadata
@@ -17241,7 +17246,7 @@
         - macros
         - optimizers
         - dynamic-symbols
-        - expression4
+        - expression3
     - list
       - encode
       - list
@@ -17256,7 +17261,7 @@
             - list
               - compile
               - metadata
-              - expression4
+              - expression3
   - main
 - set ||
 - constant let
