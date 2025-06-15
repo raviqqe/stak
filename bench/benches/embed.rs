@@ -15,6 +15,7 @@ use stak::{
 
 static ADD_MODULE: UniversalModule = include_module!("add/main.scm");
 static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
+static HELLO_MODULE: UniversalModule = include_module!("hello/main.scm");
 
 // Interesting observation here is that startup latencies get higher
 // significantly as we increase heap sizes. So we should keep bytecode sizes of
@@ -62,12 +63,29 @@ fn lua_empty(bencher: &mut Bencher) {
     })
 }
 
+fn stak_hello(bencher: &mut Bencher) {
+    bencher.iter(|| {
+        run::<{ 1 << 16 }>(black_box(&HELLO_MODULE)).unwrap();
+    })
+}
+
+fn lua_hello(bencher: &mut Bencher) {
+    bencher.iter(|| {
+        Lua::new()
+            .load(black_box(r#"print("Hello, world!")"#))
+            .exec()
+            .unwrap();
+    })
+}
+
 fn embed(criterion: &mut Criterion) {
     for (name, benchmark) in [
         ("stak_add", stak_add as fn(&mut Bencher)),
         ("lua_add", lua_add),
         ("stak_empty", stak_empty),
         ("lua_empty", lua_empty),
+        ("stak_hello", stak_hello),
+        ("lua_hello", lua_hello),
     ] {
         criterion.bench_function(&format!("embed_{name}"), benchmark);
     }
