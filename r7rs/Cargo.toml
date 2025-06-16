@@ -29,4 +29,4 @@ stak-native = { version = "0.10.27", path = "../native" }
 stak-process-context = { version = "0.10.27", path = "../process_context" }
 stak-time = { version = "0.10.27", path = "../time" }
 stak-vm = { version = "0.10.27", path = "../vm" }
-winter-maybe-async = "0.12.0"
+winter-maybe-async = "0.13.0"

@@ -2128,9 +2128,9 @@ checksum = "d135d17ab770252ad95e9a872d365cf3090e3be864a34ab46f48555993efc904"
 
 [[package]]
 name = "winter-maybe-async"
-version = "0.12.0"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eaa132be74e602b707f1dab5a69c38496445e54ee940e7c281c02b15007241bd"
+checksum = "c3253cf551b6e481f6ebeee986e8a5eaa3fbe9e79b129824320765a6efe90cb8"
 dependencies = [
  "quote",
  "syn",
