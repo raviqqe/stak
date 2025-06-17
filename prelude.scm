@@ -2171,6 +2171,7 @@
 
   (import (scheme base))
 
+  ; TODO Support Unicode.
   (begin
     (define special-chars
       '(("alarm" . #\alarm)
