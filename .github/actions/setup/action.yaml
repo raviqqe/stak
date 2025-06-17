@@ -7,7 +7,7 @@ runs:
   steps:
     - uses: raviqqe/cargo-cache@v1
     - uses: ruby/setup-ruby@v1
-    - uses: homebrew/actions/setup-homebrew@master
+    - uses: homebrew/actions/setup-homebrew@main
       with:
         stable: true
     - run: tools/ci/setup.sh
