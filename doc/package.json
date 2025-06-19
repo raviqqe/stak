@@ -28,7 +28,7 @@
     "vite-plugin-wasm": "^3.4.1"
   },
   "devDependencies": {
-    "@raviqqe/biome-config": "^1.0.2",
+    "@raviqqe/biome-config": "^2.0.2",
     "@raviqqe/eslint-config": "^4.1.16",
     "@types/node": "^24.0.3",
     "eslint": "^9.29.0",
