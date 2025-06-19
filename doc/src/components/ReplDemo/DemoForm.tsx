@@ -1,9 +1,9 @@
 import { useStore } from "@nanostores/solid";
 import {
-  type JSX,
   createEffect,
   createMemo,
   createSignal,
+  type JSX,
   onMount,
 } from "solid-js";
 import * as store from "../../stores/repl.js";
