@@ -1,4 +1,4 @@
-import { readFile, readdir, stat } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
 import sitemap from "@astrojs/sitemap";
 import solid from "@astrojs/solid-js";

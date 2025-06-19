@@ -1,9 +1,9 @@
 import { editor } from "monaco-editor";
 import {
-  type JSX,
   createEffect,
   createMemo,
   createUniqueId,
+  type JSX,
   onMount,
 } from "solid-js";
 
