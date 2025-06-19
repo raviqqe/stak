@@ -190,9 +190,10 @@ This means that Stak Scheme is suitable for embedding many small pieces of Schem
 
 - Environment: Ubuntu 24.04, x86-64
 
-| Benchmark     | Stak (full [^2]) | Lua 5.4 |
-| ------------- | ---------------: | ------: |
-| Empty program |         0.528 us | 50.9 us |
+| Benchmark        | Stak (full [^2]) | Lua 5.4 |
+| ---------------- | ---------------: | ------: |
+| Empty program    |         0.534 us | 48.9 us |
+| Integer addition |          22.9 us | 50.0 us |
 
 [^1]: Minimal: Integer-only support + standard libraries based on libc
 
