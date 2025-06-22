@@ -12,6 +12,19 @@ Feature: Multiple values
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Pass a single value to a continuation
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (call-with-values
+          (lambda () (values 65))
+          (lambda (x) x)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Call `call-with-values` with a value
     Given a file named "main.scm" with:
       """scheme
@@ -86,6 +99,18 @@ Feature: Multiple values
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "ABC"
+
+    Scenario: Define a value without decomposition
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (define x (values 65))
+
+        (write-u8 x)
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
 
     Scenario: Define values in a definition
       Given a file named "main.scm" with:

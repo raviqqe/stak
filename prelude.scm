@@ -1374,7 +1374,9 @@
 
     ; TODO Implement multiple values based on continuations as described in R7RS.
     (define (values . xs)
-      (make-tuple xs))
+      (if (and (pair? xs) (null? (cdr xs)))
+        (car xs)
+        (make-tuple xs)))
 
     (define (call-with-values producer consumer)
       (let ((xs (producer)))
