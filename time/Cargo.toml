@@ -18,7 +18,7 @@ std = []
 rustix = { version = "1.0.7", default-features = false, features = [
   "time",
 ], optional = true }
-stak-vm = { version = "0.10.27", path = "../vm" }
+stak-vm = { version = "0.10.28", path = "../vm" }
 winter-maybe-async = "0.13.0"
 
 [lints]

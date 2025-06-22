@@ -10,10 +10,10 @@ repository.workspace = true
 
 [dependencies]
 heapless = "0.8.0"
-stak = { version = "0.10.27", path = "../../root", default-features = false }
+stak = { version = "0.10.28", path = "../../root", default-features = false }
 
 [build-dependencies]
-stak-build = { version = "0.10.27", path = "../../build" }
+stak-build = { version = "0.10.28", path = "../../build" }
 
 [lints]
 workspace = true
