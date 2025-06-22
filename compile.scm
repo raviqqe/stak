@@ -1281,28 +1281,28 @@
      (optimizers metadata-optimizers)
      (dynamic-symbols metadata-dynamic-symbols))
 
-    (define (find-quoted-symbols expression)
+    (define (find-symbols expression)
      (cond
       ((symbol? expression)
        (list expression))
 
       ((vector? expression)
-       (find-quoted-symbols (vector->list expression)))
+       (find-symbols (vector->list expression)))
 
       ((pair? expression)
-       (append (find-quoted-symbols (car expression)) (find-quoted-symbols (cdr expression))))
+       (append (find-symbols (car expression)) (find-symbols (cdr expression))))
 
       (else
        '())))
 
-    (define (find-symbols expression)
+    (define (find-quoted-symbols expression)
      (define (find expression)
       (cond
        ((not (pair? expression))
         '())
 
        ((eq? (car expression) '$$quote)
-        (find-quoted-symbols (cadr expression)))
+        (find-symbols (cadr expression)))
 
        (else
         (append (find (car expression)) (find (cdr expression))))))
@@ -1321,11 +1321,11 @@
         (not (library-symbol? symbol)))
        (unique
         (append
-         (find-symbols expression)
-         (find-quoted-symbols libraries)
-         (find-quoted-symbols macros)
-         (find-quoted-symbols optimizers)
-         (find-quoted-symbols dynamic-symbols))))
+         (find-quoted-symbols expression)
+         (find-symbols libraries)
+         (find-symbols macros)
+         (find-symbols optimizers)
+         (find-symbols dynamic-symbols))))
       libraries
       macros
       optimizers
