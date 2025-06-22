@@ -2095,8 +2095,8 @@
   - library-symbol?
   - symbol
   - unique
-  - find-symbols
   - find-quoted-symbols
+  - find-symbols
   - marshal-context
   - marshal-context?
   - symbols
@@ -15650,7 +15650,7 @@
   - list
     - define
     - list
-      - find-quoted-symbols
+      - find-symbols
       - expression
     - list
       - cond
@@ -15666,7 +15666,7 @@
           - vector?
           - expression
         - list
-          - find-quoted-symbols
+          - find-symbols
           - list
             - vector->list
             - expression
@@ -15677,12 +15677,12 @@
         - list
           - append
           - list
-            - find-quoted-symbols
+            - find-symbols
             - list
               - car
               - expression
           - list
-            - find-quoted-symbols
+            - find-symbols
             - list
               - cdr
               - expression
@@ -15694,7 +15694,7 @@
   - list
     - define
     - list
-      - find-symbols
+      - find-quoted-symbols
       - expression
     - list
       - define
@@ -15722,7 +15722,7 @@
               - quote
               - $$quote
           - list
-            - find-quoted-symbols
+            - find-symbols
             - list
               - cadr
               - expression
@@ -15833,19 +15833,19 @@
           - list
             - append
             - list
-              - find-symbols
+              - find-quoted-symbols
               - expression
             - list
-              - find-quoted-symbols
+              - find-symbols
               - libraries
             - list
-              - find-quoted-symbols
+              - find-symbols
               - macros
             - list
-              - find-quoted-symbols
+              - find-symbols
               - optimizers
             - list
-              - find-quoted-symbols
+              - find-symbols
               - dynamic-symbols
       - libraries
       - macros
