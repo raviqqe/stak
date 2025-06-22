@@ -1793,6 +1793,17 @@
 - set ||
 - constant procedure 0 #t
   - get 0
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f cdr
+    - call 1 #f null?
+    - continue
+  - constant #f
+  - if
+    - get 0
+    - call 1 #f car
+  - get 0
   - call 1 #f ||
 - call 1 #f $$close
 - set values
