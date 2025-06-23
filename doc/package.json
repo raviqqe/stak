@@ -16,7 +16,7 @@
     "@astrojs/solid-js": "^5.1.0",
     "@astrojs/starlight": "^0.34.4",
     "@nanostores/solid": "^1.0.0",
-    "@raviqqe/stak": "^0.10.27",
+    "@raviqqe/stak": "^0.10.28",
     "astro": "^5.10.0",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.39.4",
