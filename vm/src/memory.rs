@@ -495,26 +495,25 @@ impl<'a> Memory<'a> {
 
 impl Write for Memory<'_> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
-        let mut list = self.null().expect("invalid memory access");
-        self.build_intermediate_string(string, &mut list)
-            .map_err(|_| fmt::Error)?;
+        (|| -> Result<(), Error> {
+            let mut list = self.null()?;
+            self.build_intermediate_string(string, &mut list)?;
 
-        if self.register() == self.null().expect("invalid memory access") {
-            self.set_register(list);
-        } else {
-            let mut head = self.register();
+            if self.register() == self.null()? {
+                self.set_register(list);
+            } else {
+                let mut head = self.register();
 
-            while self.cdr(head).expect("invalid memory access")
-                != self.null().expect("invalid memory access").into()
-            {
-                head = self.cdr(head).expect("invalid memory access").assume_cons();
+                while self.cdr(head)? != self.null()?.into() {
+                    head = self.cdr(head)?.assume_cons();
+                }
+
+                self.set_cdr(head, list.into())?;
             }
 
-            self.set_cdr(head, list.into())
-                .expect("invalid memory access");
-        }
-
-        Ok(())
+            Ok(())
+        })()
+        .map_err(|_| fmt::Error)
     }
 }
 
@@ -531,8 +530,8 @@ impl Display for Memory<'_> {
                 formatter,
                 "{:02x}: {} {}",
                 index,
-                self.car(cons).expect("invalid memory access"),
-                self.cdr(cons).expect("invalid memory access")
+                self.car(cons).map_err(|_| fmt::Error)?,
+                self.cdr(cons).map_err(|_| fmt::Error)?
             )?;
 
             for (cons, name) in [
