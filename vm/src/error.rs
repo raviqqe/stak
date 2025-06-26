@@ -33,6 +33,7 @@ impl Exception for Error {
     fn is_critical(&self) -> bool {
         match self {
             Self::ArgumentCount
+            | Self::InvalidMemoryAccess
             | Self::IllegalPrimitive
             | Self::NumberExpected
             | Self::ConsExpected
@@ -53,6 +54,7 @@ impl Display for Error {
             Self::BytecodeEnd => write!(formatter, "unexpected end of bytecodes"),
             Self::ConsExpected => write!(formatter, "cons expected"),
             Self::Format(error) => write!(formatter, "{error}"),
+            Self::InvalidMemoryAccess => write!(formatter, "invalid memory access"),
             Self::IllegalInstruction => write!(formatter, "illegal instruction"),
             Self::IllegalPrimitive => write!(formatter, "illegal primitive"),
             Self::NumberExpected => write!(formatter, "number expected"),
