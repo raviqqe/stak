@@ -86,10 +86,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     ) -> Result<(), Error> {
         memory.operate_top(|memory, value| {
             Ok(if let Some(cons) = field(memory, value)?.to_cons() {
-                Number::from_i64(cons.tag() as _).into()
+                Number::from_i64(cons.tag() as _)
             } else {
-                Number::default().into()
-            })
+                Default::default()
+            }
+            .into())
         })?;
 
         Ok(())
