@@ -35,41 +35,41 @@ impl PrimitiveSet for ListPrimitiveSet {
     fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             ListPrimitive::ASSQ => {
-                let [x, xs] = memory.pop_many();
+                let [x, xs] = memory.pop_many()?;
                 let mut xs = xs.assume_cons();
-                let mut y = memory.boolean(false);
+                let mut y = memory.boolean(false)?;
 
-                while xs != memory.null() {
-                    let cons = memory.car(xs).assume_cons();
+                while xs != memory.null()? {
+                    let cons = memory.car(xs)?.assume_cons();
 
-                    if x == memory.car(cons) {
+                    if x == memory.car(cons)? {
                         y = cons;
                         break;
                     }
 
-                    xs = memory.cdr(xs).assume_cons();
+                    xs = memory.cdr(xs)?.assume_cons();
                 }
 
                 memory.push(y.into())?;
             }
             ListPrimitive::CONS => {
-                let [car, cdr] = memory.pop_many();
+                let [car, cdr] = memory.pop_many()?;
 
                 let rib = memory.allocate(car, cdr.set_tag(Type::Pair as _))?;
                 memory.push(rib.into())?;
             }
             ListPrimitive::MEMQ => {
-                let [x, xs] = memory.pop_many();
+                let [x, xs] = memory.pop_many()?;
                 let mut xs = xs.assume_cons();
-                let mut y = memory.boolean(false);
+                let mut y = memory.boolean(false)?;
 
-                while xs != memory.null() {
-                    if x == memory.car(xs) {
+                while xs != memory.null()? {
+                    if x == memory.car(xs)? {
                         y = xs;
                         break;
                     }
 
-                    xs = memory.cdr(xs).assume_cons();
+                    xs = memory.cdr(xs)?.assume_cons();
                 }
 
                 memory.push(y.into())?;

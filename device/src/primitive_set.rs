@@ -38,21 +38,22 @@ impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
                 let byte =
                     maybe_await!(self.device.read()).map_err(|_| PrimitiveError::ReadInput)?;
 
-                memory.push(byte.map_or_else(
-                    || memory.boolean(false).into(),
-                    |byte| Number::from_i64(byte as _).into(),
-                ))?;
+                memory.push(if let Some(byte) = byte {
+                    Number::from_i64(byte as _).into()
+                } else {
+                    memory.boolean(false)?.into()
+                })?;
             }
             Primitive::WRITE => {
-                let byte = memory.pop().assume_number().to_i64() as u8;
+                let byte = memory.pop()?.assume_number().to_i64() as u8;
                 maybe_await!(self.device.write(byte)).map_err(|_| PrimitiveError::WriteOutput)?;
-                memory.push(memory.boolean(false).into())?;
+                memory.push(memory.boolean(false)?.into())?;
             }
             Primitive::WRITE_ERROR => {
-                let byte = memory.pop().assume_number().to_i64() as u8;
+                let byte = memory.pop()?.assume_number().to_i64() as u8;
                 maybe_await!(self.device.write_error(byte))
                     .map_err(|_| PrimitiveError::WriteError)?;
-                memory.push(memory.boolean(false).into())?;
+                memory.push(memory.boolean(false)?.into())?;
             }
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }

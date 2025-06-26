@@ -399,9 +399,12 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes an operation against a value at the top of a stack.
-    pub fn operate_top(&mut self, operate: impl Fn(&Self, Value) -> Value) -> Result<(), Error> {
+    pub fn operate_top(
+        &mut self,
+        operate: impl Fn(&Self, Value) -> Result<Value, Error>,
+    ) -> Result<(), Error> {
         let value = self.pop()?;
-        self.push(operate(self, value))?;
+        self.push(operate(self, value)?)?;
         Ok(())
     }
 
