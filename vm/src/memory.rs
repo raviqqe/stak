@@ -252,15 +252,15 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    const fn get(&self, index: usize) -> Value {
+    const fn get(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index);
-        self.heap[index]
+        self.heap.get(index).ok_or(Error::InvalidMemoryAccess)
     }
 
     #[inline]
-    const fn set(&mut self, index: usize, value: Value) {
+    const fn set(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index);
-        self.heap[index] = value
+        *self.heap.get_mut(index) = value
     }
 
     /// Returns a value of a `car` field in a cons.

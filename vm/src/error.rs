@@ -15,6 +15,8 @@ pub enum Error {
     BytecodeEnd,
     /// A format error.
     Format(fmt::Error),
+    /// Invalid memory access.
+    InvalidMemoryAccess,
     /// An illegal instruction detected.
     IllegalInstruction,
     /// An illegal primitive detected.
