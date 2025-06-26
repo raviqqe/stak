@@ -326,9 +326,7 @@ impl<'a> Memory<'a> {
             cons,
             index,
             value.set_tag(self.get(cons.index() + index)?.tag()),
-        )?;
-
-        Ok(())
+        )
     }
 
     /// Sets a value to a `car` field in a cons.
