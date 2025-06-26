@@ -51,6 +51,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 let [descriptor] = memory.pop_numbers();
 
                 memory.push(
+                    #[expect(clippy::option_if_let_else)]
                     if let Some(byte) = self
                         .file_system
                         .read(descriptor.to_i64() as _)
