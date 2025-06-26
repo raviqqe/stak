@@ -260,7 +260,7 @@ impl<'a> Memory<'a> {
     #[inline]
     const fn set(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index);
-        *self.heap.get_mut(index) = value
+        *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value
     }
 
     /// Returns a value of a `car` field in a cons.
