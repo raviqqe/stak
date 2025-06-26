@@ -209,8 +209,8 @@ impl<'a> Memory<'a> {
 
         assert_heap_cons!(self, cons);
 
-        self.set_raw_car(cons, car);
-        self.set_raw_cdr(cons, cdr);
+        self.set_raw_car(cons, car)?;
+        self.set_raw_cdr(cons, cdr)?;
 
         debug_assert!(self.allocation_index <= self.space_size());
 
@@ -326,7 +326,7 @@ impl<'a> Memory<'a> {
             cons,
             index,
             value.set_tag(self.get(cons.index() + index)?.tag()),
-        );
+        )?;
 
         Ok(())
     }
@@ -455,7 +455,7 @@ impl<'a> Memory<'a> {
 
         while index < self.allocation_end() {
             let value = self.copy_value(self.get(index)?)?;
-            self.set(index, value);
+            self.set(index, value)?;
             index += 1;
         }
 
@@ -507,7 +507,8 @@ impl Write for Memory<'_> {
                 head = self.cdr(head).expect("invalid memory access").assume_cons();
             }
 
-            self.set_cdr(head, list.into());
+            self.set_cdr(head, list.into())
+                .expect("invalid memory access");
         }
 
         Ok(())

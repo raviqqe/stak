@@ -164,7 +164,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 )?,
             }
 
-            self.advance_code();
+            self.advance_code()?;
 
             trace_memory!(self);
         }
@@ -344,7 +344,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             let continuation = self.continuation()?;
             // Keep a value at the top of a stack.
             self.memory
-                .set_cdr(self.memory.stack(), self.memory.cdr(continuation)?);
+                .set_cdr(self.memory.stack(), self.memory.cdr(continuation)?)?;
 
             code = self
                 .memory
@@ -458,7 +458,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let cons = self
                     .memory
                     .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
-                self.memory.set_top(cons.into());
+                self.memory.set_top(cons.into())?;
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
 
@@ -474,7 +474,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         let cons = self.memory.tail(self.memory.code(), index as usize - 1)?;
                         let head = self.memory.cdr(cons)?.assume_cons();
                         let tail = self.memory.cdr(head)?;
-                        self.memory.set_cdr(head, self.memory.code().into());
+                        self.memory.set_cdr(head, self.memory.code().into())?;
                         self.memory.set_cdr(cons, tail)?;
                         self.memory.set_code(head);
                     }
@@ -494,8 +494,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let car = self.memory.top()?;
                 let tag = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
                 self.memory.set_car(cons, car)?;
-                self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _));
-                self.memory.set_top(cons.into());
+                self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _))?;
+                self.memory.set_top(cons.into())?;
             } else {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(input, head >> 3, NUMBER_BASE)?)
