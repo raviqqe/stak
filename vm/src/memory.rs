@@ -585,20 +585,20 @@ mod tests {
         let mut memory = Memory::new(&mut heap).unwrap();
 
         let list = memory
-            .cons(Number::from_i64(1).into(), memory.null())
+            .cons(Number::from_i64(1).into(), memory.null().unwrap())
             .unwrap();
 
-        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_eq!(memory.cdr(list).unwrap().tag(), Type::Pair as Tag);
         assert_snapshot!(memory);
 
         let list = memory.cons(Number::from_i64(2).into(), list).unwrap();
 
-        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_eq!(memory.cdr(list).unwrap().tag(), Type::Pair as Tag);
         assert_snapshot!(memory);
 
         let list = memory.cons(Number::from_i64(3).into(), list).unwrap();
 
-        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_eq!(memory.cdr(list).unwrap().tag(), Type::Pair as Tag);
         assert_snapshot!(memory);
     }
 
@@ -608,8 +608,10 @@ mod tests {
         let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(memory.boolean(false)).to_cons().unwrap(),
-            memory.boolean(false)
+            Value::from(memory.boolean(false).unwrap())
+                .to_cons()
+                .unwrap(),
+            memory.boolean(false).unwrap()
         );
     }
 
@@ -619,8 +621,10 @@ mod tests {
         let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(memory.boolean(true)).to_cons().unwrap(),
-            memory.boolean(true)
+            Value::from(memory.boolean(true).unwrap())
+                .to_cons()
+                .unwrap(),
+            memory.boolean(true).unwrap()
         );
     }
 
@@ -629,16 +633,22 @@ mod tests {
         let mut heap = create_heap();
         let memory = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
+        assert_eq!(
+            Value::from(memory.null().unwrap()).to_cons().unwrap(),
+            memory.null().unwrap()
+        );
     }
 
     fn assert_raw_string(memory: &Memory, mut cons: Cons, string: &str) {
         for character in string.chars() {
-            assert_eq!(memory.car(cons).assume_number().to_i64(), character as _);
-            cons = memory.cdr(cons).assume_cons();
+            assert_eq!(
+                memory.car(cons).unwrap().assume_number().to_i64(),
+                character as _
+            );
+            cons = memory.cdr(cons).unwrap().assume_cons();
         }
 
-        assert_eq!(cons, memory.null());
+        assert_eq!(cons, memory.null().unwrap());
     }
 
     #[test]
@@ -648,9 +658,9 @@ mod tests {
 
         let string = memory.build_string("foo").unwrap();
 
-        assert_eq!(memory.car(string), Number::from_i64(3).into());
-        assert_eq!(memory.cdr(string).tag(), Type::String as _);
-        assert_raw_string(&memory, memory.cdr(string).assume_cons(), "foo");
+        assert_eq!(memory.car(string).unwrap(), Number::from_i64(3).into());
+        assert_eq!(memory.cdr(string).unwrap().tag(), Type::String as _);
+        assert_raw_string(&memory, memory.cdr(string).unwrap().assume_cons(), "foo");
     }
 
     #[test]
@@ -658,7 +668,7 @@ mod tests {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        memory.set_register(memory.null());
+        memory.set_register(memory.null().unwrap());
 
         memory.write_str("foo").unwrap();
 
@@ -670,7 +680,7 @@ mod tests {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        memory.set_register(memory.null());
+        memory.set_register(memory.null().unwrap());
 
         memory.write_str("foo").unwrap();
         memory.write_str("bar").unwrap();
@@ -685,7 +695,7 @@ mod tests {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        memory.set_register(memory.null());
+        memory.set_register(memory.null().unwrap());
 
         write!(&mut memory, "foo{FOO}bar").unwrap();
 
@@ -700,10 +710,10 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
 
-            assert_eq!(memory.pop(), Number::from_i64(42).into());
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(42).into());
         }
 
         #[test]
@@ -711,12 +721,12 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
             memory.push(Number::from_i64(2).into()).unwrap();
 
-            assert_eq!(memory.pop(), Number::from_i64(2).into());
-            assert_eq!(memory.pop(), Number::from_i64(1).into());
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(2).into());
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(1).into());
         }
     }
 
@@ -741,7 +751,7 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
             memory.collect_garbages(None).unwrap();
 
@@ -753,7 +763,7 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
             memory.push(Number::from_i64(2).into()).unwrap();
             memory.collect_garbages(None).unwrap();
@@ -769,7 +779,7 @@ mod tests {
             let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
                 .unwrap();
-            memory.set_cdr(cons, cons.into());
+            memory.set_cdr(cons, cons.into()).unwrap();
 
             memory.collect_garbages(None).unwrap();
 
