@@ -11,7 +11,7 @@ const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 type ArgumentVec<T> = heapless::Vec<T, MAXIMUM_ARGUMENT_COUNT>;
 type SchemeType = (
     TypeId,
-    Box<dyn Fn(&Memory, Value) -> Option<any_fn::Value>>,
+    Box<dyn Fn(&Memory, Value) -> Result<Option<any_fn::Value>, DynamicError>>,
     Box<dyn Fn(&mut Memory, any_fn::Value) -> Result<Value, DynamicError>>,
 );
 
@@ -59,22 +59,22 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
     pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.types.push((
             TypeId::of::<T>(),
-            Box::new(|memory, value| T::from_scheme(memory, value).map(any_fn::value)),
+            Box::new(|memory, value| Ok(T::from_scheme(memory, value)?.map(any_fn::value))),
             Box::new(|memory, value| T::into_scheme(value.downcast()?, memory)),
         ));
     }
 
-    fn collect_garbages(&mut self, memory: &Memory) {
+    fn collect_garbages(&mut self, memory: &Memory) -> Result<(), Error> {
         let mut marks = bitvec![0; self.values.len()];
 
         for index in 0..(memory.allocation_index() / 2) {
             let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
 
-            if memory.cdr(cons).tag() != Type::Foreign as _ {
+            if memory.cdr(cons)?.tag() != Type::Foreign as _ {
                 continue;
             }
 
-            marks.set(memory.car(cons).assume_number().to_i64() as _, true);
+            marks.set(memory.car(cons)?.assume_number().to_i64() as _, true);
         }
 
         for (index, mark) in marks.into_iter().enumerate() {
@@ -82,6 +82,8 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
                 self.values[index] = None;
             }
         }
+
+        Ok(())
     }
 
     // TODO Optimize this with `BitSlice::first_zero()`.
@@ -89,18 +91,18 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         self.values.iter().position(Option::is_none)
     }
 
-    fn allocate(&mut self, memory: &Memory) -> usize {
-        if let Some(index) = self.find_free() {
+    fn allocate(&mut self, memory: &Memory) -> Result<usize, Error> {
+        Ok(if let Some(index) = self.find_free() {
             index
         } else if let Some(index) = {
-            self.collect_garbages(memory);
+            self.collect_garbages(memory)?;
             self.find_free()
         } {
             index
         } else {
             self.values.push(None);
             self.values.len() - 1
-        }
+        })
     }
 
     fn convert_from_scheme(
@@ -108,14 +110,14 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         memory: &Memory,
         value: Value,
         type_id: TypeId,
-    ) -> Option<any_fn::Value> {
+    ) -> Result<Option<any_fn::Value>, DynamicError> {
         for (id, from, _) in &self.types {
             if type_id == *id {
                 return from(memory, value);
             }
         }
 
-        None
+        Ok(None)
     }
 
     fn convert_into_scheme(
@@ -129,14 +131,14 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
             }
         }
 
-        let index = self.allocate(memory);
+        let index = self.allocate(memory).unwrap();
 
         self.values[index] = Some(value);
 
         Ok(memory
             .allocate(
                 Number::from_i64(index as _).into(),
-                memory.null().set_tag(Type::Foreign as _).into(),
+                memory.null()?.set_tag(Type::Foreign as _).into(),
             )?
             .into())
     }
@@ -148,13 +150,13 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     #[maybe_async]
     fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         if primitive == 0 {
-            memory.set_register(memory.null());
+            memory.set_register(memory.null()?);
 
             for (name, _) in self.functions.iter().rev() {
-                let list = memory.cons(memory.null().into(), memory.register())?;
+                let list = memory.cons(memory.null()?.into(), memory.register())?;
                 memory.set_register(list);
                 let string = memory.build_raw_string(name)?;
-                memory.set_car(memory.register(), string.into());
+                memory.set_car(memory.register(), string.into())?;
             }
 
             memory.push(memory.register().into())?;
@@ -169,7 +171,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
 
             let mut arguments = (0..function.arity())
                 .map(|_| memory.pop())
-                .collect::<ArgumentVec<_>>();
+                .collect::<Result<ArgumentVec<_>, _>>()?;
             arguments.reverse();
 
             let cloned_arguments = {
@@ -179,17 +181,17 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
                     .map(|(index, &value)| {
                         self.convert_from_scheme(memory, value, function.parameter_types()[index])
                     })
-                    .collect::<ArgumentVec<_>>()
+                    .collect::<Result<ArgumentVec<_>, _>>()?
             };
 
             let mut copied_arguments = ArgumentVec::new();
 
             for &value in &arguments {
                 let value =
-                    if value.is_cons() && memory.cdr_value(value).tag() == Type::Foreign as _ {
+                    if value.is_cons() && memory.cdr_value(value)?.tag() == Type::Foreign as _ {
                         Some(
                             self.values
-                                .get(memory.car_value(value).assume_number().to_i64() as usize)
+                                .get(memory.car_value(value)?.assume_number().to_i64() as usize)
                                 .ok_or(DynamicError::ValueIndex)?
                                 .as_ref()
                                 .ok_or(DynamicError::ValueIndex)?,
@@ -272,7 +274,7 @@ mod tests {
         let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        let index = primitive_set.allocate(&memory);
+        let index = primitive_set.allocate(&memory).unwrap();
         primitive_set.values[index] = Some(value(42usize));
         assert_eq!(index, 0);
         assert_eq!(primitive_set.find_free(), None);
@@ -280,12 +282,12 @@ mod tests {
         let cons = memory
             .allocate(
                 Number::from_i64(index as _).into(),
-                memory.null().set_tag(Type::Foreign as _).into(),
+                memory.null().unwrap().set_tag(Type::Foreign as _).into(),
             )
             .unwrap();
         memory.push(cons.into()).unwrap();
 
-        let index = primitive_set.allocate(&memory);
+        let index = primitive_set.allocate(&memory).unwrap();
         primitive_set.values[index] = Some(value(42usize));
         assert_eq!(index, 1);
         assert_eq!(primitive_set.find_free(), None);
@@ -299,7 +301,9 @@ mod tests {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
 
-            primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
+            primitive_set
+                .collect_garbages(&Memory::new(&mut heap).unwrap())
+                .unwrap();
         }
 
         #[tokio::test]
@@ -314,10 +318,10 @@ mod tests {
             assert_eq!(primitive_set.find_free(), None);
 
             // Pop a return value from the foreign primitive.
-            memory.pop();
+            memory.pop().unwrap();
             memory.collect_garbages(None).unwrap();
 
-            primitive_set.collect_garbages(&memory);
+            primitive_set.collect_garbages(&memory).unwrap();
 
             assert_eq!(primitive_set.find_free(), Some(0));
         }
@@ -333,7 +337,7 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
-            primitive_set.collect_garbages(&memory);
+            primitive_set.collect_garbages(&memory).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
         }

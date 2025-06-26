@@ -34,7 +34,7 @@ macro_rules! trace_memory {
 macro_rules! profile_event {
     ($self:expr, $name:literal) => {
         #[cfg(feature = "profile")]
-        (&$self).profile_event($name);
+        (&$self).profile_event($name)?;
     };
 }
 
@@ -237,7 +237,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         match self.code(procedure)?.to_typed() {
             TypedValue::Cons(code) => {
                 #[cfg(feature = "profile")]
-                self.profile_call(self.memory.code(), r#return);
+                self.profile_call(self.memory.code(), r#return)?;
 
                 let arguments = Self::parse_arity(arity);
                 let parameters =
@@ -339,7 +339,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         if code == self.memory.null()? {
             #[cfg(feature = "profile")]
-            self.profile_return();
+            self.profile_return()?;
 
             let continuation = self.continuation()?;
             // Keep a value at the top of a stack.
@@ -398,26 +398,32 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     // Profiling
 
     #[cfg(feature = "profile")]
-    fn profile_call(&self, call_code: Cons, r#return: bool) {
+    fn profile_call(&self, call_code: Cons, r#return: bool) -> Result<(), Error> {
         if let Some(profiler) = &self.profiler {
             profiler
                 .borrow_mut()
-                .profile_call(&self.memory, call_code, r#return);
+                .profile_call(&self.memory, call_code, r#return)?;
         }
+
+        Ok(())
     }
 
     #[cfg(feature = "profile")]
-    fn profile_return(&self) {
+    fn profile_return(&self) -> Result<(), Error> {
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut().profile_return(&self.memory);
+            profiler.borrow_mut().profile_return(&self.memory)?;
         }
+
+        Ok(())
     }
 
     #[cfg(feature = "profile")]
-    fn profile_event(&self, name: &str) {
+    fn profile_event(&self, name: &str) -> Result<(), Error> {
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut().profile_event(name);
+            profiler.borrow_mut().profile_event(name)?;
         }
+
+        Ok(())
     }
 
     /// Initializes a virtual machine with bytecodes of a program.

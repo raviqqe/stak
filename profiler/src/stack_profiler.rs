@@ -1,5 +1,5 @@
 use crate::{COLUMN_SEPARATOR, FRAME_SEPARATOR, ProcedureOperation};
-use stak_vm::{Cons, Memory, Profiler, StackSlot};
+use stak_vm::{Cons, Error, Memory, Profiler, StackSlot};
 use std::{io::Write, time::Instant};
 
 /// A stack profiler.
@@ -34,48 +34,58 @@ impl<T: Write> StackProfiler<T> {
         .unwrap();
     }
 
-    fn write_procedure(&mut self, memory: &Memory, code: Cons) {
-        let operand = memory.car(code);
+    fn write_procedure(&mut self, memory: &Memory, code: Cons) -> Result<(), Error> {
+        let operand = memory.car(code)?;
 
         if let Some(symbol) = operand.to_cons() {
-            let mut string = memory.cdr_value(memory.cdr(symbol)).assume_cons();
+            let mut string = memory.cdr_value(memory.cdr(symbol)?)?.assume_cons();
 
-            while string != memory.null() {
+            while string != memory.null()? {
                 write!(
                     self.writer,
                     "{}",
-                    char::from_u32(memory.car(string).assume_number().to_i64() as _).unwrap_or('�')
+                    char::from_u32(memory.car(string)?.assume_number().to_i64() as _)
+                        .unwrap_or('�')
                 )
                 .unwrap();
-                string = memory.cdr(string).assume_cons();
+                string = memory.cdr(string)?.assume_cons();
             }
         }
+
+        Ok(())
     }
 
-    fn write_stack(&mut self, memory: &Memory) {
+    fn write_stack(&mut self, memory: &Memory) -> Result<(), Error> {
         let mut stack = memory.stack();
         let mut first = true;
 
-        while stack != memory.null() {
-            stack = if memory.cdr(stack).tag() == StackSlot::Frame as _ {
+        while stack != memory.null()? {
+            stack = if memory.cdr(stack)?.tag() == StackSlot::Frame as _ {
                 if !first {
                     self.write_frame_separator();
                 }
 
                 first = false;
 
-                self.write_procedure(memory, memory.car_value(memory.car(stack)).assume_cons());
+                self.write_procedure(memory, memory.car_value(memory.car(stack)?)?.assume_cons())?;
 
-                memory.cdr_value(memory.car(stack)).assume_cons()
+                memory.cdr_value(memory.car(stack)?)?.assume_cons()
             } else {
-                memory.cdr(stack).assume_cons()
+                memory.cdr(stack)?.assume_cons()
             };
         }
+
+        Ok(())
     }
 }
 
 impl<T: Write> Profiler for StackProfiler<T> {
-    fn profile_call(&mut self, memory: &Memory, call_code: Cons, r#return: bool) {
+    fn profile_call(
+        &mut self,
+        memory: &Memory,
+        call_code: Cons,
+        r#return: bool,
+    ) -> Result<(), Error> {
         write!(
             self.writer,
             "{}",
@@ -87,24 +97,30 @@ impl<T: Write> Profiler for StackProfiler<T> {
         )
         .unwrap();
         self.write_column_separator();
-        self.write_procedure(memory, call_code);
+        self.write_procedure(memory, call_code)?;
         self.write_frame_separator();
-        self.write_stack(memory);
+        self.write_stack(memory)?;
         self.write_column_separator();
         self.write_time();
+
+        Ok(())
     }
 
-    fn profile_return(&mut self, memory: &Memory) {
+    fn profile_return(&mut self, memory: &Memory) -> Result<(), Error> {
         write!(self.writer, "{}", ProcedureOperation::Return).unwrap();
         self.write_column_separator();
-        self.write_stack(memory);
+        self.write_stack(memory)?;
         self.write_column_separator();
         self.write_time();
+
+        Ok(())
     }
 
-    fn profile_event(&mut self, name: &str) {
+    fn profile_event(&mut self, name: &str) -> Result<(), Error> {
         write!(self.writer, "{name}").unwrap();
         self.write_column_separator();
         self.write_time();
+
+        Ok(())
     }
 }
