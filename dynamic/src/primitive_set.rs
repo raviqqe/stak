@@ -131,7 +131,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
             }
         }
 
-        let index = self.allocate(memory).unwrap();
+        let index = self.allocate(memory)?;
 
         self.values[index] = Some(value);
 
