@@ -50,10 +50,18 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             Primitive::READ_FILE => {
                 let [descriptor] = memory.pop_numbers();
 
-                memory.push(self.file_system.read(descriptor.to_i64() as _).map_or_else(
-                    |_| memory.boolean(false).into(),
-                    |byte| Number::from_i64(byte as _).into(),
-                ))?;
+                memory.push(
+                    #[expect(clippy::option_if_let_else)]
+                    if let Some(byte) = self
+                        .file_system
+                        .read(descriptor.to_i64() as _)
+                        .map_err(|_| FileError::Read)?
+                    {
+                        Number::from_i64(byte as _).into()
+                    } else {
+                        memory.boolean(false).into()
+                    },
+                )?;
             }
             Primitive::WRITE_FILE => {
                 let [descriptor, byte] = memory.pop_numbers();

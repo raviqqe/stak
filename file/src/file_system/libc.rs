@@ -84,14 +84,11 @@ impl FileSystem for LibcFileSystem {
         Ok(())
     }
 
-    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<Option<u8>, Self::Error> {
         let mut buffer = [0u8; 1];
+        let count = io::read(self.file(descriptor)?, &mut buffer).map_err(|_| FileError::Read)?;
 
-        if io::read(self.file(descriptor)?, &mut buffer).map_err(|_| FileError::Read)? == 0 {
-            Err(FileError::Read)
-        } else {
-            Ok(buffer[0])
-        }
+        Ok((count > 0).then_some(buffer[0]))
     }
 
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
@@ -163,7 +160,8 @@ mod tests {
 
         let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
 
-        assert_eq!(file_system.read(descriptor).unwrap(), 42);
+        assert_eq!(file_system.read(descriptor).unwrap(), Some(42));
+        assert_eq!(file_system.read(descriptor).unwrap(), None);
     }
 
     #[test]
@@ -179,7 +177,8 @@ mod tests {
         file_system.close(descriptor).unwrap();
 
         let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
-        assert_eq!(file_system.read(descriptor).unwrap(), 42);
+        assert_eq!(file_system.read(descriptor).unwrap(), Some(42));
+        assert_eq!(file_system.read(descriptor).unwrap(), None);
         file_system.close(descriptor).unwrap();
     }
 
