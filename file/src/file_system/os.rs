@@ -57,12 +57,11 @@ impl FileSystem for OsFileSystem {
         Ok(())
     }
 
-    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
-        let file = self.file_mut(descriptor)?;
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<Option<u8>, Self::Error> {
         let mut buffer = [0u8; 1];
-        file.read_exact(&mut buffer)?;
+        let count = self.file_mut(descriptor)?.read(&mut buffer)?;
 
-        Ok(buffer[0])
+        Ok((count > 0).then_some(buffer[0]))
     }
 
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
