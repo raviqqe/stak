@@ -38,7 +38,7 @@ pub trait FileSystem {
     fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error>;
 
     /// Reads a file.
-    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error>;
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<Option<u8>, Self::Error>;
 
     /// Writes a file.
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error>;
