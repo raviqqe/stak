@@ -51,8 +51,11 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 let [descriptor] = memory.pop_numbers()?;
 
                 memory.push(
-                    // TODO Use `Option<u8>`.
-                    if let Ok(byte) = self.file_system.read(descriptor.to_i64() as _) {
+                    if let Some(byte) = self
+                        .file_system
+                        .read(descriptor.to_i64() as _)
+                        .map_err(|_| FileError::Read)?
+                    {
                         Number::from_i64(byte as _).into()
                     } else {
                         memory.boolean(false)?.into()

@@ -66,24 +66,26 @@ impl FileSystem for MemoryFileSystem<'_> {
         Ok(())
     }
 
-    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<Option<u8>, Self::Error> {
         let entry = &mut self
             .entries
             .get_mut(descriptor)
             .and_then(Option::as_mut)
             .ok_or(FileError::Read)?;
 
-        let byte = self
+        let Some(&byte) = self
             .files
             .get(entry.file_index)
             .ok_or(FileError::Read)?
             .1
             .get(entry.offset)
-            .ok_or(FileError::Read)?;
+        else {
+            return Ok(None);
+        };
 
         entry.offset += 1;
 
-        Ok(*byte)
+        Ok(Some(byte))
     }
 
     fn write(&mut self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
@@ -129,10 +131,10 @@ mod tests {
 
         let descriptor = system.open(b"foo", false).unwrap();
 
-        assert_eq!(system.read(descriptor), Ok(b'b'));
-        assert_eq!(system.read(descriptor), Ok(b'a'));
-        assert_eq!(system.read(descriptor), Ok(b'r'));
-        assert!(system.read(descriptor).is_err());
+        assert_eq!(system.read(descriptor), Ok(Some(b'b')));
+        assert_eq!(system.read(descriptor), Ok(Some(b'a')));
+        assert_eq!(system.read(descriptor), Ok(Some(b'r')));
+        assert_eq!(system.read(descriptor), Ok(None));
 
         system.close(descriptor).unwrap();
 

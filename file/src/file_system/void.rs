@@ -25,7 +25,7 @@ impl FileSystem for VoidFileSystem {
         Err(FileError::Close)
     }
 
-    fn read(&mut self, _: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, _: FileDescriptor) -> Result<Option<u8>, Self::Error> {
         Err(FileError::Read)
     }
 
