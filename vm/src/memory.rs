@@ -101,18 +101,18 @@ impl<'a> Memory<'a> {
 
     /// Returns a boolean value.
     #[inline]
-    pub const fn boolean(&self, value: bool) -> Cons {
-        if value {
-            self.cdr(self.r#false).assume_cons()
+    pub fn boolean(&self, value: bool) -> Result<Cons, Error> {
+        Ok(if value {
+            self.cdr(self.r#false)?.assume_cons()
         } else {
             self.r#false
-        }
+        })
     }
 
     /// Returns a null value.
     #[inline]
-    pub const fn null(&self) -> Cons {
-        self.car(self.r#false).assume_cons()
+    pub fn null(&self) -> Result<Cons, Error> {
+        Ok(self.car(self.r#false)?.assume_cons())
     }
 
     /// Sets a false value.
@@ -131,40 +131,40 @@ impl<'a> Memory<'a> {
 
     /// Pops a value from a stack.
     #[inline]
-    pub fn pop(&mut self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
+    pub fn pop(&mut self) -> Result<Value, Error> {
+        debug_assert_ne!(self.stack, self.null()?);
 
-        let value = self.car(self.stack);
-        self.stack = self.cdr(self.stack).assume_cons();
-        value
+        let value = self.car(self.stack)?;
+        self.stack = self.cdr(self.stack)?.assume_cons();
+        Ok(value)
     }
 
     /// Pops values from a stack.
-    pub fn pop_many<const M: usize>(&mut self) -> [Value; M] {
+    pub fn pop_many<const M: usize>(&mut self) -> Result<[Value; M], Error> {
         let mut values = [Default::default(); M];
 
         for index in 0..=M - 1 {
-            values[M - 1 - index] = self.pop();
+            values[M - 1 - index] = self.pop()?;
         }
 
-        values
+        Ok(values)
     }
 
     /// Pops numbers from a stack.
-    pub fn pop_numbers<const M: usize>(&mut self) -> [Number; M] {
+    pub fn pop_numbers<const M: usize>(&mut self) -> Result<[Number; M], Error> {
         let mut numbers = [Default::default(); M];
 
-        for (index, value) in self.pop_many::<M>().into_iter().enumerate() {
+        for (index, value) in self.pop_many::<M>()?.into_iter().enumerate() {
             numbers[index] = value.assume_number();
         }
 
-        numbers
+        Ok(numbers)
     }
 
     /// Peeks a value at the top of a stack.
     #[inline]
-    pub fn top(&self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
+    pub fn top(&self) -> Result<Value, Error> {
+        debug_assert_ne!(self.stack, self.null()?);
 
         self.car(self.stack)
     }
@@ -172,7 +172,7 @@ impl<'a> Memory<'a> {
     /// Sets a value at the top of a stack.
     #[inline]
     pub fn set_top(&mut self, value: Value) -> Result<(), Error> {
-        self.set_car(self.stack, value);
+        self.set_car(self.stack, value)
     }
 
     /// Allocates a cons with a default tag of [`Type::Pair`].
@@ -367,25 +367,25 @@ impl<'a> Memory<'a> {
 
     /// Returns a tail of a list.
     #[inline(always)]
-    pub const fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
+    pub fn tail(&self, mut list: Cons, mut index: usize) -> Result<Cons, Error> {
         while index > 0 {
-            list = self.cdr(list).assume_cons();
+            list = self.cdr(list)?.assume_cons();
             index -= 1;
         }
 
-        list
+        Ok(list)
     }
 
     /// Builds a string.
     pub fn build_string(&mut self, string: &str) -> Result<Cons, Error> {
         let string = self.build_raw_string(string)?;
-        let length = Number::from_i64(self.list_length(string) as _).into();
+        let length = Number::from_i64(self.list_length(string)? as _).into();
         self.allocate(length, string.set_tag(Type::String as _).into())
     }
 
     /// Builds a raw string.
     pub fn build_raw_string(&mut self, string: &str) -> Result<Cons, Error> {
-        let mut list = self.null();
+        let mut list = self.null()?;
         self.build_intermediate_string(string, &mut list)?;
         Ok(list)
     }
@@ -400,26 +400,26 @@ impl<'a> Memory<'a> {
 
     /// Executes an operation against a value at the top of a stack.
     pub fn operate_top(&mut self, operate: impl Fn(&Self, Value) -> Value) -> Result<(), Error> {
-        let value = self.pop();
+        let value = self.pop()?;
         self.push(operate(self, value))?;
         Ok(())
     }
 
     /// Calculates a length of a list.
-    pub fn list_length(&self, mut list: Cons) -> usize {
+    pub fn list_length(&self, mut list: Cons) -> Result<usize, Error> {
         let mut length = 0;
 
-        while list != self.null() {
+        while list != self.null()? {
             length += 1;
-            list = self.cdr(list).assume_cons();
+            list = self.cdr(list)?.assume_cons();
         }
 
-        length
+        Ok(length)
     }
 
     /// Executes an unary number operation.
     pub fn operate_unary(&mut self, operate: fn(Number) -> Number) -> Result<(), Error> {
-        let [x] = self.pop_numbers();
+        let [x] = self.pop_numbers()?;
 
         self.push(operate(x).into())?;
 
@@ -428,7 +428,7 @@ impl<'a> Memory<'a> {
 
     /// Executes a binary number operation.
     pub fn operate_binary(&mut self, operate: fn(Number, Number) -> Number) -> Result<(), Error> {
-        let [x, y] = self.pop_numbers();
+        let [x, y] = self.pop_numbers()?;
 
         self.push(operate(x, y).into())?;
 
@@ -492,16 +492,18 @@ impl<'a> Memory<'a> {
 
 impl Write for Memory<'_> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
-        let mut list = self.null();
+        let mut list = self.null().expect("invalid memory access");
         self.build_intermediate_string(string, &mut list)
             .map_err(|_| fmt::Error)?;
 
-        if self.register() == self.null() {
+        if self.register() == self.null().expect("invalid memory access") {
             self.set_register(list);
         } else {
             let mut head = self.register();
 
-            while self.cdr(head).expect("invalid memory access") != self.null().into() {
+            while self.cdr(head).expect("invalid memory access")
+                != self.null().expect("invalid memory access").into()
+            {
                 head = self.cdr(head).expect("invalid memory access").assume_cons();
             }
 
