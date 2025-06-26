@@ -171,7 +171,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a value at the top of a stack.
     #[inline]
-    pub const fn set_top(&mut self, value: Value) {
+    pub fn set_top(&mut self, value: Value) -> Result<(), Error> {
         self.set_car(self.stack, value);
     }
 
@@ -252,26 +252,32 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    const fn get(&self, index: usize) -> Result<Value, Error> {
+    fn get(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index);
-        self.heap.get(index).ok_or(Error::InvalidMemoryAccess)
+        self.heap
+            .get(index)
+            .copied()
+            .ok_or(Error::InvalidMemoryAccess)
     }
 
     #[inline]
-    const fn set(&mut self, index: usize, value: Value) -> Result<(), Error> {
+    fn set(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index);
-        *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value
+
+        *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value;
+
+        Ok(())
     }
 
     /// Returns a value of a `car` field in a cons.
     #[inline]
-    pub const fn car(&self, cons: Cons) -> Value {
+    pub fn car(&self, cons: Cons) -> Result<Value, Error> {
         self.get(cons.index())
     }
 
     /// Returns a value of a `cdr` field in a cons.
     #[inline]
-    pub const fn cdr(&self, cons: Cons) -> Value {
+    pub fn cdr(&self, cons: Cons) -> Result<Value, Error> {
         self.get(cons.index() + 1)
     }
 
@@ -287,51 +293,53 @@ impl<'a> Memory<'a> {
 
     /// Returns a value of a `car` field in a value assumed as a cons.
     #[inline]
-    pub const fn car_value(&self, cons: Value) -> Value {
+    pub fn car_value(&self, cons: Value) -> Result<Value, Error> {
         self.car(cons.assume_cons())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
     #[inline]
-    pub const fn cdr_value(&self, cons: Value) -> Value {
+    pub fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
         self.cdr(cons.assume_cons())
     }
 
     #[inline]
-    const fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
-        self.set(cons.index() + index, value);
+    fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) -> Result<(), Error> {
+        self.set(cons.index() + index, value)
     }
 
     /// Sets a raw value to a `car` field in a cons overwriting its tag.
     #[inline]
-    pub const fn set_raw_car(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_raw_field(cons, 0, value)
     }
 
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
-    pub const fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_raw_field(cons, 1, value)
     }
 
     #[inline]
-    const fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
+    fn set_field(&mut self, cons: Cons, index: usize, value: Value) -> Result<(), Error> {
         self.set_raw_field(
             cons,
             index,
-            value.set_tag(self.get(cons.index() + index).tag()),
-        )
+            value.set_tag(self.get(cons.index() + index)?.tag()),
+        );
+
+        Ok(())
     }
 
     /// Sets a value to a `car` field in a cons.
     #[inline]
-    pub const fn set_car(&mut self, cons: Cons, value: Value) {
+    pub fn set_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
     #[inline]
-    pub const fn set_cdr(&mut self, cons: Cons, value: Value) {
+    pub fn set_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field(cons, 1, value)
     }
 
@@ -347,14 +355,14 @@ impl<'a> Memory<'a> {
 
     /// Sets a value to a `car` field in a value assumed as a cons.
     #[inline(always)]
-    pub const fn set_car_value(&mut self, cons: Value, value: Value) {
-        self.set_car(cons.assume_cons(), value);
+    pub fn set_car_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
+        self.set_car(cons.assume_cons(), value)
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
     #[inline(always)]
-    pub const fn set_cdr_value(&mut self, cons: Value, value: Value) {
-        self.set_cdr(cons.assume_cons(), value);
+    pub fn set_cdr_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
+        self.set_cdr(cons.assume_cons(), value)
     }
 
     /// Returns a tail of a list.
@@ -446,7 +454,7 @@ impl<'a> Memory<'a> {
         let mut index = self.allocation_start();
 
         while index < self.allocation_end() {
-            let value = self.copy_value(self.get(index))?;
+            let value = self.copy_value(self.get(index)?)?;
             self.set(index, value);
             index += 1;
         }
@@ -493,8 +501,8 @@ impl Write for Memory<'_> {
         } else {
             let mut head = self.register();
 
-            while self.cdr(head) != self.null().into() {
-                head = self.cdr(head).assume_cons();
+            while self.cdr(head).expect("invalid memory access") != self.null().into() {
+                head = self.cdr(head).expect("invalid memory access").assume_cons();
             }
 
             self.set_cdr(head, list.into());
@@ -517,8 +525,8 @@ impl Display for Memory<'_> {
                 formatter,
                 "{:02x}: {} {}",
                 index,
-                self.car(cons),
-                self.cdr(cons)
+                self.car(cons).expect("invalid memory access"),
+                self.cdr(cons).expect("invalid memory access")
             )?;
 
             for (cons, name) in [
