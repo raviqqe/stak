@@ -161,6 +161,7 @@ mod tests {
         let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
 
         assert_eq!(file_system.read(descriptor).unwrap(), Some(42));
+        assert_eq!(file_system.read(descriptor).unwrap(), None);
     }
 
     #[test]
@@ -177,6 +178,7 @@ mod tests {
 
         let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
         assert_eq!(file_system.read(descriptor).unwrap(), Some(42));
+        assert_eq!(file_system.read(descriptor).unwrap(), None);
         file_system.close(descriptor).unwrap();
     }
 

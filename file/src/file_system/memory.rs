@@ -134,7 +134,7 @@ mod tests {
         assert_eq!(system.read(descriptor), Ok(Some(b'b')));
         assert_eq!(system.read(descriptor), Ok(Some(b'a')));
         assert_eq!(system.read(descriptor), Ok(Some(b'r')));
-        assert!(system.read(descriptor).is_err());
+        assert_eq!(system.read(descriptor), Ok(None));
 
         system.close(descriptor).unwrap();
 
