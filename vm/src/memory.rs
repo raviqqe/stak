@@ -340,7 +340,7 @@ impl<'a> Memory<'a> {
     /// Sets a value to a `car` field in a cons.
     #[inline]
     pub fn set_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field::<true>(cons, 0, value)
+        self.set_raw_field::<false>(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
