@@ -313,7 +313,7 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn set_raw_field<const G: bool>(
+    fn set_field<const G: bool>(
         &mut self,
         cons: Cons,
         index: usize,
@@ -322,41 +322,37 @@ impl<'a> Memory<'a> {
         self.set::<G>(cons.index() + index, value)
     }
 
-    /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
-    #[inline]
-    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field::<false>(cons, 1, value)
-    }
-
-    #[inline]
-    fn set_field(&mut self, cons: Cons, index: usize, value: Value) -> Result<(), Error> {
-        self.set_raw_field::<false>(
-            cons,
-            index,
-            value.set_tag(self.get::<false>(cons.index() + index)?.tag()),
-        )
-    }
-
     /// Sets a value to a `car` field in a cons.
     #[inline]
     pub fn set_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field::<false>(cons, 0, value)
+        self.set_field::<false>(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
     #[inline]
     pub fn set_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_field(cons, 1, value)
+        // Keep an existing tag.
+        self.set_field::<false>(
+            cons,
+            1,
+            value.set_tag(self.get::<false>(cons.index() + 1)?.tag()),
+        )
+    }
+
+    /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
+    #[inline]
+    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
+        self.set_field::<false>(cons, 1, value)
     }
 
     #[inline]
     fn set_garbage_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field::<true>(cons, 0, value)
+        self.set_field::<true>(cons, 0, value)
     }
 
     #[inline]
     fn set_garbage_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field::<true>(cons, 1, value)
+        self.set_field::<true>(cons, 1, value)
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
