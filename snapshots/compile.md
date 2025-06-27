@@ -5000,7 +5000,7 @@
                           - call 1 #f 1
                         - call 1 #f $$close
                         - set 3
-                        - constant procedure 2 #f
+                        - constant procedure 1 #f
                           - get 0
                           - call 1 #f symbol->string
                           - call 1 #f string->uninterned-symbol
@@ -5488,9 +5488,8 @@
                                                                 - call 1 #f $$close
                                                                 - constant procedure 1 #f
                                                                   - get 0
-                                                                  - get 21
-                                                                  - get 2
-                                                                  - call 2 #f 58
+                                                                  - get 1
+                                                                  - call 1 #f 57
                                                                   - call 2 #f cons
                                                                 - call 1 #f $$close
                                                                 - get 25
@@ -5745,9 +5744,8 @@
                                             - get 9
                                             - constant procedure 1 #f
                                               - get 0
-                                              - get 13
-                                              - get 2
-                                              - call 2 #f 32
+                                              - get 1
+                                              - call 1 #f 31
                                               - call 2 #f cons
                                             - call 1 #f $$close
                                             - get 3
@@ -12828,7 +12826,6 @@
     - define
     - list
       - rename-variable
-      - context
       - name
     - list
       - string->uninterned-symbol
@@ -13497,7 +13494,6 @@
                                 - name
                                 - list
                                   - rename-variable
-                                  - use-context
                                   - name
                             - list
                               - find-pattern-variables
@@ -13759,7 +13755,6 @@
                           - name
                           - list
                             - rename-variable
-                            - context
                             - name
                       - list
                         - parameter-names
