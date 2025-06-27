@@ -281,6 +281,16 @@ impl<'a> Memory<'a> {
         self.get(cons.index() + 1)
     }
 
+    #[inline]
+    const fn unchecked_car(&self, cons: Cons) -> Value {
+        self.heap[cons.index()]
+    }
+
+    #[inline]
+    const fn unchecked_cdr(&self, cons: Cons) -> Value {
+        self.heap[cons.index() + 1]
+    }
+
     /// Returns a value of a `car` field in a value assumed as a cons.
     #[inline]
     pub fn car_value(&self, cons: Value) -> Result<Value, Error> {
@@ -329,6 +339,16 @@ impl<'a> Memory<'a> {
     #[inline]
     pub fn set_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field(cons, 1, value)
+    }
+
+    #[inline]
+    const fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index()] = value
+    }
+
+    #[inline]
+    const fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index() + 1] = value;
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
@@ -454,15 +474,16 @@ impl<'a> Memory<'a> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
         Ok(if cons == NEVER {
             NEVER
-        } else if self.car(cons)? == NEVER.into() {
+        } else if self.unchecked_car(cons) == NEVER.into() {
             // Get a forward pointer.
-            self.cdr(cons)?.assume_cons()
+            self.unchecked_cdr(cons).assume_cons()
         } else {
-            let copy = self.allocate_unchecked(self.car(cons)?, self.cdr(cons)?)?;
+            let copy =
+                self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
             // Set a forward pointer.
-            self.set_car(cons, NEVER.into())?;
-            self.set_cdr(cons, copy.into())?;
+            self.set_unchecked_car(cons, NEVER.into());
+            self.set_unchecked_cdr(cons, copy.into());
 
             copy
         }
