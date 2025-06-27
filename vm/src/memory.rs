@@ -10,8 +10,8 @@ use core::fmt::{self, Display, Formatter, Write};
 const CONS_FIELD_COUNT: usize = 2;
 
 macro_rules! assert_heap_index {
-    ($self:expr, $index:expr, $space:expr) => {
-        let (start, end) = if $space {
+    ($self:expr, $index:expr, $garbage:expr) => {
+        let (start, end) = if $garbage {
             let start = if $self.space { 0 } else { $self.space_size() };
 
             (start, start + $self.space_size())
