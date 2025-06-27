@@ -11,15 +11,16 @@ const CONS_FIELD_COUNT: usize = 2;
 
 macro_rules! assert_heap_index {
     ($self:expr, $index:expr, $space:expr) => {
-        if $space {
+        let (start, end) = if $space {
             let start = if $self.space { 0 } else { $self.space_size() };
 
-            debug_assert!(start <= $index);
-            debug_assert!($index < start + $self.space_size());
+            (start, start + $self.space_size())
         } else {
-            debug_assert!($self.allocation_start() <= $index);
-            debug_assert!($index < $self.allocation_end());
-        }
+            ($self.allocation_start(), $self.allocation_end())
+        };
+
+        debug_assert!(start <= $index);
+        debug_assert!($index < end);
     };
 }
 
