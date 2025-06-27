@@ -32,17 +32,18 @@ impl PrimitiveSet for TypeCheckPrimitiveSet {
     fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             TypeCheckPrimitive::NULL => memory.operate_top(|memory, value| {
-                memory.boolean(value == memory.null().into()).into()
+                Ok(memory.boolean(value == memory.null()?.into())?.into())
             })?,
             TypeCheckPrimitive::PAIR => memory.operate_top(|memory, value| {
-                memory
+                Ok(memory
                     .boolean(
                         value
                             .to_cons()
-                            .map(|cons| memory.cdr(cons).tag() == Type::Pair as _)
+                            .map(|cons| Ok::<_, Error>(memory.cdr(cons)?.tag() == Type::Pair as _))
+                            .transpose()?
                             .unwrap_or_default(),
-                    )
-                    .into()
+                    )?
+                    .into())
             })?,
             _ => return Err(Error::IllegalPrimitive),
         }

@@ -24,7 +24,7 @@ impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
     fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::COMMAND_LINE => {
-                memory.set_register(memory.null());
+                memory.set_register(memory.null()?);
 
                 for argument in self.process_context.command_line_rev() {
                     let string = memory.build_raw_string(argument)?;
@@ -35,18 +35,18 @@ impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
                 memory.push(memory.register().into())?;
             }
             Primitive::ENVIRONMENT_VARIABLES => {
-                memory.set_register(memory.null());
+                memory.set_register(memory.null()?);
 
                 for (key, value) in self.process_context.environment_variables() {
-                    let pair = memory.allocate(memory.null().into(), memory.null().into())?;
+                    let pair = memory.allocate(memory.null()?.into(), memory.null()?.into())?;
                     let list = memory.cons(pair.into(), memory.register())?;
                     memory.set_register(list);
 
                     let string = memory.build_raw_string(key)?;
-                    memory.set_car_value(memory.car(memory.register()), string.into());
+                    memory.set_car_value(memory.car(memory.register())?, string.into())?;
 
                     let string = memory.build_raw_string(value)?;
-                    memory.set_cdr_value(memory.car(memory.register()), string.into());
+                    memory.set_cdr_value(memory.car(memory.register())?, string.into())?;
                 }
 
                 memory.push(memory.register().into())?;

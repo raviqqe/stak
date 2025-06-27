@@ -101,18 +101,18 @@ impl<'a> Memory<'a> {
 
     /// Returns a boolean value.
     #[inline]
-    pub const fn boolean(&self, value: bool) -> Cons {
-        if value {
-            self.cdr(self.r#false).assume_cons()
+    pub fn boolean(&self, value: bool) -> Result<Cons, Error> {
+        Ok(if value {
+            self.cdr(self.r#false)?.assume_cons()
         } else {
             self.r#false
-        }
+        })
     }
 
     /// Returns a null value.
     #[inline]
-    pub const fn null(&self) -> Cons {
-        self.car(self.r#false).assume_cons()
+    pub fn null(&self) -> Result<Cons, Error> {
+        Ok(self.car(self.r#false)?.assume_cons())
     }
 
     /// Sets a false value.
@@ -131,48 +131,48 @@ impl<'a> Memory<'a> {
 
     /// Pops a value from a stack.
     #[inline]
-    pub fn pop(&mut self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
+    pub fn pop(&mut self) -> Result<Value, Error> {
+        debug_assert_ne!(self.stack, self.null()?);
 
-        let value = self.car(self.stack);
-        self.stack = self.cdr(self.stack).assume_cons();
-        value
+        let value = self.car(self.stack)?;
+        self.stack = self.cdr(self.stack)?.assume_cons();
+        Ok(value)
     }
 
     /// Pops values from a stack.
-    pub fn pop_many<const M: usize>(&mut self) -> [Value; M] {
+    pub fn pop_many<const M: usize>(&mut self) -> Result<[Value; M], Error> {
         let mut values = [Default::default(); M];
 
         for index in 0..=M - 1 {
-            values[M - 1 - index] = self.pop();
+            values[M - 1 - index] = self.pop()?;
         }
 
-        values
+        Ok(values)
     }
 
     /// Pops numbers from a stack.
-    pub fn pop_numbers<const M: usize>(&mut self) -> [Number; M] {
+    pub fn pop_numbers<const M: usize>(&mut self) -> Result<[Number; M], Error> {
         let mut numbers = [Default::default(); M];
 
-        for (index, value) in self.pop_many::<M>().into_iter().enumerate() {
+        for (index, value) in self.pop_many::<M>()?.into_iter().enumerate() {
             numbers[index] = value.assume_number();
         }
 
-        numbers
+        Ok(numbers)
     }
 
     /// Peeks a value at the top of a stack.
     #[inline]
-    pub fn top(&self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
+    pub fn top(&self) -> Result<Value, Error> {
+        debug_assert_ne!(self.stack, self.null()?);
 
         self.car(self.stack)
     }
 
     /// Sets a value at the top of a stack.
     #[inline]
-    pub const fn set_top(&mut self, value: Value) {
-        self.set_car(self.stack, value);
+    pub fn set_top(&mut self, value: Value) -> Result<(), Error> {
+        self.set_car(self.stack, value)
     }
 
     /// Allocates a cons with a default tag of [`Type::Pair`].
@@ -209,8 +209,8 @@ impl<'a> Memory<'a> {
 
         assert_heap_cons!(self, cons);
 
-        self.set_raw_car(cons, car);
-        self.set_raw_cdr(cons, cdr);
+        self.set_raw_car(cons, car)?;
+        self.set_raw_cdr(cons, cdr)?;
 
         debug_assert!(self.allocation_index <= self.space_size());
 
@@ -252,26 +252,32 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    const fn get(&self, index: usize) -> Value {
+    fn get(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index);
-        self.heap[index]
+        self.heap
+            .get(index)
+            .copied()
+            .ok_or(Error::InvalidMemoryAccess)
     }
 
     #[inline]
-    const fn set(&mut self, index: usize, value: Value) {
+    fn set(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index);
-        self.heap[index] = value
+
+        *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value;
+
+        Ok(())
     }
 
     /// Returns a value of a `car` field in a cons.
     #[inline]
-    pub const fn car(&self, cons: Cons) -> Value {
+    pub fn car(&self, cons: Cons) -> Result<Value, Error> {
         self.get(cons.index())
     }
 
     /// Returns a value of a `cdr` field in a cons.
     #[inline]
-    pub const fn cdr(&self, cons: Cons) -> Value {
+    pub fn cdr(&self, cons: Cons) -> Result<Value, Error> {
         self.get(cons.index() + 1)
     }
 
@@ -287,51 +293,51 @@ impl<'a> Memory<'a> {
 
     /// Returns a value of a `car` field in a value assumed as a cons.
     #[inline]
-    pub const fn car_value(&self, cons: Value) -> Value {
+    pub fn car_value(&self, cons: Value) -> Result<Value, Error> {
         self.car(cons.assume_cons())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
     #[inline]
-    pub const fn cdr_value(&self, cons: Value) -> Value {
+    pub fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
         self.cdr(cons.assume_cons())
     }
 
     #[inline]
-    const fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
-        self.set(cons.index() + index, value);
+    fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) -> Result<(), Error> {
+        self.set(cons.index() + index, value)
     }
 
     /// Sets a raw value to a `car` field in a cons overwriting its tag.
     #[inline]
-    pub const fn set_raw_car(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_raw_field(cons, 0, value)
     }
 
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
-    pub const fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_raw_field(cons, 1, value)
     }
 
     #[inline]
-    const fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
+    fn set_field(&mut self, cons: Cons, index: usize, value: Value) -> Result<(), Error> {
         self.set_raw_field(
             cons,
             index,
-            value.set_tag(self.get(cons.index() + index).tag()),
+            value.set_tag(self.get(cons.index() + index)?.tag()),
         )
     }
 
     /// Sets a value to a `car` field in a cons.
     #[inline]
-    pub const fn set_car(&mut self, cons: Cons, value: Value) {
+    pub fn set_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
     #[inline]
-    pub const fn set_cdr(&mut self, cons: Cons, value: Value) {
+    pub fn set_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field(cons, 1, value)
     }
 
@@ -347,37 +353,37 @@ impl<'a> Memory<'a> {
 
     /// Sets a value to a `car` field in a value assumed as a cons.
     #[inline(always)]
-    pub const fn set_car_value(&mut self, cons: Value, value: Value) {
-        self.set_car(cons.assume_cons(), value);
+    pub fn set_car_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
+        self.set_car(cons.assume_cons(), value)
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
     #[inline(always)]
-    pub const fn set_cdr_value(&mut self, cons: Value, value: Value) {
-        self.set_cdr(cons.assume_cons(), value);
+    pub fn set_cdr_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
+        self.set_cdr(cons.assume_cons(), value)
     }
 
     /// Returns a tail of a list.
     #[inline(always)]
-    pub const fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
+    pub fn tail(&self, mut list: Cons, mut index: usize) -> Result<Cons, Error> {
         while index > 0 {
-            list = self.cdr(list).assume_cons();
+            list = self.cdr(list)?.assume_cons();
             index -= 1;
         }
 
-        list
+        Ok(list)
     }
 
     /// Builds a string.
     pub fn build_string(&mut self, string: &str) -> Result<Cons, Error> {
         let string = self.build_raw_string(string)?;
-        let length = Number::from_i64(self.list_length(string) as _).into();
+        let length = Number::from_i64(self.list_length(string)? as _).into();
         self.allocate(length, string.set_tag(Type::String as _).into())
     }
 
     /// Builds a raw string.
     pub fn build_raw_string(&mut self, string: &str) -> Result<Cons, Error> {
-        let mut list = self.null();
+        let mut list = self.null()?;
         self.build_intermediate_string(string, &mut list)?;
         Ok(list)
     }
@@ -391,27 +397,30 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes an operation against a value at the top of a stack.
-    pub fn operate_top(&mut self, operate: impl Fn(&Self, Value) -> Value) -> Result<(), Error> {
-        let value = self.pop();
-        self.push(operate(self, value))?;
+    pub fn operate_top(
+        &mut self,
+        operate: impl Fn(&Self, Value) -> Result<Value, Error>,
+    ) -> Result<(), Error> {
+        let value = self.pop()?;
+        self.push(operate(self, value)?)?;
         Ok(())
     }
 
     /// Calculates a length of a list.
-    pub fn list_length(&self, mut list: Cons) -> usize {
+    pub fn list_length(&self, mut list: Cons) -> Result<usize, Error> {
         let mut length = 0;
 
-        while list != self.null() {
+        while list != self.null()? {
             length += 1;
-            list = self.cdr(list).assume_cons();
+            list = self.cdr(list)?.assume_cons();
         }
 
-        length
+        Ok(length)
     }
 
     /// Executes an unary number operation.
     pub fn operate_unary(&mut self, operate: fn(Number) -> Number) -> Result<(), Error> {
-        let [x] = self.pop_numbers();
+        let [x] = self.pop_numbers()?;
 
         self.push(operate(x).into())?;
 
@@ -420,7 +429,7 @@ impl<'a> Memory<'a> {
 
     /// Executes a binary number operation.
     pub fn operate_binary(&mut self, operate: fn(Number, Number) -> Number) -> Result<(), Error> {
-        let [x, y] = self.pop_numbers();
+        let [x, y] = self.pop_numbers()?;
 
         self.push(operate(x, y).into())?;
 
@@ -446,8 +455,8 @@ impl<'a> Memory<'a> {
         let mut index = self.allocation_start();
 
         while index < self.allocation_end() {
-            let value = self.copy_value(self.get(index))?;
-            self.set(index, value);
+            let value = self.copy_value(self.get(index)?)?;
+            self.set(index, value)?;
             index += 1;
         }
 
@@ -484,23 +493,25 @@ impl<'a> Memory<'a> {
 
 impl Write for Memory<'_> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
-        let mut list = self.null();
-        self.build_intermediate_string(string, &mut list)
-            .map_err(|_| fmt::Error)?;
+        (|| -> Result<(), Error> {
+            let mut list = self.null()?;
+            self.build_intermediate_string(string, &mut list)?;
 
-        if self.register() == self.null() {
-            self.set_register(list);
-        } else {
-            let mut head = self.register();
+            if self.register() == self.null()? {
+                self.set_register(list);
+            } else {
+                let mut head = self.register();
 
-            while self.cdr(head) != self.null().into() {
-                head = self.cdr(head).assume_cons();
+                while self.cdr(head)? != self.null()?.into() {
+                    head = self.cdr(head)?.assume_cons();
+                }
+
+                self.set_cdr(head, list.into())?;
             }
 
-            self.set_cdr(head, list.into());
-        }
-
-        Ok(())
+            Ok(())
+        })()
+        .map_err(|_| fmt::Error)
     }
 }
 
@@ -517,8 +528,8 @@ impl Display for Memory<'_> {
                 formatter,
                 "{:02x}: {} {}",
                 index,
-                self.car(cons),
-                self.cdr(cons)
+                self.car(cons).map_err(|_| fmt::Error)?,
+                self.cdr(cons).map_err(|_| fmt::Error)?
             )?;
 
             for (cons, name) in [
@@ -571,20 +582,20 @@ mod tests {
         let mut memory = Memory::new(&mut heap).unwrap();
 
         let list = memory
-            .cons(Number::from_i64(1).into(), memory.null())
+            .cons(Number::from_i64(1).into(), memory.null().unwrap())
             .unwrap();
 
-        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_eq!(memory.cdr(list).unwrap().tag(), Type::Pair as Tag);
         assert_snapshot!(memory);
 
         let list = memory.cons(Number::from_i64(2).into(), list).unwrap();
 
-        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_eq!(memory.cdr(list).unwrap().tag(), Type::Pair as Tag);
         assert_snapshot!(memory);
 
         let list = memory.cons(Number::from_i64(3).into(), list).unwrap();
 
-        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_eq!(memory.cdr(list).unwrap().tag(), Type::Pair as Tag);
         assert_snapshot!(memory);
     }
 
@@ -594,8 +605,10 @@ mod tests {
         let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(memory.boolean(false)).to_cons().unwrap(),
-            memory.boolean(false)
+            Value::from(memory.boolean(false).unwrap())
+                .to_cons()
+                .unwrap(),
+            memory.boolean(false).unwrap()
         );
     }
 
@@ -605,8 +618,10 @@ mod tests {
         let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(memory.boolean(true)).to_cons().unwrap(),
-            memory.boolean(true)
+            Value::from(memory.boolean(true).unwrap())
+                .to_cons()
+                .unwrap(),
+            memory.boolean(true).unwrap()
         );
     }
 
@@ -615,16 +630,22 @@ mod tests {
         let mut heap = create_heap();
         let memory = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
+        assert_eq!(
+            Value::from(memory.null().unwrap()).to_cons().unwrap(),
+            memory.null().unwrap()
+        );
     }
 
     fn assert_raw_string(memory: &Memory, mut cons: Cons, string: &str) {
         for character in string.chars() {
-            assert_eq!(memory.car(cons).assume_number().to_i64(), character as _);
-            cons = memory.cdr(cons).assume_cons();
+            assert_eq!(
+                memory.car(cons).unwrap().assume_number().to_i64(),
+                character as _
+            );
+            cons = memory.cdr(cons).unwrap().assume_cons();
         }
 
-        assert_eq!(cons, memory.null());
+        assert_eq!(cons, memory.null().unwrap());
     }
 
     #[test]
@@ -634,9 +655,9 @@ mod tests {
 
         let string = memory.build_string("foo").unwrap();
 
-        assert_eq!(memory.car(string), Number::from_i64(3).into());
-        assert_eq!(memory.cdr(string).tag(), Type::String as _);
-        assert_raw_string(&memory, memory.cdr(string).assume_cons(), "foo");
+        assert_eq!(memory.car(string).unwrap(), Number::from_i64(3).into());
+        assert_eq!(memory.cdr(string).unwrap().tag(), Type::String as _);
+        assert_raw_string(&memory, memory.cdr(string).unwrap().assume_cons(), "foo");
     }
 
     #[test]
@@ -644,7 +665,7 @@ mod tests {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        memory.set_register(memory.null());
+        memory.set_register(memory.null().unwrap());
 
         memory.write_str("foo").unwrap();
 
@@ -656,7 +677,7 @@ mod tests {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        memory.set_register(memory.null());
+        memory.set_register(memory.null().unwrap());
 
         memory.write_str("foo").unwrap();
         memory.write_str("bar").unwrap();
@@ -671,7 +692,7 @@ mod tests {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        memory.set_register(memory.null());
+        memory.set_register(memory.null().unwrap());
 
         write!(&mut memory, "foo{FOO}bar").unwrap();
 
@@ -686,10 +707,10 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
 
-            assert_eq!(memory.pop(), Number::from_i64(42).into());
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(42).into());
         }
 
         #[test]
@@ -697,12 +718,12 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
             memory.push(Number::from_i64(2).into()).unwrap();
 
-            assert_eq!(memory.pop(), Number::from_i64(2).into());
-            assert_eq!(memory.pop(), Number::from_i64(1).into());
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(2).into());
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(1).into());
         }
     }
 
@@ -727,7 +748,7 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
             memory.collect_garbages(None).unwrap();
 
@@ -739,7 +760,7 @@ mod tests {
             let mut heap = create_heap();
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            memory.stack = memory.null();
+            memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
             memory.push(Number::from_i64(2).into()).unwrap();
             memory.collect_garbages(None).unwrap();
@@ -755,7 +776,7 @@ mod tests {
             let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
                 .unwrap();
-            memory.set_cdr(cons, cons.into());
+            memory.set_cdr(cons, cons.into()).unwrap();
 
             memory.collect_garbages(None).unwrap();
 

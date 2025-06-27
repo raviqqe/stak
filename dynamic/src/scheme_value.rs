@@ -5,27 +5,27 @@ use stak_vm::{Memory, Number, Type, Value};
 /// A trait to convert Rust values from and into Scheme values.
 pub trait SchemeValue: Sized {
     /// Converts a Scheme value into a Rust value.
-    fn from_scheme(memory: &Memory, value: Value) -> Option<Self>;
+    fn from_scheme(memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError>;
 
     /// Converts a Rust value into a Scheme value.
     fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError>;
 }
 
 impl SchemeValue for bool {
-    fn from_scheme(memory: &Memory, value: Value) -> Option<Self> {
-        Some(value == memory.boolean(false).into())
+    fn from_scheme(memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
+        Ok(Some(value == memory.boolean(false)?.into()))
     }
 
     fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError> {
-        Ok(memory.boolean(self).into())
+        Ok(memory.boolean(self)?.into())
     }
 }
 
 macro_rules! implement_integer {
     ($type:ty) => {
         impl SchemeValue for $type {
-            fn from_scheme(_memory: &Memory, value: Value) -> Option<Self> {
-                Some(value.assume_number().to_i64() as _)
+            fn from_scheme(_memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
+                Ok(Some(value.assume_number().to_i64() as _))
             }
 
             fn into_scheme(self, _memory: &mut Memory) -> Result<Value, DynamicError> {
@@ -49,8 +49,8 @@ implement_integer!(usize);
 macro_rules! implement_float {
     ($type:ty) => {
         impl SchemeValue for $type {
-            fn from_scheme(_memory: &Memory, value: Value) -> Option<Self> {
-                Some(value.assume_number().to_f64() as _)
+            fn from_scheme(_memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
+                Ok(Some(value.assume_number().to_f64() as _))
             }
 
             fn into_scheme(self, _memory: &mut Memory) -> Result<Value, DynamicError> {
@@ -64,24 +64,26 @@ implement_float!(f32);
 implement_float!(f64);
 
 impl SchemeValue for String {
-    fn from_scheme(memory: &Memory, value: Value) -> Option<Self> {
+    fn from_scheme(memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
         let cons = value.assume_cons();
-        let mut string = Self::with_capacity(memory.car(cons).assume_number().to_i64() as _);
-        let mut cons = memory.cdr(cons).assume_cons();
+        let mut string = Self::with_capacity(memory.car(cons)?.assume_number().to_i64() as _);
+        let mut cons = memory.cdr(cons)?.assume_cons();
 
-        while cons != memory.null() {
-            string.push(char::from_u32(
-                memory.car(cons).assume_number().to_i64() as _
-            )?);
-            cons = memory.cdr(cons).assume_cons();
+        while cons != memory.null()? {
+            let Some(character) = char::from_u32(memory.car(cons)?.assume_number().to_i64() as _)
+            else {
+                return Ok(None);
+            };
+            string.push(character);
+            cons = memory.cdr(cons)?.assume_cons();
         }
 
-        Some(string)
+        Ok(Some(string))
     }
 
     fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError> {
         let mut length = 0;
-        let mut cons = memory.null();
+        let mut cons = memory.null()?;
 
         for character in self.chars().rev() {
             cons = memory.cons(Number::from_i64(character as _).into(), cons)?;
@@ -112,7 +114,10 @@ mod tests {
 
             let value = String::from(string).into_scheme(&mut memory).unwrap();
 
-            assert_eq!(&String::from_scheme(&memory, value).unwrap(), string);
+            assert_eq!(
+                &String::from_scheme(&memory, value).unwrap().unwrap(),
+                string
+            );
         }
 
         #[test]
@@ -123,7 +128,10 @@ mod tests {
 
             let value = String::from(string).into_scheme(&mut memory).unwrap();
 
-            assert_eq!(&String::from_scheme(&memory, value).unwrap(), string);
+            assert_eq!(
+                &String::from_scheme(&memory, value).unwrap().unwrap(),
+                string
+            );
         }
     }
 }

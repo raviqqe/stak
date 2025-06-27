@@ -32,38 +32,38 @@ impl PrimitiveSet for EqualPrimitiveSet {
     fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             EqualPrimitive::EQV => {
-                let [x, y] = memory.pop_many();
+                let [x, y] = memory.pop_many()?;
 
                 memory.push(
                     memory
                         .boolean(
                             x == y
                                 || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
-                                    memory.cdr(x).tag() == Type::Character as _
-                                        && memory.cdr(y).tag() == Type::Character as _
+                                    memory.cdr(x)?.tag() == Type::Character as _
+                                        && memory.cdr(y)?.tag() == Type::Character as _
                                         && memory.car(x) == memory.car(y)
                                 } else {
                                     false
                                 },
-                        )
+                        )?
                         .into(),
                 )?;
             }
             EqualPrimitive::EQUAL_INNER => {
-                let [x, y] = memory.pop_many();
+                let [x, y] = memory.pop_many()?;
 
                 memory.push(
                     memory
                         .boolean(if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
                             // - Optimize checks for unique values.
                             // - Optimize checks for strings and vectors where `car`s are integers.
-                            memory.cdr(x).tag() == memory.cdr(y).tag()
+                            memory.cdr(x)?.tag() == memory.cdr(y)?.tag()
                                 && ![Type::Boolean as _, Type::Null as _, Type::Symbol as _]
-                                    .contains(&memory.cdr(x).tag())
-                                && (memory.car(x).is_cons() || memory.car(x) == memory.car(y))
+                                    .contains(&memory.cdr(x)?.tag())
+                                && (memory.car(x)?.is_cons() || memory.car(x)? == memory.car(y)?)
                         } else {
                             false
-                        })
+                        })?
                         .into(),
                 )?;
             }
