@@ -260,8 +260,8 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn get<const U: bool>(&self, index: usize) -> Result<Value, Error> {
-        assert_heap_index!(self, index, U);
+    fn get<const G: bool>(&self, index: usize) -> Result<Value, Error> {
+        assert_heap_index!(self, index, G);
 
         self.heap
             .get(index)
@@ -270,8 +270,8 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn set<const U: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
-        assert_heap_index!(self, index, U);
+    fn set<const G: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
+        assert_heap_index!(self, index, G);
 
         *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value;
 
@@ -291,12 +291,12 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn unchecked_car(&self, cons: Cons) -> Result<Value, Error> {
+    fn garbage_car(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<true>(cons.index())
     }
 
     #[inline]
-    fn unchecked_cdr(&self, cons: Cons) -> Result<Value, Error> {
+    fn garbage_cdr(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<true>(cons.index() + 1)
     }
 
@@ -313,13 +313,13 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn set_raw_field<const C: bool>(
+    fn set_raw_field<const G: bool>(
         &mut self,
         cons: Cons,
         index: usize,
         value: Value,
     ) -> Result<(), Error> {
-        self.set::<C>(cons.index() + index, value)
+        self.set::<G>(cons.index() + index, value)
     }
 
     /// Sets a raw value to a `car` field in a cons overwriting its tag.
@@ -356,12 +356,12 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn set_unchecked_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
+    fn set_garbage_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_raw_field::<true>(cons, 0, value)
     }
 
     #[inline]
-    fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
+    fn set_garbage_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_raw_field::<true>(cons, 1, value)
     }
 
@@ -488,16 +488,15 @@ impl<'a> Memory<'a> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
         Ok(if cons == NEVER {
             NEVER
-        } else if self.unchecked_car(cons)? == NEVER.into() {
+        } else if self.garbage_car(cons)? == NEVER.into() {
             // Get a forward pointer.
-            self.unchecked_cdr(cons)?.assume_cons()
+            self.garbage_cdr(cons)?.assume_cons()
         } else {
-            let copy =
-                self.allocate_unchecked(self.unchecked_car(cons)?, self.unchecked_cdr(cons)?)?;
+            let copy = self.allocate_unchecked(self.garbage_car(cons)?, self.garbage_cdr(cons)?)?;
 
             // Set a forward pointer.
-            self.set_unchecked_car(cons, NEVER.into())?;
-            self.set_unchecked_cdr(cons, copy.into())?;
+            self.set_garbage_car(cons, NEVER.into())?;
+            self.set_garbage_cdr(cons, copy.into())?;
 
             copy
         }
