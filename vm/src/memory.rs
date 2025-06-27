@@ -10,16 +10,22 @@ use core::fmt::{self, Display, Formatter, Write};
 const CONS_FIELD_COUNT: usize = 2;
 
 macro_rules! assert_heap_index {
-    ($self:expr, $index:expr) => {
-        debug_assert!($self.allocation_start() <= $index);
-        debug_assert!($index < $self.allocation_end());
+    ($self:expr, $index:expr, $space:expr) => {
+        if $space {
+            let start = if self.space { self.space_size() } else { 0 };
+            debug_assert!($self.allocation_start() <= $index);
+            debug_assert!($index < $self.allocation_end());
+        } else {
+            debug_assert!($self.allocation_start() <= $index);
+            debug_assert!($index < $self.allocation_end());
+        }
     };
 }
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
         if $cons != NEVER {
-            assert_heap_index!($self, $cons.index());
+            assert_heap_index!($self, $cons.index(), false);
         }
     };
 }
@@ -253,9 +259,7 @@ impl<'a> Memory<'a> {
 
     #[inline]
     fn get<const U: bool>(&self, index: usize) -> Result<Value, Error> {
-        if !U {
-            assert_heap_index!(self, index);
-        }
+        assert_heap_index!(self, index, U);
 
         self.heap
             .get(index)
@@ -265,9 +269,7 @@ impl<'a> Memory<'a> {
 
     #[inline]
     fn set<const U: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
-        if !U {
-            assert_heap_index!(self, index);
-        }
+        assert_heap_index!(self, index, U);
 
         *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value;
 
