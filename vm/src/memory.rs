@@ -465,8 +465,8 @@ impl<'a> Memory<'a> {
         let mut index = self.allocation_start();
 
         while index < self.allocation_end() {
-            let value = self.copy_value(self.get(index)?)?;
-            self.set(index, value)?;
+            let value = self.copy_value(self.get::<false>(index)?)?;
+            self.set::<false>(index, value)?;
             index += 1;
         }
 
