@@ -484,7 +484,7 @@
       (else
        expression)))
 
-    (define (rename-variable context name)
+    (define (rename-variable name)
      (string->uninterned-symbol (symbol->string name)))
 
     (define (find-pattern-variables ellipsis bound-variables pattern)
@@ -650,7 +650,7 @@
                     (template (cadr rule))
                     (names
                      (map
-                      (lambda (name) (cons name (rename-variable use-context name)))
+                      (lambda (name) (cons name (rename-variable name)))
                       (find-pattern-variables ellipsis (append literals (map car matches)) template))))
               (values
                (fill-template rule-context (append names matches) template)
@@ -717,7 +717,7 @@
                  (macro-context-append
                   context
                   (map
-                   (lambda (name) (cons name (rename-variable context name)))
+                   (lambda (name) (cons name (rename-variable name)))
                    (parameter-names parameters))))
                 ; We need to resolve parameter denotations before expanding a body.
                 (parameters
