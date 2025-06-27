@@ -341,6 +341,16 @@ impl<'a> Memory<'a> {
         self.set_field(cons, 1, value)
     }
 
+    #[inline]
+    const fn set_car(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index()] = value
+    }
+
+    #[inline]
+    const fn set_cdr(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index() + 1] = value;
+    }
+
     /// Sets a value to a `car` field in a value assumed as a cons.
     #[inline(always)]
     pub fn set_car_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
@@ -472,8 +482,8 @@ impl<'a> Memory<'a> {
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
             // Set a forward pointer.
-            self.set_car(cons, NEVER.into())?;
-            self.set_cdr(cons, copy.into())?;
+            self.set_car(cons, NEVER.into());
+            self.set_cdr(cons, copy.into());
 
             copy
         }
