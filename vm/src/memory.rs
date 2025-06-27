@@ -321,21 +321,21 @@ impl<'a> Memory<'a> {
     /// Sets a raw value to a `car` field in a cons overwriting its tag.
     #[inline]
     pub fn set_raw_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field(cons, 0, value)
+        self.set_raw_field::<false>(cons, 0, value)
     }
 
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
     pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field(cons, 1, value)
+        self.set_raw_field::<false>(cons, 1, value)
     }
 
     #[inline]
     fn set_field(&mut self, cons: Cons, index: usize, value: Value) -> Result<(), Error> {
-        self.set_raw_field(
+        self.set_raw_field::<false>(
             cons,
             index,
-            value.set_tag(self.get(cons.index() + index)?.tag()),
+            value.set_tag(self.get::<false>(cons.index() + index)?.tag()),
         )
     }
 
@@ -352,13 +352,13 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    const fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index()] = value
+    fn set_unchecked_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
+        self.set_raw_field::<true>(cons, 0, value)
     }
 
     #[inline]
-    const fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index() + 1] = value;
+    fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
+        self.set_raw_field::<true>(cons, 1, value)
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
@@ -492,8 +492,8 @@ impl<'a> Memory<'a> {
                 self.allocate_unchecked(self.unchecked_car(cons)?, self.unchecked_cdr(cons)?)?;
 
             // Set a forward pointer.
-            self.set_unchecked_car(cons, NEVER.into());
-            self.set_unchecked_cdr(cons, copy.into());
+            self.set_unchecked_car(cons, NEVER.into())?;
+            self.set_unchecked_cdr(cons, copy.into())?;
 
             copy
         }
