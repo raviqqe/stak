@@ -217,7 +217,7 @@ impl<'a> Memory<'a> {
 
         assert_heap_cons!(self, cons);
 
-        self.set_raw_car(cons, car)?;
+        self.set_car(cons, car)?;
         self.set_raw_cdr(cons, cdr)?;
 
         debug_assert!(self.allocation_index <= self.space_size());
@@ -322,12 +322,6 @@ impl<'a> Memory<'a> {
         self.set::<G>(cons.index() + index, value)
     }
 
-    /// Sets a raw value to a `car` field in a cons overwriting its tag.
-    #[inline]
-    pub fn set_raw_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_raw_field::<false>(cons, 0, value)
-    }
-
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
     pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
@@ -346,7 +340,7 @@ impl<'a> Memory<'a> {
     /// Sets a value to a `car` field in a cons.
     #[inline]
     pub fn set_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
-        self.set_field(cons, 0, value)
+        self.set_raw_field::<true>(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
