@@ -255,7 +255,9 @@
        (if (eq? (car x) 'include)
         (cons
          'begin
-         (map (lambda (name) (read (read-file name)) (cdr x)))
+         (map
+          (lambda (name) (read (read-file name)))
+          (cdr x)))
         x))
       expression))
 
