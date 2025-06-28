@@ -253,7 +253,8 @@
      (relaxed-deep-map
       (lambda (x)
        (if (eq? (car x) 'include)
-        (cons 'begin
+        (cons
+         'begin
          (map read-file (cdr x)))
         x))
       expression))
