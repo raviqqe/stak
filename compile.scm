@@ -251,7 +251,11 @@
 
     (define (include-files expression)
      (relaxed-deep-map
-      (lambda (x) x)
+      (lambda (x)
+       (if (eq? (car x) 'include)
+        (cons 'begin
+         (map read-file (cdr x)))
+        x))
       expression))
 
     ; Library system
