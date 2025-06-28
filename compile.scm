@@ -251,22 +251,22 @@
 
     (define (include-files expression)
      (relaxed-deep-map
-      (lambda (x)
+      (lambda (expression)
        (if (and
-            (list? x)
-            (eq? (car x) 'include))
+            (list? expression)
+            (eq? (car expression) 'include))
         (cons
          'begin
          (flat-map
           (lambda (name)
            (with-input-from-file name
             (let loop ()
-             (let ((x (read)))
-              (if (eof-object? x)
+             (let ((value (read)))
+              (if (eof-object? value)
                '()
-               (cons x (loop)))))))
-          (cdr x)))
-        x))
+               (cons value (loop)))))))
+          (cdr expression)))
+        expression))
       expression))
 
     ; Library system
