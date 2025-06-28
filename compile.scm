@@ -1824,6 +1824,8 @@
           (import
            (scheme base)
            (scheme cxr)
+           (scheme file)
+           (scheme read)
            (only (stak base) rib string->uninterned-symbol))
 
           (begin
@@ -1921,7 +1923,8 @@
               (compile-expression (make-compilation-context '() #f) expression '()))
 
              (lambda (imports symbol-table expression)
-              (let-values (((expression imports) (expand-libraries imports symbol-table expression)))
+              (let-values (((expression imports)
+                            (expand-libraries imports symbol-table expression)))
                (values
                 (make-procedure
                  (compile-arity 0 #f)
