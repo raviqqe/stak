@@ -266,11 +266,12 @@
          (flat-map
           (lambda (name)
            (with-input-from-file name
-            (let loop ()
-             (let ((value (read)))
-              (if (eof-object? value)
-               '()
-               (cons value (loop)))))))
+            (lambda ()
+             (let loop ()
+              (let ((value (read)))
+               (if (eof-object? value)
+                '()
+                (cons value (loop))))))))
           (cdr expression)))
         expression))
       expression))
@@ -1945,6 +1946,7 @@
         '(scheme cxr)
         '(scheme file)
         '(scheme inexact)
+        '(scheme read)
         '(scheme write))))
 
   (let ((arguments (command-line)))
