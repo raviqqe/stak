@@ -1718,7 +1718,8 @@
     ; Main
 
     (define (main source)
-     (define-values (expression1 libraries) (expand-libraries source))
+     (define expression0 (include-files source))
+     (define-values (expression1 libraries) (expand-libraries expression0))
      (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
      (define features (detect-features expression2))
      (define-values (expression3 optimizers) (optimize (shake-tree features expression2)))
