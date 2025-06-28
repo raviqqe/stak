@@ -250,7 +250,9 @@
     ; Inclusion
 
     (define (include-files expression)
-     foo)
+     (relaxed-deep-map
+      (lambda (x) x)
+      expression))
 
     ; Library system
 
