@@ -6,6 +6,7 @@
   (scheme base)
   (only (scheme cxr))
   (scheme eval)
+  (only (scheme file))
   (only (scheme inexact))
   (scheme process-context)
   (scheme read)
