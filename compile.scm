@@ -1924,7 +1924,10 @@
 
              (lambda (imports symbol-table expression)
               (let-values (((expression imports)
-                            (expand-libraries imports symbol-table expression)))
+                            (expand-libraries
+                             imports
+                             symbol-table
+                             (include-files expression))))
                (values
                 (make-procedure
                  (compile-arity 0 #f)
