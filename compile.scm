@@ -249,6 +249,9 @@
 
     ; Inclusion
 
+    (define (include-files expression)
+     foo)
+
     ; Library system
 
     ;; Types
@@ -1916,6 +1919,7 @@
       (environment
         '(scheme base)
         '(scheme cxr)
+        '(scheme file)
         '(scheme inexact)
         '(scheme write))))
 
