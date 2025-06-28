@@ -145,6 +145,12 @@
        (cons x (relaxed-map f (cdr xs))))
       (f xs)))
 
+    (define (deep-map f xs)
+     (let ((xs (f xs)))
+      (if (list? xs)
+       (map (lambda (x) (deep-map f x)) xs)
+       xs)))
+
     (define (relaxed-deep-map f xs)
      (if (pair? xs)
       (cons
@@ -252,11 +258,19 @@
     (define (include-files expression)
      (relaxed-deep-map
       (lambda (x)
-       (if (eq? (car x) 'include)
+       (if (and
+            (list? x)
+            (eq? (car x) 'include))
         (cons
          'begin
-         (map
-          (lambda (name) (read (read-file name)))
+         (flat-map
+          (lambda (name)
+           (with-input-from-file name
+            (let loop ()
+             (let ((x (read)))
+              (if (eof-object? x)
+               '()
+               (cons x (loop)))))))
           (cdr x)))
         x))
       expression))
