@@ -1742,12 +1742,12 @@
     ; Main
 
     (define (main source)
-     (define expression0 (include-files source))
-     (define-values (expression1 libraries) (expand-libraries expression0))
-     (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
-     (define features (detect-features expression2))
-     (define-values (expression3 optimizers) (optimize (shake-tree features expression2)))
-     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
+     (define expression1 (include-files source))
+     (define-values (expression2 libraries) (expand-libraries expression1))
+     (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
+     (define features (detect-features expression3))
+     (define-values (expression4 optimizers) (optimize (shake-tree features expression3)))
+     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
 
      (encode
       (marshal
@@ -1756,7 +1756,7 @@
         #f
         (build-primitives
          primitives
-         (compile metadata expression3))))))
+         (compile metadata expression4))))))
 
     main))
 
