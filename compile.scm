@@ -145,12 +145,6 @@
        (cons x (relaxed-map f (cdr xs))))
       (f xs)))
 
-    (define (deep-map f xs)
-     (let ((xs (f xs)))
-      (if (list? xs)
-       (map (lambda (x) (deep-map f x)) xs)
-       xs)))
-
     (define (relaxed-deep-map f xs)
      (if (pair? xs)
       (cons
