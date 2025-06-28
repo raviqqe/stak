@@ -256,10 +256,10 @@
     ; Inclusion
 
     (define (include-files expression)
-     (relaxed-deep-map
+     (deep-map
       (lambda (expression)
        (if (and
-            (list? expression)
+            (pair? expression)
             (eq? (car expression) 'include))
         (cons
          'begin
