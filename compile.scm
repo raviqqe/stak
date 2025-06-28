@@ -798,7 +798,7 @@
        (cons name literal)
        (optimization-context-literals context))))
 
-    (define (make-optimizer name optimizer)
+    (define (make-optimizer optimizer)
      (define (match-pattern pattern expression)
       (cond
        ((and (pair? pattern) (pair? expression))
@@ -859,7 +859,7 @@
        (cond
         ((eq? predicate '$$define-optimizer)
          (let ((name (cadr expression)))
-          (optimization-context-append! context name (make-optimizer name (caddr expression)))
+          (optimization-context-append! context name (make-optimizer (caddr expression)))
           (optimization-context-append-literal! context name (caddr expression)))
          #f)
         ((eq? predicate '$$begin)
@@ -1879,12 +1879,7 @@
              (define optimize
               (let ((context
                      (make-optimization-context
-                      (map
-                       (lambda (pair)
-                        (cons
-                         (car pair)
-                         (make-optimizer (car pair) (cdr pair))))
-                       ($$optimizers))
+                      (map-values make-optimizer ($$optimizers))
                       '())))
                (lambda (expression)
                 (optimize-expression context expression))))
