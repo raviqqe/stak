@@ -2757,7 +2757,7 @@
       (eval
         (cons
           'begin
-          (with-input-from-file name
+          (with-input-from-file path
             (lambda ()
               (let loop ()
                 (let ((value (read)))
