@@ -37,7 +37,7 @@ Feature: Load
       """scheme
       (import (scheme base) (scheme eval) (scheme load))
 
-      (load "./foo.scm" (environment '(scheme base)' '(scheme eval) '(scheme load)))
+      (load "./foo.scm" (environment '(scheme base) '(scheme eval) '(scheme load)))
       """
     And a file named "foo.scm" with:
       """scheme
