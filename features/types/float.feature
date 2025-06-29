@@ -226,5 +226,6 @@ Feature: Floating-point number
 
     Examples:
       | normal | inverse |
+      | cos    | acos    |
       | sin    | asin    |
-      | sin    | asin    |
+      | tan    | atan    |
