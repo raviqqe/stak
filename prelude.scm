@@ -2068,18 +2068,18 @@
 
 (define-library (scheme inexact)
   (export
-    acos
-    asin
-    atan
-    cos
     exp
+    log
     finite?
     infinite?
-    log
     nan?
-    sin
     sqrt
-    tan)
+    cos
+    sin
+    tan
+    acos
+    asin
+    atan)
 
   (import
     (scheme base)
