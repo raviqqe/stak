@@ -15,19 +15,11 @@ impl InexactPrimitiveSet {
 }
 
 impl InexactPrimitiveSet {
-    fn operate_unary(
-        &mut self,
-        memory: &mut Memory<'_>,
-        calculate: fn(f64) -> f64,
-    ) -> Result<(), Error> {
+    fn operate_unary(memory: &mut Memory<'_>, calculate: fn(f64) -> f64) -> Result<(), Error> {
         memory.operate_unary(|x| Number::from_f64(calculate(x.to_f64())))
     }
 
-    fn operate_condition(
-        &mut self,
-        memory: &mut Memory<'_>,
-        calculate: fn(f64) -> bool,
-    ) -> Result<(), Error> {
+    fn operate_condition(memory: &mut Memory<'_>, calculate: fn(f64) -> bool) -> Result<(), Error> {
         memory.operate_top(|memory, x| {
             Ok(memory
                 .boolean(calculate(x.assume_number().to_f64()))?
@@ -42,17 +34,17 @@ impl PrimitiveSet for InexactPrimitiveSet {
     #[maybe_async]
     fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
-            Primitive::EXPONENTIATION => self.operate_unary(memory, exp)?,
-            Primitive::LOGARITHM => self.operate_unary(memory, log)?,
-            Primitive::INFINITE => self.operate_condition(memory, f64::is_infinite)?,
-            Primitive::NAN => self.operate_condition(memory, f64::is_nan)?,
-            Primitive::SQRT => self.operate_unary(memory, sqrt)?,
-            Primitive::COS => self.operate_unary(memory, cos)?,
-            Primitive::SIN => self.operate_unary(memory, sin)?,
-            Primitive::TAN => self.operate_unary(memory, tan)?,
-            Primitive::ACOS => self.operate_unary(memory, acos)?,
-            Primitive::ASIN => self.operate_unary(memory, asin)?,
-            Primitive::ATAN => self.operate_unary(memory, atan)?,
+            Primitive::EXPONENTIATION => Self::operate_unary(memory, exp)?,
+            Primitive::LOGARITHM => Self::operate_unary(memory, log)?,
+            Primitive::INFINITE => Self::operate_condition(memory, f64::is_infinite)?,
+            Primitive::NAN => Self::operate_condition(memory, f64::is_nan)?,
+            Primitive::SQRT => Self::operate_unary(memory, sqrt)?,
+            Primitive::COS => Self::operate_unary(memory, cos)?,
+            Primitive::SIN => Self::operate_unary(memory, sin)?,
+            Primitive::TAN => Self::operate_unary(memory, tan)?,
+            Primitive::ACOS => Self::operate_unary(memory, acos)?,
+            Primitive::ASIN => Self::operate_unary(memory, asin)?,
+            Primitive::ATAN => Self::operate_unary(memory, atan)?,
             _ => return Err(Error::IllegalPrimitive),
         }
 
