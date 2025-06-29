@@ -2754,9 +2754,19 @@
 
   (begin
     (define (load path . rest)
-      (define environment (if (null? rest) (interaction-environment) (car rest)))
-
-      foo)))
+      (eval
+        (cons
+          'begin
+          (with-input-from-file name
+            (lambda ()
+              (let loop ()
+                (let ((value (read)))
+                  (if (eof-object? value)
+                    '()
+                    (cons value (loop))))))))
+        (if (null? rest)
+          (interaction-environment)
+          (car rest))))))
 
 (define-library (scheme r5rs)
   (import
