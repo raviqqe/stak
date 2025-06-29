@@ -1,5 +1,5 @@
+@float
 Feature: Floating-point number
-  @float
   Scenario Outline: Check a number class of floating point numbers
     Given a file named "main.scm" with:
       """scheme
@@ -27,7 +27,6 @@ Feature: Floating-point number
       | integer?  | 3.14     | B      |
       | integer?  | -42.2045 | B      |
 
-  @float
   Scenario: Calculate an exponentiation
     Given a file named "main.scm" with:
       """scheme
@@ -38,7 +37,6 @@ Feature: Floating-point number
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  @float
   Scenario: Calculate a logarithm
     Given a file named "main.scm" with:
       """scheme
@@ -49,7 +47,6 @@ Feature: Floating-point number
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  @float
   Scenario Outline: Truncate a number
     Given a file named "main.scm" with:
       """scheme
@@ -75,7 +72,6 @@ Feature: Floating-point number
       | -2    | -2     |
       | -2.1  | -2     |
 
-  @float
   Scenario Outline: Calculate a floor
     Given a file named "main.scm" with:
       """scheme
@@ -101,7 +97,6 @@ Feature: Floating-point number
       | -2    | -2     |
       | -2.1  | -3     |
 
-  @float
   Scenario Outline: Calculate a ceiling
     Given a file named "main.scm" with:
       """scheme
@@ -127,7 +122,6 @@ Feature: Floating-point number
       | -2    | -2     |
       | -2.1  | -2     |
 
-  @float
   Scenario Outline: Round a number
     Given a file named "main.scm" with:
       """scheme
@@ -159,7 +153,6 @@ Feature: Floating-point number
       | -1.51 | -2     |
       | -1.9  | -2     |
 
-  @float
   Scenario Outline: Convert a floating point number to a string
     Given a file named "main.scm" with:
       """scheme
@@ -179,7 +172,6 @@ Feature: Floating-point number
       | 3.14  |
       | -3.14 |
 
-  @float
   Scenario Outline: Convert a string to a floating point number
     Given a file named "main.scm" with:
       """scheme
