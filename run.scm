@@ -8,6 +8,7 @@
   (scheme file)
   (only (scheme inexact))
   (only (scheme lazy))
+  (only (scheme load))
   (scheme process-context)
   (only (scheme r5rs))
   (scheme read)

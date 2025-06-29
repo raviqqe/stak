@@ -2743,6 +2743,32 @@
       (let ((environment (make-environment (make-symbol-table '()) '())))
         (lambda () environment)))))
 
+(define-library (scheme load)
+  (export load)
+
+  (import
+    (scheme base)
+    (scheme eval)
+    (scheme file)
+    (scheme read)
+    (scheme repl))
+
+  (begin
+    (define (load path . rest)
+      (eval
+        (cons
+          'begin
+          (with-input-from-file path
+            (lambda ()
+              (let loop ()
+                (let ((value (read)))
+                  (if (eof-object? value)
+                    '()
+                    (cons value (loop))))))))
+        (if (null? rest)
+          (interaction-environment)
+          (car rest))))))
+
 (define-library (scheme r5rs)
   (import
     (scheme base)
