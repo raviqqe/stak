@@ -2707,6 +2707,18 @@
     (define (current-second)
       (/ (current-jiffy) (jiffies-per-second)))))
 
+(define-library (scheme load)
+  (export load)
+
+  (import
+    (scheme base)
+    (scheme read)
+    (scheme file))
+
+  (begin
+    (define (load path)
+      foo)))
+
 ($$compiler)
 
 (define-library (scheme eval)
