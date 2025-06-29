@@ -1968,12 +1968,8 @@
   - y
   - rust
   - r5rs
-  - acos
   - angle
-  - asin
-  - atan
   - char-ready?
-  - cos
   - denominator
   - exact->inexact
   - gcd
@@ -1988,8 +1984,6 @@
   - rationalize
   - real-part
   - scheme-report-environment
-  - sin
-  - sqrt
   - string
   - string-ci<=?
   - string-ci<?
@@ -2000,7 +1994,6 @@
   - string-set!
   - string<=?
   - string>=?
-  - tan
   - vector-fill!
   - load
   - repl
@@ -2079,6 +2072,16 @@
   - cddadr
   - cdddar
   - cddddr
+  - finite?
+  - infinite?
+  - nan?
+  - sqrt
+  - cos
+  - sin
+  - tan
+  - acos
+  - asin
+  - atan
   - string->symbol
   - make-symbol-table
   - call/cc
@@ -7426,6 +7429,16 @@
                                               - inexact
                                             - (exp . exp)
                                             - (log . log)
+                                            - (finite? . finite?)
+                                            - (infinite? . infinite?)
+                                            - (nan? . nan?)
+                                            - (sqrt . sqrt)
+                                            - (cos . cos)
+                                            - (sin . sin)
+                                            - (tan . tan)
+                                            - (acos . acos)
+                                            - (asin . asin)
+                                            - (atan . atan)
                                           - list
                                             - list
                                               - scheme

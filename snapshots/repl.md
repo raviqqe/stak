@@ -1965,12 +1965,8 @@
   - imports
   - rust
   - r5rs
-  - acos
   - angle
-  - asin
-  - atan
   - char-ready?
-  - cos
   - denominator
   - exact->inexact
   - gcd
@@ -1985,8 +1981,6 @@
   - rationalize
   - real-part
   - scheme-report-environment
-  - sin
-  - sqrt
   - string
   - string-ci<=?
   - string-ci<?
@@ -1997,7 +1991,6 @@
   - string-set!
   - string<=?
   - string>=?
-  - tan
   - vector-fill!
   - load
   - repl
@@ -2076,6 +2069,16 @@
   - cddadr
   - cdddar
   - cddddr
+  - finite?
+  - infinite?
+  - nan?
+  - sqrt
+  - cos
+  - sin
+  - tan
+  - acos
+  - asin
+  - atan
   - string->symbol
   - make-symbol-table
   - call/cc
@@ -7423,6 +7426,16 @@
                                               - inexact
                                             - (exp . exp)
                                             - (log . log)
+                                            - (finite? . finite?)
+                                            - (infinite? . infinite?)
+                                            - (nan? . nan?)
+                                            - (sqrt . sqrt)
+                                            - (cos . cos)
+                                            - (sin . sin)
+                                            - (tan . tan)
+                                            - (acos . acos)
+                                            - (asin . asin)
+                                            - (atan . atan)
                                           - list
                                             - list
                                               - scheme
@@ -10485,6 +10498,49 @@
   - call 2 #f call-with-values
 - call 1 #f $$close
 - set eval
+- constant 42
+- call 1 #f primitive
+- set infinite?
+- constant 42
+- call 1 #f primitive
+- set nan?
+- constant 42
+- call 1 #f primitive
+- set sqrt
+- constant 42
+- call 1 #f primitive
+- set cos
+- constant 42
+- call 1 #f primitive
+- set sin
+- constant 42
+- call 1 #f primitive
+- set tan
+- constant 42
+- call 1 #f primitive
+- set acos
+- constant 42
+- call 1 #f primitive
+- set asin
+- constant 42
+- call 1 #f primitive
+- set atan
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - call 1 #f nan?
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f infinite?
+  - call 1 #f 1
+  - set 1
+  - constant #f
+  - call 2 #f eq?
+- call 1 #f $$close
+- set finite?
 - constant procedure 1 #f
   - call 0 #f 0
 - call 1 #f $$close
