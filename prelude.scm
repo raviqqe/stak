@@ -2074,15 +2074,18 @@
     (only (stak base) primitive exp log))
 
   (begin
+    (define acos (primitive 42))
     (define asin (primitive 42))
     (define atan (primitive 42))
     (define cos (primitive 42))
-    (define finite? (primitive 42))
     (define infinite? (primitive 42))
     (define nan? (primitive 42))
     (define sin (primitive 42))
     (define sqrt (primitive 42))
-    (define tan (primitive 42))))
+    (define tan (primitive 42))
+
+    (define (finite? x)
+      (not (or (infinite? x) (nan? x))))))
 
 (define-library (scheme cxr)
   (export
