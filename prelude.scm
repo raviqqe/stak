@@ -2069,11 +2069,20 @@
 (define-library (scheme inexact)
   (export exp log)
 
-  (import (only (stak base) exp log))
+  (import
+    (scheme base)
+    (only (stak base) primitive exp log))
 
   (begin
-    (define (foo x)
-      foo)))
+    (define asin (primitive 42))
+    (define atan (primitive 42))
+    (define cos (primitive 42))
+    (define finite? (primitive 42))
+    (define infinite? (primitive 42))
+    (define nan? (primitive 42))
+    (define sin (primitive 42))
+    (define sqrt (primitive 42))
+    (define tan (primitive 42))))
 
 (define-library (scheme cxr)
   (export
