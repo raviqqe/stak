@@ -2748,9 +2748,10 @@
 
   (import
     (scheme base)
+    (scheme eval)
+    (scheme file)
     (scheme read)
-    (scheme repl)
-    (scheme file))
+    (scheme repl))
 
   (begin
     (define (load path . rest)
