@@ -214,10 +214,10 @@ Feature: Floating-point number
   Scenario Outline: Use inverse trigonometric functions
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme inexact))
+      (import (scheme base) (scheme complex) (scheme inexact))
 
       (write-u8
-        (if (= (<inverse> (<normal> 42)) 42)
+        (if (= (round (real-part (<normal> (<inverse> 42)))) 42)
           65
           66))
       """
