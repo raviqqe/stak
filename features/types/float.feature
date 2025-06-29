@@ -210,3 +210,24 @@ Feature: Floating-point number
       | 0     |
       | 1     |
       | 2     |
+
+  Scenario Outline: Use inverse trigonometric functions
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-string
+        (if (= (/ (sin <value>) (cos <value>)) (tan <value>))
+          65
+          66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value |
+      | -2    |
+      | -1    |
+      | 0     |
+      | 1     |
+      | 2     |
