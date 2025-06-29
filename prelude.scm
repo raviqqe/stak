@@ -2067,7 +2067,19 @@
       (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme inexact)
-  (export exp log)
+  (export
+    acos
+    asin
+    atan
+    cos
+    exp
+    finite?
+    infinite?
+    log
+    nan?
+    sin
+    sqrt
+    tan)
 
   (import
     (scheme base)
