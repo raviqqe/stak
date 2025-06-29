@@ -1977,7 +1977,6 @@
   - imag-part
   - inexact->exact
   - lcm
-  - load
   - magnitude
   - make-polar
   - make-rectangular
@@ -2000,6 +1999,7 @@
   - string>=?
   - tan
   - vector-fill!
+  - load
   - repl
   - interaction-environment
   - environment
@@ -7298,6 +7298,11 @@
                                           - list
                                             - list
                                               - scheme
+                                              - load
+                                            - (load . load)
+                                          - list
+                                            - list
+                                              - scheme
                                               - repl
                                             - (interaction-environment . interaction-environment)
                                           - list
@@ -10579,6 +10584,54 @@
   - call 1 #f $$close
 - call 1 #f $$close
 - set make-promise
+- constant procedure 1 #f
+  - constant procedure 0 #f
+    - get 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- constant ()
+- call 1 #f make-symbol-table
+- constant ()
+- call 2 #f make-environment
+- call 1 #f 1
+- set 1
+- set interaction-environment
+- constant procedure 1 #t
+  - constant begin
+  - get 2
+  - constant procedure 0 #f
+    - constant procedure 1 #f
+      - constant procedure 0 #f
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f eof-object?
+          - if
+            - constant ()
+          - get 0
+          - call 0 #f 4
+          - call 2 #f cons
+        - call 1 #f $$close
+        - call 0 #f read
+        - call 1 #f 1
+      - call 1 #f $$close
+      - set 1
+      - call 0 #f 0
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - call 2 #f with-input-from-file
+  - call 2 #f cons
+  - get 1
+  - call 1 #f null?
+  - if
+    - call 0 #f interaction-environment
+    - continue
+  - get 1
+  - call 1 #f car
+  - call 2 #f eval
+- call 1 #f $$close
+- set load
 - constant 40
 - call 1 #f primitive
 - set ||
@@ -10689,18 +10742,6 @@
   - call 1 #f unwind
 - call 1 #f $$close
 - set exit
-- constant procedure 1 #f
-  - constant procedure 0 #f
-    - get 1
-  - call 1 #f $$close
-- call 1 #f $$close
-- constant ()
-- call 1 #f make-symbol-table
-- constant ()
-- call 2 #f make-environment
-- call 1 #f 1
-- set 1
-- set interaction-environment
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?

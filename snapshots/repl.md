@@ -1977,7 +1977,6 @@
   - imag-part
   - inexact->exact
   - lcm
-  - load
   - magnitude
   - make-polar
   - make-rectangular
@@ -2000,6 +1999,7 @@
   - string>=?
   - tan
   - vector-fill!
+  - load
   - repl
   - interaction-environment
   - environment
@@ -7295,6 +7295,11 @@
                                             - (write . write)
                                             - (write-char . write-char)
                                             - (zero? . zero?)
+                                          - list
+                                            - list
+                                              - scheme
+                                              - load
+                                            - (load . load)
                                           - list
                                             - list
                                               - scheme
