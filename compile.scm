@@ -6,6 +6,7 @@
   (scheme base)
   (only (scheme cxr))
   (scheme eval)
+  (only (scheme file))
   (only (scheme inexact))
   (scheme process-context)
   (scheme read)
@@ -145,6 +146,12 @@
        (cons x (relaxed-map f (cdr xs))))
       (f xs)))
 
+    (define (deep-map f x)
+     (let ((x (f x)))
+      (if (list? x)
+       (map (lambda (x) (deep-map f x)) x)
+       x)))
+
     (define (relaxed-deep-map f xs)
      (if (pair? xs)
       (cons
@@ -246,6 +253,29 @@
 
     (define (symbol-append . xs)
      (string->symbol (apply string-append (map symbol->string xs))))
+
+    ; Inclusion
+
+    (define (include-files expression)
+     (deep-map
+      (lambda (expression)
+       (if (and
+            (pair? expression)
+            (eq? (car expression) 'include))
+        (cons
+         'begin
+         (flat-map
+          (lambda (name)
+           (with-input-from-file name
+            (lambda ()
+             (let loop ()
+              (let ((value (read)))
+               (if (eof-object? value)
+                '()
+                (cons value (loop))))))))
+          (cdr expression)))
+        expression))
+      expression))
 
     ; Library system
 
@@ -1713,11 +1743,12 @@
     ; Main
 
     (define (main source)
-     (define-values (expression1 libraries) (expand-libraries source))
-     (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
-     (define features (detect-features expression2))
-     (define-values (expression3 optimizers) (optimize (shake-tree features expression2)))
-     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
+     (define expression1 (include-files source))
+     (define-values (expression2 libraries) (expand-libraries expression1))
+     (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
+     (define features (detect-features expression3))
+     (define-values (expression4 optimizers) (optimize (shake-tree features expression3)))
+     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
 
      (encode
       (marshal
@@ -1726,7 +1757,7 @@
         #f
         (build-primitives
          primitives
-         (compile metadata expression3))))))
+         (compile metadata expression4))))))
 
     main))
 
@@ -1793,6 +1824,8 @@
           (import
            (scheme base)
            (scheme cxr)
+           (scheme file)
+           (scheme read)
            (only (stak base) rib string->uninterned-symbol))
 
           (begin
@@ -1890,7 +1923,11 @@
               (compile-expression (make-compilation-context '() #f) expression '()))
 
              (lambda (imports symbol-table expression)
-              (let-values (((expression imports) (expand-libraries imports symbol-table expression)))
+              (let-values (((expression imports)
+                            (expand-libraries
+                             imports
+                             symbol-table
+                             (include-files expression))))
                (values
                 (make-procedure
                  (compile-arity 0 #f)
@@ -1914,7 +1951,9 @@
       (environment
         '(scheme base)
         '(scheme cxr)
+        '(scheme file)
         '(scheme inexact)
+        '(scheme read)
         '(scheme write))))
 
   (let ((arguments (command-line)))
