@@ -423,7 +423,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes an unary number operation.
-    pub fn operate_unary(&mut self, operate: fn(Number) -> Number) -> Result<(), Error> {
+    pub fn operate_unary(&mut self, operate: impl Fn(Number) -> Number) -> Result<(), Error> {
         let [x] = self.pop_numbers()?;
 
         self.push(operate(x).into())?;
