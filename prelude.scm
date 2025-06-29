@@ -2069,7 +2069,11 @@
 (define-library (scheme inexact)
   (export exp log)
 
-  (import (only (stak base) exp log)))
+  (import (only (stak base) exp log))
+
+  (begin
+    (define (foo x)
+      foo)))
 
 (define-library (scheme cxr)
   (export
