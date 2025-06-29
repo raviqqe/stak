@@ -1,3 +1,4 @@
+@chibi @gauche @stak
 Feature: Load
   Scenario: Load a file
     Given a file named "main.scm" with:
