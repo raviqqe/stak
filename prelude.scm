@@ -2099,7 +2099,7 @@
     (define (finite? x)
       (not (or (infinite? x) (nan? x))))))
 
-(define-library (scheme inexact)
+(define-library (scheme complex)
   (export real-part)
 
   (import (scheme base))
