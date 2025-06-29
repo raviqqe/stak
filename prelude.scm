@@ -2707,18 +2707,6 @@
     (define (current-second)
       (/ (current-jiffy) (jiffies-per-second)))))
 
-(define-library (scheme load)
-  (export load)
-
-  (import
-    (scheme base)
-    (scheme read)
-    (scheme file))
-
-  (begin
-    (define (load path)
-      foo)))
-
 ($$compiler)
 
 (define-library (scheme eval)
@@ -2754,6 +2742,21 @@
     (define interaction-environment
       (let ((environment (make-environment (make-symbol-table '()) '())))
         (lambda () environment)))))
+
+(define-library (scheme load)
+  (export load)
+
+  (import
+    (scheme base)
+    (scheme read)
+    (scheme repl)
+    (scheme file))
+
+  (begin
+    (define (load path . rest)
+      (define environment (if (null? rest) (interaction-environment) (car rest)))
+
+      foo)))
 
 (define-library (scheme r5rs)
   (import
