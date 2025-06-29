@@ -217,7 +217,7 @@ Feature: Floating-point number
       (import (scheme base) (scheme inexact))
 
       (write-string
-        (if (= (/ (sin <value>) (cos <value>)) (tan <value>))
+        (if (= (<inverse> (<normal> <value>)) <value>)
           65
           66))
       """
@@ -225,9 +225,6 @@ Feature: Floating-point number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | value |
-      | -2    |
-      | -1    |
-      | 0     |
-      | 1     |
-      | 2     |
+      | normal | inverse |
+      | sin    | asin    |
+      | sin    | asin    |
