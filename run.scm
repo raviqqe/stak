@@ -3,6 +3,7 @@
   (scheme base)
   (only (scheme case-lambda))
   (scheme char)
+  (only (scheme complex))
   (only (scheme cxr))
   (only (scheme eval) eval)
   (scheme file)
