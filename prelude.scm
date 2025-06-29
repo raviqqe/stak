@@ -2099,6 +2099,14 @@
     (define (finite? x)
       (not (or (infinite? x) (nan? x))))))
 
+(define-library (scheme inexact)
+  (export real-part)
+
+  (import (scheme base))
+
+  (begin
+    (define (real-part x) x)))
+
 (define-library (scheme cxr)
   (export
     caaar
