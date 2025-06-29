@@ -1,5 +1,5 @@
 use crate::primitive::Primitive;
-use libm::{acos, asin, atan, cos, exp, log, sin, tan};
+use libm::{acos, asin, atan, cos, exp, log, sin, sqrt, tan};
 use stak_vm::{Error, Memory, Number, PrimitiveSet};
 use winter_maybe_async::maybe_async;
 
@@ -46,6 +46,7 @@ impl PrimitiveSet for InexactPrimitiveSet {
             Primitive::LOGARITHM => self.operate_unary(memory, log)?,
             Primitive::INFINITE => self.operate_condition(memory, f64::is_infinite)?,
             Primitive::NAN => self.operate_condition(memory, f64::is_nan)?,
+            Primitive::SQRT => self.operate_unary(memory, sqrt)?,
             Primitive::COS => self.operate_unary(memory, cos)?,
             Primitive::SIN => self.operate_unary(memory, sin)?,
             Primitive::TAN => self.operate_unary(memory, tan)?,
