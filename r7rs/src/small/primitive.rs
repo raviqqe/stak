@@ -15,8 +15,6 @@ pub(super) enum Primitive {
     Multiply,
     Divide,
     Remainder,
-    Exponentiation,
-    Logarithm,
     Halt = 40,
     Null = 50,
     Pair,
@@ -38,6 +36,17 @@ pub(super) enum Primitive {
     CommandLine = 300,
     EnvironmentVariables,
     CurrentJiffy = 400,
+    Exponentiation =500,
+    Logarithm,
+    Infinite,
+    Nan,
+    Sqrt,
+    Cos,
+    Sin,
+    Tan,
+    Acos,
+    Asin,
+    Atan,
 }
 
 impl Primitive {
@@ -58,6 +67,15 @@ impl Primitive {
     pub const REMAINDER: usize = Self::Remainder as _;
     pub const EXPONENTIATION: usize = Self::Exponentiation as _;
     pub const LOGARITHM: usize = Self::Logarithm as _;
+    pub const INFINITE: usize = Self::Infinite as _;
+    pub const NAN: usize = Self::Nan as _;
+    pub const SQRT: usize = Self::Sqrt as _;
+    pub const COS: usize = Self::Cos as _;
+    pub const SIN: usize = Self::Sin as _;
+    pub const TAN: usize = Self::Tan as _;
+    pub const ACOS: usize = Self::Acos as _;
+    pub const ASIN: usize = Self::Asin as _;
+    pub const ATAN: usize = Self::Atan as _;
     pub const HALT: usize = Self::Halt as _;
     pub const NULL: usize = Self::Null as _;
     pub const PAIR: usize = Self::Pair as _;
