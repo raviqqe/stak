@@ -217,7 +217,7 @@ Feature: Floating-point number
       (import (scheme base) (scheme complex) (scheme inexact))
 
       (write-u8
-        (if (= (round (real-part (<normal> (<inverse> 42)))) 42)
+        (if (= (round (real-part (<normal> (<inverse> 1)))) 1)
           65
           66))
       """
