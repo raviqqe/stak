@@ -83,12 +83,6 @@
 - constant 14
 - call 1 #f primitive
 - set remainder
-- constant 15
-- call 1 #f primitive
-- set exp
-- constant 16
-- call 1 #f primitive
-- set ||
 - constant 50
 - call 1 #f primitive
 - set null?
@@ -108,6 +102,12 @@
 - call 1 #f primitive
 - set eqv?
 - constant 71
+- call 1 #f primitive
+- set ||
+- constant 500
+- call 1 #f primitive
+- set exp
+- constant 501
 - call 1 #f primitive
 - set ||
 - constant procedure 3 #f
@@ -1982,7 +1982,6 @@
   - null-environment
   - numerator
   - rationalize
-  - real-part
   - scheme-report-environment
   - string
   - string-ci<=?
@@ -2072,6 +2071,8 @@
   - cddadr
   - cdddar
   - cddddr
+  - complex
+  - real-part
   - finite?
   - infinite?
   - nan?
@@ -7423,6 +7424,11 @@
                                             - (cddadr . cddadr)
                                             - (cdddar . cdddar)
                                             - (cddddr . cddddr)
+                                          - list
+                                            - list
+                                              - scheme
+                                              - complex
+                                            - (real-part . real-part)
                                           - list
                                             - list
                                               - scheme

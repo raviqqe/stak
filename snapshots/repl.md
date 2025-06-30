@@ -83,12 +83,6 @@
 - constant 14
 - call 1 #f primitive
 - set remainder
-- constant 15
-- call 1 #f primitive
-- set exp
-- constant 16
-- call 1 #f primitive
-- set ||
 - constant 50
 - call 1 #f primitive
 - set null?
@@ -108,6 +102,12 @@
 - call 1 #f primitive
 - set eqv?
 - constant 71
+- call 1 #f primitive
+- set ||
+- constant 500
+- call 1 #f primitive
+- set exp
+- constant 501
 - call 1 #f primitive
 - set ||
 - constant procedure 3 #f
@@ -1979,7 +1979,6 @@
   - null-environment
   - numerator
   - rationalize
-  - real-part
   - scheme-report-environment
   - string
   - string-ci<=?
@@ -2069,6 +2068,8 @@
   - cddadr
   - cdddar
   - cddddr
+  - complex
+  - real-part
   - finite?
   - infinite?
   - nan?
@@ -7423,6 +7424,11 @@
                                           - list
                                             - list
                                               - scheme
+                                              - complex
+                                            - (real-part . real-part)
+                                          - list
+                                            - list
+                                              - scheme
                                               - inexact
                                             - (exp . exp)
                                             - (log . log)
@@ -10498,31 +10504,31 @@
   - call 2 #f call-with-values
 - call 1 #f $$close
 - set eval
-- constant 42
+- constant 502
 - call 1 #f primitive
 - set infinite?
-- constant 42
+- constant 503
 - call 1 #f primitive
 - set nan?
-- constant 42
+- constant 504
 - call 1 #f primitive
 - set sqrt
-- constant 42
+- constant 505
 - call 1 #f primitive
 - set cos
-- constant 42
+- constant 506
 - call 1 #f primitive
 - set sin
-- constant 42
+- constant 507
 - call 1 #f primitive
 - set tan
-- constant 42
+- constant 508
 - call 1 #f primitive
 - set acos
-- constant 42
+- constant 509
 - call 1 #f primitive
 - set asin
-- constant 42
+- constant 510
 - call 1 #f primitive
 - set atan
 - constant procedure 1 #f

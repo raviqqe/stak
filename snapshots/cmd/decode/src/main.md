@@ -77,12 +77,6 @@
 - constant 14
 - call 1 #f ||
 - set ||
-- constant 15
-- call 1 #f ||
-- set ||
-- constant 16
-- call 1 #f ||
-- set ||
 - constant 50
 - call 1 #f ||
 - set ||
@@ -102,6 +96,12 @@
 - call 1 #f ||
 - set ||
 - constant 71
+- call 1 #f ||
+- set ||
+- constant 500
+- call 1 #f ||
+- set ||
+- constant 501
 - call 1 #f ||
 - set ||
 - constant procedure 3 #f
