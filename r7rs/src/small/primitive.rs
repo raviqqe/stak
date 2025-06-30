@@ -36,7 +36,7 @@ pub(super) enum Primitive {
     CommandLine = 300,
     EnvironmentVariables,
     CurrentJiffy = 400,
-    Exponentiation =500,
+    Exponentiation = 500,
     Logarithm,
     Infinite,
     Nan,
