@@ -165,12 +165,13 @@ Feature: Floating-point number
     Then the stdout should contain "<value>"
 
     Examples:
-      | value |
-      | 0.5   |
-      | 0.125 |
-      | 1.2   |
-      | 3.14  |
-      | -3.14 |
+      | value   |
+      | 0.5     |
+      | 0.125   |
+      | 1.2     |
+      | 3.14    |
+      | -3.14   |
+      | (/ 0 0) |
 
   Scenario Outline: Convert a string to a floating point number
     Given a file named "main.scm" with:
