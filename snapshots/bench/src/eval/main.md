@@ -83,12 +83,6 @@
 - constant 14
 - call 1 #f primitive
 - set remainder
-- constant 15
-- call 1 #f primitive
-- set exp
-- constant 16
-- call 1 #f primitive
-- set ||
 - constant 50
 - call 1 #f primitive
 - set null?
@@ -108,6 +102,18 @@
 - call 1 #f primitive
 - set eqv?
 - constant 71
+- call 1 #f primitive
+- set ||
+- constant 500
+- call 1 #f primitive
+- set exp
+- constant 501
+- call 1 #f primitive
+- set ||
+- constant 502
+- call 1 #f primitive
+- set ||
+- constant 503
 - call 1 #f primitive
 - set ||
 - constant procedure 3 #f
@@ -1438,6 +1444,21 @@
     - call 1 #f $$close
     - set 1
     - get 5
+    - call 1 #f ||
+    - if
+      - get 5
+      - call 1 #f negative?
+      - if
+        - constant "-"
+        - continue
+      - constant ""
+      - constant "infinity"
+      - call 2 #f string-append
+    - get 5
+    - call 1 #f ||
+    - if
+      - constant "nan"
+    - get 5
     - call 1 #f negative?
     - if
       - constant #\-
@@ -1968,12 +1989,8 @@
   - y
   - rust
   - r5rs
-  - acos
   - angle
-  - asin
-  - atan
   - char-ready?
-  - cos
   - denominator
   - exact->inexact
   - gcd
@@ -1986,10 +2003,7 @@
   - null-environment
   - numerator
   - rationalize
-  - real-part
   - scheme-report-environment
-  - sin
-  - sqrt
   - string
   - string-ci<=?
   - string-ci<?
@@ -2000,7 +2014,6 @@
   - string-set!
   - string<=?
   - string>=?
-  - tan
   - vector-fill!
   - load
   - repl
@@ -2079,6 +2092,18 @@
   - cddadr
   - cdddar
   - cddddr
+  - complex
+  - real-part
+  - finite?
+  - infinite?
+  - nan?
+  - sqrt
+  - cos
+  - sin
+  - tan
+  - acos
+  - asin
+  - atan
   - string->symbol
   - make-symbol-table
   - call/cc
@@ -7423,9 +7448,24 @@
                                           - list
                                             - list
                                               - scheme
+                                              - complex
+                                            - (real-part . real-part)
+                                          - list
+                                            - list
+                                              - scheme
                                               - inexact
                                             - (exp . exp)
                                             - (log . log)
+                                            - (finite? . finite?)
+                                            - (infinite? . infinite?)
+                                            - (nan? . nan?)
+                                            - (sqrt . sqrt)
+                                            - (cos . cos)
+                                            - (sin . sin)
+                                            - (tan . tan)
+                                            - (acos . acos)
+                                            - (asin . asin)
+                                            - (atan . atan)
                                           - list
                                             - list
                                               - scheme

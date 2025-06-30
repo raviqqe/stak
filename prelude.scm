@@ -602,8 +602,6 @@
     (define $* (primitive 12))
     (define $/ (primitive 13))
     (define remainder (primitive 14))
-    (define exp (primitive 15))
-    (define $log (primitive 16))
     (define null? (primitive 50))
     (define pair? (primitive 51))
     (define assq (primitive 60))
@@ -611,6 +609,10 @@
     (define memq (primitive 62))
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
+    (define exp (primitive 500))
+    (define $log (primitive 501))
+    (define infinite? (primitive 502))
+    (define nan? (primitive 503))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -1139,21 +1141,29 @@
                       (format-digit q)
                       (loop r d ys)))))))))
 
-      (list->string
-        (append
-          (if (negative? x)
-            (list #\-)
-            '())
-          (let loop ((x (abs x)) (ys '()))
-            (let* ((q (quotient x radix))
-                   (ys
-                     (cons
-                       (format-digit (quotient (remainder x radix) 1))
-                       ys)))
-              (if (positive? q)
-                (loop q ys)
-                ys)))
-          (format-point (remainder (abs x) 1)))))
+      (cond
+        ((infinite? x)
+          (string-append
+            (if (negative? x) "-" "")
+            "infinity"))
+        ((nan? x)
+          "nan")
+        (else
+          (list->string
+            (append
+              (if (negative? x)
+                (list #\-)
+                '())
+              (let loop ((x (abs x)) (ys '()))
+                (let* ((q (quotient x radix))
+                       (ys
+                         (cons
+                           (format-digit (quotient (remainder x radix) 1))
+                           ys)))
+                  (if (positive? q)
+                    (loop q ys)
+                    ys)))
+              (format-point (remainder (abs x) 1)))))))
 
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
@@ -2067,9 +2077,48 @@
       (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme inexact)
-  (export exp log)
+  (export
+    exp
+    log
+    finite?
+    infinite?
+    nan?
+    sqrt
+    cos
+    sin
+    tan
+    acos
+    asin
+    atan)
 
-  (import (only (stak base) exp log)))
+  (import
+    (scheme base)
+    (only (stak base)
+      primitive
+      exp
+      log
+      infinite?
+      nan?))
+
+  (begin
+    (define sqrt (primitive 504))
+    (define cos (primitive 505))
+    (define sin (primitive 506))
+    (define tan (primitive 507))
+    (define acos (primitive 508))
+    (define asin (primitive 509))
+    (define atan (primitive 510))
+
+    (define (finite? x)
+      (not (or (infinite? x) (nan? x))))))
+
+(define-library (scheme complex)
+  (export real-part)
+
+  (import (scheme base))
+
+  (begin
+    (define (real-part x) x)))
 
 (define-library (scheme cxr)
   (export

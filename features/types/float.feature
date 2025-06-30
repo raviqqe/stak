@@ -172,6 +172,23 @@ Feature: Floating-point number
       | 3.14  |
       | -3.14 |
 
+  @stak
+  Scenario Outline: Convert a non-finite floating point number to a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-string (number->string <value>))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain "<output>"
+
+    Examples:
+      | value    | output    |
+      | (/ 0 0)  | nan       |
+      | (/ 1 0)  | infinity  |
+      | (/ -1 0) | -infinity |
+
   Scenario Outline: Convert a string to a floating point number
     Given a file named "main.scm" with:
       """scheme
@@ -189,3 +206,63 @@ Feature: Floating-point number
       | 1.2   |
       | 3.14  |
       | -3.14 |
+
+  Scenario Outline: Calculate a square root
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8
+        (if (< (abs (- (expt (sqrt <value>) 2) <value>)) 0.001)
+          65
+          66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value |
+      | 0     |
+      | 1     |
+      | 2     |
+      | 42    |
+
+  Scenario Outline: Use trigonometric functions
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8
+        (if (< (abs (- (/ (sin <value>) (cos <value>)) (tan <value>))) 0.001)
+          65
+          66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value |
+      | -2    |
+      | -1    |
+      | 0     |
+      | 1     |
+      | 2     |
+
+  Scenario Outline: Use inverse trigonometric functions
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme complex) (scheme inexact))
+
+      (write-u8
+        (if (= (round (real-part (<normal> (<inverse> 1)))) 1)
+          65
+          66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | normal | inverse |
+      | cos    | acos    |
+      | sin    | asin    |
+      | tan    | atan    |

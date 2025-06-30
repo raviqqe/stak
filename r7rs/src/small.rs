@@ -138,7 +138,17 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
-            Primitive::EXPONENTIATION | Primitive::LOGARITHM => maybe_await!(
+            Primitive::EXPONENTIATION
+            | Primitive::LOGARITHM
+            | Primitive::INFINITE
+            | Primitive::NAN
+            | Primitive::SQRT
+            | Primitive::COS
+            | Primitive::SIN
+            | Primitive::TAN
+            | Primitive::ACOS
+            | Primitive::ASIN
+            | Primitive::ATAN => maybe_await!(
                 self.inexact
                     .operate(memory, primitive - Primitive::EXPONENTIATION)
             )?,
