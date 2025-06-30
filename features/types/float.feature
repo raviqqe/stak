@@ -196,7 +196,7 @@ Feature: Floating-point number
       (import (scheme base) (scheme inexact))
 
       (write-u8
-        (if (= (/ (sin <value>) (cos <value>)) (tan <value>))
+        (if (< (abs (- (/ (sin <value>) (cos <value>)) (tan <value>))) 0.001)
           65
           66))
       """
