@@ -611,6 +611,8 @@
     (define equal-inner? (primitive 71))
     (define exp (primitive 500))
     (define $log (primitive 501))
+    (define infinite? (primitive 502))
+    (define nan? (primitive 503))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -2091,11 +2093,14 @@
 
   (import
     (scheme base)
-    (only (stak base) primitive exp log))
+    (only (stak base)
+      primitive
+      exp
+      log
+      infinite?
+      nan?))
 
   (begin
-    (define infinite? (primitive 502))
-    (define nan? (primitive 503))
     (define sqrt (primitive 504))
     (define cos (primitive 505))
     (define sin (primitive 506))
@@ -2437,10 +2442,7 @@
 (define-library (scheme write)
   (export display write)
 
-  (import
-    (scheme base)
-    (scheme char)
-    (scheme inexact))
+  (import (scheme base) (scheme char))
 
   (begin
     (define (get-output-port rest)
