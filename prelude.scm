@@ -2117,7 +2117,9 @@
     make-rectangular
     make-polar
     real-part
-    imag-part)
+    imag-part
+    magnitude
+    angle)
 
   (import (scheme base))
 
