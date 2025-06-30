@@ -110,6 +110,12 @@
 - constant 501
 - call 1 #f primitive
 - set ||
+- constant 502
+- call 1 #f primitive
+- set ||
+- constant 503
+- call 1 #f primitive
+- set ||
 - constant procedure 3 #f
   - get 1
   - get 1
@@ -1437,6 +1443,21 @@
       - call 2 #f cons
     - call 1 #f $$close
     - set 1
+    - get 5
+    - call 1 #f ||
+    - if
+      - get 5
+      - call 1 #f negative?
+      - if
+        - constant "-"
+        - continue
+      - constant ""
+      - constant "infinity"
+      - call 2 #f string-append
+    - get 5
+    - call 1 #f ||
+    - if
+      - constant "nan"
     - get 5
     - call 1 #f negative?
     - if
@@ -10810,12 +10831,6 @@
   - call 2 #f call-with-values
 - call 1 #f $$close
 - set eval
-- constant 502
-- call 1 #f primitive
-- set infinite?
-- constant 503
-- call 1 #f primitive
-- set nan?
 - constant 504
 - call 1 #f primitive
 - set sqrt

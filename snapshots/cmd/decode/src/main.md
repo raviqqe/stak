@@ -104,6 +104,12 @@
 - constant 501
 - call 1 #f ||
 - set ||
+- constant 502
+- call 1 #f ||
+- set ||
+- constant 503
+- call 1 #f ||
+- set ||
 - constant procedure 3 #f
   - get 1
   - get 1
@@ -986,6 +992,21 @@
       - call 2 #f ||
     - call 1 #f ||
     - set 1
+    - get 5
+    - call 1 #f ||
+    - if
+      - get 5
+      - call 1 #f ||
+      - if
+        - constant "-"
+        - continue
+      - constant ""
+      - constant "infinity"
+      - call 2 #f ||
+    - get 5
+    - call 1 #f ||
+    - if
+      - constant "nan"
     - get 5
     - call 1 #f ||
     - if
