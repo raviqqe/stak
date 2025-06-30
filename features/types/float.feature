@@ -165,13 +165,29 @@ Feature: Floating-point number
     Then the stdout should contain "<value>"
 
     Examples:
-      | value   |
-      | 0.5     |
-      | 0.125   |
-      | 1.2     |
-      | 3.14    |
-      | -3.14   |
-      | (/ 0 0) |
+      | value |
+      | 0.5   |
+      | 0.125 |
+      | 1.2   |
+      | 3.14  |
+      | -3.14 |
+
+  @stak
+  Scenario Outline: Convert a non-finite floating point number to a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-string (number->string <value>))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain "<output>"
+
+    Examples:
+      | value    | output    |
+      | (/ 0 0)  | nan       |
+      | (/ 1 0)  | infinity  |
+      | (/ -1 0) | -infinity |
 
   Scenario Outline: Convert a string to a floating point number
     Given a file named "main.scm" with:

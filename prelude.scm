@@ -1139,21 +1139,29 @@
                       (format-digit q)
                       (loop r d ys)))))))))
 
-      (list->string
-        (append
-          (if (negative? x)
-            (list #\-)
-            '())
-          (let loop ((x (abs x)) (ys '()))
-            (let* ((q (quotient x radix))
-                   (ys
-                     (cons
-                       (format-digit (quotient (remainder x radix) 1))
-                       ys)))
-              (if (positive? q)
-                (loop q ys)
-                ys)))
-          (format-point (remainder (abs x) 1)))))
+      (cond
+        ((infinite? x)
+          (string-append
+            (if (negative? x) "-" "")
+            "infinity"))
+        ((nan? x)
+          "nan")
+        (else
+          (list->string
+            (append
+              (if (negative? x)
+                (list #\-)
+                '())
+              (let loop ((x (abs x)) (ys '()))
+                (let* ((q (quotient x radix))
+                       (ys
+                         (cons
+                           (format-digit (quotient (remainder x radix) 1))
+                           ys)))
+                  (if (positive? q)
+                    (loop q ys)
+                    ys)))
+              (format-point (remainder (abs x) 1)))))))
 
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
@@ -2429,7 +2437,10 @@
 (define-library (scheme write)
   (export display write)
 
-  (import (scheme base) (scheme char))
+  (import
+    (scheme base)
+    (scheme char)
+    (scheme inexact))
 
   (begin
     (define (get-output-port rest)
