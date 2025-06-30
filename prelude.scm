@@ -2113,12 +2113,15 @@
       (not (or (infinite? x) (nan? x))))))
 
 (define-library (scheme complex)
-  (export real-part)
+  (export
+    real-part
+    imag-part)
 
   (import (scheme base))
 
   (begin
-    (define (real-part x) x)))
+    (define (real-part x) x)
+    (define (imag-part x) 0)))
 
 (define-library (scheme cxr)
   (export
