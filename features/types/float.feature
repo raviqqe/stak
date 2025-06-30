@@ -207,6 +207,26 @@ Feature: Floating-point number
       | 3.14  |
       | -3.14 |
 
+  Scenario Outline: Calculate a square root
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8
+        (if (= (expt (sqrt <value>) 2) <value>)
+          65
+          66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value |
+      | 0     |
+      | 1     |
+      | 2     |
+      | 42    |
+
   Scenario Outline: Use trigonometric functions
     Given a file named "main.scm" with:
       """scheme
