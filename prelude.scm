@@ -2114,14 +2114,21 @@
 
 (define-library (scheme complex)
   (export
+    make-rectangular
+    make-polar
     real-part
     imag-part)
 
   (import (scheme base))
 
   (begin
+    (define (make-rectangular x y) x)
+    (define (make-polar x y) foo) ; TODO
     (define (real-part x) x)
-    (define (imag-part x) 0)))
+    (define (imag-part x) 0)
+    (define magnitude abs)
+    (define (angle x)
+      (if (negative? x) -1 0))))
 
 (define-library (scheme cxr)
   (export
