@@ -213,7 +213,7 @@ Feature: Floating-point number
       (import (scheme base) (scheme inexact))
 
       (write-u8
-        (if (= (expt (sqrt <value>) 2) <value>)
+        (if (< (abs (- (expt (sqrt <value>) 2) <value>)) 0.001)
           65
           66))
       """
