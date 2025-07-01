@@ -2121,11 +2121,11 @@
     magnitude
     angle)
 
-  (import (scheme base))
+  (import (scheme base) (scheme inexact))
 
   (begin
     (define (make-rectangular x y) x)
-    (define (make-polar x y) foo) ; TODO
+    (define (make-polar x y) (* x (cos y)))
     (define (real-part x) x)
     (define (imag-part x) 0)
     (define magnitude abs)
