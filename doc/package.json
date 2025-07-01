@@ -16,22 +16,22 @@
     "@astrojs/solid-js": "^5.1.0",
     "@astrojs/starlight": "^0.34.4",
     "@nanostores/solid": "^1.0.0",
-    "@raviqqe/stak": "^0.10.28",
+    "@raviqqe/stak": "^0.10.29",
     "astro": "^5.10.1",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.39.5",
-    "lucide-solid": "^0.523.0",
+    "lucide-solid": "^0.525.0",
     "monaco-editor": "^0.52.2",
     "nanostores": "^1.0.1",
     "solid-js": "^1.9.7",
     "vite-plugin-wasm": "^3.4.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.5",
+    "@biomejs/biome": "^2.0.6",
     "@raviqqe/biome-config": "^2.0.2",
     "@raviqqe/eslint-config": "^4.1.16",
-    "@types/node": "^24.0.4",
-    "eslint": "^9.29.0",
+    "@types/node": "^24.0.8",
+    "eslint": "^9.30.0",
     "eslint-plugin-solid": "^0.14.5",
     "typescript": "^5.8.3"
   }
