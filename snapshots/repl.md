@@ -10703,9 +10703,8 @@
 - constant 400
 - call 1 #f primitive
 - set current-jiffy
-- constant procedure 0 #f
-  - constant 1000000000
-- call 1 #f $$close
+- constant 401
+- call 1 #f primitive
 - set jiffies-per-second
 - constant procedure 0 #f
   - call 0 #f current-jiffy
