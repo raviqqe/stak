@@ -5,7 +5,7 @@ Feature: Complex number
       """scheme
       (import (scheme base) (scheme inexact) (scheme complex))
 
-      (write-u8 (if (= <expression> <value>) 65 66))
+      (write-u8 (if (= (real-part <expression>) <value>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
