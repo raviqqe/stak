@@ -29,16 +29,16 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 cfg-elif = "0.6.3"
-stak-compiler = { version = "0.10.29", path = "../compiler" }
-stak-configuration = { version = "0.10.29", path = "../configuration" }
-stak-device = { version = "0.10.29", path = "../device", features = ["std"] }
-stak-file = { version = "0.10.29", path = "../file" }
-stak-macro = { version = "0.10.29", path = "../macro" }
-stak-module = { version = "0.10.29", path = "../module" }
-stak-process-context = { version = "0.10.29", path = "../process_context" }
-stak-r7rs = { version = "0.10.29", path = "../r7rs" }
-stak-time = { version = "0.10.29", path = "../time" }
-stak-vm = { version = "0.10.29", path = "../vm", features = ["float"] }
+stak-compiler = { version = "0.10.30", path = "../compiler" }
+stak-configuration = { version = "0.10.30", path = "../configuration" }
+stak-device = { version = "0.10.30", path = "../device", features = ["std"] }
+stak-file = { version = "0.10.30", path = "../file" }
+stak-macro = { version = "0.10.30", path = "../macro" }
+stak-module = { version = "0.10.30", path = "../module" }
+stak-process-context = { version = "0.10.30", path = "../process_context" }
+stak-r7rs = { version = "0.10.30", path = "../r7rs" }
+stak-time = { version = "0.10.30", path = "../time" }
+stak-vm = { version = "0.10.30", path = "../vm", features = ["float"] }
 wasm-bindgen = "0.2.97"
 wasm-bindgen-futures = "0.4.50"
 winter-maybe-async = "0.13.0"
@@ -49,7 +49,7 @@ stak-macro = { path = "../macro" }
 wasm-bindgen-test = "0.3.47"
 
 [build-dependencies]
-stak-build = { version = "0.10.29", path = "../build" }
+stak-build = { version = "0.10.30", path = "../build" }
 
 [lints]
 workspace = true
