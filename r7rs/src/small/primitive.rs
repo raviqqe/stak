@@ -36,6 +36,7 @@ pub(super) enum Primitive {
     CommandLine = 300,
     EnvironmentVariables,
     CurrentJiffy = 400,
+    JiffiesPerSecond,
     Exponentiation = 500,
     Logarithm,
     Infinite,
@@ -97,4 +98,5 @@ impl Primitive {
     pub const COMMAND_LINE: usize = Self::CommandLine as _;
     pub const ENVIRONMENT_VARIABLES: usize = Self::EnvironmentVariables as _;
     pub const CURRENT_JIFFY: usize = Self::CurrentJiffy as _;
+    pub const JIFFIES_PER_SECOND: usize = Self::JiffiesPerSecond as _;
 }

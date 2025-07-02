@@ -178,7 +178,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 self.process_context
                     .operate(memory, primitive - Primitive::COMMAND_LINE)
             )?,
-            Primitive::CURRENT_JIFFY => maybe_await!(
+            Primitive::CURRENT_JIFFY | Primitive::JIFFIES_PER_SECOND => maybe_await!(
                 self.time
                     .operate(memory, primitive - Primitive::CURRENT_JIFFY)
             )?,

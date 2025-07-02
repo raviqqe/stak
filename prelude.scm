@@ -2749,9 +2749,7 @@
 
   (begin
     (define current-jiffy (primitive 400))
-
-    (define (jiffies-per-second)
-      1000000000)
+    (define jiffies-per-second (primitive 401))
 
     (define (current-second)
       (/ (current-jiffy) (jiffies-per-second)))))
