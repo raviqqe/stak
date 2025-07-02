@@ -33,9 +33,11 @@ Feature: Complex number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | input | output    |
-      | -1    | (acos -1) |
-      | 1     | 0         |
+      | input | output |
+      | -2    | 2      |
+      | -1    | 1      |
+      | 1     | 1      |
+      | 2     | 2      |
 
   Scenario Outline: Calculate an angle
     Given a file named "main.scm" with:
