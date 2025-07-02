@@ -17,3 +17,7 @@ Feature: Complex number
       | (make-rectangular 0 0)   | 0     |
       | (make-rectangular 1 0)   | 1     |
       | (make-rectangular 42 0)  | 42    |
+      | (make-polar -1 -1)       | -1    |
+      | (make-polar 1 -1)        | -1    |
+      | (make-polar 1 -1)        | 1     |
+      | (make-polar 1 1)         | 1     |
