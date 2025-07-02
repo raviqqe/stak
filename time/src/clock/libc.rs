@@ -2,6 +2,8 @@ use super::Clock;
 use core::convert::Infallible;
 use rustix::time::{ClockId, clock_gettime};
 
+const NANOSECONDS_PER_SECOND: u64 = 1_000_000_000;
+
 /// A clock based on libc.
 #[derive(Debug, Default)]
 pub struct LibcClock {}
@@ -20,6 +22,10 @@ impl Clock for LibcClock {
         let time = clock_gettime(ClockId::Realtime);
 
         // spell-checker: disable-next-line
-        Ok((time.tv_sec * 1_000_000_000 + time.tv_nsec) as _)
+        Ok((time.tv_sec * NANOSECONDS_PER_SECOND + time.tv_nsec) as _)
+    }
+
+    fn jiffies_per_second(&self) -> u64 {
+        NANOSECONDS_PER_SECOND
     }
 }
