@@ -2113,12 +2113,24 @@
       (not (or (infinite? x) (nan? x))))))
 
 (define-library (scheme complex)
-  (export real-part)
+  (export
+    make-rectangular
+    make-polar
+    real-part
+    imag-part
+    magnitude
+    angle)
 
-  (import (scheme base))
+  (import (scheme base) (scheme inexact))
 
   (begin
-    (define (real-part x) x)))
+    (define (make-rectangular x y) x)
+    (define (make-polar x y) (* x (cos y)))
+    (define (real-part x) x)
+    (define (imag-part x) 0)
+    (define magnitude abs)
+    (define (angle x)
+      (if (negative? x) (acos -1) 0))))
 
 (define-library (scheme cxr)
   (export
