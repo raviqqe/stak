@@ -1986,17 +1986,12 @@
   - imports
   - rust
   - r5rs
-  - angle
   - char-ready?
   - denominator
   - exact->inexact
   - gcd
-  - imag-part
   - inexact->exact
   - lcm
-  - magnitude
-  - make-polar
-  - make-rectangular
   - null-environment
   - numerator
   - rationalize
@@ -2090,7 +2085,12 @@
   - cdddar
   - cddddr
   - complex
+  - make-rectangular
+  - make-polar
   - real-part
+  - imag-part
+  - magnitude
+  - angle
   - finite?
   - infinite?
   - nan?
@@ -7446,7 +7446,12 @@
                                             - list
                                               - scheme
                                               - complex
+                                            - (make-rectangular . make-rectangular)
+                                            - (make-polar . make-polar)
                                             - (real-part . real-part)
+                                            - (imag-part . imag-part)
+                                            - (magnitude . magnitude)
+                                            - (angle . angle)
                                           - list
                                             - list
                                               - scheme
