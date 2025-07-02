@@ -30,7 +30,7 @@
     "@biomejs/biome": "^2.0.6",
     "@raviqqe/biome-config": "^2.0.2",
     "@raviqqe/eslint-config": "^4.1.16",
-    "@types/node": "^24.0.8",
+    "@types/node": "^24.0.10",
     "eslint": "^9.30.1",
     "eslint-plugin-solid": "^0.14.5",
     "typescript": "^5.8.3"
