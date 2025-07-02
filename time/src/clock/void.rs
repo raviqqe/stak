@@ -18,4 +18,8 @@ impl Clock for VoidClock {
     fn current_jiffy(&self) -> Result<u64, Self::Error> {
         Ok(Default::default())
     }
+
+    fn jiffies_per_second(&self) -> u64 {
+        1
+    }
 }

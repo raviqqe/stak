@@ -18,4 +18,7 @@ pub trait Clock {
 
     /// Returns a current jiffy.
     fn current_jiffy(&self) -> Result<u64, Self::Error>;
+
+    /// Returns jiffies per second.
+    fn jiffies_per_second(&self) -> u64;
 }
