@@ -35,6 +35,9 @@ impl<T: Clock> PrimitiveSet for TimePrimitiveSet<T> {
                     .into(),
                 )?;
             }
+            Primitive::JIFFIES_PER_SECOND => {
+                memory.push(Number::from_i64(self.clock.jiffies_per_second() as _).into())?;
+            }
             _ => return Err(Error::IllegalPrimitive.into()),
         }
 
