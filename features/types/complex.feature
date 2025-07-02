@@ -11,13 +11,13 @@ Feature: Complex number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | expression               | value    |
-      | (make-rectangular -42 0) | -42      |
-      | (make-rectangular -1 0)  | -1       |
-      | (make-rectangular 0 0)   | 0        |
-      | (make-rectangular 1 0)   | 1        |
-      | (make-rectangular 42 0)  | 42       |
-      | (make-polar -1 -1)       | (cos -1) |
-      | (make-polar 1 -1)        | -1       |
-      | (make-polar 1 -1)        | 1        |
-      | (make-polar 1 1)         | 1        |
+      | expression               | value        |
+      | (make-rectangular -42 0) | -42          |
+      | (make-rectangular -1 0)  | -1           |
+      | (make-rectangular 0 0)   | 0            |
+      | (make-rectangular 1 0)   | 1            |
+      | (make-rectangular 42 0)  | 42           |
+      | (make-polar -1 -1)       | (- (cos -1)) |
+      | (make-polar -1 1)        | (- (cos 1))  |
+      | (make-polar 1 -1)        | (cos -1)     |
+      | (make-polar 1 1)         | (cos 1)      |
