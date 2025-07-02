@@ -2130,7 +2130,7 @@
     (define (imag-part x) 0)
     (define magnitude abs)
     (define (angle x)
-      (if (negative? x) -1 0))))
+      (if (negative? x) (acos -1) 0))))
 
 (define-library (scheme cxr)
   (export
