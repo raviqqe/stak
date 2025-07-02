@@ -1,6 +1,7 @@
 (import
   (scheme base)
   (scheme char)
+  (only (scheme complex))
   (only (scheme cxr))
   (scheme eval)
   (only (scheme file))

@@ -1986,17 +1986,12 @@
   - imports
   - rust
   - r5rs
-  - angle
   - char-ready?
   - denominator
   - exact->inexact
   - gcd
-  - imag-part
   - inexact->exact
   - lcm
-  - magnitude
-  - make-polar
-  - make-rectangular
   - null-environment
   - numerator
   - rationalize
@@ -2090,7 +2085,12 @@
   - cdddar
   - cddddr
   - complex
+  - make-rectangular
+  - make-polar
   - real-part
+  - imag-part
+  - magnitude
+  - angle
   - finite?
   - infinite?
   - nan?
@@ -3435,6 +3435,73 @@
   - get 0
 - call 1 #f $$close
 - set char-downcase
+- constant 504
+- call 1 #f primitive
+- set sqrt
+- constant 505
+- call 1 #f primitive
+- set cos
+- constant 506
+- call 1 #f primitive
+- set sin
+- constant 507
+- call 1 #f primitive
+- set tan
+- constant 508
+- call 1 #f primitive
+- set acos
+- constant 509
+- call 1 #f primitive
+- set asin
+- constant 510
+- call 1 #f primitive
+- set atan
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - call 1 #f nan?
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f infinite?
+  - call 1 #f 1
+  - set 1
+  - constant #f
+  - call 2 #f eq?
+- call 1 #f $$close
+- set finite?
+- constant procedure 2 #f
+  - get 1
+- call 1 #f $$close
+- set make-rectangular
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f cos
+  - call 2 #f ||
+- call 1 #f $$close
+- set make-polar
+- constant procedure 1 #f
+  - get 0
+- call 1 #f $$close
+- set real-part
+- constant procedure 1 #f
+  - constant 0
+- call 1 #f $$close
+- set imag-part
+- get abs
+- set magnitude
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f negative?
+  - if
+    - constant -1
+    - call 1 #f acos
+  - constant 0
+- call 1 #f $$close
+- set angle
 - constant procedure 1 #f
   - get 0
   - call 1 #f caar
@@ -7446,7 +7513,12 @@
                                             - list
                                               - scheme
                                               - complex
+                                            - (make-rectangular . make-rectangular)
+                                            - (make-polar . make-polar)
                                             - (real-part . real-part)
+                                            - (imag-part . imag-part)
+                                            - (magnitude . magnitude)
+                                            - (angle . angle)
                                           - list
                                             - list
                                               - scheme
@@ -10525,43 +10597,6 @@
   - call 2 #f call-with-values
 - call 1 #f $$close
 - set eval
-- constant 504
-- call 1 #f primitive
-- set sqrt
-- constant 505
-- call 1 #f primitive
-- set cos
-- constant 506
-- call 1 #f primitive
-- set sin
-- constant 507
-- call 1 #f primitive
-- set tan
-- constant 508
-- call 1 #f primitive
-- set acos
-- constant 509
-- call 1 #f primitive
-- set asin
-- constant 510
-- call 1 #f primitive
-- set atan
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 0
-    - if
-      - get 0
-    - get 2
-    - call 1 #f nan?
-  - call 1 #f $$close
-  - get 1
-  - call 1 #f infinite?
-  - call 1 #f 1
-  - set 1
-  - constant #f
-  - call 2 #f eq?
-- call 1 #f $$close
-- set finite?
 - constant procedure 1 #f
   - call 0 #f 0
 - call 1 #f $$close
