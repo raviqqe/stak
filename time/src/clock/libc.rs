@@ -22,7 +22,7 @@ impl Clock for LibcClock {
         let time = clock_gettime(ClockId::Realtime);
 
         // spell-checker: disable-next-line
-        Ok((time.tv_sec * NANOSECONDS_PER_SECOND as _ + time.tv_nsec) as _)
+        Ok(time.tv_sec as u64 * NANOSECONDS_PER_SECOND + time.tv_nsec as u64)
     }
 
     fn jiffies_per_second(&self) -> u64 {
