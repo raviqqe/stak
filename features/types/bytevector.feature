@@ -94,7 +94,7 @@ Feature: Bytevector
   Scenario Outline: Copy a bytevector in place
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (srfi 1))
 
       (define xs #u8(<values>))
 
