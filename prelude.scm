@@ -1547,16 +1547,6 @@
     reduce-right
     list-copy
 
-    bytevector?
-    bytevector-append
-    bytevector-copy
-    bytevector-copy!
-    bytevector-length
-    bytevector-u8-ref
-    bytevector-u8-set!
-    list->bytevector
-    bytevector->list
-
     vector?
     vector
     make-vector
@@ -1572,6 +1562,16 @@
     list->vector
     vector->list
     vector->string
+
+    bytevector?
+    bytevector-append
+    bytevector-copy
+    bytevector-copy!
+    bytevector-length
+    bytevector-u8-ref
+    bytevector-u8-set!
+    list->bytevector
+    bytevector->list
 
     string?
     list->string
