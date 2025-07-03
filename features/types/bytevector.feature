@@ -48,7 +48,7 @@ Feature: Bytevector
   Scenario Outline: Append bytevectors
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (srfi 1))
 
       (for-each write-u8 (bytevector->list (bytevector-append <values>)))
       """

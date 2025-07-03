@@ -3115,9 +3115,16 @@
           (primitive (+ 1000 index)))))))
 
 (define (srfi 1)
-  (export foo)
+  (export iota)
 
-  (import foo)
+  (import (scheme base))
 
   (begin
-    foo))
+    (define (iota count . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
+
+      (let loop ((count count) (x start))
+        (if (> count 0)
+          (cons x (loop (+ start step) (- count 1)))
+          '())))))
