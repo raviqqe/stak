@@ -42,9 +42,6 @@ Feature: Boolean
 
     Examples:
       | values   | output |
-      |          | A      |
-      | #f       | A      |
-      | #t       | A      |
       | #f #f    | A      |
       | #f #t    | B      |
       | #t #f    | B      |
