@@ -150,6 +150,45 @@
 - call 1 #f $$close
 - set apply
 - constant procedure 1 #f
+  - constant procedure 0 #t
+    - get 0
+    - call 1 #f null?
+    - if
+      - constant #t
+    - constant procedure 1 #f
+      - constant procedure 2 #f
+        - get 0
+        - call 1 #f null?
+        - if
+          - constant #t
+        - constant procedure 1 #f
+          - get 3
+          - get 1
+          - call 2 #f 11
+          - if
+            - get 0
+            - get 3
+            - call 1 #f cdr
+            - call 2 #f 7
+          - constant #f
+        - call 1 #f $$close
+        - get 1
+        - call 1 #f car
+        - call 1 #f 1
+      - call 1 #f $$close
+      - set 1
+      - get 2
+      - call 1 #f car
+      - get 3
+      - call 1 #f cdr
+      - call 2 #f 2
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
   - constant procedure 1 #f
     - get 0
     - call 1 #f rib?
@@ -199,6 +238,9 @@
   - call 2 #f eq?
 - call 1 #f $$close
 - set not
+- get eq?
+- call 1 #f ||
+- set boolean=?
 - constant procedure 1 #f
   - get 0
   - call 1 #f rib?
@@ -447,45 +489,6 @@
   - call 1 #f exp
 - call 1 #f $$close
 - set expt
-- constant procedure 1 #f
-  - constant procedure 0 #t
-    - get 0
-    - call 1 #f null?
-    - if
-      - constant #t
-    - constant procedure 1 #f
-      - constant procedure 2 #f
-        - get 0
-        - call 1 #f null?
-        - if
-          - constant #t
-        - constant procedure 1 #f
-          - get 3
-          - get 1
-          - call 2 #f 11
-          - if
-            - get 0
-            - get 3
-            - call 1 #f cdr
-            - call 2 #f 7
-          - constant #f
-        - call 1 #f $$close
-        - get 1
-        - call 1 #f car
-        - call 1 #f 1
-      - call 1 #f $$close
-      - set 1
-      - get 2
-      - call 1 #f car
-      - get 3
-      - call 1 #f cdr
-      - call 2 #f 2
-    - call 1 #f $$close
-    - constant #f
-    - call 1 #f 1
-  - call 1 #f $$close
-- call 1 #f $$close
-- set ||
 - get eq?
 - call 1 #f ||
 - set =
@@ -1148,28 +1151,6 @@
   - call 2 #f 2
 - call 1 #f $$close
 - set list-copy
-- get bytevector-type
-- call 1 #f ||
-- set bytevector?
-- get car
-- set bytevector-length
-- get cdr
-- set bytevector->list
-- constant procedure 1 #f
-  - get bytevector-type
-  - get 1
-  - call 1 #f length
-  - get 2
-  - call 3 #f data-rib
-- call 1 #f $$close
-- set list->bytevector
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f bytevector->list
-  - get 1
-  - call 2 #f list-ref
-- call 1 #f $$close
-- set bytevector-u8-ref
 - get vector-type
 - call 1 #f ||
 - set vector?
@@ -1214,6 +1195,46 @@
   - call 3 #f data-rib
 - call 1 #f $$close
 - set list->vector
+- constant procedure 0 #t
+  - get append
+  - get vector->list
+  - get 2
+  - call 2 #f map
+  - call 2 #f apply
+  - call 1 #f list->vector
+- call 1 #f $$close
+- set vector-append
+- get bytevector-type
+- call 1 #f ||
+- set bytevector?
+- get car
+- set bytevector-length
+- get cdr
+- set bytevector->list
+- constant procedure 1 #f
+  - get bytevector-type
+  - get 1
+  - call 1 #f length
+  - get 2
+  - call 3 #f data-rib
+- call 1 #f $$close
+- set list->bytevector
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f bytevector->list
+  - get 1
+  - call 2 #f list-ref
+- call 1 #f $$close
+- set bytevector-u8-ref
+- constant procedure 0 #t
+  - get append
+  - get bytevector->list
+  - get 2
+  - call 2 #f map
+  - call 2 #f apply
+  - call 1 #f list->bytevector
+- call 1 #f $$close
+- set bytevector-append
 - get string-type
 - call 1 #f ||
 - set string?
@@ -1987,6 +2008,8 @@
   - loop
   - x
   - y
+  - srfi
+  - iota
   - rust
   - r5rs
   - char-ready?
@@ -2009,7 +2032,6 @@
   - string-set!
   - string<=?
   - string>=?
-  - vector-fill!
   - load
   - repl
   - interaction-environment
@@ -2226,6 +2248,7 @@
   - procedure?
   - boolean?
   - not
+  - boolean=?
   - integer?
   - rational?
   - real?
@@ -2305,19 +2328,30 @@
   - memv-position
   - member-position
   - list-copy
-  - bytevector?
-  - bytevector-length
-  - bytevector-u8-ref
-  - list->bytevector
-  - bytevector->list
   - vector?
   - vector
   - make-vector
+  - vector-append
+  - vector-copy
+  - vector-copy!
+  - vector-fill!
+  - vector-for-each
   - vector-length
+  - vector-map
   - vector-ref
   - vector-set!
   - list->vector
   - vector->list
+  - vector->string
+  - bytevector?
+  - bytevector-append
+  - bytevector-copy
+  - bytevector-copy!
+  - bytevector-length
+  - bytevector-u8-ref
+  - bytevector-u8-set!
+  - list->bytevector
+  - bytevector->list
   - string?
   - list->string
   - string->code-points
@@ -7100,6 +7134,11 @@
                                         - constant list
                                           - list
                                             - list
+                                              - srfi
+                                              - 1
+                                            - (iota . iota)
+                                          - list
+                                            - list
                                               - stak
                                               - rust
                                           - list
@@ -7529,6 +7568,7 @@
                                             - (procedure? . procedure?)
                                             - (boolean? . boolean?)
                                             - (not . not)
+                                            - (boolean=? . boolean=?)
                                             - (integer? . integer?)
                                             - (rational? . rational?)
                                             - (real? . real?)
@@ -7601,19 +7641,30 @@
                                             - (fold-right . fold-right)
                                             - (reduce-right . reduce-right)
                                             - (list-copy . list-copy)
-                                            - (bytevector? . bytevector?)
-                                            - (bytevector-length . bytevector-length)
-                                            - (bytevector-u8-ref . bytevector-u8-ref)
-                                            - (list->bytevector . list->bytevector)
-                                            - (bytevector->list . bytevector->list)
                                             - (vector? . vector?)
                                             - (vector . vector)
                                             - (make-vector . make-vector)
+                                            - (vector-append . vector-append)
+                                            - (vector-copy . vector-copy)
+                                            - (vector-copy! . vector-copy!)
+                                            - (vector-fill! . vector-fill!)
+                                            - (vector-for-each . vector-for-each)
                                             - (vector-length . vector-length)
+                                            - (vector-map . vector-map)
                                             - (vector-ref . vector-ref)
                                             - (vector-set! . vector-set!)
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
+                                            - (vector->string . vector->string)
+                                            - (bytevector? . bytevector?)
+                                            - (bytevector-append . bytevector-append)
+                                            - (bytevector-copy . bytevector-copy)
+                                            - (bytevector-copy! . bytevector-copy!)
+                                            - (bytevector-length . bytevector-length)
+                                            - (bytevector-u8-ref . bytevector-u8-ref)
+                                            - (bytevector-u8-set! . bytevector-u8-set!)
+                                            - (list->bytevector . list->bytevector)
+                                            - (bytevector->list . bytevector->list)
                                             - (string? . string?)
                                             - (list->string . list->string)
                                             - (string->list . string->list)
@@ -7761,6 +7812,7 @@
                                             - (procedure? . procedure?)
                                             - (boolean? . boolean?)
                                             - (not . not)
+                                            - (boolean=? . boolean=?)
                                             - (integer? . integer?)
                                             - (rational? . rational?)
                                             - (real? . real?)
@@ -7840,19 +7892,30 @@
                                             - (memv-position . memv-position)
                                             - (member-position . member-position)
                                             - (list-copy . list-copy)
-                                            - (bytevector? . bytevector?)
-                                            - (bytevector-length . bytevector-length)
-                                            - (bytevector-u8-ref . bytevector-u8-ref)
-                                            - (list->bytevector . list->bytevector)
-                                            - (bytevector->list . bytevector->list)
                                             - (vector? . vector?)
                                             - (vector . vector)
                                             - (make-vector . make-vector)
+                                            - (vector-append . vector-append)
+                                            - (vector-copy . vector-copy)
+                                            - (vector-copy! . vector-copy!)
+                                            - (vector-fill! . vector-fill!)
+                                            - (vector-for-each . vector-for-each)
                                             - (vector-length . vector-length)
+                                            - (vector-map . vector-map)
                                             - (vector-ref . vector-ref)
                                             - (vector-set! . vector-set!)
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
+                                            - (vector->string . vector->string)
+                                            - (bytevector? . bytevector?)
+                                            - (bytevector-append . bytevector-append)
+                                            - (bytevector-copy . bytevector-copy)
+                                            - (bytevector-copy! . bytevector-copy!)
+                                            - (bytevector-length . bytevector-length)
+                                            - (bytevector-u8-ref . bytevector-u8-ref)
+                                            - (bytevector-u8-set! . bytevector-u8-set!)
+                                            - (list->bytevector . list->bytevector)
+                                            - (bytevector->list . bytevector->list)
                                             - (string? . string?)
                                             - (list->string . list->string)
                                             - (string->code-points . string->code-points)
