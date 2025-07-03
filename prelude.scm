@@ -1059,6 +1059,12 @@
     (define (vector-copy xs . rest)
       (list->vector (apply list-copy (vector->list xs) rest)))
 
+    (define (vector-for-each f xs)
+      (for-each f (vector->list xs)))
+
+    (define (vector-map f xs)
+      (list->vector (map f (vector->list xs))))
+
     (define (vector-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define end
