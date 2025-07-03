@@ -24,7 +24,7 @@ Feature: Vector
       """scheme
       (import (scheme base))
 
-      (for-each write-u8 (vector->list #(65 66 67)))
+      (vector-for-each write-u8 #(65 66 67))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
@@ -77,7 +77,7 @@ Feature: Vector
 
       (vector-set! xs <index> 88)
 
-      (for-each write-u8 (vector->list xs))
+      (vector-for-each write-u8 xs)
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
@@ -90,3 +90,102 @@ Feature: Vector
       | (vector 65 66 67) | 0     | XBC    |
       | (vector 65 66 67) | 1     | AXC    |
       | (vector 65 66 67) | 2     | ABX    |
+
+  Scenario Outline: Append vectors
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (vector-for-each write-u8 (vector-append <values>))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values                     | output |
+      | #()                        |        |
+      | #() #()                    |        |
+      | #(65)                      | A      |
+      | #(65) #(66)                | AB     |
+      | #(65) #(66) #(67)          | ABC    |
+      | #(65) #(66 67) #(68 69 70) | ABCDEF |
+
+  Scenario: Map a function on a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (vector-for-each write-u8 (vector-map (lambda (x) (+ x 65)) #(0 1 2)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
+
+  Scenario Outline: Copy a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (vector-for-each write-u8 (vector-copy <value>))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value       | output |
+      | #()         |        |
+      | #(65)       | A      |
+      | #(65 66)    | AB     |
+      | #(65 66 67) | ABC    |
+
+  Scenario Outline: Copy a vector in place
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (vector <values>))
+
+      (vector-copy! xs <arguments>)
+
+      (for-each
+        (lambda (x) (write-u8 (+ x 65)))
+        (vector->list xs))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    # spell-checker: disable
+    Examples:
+      | values    | arguments        | output |
+      | 0         | 0 #()            | A      |
+      | 0 1 2     | 0 #(3 4 5)       | DEF    |
+      | 0 1 2     | 1 #(3 4)         | ADE    |
+      | 0 1 2     | 2 #(3)           | ABD    |
+      | 0 1 2 3 4 | 1 #(5 6 7)       | AFGHE  |
+      | 0 1 2 3   | 1 #(4 5 6 7) 1   | AFGH   |
+      | 0 1 2 3   | 1 #(4 5 6 7) 1 3 | AFGD   |
+
+  # spell-checker: enable
+  Scenario Outline: Fill a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (vector <values>))
+
+      (vector-fill! xs <arguments>)
+
+      (for-each
+        (lambda (x) (write-u8 (+ x 65)))
+        (vector->list xs))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    # spell-checker: disable
+    Examples:
+      | values  | arguments | output |
+      | 0       | 1         | B      |
+      | 0 1     | 2 0       | CC     |
+      | 0 1     | 2 1       | AC     |
+      | 0 1 2   | 3         | DDD    |
+      | 0 1 2 3 | 4 1 3     | AEED   |

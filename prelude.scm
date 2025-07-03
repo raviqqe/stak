@@ -75,6 +75,7 @@
 
     boolean?
     not
+    boolean=?
 
     integer?
     rational?
@@ -158,20 +159,31 @@
     member-position
     list-copy
 
-    bytevector?
-    bytevector-length
-    bytevector-u8-ref
-    list->bytevector
-    bytevector->list
-
     vector?
     vector
     make-vector
+    vector-append
+    vector-copy
+    vector-copy!
+    vector-fill!
+    vector-for-each
     vector-length
+    vector-map
     vector-ref
     vector-set!
     list->vector
     vector->list
+
+    bytevector
+    bytevector?
+    bytevector-append
+    bytevector-copy
+    bytevector-copy!
+    bytevector-length
+    bytevector-u8-ref
+    bytevector-u8-set!
+    list->bytevector
+    bytevector->list
 
     string?
     list->string
@@ -625,6 +637,17 @@
             x
             (cons x (loop (car xs) (cdr xs)))))))
 
+    (define (comparison-operator f)
+      (lambda xs
+        (boolean-or
+          (null? xs)
+          (let loop ((x (car xs))
+                     (xs (cdr xs)))
+            (boolean-or
+              (null? xs)
+              (let ((y (car xs)))
+                (and (f x y) (loop y (cdr xs)))))))))
+
     ; Basic types
 
     (define (instance? type)
@@ -656,6 +679,8 @@
       (syntax-rules ()
         ((_ x)
           (eq? x #f))))
+
+    (define boolean=? (comparison-operator eq?))
 
     ;; Number
 
@@ -768,17 +793,6 @@
 
     (define (expt x y)
       (exp (* (log x) y)))
-
-    (define (comparison-operator f)
-      (lambda xs
-        (boolean-or
-          (null? xs)
-          (let loop ((x (car xs))
-                     (xs (cdr xs)))
-            (boolean-or
-              (null? xs)
-              (let ((y (car xs)))
-                (and (f x y) (loop y (cdr xs)))))))))
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
@@ -1015,26 +1029,12 @@
           (list-head xs (- end start))
           xs)))
 
-    ;; Bytevector
-
-    (define bytevector? (instance? bytevector-type))
-
-    (define bytevector-length car)
-
-    (define bytevector->list cdr)
-
-    (define (list->bytevector x)
-      (data-rib bytevector-type (length x) x))
-
-    (define (bytevector-u8-ref vector index)
-      (list-ref (bytevector->list vector) index))
-
     ;; Vector
 
     (define vector? (instance? vector-type))
 
-    (define (vector . rest)
-      (list->vector rest))
+    (define (vector . xs)
+      (list->vector xs))
 
     (define (make-vector length . rest)
       (list->vector (apply make-list (cons length rest))))
@@ -1051,6 +1051,78 @@
 
     (define (list->vector x)
       (data-rib vector-type (length x) x))
+
+    (define (vector-append . xs)
+      (list->vector (apply append (map vector->list xs))))
+
+    (define (vector-copy xs . rest)
+      (list->vector (apply list-copy (vector->list xs) rest)))
+
+    (define (vector-for-each f xs)
+      (for-each f (vector->list xs)))
+
+    (define (vector-map f xs)
+      (list->vector (map f (vector->list xs))))
+
+    (define (vector-copy! to at from . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (vector-length from)
+          (cadr rest)))
+
+      (do ((xs
+             (list-copy
+               (vector->list from)
+               start
+               (min end (+ start (- (vector-length to) at))))
+             (cdr xs))
+           (ys
+             (list-tail (vector->list to) at)
+             (cdr ys)))
+        ((null? xs)
+          #f)
+        (set-car! ys (car xs))))
+
+    (define (vector-fill! xs fill . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (vector-length xs)
+          (cadr rest)))
+
+      (do ((xs (list-tail (vector->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
+        ((or (null? xs) (<= count 0))
+          #f)
+        (set-car! xs fill)))
+
+    ;; Bytevector
+
+    (define bytevector? (instance? bytevector-type))
+
+    (define (bytevector . xs)
+      (list->bytevector xs))
+
+    (define bytevector-length car)
+
+    (define bytevector->list cdr)
+
+    (define (list->bytevector x)
+      (data-rib bytevector-type (length x) x))
+
+    (define (bytevector-u8-ref xs index)
+      (list-ref (bytevector->list xs) index))
+
+    (define (bytevector-u8-set! xs index x)
+      (list-set! (bytevector->list xs) index x))
+
+    (define (bytevector-append . xs)
+      (list->bytevector (apply append (map bytevector->list xs))))
+
+    (define (bytevector-copy xs . rest)
+      (list->bytevector (apply list-copy (bytevector->list xs) rest)))
+
+    (define bytevector-copy! vector-copy!)
 
     ;; String
 
@@ -1456,6 +1528,7 @@
 
     boolean?
     not
+    boolean=?
 
     integer?
     rational?
@@ -1532,20 +1605,31 @@
     reduce-right
     list-copy
 
-    bytevector?
-    bytevector-length
-    bytevector-u8-ref
-    list->bytevector
-    bytevector->list
-
     vector?
     vector
     make-vector
+    vector-append
+    vector-copy
+    vector-copy!
+    vector-fill!
+    vector-for-each
     vector-length
+    vector-map
     vector-ref
     vector-set!
     list->vector
     vector->list
+
+    bytevector
+    bytevector?
+    bytevector-append
+    bytevector-copy
+    bytevector-copy!
+    bytevector-length
+    bytevector-u8-ref
+    bytevector-u8-set!
+    list->bytevector
+    bytevector->list
 
     string?
     list->string
@@ -3081,3 +3165,18 @@
               ($$dynamic-symbols)
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
+
+(define-library (srfi 1)
+  (export iota)
+
+  (import (scheme base))
+
+  (begin
+    (define (iota count . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
+
+      (let loop ((count count) (x start))
+        (if (> count 0)
+          (cons x (loop (- count 1) (+ x step)))
+          '())))))

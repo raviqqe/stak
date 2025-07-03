@@ -15,7 +15,8 @@
   (scheme read)
   (scheme repl)
   (only (scheme time))
-  (only (scheme write)))
+  (only (scheme write))
+  (only (srfi 1)))
 
 (define (run path)
   (define file (open-input-file path))

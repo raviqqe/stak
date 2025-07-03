@@ -11,7 +11,8 @@
   (scheme read)
   (scheme repl)
   (only (scheme time))
-  (scheme write))
+  (scheme write)
+  (only (srfi 1)))
 
 (define (write-value value)
   (if (error-object? value)
