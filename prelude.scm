@@ -3114,7 +3114,7 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
-(define (srfi 1)
+(define-library (srfi 1)
   (export iota)
 
   (import (scheme base))
