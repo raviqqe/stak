@@ -1055,6 +1055,9 @@
     (define (vector-append . xs)
       (list->vector (apply append (map vector->list xs))))
 
+    (define (vector->copy xs . ys)
+      (list->vector (apply list-copy (vector->list xs) ys)))
+
     ;; Bytevector
 
     (define bytevector? (instance? bytevector-type))
@@ -1072,8 +1075,8 @@
     (define (bytevector-append . xs)
       (list->bytevector (apply append (map bytevector->list xs))))
 
-    (define (bytevector->copy . xs)
-      (list->bytevector (list-copy (apply bytevector->list xs))))
+    (define (bytevector->copy xs . ys)
+      (list->bytevector (apply list-copy (bytevector->list xs) ys)))
 
     ;; String
 

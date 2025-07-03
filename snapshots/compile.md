@@ -1204,6 +1204,15 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set vector-append
+- constant procedure 1 #t
+  - get list-copy
+  - get 2
+  - call 1 #f vector->list
+  - get 2
+  - call 3 #f apply
+  - call 1 #f list->vector
+- call 1 #f $$close
+- set ||
 - get bytevector-type
 - call 1 #f ||
 - set bytevector?
@@ -1235,6 +1244,15 @@
   - call 1 #f list->bytevector
 - call 1 #f $$close
 - set bytevector-append
+- constant procedure 1 #t
+  - get list-copy
+  - get 2
+  - call 1 #f bytevector->list
+  - get 2
+  - call 3 #f apply
+  - call 1 #f list->bytevector
+- call 1 #f $$close
+- set ||
 - get string-type
 - call 1 #f ||
 - set string?
