@@ -1072,6 +1072,9 @@
     (define (bytevector-append . xs)
       (list->bytevector (apply append (map bytevector->list xs))))
 
+    (define (bytevector->copy . xs)
+      (list->bytevector (list-copy (apply bytevector->list xs))))
+
     ;; String
 
     (define string? (instance? string-type))
