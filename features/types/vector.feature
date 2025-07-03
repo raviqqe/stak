@@ -90,3 +90,22 @@ Feature: Vector
       | (vector 65 66 67) | 0     | XBC    |
       | (vector 65 66 67) | 1     | AXC    |
       | (vector 65 66 67) | 2     | ABX    |
+
+  Scenario Outline: Append vectors
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each write-u8 (vector->list (vector-append <values>)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values                                       | output |
+      | (vector)                                     |        |
+      | (vector) (vector)                            |        |
+      | (vector 65)                                  | A      |
+      | (vector 65) (vector 66)                      | AB     |
+      | (vector 65) (vector 66) (vector 67)          | ABC    |
+      | (vector 65) (vector 66 67) (vector 68 69 70) | ABCDEF |

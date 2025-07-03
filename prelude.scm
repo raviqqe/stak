@@ -1052,6 +1052,9 @@
     (define (list->vector x)
       (data-rib vector-type (length x) x))
 
+    (define (vector-append . xs)
+      (list->vector (apply append (map vector->list xs))))
+
     ;; Bytevector
 
     (define bytevector? (instance? bytevector-type))
