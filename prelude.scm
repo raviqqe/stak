@@ -159,20 +159,31 @@
     member-position
     list-copy
 
-    bytevector?
-    bytevector-length
-    bytevector-u8-ref
-    list->bytevector
-    bytevector->list
-
     vector?
     vector
     make-vector
+    vector-append
+    vector-copy
+    vector-copy!
+    vector-fill!
+    vector-for-each
     vector-length
+    vector-map
     vector-ref
     vector-set!
     list->vector
     vector->list
+    vector->string
+
+    bytevector?
+    bytevector-append
+    bytevector-copy
+    bytevector-copy!
+    bytevector-length
+    bytevector-u8-ref
+    bytevector-u8-set!
+    list->bytevector
+    bytevector->list
 
     string?
     list->string
@@ -1018,20 +1029,6 @@
           (list-head xs (- end start))
           xs)))
 
-    ;; Bytevector
-
-    (define bytevector? (instance? bytevector-type))
-
-    (define bytevector-length car)
-
-    (define bytevector->list cdr)
-
-    (define (list->bytevector x)
-      (data-rib bytevector-type (length x) x))
-
-    (define (bytevector-u8-ref vector index)
-      (list-ref (bytevector->list vector) index))
-
     ;; Vector
 
     (define vector? (instance? vector-type))
@@ -1054,6 +1051,20 @@
 
     (define (list->vector x)
       (data-rib vector-type (length x) x))
+
+    ;; Bytevector
+
+    (define bytevector? (instance? bytevector-type))
+
+    (define bytevector-length car)
+
+    (define bytevector->list cdr)
+
+    (define (list->bytevector x)
+      (data-rib bytevector-type (length x) x))
+
+    (define (bytevector-u8-ref vector index)
+      (list-ref (bytevector->list vector) index))
 
     ;; String
 
@@ -1537,8 +1548,12 @@
     list-copy
 
     bytevector?
+    bytevector-append
+    bytevector-copy
+    bytevector-copy!
     bytevector-length
     bytevector-u8-ref
+    bytevector-u8-set!
     list->bytevector
     bytevector->list
 
