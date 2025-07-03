@@ -44,3 +44,22 @@ Feature: Bytevector
       | #u8(65 66 66) | 0     |
       | #u8(66 65 66) | 1     |
       | #u8(66 66 65) | 2     |
+
+  Scenario Outline: Append bytevectors
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each write-u8 (bytevector->list (bytevector-append <values>)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values                           | output |
+      | #u8()                            |        |
+      | #u8() #u8()                      |        |
+      | #u8(65)                          | A      |
+      | #u8(65) #u8(66)                  | AB     |
+      | #u8(65) #u8(66) #u8(67)          | ABC    |
+      | #u8(65) #u8(66 67) #u8(68 69 70) | ABCDEF |

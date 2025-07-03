@@ -1069,6 +1069,9 @@
     (define (bytevector-u8-ref vector index)
       (list-ref (bytevector->list vector) index))
 
+    (define (bytevector-append . xs)
+      (list->bytevector (apply append (map bytevector->list xs))))
+
     ;; String
 
     (define string? (instance? string-type))

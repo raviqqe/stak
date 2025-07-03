@@ -102,10 +102,10 @@ Feature: Vector
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | values                                       | output |
-      | (vector)                                     |        |
-      | (vector) (vector)                            |        |
-      | (vector 65)                                  | A      |
-      | (vector 65) (vector 66)                      | AB     |
-      | (vector 65) (vector 66) (vector 67)          | ABC    |
-      | (vector 65) (vector 66 67) (vector 68 69 70) | ABCDEF |
+      | values                     | output |
+      | #()                        |        |
+      | #() #()                    |        |
+      | #(65)                      | A      |
+      | #(65) #(66)                | AB     |
+      | #(65) #(66) #(67)          | ABC    |
+      | #(65) #(66 67) #(68 69 70) | ABCDEF |
