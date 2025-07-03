@@ -75,6 +75,7 @@
 
     boolean?
     not
+    boolean=?
 
     integer?
     rational?
@@ -625,6 +626,17 @@
             x
             (cons x (loop (car xs) (cdr xs)))))))
 
+    (define (comparison-operator f)
+      (lambda xs
+        (boolean-or
+          (null? xs)
+          (let loop ((x (car xs))
+                     (xs (cdr xs)))
+            (boolean-or
+              (null? xs)
+              (let ((y (car xs)))
+                (and (f x y) (loop y (cdr xs)))))))))
+
     ; Basic types
 
     (define (instance? type)
@@ -656,6 +668,8 @@
       (syntax-rules ()
         ((_ x)
           (eq? x #f))))
+
+    (define boolean=? (comparison-operator eq?))
 
     ;; Number
 
@@ -768,17 +782,6 @@
 
     (define (expt x y)
       (exp (* (log x) y)))
-
-    (define (comparison-operator f)
-      (lambda xs
-        (boolean-or
-          (null? xs)
-          (let loop ((x (car xs))
-                     (xs (cdr xs)))
-            (boolean-or
-              (null? xs)
-              (let ((y (car xs)))
-                (and (f x y) (loop y (cdr xs)))))))))
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))

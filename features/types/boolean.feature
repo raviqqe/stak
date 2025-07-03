@@ -29,3 +29,18 @@ Feature: Boolean
       | value | output |
       | #f    | A      |
       | #t    | B      |
+
+  Scenario Outline: Check equality of boolean values
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (not <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | #f    | A      |
+      | #t    | B      |
