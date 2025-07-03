@@ -24,7 +24,7 @@ Feature: Vector
       """scheme
       (import (scheme base))
 
-      (for-each write-u8 (vector->list #(65 66 67)))
+      (vector-for-each write-u8 #(65 66 67))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
@@ -77,7 +77,7 @@ Feature: Vector
 
       (vector-set! xs <index> 88)
 
-      (for-each write-u8 (vector->list xs))
+      (vector-for-each write-u8 xs)
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
@@ -96,7 +96,7 @@ Feature: Vector
       """scheme
       (import (scheme base))
 
-      (for-each write-u8 (vector->list (vector-append <values>)))
+      (vector-for-each write-u8 (vector-append <values>))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
@@ -110,12 +110,22 @@ Feature: Vector
       | #(65) #(66) #(67)          | ABC    |
       | #(65) #(66 67) #(68 69 70) | ABCDEF |
 
+  Scenario: Map a function on a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (vector-for-each write-u8 (vector-map (lambda (x) (+ x 65)) #(0 1 2)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
+
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (for-each write-u8 (vector->list (vector-copy <value>)))
+      (vector-for-each write-u8 (vector-copy <value>))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
