@@ -1212,10 +1212,103 @@
   - call 3 #f apply
   - call 1 #f list->vector
 - call 1 #f $$close
-- set ||
+- set vector-copy
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f vector->list
+  - call 2 #f for-each
+- call 1 #f $$close
+- set vector-for-each
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f vector->list
+  - call 2 #f map
+  - call 1 #f list->vector
+- call 1 #f $$close
+- set vector-map
+- constant procedure 3 #t
+  - constant procedure 2 #f
+    - get 3
+    - call 1 #f null?
+    - if
+      - constant 0
+      - continue
+    - get 3
+    - call 1 #f car
+    - set 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 5
+      - call 1 #f cdr
+      - call 1 #f null?
+    - call 1 #f $$close
+    - get 4
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - get 4
+      - call 1 #f vector-length
+      - continue
+    - get 3
+    - call 1 #f cadr
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 2 #f
+        - get 1
+        - call 1 #f null?
+        - if
+          - constant #f
+        - get 0
+        - get 2
+        - call 1 #f car
+        - call 2 #f set-car!
+        - set 0
+        - get 1
+        - call 1 #f cdr
+        - get 1
+        - call 1 #f cdr
+        - call 2 #f 5
+      - call 1 #f $$close
+      - set 1
+      - get 6
+      - call 1 #f vector->list
+      - get 4
+      - get 4
+      - get 6
+      - get 12
+      - call 1 #f vector-length
+      - get 12
+      - call 2 #f ||
+      - call 2 #f ||
+      - call 2 #f min
+      - call 3 #f list-copy
+      - get 9
+      - call 1 #f vector->list
+      - get 9
+      - call 2 #f list-tail
+      - call 2 #f 2
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - call 2 #f 2
+- call 1 #f $$close
+- set vector-copy!
 - get bytevector-type
 - call 1 #f ||
 - set bytevector?
+- constant procedure 0 #t
+  - get 0
+  - call 1 #f list->bytevector
+- call 1 #f $$close
+- set bytevector
 - get car
 - set bytevector-length
 - get cdr
@@ -1235,6 +1328,14 @@
   - call 2 #f list-ref
 - call 1 #f $$close
 - set bytevector-u8-ref
+- constant procedure 3 #f
+  - get 2
+  - call 1 #f bytevector->list
+  - get 2
+  - get 2
+  - call 3 #f list-set!
+- call 1 #f $$close
+- set bytevector-u8-set!
 - constant procedure 0 #t
   - get append
   - get bytevector->list
@@ -1252,7 +1353,9 @@
   - call 3 #f apply
   - call 1 #f list->bytevector
 - call 1 #f $$close
-- set ||
+- set bytevector-copy
+- get vector-copy!
+- set bytevector-copy!
 - get string-type
 - call 1 #f ||
 - set string?
@@ -2361,6 +2464,7 @@
   - list->vector
   - vector->list
   - vector->string
+  - bytevector
   - bytevector?
   - bytevector-append
   - bytevector-copy
@@ -7674,6 +7778,7 @@
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
                                             - (vector->string . vector->string)
+                                            - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
                                             - (bytevector-copy . bytevector-copy)
@@ -7925,6 +8030,7 @@
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
                                             - (vector->string . vector->string)
+                                            - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
                                             - (bytevector-copy . bytevector-copy)
