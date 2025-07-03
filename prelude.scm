@@ -1055,8 +1055,25 @@
     (define (vector-append . xs)
       (list->vector (apply append (map vector->list xs))))
 
-    (define (vector-copy xs . ys)
-      (list->vector (apply list-copy (vector->list xs) ys)))
+    (define (vector-copy xs . rest)
+      (list->vector (apply list-copy (vector->list xs) rest)))
+
+    (define (vector-copy! to at from . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (vector-length from)
+          (cadr rest)))
+
+      (set-cdr!
+        to
+        (append
+          (list-copy (vector->list to) 0 at)
+          (list-copy
+            (vector->list from)
+            start
+            (min end (+ start (- (vector-length to) at))))
+          (list-copy (vector->list to) (+ at (- end start))))))
 
     ;; Bytevector
 
@@ -1075,8 +1092,10 @@
     (define (bytevector-append . xs)
       (list->bytevector (apply append (map bytevector->list xs))))
 
-    (define (bytevector-copy xs . ys)
-      (list->bytevector (apply list-copy (bytevector->list xs) ys)))
+    (define (bytevector-copy xs . rest)
+      (list->bytevector (apply list-copy (bytevector->list xs) rest)))
+
+    (define bytevector-copy! vector-copy!)
 
     ;; String
 

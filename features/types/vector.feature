@@ -126,3 +126,26 @@ Feature: Vector
       | #(65)       | A      |
       | #(65 66)    | AB     |
       | #(65 66 67) | ABC    |
+
+  Scenario Outline: Copy a vector in place
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs #(<values>))
+
+      (vector-copy! xs <arguments>)
+
+      (for-each
+        (lambda (x) (write-u8 (+ x 65)))
+        (vector->list xs))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values | arguments  | output |
+      |        | 0 #()      |        |
+      | 0 1 2  | 0 #(3 4 5) | DEF    |
+      | 0 1 2  | 1 #(3 4)   | ADE    |
+      | 0 1 2  | 2 #(3)     | ABD    |
