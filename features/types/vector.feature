@@ -109,3 +109,20 @@ Feature: Vector
       | #(65) #(66)                | AB     |
       | #(65) #(66) #(67)          | ABC    |
       | #(65) #(66 67) #(68 69 70) | ABCDEF |
+
+  Scenario Outline: Copy a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each write-u8 (vector->list (vector-copy <value>)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value       | output |
+      | #()         |        |
+      | #(65)       | A      |
+      | #(65 66)    | AB     |
+      | #(65 66 67) | ABC    |
