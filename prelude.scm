@@ -1601,6 +1601,7 @@
     vector->list
     vector->string
 
+    bytevector
     bytevector?
     bytevector-append
     bytevector-copy
