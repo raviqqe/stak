@@ -1086,8 +1086,11 @@
     (define (list->bytevector x)
       (data-rib bytevector-type (length x) x))
 
-    (define (bytevector-u8-ref vector index)
-      (list-ref (bytevector->list vector) index))
+    (define (bytevector-u8-ref xs index)
+      (list-ref (bytevector->list xs) index))
+
+    (define (bytevector-u8-set! xs index x)
+      (list-set! (bytevector->list xs) index x))
 
     (define (bytevector-append . xs)
       (list->bytevector (apply append (map bytevector->list xs))))

@@ -132,7 +132,7 @@ Feature: Vector
       """scheme
       (import (scheme base))
 
-      (define xs #(<values>))
+      (define xs (vector <values>))
 
       (vector-copy! xs <arguments>)
 
