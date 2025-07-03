@@ -175,6 +175,7 @@
     vector->list
     vector->string
 
+    bytevector
     bytevector?
     bytevector-append
     bytevector-copy
@@ -1033,8 +1034,8 @@
 
     (define vector? (instance? vector-type))
 
-    (define (vector . rest)
-      (list->vector rest))
+    (define (vector . xs)
+      (list->vector xs))
 
     (define (make-vector length . rest)
       (list->vector (apply make-list (cons length rest))))
@@ -1078,6 +1079,9 @@
     ;; Bytevector
 
     (define bytevector? (instance? bytevector-type))
+
+    (define (bytevector . xs)
+      (list->bytevector xs))
 
     (define bytevector-length car)
 
