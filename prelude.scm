@@ -1459,6 +1459,7 @@
 
     boolean?
     not
+    boolean=?
 
     integer?
     rational?
