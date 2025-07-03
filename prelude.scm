@@ -1560,11 +1560,18 @@
     vector?
     vector
     make-vector
+    vector-append
+    vector-copy
+    vector-copy!
+    vector-fill!
+    vector-for-each
     vector-length
+    vector-map
     vector-ref
     vector-set!
     list->vector
     vector->list
+    vector->string
 
     string?
     list->string
