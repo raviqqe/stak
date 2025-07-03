@@ -3126,5 +3126,5 @@
 
       (let loop ((count count) (x start))
         (if (> count 0)
-          (cons x (loop (+ start step) (- count 1)))
+          (cons x (loop (- count 1) (+ start step)))
           '())))))
