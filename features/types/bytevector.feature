@@ -50,7 +50,12 @@ Feature: Bytevector
       """scheme
       (import (scheme base) (srfi 1))
 
-      (for-each write-u8 (bytevector->list (bytevector-append <values>)))
+      (define xs (bytevector-append <values>))
+
+      (for-each
+        (lambda (index)
+          (write-u8 (bytevector-u8-ref xs index)))
+        (iota (bytevector-length xs)))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
