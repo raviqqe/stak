@@ -90,3 +90,31 @@ Feature: Bytevector
       | #u8(65)       | A      |
       | #u8(65 66)    | AB     |
       | #u8(65 66 67) | ABC    |
+
+  Scenario Outline: Copy a bytevector in place
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs #u8(<values>))
+
+      (bytevector-copy! xs <arguments>)
+
+      (for-each
+        (lambda (index)
+          (write-u8 (+ 65 (bytevector-u8-ref xs index))))
+        (iota (bytevector-length xs)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    # spell-checker: disable
+    Examples:
+      | values    | arguments          | output |
+      |           | 0 #u8()            |        |
+      | 0 1 2     | 0 #u8(3 4 5)       | DEF    |
+      | 0 1 2     | 1 #u8(3 4)         | ADE    |
+      | 0 1 2     | 2 #u8(3)           | ABD    |
+      | 0 1 2 3 4 | 1 #u8(5 6 7)       | AFGHE  |
+      | 0 1 2 3   | 1 #u8(4 5 6 7) 1   | AFGH   |
+      | 0 1 2 3   | 1 #u8(4 5 6 7) 1 3 | AFGD   |
