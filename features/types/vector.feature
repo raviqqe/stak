@@ -163,3 +163,29 @@ Feature: Vector
       | 0 1 2 3 4 | 1 #(5 6 7)       | AFGHE  |
       | 0 1 2 3   | 1 #(4 5 6 7) 1   | AFGH   |
       | 0 1 2 3   | 1 #(4 5 6 7) 1 3 | AFGD   |
+
+  # spell-checker: enable
+  Scenario Outline: Fill a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (vector <values>))
+
+      (vector-fill! xs <arguments>)
+
+      (for-each
+        (lambda (x) (write-u8 (+ x 65)))
+        (vector->list xs))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    # spell-checker: disable
+    Examples:
+      | values  | arguments | output |
+      | 0       | 1         | B      |
+      | 0 1     | 2 0       | CC     |
+      | 0 1     | 2 1       | AC     |
+      | 0 1 2   | 3         | DDD    |
+      | 0 1 2 3 | 4 1 3     | AEED   |

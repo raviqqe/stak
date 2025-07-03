@@ -1301,6 +1301,80 @@
   - call 2 #f 2
 - call 1 #f $$close
 - set vector-copy!
+- constant procedure 2 #t
+  - constant procedure 2 #f
+    - get 3
+    - call 1 #f null?
+    - if
+      - constant 0
+      - continue
+    - get 3
+    - call 1 #f car
+    - set 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 5
+      - call 1 #f cdr
+      - call 1 #f null?
+    - call 1 #f $$close
+    - get 4
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - get 5
+      - call 1 #f vector-length
+      - continue
+    - get 3
+    - call 1 #f cadr
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 2 #f
+        - constant procedure 1 #f
+          - get 0
+          - if
+            - get 0
+          - get 2
+          - constant 0
+          - call 2 #f <=
+        - call 1 #f $$close
+        - get 2
+        - call 1 #f null?
+        - call 1 #f 1
+        - set 1
+        - if
+          - constant #f
+        - get 1
+        - get 10
+        - call 2 #f set-car!
+        - set 0
+        - get 1
+        - call 1 #f cdr
+        - get 1
+        - constant 1
+        - call 2 #f ||
+        - call 2 #f 5
+      - call 1 #f $$close
+      - set 1
+      - get 7
+      - call 1 #f vector->list
+      - get 4
+      - call 2 #f list-tail
+      - get 3
+      - get 5
+      - call 2 #f ||
+      - call 2 #f 2
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - call 2 #f 2
+- call 1 #f $$close
+- set vector-fill!
 - get bytevector-type
 - call 1 #f ||
 - set bytevector?

@@ -1084,6 +1084,18 @@
           #f)
         (set-car! ys (car xs))))
 
+    (define (vector-fill! xs fill . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (vector-length xs)
+          (cadr rest)))
+
+      (do ((xs (list-tail (vector->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
+        ((or (null? xs) (<= count 0))
+          #f)
+        (set-car! xs fill)))
+
     ;; Bytevector
 
     (define bytevector? (instance? bytevector-type))
