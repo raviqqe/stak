@@ -146,7 +146,7 @@ Feature: Vector
     # spell-checker: disable
     Examples:
       | values    | arguments        | output |
-      |           | 0 #()            |        |
+      | 0         | 0 #()            | A      |
       | 0 1 2     | 0 #(3 4 5)       | DEF    |
       | 0 1 2     | 1 #(3 4)         | ADE    |
       | 0 1 2     | 2 #(3)           | ABD    |
