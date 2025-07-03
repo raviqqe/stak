@@ -41,11 +41,15 @@ Feature: Boolean
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | values | output |
-      |        | A      |
-      | #f     | A      |
-      | #t     | A      |
-      | #f #f  | A      |
-      | #f #t  | B      |
-      | #t #f  | B      |
-      | #t #t  | A      |
+      | values   | output |
+      |          | A      |
+      | #f       | A      |
+      | #t       | A      |
+      | #f #f    | A      |
+      | #f #t    | B      |
+      | #t #f    | B      |
+      | #t #t    | A      |
+      | #f #f #f | A      |
+      | #t #t #t | A      |
+      | #f #f #t | B      |
+      | #t #t #f | B      |
