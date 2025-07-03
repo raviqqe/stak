@@ -173,7 +173,6 @@
     vector-set!
     list->vector
     vector->list
-    vector->string
 
     bytevector
     bytevector?
@@ -1608,7 +1607,6 @@
     vector-set!
     list->vector
     vector->list
-    vector->string
 
     bytevector
     bytevector?

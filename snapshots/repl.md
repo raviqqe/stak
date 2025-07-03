@@ -2460,7 +2460,6 @@
   - vector-set!
   - list->vector
   - vector->list
-  - vector->string
   - bytevector
   - bytevector?
   - bytevector-append
@@ -7841,7 +7840,6 @@
                                             - (vector-set! . vector-set!)
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
-                                            - (vector->string . vector->string)
                                             - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
@@ -8093,7 +8091,6 @@
                                             - (vector-set! . vector-set!)
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
-                                            - (vector->string . vector->string)
                                             - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
