@@ -3113,3 +3113,11 @@
               ($$dynamic-symbols)
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
+
+(define (srfi 1)
+  (export foo)
+
+  (import foo)
+
+  (begin
+    foo))

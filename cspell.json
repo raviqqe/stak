@@ -81,6 +81,7 @@
     "rustfmt",
     "rustix",
     "rustup",
+    "srfi",
     "stak",
     "tokei",
     "uninlined",
