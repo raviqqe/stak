@@ -1072,15 +1072,18 @@
           (vector-length from)
           (cadr rest)))
 
-      (set-cdr!
-        to
-        (append
-          (list-copy (vector->list to) 0 at)
-          (list-copy
-            (vector->list from)
-            start
-            (min end (+ start (- (vector-length to) at))))
-          (list-copy (vector->list to) (+ at (- end start))))))
+      (do ((xs
+             (list-copy
+               (vector->list from)
+               start
+               (min end (+ start (- (vector-length to) at))))
+             (cdr xs))
+           (ys
+             (list-tail (vector->list to) at)
+             (cdr ys)))
+        ((null? xs)
+          #f)
+        (set-car! ys (car xs))))
 
     ;; Bytevector
 
