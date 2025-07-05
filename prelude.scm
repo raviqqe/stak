@@ -2076,21 +2076,32 @@
         x))
 
     (define (read-char-bytes port)
-      (define (read)
-        (read-u8 port))
+      (define (read-bytes byte count)
+        (let ((bytes
+                (let loop ((count count))
+                  (if (zero? count)
+                    '()
+                    (let ((x (read-u8 port)))
+                      (and
+                        (number? x)
+                        (let ((xs (loop (- count 1))))
+                          (and xs (cons x xs)))))))))
+          (if bytes
+            (cons byte bytes)
+            '())))
 
-      (let ((byte (read)))
+      (let ((byte (read-u8 port)))
         (cond
           ((eof-object? byte)
             '())
           ((zero? (quotient byte 128))
             (list byte))
           ((= (quotient byte 32) 6)
-            (list byte (read)))
+            (read-bytes byte 1))
           ((= (quotient byte 16) 14)
-            (list byte (read) (read)))
+            (read-bytes byte 2))
           (else
-            (list byte (read) (read) (read))))))
+            (read-bytes byte 3)))))
 
     (define (parse-char-bytes bytes)
       (cond
@@ -2114,8 +2125,11 @@
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
              (bytes (read-char-bytes port)))
-        (port-set-data! port (append (port-data port) bytes))
-        (parse-char-bytes bytes)))
+        (if (null? bytes)
+          (eof-object)
+          (begin
+            (port-set-data! port (append (port-data port) bytes))
+            (parse-char-bytes bytes)))))
 
     ; Write
 
@@ -2181,9 +2195,10 @@
         (make-output-port
           (lambda (x)
             (write-u8 x port)
-            (let ((x (peek-char port)))
+            (let ((x (peek-char (open-input-bytevector (get-output-bytevector port)))))
               (when (char? x)
                 (set! port (open-output-bytevector))
+                (set-car! xs (+ 1 (string-length xs)))
                 (set-cdr! tail (list (char->integer x)))
                 (set! tail (cdr tail)))))
           (lambda () #f)
@@ -2206,11 +2221,7 @@
     (define (open-output-bytevector)
       (let* ((xs (bytevector))
              (tail xs))
-        (make-port
-          (lambda ()
-            (let ((x (bytevector-u8-ref xs 0)))
-              (set! xs (list->bytevector (cdr (bytevector->list xs))))
-              x))
+        (make-output-port
           (lambda (x)
             (set-car! xs (+ (bytevector-length xs) 1))
             (set-cdr! tail (list x))
