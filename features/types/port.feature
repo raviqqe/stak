@@ -120,4 +120,6 @@ Feature: Port
 
     Examples:
       | bytes    | output | length |
-      | 65 66 67 | ABC    | 1      |
+      | 65       | A      | 1      |
+      | 65 66    | AB     | 2      |
+      | 65 66 67 | ABC    | 3      |
