@@ -2167,8 +2167,7 @@
     (define (open-output-string)
       (make-output-port write flush close))
 
-    (define (get-output-string)
-      (make-output-port write flush close))
+    (define get-output-string port-data)
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
@@ -2184,8 +2183,7 @@
     (define (open-output-bytevector)
       (make-output-port write flush close))
 
-    (define (get-output-bytevector)
-      (make-output-port write flush close))
+    (define get-output-bytevector port-data)
 
     ; Dummy implementation
     (define (write-value value . rest)
