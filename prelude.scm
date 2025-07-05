@@ -2003,7 +2003,7 @@
 
     ; TODO Support multiple bytes.
     (define-record-type port
-      (make-port* read write flush close data)
+      (make-port read write flush close data)
       port?
       (read port-read)
       (write port-write)
@@ -2016,14 +2016,11 @@
     (define textual-port? port?)
     (define binary-port? port?)
 
-    (define (make-port read write flush close)
-      (make-port* read write flush close '()))
-
     (define (make-input-port read close)
-      (make-port read #f #f close))
+      (make-port read #f #f close '()))
 
     (define (make-output-port write flush close)
-      (make-port #f write flush close))
+      (make-port #f write flush close #f))
 
     (define current-input-port (make-parameter (make-input-port $read-input #f)))
     (define current-output-port (make-parameter (make-output-port $write-output (lambda () #f) #f)))
@@ -2851,7 +2848,8 @@
             (lambda () ($read-file descriptor))
             (lambda (byte) ($write-file descriptor byte))
             (lambda () ($flush-file descriptor))
-            (lambda () ($close-file descriptor))))))
+            (lambda () ($close-file descriptor))
+            '()))))
 
     (define open-input-file (open-file #f))
     (define open-output-file (open-file #t))
