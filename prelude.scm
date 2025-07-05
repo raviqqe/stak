@@ -2120,7 +2120,10 @@
                   (* size 32))))))))
 
     (define (read-char . rest)
-      (parse-char-bytes (read-char-bytes (get-input-port rest))))
+      (let ((xs (read-char-bytes (get-input-port rest))))
+        (if (null? xs)
+          (eof-object)
+          (parse-char-bytes xs))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
@@ -2195,7 +2198,7 @@
         (make-output-port
           (lambda (x)
             (write-u8 x port)
-            (let ((x (peek-char (open-input-bytevector (get-output-bytevector port)))))
+            (let ((x (read-char (open-input-bytevector (get-output-bytevector port)))))
               (when (char? x)
                 (set! port (open-output-bytevector))
                 (set-car! xs (+ 1 (string-length xs)))
