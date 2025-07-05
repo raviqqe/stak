@@ -2029,7 +2029,7 @@
     (define current-output-port (make-parameter (make-output-port $write-output (lambda () #f) #f)))
     (define current-error-port (make-parameter (make-output-port $write-error (lambda () #f) #f)))
 
-    ;;; Close
+    ; Close
 
     (define (close-port port)
       (let ((close (port-close port)))
@@ -2044,27 +2044,6 @@
       (let ((x (f port)))
         (close-port port)
         x))
-
-    ;;; In-memory
-
-    (define (open-input-string string)
-      (make-input-port read close))
-
-    (define (open-output-string)
-      (make-output-port read close))
-
-    (define (get-output-string)
-      (make-output-port read close))
-
-    (define (open-input-bytevector xs)
-      (let ((xs (bytevector->list xs)))
-        (make-input-port read (lambda (port) #f))))
-
-    (define (open-output-bytevector)
-      (make-output-port read close))
-
-    (define (get-output-bytevector)
-      (make-output-port read close))
 
     ; Read
 
@@ -2182,6 +2161,27 @@
         (unless flush
           (error "cannot flush port"))
         (flush)))
+
+    ; In-memory ports
+
+    (define (open-input-string string)
+      (make-input-port read close))
+
+    (define (open-output-string)
+      (make-output-port read close))
+
+    (define (get-output-string)
+      (make-output-port read close))
+
+    (define (open-input-bytevector xs)
+      (let ((xs (bytevector->list xs)))
+        (make-input-port read (lambda (port) #f))))
+
+    (define (open-output-bytevector)
+      (make-output-port read close))
+
+    (define (get-output-bytevector)
+      (make-output-port read close))
 
     ; Dummy implementation
     (define (write-value value . rest)
