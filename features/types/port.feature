@@ -39,7 +39,7 @@ Feature: Port
       | (current-output-port) |
       | (current-error-port)  |
 
-  Scenario: Write to a string port
+  Scenario Outline: Write to a string port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -48,11 +48,16 @@ Feature: Port
         (open-output-string)
         (lambda (port)
           (parameterize ((current-output-port port))
-            (for-each write-u8 '(65 66 67)))
+            (for-each write-u8 '(<bytes>)))
           (write-string (get-output-string port))))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "ABC"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | bytes       | output |
+      | 65 66 67    | ABC    |
+      | 227 129 130 | あ      |
 
   Scenario: Read from a bytevector port
     Given a file named "main.scm" with:
