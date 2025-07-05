@@ -2182,7 +2182,7 @@
               (let ((x (car xs)))
                 (set! xs (cdr xs))
                 x)))
-          (lambda (port) #f))))
+          (lambda () #f))))
 
     (define (open-output-bytevector)
       (make-output-port write flush close))
