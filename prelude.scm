@@ -2211,8 +2211,8 @@
 
     (define (open-output-string)
       (let* ((xs (string))
-             (port (open-output-bytevector))
-             (tail xs))
+             (tail xs)
+             (port (open-output-bytevector)))
         (make-output-port
           (lambda (x)
             (write-u8 x port)
