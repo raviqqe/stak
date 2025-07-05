@@ -2168,10 +2168,10 @@
       (make-input-port read close))
 
     (define (open-output-string)
-      (make-output-port read close))
+      (make-output-port write flush close))
 
     (define (get-output-string)
-      (make-output-port read close))
+      (make-output-port write flush close))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
@@ -2185,10 +2185,10 @@
           (lambda (port) #f))))
 
     (define (open-output-bytevector)
-      (make-output-port read close))
+      (make-output-port write flush close))
 
     (define (get-output-bytevector)
-      (make-output-port read close))
+      (make-output-port write flush close))
 
     ; Dummy implementation
     (define (write-value value . rest)
