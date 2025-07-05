@@ -2076,32 +2076,33 @@
         x))
 
     (define (read-char-bytes port)
-      (define (read-bytes byte count)
-        (let ((bytes
-                (let loop ((count count))
-                  (if (zero? count)
-                    '()
-                    (let ((x (read-u8 port)))
-                      (and
-                        (number? x)
-                        (let ((xs (loop (- count 1))))
-                          (and xs (cons x xs)))))))))
-          (if bytes
-            (cons byte bytes)
-            '())))
-
       (let ((byte (read-u8 port)))
         (cond
           ((eof-object? byte)
             '())
           ((zero? (quotient byte 128))
             (list byte))
-          ((= (quotient byte 32) 6)
-            (read-bytes byte 1))
-          ((= (quotient byte 16) 14)
-            (read-bytes byte 2))
           (else
-            (read-bytes byte 3)))))
+            (let* ((count
+                     (cond
+                       ((= (quotient byte 32) 6)
+                         1)
+                       ((= (quotient byte 16) 14)
+                         2)
+                       (else
+                         3)))
+                   (bytes
+                     (let loop ((count count))
+                       (if (zero? count)
+                         '()
+                         (let ((x (read-u8 port)))
+                           (and
+                             (number? x)
+                             (let ((xs (loop (- count 1))))
+                               (and xs (cons x xs)))))))))
+              (if bytes
+                (cons byte bytes)
+                '()))))))
 
     (define (parse-char-bytes bytes)
       (cond
