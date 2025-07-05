@@ -38,3 +38,19 @@ Feature: Port
       | expression            |
       | (current-output-port) |
       | (current-error-port)  |
+
+  Scenario: Read from a bytevector port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (call-with-port
+        (lambda (port)
+          (parameterize ((current-input-port port))
+            (do ((x (read-u8) (read-u8)))
+              ((eof-object? x) #f)
+              (write-u8 x))))
+        (open-input-bytevector #(65 66 67)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
