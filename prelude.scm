@@ -2003,13 +2003,13 @@
 
     ; TODO Support multiple bytes.
     (define-record-type port
-      (make-port* read write flush close buffer)
+      (make-port* read write flush close data)
       port?
       (read port-read)
       (write port-write)
       (flush port-flush)
       (close port-close)
-      (buffer port-buffer port-set-buffer!))
+      (data port-data port-set-data!))
 
     (define input-port? port-read)
     (define output-port? port-write)
@@ -2052,10 +2052,10 @@
 
     (define (read-u8 . rest)
       (let* ((port (get-input-port rest))
-             (buffer (port-buffer port)))
+             (buffer (port-data port)))
         (if (pair? buffer)
           (begin
-            (port-set-buffer! port (cdr buffer))
+            (port-set-data! port (cdr buffer))
             (car buffer))
           (let ((read (port-read port)))
             (unless read
@@ -2065,7 +2065,7 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (port-set-buffer! port (append (port-buffer port) (list x)))
+        (port-set-data! port (append (port-data port) (list x)))
         x))
 
     (define (read-char-bytes port)
@@ -2107,7 +2107,7 @@
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
              (bytes (read-char-bytes port)))
-        (port-set-buffer! port (append (port-buffer port) bytes))
+        (port-set-data! port (append (port-data port) bytes))
         (parse-char-bytes bytes)))
 
     ; Write
