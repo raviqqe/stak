@@ -9,6 +9,16 @@ Feature: String
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
+  Scenario: Create a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-string (string #\A #\B #\C))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
+
   Scenario: Convert a string to a list
     Given a file named "main.scm" with:
       """scheme

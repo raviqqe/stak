@@ -38,3 +38,48 @@ Feature: Port
       | expression            |
       | (current-output-port) |
       | (current-error-port)  |
+
+  Scenario: Write to a string port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (call-with-port
+        (open-output-string)
+        (lambda (port)
+          (parameterize ((current-output-port port))
+            (for-each write-u8 '(65 66 67)))
+          (write-string (get-output-string port))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
+
+  Scenario: Read from a bytevector port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (call-with-port
+        (open-input-bytevector #u8(65 66 67))
+        (lambda (port)
+          (parameterize ((current-input-port port))
+            (do ((x (read-u8) (read-u8)))
+              ((eof-object? x) #f)
+              (write-u8 x)))))
+      """
+    When I successfully run `stak main.scm`
+
+  Scenario: Write to a bytevector port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (call-with-port
+        (open-output-bytevector)
+        (lambda (port)
+          (parameterize ((current-output-port port))
+            (for-each write-u8 '(65 66 67)))
+          (write-bytevector (get-output-bytevector port))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
