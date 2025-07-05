@@ -45,12 +45,12 @@ Feature: Port
       (import (scheme base))
 
       (call-with-port
+        (open-input-bytevector #u8(65 66 67))
         (lambda (port)
           (parameterize ((current-input-port port))
             (do ((x (read-u8) (read-u8)))
               ((eof-object? x) #f)
-              (write-u8 x))))
-        (open-input-bytevector #u8(65 66 67)))
+              (write-u8 x)))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
