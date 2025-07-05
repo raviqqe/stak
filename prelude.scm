@@ -2175,7 +2175,14 @@
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
-        (make-input-port read (lambda (port) #f))))
+        (make-input-port
+          (lambda ()
+            (if (null? xs)
+              (eof-object)
+              (let ((x (car xs)))
+                (set! xs (cdr xs))
+                x)))
+          (lambda (port) #f))))
 
     (define (open-output-bytevector)
       (make-output-port read close))
