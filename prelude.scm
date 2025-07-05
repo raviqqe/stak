@@ -1711,13 +1711,6 @@
     close-output-port
     call-with-port
 
-    open-input-string
-    open-output-string
-    get-output-string
-    open-input-bytevector
-    open-output-bytevector
-    get-output-bytevector
-
     read-u8
     peek-u8
     read-char
@@ -1730,6 +1723,13 @@
     newline
 
     flush-output-port
+
+    open-input-string
+    open-output-string
+    get-output-string
+    open-input-bytevector
+    open-output-bytevector
+    get-output-bytevector
 
     write-value)
 
