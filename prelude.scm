@@ -2188,8 +2188,25 @@
 
     ; In-memory ports
 
-    (define (open-input-string string)
-      (make-input-port read close))
+    (define (open-input-string xs)
+      (let ((xs (string->code-points xs))
+            (ys '()))
+        (make-input-port
+          (lambda ()
+            (when (and
+                   (null? ys)
+                   (not (null? xs)))
+              (let ((port (open-output-bytevector)))
+                (write-char (integer->char (car xs)) port)
+                (set! xs (cdr xs))
+                (set! ys (bytevector->list (get-output-bytevector port)))))
+            (if (null? ys)
+              (eof-object)
+              (begin
+                (let ((y (car ys)))
+                  (set! ys (cdr ys))
+                  y))))
+          (lambda () #f))))
 
     (define (open-output-string)
       (let* ((xs (string))

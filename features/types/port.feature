@@ -39,6 +39,28 @@ Feature: Port
       | (current-output-port) |
       | (current-error-port)  |
 
+  Scenario Outline: Read from a string port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (call-with-port
+        (open-input-string "<string>")
+        (lambda (port)
+          (parameterize ((current-input-port port))
+            (do ((x (read-u8) (read-u8)))
+              ((eof-object? x) #f)
+              (write-u8 x)))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<string>"
+
+    Examples:
+      | string |
+      | ABC    |
+      | あ      |
+      | 😄      |
+
   Scenario Outline: Write to a string port
     Given a file named "main.scm" with:
       """scheme
