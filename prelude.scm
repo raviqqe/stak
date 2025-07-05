@@ -1709,8 +1709,14 @@
     close-port
     close-input-port
     close-output-port
-
     call-with-port
+
+    open-input-string
+    open-output-string
+    get-output-string
+    open-input-bytevector
+    open-output-bytevector
+    get-output-bytevector
 
     read-u8
     peek-u8
@@ -2023,7 +2029,7 @@
     (define current-output-port (make-parameter (make-output-port $write-output (lambda () #f) #f)))
     (define current-error-port (make-parameter (make-output-port $write-error (lambda () #f) #f)))
 
-    ; Close
+    ;;; Close
 
     (define (close-port port)
       (let ((close (port-close port)))
@@ -2038,6 +2044,27 @@
       (let ((x (f port)))
         (close-port port)
         x))
+
+    ;;; In-memory
+
+    (define (open-input-string string)
+      (make-input-port read close))
+
+    (define (open-output-string)
+      (make-output-port read close))
+
+    (define (get-output-string)
+      (make-output-port read close))
+
+    (define (open-input-bytevector xs)
+      (let ((xs (bytevector->list xs)))
+        (make-input-port read (lambda (port) #f))))
+
+    (define (open-output-bytevector)
+      (make-output-port read close))
+
+    (define (get-output-bytevector)
+      (make-output-port read close))
 
     ; Read
 
