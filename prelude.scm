@@ -2019,8 +2019,13 @@
     (define (make-input-port read close)
       (make-port read #f #f close '()))
 
-    (define (make-output-port write flush close)
-      (make-port #f write flush close #f))
+    (define (make-output-port write flush close . rest)
+      (make-port
+        #f
+        write
+        flush
+        close
+        (if (null? rest) #f (car rest))))
 
     (define current-input-port (make-parameter (make-input-port $read-input #f)))
     (define current-output-port (make-parameter (make-output-port $write-output (lambda () #f) #f)))
@@ -2178,10 +2183,19 @@
               (let ((x (car xs)))
                 (set! xs (cdr xs))
                 x)))
-          (lambda () #f))))
+          (lambda () (set! xs '())))))
 
     (define (open-output-bytevector)
-      (make-output-port write flush close))
+      (let* ((xs (bytevector))
+             (tail xs))
+        (make-output-port
+          (lambda (x)
+            (set-car! xs (+ (bytevector-length xs) 1))
+            (set-cdr! tail (list x))
+            (set! tail (cdr tail)))
+          (lambda () #f)
+          (lambda () #f)
+          xs)))
 
     (define get-output-bytevector port-data)
 
