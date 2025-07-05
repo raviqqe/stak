@@ -2175,12 +2175,20 @@
       (make-input-port read close))
 
     (define (open-output-string)
-      (let ((xs (string)))
+      (let* ((xs (string))
+             (port (open-output-bytevector))
+             (tail xs))
         (make-output-port
-          write
+          (lambda (x)
+            (write-u8 x port)
+            (let ((x (peek-char port)))
+              (when (char? x)
+                (set! port (open-output-bytevector))
+                (set-cdr! tail (list (char->integer x)))
+                (set! tail (cdr tail)))))
           (lambda () #f)
           (lambda () #f)
-          s)))
+          xs)))
 
     (define get-output-string port-data)
 
@@ -2198,7 +2206,11 @@
     (define (open-output-bytevector)
       (let* ((xs (bytevector))
              (tail xs))
-        (make-output-port
+        (make-port
+          (lambda ()
+            (let ((x (bytevector-u8-ref xs 0)))
+              (set! xs (list->bytevector (cdr (bytevector->list xs))))
+              x))
           (lambda (x)
             (set-car! xs (+ (bytevector-length xs) 1))
             (set-cdr! tail (list x))
