@@ -50,7 +50,7 @@ Feature: Port
             (do ((x (read-u8) (read-u8)))
               ((eof-object? x) #f)
               (write-u8 x))))
-        (open-input-bytevector #(65 66 67)))
+        (open-input-bytevector #u8(65 66 67)))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
