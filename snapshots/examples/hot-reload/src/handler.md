@@ -1363,7 +1363,7 @@
   - close
   - read
   - write
-  - buffer
+  - data
   - unquote-splicing
   - quote
   - quasiquote
@@ -1713,7 +1713,7 @@
   - write
   - flush
   - close
-  - buffer
+  - data
 - call 2 #f ||
 - set ||
 - get ||
@@ -1728,36 +1728,35 @@
 - call 2 #f ||
 - set ||
 - get ||
-- constant buffer
+- constant data
 - call 2 #f ||
 - set ||
 - get ||
-- constant buffer
+- constant data
 - call 2 #f ||
-- set ||
-- constant procedure 4 #f
-  - get 3
-  - get 3
-  - get 3
-  - get 3
-  - constant ()
-  - call 5 #f ||
-- call 1 #f ||
 - set ||
 - constant procedure 2 #f
   - get 1
   - constant #f
   - constant #f
   - get 3
-  - call 4 #f ||
+  - constant ()
+  - call 5 #f ||
 - call 1 #f ||
 - set ||
-- constant procedure 3 #f
+- constant procedure 3 #t
   - constant #f
-  - get 3
-  - get 3
-  - get 3
-  - call 4 #f ||
+  - get 4
+  - get 4
+  - get 4
+  - get 4
+  - call 1 #f ||
+  - if
+    - constant #f
+    - continue
+  - get 4
+  - call 1 #f ||
+  - call 5 #f ||
 - call 1 #f ||
 - set ||
 - get ||

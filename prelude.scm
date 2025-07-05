@@ -186,6 +186,7 @@
     bytevector->list
 
     string?
+    string
     list->string
     string->code-points
     code-points->string
@@ -1131,6 +1132,9 @@
     (define (string-rib codes length)
       (data-rib string-type length codes))
 
+    (define (string . xs)
+      (list->string xs))
+
     (define (code-points->string x)
       (string-rib x (length x)))
 
@@ -1632,6 +1636,7 @@
     bytevector->list
 
     string?
+    string
     list->string
     string->list
     string-append
@@ -2170,7 +2175,12 @@
       (make-input-port read close))
 
     (define (open-output-string)
-      (make-output-port write flush close))
+      (let ((xs (string)))
+        (make-output-port
+          write
+          (lambda () #f)
+          (lambda () #f)
+          s)))
 
     (define get-output-string port-data)
 
