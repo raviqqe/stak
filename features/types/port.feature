@@ -71,15 +71,19 @@ Feature: Port
         (lambda (port)
           (parameterize ((current-output-port port))
             (for-each write-u8 '(<bytes>)))
-          (write-string (get-output-string port))))
+          (let ((xs (get-output-string port)))
+            (unless (= (string-length xs) <length>)
+              (error "invalid length"))
+            (write-string xs))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | bytes       | output |
-      | 65 66 67    | ABC    |
-      | 227 129 130 | あ      |
+      | bytes           | output | length |
+      | 65 66 67        | ABC    | 3      |
+      | 227 129 130     | あ      | 1      |
+      | 240 159 152 132 | 😄      | 1      |
 
   Scenario: Read from a bytevector port
     Given a file named "main.scm" with:
@@ -96,7 +100,7 @@ Feature: Port
       """
     When I successfully run `stak main.scm`
 
-  Scenario: Write to a bytevector port
+  Scenario Outline: Write to a bytevector port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -105,8 +109,15 @@ Feature: Port
         (open-output-bytevector)
         (lambda (port)
           (parameterize ((current-output-port port))
-            (for-each write-u8 '(65 66 67)))
-          (write-bytevector (get-output-bytevector port))))
+            (for-each write-u8 '(<bytes>)))
+          (let ((xs (get-output-bytevector port)))
+            (unless (= (bytevector-length xs) <length>)
+              (error "invalid length"))
+            (write-bytevector xs))))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "ABC"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | bytes    | output | length |
+      | 65 66 67 | ABC    | 1      |
