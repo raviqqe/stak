@@ -179,7 +179,7 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (write-u8 (peek-u8))
+      (write-u8 (if (char-ready? port) foo bar))
       """
     And a file named "input.txt" with:
       """text
