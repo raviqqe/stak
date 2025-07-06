@@ -39,6 +39,7 @@ Feature: Port
       | (current-output-port) |
       | (current-error-port)  |
 
+  @gauche @guile @stak
   Scenario Outline: Read from a string port
     Given a file named "main.scm" with:
       """scheme
@@ -61,6 +62,7 @@ Feature: Port
       | あ      |
       | 😄      |
 
+  @gauche @guile @stak
   Scenario Outline: Write to a string port
     Given a file named "main.scm" with:
       """scheme
