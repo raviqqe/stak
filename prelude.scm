@@ -3099,7 +3099,6 @@
     char-downcase
     char-lower-case?
     char-numeric?
-    char-ready?
     char-upcase
     char-upper-case?
     char-whitespace?
