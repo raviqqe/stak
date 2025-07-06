@@ -3013,6 +3013,7 @@
   (import
     (scheme base)
     (scheme char)
+    (scheme complex)
     (scheme cxr)
     (scheme eval)
     (scheme file)
