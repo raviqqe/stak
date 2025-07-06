@@ -179,16 +179,10 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (char-ready? port) foo bar))
+      (write-u8 (if (char-ready? port) 65 66))
       """
-    And a file named "input.txt" with:
-      """text
-      A
-      """
-    When I run `stak main.scm` interactively
-    And I pipe in the file "input.txt"
-    Then the exit status should be 0
-    And the stdout should contain exactly "A"
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
 
   @long
   Scenario Outline: Read a value
