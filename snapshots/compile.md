@@ -1375,6 +1375,24 @@
   - call 2 #f 2
 - call 1 #f $$close
 - set vector-fill!
+- constant procedure 1 #t
+  - get vector-copy
+  - get 2
+  - call 1 #f string->list
+  - call 1 #f list->vector
+  - get 2
+  - call 3 #f apply
+- call 1 #f $$close
+- set string->vector
+- constant procedure 1 #t
+  - get vector-copy
+  - get 2
+  - get 2
+  - call 3 #f apply
+  - call 1 #f vector->list
+  - call 1 #f list->string
+- call 1 #f $$close
+- set vector->string
 - get bytevector-type
 - call 1 #f ||
 - set bytevector?
@@ -2851,6 +2869,8 @@
   - vector-set!
   - list->vector
   - vector->list
+  - string->vector
+  - vector->string
   - bytevector
   - bytevector?
   - bytevector-append
@@ -8435,6 +8455,8 @@
                                             - (vector-set! . vector-set!)
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
+                                            - (string->vector . string->vector)
+                                            - (vector->string . vector->string)
                                             - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
@@ -8695,6 +8717,8 @@
                                             - (vector-set! . vector-set!)
                                             - (list->vector . list->vector)
                                             - (vector->list . vector->list)
+                                            - (string->vector . string->vector)
+                                            - (vector->string . vector->string)
                                             - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
