@@ -3648,18 +3648,18 @@
       - constant #f
       - set 0
       - get 1
-      - call 1 #f null?
+      - call 1 #f pair?
       - if
-        - call 0 #f eof-object
-      - constant procedure 1 #f
-        - get 3
-        - call 1 #f cdr
-        - set 4
-        - get 0
-      - call 1 #f $$close
-      - get 2
-      - call 1 #f car
-      - call 1 #f 1
+        - constant procedure 1 #f
+          - get 3
+          - call 1 #f cdr
+          - set 4
+          - get 0
+        - call 1 #f $$close
+        - get 2
+        - call 1 #f car
+        - call 1 #f 1
+      - constant #f
     - call 1 #f $$close
     - constant procedure 0 #f
       - constant #f
@@ -3737,22 +3737,20 @@
   - constant procedure 1 #f
     - constant procedure 0 #f
       - get 1
-      - call 1 #f null?
+      - call 1 #f pair?
       - if
-        - call 0 #f eof-object
-      - constant procedure 1 #f
-        - get 3
-        - call 1 #f cdr
-        - set 4
-        - get 0
-      - call 1 #f $$close
-      - get 2
-      - call 1 #f car
-      - call 1 #f 1
+        - constant procedure 1 #f
+          - get 3
+          - call 1 #f cdr
+          - set 4
+          - get 0
+        - call 1 #f $$close
+        - get 2
+        - call 1 #f car
+        - call 1 #f 1
+      - constant #f
     - call 1 #f $$close
     - constant procedure 0 #f
-      - constant ()
-      - set 3
       - constant #f
     - call 1 #f $$close
     - call 2 #f make-input-port

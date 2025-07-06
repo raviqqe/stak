@@ -2201,12 +2201,11 @@
                 (write-char (integer->char (car xs)) port)
                 (set! xs (cdr xs))
                 (set! ys (bytevector->list (get-output-bytevector port)))))
-            (if (null? ys)
-              (eof-object)
-              (begin
-                (let ((y (car ys)))
-                  (set! ys (cdr ys))
-                  y))))
+            (and
+              (pair? ys)
+              (let ((y (car ys)))
+                (set! ys (cdr ys))
+                y)))
           (lambda () #f))))
 
     (define (open-output-string)
@@ -2232,12 +2231,12 @@
       (let ((xs (bytevector->list xs)))
         (make-input-port
           (lambda ()
-            (if (null? xs)
-              (eof-object)
+            (and
+              (pair? xs)
               (let ((x (car xs)))
                 (set! xs (cdr xs))
                 x)))
-          (lambda () (set! xs '())))))
+          (lambda () #f))))
 
     (define (open-output-bytevector)
       (let* ((xs (bytevector))
