@@ -2582,6 +2582,7 @@
   - char-upper-case?
   - char-upcase
   - char-downcase
+  - digit-value
   - special-chars
   - case-lambda
   - cxr
@@ -4525,6 +4526,14 @@
   - get 0
 - call 1 #f $$close
 - set char-downcase
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f char->integer
+  - constant #\0
+  - call 1 #f char->integer
+  - call 2 #f ||
+- call 1 #f $$close
+- set digit-value
 - constant procedure 0 #t
   - constant procedure 6 #f
     - constant procedure 0 #f
@@ -8221,6 +8230,7 @@
                                             - (char-upper-case? . char-upper-case?)
                                             - (char-upcase . char-upcase)
                                             - (char-downcase . char-downcase)
+                                            - (digit-value . digit-value)
                                             - (special-chars . special-chars)
                                           - list
                                             - list
