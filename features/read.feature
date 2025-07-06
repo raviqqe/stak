@@ -179,7 +179,7 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (char-ready? (get-input-bytevector #u8(<bytes>))) 65 66))
+      (write-u8 (if (char-ready? (open-input-bytevector #u8(<bytes>))) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
