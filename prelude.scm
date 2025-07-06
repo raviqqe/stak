@@ -199,6 +199,7 @@
     number->string
     string->number
     string-copy
+    string-copy!
     substring
     make-string
     string=?
@@ -1173,6 +1174,8 @@
 
     (define substring string-copy)
 
+    (define string-copy! sequence-copy!)
+
     (define (make-string length . rest)
       (code-points->string
         (make-list
@@ -1661,6 +1664,7 @@
     number->string
     string->number
     string-copy
+    string-copy!
     substring
     make-string
     string=?
