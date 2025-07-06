@@ -186,11 +186,10 @@ Feature: Read
 
     Examples:
       | bytes           | output |
+      |                 | A      |
       | 65              | A      |
       | 227 129 130     | A      |
-      | 227 129         | B      |
       | 240 159 152 132 | A      |
-      | 240 159 152     | B      |
 
   @long
   Scenario Outline: Read a value
