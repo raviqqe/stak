@@ -2514,7 +2514,6 @@
   - iota
   - rust
   - r5rs
-  - char-ready?
   - denominator
   - exact->inexact
   - gcd
@@ -2674,8 +2673,10 @@
   - call-with-port
   - read-u8
   - peek-u8
+  - u8-ready?
   - read-char
   - peek-char
+  - char-ready?
   - write-u8
   - write-char
   - write-string
@@ -3520,6 +3521,14 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set peek-u8
+- constant procedure 0 #t
+  - get peek-u8
+  - get 1
+  - call 2 #f apply
+  - set 0
+  - constant #t
+- call 1 #f $$close
+- set u8-ready?
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 0
@@ -3696,6 +3705,28 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set peek-char
+- constant procedure 0 #t
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 2
+      - call 1 #f peek-u8
+      - call 1 #f eof-object?
+    - call 1 #f $$close
+    - get 1
+    - call 1 #f peek-char
+    - call 1 #f eof-object?
+    - constant #f
+    - call 2 #f eq?
+    - call 1 #f 1
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f ||
+  - call 1 #f 1
+- call 1 #f $$close
+- set char-ready?
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
@@ -7954,7 +7985,6 @@
                                             - (char-downcase . char-downcase)
                                             - (char-lower-case? . char-lower-case?)
                                             - (char-numeric? . char-numeric?)
-                                            - (char-ready? . char-ready?)
                                             - (char-upcase . char-upcase)
                                             - (char-upper-case? . char-upper-case?)
                                             - (char-whitespace? . char-whitespace?)
@@ -8475,8 +8505,10 @@
                                             - (call-with-port . call-with-port)
                                             - (read-u8 . read-u8)
                                             - (peek-u8 . peek-u8)
+                                            - (u8-ready? . u8-ready?)
                                             - (read-char . read-char)
                                             - (peek-char . peek-char)
+                                            - (char-ready? . char-ready?)
                                             - (write-u8 . write-u8)
                                             - (write-char . write-char)
                                             - (write-string . write-string)
