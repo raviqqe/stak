@@ -174,15 +174,19 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
-  Scenario: Check if a character is ready or not.
+  Scenario Outline: Check if a character is ready or not.
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (char-ready? (get-input-bytevector #u8(65))) 65 66))
+      (write-u8 (if (char-ready? (get-input-bytevector #u8(<bytes>))) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | bytes | output |
+      | 65    | A      |
 
   @long
   Scenario Outline: Read a value
