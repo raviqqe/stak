@@ -142,9 +142,9 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (define xs <to>)
+      (define xs "<to>")
 
-      (string-copy! xs <at> <from> <start> <end>)
+      (string-copy! xs <at> "<from>" <start> <end>)
 
       (write-u8 (if (equal? xs "<output>") 65 66))
       """
