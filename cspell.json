@@ -39,6 +39,7 @@
     "fclose",
     "findutils",
     "flamegraph",
+    "foldcase",
     "fopen",
     "fread",
     "fseek",
