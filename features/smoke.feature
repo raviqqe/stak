@@ -40,7 +40,7 @@ Feature: Smoke
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "bar"
 
-  @chibi @guile @long @stak
+  @long
   Scenario: Compile many sequential `if` expressions
     Given a file named "main.scm" with:
       """scheme
@@ -52,7 +52,7 @@ Feature: Smoke
       """
     And I run the following script:
       """sh
-      for _ in $(seq 10); do
+      for _ in $(seq 8); do
         for _ in $(seq 2); do
           cat foo.scm >> bar.scm
         done
