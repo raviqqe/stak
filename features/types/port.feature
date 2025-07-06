@@ -50,13 +50,16 @@ Feature: Port
       (close-input-port port)
       (write-u8 (if (input-port-open? port) 65 66))
       """
+    And a file named "foo.txt" with:
+      """
+      """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "AB"
 
     Examples:
-      | expression                   |
-      | (open-input-file "main.scm") |
-      | (open-input-string "foo")    |
+      | expression                  |
+      | (open-input-file "foo.txt") |
+      | (open-input-string "foo")   |
 
   Scenario Outline: Check if an output port is open or not
     Given a file named "main.scm" with:
@@ -69,13 +72,16 @@ Feature: Port
       (close-output-port port)
       (write-u8 (if (output-port-open? port) 65 66))
       """
+    And a file named "foo.txt" with:
+      """
+      """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "AB"
 
     Examples:
-      | expression                    |
-      | (open-output-file "main.scm") |
-      | (open-output-string)          |
+      | expression                   |
+      | (open-output-file "foo.txt") |
+      | (open-output-string)         |
 
   @gauche @guile @stak
   Scenario Outline: Read from a string port
