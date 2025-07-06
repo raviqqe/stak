@@ -238,3 +238,35 @@ Feature: String
       | ab   | aa    |
       | ba   | aa    |
       | ba   | ab    |
+
+  Scenario Outline: Convert a vector to a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-string (vector->string #(<characters>)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | characters     | output |
+      |                |        |
+      | #\\A           | A      |
+      | #\\A #\\B #\\C | ABC    |
+
+  Scenario Outline: Convert a vector to a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (equal? (string->vector "<string>") #(<characters>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | string | characters     |
+      |        |                |
+      | A      | #\\A           |
+      | ABC    | #\\A #\\B #\\C |
