@@ -1716,6 +1716,9 @@
     close-output-port
     call-with-port
 
+    input-port-open?
+    output-port-open?
+
     read-u8
     peek-u8
     u8-ready?
@@ -2078,6 +2081,9 @@
       (let ((x (f port)))
         (close-port port)
         x))
+
+    (define input-port-open? port-close)
+    (define output-port-open? port-close)
 
     ; Read
 
