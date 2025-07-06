@@ -2138,7 +2138,9 @@
 
     (define (char-ready? . rest)
       (let ((port (get-input-port rest)))
-        (if (eof-object? (peak-char port))
+        (if (and
+             (eof-object? (peak-char port))
+             (eof-object? (peek-u8 port)))
           (eof-object)
           (begin
             (port-set-data! port (append (port-data port) bytes))
