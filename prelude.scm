@@ -2139,7 +2139,7 @@
     (define (char-ready? . rest)
       (let ((port (get-input-port rest)))
         (or
-          (not (eof-object? (peak-char port)))
+          (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
     ; Write
