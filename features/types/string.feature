@@ -274,7 +274,6 @@ Feature: String
       |        |       |                |
       | A      |       | #\\A           |
       | ABC    |       | #\\A #\\B #\\C |
-      | ABC    |       | #\\A #\\B #\\C |
       | ABC    | 0     | #\\A #\\B #\\C |
       | ABC    | 0 2   | #\\A #\\B      |
       | ABC    | 1 3   | #\\B #\\C      |
