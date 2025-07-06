@@ -5919,8 +5919,7 @@
                       - get 0
                     - call 1 #f $$close
                     - get 20
-                    - call 1 #f list
-                    - call 1 #f list->string
+                    - call 1 #f string
                     - get 4
                     - call 1 #f symbol->string
                     - call 2 #f string-append
@@ -13430,10 +13429,8 @@
                   - list
                     - string-append
                     - list
-                      - list->string
-                      - list
-                        - list
-                        - library-symbol-separator
+                      - string
+                      - library-symbol-separator
                     - list
                       - symbol->string
                       - name
