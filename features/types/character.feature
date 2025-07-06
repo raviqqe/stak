@@ -132,7 +132,7 @@ Feature: Character
       """scheme
       (import (scheme base) (scheme char))
 
-      (write-u8 (if (eqv? (digit-value #\<character>) <output>) 65 66))
+      (write-u8 (if (= (digit-value #\<character>) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
@@ -142,5 +142,4 @@ Feature: Character
       | 0         | 0      |
       | 1         | 1      |
       | 6         | 6      |
-      | A         | 10     |
-      | F         | 15     |
+      | 9         | 9      |
