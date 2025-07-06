@@ -1036,6 +1036,7 @@
     ;; Sequence
 
     (define sequence-length car)
+    (define sequence->list cdr)
 
     (define (sequence-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1069,7 +1070,7 @@
 
     (define vector-length sequence-length)
 
-    (define vector->list cdr)
+    (define vector->list sequence->list)
 
     (define (vector-ref vector index)
       (list-ref (vector->list vector) index))
@@ -1121,7 +1122,7 @@
 
     (define bytevector-length sequence-length)
 
-    (define bytevector->list cdr)
+    (define bytevector->list sequence->list)
 
     (define (list->bytevector x)
       (data-rib bytevector-type (length x) x))
@@ -1155,7 +1156,7 @@
 
     (define string-length sequence-length)
 
-    (define string->code-points cdr)
+    (define string->code-points sequence->list)
 
     (define (list->string x)
       (string-rib (map char->integer x) (length x)))
