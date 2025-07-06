@@ -39,6 +39,50 @@ Feature: Port
       | (current-output-port) |
       | (current-error-port)  |
 
+  Scenario Outline: Check if an input port is open or not
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (define port <expression>)
+
+      (write-u8 (if (input-port-open? port) 65 66))
+      (close-input-port port)
+      (write-u8 (if (input-port-open? port) 65 66))
+      """
+    And a file named "foo.txt" with:
+      """
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AB"
+
+    Examples:
+      | expression                  |
+      | (open-input-file "foo.txt") |
+      | (open-input-string "foo")   |
+
+  Scenario Outline: Check if an output port is open or not
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (define port <expression>)
+
+      (write-u8 (if (output-port-open? port) 65 66))
+      (close-output-port port)
+      (write-u8 (if (output-port-open? port) 65 66))
+      """
+    And a file named "foo.txt" with:
+      """
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AB"
+
+    Examples:
+      | expression                   |
+      | (open-output-file "foo.txt") |
+      | (open-output-string)         |
+
   @gauche @guile @stak
   Scenario Outline: Read from a string port
     Given a file named "main.scm" with:

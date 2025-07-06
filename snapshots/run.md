@@ -2385,6 +2385,8 @@
   - close-input-port
   - close-output-port
   - call-with-port
+  - input-port-open?
+  - output-port-open?
   - read-u8
   - peek-u8
   - u8-ready?
@@ -3055,11 +3057,27 @@
 - call 2 #f ||
 - set ||
 - get ||
+- constant read
+- call 2 #f ||
+- set ||
+- get ||
+- constant write
+- call 2 #f ||
+- set ||
+- get ||
 - constant write
 - call 2 #f ||
 - set ||
 - get ||
 - constant flush
+- call 2 #f ||
+- set ||
+- get ||
+- constant flush
+- call 2 #f ||
+- set ||
+- get ||
+- constant close
 - call 2 #f ||
 - set ||
 - get ||
@@ -3107,7 +3125,9 @@
 - call 1 #f $$close
 - set make-output-port
 - get ||
-- constant #f
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f $$close
 - call 2 #f make-input-port
 - call 1 #f make-parameter
 - set current-input-port
@@ -3115,7 +3135,9 @@
 - constant procedure 0 #f
   - constant #f
 - call 1 #f $$close
-- constant #f
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f $$close
 - call 3 #f make-output-port
 - call 1 #f make-parameter
 - set current-output-port
@@ -3123,7 +3145,9 @@
 - constant procedure 0 #f
   - constant #f
 - call 1 #f $$close
-- constant #f
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f $$close
 - call 3 #f make-output-port
 - call 1 #f make-parameter
 - set current-error-port
@@ -3139,6 +3163,19 @@
     - constant #f
     - set 0
     - call 0 #f 0
+    - set 0
+    - constant procedure 1 #f
+      - get 4
+      - constant #f
+      - call 2 #f 2
+    - call 1 #f $$close
+    - get ||
+    - get ||
+    - get ||
+    - get ||
+    - get ||
+    - call 5 #f list
+    - call 2 #f for-each
   - call 1 #f $$close
   - get 1
   - call 1 #f ||
@@ -3161,6 +3198,10 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set call-with-port
+- get ||
+- set input-port-open?
+- get ||
+- set output-port-open?
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
@@ -8296,6 +8337,8 @@
                                             - (close-input-port . close-input-port)
                                             - (close-output-port . close-output-port)
                                             - (call-with-port . call-with-port)
+                                            - (input-port-open? . input-port-open?)
+                                            - (output-port-open? . output-port-open?)
                                             - (read-u8 . read-u8)
                                             - (peek-u8 . peek-u8)
                                             - (u8-ready? . u8-ready?)

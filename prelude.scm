@@ -1726,6 +1726,9 @@
     close-output-port
     call-with-port
 
+    input-port-open?
+    output-port-open?
+
     read-u8
     peek-u8
     u8-ready?
@@ -2022,10 +2025,10 @@
     (define-record-type port
       (make-port read write flush close data)
       port?
-      (read port-read)
-      (write port-write)
-      (flush port-flush)
-      (close port-close)
+      (read port-read port-set-read!)
+      (write port-write port-set-write!)
+      (flush port-flush port-set-flush!)
+      (close port-close port-set-close!)
       (data port-data port-set-data!))
 
     (define input-port? port-read)
@@ -2044,9 +2047,25 @@
         close
         (if (null? rest) #f (car rest))))
 
-    (define current-input-port (make-parameter (make-input-port $read-input #f)))
-    (define current-output-port (make-parameter (make-output-port $write-output (lambda () #f) #f)))
-    (define current-error-port (make-parameter (make-output-port $write-error (lambda () #f) #f)))
+    (define current-input-port
+      (make-parameter
+        (make-input-port
+          $read-input
+          (lambda () #f))))
+
+    (define current-output-port
+      (make-parameter
+        (make-output-port
+          $write-output
+          (lambda () #f)
+          (lambda () #f))))
+
+    (define current-error-port
+      (make-parameter
+        (make-output-port
+          $write-error
+          (lambda () #f)
+          (lambda () #f))))
 
     ; Close
 
@@ -2054,7 +2073,16 @@
       (let ((close (port-close port)))
         (unless close
           (error "cannot close port"))
-        (close)))
+        (close)
+        (for-each
+          (lambda (set-field!)
+            (set-field! port #f))
+          (list
+            port-set-read!
+            port-set-write!
+            port-set-flush!
+            port-set-close!
+            port-set-data!))))
 
     (define close-input-port close-port)
     (define close-output-port close-port)
@@ -2063,6 +2091,9 @@
       (let ((x (f port)))
         (close-port port)
         x))
+
+    (define input-port-open? port-close)
+    (define output-port-open? port-close)
 
     ; Read
 

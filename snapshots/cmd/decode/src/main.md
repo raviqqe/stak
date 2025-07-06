@@ -1499,10 +1499,18 @@
 - constant read
 - call 2 #f ||
 - set ||
+- constant #f
+- set 0
 - get ||
 - constant write
 - call 2 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - get ||
 - constant data
 - call 2 #f ||
@@ -1536,7 +1544,9 @@
 - call 1 #f ||
 - set ||
 - get ||
-- constant #f
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f ||
 - call 2 #f ||
 - call 1 #f ||
 - set ||
@@ -1544,7 +1554,9 @@
 - constant procedure 0 #f
   - constant #f
 - call 1 #f ||
-- constant #f
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f ||
 - call 3 #f ||
 - call 1 #f ||
 - set ||
@@ -1552,7 +1564,9 @@
 - constant procedure 0 #f
   - constant #f
 - call 1 #f ||
-- constant #f
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f ||
 - call 3 #f ||
 - call 1 #f ||
 - set ||
