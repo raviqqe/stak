@@ -1069,7 +1069,6 @@
       (list->vector (apply make-list (cons length rest))))
 
     (define vector-length sequence-length)
-
     (define vector->list sequence->list)
 
     (define (vector-ref vector index)
@@ -1121,7 +1120,6 @@
       (list->bytevector xs))
 
     (define bytevector-length sequence-length)
-
     (define bytevector->list sequence->list)
 
     (define (list->bytevector x)
@@ -1155,7 +1153,6 @@
       (string-rib x (length x)))
 
     (define string-length sequence-length)
-
     (define string->code-points sequence->list)
 
     (define (list->string x)
