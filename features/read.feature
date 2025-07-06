@@ -89,6 +89,22 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
+  Scenario Outline: Check if a byte is ready or not.
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (u8-ready? (open-input-bytevector #u8(<bytes>))) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    # TODO Add false cases.
+    Examples:
+      | bytes | output |
+      |       | A      |
+      | 65    | A      |
+
   Scenario Outline: Read a character
     Given a file named "main.scm" with:
       """scheme
