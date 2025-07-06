@@ -486,6 +486,8 @@
   - call 3 #f ||
 - call 1 #f ||
 - set ||
+- get ||
+- set ||
 - constant procedure 2 #f
   - get ||
   - get 1

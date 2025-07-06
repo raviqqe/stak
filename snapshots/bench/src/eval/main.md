@@ -1151,6 +1151,83 @@
   - call 2 #f 2
 - call 1 #f $$close
 - set list-copy
+- get car
+- set ||
+- get cdr
+- set ||
+- constant procedure 3 #t
+  - constant procedure 2 #f
+    - get 3
+    - call 1 #f null?
+    - if
+      - constant 0
+      - continue
+    - get 3
+    - call 1 #f car
+    - set 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 5
+      - call 1 #f cdr
+      - call 1 #f null?
+    - call 1 #f $$close
+    - get 4
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - get 4
+      - call 1 #f ||
+      - continue
+    - get 3
+    - call 1 #f cadr
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 2 #f
+        - get 1
+        - call 1 #f null?
+        - if
+          - constant #f
+        - get 0
+        - get 2
+        - call 1 #f car
+        - call 2 #f set-car!
+        - set 0
+        - get 1
+        - call 1 #f cdr
+        - get 1
+        - call 1 #f cdr
+        - call 2 #f 5
+      - call 1 #f $$close
+      - set 1
+      - get 6
+      - call 1 #f ||
+      - get 4
+      - get 4
+      - get 6
+      - get 12
+      - call 1 #f ||
+      - get 12
+      - call 2 #f ||
+      - call 2 #f ||
+      - call 2 #f min
+      - call 3 #f list-copy
+      - get 9
+      - call 1 #f ||
+      - get 9
+      - call 2 #f list-tail
+      - call 2 #f 2
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - call 2 #f 2
+- call 1 #f $$close
+- set ||
 - get vector-type
 - call 1 #f ||
 - set vector?
@@ -1168,9 +1245,9 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set make-vector
-- get car
+- get ||
 - set vector-length
-- get cdr
+- get ||
 - set vector->list
 - constant procedure 2 #f
   - get 1
@@ -1228,78 +1305,7 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set vector-map
-- constant procedure 3 #t
-  - constant procedure 2 #f
-    - get 3
-    - call 1 #f null?
-    - if
-      - constant 0
-      - continue
-    - get 3
-    - call 1 #f car
-    - set 2
-    - constant procedure 1 #f
-      - get 0
-      - if
-        - get 0
-      - get 5
-      - call 1 #f cdr
-      - call 1 #f null?
-    - call 1 #f $$close
-    - get 4
-    - call 1 #f null?
-    - call 1 #f 1
-    - set 1
-    - if
-      - get 4
-      - call 1 #f vector-length
-      - continue
-    - get 3
-    - call 1 #f cadr
-    - set 1
-    - constant procedure 1 #f
-      - constant procedure 2 #f
-        - get 1
-        - call 1 #f null?
-        - if
-          - constant #f
-        - get 0
-        - get 2
-        - call 1 #f car
-        - call 2 #f set-car!
-        - set 0
-        - get 1
-        - call 1 #f cdr
-        - get 1
-        - call 1 #f cdr
-        - call 2 #f 5
-      - call 1 #f $$close
-      - set 1
-      - get 6
-      - call 1 #f vector->list
-      - get 4
-      - get 4
-      - get 6
-      - get 12
-      - call 1 #f vector-length
-      - get 12
-      - call 2 #f ||
-      - call 2 #f ||
-      - call 2 #f min
-      - call 3 #f list-copy
-      - get 9
-      - call 1 #f vector->list
-      - get 9
-      - call 2 #f list-tail
-      - call 2 #f 2
-    - call 1 #f $$close
-    - constant #f
-    - call 1 #f 1
-  - call 1 #f $$close
-  - constant #f
-  - constant #f
-  - call 2 #f 2
-- call 1 #f $$close
+- get ||
 - set vector-copy!
 - constant procedure 2 #t
   - constant procedure 2 #f
@@ -1401,9 +1407,9 @@
   - call 1 #f list->bytevector
 - call 1 #f $$close
 - set bytevector
-- get car
+- get ||
 - set bytevector-length
-- get cdr
+- get ||
 - set bytevector->list
 - constant procedure 1 #f
   - get bytevector-type
@@ -1446,7 +1452,7 @@
   - call 1 #f list->bytevector
 - call 1 #f $$close
 - set bytevector-copy
-- get vector-copy!
+- get ||
 - set bytevector-copy!
 - get string-type
 - call 1 #f ||
@@ -1470,9 +1476,9 @@
   - call 2 #f ||
 - call 1 #f $$close
 - set code-points->string
-- get car
+- get ||
 - set string-length
-- get cdr
+- get ||
 - set string->code-points
 - constant procedure 1 #f
   - get char->integer
@@ -1519,6 +1525,8 @@
 - set string-copy
 - get string-copy
 - set substring
+- get ||
+- set string-copy!
 - constant procedure 1 #t
   - get 1
   - get 1
@@ -2593,6 +2601,7 @@
   - number->string
   - string->number
   - string-copy
+  - string-copy!
   - substring
   - make-string
   - string=?
@@ -8216,6 +8225,7 @@
                                             - (number->string . number->string)
                                             - (string->number . string->number)
                                             - (string-copy . string-copy)
+                                            - (string-copy! . string-copy!)
                                             - (substring . substring)
                                             - (make-string . make-string)
                                             - (string=? . string=?)
@@ -8482,6 +8492,7 @@
                                             - (number->string . number->string)
                                             - (string->number . string->number)
                                             - (string-copy . string-copy)
+                                            - (string-copy! . string-copy!)
                                             - (substring . substring)
                                             - (make-string . make-string)
                                             - (string=? . string=?)
