@@ -2060,7 +2060,16 @@
       (let ((close (port-close port)))
         (unless close
           (error "cannot close port"))
-        (close)))
+        (close)
+        (for-each
+          (lambda (set-field!)
+            (set-field! port #f))
+          (list
+            port-set-read!
+            port-set-write!
+            port-set-flush!
+            port-set-close!
+            port-set-data!))))
 
     (define close-input-port close-port)
     (define close-output-port close-port)
