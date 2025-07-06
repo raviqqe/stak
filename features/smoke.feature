@@ -40,7 +40,7 @@ Feature: Smoke
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "bar"
 
-  @long
+  @chibi @guile @long @stak
   Scenario: Compile many sequential `if` expressions
     Given a file named "main.scm" with:
       """scheme
