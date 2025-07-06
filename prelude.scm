@@ -2012,10 +2012,10 @@
     (define-record-type port
       (make-port read write flush close data)
       port?
-      (read port-read)
-      (write port-write)
-      (flush port-flush)
-      (close port-close)
+      (read port-read port-set-read!)
+      (write port-write port-set-write!)
+      (flush port-flush port-set-flush!)
+      (close port-close port-set-close!)
       (data port-data port-set-data!))
 
     (define input-port? port-read)
