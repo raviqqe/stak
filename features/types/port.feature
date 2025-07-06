@@ -67,7 +67,7 @@ Feature: Port
     Examples:
       | expression                    |
       | (open-output-file "main.scm") |
-      | (open-output-string "foo")    |
+      | (open-output-string)          |
 
   @gauche @guile @stak
   Scenario Outline: Read from a string port
