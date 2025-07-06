@@ -39,6 +39,36 @@ Feature: Port
       | (current-output-port) |
       | (current-error-port)  |
 
+  Scenario Outline: Close an input port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (close-input-port <expression>)
+      """
+    When I successfully run `stak main.scm`
+    Then the exit status should be 0
+
+    Examples:
+      | expression                   |
+      | (open-input-file "main.scm") |
+      | (open-input-string "foo")    |
+
+  Scenario Outline: Close an output port
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (close-output-port <expression>)
+      """
+    When I successfully run `stak main.scm`
+    Then the exit status should be 0
+
+    Examples:
+      | expression                    |
+      | (open-output-file "main.scm") |
+      | (open-output-string "foo")    |
+
   @gauche @guile @stak
   Scenario Outline: Read from a string port
     Given a file named "main.scm" with:
