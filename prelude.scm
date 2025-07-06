@@ -1718,8 +1718,10 @@
 
     read-u8
     peek-u8
+    u8-ready?
     read-char
     peek-char
+    char-ready?
 
     write-u8
     write-char
@@ -2075,6 +2077,11 @@
         (port-set-data! port (append (port-data port) (list x)))
         x))
 
+    (define (u8-ready? . rest)
+      ; TODO Fix this cheating!
+      (apply peek-u8 rest)
+      #t)
+
     (define (read-char-bytes port)
       (let ((byte (read-u8 port)))
         (cond
@@ -2134,6 +2141,12 @@
           (begin
             (port-set-data! port (append (port-data port) bytes))
             (parse-char-bytes bytes)))))
+
+    (define (char-ready? . rest)
+      (let ((port (get-input-port rest)))
+        (or
+          (not (eof-object? (peek-char port)))
+          (eof-object? (peek-u8 port)))))
 
     ; Write
 
@@ -3091,7 +3104,6 @@
     char-downcase
     char-lower-case?
     char-numeric?
-    char-ready?
     char-upcase
     char-upper-case?
     char-whitespace?
