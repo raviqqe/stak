@@ -1718,6 +1718,7 @@
 
     read-u8
     peek-u8
+    u8-ready?
     read-char
     peek-char
     char-ready?
@@ -2075,6 +2076,11 @@
              (x (read-u8 port)))
         (port-set-data! port (append (port-data port) (list x)))
         x))
+
+    (define (u8-ready? . rest)
+      ; TODO Fix this cheating!
+      (peek-u8)
+      #t)
 
     (define (read-char-bytes port)
       (let ((byte (read-u8 port)))
