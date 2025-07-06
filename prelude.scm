@@ -173,6 +173,8 @@
     vector-set!
     list->vector
     vector->list
+    string->vector
+    vector->string
 
     bytevector
     bytevector?
@@ -1097,6 +1099,12 @@
           #f)
         (set-car! xs fill)))
 
+    (define (string->vector xs . rest)
+      (apply vector-copy (list->vector (string->list xs)) rest))
+
+    (define (vector->string xs . rest)
+      (list->string (vector->list (apply vector-copy xs rest))))
+
     ;; Bytevector
 
     (define bytevector? (instance? bytevector-type))
@@ -1623,6 +1631,8 @@
     vector-set!
     list->vector
     vector->list
+    string->vector
+    vector->string
 
     bytevector
     bytevector?
