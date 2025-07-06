@@ -39,30 +39,38 @@ Feature: Port
       | (current-output-port) |
       | (current-error-port)  |
 
-  Scenario Outline: Close an input port
+  Scenario Outline: Check if an input port is open or not
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme file))
 
-      (close-input-port <expression>)
+      (define port <expression>)
+
+      (write-u8 (if (input-port-open? port) 65 66))
+      (close-input-port port)
+      (write-u8 (if (input-port-open? port) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the exit status should be 0
+    Then the stdout should contain exactly "AB"
 
     Examples:
       | expression                   |
       | (open-input-file "main.scm") |
       | (open-input-string "foo")    |
 
-  Scenario Outline: Close an output port
+  Scenario Outline: Check if an output port is open or not
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme file))
 
-      (close-output-port <expression>)
+      (define port <expression>)
+
+      (write-u8 (if (output-port-open? port) 65 66))
+      (close-output-port port)
+      (write-u8 (if (output-port-open? port) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the exit status should be 0
+    Then the stdout should contain exactly "AB"
 
     Examples:
       | expression                    |
