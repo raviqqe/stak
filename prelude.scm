@@ -1720,6 +1720,7 @@
     peek-u8
     read-char
     peek-char
+    char-ready?
 
     write-u8
     write-char
@@ -2130,6 +2131,14 @@
       (let* ((port (get-input-port rest))
              (bytes (read-char-bytes port)))
         (if (null? bytes)
+          (eof-object)
+          (begin
+            (port-set-data! port (append (port-data port) bytes))
+            (parse-char-bytes bytes)))))
+
+    (define (char-ready? . rest)
+      (let ((port (get-input-port rest)))
+        (if (eof-object? (peak-char port))
           (eof-object)
           (begin
             (port-set-data! port (append (port-data port) bytes))
