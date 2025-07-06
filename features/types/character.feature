@@ -126,3 +126,20 @@ Feature: Character
       | char-downcase | #\\a  | #\\a   |
       | char-upcase   | #\\a  | #\\A   |
       | char-upcase   | #\\A  | #\\A   |
+
+  Scenario Outline: Extract a digit value
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (= (digit-value #\<character>) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | character | output |
+      | 0         | 0      |
+      | 1         | 1      |
+      | 6         | 6      |
+      | 9         | 9      |

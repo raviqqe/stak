@@ -2423,6 +2423,7 @@
     char-upper-case?
     char-upcase
     char-downcase
+    digit-value
     special-chars)
 
   (import (scheme base))
@@ -2473,7 +2474,10 @@
     (define (char-downcase x)
       (if (char-upper-case? x)
         (integer->char (+ (char->integer x) 32))
-        x))))
+        x))
+
+    (define (digit-value x)
+      (- (char->integer x) (char->integer #\0)))))
 
 (define-library (scheme read)
   (export read)
