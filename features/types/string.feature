@@ -142,7 +142,7 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (define xs "<to>")
+      (define xs (string-copy "<to>"))
 
       (string-copy! xs <at> "<from>" <start> <end>)
 
