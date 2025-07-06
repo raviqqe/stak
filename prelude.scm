@@ -2034,9 +2034,25 @@
         close
         (if (null? rest) #f (car rest))))
 
-    (define current-input-port (make-parameter (make-input-port $read-input #f)))
-    (define current-output-port (make-parameter (make-output-port $write-output (lambda () #f) #f)))
-    (define current-error-port (make-parameter (make-output-port $write-error (lambda () #f) #f)))
+    (define current-input-port
+      (make-parameter
+        (make-input-port
+          $read-input
+          (lambda () #f))))
+
+    (define current-output-port
+      (make-parameter
+        (make-output-port
+          $write-output
+          (lambda () #f)
+          (lambda () #f))))
+
+    (define current-error-port
+      (make-parameter
+        (make-output-port
+          $write-error
+          (lambda () #f)
+          (lambda () #f))))
 
     ; Close
 
