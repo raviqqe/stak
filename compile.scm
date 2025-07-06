@@ -418,7 +418,7 @@
        (else
         (let ((renamed (string->uninterned-symbol
                         (string-append
-                         (list->string (list library-symbol-separator))
+                         (string library-symbol-separator)
                          (symbol->string name)))))
          (set! names (cons (cons name renamed) names))
          renamed))))
