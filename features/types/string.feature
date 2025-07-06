@@ -244,29 +244,33 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (write-string (vector->string #(<characters>)))
+      (write-string (vector->string #(<characters>) <range>))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | characters     | output |
-      |                |        |
-      | #\\A           | A      |
-      | #\\A #\\B #\\C | ABC    |
+      | characters     | range | output |
+      |                |       |        |
+      | #\\A           |       | A      |
+      | #\\A #\\B #\\C |       | ABC    |
+      | #\\A #\\B #\\C | 0     | ABC    |
+      | #\\A #\\B #\\C | 0 2   | AB     |
+      | #\\A #\\B #\\C | 1 3   | BC     |
+      | #\\A #\\B #\\C | 1 2   | B      |
 
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (equal? (string->vector "<string>") #(<characters>)) 65 66))
+      (write-u8 (if (equal? (string->vector "<string>" <range>) #(<characters>)) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
-      | string | characters     |
-      |        |                |
-      | A      | #\\A           |
-      | ABC    | #\\A #\\B #\\C |
+      | string | range | characters     |
+      |        |       |                |
+      | A      |       | #\\A           |
+      | ABC    |       | #\\A #\\B #\\C |
