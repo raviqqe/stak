@@ -174,6 +174,22 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
+  Scenario: Check if a character is ready or not.
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (peek-u8))
+      """
+    And a file named "input.txt" with:
+      """text
+      A
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
+
   @long
   Scenario Outline: Read a value
     Given a file named "main.scm" with:
