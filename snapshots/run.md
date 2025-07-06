@@ -1440,6 +1440,11 @@
   - call 3 #f data-rib
 - call 1 #f $$close
 - set ||
+- constant procedure 0 #t
+  - get 0
+  - call 1 #f list->string
+- call 1 #f $$close
+- set string
 - constant procedure 1 #f
   - get 0
   - get 1
@@ -2152,7 +2157,7 @@
   - runtime
   - port
   - flush
-  - buffer
+  - data
   - $$rib
   - $$<
   - $$+
@@ -2214,7 +2219,6 @@
   - numerator
   - rationalize
   - scheme-report-environment
-  - string
   - string-ci<=?
   - string-ci<?
   - string-ci=?
@@ -2373,6 +2377,12 @@
   - write-bytevector
   - newline
   - flush-output-port
+  - open-input-string
+  - open-output-string
+  - get-output-string
+  - open-input-bytevector
+  - open-output-bytevector
+  - get-output-bytevector
   - write-value
   - syntax-rules
   - define-syntax
@@ -2545,6 +2555,7 @@
   - list->bytevector
   - bytevector->list
   - string?
+  - string
   - list->string
   - string->code-points
   - code-points->string
@@ -3008,12 +3019,12 @@
   - write
   - flush
   - close
-  - buffer
+  - data
 - call 2 #f cons
 - set ||
 - get ||
 - call 1 #f ||
-- set ||
+- set make-port
 - get ||
 - call 1 #f ||
 - set port?
@@ -3034,11 +3045,11 @@
 - call 2 #f ||
 - set ||
 - get ||
-- constant buffer
+- constant data
 - call 2 #f ||
 - set ||
 - get ||
-- constant buffer
+- constant data
 - call 2 #f ||
 - set ||
 - get ||
@@ -3049,29 +3060,28 @@
 - set textual-port?
 - get port?
 - set binary-port?
-- constant procedure 4 #f
-  - get 3
-  - get 3
-  - get 3
-  - get 3
-  - constant ()
-  - call 5 #f ||
-- call 1 #f $$close
-- set make-port
 - constant procedure 2 #f
   - get 1
   - constant #f
   - constant #f
   - get 3
-  - call 4 #f make-port
+  - constant ()
+  - call 5 #f make-port
 - call 1 #f $$close
 - set make-input-port
-- constant procedure 3 #f
+- constant procedure 3 #t
   - constant #f
-  - get 3
-  - get 3
-  - get 3
-  - call 4 #f make-port
+  - get 4
+  - get 4
+  - get 4
+  - get 4
+  - call 1 #f null?
+  - if
+    - constant #f
+    - continue
+  - get 4
+  - call 1 #f car
+  - call 5 #f make-port
 - call 1 #f $$close
 - set make-output-port
 - get ||
@@ -3207,53 +3217,87 @@
 - set peek-u8
 - constant procedure 1 #f
   - constant procedure 1 #f
-    - constant procedure 0 #f
-      - get 3
-      - call 1 #f read-u8
-    - call 1 #f $$close
-    - set 1
+    - get 0
+    - call 1 #f eof-object?
+    - if
+      - constant ()
+    - get 0
+    - constant 128
+    - call 2 #f quotient
+    - constant 0
+    - call 2 #f eq?
+    - if
+      - get 0
+      - call 1 #f list
     - constant procedure 1 #f
-      - get 0
-      - call 1 #f eof-object?
-      - if
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 4
+          - get 1
+          - call 2 #f cons
         - constant ()
-      - get 0
-      - constant 128
-      - call 2 #f quotient
-      - constant 0
-      - call 2 #f eq?
-      - if
-        - get 0
-        - call 1 #f list
-      - get 0
-      - constant 32
-      - call 2 #f quotient
-      - constant 6
-      - call 2 #f eq?
-      - if
-        - get 0
-        - call 0 #f 3
-        - call 2 #f list
-      - get 0
-      - constant 16
-      - call 2 #f quotient
-      - constant 14
-      - call 2 #f eq?
-      - if
-        - get 0
-        - call 0 #f 3
-        - call 0 #f 4
-        - call 3 #f list
-      - get 0
-      - call 0 #f 3
-      - call 0 #f 4
-      - call 0 #f 5
-      - call 4 #f list
+      - call 1 #f $$close
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - constant 0
+          - call 2 #f eq?
+          - if
+            - constant ()
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f number?
+            - if
+              - constant procedure 1 #f
+                - get 0
+                - if
+                  - get 2
+                  - get 1
+                  - call 2 #f cons
+                - constant #f
+              - call 1 #f $$close
+              - get 3
+              - constant 1
+              - call 2 #f ||
+              - call 1 #f 6
+              - call 1 #f 1
+            - constant #f
+          - call 1 #f $$close
+          - get 10
+          - call 1 #f read-u8
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - get 3
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+      - set 1
+      - call 1 #f 1
     - call 1 #f $$close
-    - call 0 #f 1
+    - get 1
+    - constant 32
+    - call 2 #f quotient
+    - constant 6
+    - call 2 #f eq?
+    - if
+      - constant 1
+      - continue
+    - get 1
+    - constant 16
+    - call 2 #f quotient
+    - constant 14
+    - call 2 #f eq?
+    - if
+      - constant 2
+      - continue
+    - constant 3
     - call 1 #f 1
   - call 1 #f $$close
-  - constant #f
+  - get 1
+  - call 1 #f read-u8
   - call 1 #f 1
 - call 1 #f $$close
 - set ||
@@ -3307,15 +3351,27 @@
 - call 1 #f $$close
 - set ||
 - constant procedure 0 #t
-  - get 0
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f null?
+    - if
+      - call 0 #f eof-object
+    - get 0
+    - call 1 #f ||
+  - call 1 #f $$close
+  - get 1
   - call 1 #f ||
   - call 1 #f ||
-  - call 1 #f ||
+  - call 1 #f 1
 - call 1 #f $$close
 - set read-char
 - constant procedure 0 #t
   - constant procedure 1 #f
     - constant procedure 1 #f
+      - get 0
+      - call 1 #f null?
+      - if
+        - call 0 #f eof-object
       - get 2
       - get 3
       - call 1 #f ||
@@ -3553,6 +3609,195 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set flush-output-port
+- constant procedure 1 #f
+  - constant procedure 2 #f
+    - constant procedure 0 #f
+      - get 1
+      - call 1 #f null?
+      - if
+        - get 2
+        - call 1 #f null?
+        - constant #f
+        - call 2 #f eq?
+        - continue
+      - constant #f
+      - if
+        - constant procedure 1 #f
+          - get 4
+          - call 1 #f car
+          - call 1 #f integer->char
+          - get 1
+          - call 2 #f write-char
+          - set 0
+          - get 4
+          - call 1 #f cdr
+          - set 5
+          - get 0
+          - call 1 #f get-output-bytevector
+          - call 1 #f bytevector->list
+          - set 4
+          - constant #f
+        - call 1 #f $$close
+        - call 0 #f open-output-bytevector
+        - call 1 #f 1
+        - set 1
+        - continue
+      - constant #f
+      - set 0
+      - get 1
+      - call 1 #f null?
+      - if
+        - call 0 #f eof-object
+      - constant procedure 1 #f
+        - get 3
+        - call 1 #f cdr
+        - set 4
+        - get 0
+      - call 1 #f $$close
+      - get 2
+      - call 1 #f car
+      - call 1 #f 1
+    - call 1 #f $$close
+    - constant procedure 0 #f
+      - constant #f
+    - call 1 #f $$close
+    - call 2 #f make-input-port
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f string->code-points
+  - constant ()
+  - call 2 #f 2
+- call 1 #f $$close
+- set open-input-string
+- constant procedure 0 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - get 3
+          - call 2 #f write-u8
+          - set 0
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f char?
+            - if
+              - call 0 #f open-output-bytevector
+              - set 5
+              - get 8
+              - constant 1
+              - get 10
+              - call 1 #f string-length
+              - call 2 #f ||
+              - call 2 #f set-car!
+              - set 0
+              - get 6
+              - get 1
+              - call 1 #f char->integer
+              - call 1 #f list
+              - call 2 #f set-cdr!
+              - set 0
+              - get 6
+              - call 1 #f cdr
+              - set 7
+              - constant #f
+            - constant #f
+          - call 1 #f $$close
+          - get 3
+          - call 1 #f get-output-bytevector
+          - call 1 #f open-input-bytevector
+          - call 1 #f read-char
+          - call 1 #f 1
+        - call 1 #f $$close
+        - constant procedure 0 #f
+          - constant #f
+        - call 1 #f $$close
+        - constant procedure 0 #f
+          - constant #f
+        - call 1 #f $$close
+        - get 7
+        - call 4 #f make-output-port
+      - call 1 #f $$close
+      - call 0 #f open-output-bytevector
+      - call 1 #f 1
+    - call 1 #f $$close
+    - get 1
+    - call 1 #f 1
+  - call 1 #f $$close
+  - call 0 #f string
+  - call 1 #f 1
+- call 1 #f $$close
+- set open-output-string
+- get ||
+- set get-output-string
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 0 #f
+      - get 1
+      - call 1 #f null?
+      - if
+        - call 0 #f eof-object
+      - constant procedure 1 #f
+        - get 3
+        - call 1 #f cdr
+        - set 4
+        - get 0
+      - call 1 #f $$close
+      - get 2
+      - call 1 #f car
+      - call 1 #f 1
+    - call 1 #f $$close
+    - constant procedure 0 #f
+      - constant ()
+      - set 3
+      - constant #f
+    - call 1 #f $$close
+    - call 2 #f make-input-port
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f bytevector->list
+  - call 1 #f 1
+- call 1 #f $$close
+- set open-input-bytevector
+- constant procedure 0 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 4
+        - get 5
+        - call 1 #f bytevector-length
+        - constant 1
+        - call 2 #f ||
+        - call 2 #f set-car!
+        - set 0
+        - get 2
+        - get 1
+        - call 1 #f list
+        - call 2 #f set-cdr!
+        - set 0
+        - get 2
+        - call 1 #f cdr
+        - set 3
+        - constant #f
+      - call 1 #f $$close
+      - constant procedure 0 #f
+        - constant #f
+      - call 1 #f $$close
+      - constant procedure 0 #f
+        - constant #f
+      - call 1 #f $$close
+      - get 5
+      - call 4 #f make-output-port
+    - call 1 #f $$close
+    - get 1
+    - call 1 #f 1
+  - call 1 #f $$close
+  - call 0 #f bytevector
+  - call 1 #f 1
+- call 1 #f $$close
+- set open-output-bytevector
+- get ||
+- set get-output-bytevector
 - constant procedure 1 #t
   - constant "<unknown>"
   - get 1
@@ -3942,7 +4187,8 @@
         - get 4
         - call 1 #f ||
       - call 1 #f $$close
-      - call 4 #f make-port
+      - constant ()
+      - call 5 #f make-port
     - call 1 #f $$close
     - get 1
     - call 1 #f string->code-points
@@ -7925,6 +8171,7 @@
                                             - (list->bytevector . list->bytevector)
                                             - (bytevector->list . bytevector->list)
                                             - (string? . string?)
+                                            - (string . string)
                                             - (list->string . list->string)
                                             - (string->list . string->list)
                                             - (string-append . string-append)
@@ -8000,6 +8247,12 @@
                                             - (write-bytevector . write-bytevector)
                                             - (newline . newline)
                                             - (flush-output-port . flush-output-port)
+                                            - (open-input-string . open-input-string)
+                                            - (open-output-string . open-output-string)
+                                            - (get-output-string . get-output-string)
+                                            - (open-input-bytevector . open-input-bytevector)
+                                            - (open-output-bytevector . open-output-bytevector)
+                                            - (get-output-bytevector . get-output-bytevector)
                                             - (write-value . write-value)
                                           - list
                                             - list
@@ -8176,6 +8429,7 @@
                                             - (list->bytevector . list->bytevector)
                                             - (bytevector->list . bytevector->list)
                                             - (string? . string?)
+                                            - (string . string)
                                             - (list->string . list->string)
                                             - (string->code-points . string->code-points)
                                             - (code-points->string . code-points->string)
