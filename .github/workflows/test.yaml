@@ -192,6 +192,7 @@ jobs:
       - minimal
       - decode
       - r7rs_compatible_compiler
+      - r7rs_compatible_library
       - profile
     if: always()
     runs-on: ubuntu-latest
