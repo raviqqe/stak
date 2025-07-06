@@ -185,8 +185,12 @@ Feature: Read
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | bytes | output |
-      | 65    | A      |
+      | bytes           | output |
+      | 65              | A      |
+      | 227 129 130     | A      |
+      | 227 129         | B      |
+      | 240 159 152 132 | A      |
+      | 240 159 152     | B      |
 
   @long
   Scenario Outline: Read a value
