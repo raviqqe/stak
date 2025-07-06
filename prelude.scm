@@ -1032,6 +1032,30 @@
           (list-head xs (- end start))
           xs)))
 
+    ;; Sequence
+
+    (define sequence-length car)
+
+    (define (sequence-copy! to at from . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (sequence-length from)
+          (cadr rest)))
+
+      (do ((xs
+             (list-copy
+               (sequence->list from)
+               start
+               (min end (+ start (- (sequence-length to) at))))
+             (cdr xs))
+           (ys
+             (list-tail (sequence->list to) at)
+             (cdr ys)))
+        ((null? xs)
+          #f)
+        (set-car! ys (car xs))))
+
     ;; Vector
 
     (define vector? (instance? vector-type))
@@ -1042,7 +1066,7 @@
     (define (make-vector length . rest)
       (list->vector (apply make-list (cons length rest))))
 
-    (define vector-length car)
+    (define vector-length sequence-length)
 
     (define vector->list cdr)
 
@@ -1067,25 +1091,7 @@
     (define (vector-map f xs)
       (list->vector (map f (vector->list xs))))
 
-    (define (vector-copy! to at from . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end
-        (if (or (null? rest) (null? (cdr rest)))
-          (vector-length from)
-          (cadr rest)))
-
-      (do ((xs
-             (list-copy
-               (vector->list from)
-               start
-               (min end (+ start (- (vector-length to) at))))
-             (cdr xs))
-           (ys
-             (list-tail (vector->list to) at)
-             (cdr ys)))
-        ((null? xs)
-          #f)
-        (set-car! ys (car xs))))
+    (define vector-copy! sequence-copy!)
 
     (define (vector-fill! xs fill . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1112,7 +1118,7 @@
     (define (bytevector . xs)
       (list->bytevector xs))
 
-    (define bytevector-length car)
+    (define bytevector-length sequence-length)
 
     (define bytevector->list cdr)
 
@@ -1131,7 +1137,7 @@
     (define (bytevector-copy xs . rest)
       (list->bytevector (apply list-copy (bytevector->list xs) rest)))
 
-    (define bytevector-copy! vector-copy!)
+    (define bytevector-copy! sequence-copy!)
 
     ;; String
 
@@ -1146,7 +1152,7 @@
     (define (code-points->string x)
       (string-rib x (length x)))
 
-    (define string-length car)
+    (define string-length sequence-length)
 
     (define string->code-points cdr)
 
