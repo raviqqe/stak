@@ -2079,7 +2079,7 @@
 
     (define (u8-ready? . rest)
       ; TODO Fix this cheating!
-      (peek-u8)
+      (apply peek-u8 rest)
       #t)
 
     (define (read-char-bytes port)
