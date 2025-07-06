@@ -170,6 +170,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: tools/r7rs_compatible_compiler_test.sh
+  r7rs_compatible_library:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/r7rs_compatible_library_test.sh
   profile:
     runs-on: ubuntu-latest
     steps:
@@ -186,6 +192,7 @@ jobs:
       - minimal
       - decode
       - r7rs_compatible_compiler
+      - r7rs_compatible_library
       - profile
     if: always()
     runs-on: ubuntu-latest
