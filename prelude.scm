@@ -99,6 +99,8 @@
     truncate-quotient
     modulo
     floor-remainder
+    floor-quotient
+    truncate/
     truncate
     floor
     ceiling
@@ -109,6 +111,7 @@
     exp
     expt
     log
+    square
     =
     <
     >
@@ -747,6 +750,9 @@
         ((_ x y)
           ($/ x y))))
 
+    (define (square x y)
+      (* x y))
+
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
 
@@ -760,6 +766,7 @@
           (+ r y))))
 
     (define floor-remainder modulo)
+    (define floor-quotient modulo)
 
     (define (truncate x)
       (quotient x 1))
@@ -1572,6 +1579,7 @@
     inexact
     abs
     expt
+    square
     =
     <
     >
