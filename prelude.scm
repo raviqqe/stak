@@ -775,9 +775,7 @@
       (quotient x 1))
 
     (define (floor x)
-      (-
-        (quotient x 1)
-        (if (negative? (remainder x 1)) 1 0)))
+      (floor-quotient x 1))
 
     (define (floor-quotient x y)
       (/ (- x (floor-remainder x y)) y))

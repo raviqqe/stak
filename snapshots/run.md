@@ -397,16 +397,7 @@
 - constant procedure 1 #f
   - get 0
   - constant 1
-  - call 2 #f quotient
-  - get 1
-  - constant 1
-  - call 2 #f remainder
-  - call 1 #f negative?
-  - if
-    - constant 1
-    - continue
-  - constant 0
-  - call 2 #f ||
+  - call 2 #f floor-quotient
 - call 1 #f $$close
 - set floor
 - constant procedure 2 #f
