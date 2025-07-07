@@ -2405,14 +2405,6 @@
   - make-symbol-table
   - call/cc
   - call-with-current-continuation
-  - make-point
-  - point?
-  - point-depth
-  - point-before
-  - point-after
-  - point-parent
-  - current-point
-  - set-current-point!
   - dynamic-wind
   - make-parameter
   - parameterize
@@ -2693,12 +2685,12 @@
 - constant procedure 1 #f
   - constant procedure 2 #f
     - constant procedure 1 #f
-      - get current-point
+      - get ||
       - get 3
       - call 2 #f ||
       - set 0
       - get 2
-      - call 1 #f set-current-point!
+      - call 1 #f ||
       - set 0
       - get ||
       - call 1 #f close
@@ -2714,7 +2706,7 @@
   - call 1 #f close
   - call 1 #f cddr
   - call 1 #f cadr
-  - get current-point
+  - get ||
   - call 2 #f 2
 - call 1 #f $$close
 - set call/cc
@@ -2730,55 +2722,55 @@
 - set ||
 - get ||
 - call 1 #f ||
-- set make-point
+- set ||
 - get ||
 - call 1 #f ||
-- set point?
+- set ||
 - get ||
 - constant depth
 - call 2 #f ||
-- set point-depth
+- set ||
 - get ||
 - constant before
 - call 2 #f ||
-- set point-before
+- set ||
 - get ||
 - constant after
 - call 2 #f ||
-- set point-after
+- set ||
 - get ||
 - constant parent
 - call 2 #f ||
-- set point-parent
+- set ||
 - constant 0
 - constant #f
 - constant #f
 - constant #f
-- call 4 #f make-point
-- set current-point
+- call 4 #f ||
+- set ||
 - constant procedure 1 #f
   - get 0
-  - set current-point
+  - set ||
   - constant #f
 - call 1 #f $$close
-- set set-current-point!
+- set ||
 - constant procedure 3 #f
   - call 0 #f 2
   - set 0
   - constant procedure 1 #f
     - get 0
-    - call 1 #f point-depth
+    - call 1 #f ||
     - constant 1
     - call 2 #f ||
     - get 5
     - get 4
     - get 3
-    - call 4 #f make-point
-    - call 1 #f set-current-point!
+    - call 4 #f ||
+    - call 1 #f ||
     - set 0
     - constant procedure 1 #f
       - get 2
-      - call 1 #f set-current-point!
+      - call 1 #f ||
       - set 0
       - call 0 #f 4
       - set 0
@@ -2787,7 +2779,7 @@
     - call 0 #f 4
     - call 1 #f 1
   - call 1 #f $$close
-  - get current-point
+  - get ||
   - call 1 #f 1
 - call 1 #f $$close
 - set dynamic-wind
@@ -2798,26 +2790,26 @@
   - if
     - constant #f
   - get 1
-  - call 1 #f point-depth
+  - call 1 #f ||
   - get 1
-  - call 1 #f point-depth
+  - call 1 #f ||
   - call 2 #f ||
   - if
     - get 1
     - get 1
-    - call 1 #f point-parent
+    - call 1 #f ||
     - call 2 #f ||
     - set 0
     - get 0
-    - call 1 #f point-before
+    - call 1 #f ||
     - call 0 #f 0
   - get 1
-  - call 1 #f point-after
+  - call 1 #f ||
   - call 0 #f 0
   - set 1
   - set 0
   - get 1
-  - call 1 #f point-parent
+  - call 1 #f ||
   - get 1
   - call 2 #f ||
 - call 1 #f $$close
@@ -8304,14 +8296,6 @@
                                             - (call-with-values . call-with-values)
                                             - (call/cc . call/cc)
                                             - (call-with-current-continuation . call-with-current-continuation)
-                                            - (make-point . make-point)
-                                            - (point? . point?)
-                                            - (point-depth . point-depth)
-                                            - (point-before . point-before)
-                                            - (point-after . point-after)
-                                            - (point-parent . point-parent)
-                                            - (current-point . current-point)
-                                            - (set-current-point! . set-current-point!)
                                             - (dynamic-wind . dynamic-wind)
                                             - (make-parameter . make-parameter)
                                             - (parameterize . parameterize)
