@@ -824,6 +824,10 @@
 - call 1 #f ||
 - set ||
 - get ||
+- set ||
+- get ||
+- set ||
+- get ||
 - call 1 #f ||
 - set ||
 - get ||
