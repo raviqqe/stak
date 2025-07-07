@@ -760,36 +760,37 @@
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
 
-    (define truncate-remainder remainder)
     (define truncate-quotient quotient)
+    (define truncate-remainder remainder)
 
     (define (truncate/ x y)
       (values
         (truncate-quotient x y)
         (truncate-remainder x y)))
 
-    (define (modulo x y)
+    (define (truncate x)
+      (quotient x 1))
+
+    (define (floor x)
+      (-
+        (quotient x 1)
+        (if (negative? (remainder x 1)) 1 0)))
+
+    (define (floor-quotient x y)
+      (floor (/ x y)))
+
+    (define (floor-remainder x y)
       (let ((r (remainder x y)))
         (if (or (zero? r) (eq? (negative? x) (negative? y)))
           r
           (+ r y))))
-
-    (define floor-remainder modulo)
-    (define floor-quotient modulo)
 
     (define (floor/ x y)
       (values
         (floor-quotient x y)
         (floor-remainder x y)))
 
-    (define (truncate x)
-      (quotient x 1))
-
-    (define (floor x)
-      (let ((y (quotient x 1)))
-        (if (negative? (remainder x 1))
-          (- y 1)
-          y)))
+    (define modulo floor-remainder)
 
     (define (ceiling x)
       (- (floor (- x))))
