@@ -116,6 +116,9 @@
 - constant 503
 - call 1 #f primitive
 - set ||
+- constant 504
+- call 1 #f primitive
+- set ||
 - constant procedure 3 #f
   - get 1
   - get 1
@@ -276,6 +279,15 @@
 - set inexact?
 - constant procedure 1 #f
   - get 0
+  - call 1 #f exact?
+  - if
+    - get 0
+    - call 1 #f integer?
+  - constant #f
+- call 1 #f $$close
+- set exact-integer?
+- constant procedure 1 #f
+  - get 0
   - constant 0
   - call 2 #f eq?
 - call 1 #f $$close
@@ -346,6 +358,12 @@
 - constant 1
 - call 2 #f ||
 - set /
+- constant procedure 1 #f
+  - get 0
+  - get 1
+  - call 2 #f ||
+- call 1 #f $$close
+- set square
 - constant procedure 2 #f
   - get 1
   - get 2
@@ -356,10 +374,48 @@
   - call 2 #f ||
 - call 1 #f $$close
 - set quotient
-- get remainder
-- set truncate-remainder
 - get quotient
 - set truncate-quotient
+- get remainder
+- set truncate-remainder
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f truncate-quotient
+  - get 2
+  - get 2
+  - call 2 #f truncate-remainder
+  - call 2 #f values
+- call 1 #f $$close
+- set truncate/
+- constant procedure 1 #f
+  - get 0
+  - constant 1
+  - call 2 #f quotient
+- call 1 #f $$close
+- set truncate
+- constant procedure 1 #f
+  - get 0
+  - constant 1
+  - call 2 #f quotient
+  - get 1
+  - constant 1
+  - call 2 #f remainder
+  - call 1 #f negative?
+  - if
+    - constant 1
+    - continue
+  - constant 0
+  - call 2 #f ||
+- call 1 #f $$close
+- set floor
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f ||
+  - call 1 #f floor
+- call 1 #f $$close
+- set floor-quotient
 - constant procedure 2 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -388,33 +444,19 @@
   - call 2 #f remainder
   - call 1 #f 1
 - call 1 #f $$close
-- set modulo
-- get modulo
 - set floor-remainder
-- constant procedure 1 #f
-  - get 0
-  - constant 1
-  - call 2 #f quotient
-- call 1 #f $$close
-- set truncate
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 2
-    - constant 1
-    - call 2 #f remainder
-    - call 1 #f negative?
-    - if
-      - get 0
-      - constant 1
-      - call 2 #f ||
-    - get 0
-  - call 1 #f $$close
+- constant procedure 2 #f
   - get 1
-  - constant 1
-  - call 2 #f quotient
-  - call 1 #f 1
+  - get 1
+  - call 2 #f floor-quotient
+  - get 2
+  - get 2
+  - call 2 #f floor-remainder
+  - call 2 #f values
 - call 1 #f $$close
-- set floor
+- set floor/
+- get floor-remainder
+- set modulo
 - constant procedure 1 #f
   - get 0
   - call 1 #f -
@@ -489,6 +531,21 @@
   - call 1 #f exp
 - call 1 #f $$close
 - set expt
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - get 3
+    - get 2
+    - call 1 #f square
+    - call 2 #f ||
+    - call 2 #f values
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f ||
+  - call 1 #f floor
+  - call 1 #f 1
+- call 1 #f $$close
+- set exact-integer-sqrt
 - get eq?
 - call 1 #f ||
 - set =
@@ -2793,6 +2850,7 @@
   - number?
   - exact?
   - inexact?
+  - exact-integer?
   - zero?
   - positive?
   - negative?
@@ -2804,12 +2862,15 @@
   - /
   - remainder
   - quotient
-  - truncate-remainder
-  - truncate-quotient
   - modulo
-  - floor-remainder
   - truncate
+  - truncate-quotient
+  - truncate-remainder
+  - truncate/
   - floor
+  - floor-quotient
+  - floor-remainder
+  - floor/
   - ceiling
   - round
   - exact
@@ -2818,6 +2879,8 @@
   - exp
   - expt
   - log
+  - square
+  - exact-integer-sqrt
   - =
   - <
   - >
@@ -8426,6 +8489,7 @@
                                             - (number? . number?)
                                             - (exact? . exact?)
                                             - (inexact? . inexact?)
+                                            - (exact-integer? . exact-integer?)
                                             - (zero? . zero?)
                                             - (positive? . positive?)
                                             - (negative? . negative?)
@@ -8437,18 +8501,23 @@
                                             - (/ . /)
                                             - (remainder . remainder)
                                             - (quotient . quotient)
-                                            - (truncate-remainder . truncate-remainder)
-                                            - (truncate-quotient . truncate-quotient)
                                             - (modulo . modulo)
-                                            - (floor-remainder . floor-remainder)
                                             - (truncate . truncate)
+                                            - (truncate-quotient . truncate-quotient)
+                                            - (truncate-remainder . truncate-remainder)
+                                            - (truncate/ . truncate/)
                                             - (floor . floor)
+                                            - (floor-quotient . floor-quotient)
+                                            - (floor-remainder . floor-remainder)
+                                            - (floor/ . floor/)
                                             - (ceiling . ceiling)
                                             - (round . round)
                                             - (exact . exact)
                                             - (inexact . inexact)
                                             - (abs . abs)
                                             - (expt . expt)
+                                            - (square . square)
+                                            - (exact-integer-sqrt . exact-integer-sqrt)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)
@@ -8684,6 +8753,7 @@
                                             - (number? . number?)
                                             - (exact? . exact?)
                                             - (inexact? . inexact?)
+                                            - (exact-integer? . exact-integer?)
                                             - (zero? . zero?)
                                             - (positive? . positive?)
                                             - (negative? . negative?)
@@ -8695,12 +8765,15 @@
                                             - (/ . /)
                                             - (remainder . remainder)
                                             - (quotient . quotient)
-                                            - (truncate-remainder . truncate-remainder)
-                                            - (truncate-quotient . truncate-quotient)
                                             - (modulo . modulo)
-                                            - (floor-remainder . floor-remainder)
                                             - (truncate . truncate)
+                                            - (truncate-quotient . truncate-quotient)
+                                            - (truncate-remainder . truncate-remainder)
+                                            - (truncate/ . truncate/)
                                             - (floor . floor)
+                                            - (floor-quotient . floor-quotient)
+                                            - (floor-remainder . floor-remainder)
+                                            - (floor/ . floor/)
                                             - (ceiling . ceiling)
                                             - (round . round)
                                             - (exact . exact)
@@ -8709,6 +8782,8 @@
                                             - (exp . exp)
                                             - (expt . expt)
                                             - (log . log)
+                                            - (square . square)
+                                            - (exact-integer-sqrt . exact-integer-sqrt)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)

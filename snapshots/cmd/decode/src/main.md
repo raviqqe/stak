@@ -347,6 +347,8 @@
   - call 1 #f 1
 - call 1 #f ||
 - set ||
+- get ||
+- set ||
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
