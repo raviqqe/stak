@@ -807,7 +807,7 @@
       (exp (* (log x) y)))
 
     (define (exact-integer-sqrt x)
-      (let ((y (sqrt x)))
+      (let ((y (floor (sqrt x))))
         (values y (- x (square y)))))
 
     (define = (comparison-operator eq?))
