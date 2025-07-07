@@ -1514,37 +1514,6 @@
           (apply consumer (tuple-values xs))
           (consumer xs))))))
 
-(define-library (stak continue)
-  (export string->symbol)
-
-  (import (stak base))
-
-  (begin
-    ; Symbol table
-
-    (define-record-type symbol-table
-      (make-symbol-table symbols)
-      symbol-table?
-      (symbols symbol-table-symbols symbol-table-set-symbols!))
-
-    (define string->symbol
-      (let ((global-table (make-symbol-table ($$symbols))))
-        (lambda (name . rest)
-          (define table (if (null? rest) global-table (car rest)))
-
-          (cond
-            ((member
-                name
-                (symbol-table-symbols table)
-                (lambda (name symbol) (equal? name (symbol->string symbol))))
-              =>
-              car)
-
-            (else
-              (let ((name (string->uninterned-symbol name)))
-                (symbol-table-set-symbols! table (cons name (symbol-table-symbols table)))
-                name))))))))
-
 (define-library (scheme base)
   (export
     syntax-rules
@@ -1818,13 +1787,38 @@
 
     set-write!)
 
-  (import (stak base) (stak continue))
+  (import (stak base))
 
   (begin
     (define $halt (primitive 40))
     (define $read-input (primitive 100))
     (define $write-output (primitive 101))
     (define $write-error (primitive 102))
+
+    ; Symbol table
+
+    (define-record-type symbol-table
+      (make-symbol-table symbols)
+      symbol-table?
+      (symbols symbol-table-symbols symbol-table-set-symbols!))
+
+    (define string->symbol
+      (let ((global-table (make-symbol-table ($$symbols))))
+        (lambda (name . rest)
+          (define table (if (null? rest) global-table (car rest)))
+
+          (cond
+            ((member
+                name
+                (symbol-table-symbols table)
+                (lambda (name symbol) (equal? name (symbol->string symbol))))
+              =>
+              car)
+
+            (else
+              (let ((name (string->uninterned-symbol name)))
+                (symbol-table-set-symbols! table (cons name (symbol-table-symbols table)))
+                name))))))
 
     ; Control
 
