@@ -1516,6 +1516,8 @@
 
 (define-library (stak continue)
   (export
+    make-symbol-table
+    symbol-table?
     string->symbol
 
     call/cc
