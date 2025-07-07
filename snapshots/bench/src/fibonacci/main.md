@@ -1483,6 +1483,8 @@
   - constant #f
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant list
   - ("alarm" . #\alarm)
   - ("backspace" . #\backspace)

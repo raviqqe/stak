@@ -1109,5 +1109,7 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant "Hello, world!\n"
 - call 1 #f ||

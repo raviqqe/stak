@@ -1794,6 +1794,8 @@
   - constant #f
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 40
 - call 1 #f ||
 - set ||

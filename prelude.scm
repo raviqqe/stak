@@ -1516,10 +1516,6 @@
 
 (define-library (stak continue)
   (export
-    make-symbol-table
-    symbol-table?
-    string->symbol
-
     call/cc
     call-with-current-continuation
 
@@ -2423,7 +2419,33 @@
 
     set-write!)
 
-  (import (stak base) (stak continue)))
+  (import (stak base) (stak continue))
+
+  (begin
+    ; Symbol table
+
+    (define-record-type symbol-table
+      (make-symbol-table symbols)
+      symbol-table?
+      (symbols symbol-table-symbols symbol-table-set-symbols!))
+
+    (define string->symbol
+      (let ((global-table (make-symbol-table ($$symbols))))
+        (lambda (name . rest)
+          (define table (if (null? rest) global-table (car rest)))
+
+          (cond
+            ((member
+                name
+                (symbol-table-symbols table)
+                (lambda (name symbol) (equal? name (symbol->string symbol))))
+              =>
+              car)
+
+            (else
+              (let ((name (string->uninterned-symbol name)))
+                (symbol-table-set-symbols! table (cons name (symbol-table-symbols table)))
+                name))))))))
 
 (define-library (scheme inexact)
   (export
