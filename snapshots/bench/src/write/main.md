@@ -2187,6 +2187,12 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant procedure 1 #f
+  - get 0
+  - set ||
+  - constant #f
+- call 1 #f ||
+- set ||
 - constant list
   - ("alarm" . #\alarm)
   - ("backspace" . #\backspace)
@@ -2994,7 +3000,8 @@
 - call 1 #f ||
 - set ||
 - get ||
-- set ||
+- call 1 #f ||
+- set 0
 - constant procedure 0 #f
   - constant procedure 1 #f
     - get 0
