@@ -95,14 +95,14 @@
     /
     remainder
     quotient
-    truncate-remainder
-    truncate-quotient
     modulo
-    floor-remainder
-    floor-quotient
-    truncate/
     truncate
+    truncate-quotient
+    truncate-remainder
+    truncate/
     floor
+    floor-quotient
+    floor-remainder
     ceiling
     round
     exact
@@ -1580,12 +1580,14 @@
     /
     remainder
     quotient
-    truncate-remainder
-    truncate-quotient
     modulo
-    floor-remainder
     truncate
+    truncate-quotient
+    truncate-remainder
+    truncate/
     floor
+    floor-quotient
+    floor-remainder
     ceiling
     round
     exact
