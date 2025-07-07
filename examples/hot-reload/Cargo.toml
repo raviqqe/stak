@@ -11,7 +11,7 @@ hot-reload = ["stak/hot-reload"]
 [dependencies]
 axum = "0.8.4"
 stak = { version = "0.10.31", path = "../../root" }
-tokio = { version = "1.46.0", features = ["rt-multi-thread"] }
+tokio = { version = "1.46.1", features = ["rt-multi-thread"] }
 
 [build-dependencies]
 stak-build = { version = "0.10.31", path = "../../build" }
