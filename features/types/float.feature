@@ -27,6 +27,60 @@ Feature: Floating-point number
       | integer?  | 3.14     | B      |
       | integer?  | -42.2045 | B      |
 
+  Scenario Outline: Check if a number is exact
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (exact? <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | -42   | A      |
+      | -3.14 | B      |
+      | 0     | A      |
+      | 3.14  | B      |
+      | 42    | A      |
+
+  Scenario Outline: Check if a number is inexact
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (inexact? <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | -42   | B      |
+      | -3.14 | A      |
+      | 0     | B      |
+      | 3.14  | A      |
+      | 42    | B      |
+
+  Scenario Outline: Check if a number is an exact integer
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (exact-integer? <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | -42   | A      |
+      | -3.14 | B      |
+      | 0     | A      |
+      | 3.14  | B      |
+      | 42    | A      |
+
   Scenario: Calculate an exponentiation
     Given a file named "main.scm" with:
       """scheme
