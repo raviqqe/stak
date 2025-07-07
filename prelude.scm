@@ -1719,15 +1719,6 @@
     call/cc
     call-with-current-continuation
 
-    make-point
-    point?
-    point-depth
-    point-before
-    point-after
-    point-parent
-    current-point
-    set-current-point!
-
     dynamic-wind
 
     make-parameter
