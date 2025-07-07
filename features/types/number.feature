@@ -204,6 +204,30 @@ Feature: Number
       | (floor-remainder -5 2)     | 1     |
       | (floor-remainder -5 -2)    | -1    |
 
+  Scenario Outline: Use multi-value division operators
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-values (x y) <expression>)
+
+      (write-u8 (if (= x <quotient>) 65 66))
+      (write-u8 (if (= y <remainder>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AA"
+
+    Examples:
+      | expression        | quotient | remainder |
+      | (floor/ 8 3)      | 2        | 2         |
+      | (floor/ 8 -3)     | -3       | -1        |
+      | (floor/ -8 3)     | -3       | 1         |
+      | (floor/ -8 -3)    | 2        | -2        |
+      | (truncate/ 8 3)   | 2        | 2         |
+      | (truncate/ 8 -3)  | -2       | 2         |
+      | (truncate/ -8 3)  | -2       | -2        |
+      | (truncate/ -8 -3) | 2        | -2        |
+
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
       """scheme
@@ -213,6 +237,48 @@ Feature: Number
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario Outline: Calculate a square
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (square <value>) <result>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value | result |
+      | -3    | 9      |
+      | -2    | 4      |
+      | -1    | 1      |
+      | 0     | 0      |
+      | 1     | 1      |
+      | 2     | 4      |
+      | 3     | 9      |
+
+  Scenario Outline: Calculate a square root of an exact integer
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-values (x y) (exact-integer-sqrt <value>))
+
+      (write-u8 (if (= x <root>) 65 66))
+      (write-u8 (if (= y <remainder>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AA"
+
+    Examples:
+      | value | root | remainder |
+      | 0     | 0    | 0         |
+      | 1     | 1    | 0         |
+      | 4     | 2    | 0         |
+      | 5     | 2    | 1         |
+      | 8     | 2    | 4         |
+      | 9     | 3    | 0         |
 
   Scenario Outline: Compare numbers
     Given a file named "main.scm" with:

@@ -84,6 +84,7 @@
     number?
     exact?
     inexact?
+    exact-integer?
     zero?
     positive?
     negative?
@@ -95,12 +96,15 @@
     /
     remainder
     quotient
-    truncate-remainder
-    truncate-quotient
     modulo
-    floor-remainder
     truncate
+    truncate-quotient
+    truncate-remainder
+    truncate/
     floor
+    floor-quotient
+    floor-remainder
+    floor/
     ceiling
     round
     exact
@@ -109,6 +113,8 @@
     exp
     expt
     log
+    square
+    exact-integer-sqrt
     =
     <
     >
@@ -629,6 +635,7 @@
     (define $log (primitive 501))
     (define infinite? (primitive 502))
     (define nan? (primitive 503))
+    (define sqrt (primitive 504))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -702,6 +709,8 @@
     (define exact? integer?)
     (define (inexact? x)
       (not (exact? x)))
+    (define (exact-integer? x)
+      (and (exact? x) (integer? x)))
 
     (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
@@ -748,28 +757,43 @@
         ((_ x y)
           ($/ x y))))
 
+    (define (square x)
+      (* x x))
+
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
 
-    (define truncate-remainder remainder)
     (define truncate-quotient quotient)
+    (define truncate-remainder remainder)
 
-    (define (modulo x y)
-      (let ((r (remainder x y)))
-        (if (or (zero? r) (eq? (negative? x) (negative? y)))
-          r
-          (+ r y))))
-
-    (define floor-remainder modulo)
+    (define (truncate/ x y)
+      (values
+        (truncate-quotient x y)
+        (truncate-remainder x y)))
 
     (define (truncate x)
       (quotient x 1))
 
     (define (floor x)
-      (let ((y (quotient x 1)))
-        (if (negative? (remainder x 1))
-          (- y 1)
-          y)))
+      (-
+        (quotient x 1)
+        (if (negative? (remainder x 1)) 1 0)))
+
+    (define (floor-quotient x y)
+      (floor (/ x y)))
+
+    (define (floor-remainder x y)
+      (let ((r (remainder x y)))
+        (if (or (zero? r) (eq? (negative? x) (negative? y)))
+          r
+          (+ r y))))
+
+    (define (floor/ x y)
+      (values
+        (floor-quotient x y)
+        (floor-remainder x y)))
+
+    (define modulo floor-remainder)
 
     (define (ceiling x)
       (- (floor (- x))))
@@ -797,6 +821,10 @@
 
     (define (expt x y)
       (exp (* (log x) y)))
+
+    (define (exact-integer-sqrt x)
+      (let ((y (floor (sqrt x))))
+        (values y (- x (square y)))))
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
@@ -1556,6 +1584,7 @@
     number?
     exact?
     inexact?
+    exact-integer?
     zero?
     positive?
     negative?
@@ -1567,18 +1596,23 @@
     /
     remainder
     quotient
-    truncate-remainder
-    truncate-quotient
     modulo
-    floor-remainder
     truncate
+    truncate-quotient
+    truncate-remainder
+    truncate/
     floor
+    floor-quotient
+    floor-remainder
+    floor/
     ceiling
     round
     exact
     inexact
     abs
     expt
+    square
+    exact-integer-sqrt
     =
     <
     >
@@ -2222,7 +2256,7 @@
           (let loop ((head 32) (offset 64) (mask 192))
             (if (zero? (quotient integer (* head offset)))
               (begin
-                ; TODO Use `floor/`.
+                ; TODO Use `floor/`?
                 (write-u8 (+ mask (quotient integer offset)) port)
                 (write-trailing-bytes (remainder integer offset) port))
               (loop (/ head 2) (* offset 64) (+ mask head)))))))
