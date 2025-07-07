@@ -220,12 +220,12 @@ Feature: Number
     Examples:
       | expression        | quotient | remainder |
       | (floor/ 8 3)      | 2        | 2         |
-      | (floor/ 8 -3)     | -2       | 2         |
-      | (floor/ -8 3)     | -2       | -2        |
+      | (floor/ 8 -3)     | -3       | -1        |
+      | (floor/ -8 3)     | -3       | 1         |
       | (floor/ -8 -3)    | 2        | -2        |
       | (truncate/ 8 3)   | 2        | 2         |
-      | (truncate/ 8 -3)  | -3       | -1        |
-      | (truncate/ -8 3)  | -3       | 1         |
+      | (truncate/ 8 -3)  | -2       | 2         |
+      | (truncate/ -8 3)  | -2       | -2        |
       | (truncate/ -8 -3) | 2        | -2        |
 
   Scenario: Calculate a multiplicative inverse
