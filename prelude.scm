@@ -112,6 +112,7 @@
     expt
     log
     square
+    exact-integer-sqrt
     =
     <
     >
@@ -631,6 +632,7 @@
     (define $log (primitive 501))
     (define infinite? (primitive 502))
     (define nan? (primitive 503))
+    (define sqrt (primitive 504))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -750,8 +752,8 @@
         ((_ x y)
           ($/ x y))))
 
-    (define (square x y)
-      (* x y))
+    (define (square x)
+      (* x x))
 
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
@@ -803,6 +805,10 @@
 
     (define (expt x y)
       (exp (* (log x) y)))
+
+    (define (exact-integer-sqrt x)
+      (let ((y (sqrt x)))
+        (values y (- x (square y)))))
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))

@@ -214,6 +214,48 @@ Feature: Number
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario Outline: Calculate a square
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (square <value>) <result>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value | result |
+      | -3    | 9      |
+      | -2    | 4      |
+      | -1    | 1      |
+      | 0     | 0      |
+      | 1     | 1      |
+      | 2     | 4      |
+      | 3     | 9      |
+
+  Scenario Outline: Calculate a square root of an exact integer
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-values (x y) (exact-integer-sqrt <value>))
+
+      (write-u8 (if (= x <root>) 65 66))
+      (write-u8 (if (= y <remainder>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AA"
+
+    Examples:
+      | value | root | remainder |
+      | 0     | 0    | 0         |
+      | 1     | 1    | 0         |
+      | 4     | 2    | 0         |
+      | 5     | 2    | 1         |
+      | 8     | 2    | 4         |
+      | 9     | 3    | 0         |
+
   Scenario Outline: Compare numbers
     Given a file named "main.scm" with:
       """scheme
