@@ -18,7 +18,12 @@
   (if (error-object? value)
     (begin
       (display "ERROR: ")
-      (display (error-object-message value)))
+      (display (error-object-message value))
+      (for-each
+        (lambda (value)
+          (write-char #\space)
+          (write value))
+        (error-object-irritants value)))
     (write value)))
 
 (define (main)
