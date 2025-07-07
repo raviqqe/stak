@@ -84,6 +84,7 @@
     number?
     exact?
     inexact?
+    exact-integer?
     zero?
     positive?
     negative?
@@ -708,6 +709,8 @@
     (define exact? integer?)
     (define (inexact? x)
       (not (exact? x)))
+    (define (exact-integer? x)
+      (and (exact? x) (integer? x)))
 
     (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
@@ -1581,6 +1584,7 @@
     number?
     exact?
     inexact?
+    exact-integer?
     zero?
     positive?
     negative?
