@@ -2256,7 +2256,7 @@
           (let loop ((head 32) (offset 64) (mask 192))
             (if (zero? (quotient integer (* head offset)))
               (begin
-                ; TODO Use `floor/`.
+                ; TODO Use `floor/`?
                 (write-u8 (+ mask (quotient integer offset)) port)
                 (write-trailing-bytes (remainder integer offset) port))
               (loop (/ head 2) (* offset 64) (+ mask head)))))))
