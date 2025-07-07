@@ -397,52 +397,45 @@
 - constant procedure 1 #f
   - get 0
   - constant 1
-  - call 2 #f quotient
-  - get 1
-  - constant 1
-  - call 2 #f remainder
-  - call 1 #f negative?
-  - if
-    - constant 1
-    - continue
-  - constant 0
-  - call 2 #f ||
+  - call 2 #f floor-quotient
 - call 1 #f $$close
 - set floor
 - constant procedure 2 #f
   - get 1
+  - get 2
+  - get 2
+  - call 2 #f floor-remainder
+  - call 2 #f ||
   - get 1
   - call 2 #f ||
-  - call 1 #f floor
 - call 1 #f $$close
 - set floor-quotient
 - constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f remainder
   - constant procedure 1 #f
-    - constant procedure 1 #f
-      - get 0
-      - if
-        - get 0
-      - get 5
-      - call 1 #f negative?
-      - get 5
-      - call 1 #f negative?
-      - call 2 #f eq?
-    - call 1 #f $$close
-    - get 1
-    - constant 0
-    - call 2 #f eq?
-    - call 1 #f 1
-    - set 1
+    - get 0
     - if
       - get 0
-    - get 0
-    - get 3
-    - call 2 #f ||
+    - get 4
+    - call 1 #f negative?
+    - get 4
+    - call 1 #f negative?
+    - call 2 #f eq?
   - call 1 #f $$close
-  - get 2
-  - get 2
+  - get 3
+  - get 3
   - call 2 #f remainder
+  - constant 0
+  - call 2 #f eq?
   - call 1 #f 1
+  - set 1
+  - if
+    - constant 0
+    - continue
+  - get 1
+  - call 2 #f ||
 - call 1 #f $$close
 - set floor-remainder
 - constant procedure 2 #f
