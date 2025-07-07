@@ -198,11 +198,20 @@ Feature: Number
       | (modulo 8 -3)              | -1    |
       | (modulo -8 3)              | 1     |
       | (modulo -8 -3)             | -2    |
+      | (floor-quotient 5 1)       | 5     |
+      | (floor-quotient 5 2)       | 2     |
+      | (floor-quotient 5 3)       | 1     |
+      | (floor-quotient -5 2)      | -3    |
+      | (floor-quotient -5 -2)     | 2     |
       | (floor-remainder 5 1)      | 0     |
       | (floor-remainder 5 2)      | 1     |
       | (floor-remainder 5 3)      | 2     |
       | (floor-remainder -5 2)     | 1     |
       | (floor-remainder -5 -2)    | -1    |
+      | (floor-remainder 6 2)      | 0     |
+      | (floor-remainder 6 -2)     | 0     |
+      | (floor-remainder -6 2)     | 0     |
+      | (floor-remainder -6 -2)    | 0     |
 
   Scenario Outline: Use multi-value division operators
     Given a file named "main.scm" with:

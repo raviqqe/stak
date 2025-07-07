@@ -780,13 +780,16 @@
         (if (negative? (remainder x 1)) 1 0)))
 
     (define (floor-quotient x y)
-      (floor (/ x y)))
+      (/ (- x (floor-remainder x y)) y))
 
     (define (floor-remainder x y)
-      (let ((r (remainder x y)))
-        (if (or (zero? r) (eq? (negative? x) (negative? y)))
-          r
-          (+ r y))))
+      (+
+        (remainder x y)
+        (if (or
+             (zero? (remainder x y))
+             (eq? (negative? x) (negative? y)))
+          0
+          y)))
 
     (define (floor/ x y)
       (values
