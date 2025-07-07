@@ -1586,6 +1586,7 @@
     abs
     expt
     square
+    exact-integer-sqrt
     =
     <
     >
