@@ -2163,7 +2163,7 @@
 - set make-symbol-table
 - get ||
 - call 1 #f ||
-- set ||
+- set symbol-table?
 - get ||
 - constant symbols
 - call 2 #f ||
@@ -2398,8 +2398,10 @@
   - acos
   - asin
   - atan
-  - string->symbol
+  - continue
   - make-symbol-table
+  - symbol-table?
+  - string->symbol
   - call/cc
   - call-with-current-continuation
   - dynamic-wind
@@ -8364,6 +8366,69 @@
                                             - (record? . record?)
                                             - (values . values)
                                             - (call-with-values . call-with-values)
+                                            - (call/cc . call/cc)
+                                            - (call-with-current-continuation . call-with-current-continuation)
+                                            - (dynamic-wind . dynamic-wind)
+                                            - (make-parameter . make-parameter)
+                                            - (parameterize . parameterize)
+                                            - (error-object? . error-object?)
+                                            - (error-object-message . error-object-message)
+                                            - (error-object-irritants . error-object-irritants)
+                                            - (with-exception-handler . with-exception-handler)
+                                            - (raise . raise)
+                                            - (raise-continuable . raise-continuable)
+                                            - (error . error)
+                                            - (read-error . read-error)
+                                            - (file-error . file-error)
+                                            - (read-error? . read-error?)
+                                            - (file-error? . file-error?)
+                                            - (guard . guard)
+                                            - (unwind . unwind)
+                                            - (eof-object . eof-object)
+                                            - (eof-object? . eof-object?)
+                                            - (make-port . make-port)
+                                            - (make-input-port . make-input-port)
+                                            - (make-output-port . make-output-port)
+                                            - (port? . port?)
+                                            - (input-port? . input-port?)
+                                            - (output-port? . output-port?)
+                                            - (textual-port? . textual-port?)
+                                            - (binary-port? . binary-port?)
+                                            - (current-input-port . current-input-port)
+                                            - (current-output-port . current-output-port)
+                                            - (current-error-port . current-error-port)
+                                            - (close-port . close-port)
+                                            - (close-input-port . close-input-port)
+                                            - (close-output-port . close-output-port)
+                                            - (call-with-port . call-with-port)
+                                            - (input-port-open? . input-port-open?)
+                                            - (output-port-open? . output-port-open?)
+                                            - (read-u8 . read-u8)
+                                            - (peek-u8 . peek-u8)
+                                            - (u8-ready? . u8-ready?)
+                                            - (read-char . read-char)
+                                            - (peek-char . peek-char)
+                                            - (char-ready? . char-ready?)
+                                            - (write-u8 . write-u8)
+                                            - (write-char . write-char)
+                                            - (write-string . write-string)
+                                            - (write-bytevector . write-bytevector)
+                                            - (newline . newline)
+                                            - (flush-output-port . flush-output-port)
+                                            - (open-input-string . open-input-string)
+                                            - (open-output-string . open-output-string)
+                                            - (get-output-string . get-output-string)
+                                            - (open-input-bytevector . open-input-bytevector)
+                                            - (open-output-bytevector . open-output-bytevector)
+                                            - (get-output-bytevector . get-output-bytevector)
+                                            - (set-write! . set-write!)
+                                          - list
+                                            - list
+                                              - stak
+                                              - continue
+                                            - (make-symbol-table . make-symbol-table)
+                                            - (symbol-table? . symbol-table?)
+                                            - (string->symbol . string->symbol)
                                             - (call/cc . call/cc)
                                             - (call-with-current-continuation . call-with-current-continuation)
                                             - (dynamic-wind . dynamic-wind)
