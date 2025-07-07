@@ -1785,7 +1785,7 @@
     open-output-bytevector
     get-output-bytevector
 
-    write-value)
+    set-write!)
 
   (import (stak base))
 
@@ -1931,9 +1931,9 @@
                       (for-each
                         (lambda (value)
                           (write-char #\space)
-                          (write-value value))
+                          (write value))
                         (error-object-irritants exception)))
-                    (write-value exception))
+                    (write exception))
                   (newline)
                   ($halt))))))
         (lambda (handler)
@@ -2340,9 +2340,11 @@
 
     (define get-output-bytevector port-data)
 
-    ; Dummy implementation
-    (define (write-value value . rest)
-      (write-string "<unknown>" (get-output-port rest)))))
+    (define (write value . rest)
+      (write-string "<unknown>" (get-output-port rest)))
+
+    (define (set-write! f)
+      (set! write f))))
 
 (define-library (scheme inexact)
   (export
@@ -2878,7 +2880,7 @@
       (write-char #\#)
       (write-sequence (vector->list xs)))
 
-    (set! write-value write)))
+    (set-write! write)))
 
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)

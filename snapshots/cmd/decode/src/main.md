@@ -1788,6 +1788,12 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant procedure 1 #f
+  - get 0
+  - set ||
+  - constant #f
+- call 1 #f ||
+- set ||
 - constant 40
 - call 1 #f ||
 - set ||
@@ -2273,7 +2279,8 @@
 - call 1 #f ||
 - set ||
 - get ||
-- set ||
+- call 1 #f ||
+- set 0
 - constant 3
 - set ||
 - constant 4

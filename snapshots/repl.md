@@ -2455,7 +2455,7 @@
   - open-input-bytevector
   - open-output-bytevector
   - get-output-bytevector
-  - write-value
+  - set-write!
   - syntax-rules
   - define-syntax
   - \_
@@ -2915,14 +2915,14 @@
               - call 1 #f write-char
               - set 0
               - get 0
-              - call 1 #f write-value
+              - call 1 #f ||
             - call 1 #f $$close
             - get 8
             - call 1 #f error-object-irritants
             - call 2 #f for-each
             - continue
           - get 7
-          - call 1 #f write-value
+          - call 1 #f ||
           - set 0
           - call 0 #f newline
           - set 0
@@ -3952,7 +3952,13 @@
   - call 1 #f ||
   - call 2 #f write-string
 - call 1 #f $$close
-- set write-value
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - set ||
+  - constant #f
+- call 1 #f $$close
+- set set-write!
 - constant list
   - ("alarm" . #\alarm)
   - ("backspace" . #\backspace)
@@ -8413,7 +8419,7 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (write-value . write-value)
+                                            - (set-write! . set-write!)
                                           - list
                                             - list
                                               - stak
@@ -11836,7 +11842,8 @@
 - call 1 #f $$close
 - set ||
 - get write
-- set write-value
+- call 1 #f set-write!
+- set 0
 - constant procedure 1 #t
   - constant procedure 2 #f
     - get 3
@@ -11905,10 +11912,21 @@
     - get 0
     - call 1 #f error-object-message
     - call 1 #f display
+    - set 0
+    - constant procedure 1 #f
+      - constant #\space
+      - call 1 #f write-char
+      - set 0
+      - get 0
+      - call 1 #f write
+    - call 1 #f $$close
+    - get 1
+    - call 1 #f error-object-irritants
+    - call 2 #f for-each
   - get 0
   - call 1 #f write
 - call 1 #f $$close
-- set write-value
+- set ||
 - constant procedure 0 #f
   - constant "> "
   - call 0 #f current-error-port
@@ -11977,7 +11995,7 @@
         - call 1 #f call/cc
         - call 0 #f 0
         - set 1
-        - call 1 #f write-value
+        - call 1 #f ||
         - set 0
         - call 0 #f newline
         - set 0
