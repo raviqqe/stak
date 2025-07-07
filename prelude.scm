@@ -763,6 +763,11 @@
     (define truncate-remainder remainder)
     (define truncate-quotient quotient)
 
+    (define (truncate/ x y)
+      (values
+        (truncate-quotient x y)
+        (truncate-remainder x y)))
+
     (define (modulo x y)
       (let ((r (remainder x y)))
         (if (or (zero? r) (eq? (negative? x) (negative? y)))
@@ -771,6 +776,11 @@
 
     (define floor-remainder modulo)
     (define floor-quotient modulo)
+
+    (define (floor/ x y)
+      (values
+        (floor-quotient x y)
+        (floor-remainder x y)))
 
     (define (truncate x)
       (quotient x 1))
