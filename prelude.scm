@@ -1855,7 +1855,6 @@
 
     ;; Port
 
-    ; TODO Support multiple bytes.
     (define-record-type port
       (make-port read write flush close data)
       port?
