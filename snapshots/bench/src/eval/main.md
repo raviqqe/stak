@@ -2160,7 +2160,7 @@
 - set ||
 - get ||
 - call 1 #f ||
-- set make-symbol-table
+- set ||
 - get ||
 - call 1 #f ||
 - set ||
@@ -2220,7 +2220,6 @@
 - call 1 #f $$close
 - constant list
   - tuple
-  - symbols
   - point
   - depth
   - before
@@ -2234,6 +2233,7 @@
   - port
   - flush
   - data
+  - symbols
   - $$rib
   - $$<
   - $$+
@@ -2403,6 +2403,7 @@
   - atan
   - string->symbol
   - make-symbol-table
+  - continue
   - call/cc
   - call-with-current-continuation
   - dynamic-wind
@@ -2674,10 +2675,10 @@
   - $$set!
   - $$if
   - $$syntax-rules
-- call 1 #f make-symbol-table
+- call 1 #f ||
 - call 1 #f 1
 - set 1
-- set string->symbol
+- set ||
 - constant procedure 0 #f
   - constant #f
 - call 1 #f $$close
@@ -3962,6 +3963,532 @@
   - constant #f
 - call 1 #f $$close
 - set set-write!
+- constant symbol-table
+- constant list
+  - symbols
+- call 2 #f cons
+- set ||
+- get ||
+- call 1 #f ||
+- set make-symbol-table
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- constant symbols
+- call 2 #f ||
+- set ||
+- get ||
+- constant symbols
+- call 2 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - constant procedure 1 #f
+      - get 2
+      - call 1 #f null?
+      - if
+        - get 5
+        - continue
+      - get 2
+      - call 1 #f car
+      - set 1
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+          - call 1 #f car
+        - constant procedure 1 #f
+          - get 4
+          - get 1
+          - get 6
+          - call 1 #f ||
+          - call 2 #f cons
+          - call 2 #f ||
+          - set 0
+          - get 0
+        - call 1 #f $$close
+        - get 6
+        - call 1 #f string->uninterned-symbol
+        - call 1 #f 1
+      - call 1 #f $$close
+      - get 4
+      - get 2
+      - call 1 #f ||
+      - constant procedure 2 #f
+        - get 1
+        - get 1
+        - call 1 #f symbol->string
+        - call 2 #f equal?
+      - call 1 #f $$close
+      - call 3 #f member
+      - call 1 #f 1
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- constant list
+  - tuple
+  - point
+  - depth
+  - before
+  - after
+  - parent
+  - error-object
+  - type
+  - message
+  - irritants
+  - runtime
+  - port
+  - flush
+  - data
+  - symbols
+  - $$rib
+  - $$<
+  - $$+
+  - $$-
+  - $$\*
+  - $$/
+  - include
+  - exports
+  - body
+  - library-context
+  - libraries
+  - imported
+  - except
+  - only
+  - prefix
+  - rename
+  - export
+  - macro-state
+  - static-symbols
+  - dynamic-symbols
+  - macro-context
+  - state
+  - rule-context
+  - definition-context
+  - use-context
+  - ellipsis-match
+  - value
+  - ellipsis-pattern
+  - element
+  - variables
+  - optimization-context
+  - optimizers
+  - literals
+  - compilation-context
+  - metadata
+  - $procedure
+  - $$apply
+  - $$close
+  - $$libraries
+  - $$macros
+  - $$optimizers
+  - $$symbols
+  - $$dynamic-symbols
+  - define-library
+  - import
+  - symbol-table
+  - imports
+  - loop
+  - x
+  - y
+  - srfi
+  - iota
+  - rust
+  - r5rs
+  - denominator
+  - exact->inexact
+  - gcd
+  - inexact->exact
+  - lcm
+  - null-environment
+  - numerator
+  - rationalize
+  - scheme-report-environment
+  - string-ci<=?
+  - string-ci<?
+  - string-ci=?
+  - string-ci>=?
+  - string-ci>?
+  - string-fill!
+  - string-set!
+  - string<=?
+  - string>=?
+  - load
+  - repl
+  - interaction-environment
+  - environment
+  - eval
+  - make-environment
+  - compile
+  - time
+  - current-jiffy
+  - current-second
+  - jiffies-per-second
+  - file
+  - call-with-input-file
+  - call-with-output-file
+  - delete-file
+  - file-exists?
+  - open-binary-input-file
+  - open-binary-output-file
+  - open-input-file
+  - open-output-file
+  - with-input-from-file
+  - with-output-to-file
+  - process-context
+  - command-line
+  - emergency-exit
+  - exit
+  - get-environment-variable
+  - get-environment-variables
+  - lazy
+  - delay
+  - delay-force
+  - force
+  - promise?
+  - make-promise
+  - display
+  - write
+  - read
+  - char
+  - char-ci=?
+  - char-ci<?
+  - char-ci>?
+  - char-ci<=?
+  - char-ci>=?
+  - char-alphabetic?
+  - char-numeric?
+  - char-whitespace?
+  - char-lower-case?
+  - char-upper-case?
+  - char-upcase
+  - char-downcase
+  - digit-value
+  - special-chars
+  - case-lambda
+  - cxr
+  - caaar
+  - caadr
+  - cadar
+  - caddr
+  - cdaar
+  - cdadr
+  - cddar
+  - cdddr
+  - caaaar
+  - caaadr
+  - caadar
+  - caaddr
+  - cadaar
+  - cadadr
+  - caddar
+  - cadddr
+  - cdaaar
+  - cdaadr
+  - cdadar
+  - cdaddr
+  - cddaar
+  - cddadr
+  - cdddar
+  - cddddr
+  - complex
+  - make-rectangular
+  - make-polar
+  - real-part
+  - imag-part
+  - magnitude
+  - angle
+  - finite?
+  - infinite?
+  - nan?
+  - sqrt
+  - cos
+  - sin
+  - tan
+  - acos
+  - asin
+  - atan
+  - string->symbol
+  - make-symbol-table
+  - continue
+  - call/cc
+  - call-with-current-continuation
+  - dynamic-wind
+  - make-parameter
+  - parameterize
+  - error-object?
+  - error-object-message
+  - error-object-irritants
+  - with-exception-handler
+  - raise
+  - raise-continuable
+  - error
+  - read-error
+  - file-error
+  - read-error?
+  - file-error?
+  - guard
+  - unwind
+  - eof-object
+  - eof-object?
+  - make-port
+  - make-input-port
+  - make-output-port
+  - port?
+  - input-port?
+  - output-port?
+  - textual-port?
+  - binary-port?
+  - current-input-port
+  - current-output-port
+  - current-error-port
+  - close-port
+  - close-input-port
+  - close-output-port
+  - call-with-port
+  - input-port-open?
+  - output-port-open?
+  - read-u8
+  - peek-u8
+  - u8-ready?
+  - read-char
+  - peek-char
+  - char-ready?
+  - write-u8
+  - write-char
+  - write-string
+  - write-bytevector
+  - newline
+  - flush-output-port
+  - open-input-string
+  - open-output-string
+  - get-output-string
+  - open-input-bytevector
+  - open-output-bytevector
+  - get-output-bytevector
+  - set-write!
+  - syntax-rules
+  - define-syntax
+  - \_
+  - ...
+  - define
+  - lambda
+  - let-syntax
+  - letrec-syntax
+  - begin
+  - quasiquote
+  - unquote
+  - unquote-splicing
+  - quote
+  - set!
+  - cond-expand
+  - let
+  - let\*
+  - letrec
+  - letrec\*
+  - define-values
+  - let-values
+  - let\*-values
+  - if
+  - cond
+  - case
+  - else
+  - =>
+  - and
+  - or
+  - boolean-or
+  - when
+  - unless
+  - do
+  - base
+  - library
+  - r7rs
+  - scheme
+  - stak
+  - pair-type
+  - null-type
+  - boolean-type
+  - procedure-type
+  - symbol-type
+  - string-type
+  - char-type
+  - vector-type
+  - bytevector-type
+  - record-type
+  - primitive
+  - rib
+  - cons
+  - close
+  - rib?
+  - car
+  - cdr
+  - rib-tag
+  - set-car!
+  - set-cdr!
+  - eq?
+  - apply
+  - data-rib
+  - eqv?
+  - equal?
+  - procedure?
+  - boolean?
+  - not
+  - boolean=?
+  - integer?
+  - rational?
+  - real?
+  - complex?
+  - number?
+  - exact?
+  - inexact?
+  - exact-integer?
+  - zero?
+  - positive?
+  - negative?
+  - even?
+  - odd?
+  - -
+  - -
+  - -
+  - /
+  - remainder
+  - quotient
+  - modulo
+  - truncate
+  - truncate-quotient
+  - truncate-remainder
+  - truncate/
+  - floor
+  - floor-quotient
+  - floor-remainder
+  - floor/
+  - ceiling
+  - round
+  - exact
+  - inexact
+  - abs
+  - exp
+  - expt
+  - log
+  - square
+  - exact-integer-sqrt
+  - =
+  - <
+  - >
+  - <=
+  - > =
+  - min
+  - max
+  - char?
+  - integer->char
+  - char->integer
+  - char=?
+  - char<?
+  - char<=?
+  - char>?
+  - char>=?
+  - null?
+  - pair?
+  - list?
+  - caar
+  - cadr
+  - cdar
+  - cddr
+  - list
+  - make-list
+  - length
+  - map
+  - for-each
+  - filter
+  - list-ref
+  - list-set!
+  - list-head
+  - list-tail
+  - member
+  - memq
+  - memv
+  - assoc
+  - assq
+  - assv
+  - append
+  - reverse
+  - fold-left
+  - fold-right
+  - reduce-right
+  - memq-position
+  - memv-position
+  - member-position
+  - list-copy
+  - vector?
+  - vector
+  - make-vector
+  - vector-append
+  - vector-copy
+  - vector-copy!
+  - vector-fill!
+  - vector-for-each
+  - vector-length
+  - vector-map
+  - vector-ref
+  - vector-set!
+  - list->vector
+  - vector->list
+  - string->vector
+  - vector->string
+  - bytevector
+  - bytevector?
+  - bytevector-append
+  - bytevector-copy
+  - bytevector-copy!
+  - bytevector-length
+  - bytevector-u8-ref
+  - bytevector-u8-set!
+  - list->bytevector
+  - bytevector->list
+  - string?
+  - string
+  - list->string
+  - string->code-points
+  - code-points->string
+  - string->list
+  - string-append
+  - string-length
+  - string-ref
+  - number->string
+  - string->number
+  - string-copy
+  - string-copy!
+  - substring
+  - make-string
+  - string=?
+  - string<?
+  - string>?
+  - symbol?
+  - symbol->string
+  - string->uninterned-symbol
+  - define-record-type
+  - record?
+  - values
+  - call-with-values
+  - $$...
+  - $$define-syntax
+  - $$define-optimizer
+  - $$define
+  - $$lambda
+  - $$let-syntax
+  - $$letrec-syntax
+  - $$begin
+  - $$quote
+  - $$set!
+  - $$if
+  - $$syntax-rules
+- call 1 #f make-symbol-table
+- call 1 #f 1
+- set 1
+- set string->symbol
 - constant procedure 1 #f
   - get 0
   - call 1 #f caar
@@ -8300,6 +8827,66 @@
                                             - (record? . record?)
                                             - (values . values)
                                             - (call-with-values . call-with-values)
+                                            - (call/cc . call/cc)
+                                            - (call-with-current-continuation . call-with-current-continuation)
+                                            - (dynamic-wind . dynamic-wind)
+                                            - (make-parameter . make-parameter)
+                                            - (parameterize . parameterize)
+                                            - (error-object? . error-object?)
+                                            - (error-object-message . error-object-message)
+                                            - (error-object-irritants . error-object-irritants)
+                                            - (with-exception-handler . with-exception-handler)
+                                            - (raise . raise)
+                                            - (raise-continuable . raise-continuable)
+                                            - (error . error)
+                                            - (read-error . read-error)
+                                            - (file-error . file-error)
+                                            - (read-error? . read-error?)
+                                            - (file-error? . file-error?)
+                                            - (guard . guard)
+                                            - (unwind . unwind)
+                                            - (eof-object . eof-object)
+                                            - (eof-object? . eof-object?)
+                                            - (make-port . make-port)
+                                            - (make-input-port . make-input-port)
+                                            - (make-output-port . make-output-port)
+                                            - (port? . port?)
+                                            - (input-port? . input-port?)
+                                            - (output-port? . output-port?)
+                                            - (textual-port? . textual-port?)
+                                            - (binary-port? . binary-port?)
+                                            - (current-input-port . current-input-port)
+                                            - (current-output-port . current-output-port)
+                                            - (current-error-port . current-error-port)
+                                            - (close-port . close-port)
+                                            - (close-input-port . close-input-port)
+                                            - (close-output-port . close-output-port)
+                                            - (call-with-port . call-with-port)
+                                            - (input-port-open? . input-port-open?)
+                                            - (output-port-open? . output-port-open?)
+                                            - (read-u8 . read-u8)
+                                            - (peek-u8 . peek-u8)
+                                            - (u8-ready? . u8-ready?)
+                                            - (read-char . read-char)
+                                            - (peek-char . peek-char)
+                                            - (char-ready? . char-ready?)
+                                            - (write-u8 . write-u8)
+                                            - (write-char . write-char)
+                                            - (write-string . write-string)
+                                            - (write-bytevector . write-bytevector)
+                                            - (newline . newline)
+                                            - (flush-output-port . flush-output-port)
+                                            - (open-input-string . open-input-string)
+                                            - (open-output-string . open-output-string)
+                                            - (get-output-string . get-output-string)
+                                            - (open-input-bytevector . open-input-bytevector)
+                                            - (open-output-bytevector . open-output-bytevector)
+                                            - (get-output-bytevector . get-output-bytevector)
+                                            - (set-write! . set-write!)
+                                          - list
+                                            - list
+                                              - stak
+                                              - continue
                                             - (call/cc . call/cc)
                                             - (call-with-current-continuation . call-with-current-continuation)
                                             - (dynamic-wind . dynamic-wind)

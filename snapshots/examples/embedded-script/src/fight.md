@@ -1148,6 +1148,8 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant procedure 1 #f
   - constant procedure 2 #f
     - get 1

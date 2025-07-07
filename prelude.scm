@@ -1514,208 +1514,8 @@
           (apply consumer (tuple-values xs))
           (consumer xs))))))
 
-(define-library (scheme base)
+(define-library (stak continue)
   (export
-    syntax-rules
-    define-syntax
-    _
-    ...
-    define
-    lambda
-    let-syntax
-    letrec-syntax
-    begin
-    quasiquote
-    unquote
-    unquote-splicing
-    quote
-    set!
-    cond-expand
-    let
-    let*
-    letrec
-    letrec*
-    define-values
-    let-values
-    let*-values
-    if
-    cond
-    case
-    else
-    =>
-    and
-    or
-    when
-    unless
-    do
-
-    base
-    library
-    r7rs
-    scheme
-    stak
-
-    rib
-    cons
-    close
-    rib?
-    car
-    cdr
-    rib-tag
-    set-car!
-    set-cdr!
-    eq?
-
-    apply
-    data-rib
-
-    eqv?
-    equal?
-
-    procedure?
-
-    boolean?
-    not
-    boolean=?
-
-    integer?
-    rational?
-    real?
-    complex?
-    number?
-    exact?
-    inexact?
-    exact-integer?
-    zero?
-    positive?
-    negative?
-    even?
-    odd?
-    +
-    -
-    *
-    /
-    remainder
-    quotient
-    modulo
-    truncate
-    truncate-quotient
-    truncate-remainder
-    truncate/
-    floor
-    floor-quotient
-    floor-remainder
-    floor/
-    ceiling
-    round
-    exact
-    inexact
-    abs
-    expt
-    square
-    exact-integer-sqrt
-    =
-    <
-    >
-    <=
-    >=
-    min
-    max
-
-    char?
-    integer->char
-    char->integer
-    char=?
-    char<?
-    char<=?
-    char>?
-    char>=?
-
-    null?
-    pair?
-    list?
-    caar
-    cadr
-    cdar
-    cddr
-    list
-    make-list
-    length
-    map
-    for-each
-    list-ref
-    list-set!
-    list-tail
-    member
-    memq
-    memv
-    assoc
-    assq
-    assv
-    append
-    reverse
-    fold-left
-    fold-right
-    reduce-right
-    list-copy
-
-    vector?
-    vector
-    make-vector
-    vector-append
-    vector-copy
-    vector-copy!
-    vector-fill!
-    vector-for-each
-    vector-length
-    vector-map
-    vector-ref
-    vector-set!
-    list->vector
-    vector->list
-    string->vector
-    vector->string
-
-    bytevector
-    bytevector?
-    bytevector-append
-    bytevector-copy
-    bytevector-copy!
-    bytevector-length
-    bytevector-u8-ref
-    bytevector-u8-set!
-    list->bytevector
-    bytevector->list
-
-    string?
-    string
-    list->string
-    string->list
-    string-append
-    string-length
-    string-ref
-    number->string
-    string->number
-    string-copy
-    string-copy!
-    substring
-    make-string
-    string=?
-    string<?
-    string>?
-
-    symbol?
-    symbol->string
-    string->uninterned-symbol
-    string->symbol
-    make-symbol-table
-
-    define-record-type
-    record?
-
-    values
-    call-with-values
-
     call/cc
     call-with-current-continuation
 
@@ -2345,6 +2145,307 @@
 
     (define (set-write! f)
       (set! write f))))
+
+(define-library (scheme base)
+  (export
+    syntax-rules
+    define-syntax
+    _
+    ...
+    define
+    lambda
+    let-syntax
+    letrec-syntax
+    begin
+    quasiquote
+    unquote
+    unquote-splicing
+    quote
+    set!
+    cond-expand
+    let
+    let*
+    letrec
+    letrec*
+    define-values
+    let-values
+    let*-values
+    if
+    cond
+    case
+    else
+    =>
+    and
+    or
+    when
+    unless
+    do
+
+    base
+    library
+    r7rs
+    scheme
+    stak
+
+    rib
+    cons
+    close
+    rib?
+    car
+    cdr
+    rib-tag
+    set-car!
+    set-cdr!
+    eq?
+
+    apply
+    data-rib
+
+    eqv?
+    equal?
+
+    procedure?
+
+    boolean?
+    not
+    boolean=?
+
+    integer?
+    rational?
+    real?
+    complex?
+    number?
+    exact?
+    inexact?
+    exact-integer?
+    zero?
+    positive?
+    negative?
+    even?
+    odd?
+    +
+    -
+    *
+    /
+    remainder
+    quotient
+    modulo
+    truncate
+    truncate-quotient
+    truncate-remainder
+    truncate/
+    floor
+    floor-quotient
+    floor-remainder
+    floor/
+    ceiling
+    round
+    exact
+    inexact
+    abs
+    expt
+    square
+    exact-integer-sqrt
+    =
+    <
+    >
+    <=
+    >=
+    min
+    max
+
+    char?
+    integer->char
+    char->integer
+    char=?
+    char<?
+    char<=?
+    char>?
+    char>=?
+
+    null?
+    pair?
+    list?
+    caar
+    cadr
+    cdar
+    cddr
+    list
+    make-list
+    length
+    map
+    for-each
+    list-ref
+    list-set!
+    list-tail
+    member
+    memq
+    memv
+    assoc
+    assq
+    assv
+    append
+    reverse
+    fold-left
+    fold-right
+    reduce-right
+    list-copy
+
+    vector?
+    vector
+    make-vector
+    vector-append
+    vector-copy
+    vector-copy!
+    vector-fill!
+    vector-for-each
+    vector-length
+    vector-map
+    vector-ref
+    vector-set!
+    list->vector
+    vector->list
+    string->vector
+    vector->string
+
+    bytevector
+    bytevector?
+    bytevector-append
+    bytevector-copy
+    bytevector-copy!
+    bytevector-length
+    bytevector-u8-ref
+    bytevector-u8-set!
+    list->bytevector
+    bytevector->list
+
+    string?
+    string
+    list->string
+    string->list
+    string-append
+    string-length
+    string-ref
+    number->string
+    string->number
+    string-copy
+    string-copy!
+    substring
+    make-string
+    string=?
+    string<?
+    string>?
+
+    symbol?
+    symbol->string
+    string->uninterned-symbol
+    string->symbol
+    make-symbol-table
+
+    define-record-type
+    record?
+
+    values
+    call-with-values
+
+    call/cc
+    call-with-current-continuation
+
+    dynamic-wind
+
+    make-parameter
+    parameterize
+
+    error-object?
+    error-object-message
+    error-object-irritants
+    with-exception-handler
+    raise
+    raise-continuable
+    error
+    read-error
+    file-error
+    read-error?
+    file-error?
+    guard
+
+    unwind
+
+    eof-object
+    eof-object?
+
+    make-port
+    make-input-port
+    make-output-port
+    port?
+    input-port?
+    output-port?
+    textual-port?
+    binary-port?
+
+    current-input-port
+    current-output-port
+    current-error-port
+
+    close-port
+    close-input-port
+    close-output-port
+    call-with-port
+
+    input-port-open?
+    output-port-open?
+
+    read-u8
+    peek-u8
+    u8-ready?
+    read-char
+    peek-char
+    char-ready?
+
+    write-u8
+    write-char
+    write-string
+    write-bytevector
+    newline
+
+    flush-output-port
+
+    open-input-string
+    open-output-string
+    get-output-string
+    open-input-bytevector
+    open-output-bytevector
+    get-output-bytevector
+
+    set-write!)
+
+  (import (stak base) (stak continue))
+
+  (begin
+    ; Symbol table
+
+    (define-record-type symbol-table
+      (make-symbol-table symbols)
+      symbol-table?
+      (symbols symbol-table-symbols symbol-table-set-symbols!))
+
+    (define string->symbol
+      (let ((global-table (make-symbol-table ($$symbols))))
+        (lambda (name . rest)
+          (define table (if (null? rest) global-table (car rest)))
+
+          (cond
+            ((member
+                name
+                (symbol-table-symbols table)
+                (lambda (name symbol) (equal? name (symbol->string symbol))))
+              =>
+              car)
+
+            (else
+              (let ((name (string->uninterned-symbol name)))
+                (symbol-table-set-symbols! table (cons name (symbol-table-symbols table)))
+                name))))))))
 
 (define-library (scheme inexact)
   (export
