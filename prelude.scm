@@ -103,6 +103,7 @@
     floor
     floor-quotient
     floor-remainder
+    floor/
     ceiling
     round
     exact
@@ -1588,6 +1589,7 @@
     floor
     floor-quotient
     floor-remainder
+    floor/
     ceiling
     round
     exact
