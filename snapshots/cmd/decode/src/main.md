@@ -319,32 +319,31 @@
 - call 1 #f ||
 - set ||
 - constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f ||
   - constant procedure 1 #f
-    - constant procedure 1 #f
-      - get 0
-      - if
-        - get 0
-      - get 5
-      - call 1 #f ||
-      - get 5
-      - call 1 #f ||
-      - call 2 #f ||
-    - call 1 #f ||
-    - get 1
-    - constant 0
-    - call 2 #f ||
-    - call 1 #f 1
-    - set 1
+    - get 0
     - if
       - get 0
-    - get 0
-    - get 3
+    - get 4
+    - call 1 #f ||
+    - get 4
+    - call 1 #f ||
     - call 2 #f ||
   - call 1 #f ||
-  - get 2
-  - get 2
+  - get 3
+  - get 3
+  - call 2 #f ||
+  - constant 0
   - call 2 #f ||
   - call 1 #f 1
+  - set 1
+  - if
+    - constant 0
+    - continue
+  - get 1
+  - call 2 #f ||
 - call 1 #f ||
 - set ||
 - get ||
