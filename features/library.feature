@@ -332,6 +332,36 @@ Feature: Library system
     When I successfully run `stak -l foo.scm -l bar.scm -l baz.scm main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Re-export an imported syntax
+    Given a file named "foo.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define-syntax foo
+            (syntax-rules ()
+              ((_ x)
+                (write-u8 x))))))
+      """
+    And a file named "bar.scm" with:
+      """scheme
+      (define-library (bar)
+        (export foo)
+
+        (import (foo)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (bar))
+
+      (foo 65)
+      """
+    When I successfully run `stak -l foo.scm -l bar.scm main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Re-export an imported syntax twice
     Given a file named "foo.scm" with:
       """scheme
