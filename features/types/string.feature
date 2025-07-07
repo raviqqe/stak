@@ -120,6 +120,49 @@ Feature: String
       | abc   | 1     | 3   | bc     |
       | abc   | 0     | 3   | abc    |
 
+  Scenario Outline: Get a length of a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (string-length "<value>") <length>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value | length |
+      |       | 0      |
+      | a     | 1      |
+      | aa    | 2      |
+      | aaa   | 3      |
+
+  Scenario Outline: Copy a string in place
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (string-copy "<to>"))
+
+      (string-copy! xs <at> "<from>" <start> <end>)
+
+      (write-u8 (if (equal? xs "<output>") 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    # spell-checker: disable
+    Examples:
+      | to    | at | from | start | end | output |
+      | A     | 0  |      |       |     | A      |
+      | ABC   | 0  | DEF  |       |     | DEF    |
+      | ABC   | 1  | DE   |       |     | ADE    |
+      | ABC   | 2  | D    |       |     | ABD    |
+      | ABCDE | 1  | FGH  |       |     | AFGHE  |
+      | ABCD  | 1  | EFGH | 1     |     | AFGH   |
+      | ABCD  | 1  | EFGH | 1     | 3   | AFGD   |
+
+  # spell-checker: enable
   Scenario Outline: Make a string
     Given a file named "main.scm" with:
       """scheme
