@@ -204,6 +204,26 @@ Feature: Number
       | (floor-remainder -5 2)     | 1     |
       | (floor-remainder -5 -2)    | -1    |
 
+  Scenario Outline: Use multi-value division operators
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-values (x y) <expression>)
+
+      (write-u8 (if (= x <quotient>) 65 66))
+      (write-u8 (if (= y <remainder>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AA"
+
+    Examples:
+      | expression        | quotient | remainder |
+      | (truncate/ 8 3)   | 2        | 2         |
+      | (truncate/ 8 -3)  | -2       | 2         |
+      | (truncate/ -8 3)  | -2       | -2        |
+      | (truncate/ -8 -3) | 2        | -2        |
+
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
       """scheme
