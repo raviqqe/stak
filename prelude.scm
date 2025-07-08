@@ -222,8 +222,7 @@
     values
     call-with-values
 
-    error
-    set-error!)
+    error)
 
   (begin
     ; Syntax
@@ -1519,10 +1518,7 @@
           (consumer xs))))
 
     (define (error . xs)
-      ($halt))
-
-    (define (set-error! f)
-      (set! error f))))
+      ($halt))))
 
 (define-library (stak continue)
   (export
@@ -1777,7 +1773,7 @@
       (lambda (error)
         (eq? (error-object-type error) type)))
 
-    (set-error! (error-type #f))
+    (set! error (error-type #f))
     (define read-error (error-type 'read))
     (define file-error (error-type 'file))
 
