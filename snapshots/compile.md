@@ -2704,6 +2704,7 @@
   - atan
   - string->symbol
   - make-symbol-table
+  - set-write!
   - continue
   - call/cc
   - call-with-current-continuation
@@ -2760,7 +2761,7 @@
   - open-input-bytevector
   - open-output-bytevector
   - get-output-bytevector
-  - set-write!
+  - write-value
   - syntax-rules
   - define-syntax
   - \_
@@ -3220,14 +3221,14 @@
               - call 1 #f write-char
               - set 0
               - get 0
-              - call 1 #f ||
+              - call 1 #f write-value
             - call 1 #f $$close
             - get 8
             - call 1 #f error-object-irritants
             - call 2 #f for-each
             - continue
           - get 7
-          - call 1 #f ||
+          - call 1 #f write-value
           - set 0
           - call 0 #f newline
           - set 0
@@ -4257,13 +4258,7 @@
   - call 1 #f ||
   - call 2 #f write-string
 - call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - set ||
-  - constant #f
-- call 1 #f $$close
-- set set-write!
+- set write-value
 - constant symbol-table
 - constant list
   - symbols
@@ -4815,6 +4810,7 @@
   - atan
   - string->symbol
   - make-symbol-table
+  - set-write!
   - continue
   - call/cc
   - call-with-current-continuation
@@ -4871,7 +4867,7 @@
   - open-input-bytevector
   - open-output-bytevector
   - get-output-bytevector
-  - set-write!
+  - write-value
   - syntax-rules
   - define-syntax
   - \_
@@ -9544,7 +9540,7 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (set-write! . set-write!)
+                                            - (write-value . write-value)
                                           - list
                                             - list
                                               - stak
@@ -12980,8 +12976,7 @@
 - call 1 #f $$close
 - set ||
 - get write
-- call 1 #f set-write!
-- set 0
+- set ||
 - constant list
   - list
     - define
