@@ -17,18 +17,19 @@ export const Terminal = (props: Props): JSX.Element => {
   });
 
   createEffect(() => {
-    const encoder = new TextEncoder();
-    const writer = props.input.getWriter();
+    void (async (input: WritableStream<Uint8Array>) => {
+      const stream = new TextEncoderStream();
 
-    terminal.onData((data) => writer.write(encoder.encode(data)));
+      terminal.onData((data) => stream.writable.getWriter().write(data));
+
+      await stream.readable.pipeTo(input);
+    })(props.input);
   });
 
   createEffect(() => {
-    const decoder = new TextDecoder();
-
     void (async (output: ReadableStream<Uint8Array>) => {
-      for await (const data of output) {
-        terminal.write(decoder.decode(data));
+      for await (const data of output.pipeThrough(new TextDecoderStream())) {
+        terminal.write(data);
       }
     })(props.output);
   });
