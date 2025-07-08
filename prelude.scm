@@ -2414,7 +2414,7 @@
     open-output-bytevector
     get-output-bytevector
 
-    set-write!)
+    write-value)
 
   (import (stak base) (stak continue))
 
