@@ -1917,9 +1917,7 @@
   (begin
     (define $halt (primitive 40))
 
-    ; Control
-
-    ;; Continuation
+    ; Continuation
 
     (define dummy-procedure (lambda () #f))
 
@@ -1937,7 +1935,7 @@
 
     (define call-with-current-continuation call/cc)
 
-    ;; Dynamic wind
+    ; Dynamic wind
 
     (define-record-type point
       (make-point depth before after parent)
@@ -1974,7 +1972,7 @@
           ((point-after from))
           (travel-to-point! (point-parent from) to))))
 
-    ;; Parameter
+    ; Parameter
 
     (define-syntax parameterize
       (syntax-rules ()
@@ -1989,7 +1987,7 @@
               (lambda () (parameterize ((parameter2 value2) ...) body ...))
               (lambda () (parameter old)))))))
 
-    ;; Exception
+    ; Exception
 
     (define-record-type error-object
       (make-error-object type message irritants)
@@ -2120,7 +2118,7 @@
             (begin result1 result2 ...)
             (guard* re-raise clause1 clause2 ...)))))
 
-    ;; Unwind
+    ; Unwind
 
     (define unwind #f)
 
