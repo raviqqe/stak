@@ -1520,30 +1520,23 @@
     (define (error . xs)
       ($halt))))
 
-(define-library (stak continue)
+(define-library (stak parameter)
+  (export make-parameter)
+
+  (import (stak base))
+
+  (begin
+    (define (make-parameter x . rest)
+      (define convert (if (pair? rest) (car rest) (lambda (x) x)))
+      (set! x (convert x))
+
+      (lambda rest
+        (if (null? rest)
+          x
+          (set! x (convert (car rest))))))))
+
+(define-library (stak io)
   (export
-    call/cc
-    call-with-current-continuation
-
-    dynamic-wind
-
-    make-parameter
-    parameterize
-
-    error-object?
-    error-object-message
-    error-object-irritants
-    with-exception-handler
-    raise
-    raise-continuable
-    read-error
-    file-error
-    read-error?
-    file-error?
-    guard
-
-    unwind
-
     eof-object
     eof-object?
 
@@ -1588,242 +1581,16 @@
     get-output-string
     open-input-bytevector
     open-output-bytevector
-    get-output-bytevector
+    get-output-bytevector)
 
-    write-value)
-
-  (import (stak base))
+  (import (stak base) (stak parameter))
 
   (begin
-    (define $halt (primitive 40))
     (define $read-input (primitive 100))
     (define $write-output (primitive 101))
     (define $write-error (primitive 102))
 
-    ; Control
-
-    ;; Continuation
-
-    (define dummy-procedure (lambda () #f))
-
-    (define (call/cc receiver)
-      (let ((continuation (cadr (cddr (close dummy-procedure))))
-            (point current-point))
-        (receiver
-          (lambda (argument)
-            (travel-to-point! current-point point)
-            (set-current-point! point)
-            (set-car!
-              (cddr (close dummy-procedure)) ; frame
-              continuation)
-            argument))))
-
-    (define call-with-current-continuation call/cc)
-
-    ;; Dynamic wind
-
-    (define-record-type point
-      (make-point depth before after parent)
-      point?
-      (depth point-depth)
-      (before point-before)
-      (after point-after)
-      (parent point-parent))
-
-    (define current-point (make-point 0 #f #f #f))
-
-    (define (set-current-point! x)
-      (set! current-point x))
-
-    (define (dynamic-wind before thunk after)
-      (before)
-      (let ((point current-point))
-        (set-current-point! (make-point (+ (point-depth point) 1) before after point))
-        (let ((value (thunk)))
-          (set-current-point! point)
-          (after)
-          value)))
-
-    (define (travel-to-point! from to)
-      (cond
-        ((eq? from to)
-          #f)
-
-        ((< (point-depth from) (point-depth to))
-          (travel-to-point! from (point-parent to))
-          ((point-before to)))
-
-        (else
-          ((point-after from))
-          (travel-to-point! (point-parent from) to))))
-
-    ;; Parameter
-
-    (define (make-parameter x . rest)
-      (define convert (if (pair? rest) (car rest) (lambda (x) x)))
-      (set! x (convert x))
-
-      (lambda rest
-        (if (null? rest)
-          x
-          (set! x (convert (car rest))))))
-
-    (define-syntax parameterize
-      (syntax-rules ()
-        ((_ () body ...)
-          (begin body ...))
-
-        ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
-          (let* ((parameter parameter1)
-                 (old (parameter)))
-            (dynamic-wind
-              (lambda () (parameter value1))
-              (lambda () (parameterize ((parameter2 value2) ...) body ...))
-              (lambda () (parameter old)))))))
-
-    ;; Exception
-
-    (define-record-type error-object
-      (make-error-object type message irritants)
-      error-object?
-      (type error-object-type)
-      (message error-object-message)
-      (irritants error-object-irritants))
-
-    (define (convert-exception-handler handler)
-      (lambda (pair)
-        (let* ((exception (cdr pair))
-               (value (handler exception)))
-          (unless (car pair)
-            (error "exception handler returned on non-continuable exception" exception))
-          value)))
-
-    (define current-exception-handler
-      (make-parameter
-        (convert-exception-handler
-          (lambda (exception)
-            (unwind
-              (lambda ()
-                (parameterize ((current-output-port (current-error-port)))
-                  (if (error-object? exception)
-                    (begin
-                      (write-string (error-object-message exception))
-                      (for-each
-                        (lambda (value)
-                          (write-char #\space)
-                          (write-value value))
-                        (error-object-irritants exception)))
-                    (write-value exception))
-                  (newline)
-                  ($halt))))))
-        (lambda (handler)
-          ; Set an exception handler for runtime errors.
-          (set-cdr!
-            '()
-            (lambda (message)
-              (handler (cons #f (make-error-object 'runtime (code-points->string message) '())))))
-          handler)))
-
-    (define (with-exception-handler handler thunk)
-      (let ((new (convert-exception-handler handler))
-            (old (current-exception-handler)))
-        (parameterize ((current-exception-handler
-                         (lambda (exception)
-                           (parameterize ((current-exception-handler old))
-                             (new exception)))))
-          (thunk))))
-
-    (define (raise-value continuable)
-      (lambda (value)
-        ((current-exception-handler) (cons continuable value))))
-
-    (define raise (raise-value #f))
-    (define raise-continuable (raise-value #t))
-
-    (define (error-type type)
-      (lambda (message . rest)
-        (raise (make-error-object type message rest))))
-
-    (define (error-type? type)
-      (lambda (error)
-        (eq? (error-object-type error) type)))
-
-    (set! error (error-type #f))
-    (define read-error (error-type 'read))
-    (define file-error (error-type 'file))
-
-    (define read-error? (error-type? 'read))
-    (define file-error? (error-type? 'file))
-
-    (define-syntax guard
-      (syntax-rules ()
-        ((_ (name clause ...) body1 body2 ...)
-          ((call/cc
-              (lambda (continue-guard)
-                (with-exception-handler
-                  (lambda (exception)
-                    ((call/cc
-                        (lambda (continue-handler)
-                          (continue-guard
-                            (lambda ()
-                              (let ((name exception))
-                                (guard*
-                                  (continue-handler
-                                    (lambda () (raise-continuable name)))
-                                  clause
-                                  ...))))))))
-                  (lambda ()
-                    (let ((x (begin body1 body2 ...)))
-                      (continue-guard (lambda () x)))))))))))
-
-    (define-syntax guard*
-      (syntax-rules (else =>)
-        ((_ re-raise (else result1 result2 ...))
-          (begin result1 result2 ...))
-
-        ((_ re-raise (test => result))
-          (let ((temp test))
-            (if temp
-              (result temp)
-              re-raise)))
-
-        ((_ re-raise (test => result) clause1 clause2 ...)
-          (let ((temp test))
-            (if temp
-              (result temp)
-              (guard* re-raise clause1 clause2 ...))))
-
-        ((_ re-raise (test))
-          (or test re-raise))
-
-        ((_ re-raise (test) clause1 clause2 ...)
-          (let ((temp test))
-            (if temp
-              temp
-              (guard* re-raise clause1 clause2 ...))))
-
-        ((_ re-raise (test result1 result2 ...))
-          (if test
-            (begin result1 result2 ...)
-            re-raise))
-
-        ((_ re-raise (test result1 result2 ...) clause1 clause2 ...)
-          (if test
-            (begin result1 result2 ...)
-            (guard* re-raise clause1 clause2 ...)))))
-
-    ;; Unwind
-
-    (define unwind #f)
-
-    ((call/cc
-        (lambda (continuation)
-          (set! unwind continuation)
-          (lambda () #f))))
-
-    ; Derived types
-
-    ;; EOF object
+    ; EOF object
 
     (define-record-type eof-object
       (make-eof-object)
@@ -1833,7 +1600,7 @@
       (let ((eof (make-eof-object)))
         (lambda () eof)))
 
-    ;; Port
+    ; Port
 
     (define-record-type port
       (make-port read write flush close data)
@@ -2033,15 +1800,17 @@
               (loop (/ head 2) (* offset 64) (+ mask head)))))))
 
     (define (write-string x . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
-        (for-each write-char (string->list x))))
+      (let ((port (get-output-port rest)))
+        (for-each
+          (lambda (x) (write-char x port))
+          (string->list x))))
 
     (define (write-bytevector xs . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
+      (let ((port (get-output-port rest)))
         (do ((index 0 (+ index 1)))
           ((= index (bytevector-length xs))
             #f)
-          (write-u8 (bytevector-u8-ref xs index)))))
+          (write-u8 (bytevector-u8-ref xs index) port))))
 
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
@@ -2117,7 +1886,246 @@
           (lambda () #f)
           xs)))
 
-    (define get-output-bytevector port-data)
+    (define get-output-bytevector port-data)))
+
+(define-library (stak continue)
+  (export
+    call/cc
+    call-with-current-continuation
+
+    dynamic-wind
+    parameterize
+
+    error-object?
+    error-object-message
+    error-object-irritants
+    with-exception-handler
+    raise
+    raise-continuable
+    read-error
+    file-error
+    read-error?
+    file-error?
+    guard
+
+    unwind
+
+    write-value)
+
+  (import (stak base) (stak parameter) (stak io))
+
+  (begin
+    (define $halt (primitive 40))
+
+    ; Continuation
+
+    (define dummy-procedure (lambda () #f))
+
+    (define (call/cc receiver)
+      (let ((continuation (cadr (cddr (close dummy-procedure))))
+            (point current-point))
+        (receiver
+          (lambda (argument)
+            (travel-to-point! current-point point)
+            (set-current-point! point)
+            (set-car!
+              (cddr (close dummy-procedure)) ; frame
+              continuation)
+            argument))))
+
+    (define call-with-current-continuation call/cc)
+
+    ; Dynamic wind
+
+    (define-record-type point
+      (make-point depth before after parent)
+      point?
+      (depth point-depth)
+      (before point-before)
+      (after point-after)
+      (parent point-parent))
+
+    (define current-point (make-point 0 #f #f #f))
+
+    (define (set-current-point! x)
+      (set! current-point x))
+
+    (define (dynamic-wind before thunk after)
+      (before)
+      (let ((point current-point))
+        (set-current-point! (make-point (+ (point-depth point) 1) before after point))
+        (let ((value (thunk)))
+          (set-current-point! point)
+          (after)
+          value)))
+
+    (define (travel-to-point! from to)
+      (cond
+        ((eq? from to)
+          #f)
+
+        ((< (point-depth from) (point-depth to))
+          (travel-to-point! from (point-parent to))
+          ((point-before to)))
+
+        (else
+          ((point-after from))
+          (travel-to-point! (point-parent from) to))))
+
+    ; Parameter
+
+    (define-syntax parameterize
+      (syntax-rules ()
+        ((_ () body ...)
+          (begin body ...))
+
+        ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
+          (let* ((parameter parameter1)
+                 (old (parameter)))
+            (dynamic-wind
+              (lambda () (parameter value1))
+              (lambda () (parameterize ((parameter2 value2) ...) body ...))
+              (lambda () (parameter old)))))))
+
+    ; Exception
+
+    (define-record-type error-object
+      (make-error-object type message irritants)
+      error-object?
+      (type error-object-type)
+      (message error-object-message)
+      (irritants error-object-irritants))
+
+    (define (convert-exception-handler handler)
+      (lambda (pair)
+        (let* ((exception (cdr pair))
+               (value (handler exception)))
+          (unless (car pair)
+            (error "exception handler returned on non-continuable exception" exception))
+          value)))
+
+    (define current-exception-handler
+      (make-parameter
+        (convert-exception-handler
+          (lambda (exception)
+            (unwind
+              (lambda ()
+                (parameterize ((current-output-port (current-error-port)))
+                  (if (error-object? exception)
+                    (begin
+                      (write-string (error-object-message exception))
+                      (for-each
+                        (lambda (value)
+                          (write-char #\space)
+                          (write-value value))
+                        (error-object-irritants exception)))
+                    (write-value exception))
+                  (newline)
+                  ($halt))))))
+        (lambda (handler)
+          ; Set an exception handler for runtime errors.
+          (set-cdr!
+            '()
+            (lambda (message)
+              (handler (cons #f (make-error-object 'runtime (code-points->string message) '())))))
+          handler)))
+
+    (define (with-exception-handler handler thunk)
+      (let ((new (convert-exception-handler handler))
+            (old (current-exception-handler)))
+        (parameterize ((current-exception-handler
+                         (lambda (exception)
+                           (parameterize ((current-exception-handler old))
+                             (new exception)))))
+          (thunk))))
+
+    (define (raise-value continuable)
+      (lambda (value)
+        ((current-exception-handler) (cons continuable value))))
+
+    (define raise (raise-value #f))
+    (define raise-continuable (raise-value #t))
+
+    (define (error-type type)
+      (lambda (message . rest)
+        (raise (make-error-object type message rest))))
+
+    (define (error-type? type)
+      (lambda (error)
+        (eq? (error-object-type error) type)))
+
+    (set! error (error-type #f))
+    (define read-error (error-type 'read))
+    (define file-error (error-type 'file))
+
+    (define read-error? (error-type? 'read))
+    (define file-error? (error-type? 'file))
+
+    (define-syntax guard
+      (syntax-rules ()
+        ((_ (name clause ...) body1 body2 ...)
+          ((call/cc
+              (lambda (continue-guard)
+                (with-exception-handler
+                  (lambda (exception)
+                    ((call/cc
+                        (lambda (continue-handler)
+                          (continue-guard
+                            (lambda ()
+                              (let ((name exception))
+                                (guard*
+                                  (continue-handler
+                                    (lambda () (raise-continuable name)))
+                                  clause
+                                  ...))))))))
+                  (lambda ()
+                    (let ((x (begin body1 body2 ...)))
+                      (continue-guard (lambda () x)))))))))))
+
+    (define-syntax guard*
+      (syntax-rules (else =>)
+        ((_ re-raise (else result1 result2 ...))
+          (begin result1 result2 ...))
+
+        ((_ re-raise (test => result))
+          (let ((temp test))
+            (if temp
+              (result temp)
+              re-raise)))
+
+        ((_ re-raise (test => result) clause1 clause2 ...)
+          (let ((temp test))
+            (if temp
+              (result temp)
+              (guard* re-raise clause1 clause2 ...))))
+
+        ((_ re-raise (test))
+          (or test re-raise))
+
+        ((_ re-raise (test) clause1 clause2 ...)
+          (let ((temp test))
+            (if temp
+              temp
+              (guard* re-raise clause1 clause2 ...))))
+
+        ((_ re-raise (test result1 result2 ...))
+          (if test
+            (begin result1 result2 ...)
+            re-raise))
+
+        ((_ re-raise (test result1 result2 ...) clause1 clause2 ...)
+          (if test
+            (begin result1 result2 ...)
+            (guard* re-raise clause1 clause2 ...)))))
+
+    ; Unwind
+
+    (define unwind #f)
+
+    ((call/cc
+        (lambda (continuation)
+          (set! unwind continuation)
+          (lambda () #f))))
 
     ; Dummy implementation
     (define (write-value value . rest)
@@ -2396,7 +2404,7 @@
 
     write-value)
 
-  (import (stak base) (stak continue))
+  (import (stak base) (stak parameter) (stak io) (stak continue))
 
   (begin
     ; Symbol table
