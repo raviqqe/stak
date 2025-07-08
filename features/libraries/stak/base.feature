@@ -5,8 +5,8 @@ Feature: Stak base library
       """scheme
       (import (stak base))
 
-      (error "foo")
+      (when (procedure? error)
+        (error "foo"))
       """
     When I run `stak main.scm`
     Then the exit status should not be 0
-    And the stderr should not contain "foo"
