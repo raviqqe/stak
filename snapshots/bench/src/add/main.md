@@ -618,10 +618,10 @@
 - set ||
 - constant point
 - constant list
-    - depth
-    - before
-    - after
-    - parent
+  - depth
+  - before
+  - after
+  - parent
 - call 2 #f ||
 - set ||
 - get ||
@@ -748,9 +748,9 @@
 - set ||
 - constant error-object
 - constant list
-    - type
-    - message
-    - irritants
+  - type
+  - message
+  - irritants
 - call 2 #f ||
 - set ||
 - get ||
@@ -905,11 +905,11 @@
 - set 0
 - constant port
 - constant list
-    - read
-    - write
-    - flush
-    - close
-    - data
+  - read
+  - write
+  - flush
+  - close
+  - data
 - call 2 #f ||
 - set ||
 - get ||
