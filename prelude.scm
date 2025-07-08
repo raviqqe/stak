@@ -220,7 +220,10 @@
     record?
 
     values
-    call-with-values)
+    call-with-values
+
+    error
+    set-error!)
 
   (begin
     ; Syntax
@@ -624,6 +627,7 @@
     (define $* (primitive 12))
     (define $/ (primitive 13))
     (define remainder (primitive 14))
+    (define $halt (primitive 40))
     (define null? (primitive 50))
     (define pair? (primitive 51))
     (define assq (primitive 60))
@@ -1512,7 +1516,13 @@
       (let ((xs (producer)))
         (if (tuple? xs)
           (apply consumer (tuple-values xs))
-          (consumer xs))))))
+          (consumer xs))))
+
+    (define (error . xs)
+      ($halt))
+
+    (define (set-error! f)
+      (set! error f))))
 
 (define-library (stak continue)
   (export
