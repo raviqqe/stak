@@ -220,7 +220,9 @@
     record?
 
     values
-    call-with-values)
+    call-with-values
+
+    error)
 
   (begin
     ; Syntax
@@ -624,6 +626,7 @@
     (define $* (primitive 12))
     (define $/ (primitive 13))
     (define remainder (primitive 14))
+    (define $halt (primitive 40))
     (define null? (primitive 50))
     (define pair? (primitive 51))
     (define assq (primitive 60))
@@ -1512,7 +1515,10 @@
       (let ((xs (producer)))
         (if (tuple? xs)
           (apply consumer (tuple-values xs))
-          (consumer xs))))))
+          (consumer xs))))
+
+    (define (error . xs)
+      ($halt))))
 
 (define-library (stak continue)
   (export
@@ -1530,7 +1536,6 @@
     with-exception-handler
     raise
     raise-continuable
-    error
     read-error
     file-error
     read-error?
@@ -1585,7 +1590,7 @@
     open-output-bytevector
     get-output-bytevector
 
-    set-write!)
+    write-value)
 
   (import (stak base))
 
@@ -1706,9 +1711,9 @@
                       (for-each
                         (lambda (value)
                           (write-char #\space)
-                          (write value))
+                          (write-value value))
                         (error-object-irritants exception)))
-                    (write exception))
+                    (write-value exception))
                   (newline)
                   ($halt))))))
         (lambda (handler)
@@ -1743,7 +1748,7 @@
       (lambda (error)
         (eq? (error-object-type error) type)))
 
-    (define error (error-type #f))
+    (set! error (error-type #f))
     (define read-error (error-type 'read))
     (define file-error (error-type 'file))
 
@@ -2114,11 +2119,9 @@
 
     (define get-output-bytevector port-data)
 
-    (define (write value . rest)
-      (write-string "<unknown>" (get-output-port rest)))
-
-    (define (set-write! f)
-      (set! write f))))
+    ; Dummy implementation
+    (define (write-value value . rest)
+      (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme base)
   (export
@@ -2391,7 +2394,7 @@
     open-output-bytevector
     get-output-bytevector
 
-    set-write!)
+    write-value)
 
   (import (stak base) (stak continue))
 
@@ -2955,7 +2958,7 @@
       (write-char #\#)
       (write-sequence (vector->list xs)))
 
-    (set-write! write)))
+    (set! write-value write)))
 
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
