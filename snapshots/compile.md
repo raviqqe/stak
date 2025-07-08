@@ -83,6 +83,9 @@
 - constant 14
 - call 1 #f primitive
 - set remainder
+- constant 40
+- call 1 #f primitive
+- set ||
 - constant 50
 - call 1 #f primitive
 - set null?
@@ -2141,6 +2144,10 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set call-with-values
+- constant procedure 0 #t
+  - call 0 #f ||
+- call 1 #f $$close
+- set error
 - constant 40
 - call 1 #f primitive
 - set ||
@@ -2716,7 +2723,6 @@
   - with-exception-handler
   - raise
   - raise-continuable
-  - error
   - read-error
   - file-error
   - read-error?
@@ -2760,7 +2766,7 @@
   - open-input-bytevector
   - open-output-bytevector
   - get-output-bytevector
-  - set-write!
+  - write-value
   - syntax-rules
   - define-syntax
   - \_
@@ -2964,6 +2970,7 @@
   - record?
   - values
   - call-with-values
+  - error
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -3220,14 +3227,14 @@
               - call 1 #f write-char
               - set 0
               - get 0
-              - call 1 #f ||
+              - call 1 #f write-value
             - call 1 #f $$close
             - get 8
             - call 1 #f error-object-irritants
             - call 2 #f for-each
             - continue
           - get 7
-          - call 1 #f ||
+          - call 1 #f write-value
           - set 0
           - call 0 #f newline
           - set 0
@@ -4257,13 +4264,7 @@
   - call 1 #f ||
   - call 2 #f write-string
 - call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - set ||
-  - constant #f
-- call 1 #f $$close
-- set set-write!
+- set write-value
 - constant symbol-table
 - constant list
   - symbols
@@ -4827,7 +4828,6 @@
   - with-exception-handler
   - raise
   - raise-continuable
-  - error
   - read-error
   - file-error
   - read-error?
@@ -4871,7 +4871,7 @@
   - open-input-bytevector
   - open-output-bytevector
   - get-output-bytevector
-  - set-write!
+  - write-value
   - syntax-rules
   - define-syntax
   - \_
@@ -5075,6 +5075,7 @@
   - record?
   - values
   - call-with-values
+  - error
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -9484,7 +9485,7 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (set-write! . set-write!)
+                                            - (write-value . write-value)
                                           - list
                                             - list
                                               - stak
@@ -9500,7 +9501,6 @@
                                             - (with-exception-handler . with-exception-handler)
                                             - (raise . raise)
                                             - (raise-continuable . raise-continuable)
-                                            - (error . error)
                                             - (read-error . read-error)
                                             - (file-error . file-error)
                                             - (read-error? . read-error?)
@@ -9544,7 +9544,7 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (set-write! . set-write!)
+                                            - (write-value . write-value)
                                           - list
                                             - list
                                               - stak
@@ -9752,6 +9752,7 @@
                                             - (record? . record?)
                                             - (values . values)
                                             - (call-with-values . call-with-values)
+                                            - (error . error)
                                         - call 2 #f 89
                                         - constant ()
                                         - call 2 #f ||
@@ -12980,8 +12981,7 @@
 - call 1 #f $$close
 - set ||
 - get write
-- call 1 #f set-write!
-- set 0
+- set write-value
 - constant list
   - list
     - define

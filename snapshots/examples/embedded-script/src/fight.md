@@ -71,6 +71,9 @@
 - constant 14
 - call 1 #f ||
 - set ||
+- constant 40
+- call 1 #f ||
+- set ||
 - constant 50
 - call 1 #f ||
 - set ||
@@ -599,6 +602,10 @@
 - set ||
 - constant #f
 - set 0
+- constant procedure 0 #t
+  - call 0 #f ||
+- call 1 #f ||
+- set ||
 - constant 40
 - call 1 #f ||
 - set ||
