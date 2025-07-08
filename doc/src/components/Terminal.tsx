@@ -19,8 +19,9 @@ export const Terminal = (props: Props): JSX.Element => {
   createEffect(() => {
     void (async (input: WritableStream<Uint8Array>) => {
       const stream = new TextEncoderStream();
+      const writer = stream.writable.getWriter();
 
-      terminal.onData((data) => stream.writable.getWriter().write(data));
+      terminal.onData((data) => writer.write(data));
 
       await stream.readable.pipeTo(input);
     })(props.input);
