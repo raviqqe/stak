@@ -83,6 +83,9 @@
 - constant 14
 - call 1 #f primitive
 - set remainder
+- constant 40
+- call 1 #f primitive
+- set ||
 - constant 50
 - call 1 #f primitive
 - set null?
@@ -2141,6 +2144,10 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set call-with-values
+- constant procedure 0 #t
+  - call 0 #f ||
+- call 1 #f $$close
+- set error
 - constant 40
 - call 1 #f primitive
 - set ||
@@ -2412,7 +2419,6 @@
   - with-exception-handler
   - raise
   - raise-continuable
-  - error
   - read-error
   - file-error
   - read-error?
@@ -2660,6 +2666,7 @@
   - record?
   - values
   - call-with-values
+  - error
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -4219,7 +4226,6 @@
   - with-exception-handler
   - raise
   - raise-continuable
-  - error
   - read-error
   - file-error
   - read-error?
@@ -4467,6 +4473,7 @@
   - record?
   - values
   - call-with-values
+  - error
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -8959,7 +8966,6 @@
                                             - (with-exception-handler . with-exception-handler)
                                             - (raise . raise)
                                             - (raise-continuable . raise-continuable)
-                                            - (error . error)
                                             - (read-error . read-error)
                                             - (file-error . file-error)
                                             - (read-error? . read-error?)
@@ -9211,6 +9217,7 @@
                                             - (record? . record?)
                                             - (values . values)
                                             - (call-with-values . call-with-values)
+                                            - (error . error)
                                         - call 2 #f 89
                                         - constant ()
                                         - call 2 #f ||

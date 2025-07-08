@@ -220,7 +220,9 @@
     record?
 
     values
-    call-with-values)
+    call-with-values
+
+    error)
 
   (begin
     ; Syntax
@@ -624,6 +626,7 @@
     (define $* (primitive 12))
     (define $/ (primitive 13))
     (define remainder (primitive 14))
+    (define $halt (primitive 40))
     (define null? (primitive 50))
     (define pair? (primitive 51))
     (define assq (primitive 60))
@@ -1512,7 +1515,10 @@
       (let ((xs (producer)))
         (if (tuple? xs)
           (apply consumer (tuple-values xs))
-          (consumer xs))))))
+          (consumer xs))))
+
+    (define (error . xs)
+      ($halt))))
 
 (define-library (stak continue)
   (export
@@ -1530,7 +1536,6 @@
     with-exception-handler
     raise
     raise-continuable
-    error
     read-error
     file-error
     read-error?
@@ -1768,7 +1773,7 @@
       (lambda (error)
         (eq? (error-object-type error) type)))
 
-    (define error (error-type #f))
+    (set! error (error-type #f))
     (define read-error (error-type 'read))
     (define file-error (error-type 'file))
 
