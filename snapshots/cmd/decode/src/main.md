@@ -2274,6 +2274,8 @@
   - call 1 #f ||
 - call 1 #f ||
 - set ||
+- get ||
+- set ||
 - constant 3
 - set ||
 - constant 4

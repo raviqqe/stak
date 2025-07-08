@@ -2403,7 +2403,6 @@
   - atan
   - string->symbol
   - make-symbol-table
-  - set-write!
   - continue
   - call/cc
   - call-with-current-continuation
@@ -4208,7 +4207,6 @@
   - atan
   - string->symbol
   - make-symbol-table
-  - set-write!
   - continue
   - call/cc
   - call-with-current-continuation
@@ -8878,7 +8876,7 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (set-write! . set-write!)
+                                            - (write-value . write-value)
                                           - list
                                             - list
                                               - stak
@@ -12162,7 +12160,7 @@
 - call 1 #f $$close
 - set ||
 - get write
-- set ||
+- set write-value
 - constant list
   - lambda
   - list

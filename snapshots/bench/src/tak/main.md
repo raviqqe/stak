@@ -1897,6 +1897,8 @@
   - call 1 #f ||
 - call 1 #f ||
 - set ||
+- get ||
+- set ||
 - constant procedure 3 #f
   - get 1
   - get 3

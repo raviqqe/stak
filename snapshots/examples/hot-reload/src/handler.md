@@ -2996,6 +2996,8 @@
 - call 1 #f ||
 - set ||
 - get ||
+- set ||
+- get ||
 - call 0 #f ||
 - call 2 #f ||
 - call 1 #f ||
