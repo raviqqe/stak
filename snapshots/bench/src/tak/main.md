@@ -1484,12 +1484,6 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
-- constant procedure 1 #f
-  - get 0
-  - set ||
-  - constant #f
-- call 1 #f ||
-- set ||
 - constant #f
 - set 0
 - constant list
@@ -1911,8 +1905,7 @@
 - call 1 #f ||
 - set ||
 - get ||
-- call 1 #f ||
-- set 0
+- set ||
 - constant procedure 3 #f
   - get 1
   - get 3
