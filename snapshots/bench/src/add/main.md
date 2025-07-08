@@ -339,8 +339,6 @@
 - set ||
 - constant #f
 - set 0
-- constant #f
-- set 0
 - constant procedure 0 #f
   - constant #f
 - call 1 #f ||

@@ -1151,8 +1151,6 @@
 - constant 102
 - call 1 #f ||
 - set ||
-- constant #f
-- set 0
 - constant procedure 0 #f
   - constant #f
 - call 1 #f ||
