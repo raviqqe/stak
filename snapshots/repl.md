@@ -2148,12 +2148,6 @@
   - call 0 #f ||
 - call 1 #f $$close
 - set error
-- constant procedure 1 #f
-  - get 0
-  - set error
-  - constant #f
-- call 1 #f $$close
-- set set-error!
 - constant 40
 - call 1 #f primitive
 - set ||
@@ -2673,7 +2667,6 @@
   - values
   - call-with-values
   - error
-  - set-error!
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -3064,8 +3057,7 @@
 - set ||
 - constant #f
 - call 1 #f ||
-- call 1 #f set-error!
-- set 0
+- set error
 - constant read
 - call 1 #f ||
 - set read-error
@@ -4482,7 +4474,6 @@
   - values
   - call-with-values
   - error
-  - set-error!
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -9227,7 +9218,6 @@
                                             - (values . values)
                                             - (call-with-values . call-with-values)
                                             - (error . error)
-                                            - (set-error! . set-error!)
                                         - call 2 #f 89
                                         - constant ()
                                         - call 2 #f ||
