@@ -2,7 +2,7 @@ import { createEffect, onMount, type JSX } from "solid-js";
 import * as xterm from "@xterm/xterm";
 
 interface Props {
-  input: ReadableStream<Uint8Array>;
+  input: WritableStream<Uint8Array>;
   output: ReadableStream<Uint8Array>;
 }
 
@@ -17,13 +17,10 @@ export const Terminal = (props: Props): JSX.Element => {
   });
 
   createEffect(() => {
-    const decoder = new TextDecoder();
+    const encoder = new TextEncoder();
+    const writer = props.input.getWriter();
 
-    void (async (input: ReadableStream<Uint8Array>) => {
-      for await (const data of input) {
-        terminal.input(decoder.decode(data));
-      }
-    })(props.input);
+    terminal.onData((data) => writer.write(encoder.encode(data)));
   });
 
   createEffect(() => {
