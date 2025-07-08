@@ -1540,7 +1540,6 @@
     with-exception-handler
     raise
     raise-continuable
-    error
     read-error
     file-error
     read-error?
@@ -1778,7 +1777,7 @@
       (lambda (error)
         (eq? (error-object-type error) type)))
 
-    (define error (error-type #f))
+    (set-error! (error-type #f))
     (define read-error (error-type 'read))
     (define file-error (error-type 'file))
 
