@@ -5,6 +5,7 @@ import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import styles from "./DemoForm.module.css";
 import { Terminal } from "../Terminal.js";
+import type { TransformStreamDefaultController } from "node:stream/web";
 
 const _source = [
   "(import (scheme base) (scheme write))",
@@ -13,8 +14,23 @@ const _source = [
   "(fibonacci 10)",
 ];
 
+class LineBufferedTransformer implements Transformer {
+  private line = "";
+
+  public transform(data: string, controller: TransformStreamDefaultController) {
+    if (data === "\n") {
+      controller.enqueue(this.line);
+      this.line = "";
+    } else {
+      this.line += data;
+    }
+  }
+}
+
 export const DemoForm = (): JSX.Element => {
-  const input = new TransformStream<Uint8Array, Uint8Array>();
+  const input = new TransformStream<string, Uint8Array>(
+    new LineBufferedTransformer(),
+  );
   const output = useStore(store.output);
 
   onMount(() => store.input.set(input.readable));
@@ -23,7 +39,10 @@ export const DemoForm = (): JSX.Element => {
     <form class={styles.root}>
       <Field style={{ flex: 1 }}>
         <Label for="repl">Try it out!</Label>
-        <Terminal input={input.writable} output={output()} />
+        <Terminal
+          input={input.writable}
+          output={output().pipeThrough(new TextDecoderStream())}
+        />
       </Field>
     </form>
   );
