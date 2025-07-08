@@ -1520,6 +1520,21 @@
     (define (error . xs)
       ($halt))))
 
+(define-library (stak parameter)
+  (export make-parameter)
+
+  (import (stak base))
+
+  (begin
+    (define (make-parameter x . rest)
+      (define convert (if (pair? rest) (car rest) (lambda (x) x)))
+      (set! x (convert x))
+
+      (lambda rest
+        (if (null? rest)
+          x
+          (set! x (convert (car rest))))))))
+
 (define-library (stak io)
   (export
     eof-object
@@ -1568,7 +1583,7 @@
     open-output-bytevector
     get-output-bytevector)
 
-  (import (stak base))
+  (import (stak base) (stak parameter))
 
   (begin
     (define $read-input (primitive 100))
@@ -1785,15 +1800,17 @@
               (loop (/ head 2) (* offset 64) (+ mask head)))))))
 
     (define (write-string x . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
-        (for-each write-char (string->list x))))
+      (let ((port (get-output-port rest)))
+        (for-each
+          (lambda (x) (write-char x port))
+          (string->list x))))
 
     (define (write-bytevector xs . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
+      (let ((port (get-output-port rest)))
         (do ((index 0 (+ index 1)))
           ((= index (bytevector-length xs))
             #f)
-          (write-u8 (bytevector-u8-ref xs index)))))
+          (write-u8 (bytevector-u8-ref xs index) port))))
 
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
@@ -1877,8 +1894,6 @@
     call-with-current-continuation
 
     dynamic-wind
-
-    make-parameter
     parameterize
 
     error-object?
@@ -1897,7 +1912,7 @@
 
     write-value)
 
-  (import (stak base) (stak io))
+  (import (stak base) (stak parameter) (stak io))
 
   (begin
     (define $halt (primitive 40))
@@ -1960,15 +1975,6 @@
           (travel-to-point! (point-parent from) to))))
 
     ;; Parameter
-
-    (define (make-parameter x . rest)
-      (define convert (if (pair? rest) (car rest) (lambda (x) x)))
-      (set! x (convert x))
-
-      (lambda rest
-        (if (null? rest)
-          x
-          (set! x (convert (car rest))))))
 
     (define-syntax parameterize
       (syntax-rules ()
@@ -2400,7 +2406,7 @@
 
     write-value)
 
-  (import (stak base) (stak io) (stak continue))
+  (import (stak base) (stak parameter) (stak io) (stak continue))
 
   (begin
     ; Symbol table
