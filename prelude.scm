@@ -1080,11 +1080,17 @@
     (define (sequence-set! xs index value)
       (list-set! (sequence->list xs) index value))
 
-    (define (sequence-append . xs)
-      (list->sequence (apply append (map sequence->list xs))))
+    (define (make-sequence list->sequence)
+      (lambda (length . rest)
+        (list->sequence (apply make-list (cons length rest)))))
 
-    (define (sequence-copy xs . rest)
-      (list->sequence (apply list-copy (sequence->list xs) rest)))
+    (define (sequence-append list->sequence)
+      (lambda xs
+        (list->sequence (apply append (map sequence->list xs)))))
+
+    (define (sequence-copy list->sequence)
+      (lambda (xs . rest)
+        (list->sequence (apply list-copy (sequence->list xs) rest))))
 
     (define (sequence-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1113,28 +1119,21 @@
     (define (vector . xs)
       (list->vector xs))
 
-    (define (make-vector length . rest)
-      (list->vector (apply make-list (cons length rest))))
-
     (define vector-length sequence-length)
     (define vector->list sequence->list)
     (define list->vector (list->sequence vector-type))
     (define vector-ref sequence-ref)
     (define vector-set! sequence-set!)
-
-    (define (vector-append . xs)
-      (list->vector (apply append (map vector->list xs))))
-
-    (define (vector-copy xs . rest)
-      (list->vector (apply list-copy (vector->list xs) rest)))
+    (define make-vector (make-sequence list->vector))
+    (define vector-append (sequence-append list->vector))
+    (define vector-copy (sequence-copy list->vector))
+    (define vector-copy! sequence-copy!)
 
     (define (vector-for-each f xs)
       (for-each f (vector->list xs)))
 
     (define (vector-map f xs)
       (list->vector (map f (vector->list xs))))
-
-    (define vector-copy! sequence-copy!)
 
     (define (vector-fill! xs fill . rest)
       (define start (if (null? rest) 0 (car rest)))
