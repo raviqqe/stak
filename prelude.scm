@@ -1074,6 +1074,18 @@
       (lambda (xs)
         (data-rib type (length xs) xs)))
 
+    (define (sequence-ref xs index)
+      (list-ref (sequence->list xs) index))
+
+    (define (sequence-set! xs index value)
+      (list-set! (sequence->list xs) index value))
+
+    (define (sequence-append . xs)
+      (list->sequence (apply append (map sequence->list xs))))
+
+    (define (sequence-copy xs . rest)
+      (list->sequence (apply list-copy (sequence->list xs) rest)))
+
     (define (sequence-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define end
@@ -1113,8 +1125,7 @@
     (define (vector-set! vector index value)
       (list-set! (vector->list vector) index value))
 
-    (define (list->vector x)
-      (data-rib vector-type (length x) x))
+    (define list->vector (list->sequence vector-type))
 
     (define (vector-append . xs)
       (list->vector (apply append (map vector->list xs))))
