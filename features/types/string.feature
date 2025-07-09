@@ -206,7 +206,7 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (string-map write-char "ABC")
+      (string-for-each write-char "ABC")
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
