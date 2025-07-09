@@ -3042,9 +3042,6 @@
 - set open-output-bytevector
 - get ||
 - set get-output-bytevector
-- constant 40
-- call 1 #f primitive
-- set ||
 - constant procedure 0 #f
   - constant #f
 - call 1 #f $$close
@@ -3180,6 +3177,9 @@
   - get 1
   - call 2 #f ||
 - call 1 #f $$close
+- set ||
+- constant 40
+- call 1 #f primitive
 - set ||
 - constant error-object
 - constant list
@@ -3671,11 +3671,7 @@
   - atan
   - string->symbol
   - make-symbol-table
-  - continue
-  - call/cc
-  - call-with-current-continuation
-  - dynamic-wind
-  - parameterize
+  - exception
   - error-object?
   - error-object-message
   - error-object-irritants
@@ -3689,6 +3685,11 @@
   - guard
   - unwind
   - write-value
+  - continue
+  - call/cc
+  - call-with-current-continuation
+  - dynamic-wind
+  - parameterize
   - io
   - eof-object
   - eof-object?
@@ -8351,11 +8352,7 @@
                                           - list
                                             - list
                                               - stak
-                                              - continue
-                                            - (call/cc . call/cc)
-                                            - (call-with-current-continuation . call-with-current-continuation)
-                                            - (dynamic-wind . dynamic-wind)
-                                            - (parameterize . parameterize)
+                                              - exception
                                             - (error-object? . error-object?)
                                             - (error-object-message . error-object-message)
                                             - (error-object-irritants . error-object-irritants)
@@ -8369,6 +8366,14 @@
                                             - (guard . guard)
                                             - (unwind . unwind)
                                             - (write-value . write-value)
+                                          - list
+                                            - list
+                                              - stak
+                                              - continue
+                                            - (call/cc . call/cc)
+                                            - (call-with-current-continuation . call-with-current-continuation)
+                                            - (dynamic-wind . dynamic-wind)
+                                            - (parameterize . parameterize)
                                           - list
                                             - list
                                               - stak

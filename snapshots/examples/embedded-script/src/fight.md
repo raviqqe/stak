@@ -859,9 +859,6 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
-- constant 40
-- call 1 #f ||
-- set ||
 - constant procedure 0 #f
   - constant #f
 - call 1 #f ||
@@ -991,6 +988,9 @@
   - call 1 #f ||
   - get 1
   - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant 40
 - call 1 #f ||
 - set ||
 - constant error-object

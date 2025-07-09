@@ -1900,31 +1900,12 @@
   (export
     call/cc
     call-with-current-continuation
-
     dynamic-wind
-    parameterize
-
-    error-object?
-    error-object-message
-    error-object-irritants
-    with-exception-handler
-    raise
-    raise-continuable
-    read-error
-    file-error
-    read-error?
-    file-error?
-    guard
-
-    unwind
-
-    write-value)
+    parameterize)
 
   (import (stak base) (stak parameter) (stak io))
 
   (begin
-    (define $halt (primitive 40))
-
     ; Continuation
 
     (define dummy-procedure (lambda () #f))
@@ -1993,9 +1974,30 @@
             (dynamic-wind
               (lambda () (parameter value1))
               (lambda () (parameterize ((parameter2 value2) ...) body ...))
-              (lambda () (parameter old)))))))
+              (lambda () (parameter old)))))))))
 
-    ; Exception
+(define-library (stak exception)
+  (export
+    error-object?
+    error-object-message
+    error-object-irritants
+    with-exception-handler
+    raise
+    raise-continuable
+    read-error
+    file-error
+    read-error?
+    file-error?
+    guard
+
+    unwind
+
+    write-value)
+
+  (import (stak base) (stak parameter) (stak io) (stak continue))
+
+  (begin
+    (define $halt (primitive 40))
 
     (define-record-type error-object
       (make-error-object type message irritants)
@@ -2414,7 +2416,7 @@
 
     write-value)
 
-  (import (stak base) (stak parameter) (stak io) (stak continue))
+  (import (stak base) (stak parameter) (stak io) (stak continue) (stak exception))
 
   (begin
     ; Symbol table
