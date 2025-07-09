@@ -1821,7 +1821,9 @@
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
 
-    (set! write-message write-string)
+    (set! write-message
+      (lambda (x)
+        (write-string x (current-error-port))))
 
     ; Flush
 
