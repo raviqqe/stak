@@ -1,6 +1,6 @@
 @stak
 Feature: Stak base library
-  Scenario: Enumerate numbers
+  Scenario: Raise an error
     Given a file named "main.scm" with:
       """scheme
       (import (stak base))
