@@ -201,6 +201,29 @@ Feature: String
       | 2      | #\\B      | BB     |
       | 3      | #\\B      | BBB    |
 
+  Scenario: Iterate over a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (string-map write-char "ABC")
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
+
+  Scenario: Map a function to a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (if (equal? (string-map (lambda (x) (integer->char (+ 1 (char->integer x)))) "ABC") "BCD")
+          65
+          66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario Outline: Check string equality
     Given a file named "main.scm" with:
       """scheme

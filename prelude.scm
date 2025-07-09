@@ -208,6 +208,8 @@
     string-copy!
     substring
     make-string
+    string-for-each
+    string-map
     string=?
     string<?
     string>?
@@ -1201,6 +1203,12 @@
       ((make-sequence code-points->string)
         length
         (if (null? rest) 0 (char->integer (car rest)))))
+
+    (define (string-for-each f xs)
+      (for-each f (string->list xs)))
+
+    (define (string-map f xs)
+      (list->string (map f (string->list xs))))
 
     (define string=? (comparison-operator equal?))
 
@@ -2307,6 +2315,8 @@
     string-copy!
     substring
     make-string
+    string-for-each
+    string-map
     string=?
     string<?
     string>?
