@@ -1070,6 +1070,10 @@
     (define sequence-length car)
     (define sequence->list cdr)
 
+    (define (list->sequence type)
+      (lambda (xs)
+        (data-rib type (length xs) xs)))
+
     (define (sequence-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define end
