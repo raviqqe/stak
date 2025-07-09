@@ -1142,8 +1142,15 @@
 - set ||
 - constant #f
 - set 0
-- constant procedure 0 #t
+- constant procedure 1 #t
+  - get 1
+  - call 1 #f ||
+  - set 0
   - call 0 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 0 #t
+  - constant #f
 - call 1 #f ||
 - set ||
 - constant procedure 1 #t
@@ -1484,6 +1491,12 @@
   - constant #\newline
   - get 1
   - call 1 #f ||
+  - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - call 0 #f ||
   - call 2 #f ||
 - call 1 #f ||
 - set ||

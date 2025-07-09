@@ -2144,10 +2144,17 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set call-with-values
-- constant procedure 0 #t
+- constant procedure 1 #t
+  - get 1
+  - call 1 #f write-message
+  - set 0
   - call 0 #f ||
 - call 1 #f $$close
 - set error
+- constant procedure 0 #t
+  - constant #f
+- call 1 #f $$close
+- set write-message
 - constant procedure 1 #t
   - constant procedure 1 #f
     - get 2
@@ -2828,6 +2835,12 @@
   - call 2 #f write-char
 - call 1 #f $$close
 - set newline
+- constant procedure 1 #f
+  - get 0
+  - call 0 #f current-error-port
+  - call 2 #f write-string
+- call 1 #f $$close
+- set write-message
 - constant procedure 0 #t
   - constant procedure 1 #f
     - get 0
@@ -3922,6 +3935,7 @@
   - values
   - call-with-values
   - error
+  - write-message
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -8674,6 +8688,7 @@
                                             - (values . values)
                                             - (call-with-values . call-with-values)
                                             - (error . error)
+                                            - (write-message . write-message)
                                         - call 2 #f 89
                                         - constant ()
                                         - call 2 #f ||
