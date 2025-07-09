@@ -1162,22 +1162,12 @@
 
     (define bytevector-length sequence-length)
     (define bytevector->list sequence->list)
-
-    (define (list->bytevector x)
-      (data-rib bytevector-type (length x) x))
-
-    (define (bytevector-u8-ref xs index)
-      (list-ref (bytevector->list xs) index))
-
-    (define (bytevector-u8-set! xs index x)
-      (list-set! (bytevector->list xs) index x))
-
-    (define (bytevector-append . xs)
-      (list->bytevector (apply append (map bytevector->list xs))))
-
-    (define (bytevector-copy xs . rest)
-      (list->bytevector (apply list-copy (bytevector->list xs) rest)))
-
+    (define list->bytevector (list->sequence bytevector-type))
+    (define bytevector-u8-ref sequence-ref)
+    (define bytevector-u8-set! sequence-set!)
+    (define make-bytevector (make-sequence list->bytevector))
+    (define bytevector-append (sequence-append list->bytevector))
+    (define bytevector-copy (sequence-copy list->bytevector))
     (define bytevector-copy! sequence-copy!)
 
     ;; String
