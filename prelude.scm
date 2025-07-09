@@ -222,7 +222,8 @@
     values
     call-with-values
 
-    error)
+    error
+    write-message)
 
   (begin
     ; Syntax
@@ -1517,8 +1518,13 @@
           (apply consumer (tuple-values xs))
           (consumer xs))))
 
-    (define (error . xs)
-      ($halt))))
+    (define (error message . xs)
+      (write-message message)
+      ($halt))
+
+    ; Dummy implementation
+    (define (write-message . xs)
+      #f)))
 
 (define-library (stak parameter)
   (export make-parameter)
@@ -1814,6 +1820,8 @@
 
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
+
+    (set! write-message write-string)
 
     ; Flush
 
