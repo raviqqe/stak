@@ -208,6 +208,8 @@
     string-copy!
     substring
     make-string
+    string-for-each
+    string-map
     string=?
     string<?
     string>?
@@ -1071,6 +1073,28 @@
     (define sequence-length car)
     (define sequence->list cdr)
 
+    (define (list->sequence type)
+      (lambda (xs)
+        (data-rib type (length xs) xs)))
+
+    (define (sequence-ref xs index)
+      (list-ref (sequence->list xs) index))
+
+    (define (sequence-set! xs index value)
+      (list-set! (sequence->list xs) index value))
+
+    (define (make-sequence list->sequence)
+      (lambda (length . rest)
+        (list->sequence (apply make-list (cons length rest)))))
+
+    (define (sequence-append list->sequence)
+      (lambda xs
+        (list->sequence (apply append (map sequence->list xs)))))
+
+    (define (sequence-copy list->sequence)
+      (lambda (xs . rest)
+        (list->sequence (apply list-copy (sequence->list xs) rest))))
+
     (define (sequence-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define end
@@ -1098,34 +1122,21 @@
     (define (vector . xs)
       (list->vector xs))
 
-    (define (make-vector length . rest)
-      (list->vector (apply make-list (cons length rest))))
-
     (define vector-length sequence-length)
     (define vector->list sequence->list)
-
-    (define (vector-ref vector index)
-      (list-ref (vector->list vector) index))
-
-    (define (vector-set! vector index value)
-      (list-set! (vector->list vector) index value))
-
-    (define (list->vector x)
-      (data-rib vector-type (length x) x))
-
-    (define (vector-append . xs)
-      (list->vector (apply append (map vector->list xs))))
-
-    (define (vector-copy xs . rest)
-      (list->vector (apply list-copy (vector->list xs) rest)))
+    (define list->vector (list->sequence vector-type))
+    (define vector-ref sequence-ref)
+    (define vector-set! sequence-set!)
+    (define make-vector (make-sequence list->vector))
+    (define vector-append (sequence-append list->vector))
+    (define vector-copy (sequence-copy list->vector))
+    (define vector-copy! sequence-copy!)
 
     (define (vector-for-each f xs)
       (for-each f (vector->list xs)))
 
     (define (vector-map f xs)
       (list->vector (map f (vector->list xs))))
-
-    (define vector-copy! sequence-copy!)
 
     (define (vector-fill! xs fill . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1154,22 +1165,12 @@
 
     (define bytevector-length sequence-length)
     (define bytevector->list sequence->list)
-
-    (define (list->bytevector x)
-      (data-rib bytevector-type (length x) x))
-
-    (define (bytevector-u8-ref xs index)
-      (list-ref (bytevector->list xs) index))
-
-    (define (bytevector-u8-set! xs index x)
-      (list-set! (bytevector->list xs) index x))
-
-    (define (bytevector-append . xs)
-      (list->bytevector (apply append (map bytevector->list xs))))
-
-    (define (bytevector-copy xs . rest)
-      (list->bytevector (apply list-copy (bytevector->list xs) rest)))
-
+    (define list->bytevector (list->sequence bytevector-type))
+    (define bytevector-u8-ref sequence-ref)
+    (define bytevector-u8-set! sequence-set!)
+    (define make-bytevector (make-sequence list->bytevector))
+    (define bytevector-append (sequence-append list->bytevector))
+    (define bytevector-copy (sequence-copy list->bytevector))
     (define bytevector-copy! sequence-copy!)
 
     ;; String
@@ -1182,36 +1183,33 @@
     (define (string . xs)
       (list->string xs))
 
-    (define (code-points->string x)
-      (string-rib x (length x)))
-
     (define string-length sequence-length)
     (define string->code-points sequence->list)
+    (define code-points->string (list->sequence string-type))
+    (define string-append (sequence-append code-points->string))
+    (define string-copy (sequence-copy code-points->string))
+    (define string-copy! sequence-copy!)
+    (define substring string-copy)
 
     (define (list->string x)
-      (string-rib (map char->integer x) (length x)))
+      (code-points->string (map char->integer x)))
 
     (define (string->list x)
       (map integer->char (string->code-points x)))
 
     (define (string-ref x index)
-      (integer->char (list-ref (string->code-points x) index)))
-
-    (define (string-append . xs)
-      (code-points->string (apply append (map string->code-points xs))))
-
-    (define (string-copy x . rest)
-      (code-points->string (apply list-copy (cons (string->code-points x) rest))))
-
-    (define substring string-copy)
-
-    (define string-copy! sequence-copy!)
+      (integer->char (sequence-ref x index)))
 
     (define (make-string length . rest)
-      (code-points->string
-        (make-list
-          length
-          (if (null? rest) 0 (char->integer (car rest))))))
+      ((make-sequence code-points->string)
+        length
+        (if (null? rest) 0 (char->integer (car rest)))))
+
+    (define (string-for-each f xs)
+      (for-each f (string->list xs)))
+
+    (define (string-map f xs)
+      (list->string (map f (string->list xs))))
 
     (define string=? (comparison-operator equal?))
 
@@ -2327,6 +2325,8 @@
     string-copy!
     substring
     make-string
+    string-for-each
+    string-map
     string=?
     string<?
     string>?

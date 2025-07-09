@@ -1208,6 +1208,64 @@
 - set ||
 - get cdr
 - set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 2
+    - get 1
+    - call 1 #f length
+    - get 2
+    - call 3 #f data-rib
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - call 2 #f list-ref
+- call 1 #f $$close
+- set ||
+- constant procedure 3 #f
+  - get 2
+  - call 1 #f ||
+  - get 2
+  - get 2
+  - call 3 #f list-set!
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - get make-list
+    - get 2
+    - get 2
+    - call 2 #f cons
+    - call 2 #f apply
+    - call 1 #f 4
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 0 #t
+    - get append
+    - get ||
+    - get 2
+    - call 2 #f map
+    - call 2 #f apply
+    - call 1 #f 3
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - get list-copy
+    - get 2
+    - call 1 #f ||
+    - get 2
+    - call 3 #f apply
+    - call 1 #f 4
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
 - constant procedure 3 #t
   - constant procedure 2 #f
     - get 3
@@ -1289,60 +1347,28 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set vector
-- constant procedure 1 #t
-  - get make-list
-  - get 2
-  - get 2
-  - call 2 #f cons
-  - call 2 #f apply
-  - call 1 #f list->vector
-- call 1 #f $$close
-- set make-vector
 - get ||
 - set vector-length
 - get ||
 - set vector->list
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f vector->list
-  - get 1
-  - call 2 #f list-ref
-- call 1 #f $$close
-- set vector-ref
-- constant procedure 3 #f
-  - get 2
-  - call 1 #f vector->list
-  - get 2
-  - get 2
-  - call 3 #f list-set!
-- call 1 #f $$close
-- set vector-set!
-- constant procedure 1 #f
-  - get vector-type
-  - get 1
-  - call 1 #f length
-  - get 2
-  - call 3 #f data-rib
-- call 1 #f $$close
+- get vector-type
+- call 1 #f ||
 - set list->vector
-- constant procedure 0 #t
-  - get append
-  - get vector->list
-  - get 2
-  - call 2 #f map
-  - call 2 #f apply
-  - call 1 #f list->vector
-- call 1 #f $$close
+- get ||
+- set vector-ref
+- get ||
+- set vector-set!
+- get list->vector
+- call 1 #f ||
+- set make-vector
+- get list->vector
+- call 1 #f ||
 - set vector-append
-- constant procedure 1 #t
-  - get list-copy
-  - get 2
-  - call 1 #f vector->list
-  - get 2
-  - call 3 #f apply
-  - call 1 #f list->vector
-- call 1 #f $$close
+- get list->vector
+- call 1 #f ||
 - set vector-copy
+- get ||
+- set vector-copy!
 - constant procedure 2 #f
   - get 1
   - get 1
@@ -1358,8 +1384,6 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set vector-map
-- get ||
-- set vector-copy!
 - constant procedure 2 #t
   - constant procedure 2 #f
     - get 3
@@ -1464,46 +1488,21 @@
 - set bytevector-length
 - get ||
 - set bytevector->list
-- constant procedure 1 #f
-  - get bytevector-type
-  - get 1
-  - call 1 #f length
-  - get 2
-  - call 3 #f data-rib
-- call 1 #f $$close
+- get bytevector-type
+- call 1 #f ||
 - set list->bytevector
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f bytevector->list
-  - get 1
-  - call 2 #f list-ref
-- call 1 #f $$close
+- get ||
 - set bytevector-u8-ref
-- constant procedure 3 #f
-  - get 2
-  - call 1 #f bytevector->list
-  - get 2
-  - get 2
-  - call 3 #f list-set!
-- call 1 #f $$close
+- get ||
 - set bytevector-u8-set!
-- constant procedure 0 #t
-  - get append
-  - get bytevector->list
-  - get 2
-  - call 2 #f map
-  - call 2 #f apply
-  - call 1 #f list->bytevector
-- call 1 #f $$close
+- get list->bytevector
+- call 1 #f ||
+- set ||
+- get list->bytevector
+- call 1 #f ||
 - set bytevector-append
-- constant procedure 1 #t
-  - get list-copy
-  - get 2
-  - call 1 #f bytevector->list
-  - get 2
-  - call 3 #f apply
-  - call 1 #f list->bytevector
-- call 1 #f $$close
+- get list->bytevector
+- call 1 #f ||
 - set bytevector-copy
 - get ||
 - set bytevector-copy!
@@ -1522,24 +1521,28 @@
   - call 1 #f list->string
 - call 1 #f $$close
 - set string
-- constant procedure 1 #f
-  - get 0
-  - get 1
-  - call 1 #f length
-  - call 2 #f ||
-- call 1 #f $$close
-- set code-points->string
 - get ||
 - set string-length
 - get ||
 - set string->code-points
+- get string-type
+- call 1 #f ||
+- set code-points->string
+- get code-points->string
+- call 1 #f ||
+- set string-append
+- get code-points->string
+- call 1 #f ||
+- set string-copy
+- get ||
+- set string-copy!
+- get string-copy
+- set substring
 - constant procedure 1 #f
   - get char->integer
   - get 1
   - call 2 #f map
-  - get 1
-  - call 1 #f length
-  - call 2 #f ||
+  - call 1 #f code-points->string
 - call 1 #f $$close
 - set list->string
 - constant procedure 1 #f
@@ -1551,49 +1554,41 @@
 - set string->list
 - constant procedure 2 #f
   - get 1
-  - call 1 #f string->code-points
   - get 1
-  - call 2 #f list-ref
+  - call 2 #f ||
   - call 1 #f integer->char
 - call 1 #f $$close
 - set string-ref
-- constant procedure 0 #t
-  - get append
-  - get string->code-points
-  - get 2
-  - call 2 #f map
-  - call 2 #f apply
-  - call 1 #f code-points->string
-- call 1 #f $$close
-- set string-append
 - constant procedure 1 #t
-  - get list-copy
+  - get code-points->string
+  - call 1 #f ||
   - get 2
-  - call 1 #f string->code-points
   - get 2
-  - call 2 #f cons
-  - call 2 #f apply
-  - call 1 #f code-points->string
-- call 1 #f $$close
-- set string-copy
-- get string-copy
-- set substring
-- get ||
-- set string-copy!
-- constant procedure 1 #t
-  - get 1
-  - get 1
   - call 1 #f null?
   - if
     - constant 0
     - continue
-  - get 1
+  - get 2
   - call 1 #f car
   - call 1 #f char->integer
-  - call 2 #f make-list
-  - call 1 #f code-points->string
+  - call 2 #f 2
 - call 1 #f $$close
 - set make-string
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f string->list
+  - call 2 #f for-each
+- call 1 #f $$close
+- set string-for-each
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f string->list
+  - call 2 #f map
+  - call 1 #f list->string
+- call 1 #f $$close
+- set string-map
 - get equal?
 - call 1 #f ||
 - set string=?
@@ -4228,6 +4223,8 @@
   - string-copy!
   - substring
   - make-string
+  - string-for-each
+  - string-map
   - string=?
   - string<?
   - string>?
@@ -8582,6 +8579,8 @@
                                             - (string-copy! . string-copy!)
                                             - (substring . substring)
                                             - (make-string . make-string)
+                                            - (string-for-each . string-for-each)
+                                            - (string-map . string-map)
                                             - (string=? . string=?)
                                             - (string<? . string<?)
                                             - (string>? . string>?)
@@ -8914,6 +8913,8 @@
                                             - (string-copy! . string-copy!)
                                             - (substring . substring)
                                             - (make-string . make-string)
+                                            - (string-for-each . string-for-each)
+                                            - (string-map . string-map)
                                             - (string=? . string=?)
                                             - (string<? . string<?)
                                             - (string>? . string>?)
