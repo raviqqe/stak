@@ -1118,14 +1118,9 @@
 
     (define vector-length sequence-length)
     (define vector->list sequence->list)
-
-    (define (vector-ref vector index)
-      (list-ref (vector->list vector) index))
-
-    (define (vector-set! vector index value)
-      (list-set! (vector->list vector) index value))
-
     (define list->vector (list->sequence vector-type))
+    (define vector-ref sequence-ref)
+    (define vector-set! sequence-set!)
 
     (define (vector-append . xs)
       (list->vector (apply append (map vector->list xs))))
