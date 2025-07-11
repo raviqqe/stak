@@ -1,7 +1,6 @@
-import "@xterm/xterm/css/xterm.css";
 import { createEffect, onMount, type JSX } from "solid-js";
 import * as xterm from "@xterm/xterm";
-import { Readline } from "xterm-readline";
+import "@xterm/xterm/css/xterm.css";
 
 interface Props {
   input: WritableStream<string>;
@@ -10,7 +9,6 @@ interface Props {
 
 export const Terminal = (props: Props): JSX.Element => {
   const terminal = new xterm.Terminal();
-  terminal.loadAddon(new Readline());
   let element: HTMLDivElement | null = null;
 
   onMount(() => {

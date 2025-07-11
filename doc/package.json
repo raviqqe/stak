@@ -25,8 +25,7 @@
     "monaco-editor": "^0.52.2",
     "nanostores": "^1.0.1",
     "solid-js": "^1.9.7",
-    "vite-plugin-wasm": "^3.4.1",
-    "xterm-readline": "^1.1.2"
+    "vite-plugin-wasm": "^3.4.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
