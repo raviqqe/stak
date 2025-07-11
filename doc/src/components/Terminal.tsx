@@ -23,7 +23,6 @@ export const Terminal = (props: Props): JSX.Element => {
     const writer = props.input.getWriter();
 
     terminal.onData(async (data) => {
-      console.log({ data, line: line.join("") });
       if (data == "\r") {
         await writer.write([...line.splice(0), "\n"].join(""));
         terminal.write("\r\n");
