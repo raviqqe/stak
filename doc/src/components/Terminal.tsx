@@ -6,6 +6,8 @@ import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
 
+const inputDelay = 200;
+
 interface Props {
   initialInput?: string[];
   input: WritableStream<string>;
@@ -53,7 +55,7 @@ export const Terminal = (props: Props): JSX.Element => {
 
     void (async (initialInput: string[]) => {
       for (const line of initialInput) {
-        await delay(500);
+        await delay(inputDelay);
 
         for (const character of line) {
           terminal.input(character);
