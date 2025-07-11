@@ -1,10 +1,10 @@
 import * as xterm from "@xterm/xterm";
 import { createEffect, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
+import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
-import { createResizeObserver } from "@solid-primitives/resize-observer";
 
 interface Props {
   initialInput?: string[];
