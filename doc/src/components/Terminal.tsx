@@ -1,8 +1,8 @@
 import * as xterm from "@xterm/xterm";
 import { createEffect, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
-import { delay } from "es-toolkit";
 import { FitAddon } from "@xterm/addon-fit";
+import { delay } from "es-toolkit";
 
 interface Props {
   initialInput?: string[];
