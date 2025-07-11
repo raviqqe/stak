@@ -9,7 +9,12 @@ import styles from "./DemoForm.module.css";
 const source = [
   "(import (scheme base) (scheme write))",
   '(write-string "Hello, world!\\n")',
-  "(define (fibonacci x) (if (< x 2) x (+ (fibonacci (- x 1)) (fibonacci (- x 2)))))",
+  "(define (fibonacci x)",
+  "\t(if (< x 2)",
+  "\t\tx",
+  "\t\t(+",
+  "\t\t\t(fibonacci (- x 1))",
+  "\t\t\t(fibonacci (- x 2))))) ",
   "(fibonacci 10)",
 ];
 

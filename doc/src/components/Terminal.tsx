@@ -7,6 +7,10 @@ import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
 
 const inputDelay = 100;
+const configuration: xterm.ITerminalOptions = {
+  lineHeight: 1.1,
+  tabStopWidth: 4,
+};
 
 interface Props {
   initialInput?: string[];
@@ -15,9 +19,7 @@ interface Props {
 }
 
 export const Terminal = (props: Props): JSX.Element => {
-  const terminal = new xterm.Terminal({
-    lineHeight: 1.1,
-  });
+  const terminal = new xterm.Terminal(configuration);
   const fitAddon = new FitAddon();
   terminal.loadAddon(fitAddon);
 
