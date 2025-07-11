@@ -12,7 +12,9 @@ interface Props {
 }
 
 export const Terminal = (props: Props): JSX.Element => {
-  const terminal = new xterm.Terminal({ lineHeight: 1.2 });
+  const terminal = new xterm.Terminal({
+    lineHeight: 1.1,
+  });
   const fitAddon = new FitAddon();
   terminal.loadAddon(fitAddon);
 
