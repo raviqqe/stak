@@ -1208,6 +1208,64 @@
 - set ||
 - get cdr
 - set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 2
+    - get 1
+    - call 1 #f length
+    - get 2
+    - call 3 #f data-rib
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - call 2 #f list-ref
+- call 1 #f $$close
+- set ||
+- constant procedure 3 #f
+  - get 2
+  - call 1 #f ||
+  - get 2
+  - get 2
+  - call 3 #f list-set!
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - get make-list
+    - get 2
+    - get 2
+    - call 2 #f cons
+    - call 2 #f apply
+    - call 1 #f 4
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 0 #t
+    - get append
+    - get ||
+    - get 2
+    - call 2 #f map
+    - call 2 #f apply
+    - call 1 #f 3
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - get list-copy
+    - get 2
+    - call 1 #f ||
+    - get 2
+    - call 3 #f apply
+    - call 1 #f 4
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
 - constant procedure 3 #t
   - constant procedure 2 #f
     - get 3
@@ -1289,60 +1347,28 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set vector
-- constant procedure 1 #t
-  - get make-list
-  - get 2
-  - get 2
-  - call 2 #f cons
-  - call 2 #f apply
-  - call 1 #f list->vector
-- call 1 #f $$close
-- set make-vector
 - get ||
 - set vector-length
 - get ||
 - set vector->list
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f vector->list
-  - get 1
-  - call 2 #f list-ref
-- call 1 #f $$close
-- set vector-ref
-- constant procedure 3 #f
-  - get 2
-  - call 1 #f vector->list
-  - get 2
-  - get 2
-  - call 3 #f list-set!
-- call 1 #f $$close
-- set vector-set!
-- constant procedure 1 #f
-  - get vector-type
-  - get 1
-  - call 1 #f length
-  - get 2
-  - call 3 #f data-rib
-- call 1 #f $$close
+- get vector-type
+- call 1 #f ||
 - set list->vector
-- constant procedure 0 #t
-  - get append
-  - get vector->list
-  - get 2
-  - call 2 #f map
-  - call 2 #f apply
-  - call 1 #f list->vector
-- call 1 #f $$close
+- get ||
+- set vector-ref
+- get ||
+- set vector-set!
+- get list->vector
+- call 1 #f ||
+- set make-vector
+- get list->vector
+- call 1 #f ||
 - set vector-append
-- constant procedure 1 #t
-  - get list-copy
-  - get 2
-  - call 1 #f vector->list
-  - get 2
-  - call 3 #f apply
-  - call 1 #f list->vector
-- call 1 #f $$close
+- get list->vector
+- call 1 #f ||
 - set vector-copy
+- get ||
+- set vector-copy!
 - constant procedure 2 #f
   - get 1
   - get 1
@@ -1358,8 +1384,6 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set vector-map
-- get ||
-- set vector-copy!
 - constant procedure 2 #t
   - constant procedure 2 #f
     - get 3
@@ -1464,46 +1488,21 @@
 - set bytevector-length
 - get ||
 - set bytevector->list
-- constant procedure 1 #f
-  - get bytevector-type
-  - get 1
-  - call 1 #f length
-  - get 2
-  - call 3 #f data-rib
-- call 1 #f $$close
+- get bytevector-type
+- call 1 #f ||
 - set list->bytevector
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f bytevector->list
-  - get 1
-  - call 2 #f list-ref
-- call 1 #f $$close
+- get ||
 - set bytevector-u8-ref
-- constant procedure 3 #f
-  - get 2
-  - call 1 #f bytevector->list
-  - get 2
-  - get 2
-  - call 3 #f list-set!
-- call 1 #f $$close
+- get ||
 - set bytevector-u8-set!
-- constant procedure 0 #t
-  - get append
-  - get bytevector->list
-  - get 2
-  - call 2 #f map
-  - call 2 #f apply
-  - call 1 #f list->bytevector
-- call 1 #f $$close
+- get list->bytevector
+- call 1 #f ||
+- set ||
+- get list->bytevector
+- call 1 #f ||
 - set bytevector-append
-- constant procedure 1 #t
-  - get list-copy
-  - get 2
-  - call 1 #f bytevector->list
-  - get 2
-  - call 3 #f apply
-  - call 1 #f list->bytevector
-- call 1 #f $$close
+- get list->bytevector
+- call 1 #f ||
 - set bytevector-copy
 - get ||
 - set bytevector-copy!
@@ -1522,24 +1521,28 @@
   - call 1 #f list->string
 - call 1 #f $$close
 - set string
-- constant procedure 1 #f
-  - get 0
-  - get 1
-  - call 1 #f length
-  - call 2 #f ||
-- call 1 #f $$close
-- set code-points->string
 - get ||
 - set string-length
 - get ||
 - set string->code-points
+- get string-type
+- call 1 #f ||
+- set code-points->string
+- get code-points->string
+- call 1 #f ||
+- set string-append
+- get code-points->string
+- call 1 #f ||
+- set string-copy
+- get ||
+- set string-copy!
+- get string-copy
+- set substring
 - constant procedure 1 #f
   - get char->integer
   - get 1
   - call 2 #f map
-  - get 1
-  - call 1 #f length
-  - call 2 #f ||
+  - call 1 #f code-points->string
 - call 1 #f $$close
 - set list->string
 - constant procedure 1 #f
@@ -1551,49 +1554,41 @@
 - set string->list
 - constant procedure 2 #f
   - get 1
-  - call 1 #f string->code-points
   - get 1
-  - call 2 #f list-ref
+  - call 2 #f ||
   - call 1 #f integer->char
 - call 1 #f $$close
 - set string-ref
-- constant procedure 0 #t
-  - get append
-  - get string->code-points
-  - get 2
-  - call 2 #f map
-  - call 2 #f apply
-  - call 1 #f code-points->string
-- call 1 #f $$close
-- set string-append
 - constant procedure 1 #t
-  - get list-copy
+  - get code-points->string
+  - call 1 #f ||
   - get 2
-  - call 1 #f string->code-points
   - get 2
-  - call 2 #f cons
-  - call 2 #f apply
-  - call 1 #f code-points->string
-- call 1 #f $$close
-- set string-copy
-- get string-copy
-- set substring
-- get ||
-- set string-copy!
-- constant procedure 1 #t
-  - get 1
-  - get 1
   - call 1 #f null?
   - if
     - constant 0
     - continue
-  - get 1
+  - get 2
   - call 1 #f car
   - call 1 #f char->integer
-  - call 2 #f make-list
-  - call 1 #f code-points->string
+  - call 2 #f 2
 - call 1 #f $$close
 - set make-string
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f string->list
+  - call 2 #f for-each
+- call 1 #f $$close
+- set string-for-each
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f string->list
+  - call 2 #f map
+  - call 1 #f list->string
+- call 1 #f $$close
+- set string-map
 - get equal?
 - call 1 #f ||
 - set string=?
@@ -2144,985 +2139,17 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set call-with-values
-- constant procedure 0 #t
+- constant procedure 1 #t
+  - get 1
+  - call 1 #f write-message
+  - set 0
   - call 0 #f ||
 - call 1 #f $$close
 - set error
-- constant 40
-- call 1 #f primitive
-- set ||
-- constant 100
-- call 1 #f primitive
-- set ||
-- constant 101
-- call 1 #f primitive
-- set ||
-- constant 102
-- call 1 #f primitive
-- set ||
-- constant symbol-table
-- constant list
-  - symbols
-- call 2 #f cons
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- get ||
-- constant symbols
-- call 2 #f ||
-- set ||
-- get ||
-- constant symbols
-- call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #t
-    - constant procedure 1 #f
-      - get 2
-      - call 1 #f null?
-      - if
-        - get 5
-        - continue
-      - get 2
-      - call 1 #f car
-      - set 1
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-          - call 1 #f car
-        - constant procedure 1 #f
-          - get 4
-          - get 1
-          - get 6
-          - call 1 #f ||
-          - call 2 #f cons
-          - call 2 #f ||
-          - set 0
-          - get 0
-        - call 1 #f $$close
-        - get 6
-        - call 1 #f string->uninterned-symbol
-        - call 1 #f 1
-      - call 1 #f $$close
-      - get 4
-      - get 2
-      - call 1 #f ||
-      - constant procedure 2 #f
-        - get 1
-        - get 1
-        - call 1 #f symbol->string
-        - call 2 #f equal?
-      - call 1 #f $$close
-      - call 3 #f member
-      - call 1 #f 1
-    - call 1 #f $$close
-    - constant #f
-    - call 1 #f 1
-  - call 1 #f $$close
-- call 1 #f $$close
-- constant list
-  - tuple
-  - point
-  - depth
-  - before
-  - after
-  - parent
-  - error-object
-  - message
-  - irritants
-  - runtime
-  - port
-  - flush
-  - $$rib
-  - $$<
-  - $$+
-  - $$-
-  - $$\*
-  - $$/
-  - debug
-  - call-instruction
-  - constant
-  - type
-  - code
-  - procedure-code
-  - n
-  - list-position
-  - deep-unique
-  - f
-  - key
-  - append-multi-map
-  - ys
-  - deep-map
-  - include
-  - library?
-  - library-context
-  - library-context?
-  - library-context-set-libraries!
-  - library-context-imported
-  - library-context-set-imported!
-  - imported
-  - position
-  - except
-  - prefix
-  - symbol-append
-  - set
-  - qualify
-  - library-context-import!
-  - library-imports
-  - library-body
-  - library-context-find
-  - body
-  - renamed
-  - library-context-add!
-  - rename
-  - resolve-symbol
-  - collect-bodies
-  - macro-state
-  - macro-state?
-  - static-symbols
-  - macro-context
-  - macro-context?
-  - pairs
-  - denotation
-  - macro-context-set-environment!
-  - set-last-cdr!
-  - syntax
-  - rule-context?
-  - bound-variables
-  - excluded-variables
-  - ellipsis-match
-  - ellipsis-pattern
-  - element
-  - make-ellipsis-pattern
-  - make-ellipsis-match
-  - rule-context-literals
-  - rule-context-use-context
-  - rule-context-definition-context
-  - relaxed-length
-  - match-ellipsis-pattern
-  - ellipsis-pattern-variables
-  - ellipsis-pattern-element
-  - match
-  - filter-values
-  - ellipsis-match?
-  - singleton-matches
-  - ellipsis-match-value
-  - ellipsis-matches
-  - ellipsis-pattern?
-  - fill-ellipsis-template
-  - fill
-  - compile-pattern
-  - make-rule-context
-  - find-pattern-variables
-  - ellipsis
-  - rule-context
-  - use-context
-  - definition-context
-  - expand-outer-macro
-  - macro-context-environment
-  - macro-context-append-dynamic-symbol!
-  - resolve
-  - macro-context-append-literal!
-  - macro-context-append-static-symbol!
-  - rename-variable
-  - resolve-denotation
-  - transformer
-  - macro-context-append
-  - macro-context-set!
-  - bindings
-  - relaxed-deep-map
-  - expand
-  - optimization-context
-  - optimization-context?
-  - literals
-  - optimization-context-set-optimizers!
-  - literal
-  - maybe-append
-  - pattern
-  - template
-  - match-pattern
-  - fill-template
-  - matches
-  - rule
-  - rules
-  - optimizer
-  - relaxed-map
-  - optimization-context-append!
-  - optimization-context-append-literal!
-  - predicate
-  - optimization-context-optimizers
-  - compilation-context
-  - compilation-context?
-  - variables
-  - compilation-context-environment
-  - variable
-  - argument-count
-  - drop?
-  - compile-drop
-  - arity
-  - compile-raw-call
-  - arguments
-  - variadic
-  - procedure
-  - $procedure
-  - compile-unbind
-  - get-instruction
-  - $$apply
-  - count-parameters
-  - last-cdr
-  - compile-sequence
-  - compilation-context-append-locals
-  - call-rib
-  - $$close
-  - compilation-context-resolve
-  - compilation-context-push-local
-  - compile-unspecified
-  - compilation-context-metadata
-  - compile-call
-  - constant-rib
-  - library-symbol-separator
-  - sets
-  - library-predicates
-  - library-exports
-  - library-context-libraries
-  - macro-context-state
-  - macro-state-literals
-  - macro-state-static-symbols
-  - built-in-symbol?
-  - macro-state-dynamic-symbols
-  - state
-  - optimization-context-literals
-  - tree-shake-context
-  - tree-shake-context?
-  - tree-shake-context-set-symbols!
-  - tree-shake-context-dependencies
-  - merge-multi-maps
-  - find-library-symbols
-  - first
-  - expressions
-  - parameter-names
-  - parameters
-  - tree-shake-context-symbols
-  - shake-sequence
-  - locals
-  - find-symbol-dependencies
-  - make-tree-shake-context
-  - tree-shake-context-append!
-  - dependencies
-  - shake-expression
-  - $$dynamic-symbols
-  - $$symbols
-  - loop
-  - metadata?
-  - metadata-macros
-  - metadata-optimizers
-  - metadata-dynamic-symbols
-  - find
-  - raw-libraries
-  - raw-macros
-  - raw-optimizers
-  - raw-dynamic-symbols
-  - make-metadata
-  - library-symbol?
-  - symbol
-  - unique
-  - find-quoted-symbols
-  - find-symbols
-  - marshal-context
-  - marshal-context?
-  - symbols
-  - constants
-  - continuations
-  - marshal-context-symbols
-  - resolve-symbol-string
-  - bytes->list
-  - marshal-context-set-constants!
-  - marshal-context-constants
-  - marshalled
-  - marshal-unique-constant
-  - marshal-constant
-  - marshal-context-set-continuations!
-  - marshal-context-continuations
-  - data
-  - marshal-rib
-  - make-marshal-context
-  - metadata-symbols
-  - flat-map
-  - metadata-libraries
-  - encode-context
-  - encode-context?
-  - null
-  - encode-context-set-dictionary!
-  - dictionary
-  - nop-instruction
-  - shared-value?
-  - encode-context-null
-  - nop-code?
-  - increment-count!
-  - counted
-  - if-instruction
-  - count-data!
-  - count-code!
-  - fraction
-  - epsilon
-  - maximum-float-integer
-  - mantissa
-  - y
-  - bit
-  - integer
-  - rest
-  - encode-integer-part
-  - integer-base
-  - decompose-float
-  - x
-  - e
-  - m
-  - strip-nop-instructions
-  - encode-context-find-count
-  - encode-context-position
-  - encode-context-remove!
-  - index
-  - removed
-  - share-base
-  - tag-base
-  - encode-context-push!
-  - decrement-count!
-  - entry
-  - encode-integer-parts
-  - encode-number
-  - number-base
-  - head
-  - encode-integer-tail
-  - tail
-  - constant-instruction
-  - code-rib
-  - set-instruction
-  - build-primitive
-  - make-encode-context
-  - count-ribs!
-  - encode-context-set-counts!
-  - encode-rib
-  - codes
-  - encode-context-dictionary
-  - size
-  - encode-context-counts
-  - counts
-  - source
-  - expression1
-  - expression2
-  - detect-features
-  - shake-tree
-  - expression3
-  - compile-metadata
-  - features
-  - libraries
-  - macros
-  - optimizers
-  - dynamic-symbols
-  - encode
-  - marshal
-  - build-primitives
-  - primitives
-  - metadata
-  - expression4
-  - main
-  - _rib_
-  - tag
-  - target-procedure?
-  - value
-  - symbol-id
-  - $$compiler
-  - export
-  - only
-  - cons-rib
-  - rib-car
-  - rib-cdr
-  - dummy
-  - xs
-  - nop-rib
-  - continuation
-  - macro-state-set-literals!
-  - macro-state-set-static-symbols!
-  - macro-state-set-dynamic-symbols!
-  - optimization-context-set-literals!
-  - set-nothing
-  - old-imports
-  - new-imports
-  - make-library-context
-  - make-library
-  - exports
-  - $$libraries
-  - maybe-car
-  - define-library
-  - add-library-definition!
-  - import
-  - append-imports
-  - expand-library-bodies
-  - resolve-environment-symbols
-  - collect-imported-names
-  - parse-import-set
-  - names
-  - name
-  - make-macro-context
-  - make-macro-state
-  - macro-context-set-last!
-  - make-transformer
-  - pair
-  - $$macros
-  - expand-macro
-  - make-optimization-context
-  - map-values
-  - make-optimizer
-  - $$optimizers
-  - optimize-expression
-  - context
-  - compile-expression
-  - make-compilation-context
-  - expand-libraries
-  - symbol-table
-  - include-files
-  - make-procedure
-  - compile-arity
-  - optimize
-  - expand-macros
-  - expression
-  - imports
-  - srfi
-  - iota
-  - rust
-  - r5rs
-  - denominator
-  - exact->inexact
-  - gcd
-  - inexact->exact
-  - lcm
-  - null-environment
-  - numerator
-  - rationalize
-  - scheme-report-environment
-  - string-ci<=?
-  - string-ci<?
-  - string-ci=?
-  - string-ci>=?
-  - string-ci>?
-  - string-fill!
-  - string-set!
-  - string<=?
-  - string>=?
-  - load
-  - repl
-  - interaction-environment
-  - environment
-  - eval
-  - make-environment
-  - compile
-  - time
-  - current-jiffy
-  - current-second
-  - jiffies-per-second
-  - file
-  - call-with-input-file
-  - call-with-output-file
-  - delete-file
-  - file-exists?
-  - open-binary-input-file
-  - open-binary-output-file
-  - open-input-file
-  - open-output-file
-  - with-input-from-file
-  - with-output-to-file
-  - process-context
-  - command-line
-  - emergency-exit
-  - exit
-  - get-environment-variable
-  - get-environment-variables
-  - lazy
-  - delay
-  - delay-force
-  - force
-  - promise?
-  - make-promise
-  - display
-  - write
-  - read
-  - char
-  - char-ci=?
-  - char-ci<?
-  - char-ci>?
-  - char-ci<=?
-  - char-ci>=?
-  - char-alphabetic?
-  - char-numeric?
-  - char-whitespace?
-  - char-lower-case?
-  - char-upper-case?
-  - char-upcase
-  - char-downcase
-  - digit-value
-  - special-chars
-  - case-lambda
-  - cxr
-  - caaar
-  - caadr
-  - cadar
-  - caddr
-  - cdaar
-  - cdadr
-  - cddar
-  - cdddr
-  - caaaar
-  - caaadr
-  - caadar
-  - caaddr
-  - cadaar
-  - cadadr
-  - caddar
-  - cadddr
-  - cdaaar
-  - cdaadr
-  - cdadar
-  - cdaddr
-  - cddaar
-  - cddadr
-  - cdddar
-  - cddddr
-  - complex
-  - make-rectangular
-  - make-polar
-  - real-part
-  - imag-part
-  - magnitude
-  - angle
-  - finite?
-  - infinite?
-  - nan?
-  - sqrt
-  - cos
-  - sin
-  - tan
-  - acos
-  - asin
-  - atan
-  - string->symbol
-  - make-symbol-table
-  - continue
-  - call/cc
-  - call-with-current-continuation
-  - dynamic-wind
-  - make-parameter
-  - parameterize
-  - error-object?
-  - error-object-message
-  - error-object-irritants
-  - with-exception-handler
-  - raise
-  - raise-continuable
-  - read-error
-  - file-error
-  - read-error?
-  - file-error?
-  - guard
-  - unwind
-  - eof-object
-  - eof-object?
-  - make-port
-  - make-input-port
-  - make-output-port
-  - port?
-  - input-port?
-  - output-port?
-  - textual-port?
-  - binary-port?
-  - current-input-port
-  - current-output-port
-  - current-error-port
-  - close-port
-  - close-input-port
-  - close-output-port
-  - call-with-port
-  - input-port-open?
-  - output-port-open?
-  - read-u8
-  - peek-u8
-  - u8-ready?
-  - read-char
-  - peek-char
-  - char-ready?
-  - write-u8
-  - write-char
-  - write-string
-  - write-bytevector
-  - newline
-  - flush-output-port
-  - open-input-string
-  - open-output-string
-  - get-output-string
-  - open-input-bytevector
-  - open-output-bytevector
-  - get-output-bytevector
-  - write-value
-  - syntax-rules
-  - define-syntax
-  - \_
-  - ...
-  - define
-  - lambda
-  - let-syntax
-  - letrec-syntax
-  - begin
-  - quasiquote
-  - unquote
-  - unquote-splicing
-  - quote
-  - set!
-  - cond-expand
-  - let
-  - let\*
-  - letrec
-  - letrec\*
-  - define-values
-  - let-values
-  - let\*-values
-  - if
-  - cond
-  - case
-  - else
-  - =>
-  - and
-  - or
-  - boolean-or
-  - when
-  - unless
-  - do
-  - base
-  - library
-  - r7rs
-  - scheme
-  - stak
-  - pair-type
-  - null-type
-  - boolean-type
-  - procedure-type
-  - symbol-type
-  - string-type
-  - char-type
-  - vector-type
-  - bytevector-type
-  - record-type
-  - primitive
-  - rib
-  - cons
-  - close
-  - rib?
-  - car
-  - cdr
-  - rib-tag
-  - set-car!
-  - set-cdr!
-  - eq?
-  - apply
-  - data-rib
-  - eqv?
-  - equal?
-  - procedure?
-  - boolean?
-  - not
-  - boolean=?
-  - integer?
-  - rational?
-  - real?
-  - complex?
-  - number?
-  - exact?
-  - inexact?
-  - exact-integer?
-  - zero?
-  - positive?
-  - negative?
-  - even?
-  - odd?
-  - -
-  - -
-  - -
-  - /
-  - remainder
-  - quotient
-  - modulo
-  - truncate
-  - truncate-quotient
-  - truncate-remainder
-  - truncate/
-  - floor
-  - floor-quotient
-  - floor-remainder
-  - floor/
-  - ceiling
-  - round
-  - exact
-  - inexact
-  - abs
-  - exp
-  - expt
-  - log
-  - square
-  - exact-integer-sqrt
-  - =
-  - <
-  - >
-  - <=
-  - > =
-  - min
-  - max
-  - char?
-  - integer->char
-  - char->integer
-  - char=?
-  - char<?
-  - char<=?
-  - char>?
-  - char>=?
-  - null?
-  - pair?
-  - list?
-  - caar
-  - cadr
-  - cdar
-  - cddr
-  - list
-  - make-list
-  - length
-  - map
-  - for-each
-  - filter
-  - list-ref
-  - list-set!
-  - list-head
-  - list-tail
-  - member
-  - memq
-  - memv
-  - assoc
-  - assq
-  - assv
-  - append
-  - reverse
-  - fold-left
-  - fold-right
-  - reduce-right
-  - memq-position
-  - memv-position
-  - member-position
-  - list-copy
-  - vector?
-  - vector
-  - make-vector
-  - vector-append
-  - vector-copy
-  - vector-copy!
-  - vector-fill!
-  - vector-for-each
-  - vector-length
-  - vector-map
-  - vector-ref
-  - vector-set!
-  - list->vector
-  - vector->list
-  - string->vector
-  - vector->string
-  - bytevector
-  - bytevector?
-  - bytevector-append
-  - bytevector-copy
-  - bytevector-copy!
-  - bytevector-length
-  - bytevector-u8-ref
-  - bytevector-u8-set!
-  - list->bytevector
-  - bytevector->list
-  - string?
-  - string
-  - list->string
-  - string->code-points
-  - code-points->string
-  - string->list
-  - string-append
-  - string-length
-  - string-ref
-  - number->string
-  - string->number
-  - string-copy
-  - string-copy!
-  - substring
-  - make-string
-  - string=?
-  - string<?
-  - string>?
-  - symbol?
-  - symbol->string
-  - string->uninterned-symbol
-  - define-record-type
-  - record?
-  - values
-  - call-with-values
-  - error
-  - $$...
-  - $$define-syntax
-  - $$define-optimizer
-  - $$define
-  - $$lambda
-  - $$let-syntax
-  - $$letrec-syntax
-  - $$begin
-  - $$quote
-  - $$set!
-  - $$if
-  - $$syntax-rules
-- call 1 #f ||
-- call 1 #f 1
-- set 1
-- set ||
-- constant procedure 0 #f
+- constant procedure 0 #t
   - constant #f
 - call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - constant procedure 2 #f
-    - constant procedure 1 #f
-      - get ||
-      - get 3
-      - call 2 #f ||
-      - set 0
-      - get 2
-      - call 1 #f ||
-      - set 0
-      - get ||
-      - call 1 #f close
-      - call 1 #f cddr
-      - get 4
-      - call 2 #f set-car!
-      - set 0
-      - get 0
-    - call 1 #f $$close
-    - call 1 #f 4
-  - call 1 #f $$close
-  - get ||
-  - call 1 #f close
-  - call 1 #f cddr
-  - call 1 #f cadr
-  - get ||
-  - call 2 #f 2
-- call 1 #f $$close
-- set call/cc
-- get call/cc
-- set call-with-current-continuation
-- constant point
-- constant list
-  - depth
-  - before
-  - after
-  - parent
-- call 2 #f cons
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- get ||
-- constant depth
-- call 2 #f ||
-- set ||
-- get ||
-- constant before
-- call 2 #f ||
-- set ||
-- get ||
-- constant after
-- call 2 #f ||
-- set ||
-- get ||
-- constant parent
-- call 2 #f ||
-- set ||
-- constant 0
-- constant #f
-- constant #f
-- constant #f
-- call 4 #f ||
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - set ||
-  - constant #f
-- call 1 #f $$close
-- set ||
-- constant procedure 3 #f
-  - call 0 #f 2
-  - set 0
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f ||
-    - constant 1
-    - call 2 #f ||
-    - get 5
-    - get 4
-    - get 3
-    - call 4 #f ||
-    - call 1 #f ||
-    - set 0
-    - constant procedure 1 #f
-      - get 2
-      - call 1 #f ||
-      - set 0
-      - call 0 #f 4
-      - set 0
-      - get 0
-    - call 1 #f $$close
-    - call 0 #f 4
-    - call 1 #f 1
-  - call 1 #f $$close
-  - get ||
-  - call 1 #f 1
-- call 1 #f $$close
-- set dynamic-wind
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 2 #f eq?
-  - if
-    - constant #f
-  - get 1
-  - call 1 #f ||
-  - get 1
-  - call 1 #f ||
-  - call 2 #f ||
-  - if
-    - get 1
-    - get 1
-    - call 1 #f ||
-    - call 2 #f ||
-    - set 0
-    - get 0
-    - call 1 #f ||
-    - call 0 #f 0
-  - get 1
-  - call 1 #f ||
-  - call 0 #f 0
-  - set 1
-  - set 0
-  - get 1
-  - call 1 #f ||
-  - get 1
-  - call 2 #f ||
-- call 1 #f $$close
-- set ||
+- set write-message
 - constant procedure 1 #t
   - constant procedure 1 #f
     - get 2
@@ -3154,239 +2181,15 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set make-parameter
-- constant error-object
-- constant list
-  - type
-  - message
-  - irritants
-- call 2 #f cons
+- constant 100
+- call 1 #f primitive
 - set ||
-- get ||
-- call 1 #f ||
+- constant 101
+- call 1 #f primitive
 - set ||
-- get ||
-- call 1 #f ||
-- set error-object?
-- get ||
-- constant type
-- call 2 #f ||
+- constant 102
+- call 1 #f primitive
 - set ||
-- get ||
-- constant message
-- call 2 #f ||
-- set error-object-message
-- get ||
-- constant irritants
-- call 2 #f ||
-- set error-object-irritants
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 4
-        - call 1 #f car
-        - constant #f
-        - call 2 #f eq?
-        - if
-          - constant "exception handler returned on non-continuable exception"
-          - get 3
-          - call 2 #f error
-          - continue
-        - constant #f
-        - set 0
-        - get 0
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f 6
-      - call 1 #f 1
-    - call 1 #f $$close
-    - get 1
-    - call 1 #f cdr
-    - call 1 #f 1
-  - call 1 #f $$close
-- call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - constant procedure 0 #f
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 0 #f
-          - call 0 #f current-error-port
-          - call 1 #f 4
-        - call 1 #f $$close
-        - constant procedure 0 #f
-          - get 7
-          - call 1 #f error-object?
-          - if
-            - get 7
-            - call 1 #f error-object-message
-            - call 1 #f write-string
-            - set 0
-            - constant procedure 1 #f
-              - constant #\space
-              - call 1 #f write-char
-              - set 0
-              - get 0
-              - call 1 #f write-value
-            - call 1 #f $$close
-            - get 8
-            - call 1 #f error-object-irritants
-            - call 2 #f for-each
-            - continue
-          - get 7
-          - call 1 #f write-value
-          - set 0
-          - call 0 #f newline
-          - set 0
-          - call 0 #f ||
-        - call 1 #f $$close
-        - constant procedure 0 #f
-          - get 3
-          - call 1 #f 6
-        - call 1 #f $$close
-        - call 3 #f dynamic-wind
-      - call 1 #f $$close
-      - call 0 #f 1
-      - call 1 #f 1
-    - call 1 #f $$close
-    - get current-output-port
-    - call 1 #f 1
-  - call 1 #f $$close
-  - call 1 #f unwind
-- call 1 #f $$close
-- call 1 #f ||
-- constant procedure 1 #f
-  - constant ()
-  - constant procedure 1 #f
-    - constant #f
-    - constant runtime
-    - get 2
-    - call 1 #f code-points->string
-    - constant ()
-    - call 3 #f ||
-    - call 2 #f cons
-    - call 1 #f 4
-  - call 1 #f $$close
-  - call 2 #f set-cdr!
-  - set 0
-  - get 0
-- call 1 #f $$close
-- call 2 #f make-parameter
-- set ||
-- constant procedure 2 #f
-  - constant procedure 2 #f
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 0 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - constant procedure 0 #f
-                  - get 12
-                  - call 1 #f 4
-                - call 1 #f $$close
-                - constant procedure 0 #f
-                  - get 6
-                  - call 1 #f 15
-                - call 1 #f $$close
-                - constant procedure 0 #f
-                  - get 3
-                  - call 1 #f 6
-                - call 1 #f $$close
-                - call 3 #f dynamic-wind
-              - call 1 #f $$close
-              - call 0 #f 1
-              - call 1 #f 1
-            - call 1 #f $$close
-            - get ||
-            - call 1 #f 1
-          - call 1 #f $$close
-          - call 1 #f 4
-        - call 1 #f $$close
-        - constant procedure 0 #f
-          - call 0 #f 9
-        - call 1 #f $$close
-        - constant procedure 0 #f
-          - get 3
-          - call 1 #f 6
-        - call 1 #f $$close
-        - call 3 #f dynamic-wind
-      - call 1 #f $$close
-      - call 0 #f 1
-      - call 1 #f 1
-    - call 1 #f $$close
-    - get ||
-    - call 1 #f 1
-  - call 1 #f $$close
-  - get 2
-  - call 1 #f ||
-  - call 0 #f ||
-  - call 2 #f 2
-- call 1 #f $$close
-- set with-exception-handler
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - call 0 #f ||
-    - get 3
-    - get 2
-    - call 2 #f cons
-    - call 1 #f 1
-  - call 1 #f $$close
-- call 1 #f $$close
-- set ||
-- constant #f
-- call 1 #f ||
-- set raise
-- constant #t
-- call 1 #f ||
-- set raise-continuable
-- constant procedure 1 #f
-  - constant procedure 1 #t
-    - get 3
-    - get 2
-    - get 2
-    - call 3 #f ||
-    - call 1 #f raise
-  - call 1 #f $$close
-- call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f ||
-    - get 3
-    - call 2 #f eq?
-  - call 1 #f $$close
-- call 1 #f $$close
-- set ||
-- constant #f
-- call 1 #f ||
-- set error
-- constant read
-- call 1 #f ||
-- set read-error
-- constant file
-- call 1 #f ||
-- set file-error
-- constant read
-- call 1 #f ||
-- set read-error?
-- constant file
-- call 1 #f ||
-- set file-error?
-- constant #f
-- set unwind
-- constant procedure 1 #f
-  - get 0
-  - set unwind
-  - constant procedure 0 #f
-    - constant #f
-  - call 1 #f $$close
-- call 1 #f $$close
-- call 1 #f call/cc
-- call 0 #f 0
-- set 1
-- set 0
 - constant eof-object
 - constant ()
 - call 2 #f cons
@@ -3974,74 +2777,49 @@
 - constant procedure 1 #t
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - constant procedure 0 #f
-        - get 5
-        - call 1 #f ||
-        - call 1 #f 4
-      - call 1 #f $$close
-      - constant procedure 0 #f
-        - get write-char
-        - get 8
-        - call 1 #f string->list
-        - call 2 #f for-each
-      - call 1 #f $$close
-      - constant procedure 0 #f
-        - get 3
-        - call 1 #f 6
-      - call 1 #f $$close
-      - call 3 #f dynamic-wind
+      - get 0
+      - get 3
+      - call 2 #f write-char
     - call 1 #f $$close
-    - call 0 #f 1
-    - call 1 #f 1
+    - get 4
+    - call 1 #f string->list
+    - call 2 #f for-each
   - call 1 #f $$close
-  - get current-output-port
+  - get 1
+  - call 1 #f ||
   - call 1 #f 1
 - call 1 #f $$close
 - set write-string
 - constant procedure 1 #t
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - constant procedure 0 #f
+      - constant procedure 1 #f
+        - get 0
+        - get 8
+        - call 1 #f bytevector-length
+        - call 2 #f eq?
+        - if
+          - constant #f
+        - get 7
+        - get 1
+        - call 2 #f bytevector-u8-ref
         - get 5
-        - call 1 #f ||
-        - call 1 #f 4
+        - call 2 #f write-u8
+        - set 0
+        - get 0
+        - constant 1
+        - call 2 #f ||
+        - call 1 #f 3
       - call 1 #f $$close
-      - constant procedure 0 #f
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - get 0
-            - get 12
-            - call 1 #f bytevector-length
-            - call 2 #f eq?
-            - if
-              - constant #f
-            - get 11
-            - get 1
-            - call 2 #f bytevector-u8-ref
-            - call 1 #f write-u8
-            - set 0
-            - get 0
-            - constant 1
-            - call 2 #f ||
-            - call 1 #f 3
-          - call 1 #f $$close
-          - set 1
-          - constant 0
-          - call 1 #f 1
-        - call 1 #f $$close
-        - constant #f
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant procedure 0 #f
-        - get 3
-        - call 1 #f 6
-      - call 1 #f $$close
-      - call 3 #f dynamic-wind
+      - set 1
+      - constant 0
+      - call 1 #f 1
     - call 1 #f $$close
-    - call 0 #f 1
+    - constant #f
     - call 1 #f 1
   - call 1 #f $$close
-  - get current-output-port
+  - get 1
+  - call 1 #f ||
   - call 1 #f 1
 - call 1 #f $$close
 - set write-bytevector
@@ -4052,6 +2830,12 @@
   - call 2 #f write-char
 - call 1 #f $$close
 - set newline
+- constant procedure 1 #f
+  - get 0
+  - call 0 #f current-error-port
+  - call 2 #f write-string
+- call 1 #f $$close
+- set write-message
 - constant procedure 0 #t
   - constant procedure 1 #f
     - get 0
@@ -4258,6 +3042,378 @@
 - set open-output-bytevector
 - get ||
 - set get-output-bytevector
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 2 #f
+    - constant procedure 1 #f
+      - get ||
+      - get 3
+      - call 2 #f ||
+      - set 0
+      - get 2
+      - call 1 #f ||
+      - set 0
+      - get ||
+      - call 1 #f close
+      - call 1 #f cddr
+      - get 4
+      - call 2 #f set-car!
+      - set 0
+      - get 0
+    - call 1 #f $$close
+    - call 1 #f 4
+  - call 1 #f $$close
+  - get ||
+  - call 1 #f close
+  - call 1 #f cddr
+  - call 1 #f cadr
+  - get ||
+  - call 2 #f 2
+- call 1 #f $$close
+- set call/cc
+- get call/cc
+- set call-with-current-continuation
+- constant point
+- constant list
+  - depth
+  - before
+  - after
+  - parent
+- call 2 #f cons
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- constant depth
+- call 2 #f ||
+- set ||
+- get ||
+- constant before
+- call 2 #f ||
+- set ||
+- get ||
+- constant after
+- call 2 #f ||
+- set ||
+- get ||
+- constant parent
+- call 2 #f ||
+- set ||
+- constant 0
+- constant #f
+- constant #f
+- constant #f
+- call 4 #f ||
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - set ||
+  - constant #f
+- call 1 #f $$close
+- set ||
+- constant procedure 3 #f
+  - call 0 #f 2
+  - set 0
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - constant 1
+    - call 2 #f ||
+    - get 5
+    - get 4
+    - get 3
+    - call 4 #f ||
+    - call 1 #f ||
+    - set 0
+    - constant procedure 1 #f
+      - get 2
+      - call 1 #f ||
+      - set 0
+      - call 0 #f 4
+      - set 0
+      - get 0
+    - call 1 #f $$close
+    - call 0 #f 4
+    - call 1 #f 1
+  - call 1 #f $$close
+  - get ||
+  - call 1 #f 1
+- call 1 #f $$close
+- set dynamic-wind
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f eq?
+  - if
+    - constant #f
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - call 1 #f ||
+  - call 2 #f ||
+  - if
+    - get 1
+    - get 1
+    - call 1 #f ||
+    - call 2 #f ||
+    - set 0
+    - get 0
+    - call 1 #f ||
+    - call 0 #f 0
+  - get 1
+  - call 1 #f ||
+  - call 0 #f 0
+  - set 1
+  - set 0
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - call 2 #f ||
+- call 1 #f $$close
+- set ||
+- constant 40
+- call 1 #f primitive
+- set ||
+- constant error-object
+- constant list
+  - type
+  - message
+  - irritants
+- call 2 #f cons
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set error-object?
+- get ||
+- constant type
+- call 2 #f ||
+- set ||
+- get ||
+- constant message
+- call 2 #f ||
+- set error-object-message
+- get ||
+- constant irritants
+- call 2 #f ||
+- set error-object-irritants
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 4
+        - call 1 #f car
+        - constant #f
+        - call 2 #f eq?
+        - if
+          - constant "exception handler returned on non-continuable exception"
+          - get 3
+          - call 2 #f error
+          - continue
+        - constant #f
+        - set 0
+        - get 0
+      - call 1 #f $$close
+      - get 1
+      - call 1 #f 6
+      - call 1 #f 1
+    - call 1 #f $$close
+    - get 1
+    - call 1 #f cdr
+    - call 1 #f 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 0 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 0 #f
+          - call 0 #f current-error-port
+          - call 1 #f 4
+        - call 1 #f $$close
+        - constant procedure 0 #f
+          - get 7
+          - call 1 #f error-object?
+          - if
+            - get 7
+            - call 1 #f error-object-message
+            - call 1 #f write-string
+            - set 0
+            - constant procedure 1 #f
+              - constant #\space
+              - call 1 #f write-char
+              - set 0
+              - get 0
+              - call 1 #f write-value
+            - call 1 #f $$close
+            - get 8
+            - call 1 #f error-object-irritants
+            - call 2 #f for-each
+            - continue
+          - get 7
+          - call 1 #f write-value
+          - set 0
+          - call 0 #f newline
+          - set 0
+          - call 0 #f ||
+        - call 1 #f $$close
+        - constant procedure 0 #f
+          - get 3
+          - call 1 #f 6
+        - call 1 #f $$close
+        - call 3 #f dynamic-wind
+      - call 1 #f $$close
+      - call 0 #f 1
+      - call 1 #f 1
+    - call 1 #f $$close
+    - get current-output-port
+    - call 1 #f 1
+  - call 1 #f $$close
+  - call 1 #f unwind
+- call 1 #f $$close
+- call 1 #f ||
+- constant procedure 1 #f
+  - constant ()
+  - constant procedure 1 #f
+    - constant #f
+    - constant runtime
+    - get 2
+    - call 1 #f code-points->string
+    - constant ()
+    - call 3 #f ||
+    - call 2 #f cons
+    - call 1 #f 4
+  - call 1 #f $$close
+  - call 2 #f set-cdr!
+  - set 0
+  - get 0
+- call 1 #f $$close
+- call 2 #f make-parameter
+- set ||
+- constant procedure 2 #f
+  - constant procedure 2 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 0 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - constant procedure 0 #f
+                  - get 12
+                  - call 1 #f 4
+                - call 1 #f $$close
+                - constant procedure 0 #f
+                  - get 6
+                  - call 1 #f 15
+                - call 1 #f $$close
+                - constant procedure 0 #f
+                  - get 3
+                  - call 1 #f 6
+                - call 1 #f $$close
+                - call 3 #f dynamic-wind
+              - call 1 #f $$close
+              - call 0 #f 1
+              - call 1 #f 1
+            - call 1 #f $$close
+            - get ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - call 1 #f 4
+        - call 1 #f $$close
+        - constant procedure 0 #f
+          - call 0 #f 9
+        - call 1 #f $$close
+        - constant procedure 0 #f
+          - get 3
+          - call 1 #f 6
+        - call 1 #f $$close
+        - call 3 #f dynamic-wind
+      - call 1 #f $$close
+      - call 0 #f 1
+      - call 1 #f 1
+    - call 1 #f $$close
+    - get ||
+    - call 1 #f 1
+  - call 1 #f $$close
+  - get 2
+  - call 1 #f ||
+  - call 0 #f ||
+  - call 2 #f 2
+- call 1 #f $$close
+- set with-exception-handler
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - call 0 #f ||
+    - get 3
+    - get 2
+    - call 2 #f cons
+    - call 1 #f 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant #f
+- call 1 #f ||
+- set raise
+- constant #t
+- call 1 #f ||
+- set raise-continuable
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - get 3
+    - get 2
+    - get 2
+    - call 3 #f ||
+    - call 1 #f raise
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - get 3
+    - call 2 #f eq?
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- constant #f
+- call 1 #f ||
+- set error
+- constant read
+- call 1 #f ||
+- set read-error
+- constant file
+- call 1 #f ||
+- set file-error
+- constant read
+- call 1 #f ||
+- set read-error?
+- constant file
+- call 1 #f ||
+- set file-error?
+- constant #f
+- set unwind
+- constant procedure 1 #f
+  - get 0
+  - set unwind
+  - constant procedure 0 #f
+    - constant #f
+  - call 1 #f $$close
+- call 1 #f $$close
+- call 1 #f call/cc
+- call 0 #f 0
+- set 1
+- set 0
 - constant procedure 1 #t
   - constant "<unknown>"
   - get 1
@@ -4332,6 +3488,8 @@
 - call 1 #f $$close
 - constant list
   - tuple
+  - port
+  - flush
   - point
   - depth
   - before
@@ -4341,8 +3499,6 @@
   - message
   - irritants
   - runtime
-  - port
-  - flush
   - $$rib
   - $$<
   - $$+
@@ -4816,12 +3972,7 @@
   - atan
   - string->symbol
   - make-symbol-table
-  - continue
-  - call/cc
-  - call-with-current-continuation
-  - dynamic-wind
-  - make-parameter
-  - parameterize
+  - exception
   - error-object?
   - error-object-message
   - error-object-irritants
@@ -4834,6 +3985,13 @@
   - file-error?
   - guard
   - unwind
+  - write-value
+  - continue
+  - call/cc
+  - call-with-current-continuation
+  - dynamic-wind
+  - parameterize
+  - io
   - eof-object
   - eof-object?
   - make-port
@@ -4871,7 +4029,8 @@
   - open-input-bytevector
   - open-output-bytevector
   - get-output-bytevector
-  - write-value
+  - parameter
+  - make-parameter
   - syntax-rules
   - define-syntax
   - \_
@@ -5065,6 +4224,8 @@
   - string-copy!
   - substring
   - make-string
+  - string-for-each
+  - string-map
   - string=?
   - string<?
   - string>?
@@ -5076,6 +4237,7 @@
   - values
   - call-with-values
   - error
+  - write-message
   - $$...
   - $$define-syntax
   - $$define-optimizer
@@ -9418,6 +8580,8 @@
                                             - (string-copy! . string-copy!)
                                             - (substring . substring)
                                             - (make-string . make-string)
+                                            - (string-for-each . string-for-each)
+                                            - (string-map . string-map)
                                             - (string=? . string=?)
                                             - (string<? . string<?)
                                             - (string>? . string>?)
@@ -9489,12 +8653,7 @@
                                           - list
                                             - list
                                               - stak
-                                              - continue
-                                            - (call/cc . call/cc)
-                                            - (call-with-current-continuation . call-with-current-continuation)
-                                            - (dynamic-wind . dynamic-wind)
-                                            - (make-parameter . make-parameter)
-                                            - (parameterize . parameterize)
+                                              - exception
                                             - (error-object? . error-object?)
                                             - (error-object-message . error-object-message)
                                             - (error-object-irritants . error-object-irritants)
@@ -9507,6 +8666,19 @@
                                             - (file-error? . file-error?)
                                             - (guard . guard)
                                             - (unwind . unwind)
+                                            - (write-value . write-value)
+                                          - list
+                                            - list
+                                              - stak
+                                              - continue
+                                            - (call/cc . call/cc)
+                                            - (call-with-current-continuation . call-with-current-continuation)
+                                            - (dynamic-wind . dynamic-wind)
+                                            - (parameterize . parameterize)
+                                          - list
+                                            - list
+                                              - stak
+                                              - io
                                             - (eof-object . eof-object)
                                             - (eof-object? . eof-object?)
                                             - (make-port . make-port)
@@ -9544,7 +8716,11 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (write-value . write-value)
+                                          - list
+                                            - list
+                                              - stak
+                                              - parameter
+                                            - (make-parameter . make-parameter)
                                           - list
                                             - list
                                               - stak
@@ -9742,6 +8918,8 @@
                                             - (string-copy! . string-copy!)
                                             - (substring . substring)
                                             - (make-string . make-string)
+                                            - (string-for-each . string-for-each)
+                                            - (string-map . string-map)
                                             - (string=? . string=?)
                                             - (string<? . string<?)
                                             - (string>? . string>?)
@@ -9753,6 +8931,7 @@
                                             - (values . values)
                                             - (call-with-values . call-with-values)
                                             - (error . error)
+                                            - (write-message . write-message)
                                         - call 2 #f 89
                                         - constant ()
                                         - call 2 #f ||

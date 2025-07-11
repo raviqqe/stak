@@ -700,44 +700,31 @@
 - get ||
 - set ||
 - constant procedure 1 #f
-  - get ||
-  - get 1
+  - constant procedure 1 #f
+    - get 2
+    - get 1
+    - call 1 #f ||
+    - get 2
+    - call 3 #f ||
   - call 1 #f ||
-  - get 2
-  - call 3 #f ||
 - call 1 #f ||
 - set ||
-- constant procedure 1 #f
-  - get ||
-  - get 1
-  - call 1 #f ||
-  - get 2
-  - call 3 #f ||
+- get ||
 - call 1 #f ||
 - set ||
-- constant procedure 2 #f
-  - get ||
-  - get 1
-  - get 3
-  - call 3 #f ||
-- call 1 #f ||
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - get 1
-  - call 1 #f ||
-  - call 2 #f ||
+- get ||
 - call 1 #f ||
 - set ||
 - get ||
 - set ||
+- get ||
+- call 1 #f ||
+- set ||
 - constant procedure 1 #f
   - get ||
   - get 1
   - call 2 #f ||
-  - get 1
   - call 1 #f ||
-  - call 2 #f ||
 - call 1 #f ||
 - set ||
 - constant procedure 1 #f
@@ -1031,153 +1018,15 @@
 - set ||
 - constant #f
 - set 0
-- constant procedure 0 #t
+- constant procedure 1 #t
+  - get 1
+  - call 1 #f ||
+  - set 0
   - call 0 #f ||
 - call 1 #f ||
 - set ||
-- constant 40
-- call 1 #f ||
-- set ||
-- constant 100
-- call 1 #f ||
-- set ||
-- constant 101
-- call 1 #f ||
-- set ||
-- constant 102
-- call 1 #f ||
-- set ||
-- constant #f
-- set 0
-- constant procedure 0 #f
+- constant procedure 0 #t
   - constant #f
-- call 1 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant procedure 2 #f
-    - constant procedure 1 #f
-      - get ||
-      - get 3
-      - call 2 #f ||
-      - set 0
-      - get 2
-      - call 1 #f ||
-      - set 0
-      - get ||
-      - call 1 #f ||
-      - call 1 #f ||
-      - get 4
-      - call 2 #f ||
-      - set 0
-      - get 0
-    - call 1 #f ||
-    - call 1 #f 4
-  - call 1 #f ||
-  - get ||
-  - call 1 #f ||
-  - call 1 #f ||
-  - call 1 #f ||
-  - get ||
-  - call 2 #f 2
-- call 1 #f ||
-- set ||
-- constant point
-- constant list
-  - depth
-  - before
-  - after
-  - parent
-- call 2 #f ||
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- get ||
-- constant depth
-- call 2 #f ||
-- set ||
-- get ||
-- constant before
-- call 2 #f ||
-- set ||
-- get ||
-- constant after
-- call 2 #f ||
-- set ||
-- get ||
-- constant parent
-- call 2 #f ||
-- set ||
-- constant 0
-- constant #f
-- constant #f
-- constant #f
-- call 4 #f ||
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - set ||
-  - constant #f
-- call 1 #f ||
-- set ||
-- constant procedure 3 #f
-  - call 0 #f 2
-  - set 0
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f ||
-    - constant 1
-    - call 2 #f ||
-    - get 5
-    - get 4
-    - get 3
-    - call 4 #f ||
-    - call 1 #f ||
-    - set 0
-    - constant procedure 1 #f
-      - get 2
-      - call 1 #f ||
-      - set 0
-      - call 0 #f 4
-      - set 0
-      - get 0
-    - call 1 #f ||
-    - call 0 #f 4
-    - call 1 #f 1
-  - call 1 #f ||
-  - get ||
-  - call 1 #f 1
-- call 1 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 2 #f ||
-  - if
-    - constant #f
-  - get 1
-  - call 1 #f ||
-  - get 1
-  - call 1 #f ||
-  - call 2 #f ||
-  - if
-    - get 1
-    - get 1
-    - call 1 #f ||
-    - call 2 #f ||
-    - set 0
-    - get 0
-    - call 1 #f ||
-    - call 0 #f 0
-  - get 1
-  - call 1 #f ||
-  - call 0 #f 0
-  - set 1
-  - set 0
-  - get 1
-  - call 1 #f ||
-  - get 1
-  - call 2 #f ||
 - call 1 #f ||
 - set ||
 - constant procedure 1 #t
@@ -1211,160 +1060,15 @@
   - call 1 #f 1
 - call 1 #f ||
 - set ||
-- constant error-object
-- constant list
-  - type
-  - message
-  - irritants
-- call 2 #f ||
-- set ||
-- get ||
+- constant 100
 - call 1 #f ||
 - set ||
-- get ||
+- constant 101
 - call 1 #f ||
 - set ||
-- get ||
-- constant message
-- call 2 #f ||
-- set ||
-- get ||
-- constant irritants
-- call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 4
-        - call 1 #f ||
-        - constant #f
-        - call 2 #f ||
-        - if
-          - constant "exception handler returned on non-continuable exception"
-          - get 3
-          - call 2 #f ||
-          - continue
-        - constant #f
-        - set 0
-        - get 0
-      - call 1 #f ||
-      - get 1
-      - call 1 #f 6
-      - call 1 #f 1
-    - call 1 #f ||
-    - get 1
-    - call 1 #f ||
-    - call 1 #f 1
-  - call 1 #f ||
+- constant 102
 - call 1 #f ||
 - set ||
-- constant procedure 1 #f
-  - constant procedure 0 #f
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 0 #f
-          - call 0 #f ||
-          - call 1 #f 4
-        - call 1 #f ||
-        - constant procedure 0 #f
-          - get 7
-          - call 1 #f ||
-          - if
-            - get 7
-            - call 1 #f ||
-            - call 1 #f ||
-            - set 0
-            - constant procedure 1 #f
-              - constant #\space
-              - call 1 #f ||
-              - set 0
-              - get 0
-              - call 1 #f ||
-            - call 1 #f ||
-            - get 8
-            - call 1 #f ||
-            - call 2 #f ||
-            - continue
-          - get 7
-          - call 1 #f ||
-          - set 0
-          - call 0 #f ||
-          - set 0
-          - call 0 #f ||
-        - call 1 #f ||
-        - constant procedure 0 #f
-          - get 3
-          - call 1 #f 6
-        - call 1 #f ||
-        - call 3 #f ||
-      - call 1 #f ||
-      - call 0 #f 1
-      - call 1 #f 1
-    - call 1 #f ||
-    - get ||
-    - call 1 #f 1
-  - call 1 #f ||
-  - call 1 #f ||
-- call 1 #f ||
-- call 1 #f ||
-- constant procedure 1 #f
-  - constant ()
-  - constant procedure 1 #f
-    - constant #f
-    - constant runtime
-    - get 2
-    - call 1 #f ||
-    - constant ()
-    - call 3 #f ||
-    - call 2 #f ||
-    - call 1 #f 4
-  - call 1 #f ||
-  - call 2 #f ||
-  - set 0
-  - get 0
-- call 1 #f ||
-- call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - call 0 #f ||
-    - get 3
-    - get 2
-    - call 2 #f ||
-    - call 1 #f 1
-  - call 1 #f ||
-- call 1 #f ||
-- set ||
-- constant #f
-- call 1 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #t
-    - get 3
-    - get 2
-    - get 2
-    - call 3 #f ||
-    - call 1 #f ||
-  - call 1 #f ||
-- call 1 #f ||
-- set ||
-- constant #f
-- call 1 #f ||
-- set ||
-- constant #f
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - set ||
-  - constant procedure 0 #f
-    - constant #f
-  - call 1 #f ||
-- call 1 #f ||
-- call 1 #f ||
-- call 0 #f 0
-- set 1
-- set 0
 - constant eof-object
 - constant ()
 - call 2 #f ||
@@ -1822,27 +1526,16 @@
 - constant procedure 1 #t
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - constant procedure 0 #f
-        - get 5
-        - call 1 #f ||
-        - call 1 #f 4
-      - call 1 #f ||
-      - constant procedure 0 #f
-        - get ||
-        - get 8
-        - call 1 #f ||
-        - call 2 #f ||
-      - call 1 #f ||
-      - constant procedure 0 #f
-        - get 3
-        - call 1 #f 6
-      - call 1 #f ||
-      - call 3 #f ||
+      - get 0
+      - get 3
+      - call 2 #f ||
     - call 1 #f ||
-    - call 0 #f 1
-    - call 1 #f 1
+    - get 4
+    - call 1 #f ||
+    - call 2 #f ||
   - call 1 #f ||
-  - get ||
+  - get 1
+  - call 1 #f ||
   - call 1 #f 1
 - call 1 #f ||
 - set ||
@@ -1853,6 +1546,300 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant procedure 1 #f
+  - get 0
+  - call 0 #f ||
+  - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 0 #f
+  - constant #f
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 2 #f
+    - constant procedure 1 #f
+      - get ||
+      - get 3
+      - call 2 #f ||
+      - set 0
+      - get 2
+      - call 1 #f ||
+      - set 0
+      - get ||
+      - call 1 #f ||
+      - call 1 #f ||
+      - get 4
+      - call 2 #f ||
+      - set 0
+      - get 0
+    - call 1 #f ||
+    - call 1 #f 4
+  - call 1 #f ||
+  - get ||
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+  - get ||
+  - call 2 #f 2
+- call 1 #f ||
+- set ||
+- constant point
+- constant list
+  - depth
+  - before
+  - after
+  - parent
+- call 2 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- constant depth
+- call 2 #f ||
+- set ||
+- get ||
+- constant before
+- call 2 #f ||
+- set ||
+- get ||
+- constant after
+- call 2 #f ||
+- set ||
+- get ||
+- constant parent
+- call 2 #f ||
+- set ||
+- constant 0
+- constant #f
+- constant #f
+- constant #f
+- call 4 #f ||
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - set ||
+  - constant #f
+- call 1 #f ||
+- set ||
+- constant procedure 3 #f
+  - call 0 #f 2
+  - set 0
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - constant 1
+    - call 2 #f ||
+    - get 5
+    - get 4
+    - get 3
+    - call 4 #f ||
+    - call 1 #f ||
+    - set 0
+    - constant procedure 1 #f
+      - get 2
+      - call 1 #f ||
+      - set 0
+      - call 0 #f 4
+      - set 0
+      - get 0
+    - call 1 #f ||
+    - call 0 #f 4
+    - call 1 #f 1
+  - call 1 #f ||
+  - get ||
+  - call 1 #f 1
+- call 1 #f ||
+- set ||
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f ||
+  - if
+    - constant #f
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - call 1 #f ||
+  - call 2 #f ||
+  - if
+    - get 1
+    - get 1
+    - call 1 #f ||
+    - call 2 #f ||
+    - set 0
+    - get 0
+    - call 1 #f ||
+    - call 0 #f 0
+  - get 1
+  - call 1 #f ||
+  - call 0 #f 0
+  - set 1
+  - set 0
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant 40
+- call 1 #f ||
+- set ||
+- constant error-object
+- constant list
+  - type
+  - message
+  - irritants
+- call 2 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- constant message
+- call 2 #f ||
+- set ||
+- get ||
+- constant irritants
+- call 2 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 4
+        - call 1 #f ||
+        - constant #f
+        - call 2 #f ||
+        - if
+          - constant "exception handler returned on non-continuable exception"
+          - get 3
+          - call 2 #f ||
+          - continue
+        - constant #f
+        - set 0
+        - get 0
+      - call 1 #f ||
+      - get 1
+      - call 1 #f 6
+      - call 1 #f 1
+    - call 1 #f ||
+    - get 1
+    - call 1 #f ||
+    - call 1 #f 1
+  - call 1 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 0 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 0 #f
+          - call 0 #f ||
+          - call 1 #f 4
+        - call 1 #f ||
+        - constant procedure 0 #f
+          - get 7
+          - call 1 #f ||
+          - if
+            - get 7
+            - call 1 #f ||
+            - call 1 #f ||
+            - set 0
+            - constant procedure 1 #f
+              - constant #\space
+              - call 1 #f ||
+              - set 0
+              - get 0
+              - call 1 #f ||
+            - call 1 #f ||
+            - get 8
+            - call 1 #f ||
+            - call 2 #f ||
+            - continue
+          - get 7
+          - call 1 #f ||
+          - set 0
+          - call 0 #f ||
+          - set 0
+          - call 0 #f ||
+        - call 1 #f ||
+        - constant procedure 0 #f
+          - get 3
+          - call 1 #f 6
+        - call 1 #f ||
+        - call 3 #f ||
+      - call 1 #f ||
+      - call 0 #f 1
+      - call 1 #f 1
+    - call 1 #f ||
+    - get ||
+    - call 1 #f 1
+  - call 1 #f ||
+  - call 1 #f ||
+- call 1 #f ||
+- call 1 #f ||
+- constant procedure 1 #f
+  - constant ()
+  - constant procedure 1 #f
+    - constant #f
+    - constant runtime
+    - get 2
+    - call 1 #f ||
+    - constant ()
+    - call 3 #f ||
+    - call 2 #f ||
+    - call 1 #f 4
+  - call 1 #f ||
+  - call 2 #f ||
+  - set 0
+  - get 0
+- call 1 #f ||
+- call 2 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - call 0 #f ||
+    - get 3
+    - get 2
+    - call 2 #f ||
+    - call 1 #f 1
+  - call 1 #f ||
+- call 1 #f ||
+- set ||
+- constant #f
+- call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - get 3
+    - get 2
+    - get 2
+    - call 3 #f ||
+    - call 1 #f ||
+  - call 1 #f ||
+- call 1 #f ||
+- set ||
+- constant #f
+- call 1 #f ||
+- set ||
+- constant #f
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - set ||
+  - constant procedure 0 #f
+    - constant #f
+  - call 1 #f ||
+- call 1 #f ||
+- call 1 #f ||
+- call 0 #f 0
+- set 1
+- set 0
 - constant procedure 1 #t
   - constant "<unknown>"
   - get 1
@@ -1923,6 +1910,13 @@
   - call 1 #f ||
 - call 1 #f ||
 - constant list
+  - eof-object
+  - port
+  - flush
+  - close
+  - read
+  - write
+  - data
   - point
   - depth
   - before
@@ -1933,13 +1927,6 @@
   - message
   - irritants
   - runtime
-  - eof-object
-  - port
-  - flush
-  - close
-  - read
-  - write
-  - data
   - symbol-table
   - symbols
   - quote
