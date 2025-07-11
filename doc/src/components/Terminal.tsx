@@ -58,7 +58,7 @@ export const Terminal = (props: Props): JSX.Element => {
     terminal.onData(async (data) => {
       if (data === "\r") {
         await writer.write([...line.splice(0), "\n"].join(""));
-        terminal.writeln("\r\n");
+        terminal.write("\r\n");
       } else if (data === "\x7f") {
         if (line.length) {
           line.pop();
