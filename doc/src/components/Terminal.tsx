@@ -17,15 +17,20 @@ export const Terminal = (props: Props): JSX.Element => {
     }
   });
 
+  const line: string[] = [];
+
   createEffect(() => {
     const writer = props.input.getWriter();
 
     terminal.onData(async (data) => {
       if (data == "\r") {
-        await writer.write("\n");
+        await writer.write([...line.splice(0), "\n"].join(""));
         terminal.write("\r\n");
+      } else if (data === "\x7f" && line.length) {
+        line.pop();
+        terminal.write("\b \b");
       } else {
-        await writer.write(data);
+        line.push(data);
         terminal.write(data);
       }
     });
