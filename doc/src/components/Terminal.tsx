@@ -13,6 +13,7 @@ const terminalOptions: xterm.ITerminalOptions = {
 };
 
 interface Props {
+  id?: string;
   initialInput?: string[];
   input: WritableStream<string>;
   output: ReadableStream<string>;
@@ -79,6 +80,7 @@ export const Terminal = (props: Props): JSX.Element => {
   return (
     <div
       class={styles.root}
+      id={props.id}
       ref={(value) => {
         element = value;
       }}

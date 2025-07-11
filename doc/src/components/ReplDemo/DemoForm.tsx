@@ -31,6 +31,7 @@ export const DemoForm = (): JSX.Element => {
       <Field style={{ flex: 1 }}>
         <Label for="repl">Try it out!</Label>
         <Terminal
+          id="repl"
           initialInput={source}
           input={input.writable}
           output={output().pipeThrough(new TextDecoderStream())}
