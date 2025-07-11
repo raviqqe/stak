@@ -4,6 +4,7 @@ import "@xterm/xterm/css/xterm.css";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
+import { createResizeObserver } from "@solid-primitives/resize-observer";
 
 interface Props {
   initialInput?: string[];
@@ -21,10 +22,13 @@ export const Terminal = (props: Props): JSX.Element => {
   let element: HTMLDivElement | null = null;
 
   onMount(() => {
-    if (element) {
-      terminal.open(element);
-      fitAddon.fit();
+    if (!element) {
+      return;
     }
+
+    terminal.open(element);
+    fitAddon.fit();
+    createResizeObserver(element, () => fitAddon.fit());
   });
 
   const line: string[] = [];
