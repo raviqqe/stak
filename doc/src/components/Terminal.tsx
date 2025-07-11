@@ -3,6 +3,7 @@ import { createEffect, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
+import styles from "./Terminal.module.css";
 
 interface Props {
   initialInput?: string[];
@@ -67,6 +68,7 @@ export const Terminal = (props: Props): JSX.Element => {
 
   return (
     <div
+      class={styles.root}
       ref={(value) => {
         element = value;
       }}
