@@ -9,7 +9,7 @@ import styles from "./Terminal.module.css";
 const inputDelay = 100;
 const terminalOptions: xterm.ITerminalOptions = {
   lineHeight: 1.1,
-  tabStopWidth: 4,
+  tabStopWidth: 2,
 };
 
 interface Props {
