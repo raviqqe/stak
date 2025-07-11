@@ -23,12 +23,15 @@ export const Terminal = (props: Props): JSX.Element => {
     const writer = props.input.getWriter();
 
     terminal.onData(async (data) => {
+      console.log({ data, line: line.join("") });
       if (data == "\r") {
         await writer.write([...line.splice(0), "\n"].join(""));
         terminal.write("\r\n");
-      } else if (data === "\x7f" && line.length) {
-        line.pop();
-        terminal.write("\b \b");
+      } else if (data === "\x7f") {
+        if (line.length) {
+          line.pop();
+          terminal.write("\b \b");
+        }
       } else {
         line.push(data);
         terminal.write(data);
