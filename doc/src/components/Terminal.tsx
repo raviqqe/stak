@@ -2,6 +2,7 @@ import * as xterm from "@xterm/xterm";
 import { createEffect, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
 import { delay } from "es-toolkit";
+import { FitAddon } from "@xterm/addon-fit";
 
 interface Props {
   initialInput?: string[];
@@ -11,11 +12,15 @@ interface Props {
 
 export const Terminal = (props: Props): JSX.Element => {
   const terminal = new xterm.Terminal();
+  const fitAddon = new FitAddon();
+  terminal.loadAddon(fitAddon);
+
   let element: HTMLDivElement | null = null;
 
   onMount(() => {
     if (element) {
       terminal.open(element);
+      fitAddon.fit();
     }
   });
 
@@ -41,12 +46,13 @@ export const Terminal = (props: Props): JSX.Element => {
 
     void (async (initialInput: string[]) => {
       for (const line of initialInput) {
+        await delay(500);
+
         for (const character of line) {
           terminal.input(character);
         }
 
         terminal.input("\r");
-        await delay(500);
       }
     })(props.initialInput ?? []);
   });

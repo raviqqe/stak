@@ -17,6 +17,7 @@
     "@astrojs/starlight": "^0.34.4",
     "@nanostores/solid": "^1.0.0",
     "@raviqqe/stak": "^0.10.31",
+    "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.11.0",
     "classnames": "^2.5.1",
