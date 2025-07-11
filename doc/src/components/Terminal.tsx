@@ -6,7 +6,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
 
-const inputDelay = 200;
+const inputDelay = 100;
 
 interface Props {
   initialInput?: string[];
