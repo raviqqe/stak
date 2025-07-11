@@ -6,7 +6,7 @@ import { Label } from "../Label.js";
 import styles from "./DemoForm.module.css";
 import { Terminal } from "../Terminal.js";
 
-const _source = [
+const source = [
   "(import (scheme base) (scheme write))",
   '(write-string "Hello, world!\\n")',
   "(define (fibonacci x) (if (< x 2) x (+ (fibonacci (- x 1)) (fibonacci (- x 2)))))",
@@ -26,6 +26,7 @@ export const DemoForm = (): JSX.Element => {
       <Field style={{ flex: 1 }}>
         <Label for="repl">Try it out!</Label>
         <Terminal
+          initialInput={source}
           input={input.writable}
           output={output().pipeThrough(new TextDecoderStream())}
         />

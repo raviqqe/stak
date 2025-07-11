@@ -3,6 +3,7 @@ import * as xterm from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 
 interface Props {
+  initialInput?: string[];
   input: WritableStream<string>;
   output: ReadableStream<string>;
 }
@@ -34,6 +35,12 @@ export const Terminal = (props: Props): JSX.Element => {
       } else {
         line.push(data);
         terminal.write(data);
+      }
+    });
+
+    void (async () => {
+      for (const line of props.initialInput ?? []) {
+        await writer.write(line + "\r");
       }
     });
   });
