@@ -3,7 +3,7 @@ import { createEffect, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { FitAddon } from "@xterm/addon-fit";
-import { delay } from "es-toolkit";
+import { delay, once } from "es-toolkit";
 import styles from "./Terminal.module.css";
 
 const inputDelay = 100;
@@ -39,12 +39,26 @@ export const Terminal = (props: Props): JSX.Element => {
   const line: string[] = [];
 
   createEffect(() => {
+    terminal.onRender(
+      once(async () => {
+        for (const line of props.initialInput ?? []) {
+          await delay(inputDelay);
+
+          for (const character of line) {
+            terminal.input(character);
+          }
+
+          terminal.input("\r");
+        }
+      }),
+    );
+
     const writer = props.input.getWriter();
 
     terminal.onData(async (data) => {
       if (data === "\r") {
         await writer.write([...line.splice(0), "\n"].join(""));
-        terminal.write("\r\n");
+        terminal.writeln("\r\n");
       } else if (data === "\x7f") {
         if (line.length) {
           line.pop();
@@ -55,18 +69,6 @@ export const Terminal = (props: Props): JSX.Element => {
         terminal.write(data);
       }
     });
-
-    void (async (initialInput: string[]) => {
-      for (const line of initialInput) {
-        await delay(inputDelay);
-
-        for (const character of line) {
-          terminal.input(character);
-        }
-
-        terminal.input("\r");
-      }
-    })(props.initialInput ?? []);
   });
 
   createEffect(() => {
