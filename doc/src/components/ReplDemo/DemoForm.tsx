@@ -3,8 +3,8 @@ import { type JSX, onMount } from "solid-js";
 import * as store from "../../stores/repl.js";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
-import styles from "./DemoForm.module.css";
 import { Terminal } from "../Terminal.js";
+import styles from "./DemoForm.module.css";
 
 const source = [
   "(import (scheme base) (scheme write))",

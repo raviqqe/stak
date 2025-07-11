@@ -1,5 +1,5 @@
-import { createEffect, onMount, type JSX } from "solid-js";
 import * as xterm from "@xterm/xterm";
+import { createEffect, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
 import { delay } from "es-toolkit";
 
@@ -25,7 +25,7 @@ export const Terminal = (props: Props): JSX.Element => {
     const writer = props.input.getWriter();
 
     terminal.onData(async (data) => {
-      if (data == "\r") {
+      if (data === "\r") {
         await writer.write([...line.splice(0), "\n"].join(""));
         terminal.write("\r\n");
       } else if (data === "\x7f") {
@@ -54,7 +54,7 @@ export const Terminal = (props: Props): JSX.Element => {
   createEffect(() => {
     void (async (output: ReadableStream<string>) => {
       for await (const data of output) {
-        terminal.write(data == "\n" ? "\r\n" : data);
+        terminal.write(data === "\n" ? "\r\n" : data);
       }
     })(props.output);
   });
