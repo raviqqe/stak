@@ -46,7 +46,7 @@ export const Terminal = (props: Props): JSX.Element => {
         }
 
         terminal.input("\r");
-        await delay(100);
+        await delay(500);
       }
     })(props.initialInput ?? []);
   });
