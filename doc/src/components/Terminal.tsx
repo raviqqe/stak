@@ -1,5 +1,6 @@
 import { createEffect, onMount, type JSX } from "solid-js";
 import * as xterm from "@xterm/xterm";
+import "@xterm/xterm/css/xterm.css";
 
 interface Props {
   input: WritableStream<string>;
