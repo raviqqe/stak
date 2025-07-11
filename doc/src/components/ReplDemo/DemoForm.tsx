@@ -18,22 +18,24 @@ class LineBufferedTransformer implements Transformer {
   private line = "";
 
   public transform(data: string, controller: TransformStreamDefaultController) {
+    this.line += data;
+
     if (data === "\n") {
       controller.enqueue(this.line);
       this.line = "";
-    } else {
-      this.line += data;
     }
   }
 }
 
 export const DemoForm = (): JSX.Element => {
-  const input = new TransformStream<string, Uint8Array>(
+  const input = new TransformStream<string, string>(
     new LineBufferedTransformer(),
   );
   const output = useStore(store.output);
 
-  onMount(() => store.input.set(input.readable));
+  onMount(() =>
+    store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
+  );
 
   return (
     <form class={styles.root}>

@@ -20,13 +20,21 @@ export const Terminal = (props: Props): JSX.Element => {
   createEffect(() => {
     const writer = props.input.getWriter();
 
-    terminal.onData((data) => writer.write(data));
+    terminal.onData(async (data) => {
+      if (data == "\r") {
+        await writer.write("\n");
+        terminal.write("\r\n");
+      } else {
+        await writer.write(data);
+        terminal.write(data);
+      }
+    });
   });
 
   createEffect(() => {
     void (async (output: ReadableStream<string>) => {
       for await (const data of output) {
-        terminal.write(data);
+        terminal.write(data == "\n" ? "\r\n" : data);
       }
     })(props.output);
   });
