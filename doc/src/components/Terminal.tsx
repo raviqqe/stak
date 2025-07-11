@@ -1,6 +1,7 @@
 import { createEffect, onMount, type JSX } from "solid-js";
 import * as xterm from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
+import { delay } from "es-toolkit";
 
 interface Props {
   initialInput?: string[];
@@ -38,11 +39,16 @@ export const Terminal = (props: Props): JSX.Element => {
       }
     });
 
-    void (async () => {
-      for (const line of props.initialInput ?? []) {
-        await writer.write(line + "\r");
+    void (async (initialInput: string[]) => {
+      for (const line of initialInput) {
+        for (const character of line) {
+          terminal.input(character);
+        }
+
+        terminal.input("\r");
+        await delay(100);
       }
-    });
+    })(props.initialInput ?? []);
   });
 
   createEffect(() => {
