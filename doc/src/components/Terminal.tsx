@@ -39,7 +39,7 @@ export const Terminal = (props: Props): JSX.Element => {
   const line: string[] = [];
 
   createEffect(() => {
-    terminal.onRender(
+    terminal.buffer.onBufferChange(
       once(async () => {
         for (const line of props.initialInput ?? []) {
           await delay(inputDelay);
