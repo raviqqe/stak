@@ -3,7 +3,7 @@ import { createEffect, createMemo, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { FitAddon } from "@xterm/addon-fit";
-import { delay, once } from "es-toolkit";
+import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
 
 const inputDelay = 100;
@@ -20,12 +20,12 @@ interface Props {
 }
 
 export const Terminal = (props: Props): JSX.Element => {
+  const outputs = createMemo(() => props.output.tee());
   const terminal = new xterm.Terminal(terminalOptions);
   const fitAddon = new FitAddon();
   terminal.loadAddon(fitAddon);
 
   let element: HTMLDivElement | null = null;
-  const outputs = createMemo(() => props.output.tee());
 
   onMount(() => {
     if (!element) {
