@@ -52,7 +52,7 @@ export const Terminal = (props: Props): JSX.Element => {
           terminal.write("\b \b");
         }
       } else {
-        line.push(data);
+        line.push(...data);
         terminal.write(data);
       }
     });
