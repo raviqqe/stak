@@ -1,9 +1,9 @@
 import * as xterm from "@xterm/xterm";
-import { createEffect, type JSX, onMount } from "solid-js";
+import { createEffect, createMemo, type JSX, onMount } from "solid-js";
 import "@xterm/xterm/css/xterm.css";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { FitAddon } from "@xterm/addon-fit";
-import { delay, once } from "es-toolkit";
+import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
 
 const inputDelay = 100;
@@ -20,6 +20,7 @@ interface Props {
 }
 
 export const Terminal = (props: Props): JSX.Element => {
+  const outputs = createMemo(() => props.output.tee());
   const terminal = new xterm.Terminal(terminalOptions);
   const fitAddon = new FitAddon();
   terminal.loadAddon(fitAddon);
@@ -39,20 +40,6 @@ export const Terminal = (props: Props): JSX.Element => {
   const line: string[] = [];
 
   createEffect(() => {
-    terminal.onRender(
-      once(async () => {
-        for (const line of props.initialInput ?? []) {
-          await delay(inputDelay);
-
-          for (const character of line) {
-            terminal.input(character);
-          }
-
-          terminal.input("\r");
-        }
-      }),
-    );
-
     const writer = props.input.getWriter();
 
     terminal.onData(async (data) => {
@@ -76,7 +63,23 @@ export const Terminal = (props: Props): JSX.Element => {
       for await (const data of output) {
         terminal.write(data === "\n" ? "\r\n" : data);
       }
-    })(props.output);
+    })(outputs()[0]);
+  });
+
+  createEffect(() => {
+    void (async (output: ReadableStream<string>) => {
+      await output.values().next();
+
+      for (const line of props.initialInput ?? []) {
+        await delay(inputDelay);
+
+        for (const character of line) {
+          terminal.input(character);
+        }
+
+        terminal.input("\r");
+      }
+    })(outputs()[1]);
   });
 
   return (
