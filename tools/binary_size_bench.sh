@@ -2,6 +2,8 @@
 
 set -e
 
+[ -n "$CI" ]
+
 . $(dirname $0)/utility.sh
 
 cd $(dirname $0)/..
