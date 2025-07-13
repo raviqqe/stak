@@ -39,12 +39,13 @@ build_stak() (
     options="--target $target"
   fi
 
-  for directory in . cmd/minimal; do
-    (
-      cd $directory
-      cargo build --release $options
-    )
-  done
+  build() (
+    cd $1 $2
+    cargo build --release $options
+  )
+
+  build . stak
+  build cmd/minimal mstak
 )
 
 build_tr7() (
