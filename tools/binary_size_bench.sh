@@ -72,5 +72,5 @@ for binary in $binaries; do
   libraries=$(list_dynamic_libraries $binary)
 
   echo $binary '=>' $libraries
-  ls -l $binary $(filter_existent_paths $libraries)
+  ls -lX $binary $(filter_existent_paths $libraries)
 done
