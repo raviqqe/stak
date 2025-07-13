@@ -2,13 +2,21 @@
 
 set -e
 
+filter_existent_paths() (
+  for path in "$@"; do
+    if [ -r $path ]; then
+      echo $path
+    fi
+  done
+)
+
 list_dynamic_libraries() {
   case $(uname) in
   Darwin)
     otool -L "$@" | tail -n +2 | grep -o '.*\.dylib'
     ;;
   *)
-    ldd "$@"
+    ldd /bin/ls | grep -o '/lib/[^ ]*'
     ;;
   esac
 }
@@ -61,6 +69,8 @@ binaries='cmd/minimal/target/release/mstak target/release/stak tmp/chibi-scheme/
 strip $binaries
 
 for binary in $binaries; do
-  echo '>>>' $binary
-  ls -l $binary $(list_dynamic_libraries $binary)
+  libraries=$(list_dynamic_libraries $binary)
+
+  echo $binary '=>' $libraries
+  ls -l $binary $(filter_existent_paths $libraries)
 done
