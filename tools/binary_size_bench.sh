@@ -34,7 +34,7 @@ build_chibi() (
 build_stak() (
   for directory in . cmd/minimal; do
     (
-      cd $1
+      cd $directory
       cargo build --release
     )
   done
