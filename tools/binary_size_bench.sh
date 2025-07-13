@@ -33,7 +33,10 @@ build_chibi() (
 
 build_stak() (
   if [ $(uname) = Linux ]; then
-    options='--target x86_64-unknown-linux-musl'
+    target=x86_64-unknown-linux-musl
+
+    rustup target add $target
+    options="--target $target"
   fi
 
   for directory in . cmd/minimal; do
