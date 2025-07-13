@@ -41,7 +41,7 @@ build_stak() (
 
   build() (
     cd $1
-    cargo build --release $options $2
+    cargo build --release --bin $2 $options
   )
 
   build . stak
