@@ -32,20 +32,12 @@ build_chibi() (
 )
 
 build_stak() (
-  if [ $(uname) = Linux ]; then
-    target=x86_64-unknown-linux-musl
-
-    rustup target add $target
-    options="--target $target"
-  fi
-
-  build() (
-    cd $1
-    cargo build --release --bin $2 $options
-  )
-
-  build . stak
-  build cmd/minimal mstak
+  for directory in . cmd/minimal; do
+    (
+      cd $1
+      cargo build --release
+    )
+  done
 )
 
 build_tr7() (
