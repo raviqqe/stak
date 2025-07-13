@@ -5,7 +5,7 @@ set -e
 list_dynamic_libraries() {
   case $(uname) in
   Darwin)
-    otool -L "$@"
+    otool -L "$@" | tail -n +2 | grep -o '.*\.dylib'
     ;;
   *)
     ldd "$@"
@@ -59,8 +59,8 @@ build_tr7
 binaries='cmd/minimal/target/release/mstak target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i'
 
 strip $binaries
-ls -l $binaries
 
 for binary in $binaries; do
-  list_dynamic_libraries $binary
+  echo '>>>' $binary
+  ls -l $binary $(list_dynamic_libraries $binary)
 done

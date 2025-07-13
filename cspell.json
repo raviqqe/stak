@@ -32,6 +32,7 @@
     "coreutils",
     "ctypes",
     "doctest",
+    "dylib",
     "elif",
     "embeddable",
     "errno",
