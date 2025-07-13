@@ -71,6 +71,12 @@ jobs:
         with:
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
+  binary_size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/binary_size_bench.sh
   bytecode_size:
     runs-on: ubuntu-latest
     steps:
