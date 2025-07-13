@@ -94,6 +94,7 @@ jobs:
       - command_time
       - command_memory
       - rust
+      - binary_size
       - bytecode_size
       - loc
     if: always()
