@@ -5,7 +5,7 @@ set -e
 filter_existent_paths() (
   for path in "$@"; do
     if [ -r $path ]; then
-      echo $path
+      readlink -f $path
     fi
   done
 )
