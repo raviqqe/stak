@@ -58,6 +58,7 @@ build_tr7
 
 binaries='cmd/minimal/target/release/mstak target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i'
 
+strip $binaries
 ls -l $binaries
 
 for binary in $binaries; do
