@@ -40,8 +40,8 @@ build_stak() (
   fi
 
   build() (
-    cd $1 $2
-    cargo build --release $options
+    cd $1
+    cargo build --release $options $2
   )
 
   build . stak
