@@ -3,7 +3,12 @@
 set -e
 
 git_clone() (
-  if [ ! -d $(basename $1) ]; then
+  directory=$(basename $1)
+
+  if [ -d $directory ]; then
+    cd $directory
+    git pull
+  else
     git clone $1
   fi
 )
