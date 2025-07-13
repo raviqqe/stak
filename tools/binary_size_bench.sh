@@ -32,12 +32,16 @@ build_chibi() (
 )
 
 build_stak() (
-  cargo build --release
+  if [ $(uname) = Linux ]; then
+    options='--target x86_64-unknown-linux-musl'
+  fi
 
-  (
-    cd cmd/minimal
-    cargo build --release
-  )
+  for directory in . cmd/minimal; do
+    (
+      cd $directory
+      cargo build --release $options
+    )
+  done
 )
 
 build_tr7() (
