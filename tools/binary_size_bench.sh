@@ -2,6 +2,17 @@
 
 set -e
 
+list_dynamic_libraries() {
+  case $(uname) in
+  Darwin)
+    otool -L "$@"
+    ;;
+  *)
+    ldd "$@"
+    ;;
+  esac
+}
+
 git_clone() (
   directory=$(basename $1)
 
@@ -48,3 +59,7 @@ build_tr7
 binaries='cmd/minimal/target/release/mstak target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i'
 
 ls -l $binaries
+
+for binary in $binaries; do
+  list_dynamic_libraries $binary
+done
