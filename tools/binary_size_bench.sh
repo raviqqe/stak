@@ -68,6 +68,8 @@ binaries='cmd/minimal/target/release/mstak target/release/stak tmp/chibi-scheme/
 
 strip $binaries
 
+uname -a
+
 for binary in $binaries; do
   libraries=$(list_dynamic_libraries $binary)
 
