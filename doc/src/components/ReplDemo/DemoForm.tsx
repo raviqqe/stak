@@ -7,7 +7,7 @@ import { Terminal } from "../Terminal.js";
 import styles from "./DemoForm.module.css";
 
 const source = [
-  "(import (scheme base) (scheme write))",
+  "(import (scheme base))",
   '(write-string "Hello, world!\\n")',
   "(define (fibonacci x)",
   "\t(if (< x 2)",
