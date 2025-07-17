@@ -89,6 +89,26 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: tools/rust_loc_bench.sh
+  r7rs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        options:
+          - chibi
+          - stak
+          - chibi
+          - chickencsi
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ./.github/actions/setup
+      - run: cargo install --path root
+      - run: cargo install --path run
+        working-directory: cmd/minimal
+      - run:
+        working-directory: r7rs-benchmarks
   bench:
     needs:
       - command_time
@@ -97,6 +117,7 @@ jobs:
       - binary_size
       - bytecode_size
       - loc
+      - r7rs
     if: always()
     runs-on: ubuntu-latest
     steps:
