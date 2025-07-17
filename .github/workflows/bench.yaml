@@ -99,6 +99,7 @@ jobs:
           - chickencsi
           - gauche
           - stak
+          - tr7
     steps:
       - uses: actions/checkout@v4
         with:
