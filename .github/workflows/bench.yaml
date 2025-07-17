@@ -94,12 +94,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        options:
-          - chibi
-          - chickencsi
-          - gauche
-          - stak
-          - tr7
+        name:
+          - Chibi
+          - ChickenCSI
+          - Gauche
+          - Stak
+          - TR7
     steps:
       - uses: actions/checkout@v4
         with:
@@ -107,8 +107,9 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: cargo install --path root
-      - run: make ${{ matrix.name }}
+      - run: make $(echo ${{ matrix.name }} | tr '[:upper:]' '[:lower:]')
         working-directory: r7rs-benchmarks
+      - run: cat results.${{ matrix.name }}
   bench:
     needs:
       - command_time
