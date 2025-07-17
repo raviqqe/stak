@@ -96,9 +96,9 @@ jobs:
       matrix:
         options:
           - chibi
-          - stak
-          - chibi
           - chickencsi
+          - gauche
+          - stak
     steps:
       - uses: actions/checkout@v4
         with:
@@ -106,8 +106,6 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: cargo install --path root
-      - run: cargo install --path run
-        working-directory: cmd/minimal
       - run: make ${{ matrix.name }}
         working-directory: r7rs-benchmarks
   bench:
