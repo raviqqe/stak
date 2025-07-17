@@ -104,10 +104,11 @@ jobs:
         with:
           submodules: true
       - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup-scheme
       - run: cargo install --path root
       - run: cargo install --path run
         working-directory: cmd/minimal
-      - run:
+      - run: make ${{ matrix.name }}
         working-directory: r7rs-benchmarks
   bench:
     needs:
