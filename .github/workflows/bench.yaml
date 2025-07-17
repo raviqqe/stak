@@ -110,6 +110,7 @@ jobs:
       - run: make $(echo ${{ matrix.name }} | tr '[:upper:]' '[:lower:]')
         working-directory: r7rs-benchmarks
       - run: cat results.${{ matrix.name }}
+        working-directory: r7rs-benchmarks
   bench:
     needs:
       - command_time
