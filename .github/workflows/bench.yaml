@@ -96,8 +96,6 @@ jobs:
       matrix:
         name:
           - Chibi
-          - ChickenCSI
-          - Gauche
           - Stak
           - TR7
     steps:
