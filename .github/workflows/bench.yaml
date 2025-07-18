@@ -89,6 +89,32 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: tools/rust_loc_bench.sh
+  r7rs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+          - Chibi
+          - Stak
+          - TR7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup-scheme
+      - run: cargo install --path root
+      - run: rm results.*
+        working-directory: r7rs-benchmarks
+      - run: make $(echo ${{ matrix.name }} | tr '[:upper:]' '[:lower:]')
+        working-directory: r7rs-benchmarks
+      - run: cat results.${{ matrix.name }}
+        working-directory: r7rs-benchmarks
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}_benchmark
+          path: r7rs-benchmarks/results.${{ matrix.name }}
   bench:
     needs:
       - command_time

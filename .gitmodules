@@ -1,0 +1,4 @@
+[submodule "r7rs-benchmarks"]
+	path = r7rs-benchmarks
+	url = https://github.com/raviqqe/r7rs-benchmarks
+	branch = feature/stak

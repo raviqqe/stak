@@ -1,0 +1,9 @@
+name: stak/setup-scheme
+description: Sets up Scheme implementations
+inputs: {}
+outputs: {}
+runs:
+  using: composite
+  steps:
+    - run: tools/ci/setup_scheme.sh
+      shell: bash
