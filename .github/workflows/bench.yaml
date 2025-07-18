@@ -107,6 +107,8 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: cargo install --path root
+      - run: rm results.*
+        working-directory: r7rs-benchmarks
       - run: make $(echo ${{ matrix.name }} | tr '[:upper:]' '[:lower:]')
         working-directory: r7rs-benchmarks
       - run: cat results.${{ matrix.name }}
