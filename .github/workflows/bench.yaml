@@ -111,6 +111,10 @@ jobs:
         working-directory: r7rs-benchmarks
       - run: cat results.${{ matrix.name }}
         working-directory: r7rs-benchmarks
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          name: ${{ matrix.name }}_benchmark
+          path: r7rs-benchmarks/results.${{ matrix.name }}
   bench:
     needs:
       - command_time
