@@ -119,7 +119,6 @@ jobs:
       - binary_size
       - bytecode_size
       - loc
-      - r7rs
     if: always()
     runs-on: ubuntu-latest
     steps:
