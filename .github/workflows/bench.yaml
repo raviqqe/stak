@@ -96,6 +96,7 @@ jobs:
       matrix:
         name:
           - Chibi
+          - MIT
           - Stak
           - TR7
     steps:
