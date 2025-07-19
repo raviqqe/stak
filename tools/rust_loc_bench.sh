@@ -18,4 +18,21 @@ for cargo_file in $(find . -name Cargo.toml | sort); do
   log tokei $(dirname $cargo_file)
 done
 
-tokei
+tokei \
+  build \
+  compiler \
+  configuration \
+  device \
+  file \
+  inexact \
+  macro \
+  macro-util \
+  module \
+  native \
+  process-context \
+  r7rs \
+  root \
+  sac \
+  time \
+  util \
+  vm
