@@ -17,3 +17,5 @@ cargo fmt --all
 for cargo_file in $(find . -name Cargo.toml | sort); do
   log tokei $(dirname $cargo_file)
 done
+
+tokei
