@@ -90,6 +90,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup-scheme
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
