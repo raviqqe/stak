@@ -110,7 +110,7 @@ jobs:
         working-directory: r7rs-benchmarks
       - run: make $(echo ${{ matrix.name }} | tr '[:upper:]' '[:lower:]')
         env:
-          CPU_LIMIT: 3600
+          CPU_LIMIT: 600
         working-directory: r7rs-benchmarks
       - run: cat results.${{ matrix.name }}
         working-directory: r7rs-benchmarks
