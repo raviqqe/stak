@@ -95,8 +95,6 @@ jobs:
       fail-fast: false
       matrix:
         name:
-          - Chez
-          - Chicken
           - Chibi
           - MIT
           - Stak
