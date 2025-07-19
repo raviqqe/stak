@@ -29,7 +29,7 @@ tokei \
   macro-util \
   module \
   native \
-  process-context \
+  process_context \
   r7rs \
   root \
   sac \
