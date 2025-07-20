@@ -25,7 +25,7 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/..
 
-brew install chibi-scheme gauche guile parallel
+brew install parallel
 bundler install
 
 cargo build --profile release_test --features $features

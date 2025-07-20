@@ -90,6 +90,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup-scheme
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
@@ -169,6 +170,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup-scheme
       - run: tools/r7rs_compatible_compiler_test.sh
   r7rs_compatible_library:
     runs-on: ubuntu-latest
