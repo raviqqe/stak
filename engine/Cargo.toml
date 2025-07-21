@@ -34,7 +34,7 @@ stak-r7rs = { version = "0.10.32", path = "../r7rs" }
 stak-time = { version = "0.10.32", path = "../time" }
 stak-util = { version = "0.10.32", path = "../util" }
 stak-vm = { version = "0.10.32", path = "../vm" }
-winter-maybe-async = "0.13.0"
+winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
 rand = "0.9.1"

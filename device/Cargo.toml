@@ -19,7 +19,7 @@ rustix = { version = "1.0.8", default-features = false, features = [
   "stdio",
 ], optional = true }
 stak-vm = { version = "0.10.32", path = "../vm" }
-winter-maybe-async = "0.13.0"
+winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
 stak-util = { path = "../util" }
