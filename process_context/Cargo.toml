@@ -19,4 +19,4 @@ workspace = true
 
 [dependencies]
 stak-vm = { version = "0.10.32", path = "../vm" }
-winter-maybe-async = "0.13.0"
+winter-maybe-async = "0.13.1"
