@@ -6,7 +6,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
 
-const inputDelay = 10;
+const inputDelay = 20;
 const terminalOptions: xterm.ITerminalOptions = {
   lineHeight: 1.1,
   tabStopWidth: 2,
