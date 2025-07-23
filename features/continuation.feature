@@ -1,10 +1,9 @@
 Feature: Continuation
-
   Scenario: Call a continuation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (call/cc (lambda (k) (k 65))))
       """
     When I successfully run `stak main.scm`
@@ -14,9 +13,9 @@ Feature: Continuation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define x 5)
-      
+
       (write-u8 (+ 60 (call/cc (lambda (k) (k x)))))
       """
     When I successfully run `stak main.scm`
@@ -26,9 +25,9 @@ Feature: Continuation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define (f x) (call/cc (lambda (k) (k x))))
-      
+
       (write-u8 (+ 60 (f 5)))
       """
     When I successfully run `stak main.scm`
@@ -38,7 +37,7 @@ Feature: Continuation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (call/cc (lambda (k) 65)))
       """
     When I successfully run `stak main.scm`
@@ -48,9 +47,9 @@ Feature: Continuation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define backtrack #f)
-      
+
       (let ((i 65))
         (call/cc
           (lambda (target)
@@ -72,7 +71,7 @@ Feature: Continuation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (call-with-current-continuation (lambda (k) (k 65))))
       """
     When I successfully run `stak main.scm`

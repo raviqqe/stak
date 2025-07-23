@@ -1,10 +1,9 @@
 Feature: Parameter
-
   Scenario: Make a parameter
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 ((make-parameter 65)))
       """
     When I successfully run `stak main.scm`
@@ -14,9 +13,9 @@ Feature: Parameter
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define x (make-parameter 65))
-      
+
       (write-u8 (x))
       (write-u8 (parameterize ((x 66)) (x)))
       (write-u8 (x))
@@ -28,9 +27,9 @@ Feature: Parameter
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define x (make-parameter 65))
-      
+
       (write-u8 (x))
       (parameterize ((x 66))
         (write-u8 (x))
@@ -46,10 +45,10 @@ Feature: Parameter
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define x (make-parameter 65))
       (define y (make-parameter 66))
-      
+
       (write-u8 (x))
       (write-u8 (y))
       (parameterize ((x 67) (y 68))

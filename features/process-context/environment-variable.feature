@@ -1,11 +1,10 @@
 @environment-variable
 Feature: Environment variables
-
   Scenario: Get an environment variable
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme process-context))
-      
+
       (write-string (get-environment-variable "FOO"))
       """
     And I set the environment variable "FOO" to "bar"
@@ -16,7 +15,7 @@ Feature: Environment variables
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme process-context))
-      
+
       (for-each
         (lambda (pair)
           (write-string (car pair))

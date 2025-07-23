@@ -1,10 +1,9 @@
 Feature: Dynamic wind
-
   Scenario: Run callbacks
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (dynamic-wind
         (lambda () (write-u8 65))
         (lambda () (write-u8 66))
@@ -17,17 +16,17 @@ Feature: Dynamic wind
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define f #f)
-      
+
       (define (g)
         (dynamic-wind
           (lambda () (write-u8 65))
           (lambda () (call/cc (lambda (k) (set! f k))))
           (lambda () (write-u8 66))))
-      
+
       (g)
-      
+
       (when f
         (let ((g f))
           (set! f #f)
@@ -40,15 +39,15 @@ Feature: Dynamic wind
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define f #f)
-      
+
       (define (g)
         (dynamic-wind
           (lambda () (write-u8 65))
           (lambda () (f #f))
           (lambda () (write-u8 66))))
-      
+
       (call/cc
         (lambda (k)
           (set! f k)
@@ -61,9 +60,9 @@ Feature: Dynamic wind
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define f #f)
-      
+
       (define (g)
         (dynamic-wind
           (lambda () (write-u8 65))
@@ -73,9 +72,9 @@ Feature: Dynamic wind
               (lambda () (call/cc (lambda (k) (set! f k))))
               (lambda () (write-u8 67))))
           (lambda () (write-u8 68))))
-      
+
       (g)
-      
+
       (when f
         (let ((g f))
           (set! f #f)
@@ -89,10 +88,10 @@ Feature: Dynamic wind
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define f #f)
       (define g #f)
-      
+
       (define (h)
         (dynamic-wind
           (lambda () (write-u8 65))
@@ -112,9 +111,9 @@ Feature: Dynamic wind
               (lambda () (call/cc (lambda (k) (set! g k))))
               (lambda () (write-u8 71))))
           (lambda () (write-u8 72))))
-      
+
       (h)
-      
+
       (when f
         (let ((h f))
           (set! f #f)

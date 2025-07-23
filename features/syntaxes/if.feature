@@ -1,10 +1,9 @@
 Feature: if
-
   Scenario Outline: Use `if` expressions
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (if <value> 65 66))
       """
     When I successfully run `stak main.scm`
@@ -19,7 +18,7 @@ Feature: if
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 <expression>)
       """
     When I successfully run `stak main.scm`
@@ -34,7 +33,7 @@ Feature: if
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 <expression>)
       """
     When I successfully run `stak main.scm`
@@ -49,7 +48,7 @@ Feature: if
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (if <value> (write-u8 65))
       """
     When I successfully run `stak main.scm`
@@ -64,7 +63,7 @@ Feature: if
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (if <value1>
         (write-u8 65)
         (write-u8 66))
@@ -93,7 +92,7 @@ Feature: if
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (if <value1>
         (begin
           (write-u8 65)
@@ -140,7 +139,7 @@ Feature: if
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (if <value1>
         (begin
           (write-u8 65)

@@ -1,10 +1,9 @@
 Feature: Port
-
   Scenario Outline: Check if a value is a port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (if (port? <expression>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -19,7 +18,7 @@ Feature: Port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (if (input-port? (current-input-port)) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -29,7 +28,7 @@ Feature: Port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (if (output-port? <expression>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -44,16 +43,15 @@ Feature: Port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme file))
-      
+
       (define port <expression>)
-      
+
       (write-u8 (if (input-port-open? port) 65 66))
       (close-input-port port)
       (write-u8 (if (input-port-open? port) 65 66))
       """
     And a file named "foo.txt" with:
       """
-      
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "AB"
@@ -67,16 +65,15 @@ Feature: Port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme file))
-      
+
       (define port <expression>)
-      
+
       (write-u8 (if (output-port-open? port) 65 66))
       (close-output-port port)
       (write-u8 (if (output-port-open? port) 65 66))
       """
     And a file named "foo.txt" with:
       """
-      
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "AB"
@@ -91,7 +88,7 @@ Feature: Port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (call-with-port
         (open-input-string "<string>")
         (lambda (port)
@@ -106,7 +103,7 @@ Feature: Port
     Examples:
       | string |
       | ABC    |
-      | あ     |
+      | あ      |
       | 😄      |
 
   @gauche @guile @stak
@@ -114,7 +111,7 @@ Feature: Port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (call-with-port
         (open-output-string)
         (lambda (port)
@@ -130,15 +127,15 @@ Feature: Port
 
     Examples:
       | bytes           | output | length |
-      |        65 66 67 | ABC    |      3 |
-      |     227 129 130 | あ     |      1 |
-      | 240 159 152 132 | 😄      |      1 |
+      | 65 66 67        | ABC    | 3      |
+      | 227 129 130     | あ      | 1      |
+      | 240 159 152 132 | 😄      | 1      |
 
   Scenario: Read from a bytevector port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (call-with-port
         (open-input-bytevector #u8(65 66 67))
         (lambda (port)
@@ -153,7 +150,7 @@ Feature: Port
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (call-with-port
         (open-output-bytevector)
         (lambda (port)
@@ -169,6 +166,6 @@ Feature: Port
 
     Examples:
       | bytes    | output | length |
-      |       65 | A      |      1 |
-      |    65 66 | AB     |      2 |
-      | 65 66 67 | ABC    |      3 |
+      | 65       | A      | 1      |
+      | 65 66    | AB     | 2      |
+      | 65 66 67 | ABC    | 3      |

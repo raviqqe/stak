@@ -1,11 +1,10 @@
 Feature: Read
-
   @chibi @gauche @stak
   Scenario: Read a byte
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (read-u8))
       """
     And a file named "input.txt" with:
@@ -22,7 +21,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (read-u8))
       (write-u8 (read-u8))
       (write-u8 (read-u8))
@@ -41,7 +40,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (peek-u8))
       """
     And a file named "input.txt" with:
@@ -58,7 +57,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (peek-u8))
       (write-u8 (peek-u8))
       """
@@ -76,7 +75,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (peek-u8))
       (write-u8 (read-u8))
       (write-u8 (read-u8))
@@ -94,7 +93,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (if (u8-ready? (open-input-bytevector #u8(<bytes>))) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -104,13 +103,13 @@ Feature: Read
     Examples:
       | bytes | output |
       |       | A      |
-      |    65 | A      |
+      | 65    | A      |
 
   Scenario Outline: Read a character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-char (read-char))
       """
     And a file named "input.txt" with:
@@ -135,7 +134,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-char (peek-char))
       """
     And a file named "input.txt" with:
@@ -160,7 +159,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-char (peek-char))
       (write-char (peek-char))
       """
@@ -177,7 +176,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-char (peek-char))
       (write-char (read-char))
       (write-char (read-char))
@@ -195,7 +194,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 (if (char-ready? (open-input-bytevector #u8(<bytes>))) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -205,8 +204,8 @@ Feature: Read
     Examples:
       | bytes           | output |
       |                 | A      |
-      |              65 | A      |
-      |     227 129 130 | A      |
+      | 65              | A      |
+      | 227 129 130     | A      |
       | 240 159 152 132 | A      |
 
   @long
@@ -214,7 +213,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme read))
-      
+
       (write-u8 (if (equal? (read) '<value>) 65 66))
       """
     And a file named "input.txt" with:
@@ -230,13 +229,13 @@ Feature: Read
       | value           |
       | #f              |
       | #t              |
-      |               0 |
-      |               1 |
-      |               2 |
-      |              42 |
-      |              -1 |
-      |              -2 |
-      |             -42 |
+      | 0               |
+      | 1               |
+      | 2               |
+      | 42              |
+      | -1              |
+      | -2              |
+      | -42             |
       | a               |
       | x               |
       | foo             |
@@ -269,7 +268,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme read))
-      
+
       (write-u8 (if (equal? (read (current-input-port)) 'foo) 65 66))
       """
     And a file named "input.txt" with:
@@ -286,7 +285,7 @@ Feature: Read
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme read))
-      
+
       (read)
       """
     And a file named "input.txt" with:

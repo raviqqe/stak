@@ -1,10 +1,9 @@
 Feature: Write
-
   Scenario: Write a byte
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-u8 65)
       """
     When I successfully run `stak main.scm`
@@ -14,7 +13,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-char #\<value>)
       """
     When I successfully run `stak main.scm`
@@ -31,7 +30,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-char #\<value>)
       """
     When I successfully run `stak main.scm`
@@ -47,7 +46,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write <value>)
       """
     When I successfully run `stak main.scm`
@@ -57,15 +56,15 @@ Feature: Write
       | value | output |
       | #\\a  | #\\\\a |
       | #\\A  | #\\\\A |
-      | #\\"  | #\\\\" |
       | #\\(  | #\\\\( |
+      | #\\#  | #\\\\# |
 
   @gauche @stak
   Scenario Outline: Write an escaped special character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write <value>)
       """
     When I successfully run `stak main.scm`
@@ -87,7 +86,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-string "Hello, world!")
       """
     When I successfully run `stak main.scm`
@@ -97,7 +96,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (write-string "<value>")
       """
     When I successfully run `stak main.scm`
@@ -113,7 +112,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write <value>)
       """
     When I successfully run `stak main.scm`
@@ -128,7 +127,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write '<value>)
       """
     When I successfully run `stak main.scm`
@@ -148,7 +147,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write <value>)
       """
     When I successfully run `stak main.scm`
@@ -156,18 +155,18 @@ Feature: Write
 
     Examples:
       | value |
-      |     0 |
-      |     1 |
-      |    42 |
-      |    -1 |
-      |   -42 |
+      | 0     |
+      | 1     |
+      | 42    |
+      | -1    |
+      | -42   |
 
   @stak
   Scenario: Write a procedure
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write (lambda () #f))
       """
     When I successfully run `stak main.scm`
@@ -178,11 +177,11 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (define-record-type foo
         (make-foo)
         foo?)
-      
+
       (write (make-foo))
       """
     When I successfully run `stak main.scm`
@@ -192,7 +191,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write "<value>")
       """
     When I successfully run `stak main.scm`
@@ -212,7 +211,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write 'foo)
       """
     When I successfully run `stak main.scm`
@@ -223,7 +222,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write (string->symbol ""))
       """
     When I successfully run `stak main.scm`
@@ -233,7 +232,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write <value>)
       """
     When I successfully run `stak main.scm`
@@ -252,7 +251,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write <value>)
       """
     When I successfully run `stak main.scm`
@@ -269,7 +268,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write '(42 foo #f) (current-output-port))
       """
     When I successfully run `stak main.scm`
@@ -280,7 +279,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write '<value>)
       """
     When I successfully run `stak main.scm`
@@ -303,7 +302,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (write '<value>)
       """
     When I successfully run `stak main.scm`
@@ -329,7 +328,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-      
+
       (display '<value>)
       """
     When I successfully run `stak main.scm`
@@ -356,7 +355,7 @@ Feature: Write
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (flush-output-port)
       """
     When I successfully run `stak main.scm`

@@ -1,12 +1,11 @@
 Feature: do
-
   Scenario: Use a `do` syntax with steps
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define xs '(1 2 3 4 5 6 7 8 9 10 11))
-      
+
       (do ((xs xs (cdr xs))
            (y 0 (+ y (car xs))))
         ((null? xs)
@@ -19,9 +18,9 @@ Feature: do
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define y 0)
-      
+
       (do ((xs #(1 2 3 4 5 6 7 8 9 10 11))
            (i 0 (+ i 1)))
         ((= i (vector-length xs))

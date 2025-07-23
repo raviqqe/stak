@@ -1,10 +1,9 @@
 Feature: Lazy
-
   Scenario: Delay an expression
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (delay (write-u8 65))
       """
     When I successfully run `stak main.scm`
@@ -14,7 +13,7 @@ Feature: Lazy
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (write-u8 (if (promise? <value>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -30,7 +29,7 @@ Feature: Lazy
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (force (delay (write-u8 65)))
       """
     When I successfully run `stak main.scm`
@@ -40,9 +39,9 @@ Feature: Lazy
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (define x (delay (write-u8 65)))
-      
+
       (force x)
       (force x)
       """
@@ -53,7 +52,7 @@ Feature: Lazy
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (delay-force (write-u8 65))
       """
     When I successfully run `stak main.scm`
@@ -63,7 +62,7 @@ Feature: Lazy
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (write-u8 (force (delay-force (make-promise (+ 60 5)))))
       """
     When I successfully run `stak main.scm`
@@ -73,7 +72,7 @@ Feature: Lazy
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (write-u8
         (force
           (let loop ((i 10000))
@@ -88,7 +87,7 @@ Feature: Lazy
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
-      
+
       (write-u8 (force (make-promise 65)))
       """
     When I successfully run `stak main.scm`

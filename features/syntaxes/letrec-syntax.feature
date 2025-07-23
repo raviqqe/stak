@@ -1,10 +1,9 @@
 Feature: letrec-syntax
-
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (letrec-syntax
         ((foo
           (syntax-rules ()
@@ -21,7 +20,7 @@ Feature: letrec-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (letrec-syntax (
         (foo
           (syntax-rules ()
@@ -44,7 +43,7 @@ Feature: letrec-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (letrec-syntax ()
         (write-u8 65)
         (write-u8 66))

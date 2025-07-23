@@ -1,10 +1,9 @@
 Feature: let-syntax
-
   Scenario: Define a local macro
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let-syntax (
         (foo
           (syntax-rules ()
@@ -19,9 +18,9 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define foo 65)
-      
+
       (let-syntax (
         (foo
           (syntax-rules ()
@@ -36,7 +35,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let-syntax (
         (foo
           (syntax-rules ()
@@ -53,12 +52,12 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define-syntax foo
         (syntax-rules ()
           ((_ x y)
             x)))
-      
+
       (let-syntax (
         (foo
           (syntax-rules ()
@@ -77,12 +76,12 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (define-syntax foo
         (syntax-rules ()
           ((_ x y)
             (x y))))
-      
+
       (let-syntax (
           (bar
             (syntax-rules ()
@@ -97,7 +96,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let ((foo 42))
         (let-syntax (
           (foo
@@ -113,7 +112,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let ((foo 65))
         (let-syntax (
           (foo
@@ -129,7 +128,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let-syntax (
         (foo
           (syntax-rules ()
@@ -145,7 +144,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let ((x 65))
         (let-syntax (
             (foo
@@ -162,7 +161,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let-syntax (
           (foo
             (syntax-rules ()
@@ -183,7 +182,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let-syntax (
           (foo
             (syntax-rules ()
@@ -203,7 +202,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let-syntax ()
         (write-u8 65)
         (write-u8 66))
@@ -215,7 +214,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let ((x 42))
         (let-syntax (
             (foo
@@ -231,7 +230,7 @@ Feature: let-syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-      
+
       (let-syntax (
           (x
             (syntax-rules ()

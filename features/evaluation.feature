@@ -1,6 +1,5 @@
 @long
 Feature: Evaluation
-
   Scenario: Import an `eval` library
     Given a file named "main.scm" with:
       """scheme
@@ -13,7 +12,7 @@ Feature: Evaluation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval))
-      
+
       (write-u8 (if (eval #f (environment)) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -23,7 +22,7 @@ Feature: Evaluation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval))
-      
+
       (write-u8 (eval 65 (environment)))
       """
     When I successfully run `stak main.scm`
@@ -33,7 +32,7 @@ Feature: Evaluation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval))
-      
+
       (write-string (eval "foo" (environment)))
       """
     When I successfully run `stak main.scm`
@@ -43,7 +42,7 @@ Feature: Evaluation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval))
-      
+
       (write-u8 (eval 65 (environment '(scheme base))))
       """
     When I successfully run `stak main.scm`
@@ -53,7 +52,7 @@ Feature: Evaluation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval))
-      
+
       (write-u8 (eval 65 (environment '(scheme base) '(scheme write))))
       """
     When I successfully run `stak main.scm`
@@ -63,7 +62,7 @@ Feature: Evaluation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval) (scheme repl))
-      
+
       (write-u8 (eval 65 (interaction-environment)))
       """
     When I successfully run `stak main.scm`
@@ -73,7 +72,7 @@ Feature: Evaluation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval) (scheme repl))
-      
+
       (eval '(import (scheme base)) (interaction-environment))
       (eval '(define x 42) (interaction-environment))
       (eval '(define y 23) (interaction-environment))
@@ -83,13 +82,12 @@ Feature: Evaluation
     Then the stdout should contain exactly "A"
 
   Rule: Environment
-
     @gauche @guile @stak
     Scenario: Use a `define` syntax with a variable
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (eval
           '(begin
             (define x 65)
@@ -104,7 +102,7 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (eval
           '(begin
             (define (f x)
@@ -119,9 +117,9 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (define x #t)
-        
+
         (eval
           '(unless x (error "Oh, no!"))
           (environment '(scheme base)))
@@ -134,25 +132,24 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (define x 65)
-        
+
         (eval
           '(begin (define x 66))
           (environment '(scheme base)))
-        
+
         (write-u8 x)
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
   Rule: Procedures
-
     Scenario: Use a `+` procedure
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (write-u8 (eval '(+ 60 5) (environment '(scheme base))))
         """
       When I successfully run `stak main.scm`
@@ -162,7 +159,7 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval) (scheme write))
-        
+
         (eval '(display "foo") (environment '(scheme write)))
         """
       When I successfully run `stak main.scm`
@@ -172,7 +169,7 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (write-u8
           (eval
             '(let ((x 0))
@@ -184,12 +181,11 @@ Feature: Evaluation
       Then the stdout should contain exactly "A"
 
   Rule: Syntaxes
-
     Scenario: Use a `begin` syntax
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (write-u8
           (eval
             '(begin 42 65)
@@ -202,7 +198,7 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (eval '(write-u8 (if <value> 65 66)) (environment '(scheme base)))
         """
       When I successfully run `stak main.scm`
@@ -217,7 +213,7 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (write-u8
           (eval
             '((lambda () 65))
@@ -230,7 +226,7 @@ Feature: Evaluation
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
-        
+
         (write-u8
           (eval
             '((lambda (x) x) 65)
