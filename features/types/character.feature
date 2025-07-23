@@ -1,9 +1,10 @@
 Feature: Character
+
   Scenario Outline: Check if a value is a character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (char? <expression>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -19,7 +20,7 @@ Feature: Character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
-
+      
       (write-u8 (if (<predicate> #\<value>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -31,9 +32,9 @@ Feature: Character
       | char-alphabetic? | A       | A      |
       | char-alphabetic? | z       | A      |
       | char-alphabetic? | Z       | A      |
-      | char-alphabetic? | 0       | B      |
-      | char-numeric?    | 0       | A      |
-      | char-numeric?    | 9       | A      |
+      | char-alphabetic? |       0 | B      |
+      | char-numeric?    |       0 | A      |
+      | char-numeric?    |       9 | A      |
       | char-numeric?    | A       | B      |
       | char-whitespace? | newline | A      |
       | char-whitespace? | return  | A      |
@@ -45,7 +46,7 @@ Feature: Character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-char #\A)
       """
     When I successfully run `stak main.scm`
@@ -55,7 +56,7 @@ Feature: Character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-char #\A)
       (newline)
       (write-char #\B)
@@ -71,7 +72,7 @@ Feature: Character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (<predicate> <characters>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -98,7 +99,7 @@ Feature: Character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
-
+      
       (write-u8 (if (<predicate> <characters>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -114,7 +115,7 @@ Feature: Character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
-
+      
       (write-u8 (if (eqv? (<predicate> <input>) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -131,7 +132,7 @@ Feature: Character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
-
+      
       (write-u8 (if (= (digit-value #\<character>) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -139,7 +140,7 @@ Feature: Character
 
     Examples:
       | character | output |
-      | 0         | 0      |
-      | 1         | 1      |
-      | 6         | 6      |
-      | 9         | 9      |
+      |         0 |      0 |
+      |         1 |      1 |
+      |         6 |      6 |
+      |         9 |      9 |

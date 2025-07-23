@@ -1,9 +1,10 @@
 Feature: SRFI 1
+
   Scenario Outline: Enumerate numbers
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (srfi 1))
-
+      
       (write-u8 (if (equal? <lhs> <rhs>) 65 66))
       """
     When I successfully run `stak main.scm`

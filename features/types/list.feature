@@ -1,9 +1,10 @@
 Feature: List
+
   Scenario Outline: Use literals
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (define x '<value>)
       """
     When I successfully run `stak main.scm`
@@ -21,7 +22,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (cons 42 '())
       """
     When I successfully run `stak main.scm`
@@ -31,7 +32,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (cons 1 2)
       """
     When I successfully run `stak main.scm`
@@ -41,7 +42,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (list 1 2 3)
       """
     When I successfully run `stak main.scm`
@@ -51,7 +52,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each
         (lambda (x) (write-u8 (+ 60 x)))
         '(5 6 7))
@@ -63,7 +64,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each
         (lambda (x y) (write-u8 (+ x y)))
         '(65 66 67)
@@ -76,7 +77,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each
         (lambda (x y z) (write-u8 (+ x y z)))
         '(65 66 67)
@@ -90,7 +91,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each
         write-u8
         (map
@@ -104,7 +105,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each
         write-u8
         (map
@@ -119,7 +120,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each
         write-u8
         (map
@@ -135,7 +136,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each
         write-u8
         (map
@@ -150,7 +151,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (for-each write-u8 (append <values>))
       """
     When I successfully run `stak main.scm`
@@ -168,14 +169,14 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (define x (list 65))
       (define y (append '(65) x))
-
+      
       (for-each write-u8 y)
-
+      
       (set-car! x 66)
-
+      
       (for-each write-u8 y)
       """
     When I successfully run `stak main.scm`
@@ -186,7 +187,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (memq <value> '(<values>)) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -194,20 +195,20 @@ Feature: List
 
     Examples:
       | value | values | output |
-      | 1     |        | B      |
-      | 1     | 1      | A      |
-      | 2     | 1      | B      |
-      | 1     | 1 2    | A      |
-      | 2     | 1 2    | A      |
-      | 3     | 1 2    | B      |
-      | 1     | 1 2 3  | A      |
-      | 4     | 1 2 3  | B      |
+      |     1 |        | B      |
+      |     1 |      1 | A      |
+      |     2 |      1 | B      |
+      |     1 |    1 2 | A      |
+      |     2 |    1 2 | A      |
+      |     3 |    1 2 | B      |
+      |     1 |  1 2 3 | A      |
+      |     4 |  1 2 3 | B      |
 
   Scenario Outline: Use a `memv` procedure
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (memv <value> '(<values>)) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -228,7 +229,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (member <value> '(<values>)) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -249,7 +250,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (cdr (<procedure> 42 '((1 . 1) (42 . 65) (3 . 3)))))
       """
     When I successfully run `stak main.scm`
@@ -265,7 +266,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (cdr (<procedure> #\B '((#\A . 1) (#\B . 65) (#\C . 3)))))
       """
     When I successfully run `stak main.scm`
@@ -280,7 +281,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (pair? <value>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -298,7 +299,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (null? <value>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -316,7 +317,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (list? <value>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -334,7 +335,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme cxr))
-
+      
       (write-u8 (<procedure> '<value>))
       """
     When I successfully run `stak main.scm`
@@ -362,7 +363,7 @@ Feature: List
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (equal? (list-copy <value>) <value>) 65 66))
       """
     When I successfully run `stak main.scm`

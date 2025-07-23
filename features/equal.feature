@@ -1,9 +1,10 @@
 Feature: Equality
+
   Scenario Outline: Use an `eq?` procedure
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (eq? <lhs> <rhs>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -17,14 +18,14 @@ Feature: Equality
       | '() | #f  | B      |
       | #f  | #t  | B      |
       | #t  | '() | B      |
-      | 42  | 42  | A      |
-      | 42  | 0   | B      |
+      |  42 |  42 | A      |
+      |  42 |   0 | B      |
 
   Scenario Outline: Use an `eqv?` procedure
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (eqv? <lhs> <rhs>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -38,8 +39,8 @@ Feature: Equality
       | '()  | #f   | B      |
       | #f   | #t   | B      |
       | #t   | '()  | B      |
-      | 42   | 42   | A      |
-      | 42   | 0    | B      |
+      |   42 |   42 | A      |
+      |   42 |    0 | B      |
       | #\\A | #\\A | A      |
       | #\\A | #\\B | B      |
 
@@ -47,7 +48,7 @@ Feature: Equality
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (equal? <lhs> <rhs>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -61,8 +62,8 @@ Feature: Equality
       | '()  | #f   | B      |
       | #f   | #t   | B      |
       | #t   | '()  | B      |
-      | 42   | 42   | A      |
-      | 42   | 0    | B      |
+      |   42 |   42 | A      |
+      |   42 |    0 | B      |
       | #\\A | #\\A | A      |
       | #\\A | #\\B | B      |
 
@@ -70,7 +71,7 @@ Feature: Equality
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (equal? <lhs> <rhs>) 65 66))
       """
     When I successfully run `stak main.scm`

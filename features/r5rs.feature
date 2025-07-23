@@ -1,10 +1,11 @@
 @long
 Feature: The R5RS library
+
   Scenario: Add numbers
     Given a file named "main.scm" with:
       """scheme
       (import (scheme r5rs))
-
+      
       (write (+ 40 2))
       """
     When I successfully run `stak main.scm`
@@ -14,7 +15,7 @@ Feature: The R5RS library
     Given a file named "main.scm" with:
       """scheme
       (import (scheme r5rs))
-
+      
       (for-each write-char '(#\A #\B #\C))
       """
     When I successfully run `stak main.scm`
@@ -24,7 +25,7 @@ Feature: The R5RS library
     Given a file named "main.scm" with:
       """scheme
       (import (scheme r5rs))
-
+      
       (write (read))
       """
     And a file named "input.txt" with:
@@ -40,7 +41,7 @@ Feature: The R5RS library
     Given a file named "main.scm" with:
       """scheme
       (import (scheme r5rs))
-
+      
       (write '(1 2 3))
       """
     When I successfully run `stak main.scm`
@@ -50,7 +51,7 @@ Feature: The R5RS library
     Given a file named "main.scm" with:
       """scheme
       (import (scheme r5rs))
-
+      
       (write-char (force (delay (integer->char 65))))
       """
     When I successfully run `stak main.scm`
@@ -60,7 +61,7 @@ Feature: The R5RS library
     Given a file named "main.scm" with:
       """scheme
       (import (scheme r5rs))
-
+      
       (write
         (eval
           '(+ 40 2)

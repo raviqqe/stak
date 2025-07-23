@@ -1,9 +1,10 @@
 Feature: Multiple values
+
   Scenario: Pass multiple values to a continuation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (call-with-values
           (lambda () (values 1 4 60))
@@ -16,7 +17,7 @@ Feature: Multiple values
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (call-with-values
           (lambda () (values 65))
@@ -29,18 +30,19 @@ Feature: Multiple values
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (+ 66 (call-with-values * -)))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
   Rule: `define-values`
+
     Scenario: Define no value
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define-values () (values))
         """
       When I successfully run `stak main.scm`
@@ -50,9 +52,9 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define-values (x) (values 65))
-
+        
         (write-u8 x)
         """
       When I successfully run `stak main.scm`
@@ -62,9 +64,9 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define-values (x y z) (values 65 66 67))
-
+        
         (write-u8 x)
         (write-u8 y)
         (write-u8 z)
@@ -76,9 +78,9 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme cxr))
-
+        
         (define-values xs (values 65 66 67))
-
+        
         (write-u8 (car xs))
         (write-u8 (cadr xs))
         (write-u8 (caddr xs))
@@ -90,9 +92,9 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define-values (x . xs) (values 65 66 67))
-
+        
         (write-u8 x)
         (write-u8 (car xs))
         (write-u8 (cadr xs))
@@ -104,9 +106,9 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define x (values 65))
-
+        
         (write-u8 x)
         """
       When I successfully run `stak main.scm`
@@ -116,14 +118,14 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define (f)
           (values 60 5))
-
+        
         (define (g)
           (define-values (x y) (f))
           (+ x y))
-
+        
         (write-u8 (g))
         """
       When I successfully run `stak main.scm`
@@ -133,17 +135,17 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define (f x)
           (values 65 x))
-
+        
         (define (g)
           (define-values (x y) (f 0))
           (define-values (v w) (f 1))
-
+        
           (write-u8 (+ x y))
           (write-u8 (+ v w)))
-
+        
         (g)
         """
       When I successfully run `stak main.scm`
@@ -153,28 +155,29 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (define (f x)
           (values 65 x))
-
+        
         (define (g)
           (define-values (x y) (f 0))
           (define-values (v w) (f (+ y 1)))
-
+        
           (write-u8 (+ x y))
           (write-u8 (+ v w)))
-
+        
         (g)
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "AB"
 
   Rule: `let-values`
+
     Scenario: Define no value
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (let-values ((() (values)))
           #f)
         """
@@ -185,7 +188,7 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (let-values (((x) (values 65)))
           (write-u8 x))
         """
@@ -196,7 +199,7 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (let-values (((x y z) (values 65 66 67)))
           (write-u8 x)
           (write-u8 y)
@@ -209,7 +212,7 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme cxr))
-
+        
         (let-values ((xs (values 65 66 67)))
           (write-u8 (car xs))
           (write-u8 (cadr xs))
@@ -222,7 +225,7 @@ Feature: Multiple values
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
-
+        
         (let-values (((x . xs) (values 65 66 67)))
           (write-u8 x)
           (write-u8 (car xs))

@@ -1,9 +1,10 @@
 Feature: Inclusion
+
   Scenario: Include a file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (include "./foo.scm")
       """
     And a file named "foo.scm" with:
@@ -17,7 +18,7 @@ Feature: Inclusion
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (include "./foo.scm")
       (include "./bar.scm")
       """
@@ -36,7 +37,7 @@ Feature: Inclusion
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (include "./foo.scm")
       """
     And a file named "foo.scm" with:

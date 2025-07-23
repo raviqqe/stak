@@ -1,12 +1,14 @@
 Feature: Exit
+
   Rule: `exit`
+
     Scenario: Exit an interpreter
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (exit)
-
+        
         (write-u8 65)
         """
       When I successfully run `stak main.scm`
@@ -16,7 +18,7 @@ Feature: Exit
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (exit #t)
         """
       When I successfully run `stak main.scm`
@@ -26,7 +28,7 @@ Feature: Exit
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (exit #f)
         """
       When I run `stak main.scm`
@@ -36,7 +38,7 @@ Feature: Exit
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (dynamic-wind
           (lambda () (write-u8 65))
           (lambda () (exit))
@@ -46,13 +48,14 @@ Feature: Exit
       Then the stdout should contain exactly "AB"
 
   Rule: `emergency-exit`
+
     Scenario: Exit an interpreter
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (emergency-exit)
-
+        
         (write-u8 65)
         """
       When I successfully run `stak main.scm`
@@ -62,7 +65,7 @@ Feature: Exit
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (emergency-exit #t)
         """
       When I successfully run `stak main.scm`
@@ -72,7 +75,7 @@ Feature: Exit
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (emergency-exit #f)
         """
       When I run `stak main.scm`
@@ -82,7 +85,7 @@ Feature: Exit
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme process-context))
-
+        
         (dynamic-wind
           (lambda () #f)
           (lambda () (emergency-exit))

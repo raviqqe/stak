@@ -1,10 +1,11 @@
 @chibi @gauche @stak
 Feature: Load
+
   Scenario: Load a file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval) (scheme load))
-
+      
       (load "./foo.scm" (environment '(scheme base)))
       """
     And a file named "foo.scm" with:
@@ -18,7 +19,7 @@ Feature: Load
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval) (scheme load))
-
+      
       (load "./foo.scm" (environment '(scheme base)))
       (load "./bar.scm" (environment '(scheme base)))
       """
@@ -37,7 +38,7 @@ Feature: Load
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval) (scheme load))
-
+      
       (load "./foo.scm" (environment '(scheme base) '(scheme eval) '(scheme load)))
       """
     And a file named "foo.scm" with:

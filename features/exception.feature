@@ -1,9 +1,10 @@
 Feature: Exception
+
   Scenario: Raise an error
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (error "Oh, no!")
       """
     When I run `stak main.scm`
@@ -14,7 +15,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (error "Oh, no!" 42)
       """
     When I run `stak main.scm`
@@ -25,7 +26,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-
+      
       (error "Oh, no!" 42)
       """
     When I run `stak main.scm`
@@ -37,11 +38,11 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 65)
-
+      
       (error "")
-
+      
       (write-u8 66)
       """
     When I run `stak main.scm`
@@ -52,7 +53,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (with-exception-handler
           (lambda (value) 65)
@@ -66,7 +67,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (with-exception-handler
           (lambda (value) 65)
@@ -79,7 +80,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (with-exception-handler
         (lambda (value) (raise #f))
         (lambda () (raise-continuable #f)))
@@ -91,7 +92,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-
+      
       (with-exception-handler
         (lambda (value) (error "foo"))
         (lambda ()
@@ -110,7 +111,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-
+      
       (with-exception-handler
         (lambda (value) (error "foo"))
         (lambda ()
@@ -135,7 +136,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (with-exception-handler
           (lambda (value) 65)
@@ -150,7 +151,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (with-exception-handler
           (lambda (value) 65)
@@ -166,7 +167,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (dynamic-wind
         (lambda () (write-u8 65))
         (lambda () (error ""))
@@ -180,15 +181,15 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (guard
         (condition
           ((null? condition)
             #f)
-
+      
           ((number? condition)
             (write-u8 condition))
-
+      
           ((string? condition)
             #f))
         (raise 65))
@@ -200,15 +201,15 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (guard
         (condition
           ((null? condition)
             #f)
-
+      
           ((string? condition)
             #f)
-
+      
           (else
             (write-u8 condition)))
         (raise 65))
@@ -220,25 +221,25 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (guard
         (condition
           ((null? condition)
             #f)
-
+      
           ((number? condition)
             (write-u8 condition))
-
+      
           ((string? condition)
             #f))
         (guard
           (condition
             ((null? condition)
               #f)
-
+      
             ((number? condition)
               (write-u8 condition))
-
+      
             ((string? condition)
               #f))
           (raise 65)))
@@ -250,25 +251,25 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (guard
         (condition
           ((null? condition)
             #f)
-
+      
           ((number? condition)
             (guard
               (condition
                 ((null? condition)
                   #f)
-
+      
                 ((number? condition)
                   (write-u8 condition))
-
+      
                 ((string? condition)
                   #f))
               (raise condition)))
-
+      
           ((string? condition)
             #f))
         (raise 65))
@@ -280,7 +281,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (guard
           (value
@@ -294,7 +295,7 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (guard
           (value
@@ -309,10 +310,10 @@ Feature: Exception
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme process-context) (stak base))
-
+      
       (define (foo x)
         x)
-
+      
       (with-exception-handler
         (lambda (error)
           (write-string (error-object-message error))

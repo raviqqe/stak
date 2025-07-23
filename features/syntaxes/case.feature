@@ -1,9 +1,10 @@
 Feature: case
+
   Scenario: Evaluate the first clause
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (case 2
           ((1 2 3)
@@ -18,7 +19,7 @@ Feature: case
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (case 5
           ((1 2 3)
@@ -35,7 +36,7 @@ Feature: case
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8
         (case 7
           ((1 2 3)

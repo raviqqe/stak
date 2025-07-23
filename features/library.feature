@@ -1,18 +1,20 @@
 Feature: Library system
+
   Scenario: Define a library
     Given a file named "foo.scm" with:
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
       """
     And a file named "main.scm" with:
       """scheme
+      
       """
     When I successfully run `stak -l foo.scm main.scm`
     Then the exit status should be 0
@@ -22,7 +24,7 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (import (scheme base))
-
+      
         (begin
           (write-u8 65)))
       """
@@ -39,9 +41,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -49,7 +51,7 @@ Feature: Library system
     And a file named "main.scm" with:
       """scheme
       (import (foo))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -60,9 +62,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define-syntax foo
             (syntax-rules ()
@@ -72,7 +74,7 @@ Feature: Library system
     And a file named "main.scm" with:
       """scheme
       (import (foo))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -83,20 +85,20 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo bar)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))
-
+      
           (define (bar x)
             (write-u8 (+ x 1)))))
       """
     And a file named "main.scm" with:
       """scheme
       (import (foo))
-
+      
       (foo 65)
       (bar 65)
       """
@@ -108,9 +110,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -118,7 +120,7 @@ Feature: Library system
     And a file named "main.scm" with:
       """scheme
       (import (prefix (foo) bar-))
-
+      
       (bar-foo 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -129,9 +131,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -139,7 +141,7 @@ Feature: Library system
     And a file named "main.scm" with:
       """scheme
       (import (only (foo) foo))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -150,20 +152,20 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo bar)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo)
             #f)
-
+      
           (define (bar)
             #f)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (only (foo) foo))
-
+      
       (bar)
       """
     When I run `stak -l foo.scm main.scm`
@@ -174,20 +176,20 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo bar)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))
-
+      
           (define (bar x)
             (write-u8 (+ x 1)))))
       """
     And a file named "main.scm" with:
       """scheme
       (import (except (foo) foo))
-
+      
       (bar 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -198,20 +200,20 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo bar)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo)
             #f)
-
+      
           (define (bar)
             #f)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (except (foo) foo))
-
+      
       (foo)
       """
     When I run `stak -l foo.scm main.scm`
@@ -222,9 +224,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -232,7 +234,7 @@ Feature: Library system
     And a file named "main.scm" with:
       """scheme
       (import (rename (foo) (foo bar)))
-
+      
       (bar 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -244,20 +246,20 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo bar)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))
-
+      
           (define (bar x)
             (write-u8 (+ x 1)))))
       """
     And a file named "main.scm" with:
       """scheme
       (import <import set>)
-
+      
       (<symbol> 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -274,9 +276,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -285,13 +287,13 @@ Feature: Library system
       """scheme
       (define-library (bar)
         (export foo)
-
+      
         (import (foo)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (bar))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm -l bar.scm main.scm`
@@ -302,9 +304,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -313,20 +315,20 @@ Feature: Library system
       """scheme
       (define-library (bar)
         (export foo)
-
+      
         (import (foo)))
       """
     And a file named "baz.scm" with:
       """scheme
       (define-library (baz)
         (export foo)
-
+      
         (import (bar)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (baz))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm -l bar.scm -l baz.scm main.scm`
@@ -337,9 +339,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define-syntax foo
             (syntax-rules ()
@@ -350,13 +352,13 @@ Feature: Library system
       """scheme
       (define-library (bar)
         (export foo)
-
+      
         (import (foo)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (bar))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm -l bar.scm main.scm`
@@ -367,9 +369,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define-syntax foo
             (syntax-rules ()
@@ -380,20 +382,20 @@ Feature: Library system
       """scheme
       (define-library (bar)
         (export foo)
-
+      
         (import (foo)))
       """
     And a file named "baz.scm" with:
       """scheme
       (define-library (baz)
         (export foo)
-
+      
         (import (bar)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (baz))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm -l bar.scm -l baz.scm main.scm`
@@ -404,9 +406,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -415,13 +417,13 @@ Feature: Library system
       """scheme
       (define-library (bar)
         (export foo)
-
+      
         (import (only (foo) foo)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (bar))
-
+      
       (foo 65)
       """
     When I successfully run `stak -l foo.scm -l bar.scm main.scm`
@@ -433,9 +435,9 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export (rename foo bar))
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))))
@@ -443,7 +445,7 @@ Feature: Library system
     And a file named "main.scm" with:
       """scheme
       (import (foo))
-
+      
       (bar 65)
       """
     When I successfully run `stak -l foo.scm main.scm`
@@ -454,23 +456,23 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export bar)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))
-
+      
           (define (bar x)
             (foo x))))
       """
     And a file named "main.scm" with:
       """scheme
       (import (scheme base) (foo))
-
+      
       (define (foo x)
         (write-u8 66))
-
+      
       (foo 65)
       (bar 65)
       """
@@ -483,25 +485,25 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo bar)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define (foo x)
             (write-u8 x))
-
+      
           (define (bar x)
             (foo x))))
       """
     And a file named "main.scm" with:
       """scheme
       (import (scheme base) (foo))
-
+      
       (foo 65)
       (bar 65)
-
+      
       (set! foo (lambda (x) (write-u8 66)))
-
+      
       (foo 65)
       (bar 65)
       """
@@ -513,7 +515,7 @@ Feature: Library system
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
-
+      
       (display 'define)
       """
     When I successfully run `stak main.scm`
@@ -524,16 +526,16 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
-
+      
         (import (scheme base))
-
+      
         (begin
           (define foo 42)))
       """
     And a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write) (foo))
-
+      
       (display 'foo)
       """
     When I successfully run `stak -l foo.scm main.scm`

@@ -1,9 +1,10 @@
 Feature: Boolean
+
   Scenario Outline: Check if a value is a boolean
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (boolean? <value>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -19,7 +20,7 @@ Feature: Boolean
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (not <value>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -34,7 +35,7 @@ Feature: Boolean
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (boolean=? <values>) 65 66))
       """
     When I successfully run `stak main.scm`

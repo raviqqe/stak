@@ -1,9 +1,10 @@
 Feature: or
+
   Scenario Outline: Use an `or` operator
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (if (or <values>) 65 66))
       """
     When I successfully run `stak main.scm`
@@ -21,7 +22,7 @@ Feature: or
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
-
+      
       (write-u8 (or <values>))
       """
     When I successfully run `stak main.scm`
@@ -29,6 +30,6 @@ Feature: or
 
     Examples:
       | values |
-      | 65     |
-      | 65 #f  |
+      |     65 |
+      |  65 #f |
       | #f 65  |

@@ -1,10 +1,11 @@
 @command-line
 Feature: Command line
+
   Scenario: Get an argument
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme process-context))
-
+      
       (map write-string (command-line))
       """
     When I successfully run `stak main.scm hello`
@@ -14,7 +15,7 @@ Feature: Command line
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme process-context))
-
+      
       (map write-string (command-line))
       """
     When I successfully run `stak main.scm hello world`

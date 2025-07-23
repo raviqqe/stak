@@ -1,10 +1,11 @@
 @stak
 Feature: Stak base library
+
   Scenario: Raise an error
     Given a file named "main.scm" with:
       """scheme
       (import (stak base))
-
+      
       (when (procedure? error)
         (error "foo"))
       """
@@ -15,7 +16,7 @@ Feature: Stak base library
     Given a file named "main.scm" with:
       """scheme
       (import (stak base) (stak io))
-
+      
       (when (procedure? error)
         (error "foo"))
       """
