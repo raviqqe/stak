@@ -27,7 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: go run github.com/raviqqe/gherkin-format@latest -check .
+      - run: npx @cucumber/gherkin-utils format features/**/*.feature
+      - run: git diff --exit-code
   spell_check:
     runs-on: ubuntu-latest
     steps:
