@@ -76,11 +76,11 @@ jobs:
               - gc_always
             tags: ~@long
           - name: chibi
-            tags: ~@stak || @chibi
+            tags: ~@stak,@chibi
           - name: gauche
-            tags: ~@stak || @gauche
+            tags: ~@stak,@gauche
           - name: guile
-            tags: ~@stak || @guile
+            tags: ~@stak,@guile
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
