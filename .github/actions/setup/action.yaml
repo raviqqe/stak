@@ -6,9 +6,6 @@ runs:
   using: composite
   steps:
     - uses: raviqqe/cargo-cache@v1
-    - uses: ruby/setup-ruby@v1
-      with:
-        bundler-cache: true
     - uses: homebrew/actions/setup-homebrew@main
       with:
         stable: true
