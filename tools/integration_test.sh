@@ -39,6 +39,6 @@ export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 start=$(epoch)
 
-go run github.com/raviqqe/aruba-go/cmd/agoa@latest ${tags:+-t "$tags"}
+go run github.com/raviqqe/aruba-go/cmd/agoa@latest ${tags:+-t "$tags"} "$@"
 
 echo Duration: $(expr $(epoch) - $start)s
