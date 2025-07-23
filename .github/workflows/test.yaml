@@ -122,7 +122,7 @@ jobs:
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
           --
-          ${{ matrix.interpreter.options }}
+          ${{ matrix.interpreter.options }}'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
