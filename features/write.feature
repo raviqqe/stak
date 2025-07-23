@@ -54,11 +54,11 @@ Feature: Write
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value | output    |
-      | #\\a  | #\\\\a    |
-      | #\\A  | #\\\\A    |
-      | #\\\\ | #\\\\\\\\ |
-      | #\\(  | #\\\\(    |
+      | value | output |
+      | #\\a  | #\\\\a |
+      | #\\A  | #\\\\A |
+      | #\\"  | #\\\\" |
+      | #\\(  | #\\\\( |
 
   @gauche @stak
   Scenario Outline: Write an escaped special character
