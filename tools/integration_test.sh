@@ -25,8 +25,6 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/..
 
-bundler install
-
 cargo build --profile release_test --features $features
 (
   cd cmd/minimal
