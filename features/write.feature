@@ -51,14 +51,14 @@ Feature: Write
       (write <value>)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<value>"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value     |
-      | #\\a      |
-      | #\\A      |
-      | #\\\\\\\\ |
-      | #\\(      |
+      | value | output    |
+      | #\\a  | #\\\\a    |
+      | #\\A  | #\\\\A    |
+      | #\\\\ | #\\\\\\\\ |
+      | #\\(  | #\\\\(    |
 
   @gauche @stak
   Scenario Outline: Write an escaped special character
@@ -310,19 +310,19 @@ Feature: Write
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value          | output          |
-      | (#\\a)         | (#\\\\a)        |
-      | (#\\space)     | (#\\\\space)    |
-      | ("foo")        | (\\"foo\\")     |
-      | ((#\\a))       | ((#\\a))        |
-      | ((#\\space))   | ((#\\space))    |
-      | (("foo"))      | ((\\"foo\\"))   |
-      | #(#\\a)        | #(#\\a)         |
-      | #(#\\space)    | #(#\\space)     |
-      | #("foo")       | #(\\"foo\\")    |
-      | #(#(#\\a))     | #(#(#\\a))      |
-      | #(#(#\\space)) | #(#(#\\space))  |
-      | #(#("foo"))    | #(#(\\"foo\\")) |
+      | value          | output           |
+      | (#\\a)         | (#\\\\a)         |
+      | (#\\space)     | (#\\\\space)     |
+      | ("foo")        | (\\"foo\\")      |
+      | ((#\\a))       | ((#\\\\a))       |
+      | ((#\\space))   | ((#\\\\space))   |
+      | (("foo"))      | ((\\"foo\\"))    |
+      | #(#\\a)        | #(#\\\\a)        |
+      | #(#\\space)    | #(#\\\\space)    |
+      | #("foo")       | #(\\"foo\\")     |
+      | #(#(#\\a))     | #(#(#\\\\a))     |
+      | #(#(#\\space)) | #(#(#\\\\space)) |
+      | #(#("foo"))    | #(#(\\"foo\\"))  |
 
   @gauche @guile @stak
   Scenario Outline: Display a value
