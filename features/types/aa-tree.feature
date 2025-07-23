@@ -1,4 +1,5 @@
 Feature: AA tree
+
   Background:
     Given I run the following script:
       """sh
@@ -131,16 +132,16 @@ Feature: AA tree
     When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
-
     # spell-checker: disable
+
     Examples:
       | values  | output       |
-      | 1 2 3   | BABABAAAA    |
-      | 1 3 2   | BABABAAAA    |
-      | 2 1 3   | BABABAAAA    |
-      | 2 3 1   | BABABAAAA    |
-      | 3 1 2   | BABABAAAA    |
-      | 3 2 1   | BABABAAAA    |
+      |   1 2 3 | BABABAAAA    |
+      |   1 3 2 | BABABAAAA    |
+      |   2 1 3 | BABABAAAA    |
+      |   2 3 1 | BABABAAAA    |
+      |   3 1 2 | BABABAAAA    |
+      |   3 2 1 | BABABAAAA    |
       | 1 2 3 4 | BABABABAAAAA |
       | 1 2 4 3 | BABABABAAAAA |
       | 1 3 2 4 | BABABABAAAAA |
@@ -164,20 +165,20 @@ Feature: AA tree
     When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
-
     # spell-checker: disable
+
     Examples:
       | values  | output  |
       |         |         |
-      | 1       | 1       |
-      | 1 2     | 1 2     |
-      | 2 1     | 1 2     |
-      | 1 2 3   | 1 2 3   |
-      | 1 3 2   | 1 2 3   |
-      | 2 1 3   | 1 2 3   |
-      | 2 3 1   | 1 2 3   |
-      | 3 1 2   | 1 2 3   |
-      | 3 2 1   | 1 2 3   |
+      |       1 |       1 |
+      |     1 2 |     1 2 |
+      |     2 1 |     1 2 |
+      |   1 2 3 |   1 2 3 |
+      |   1 3 2 |   1 2 3 |
+      |   2 1 3 |   1 2 3 |
+      |   2 3 1 |   1 2 3 |
+      |   3 1 2 |   1 2 3 |
+      |   3 2 1 |   1 2 3 |
       | 1 2 3 4 | 1 2 3 4 |
       | 1 2 4 3 | 1 2 3 4 |
       | 1 3 2 4 | 1 2 3 4 |
