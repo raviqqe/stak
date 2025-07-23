@@ -69,19 +69,19 @@ Feature: Write
       (write <value>)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<value>"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value        |
-      | #\\alarm     |
-      | #\\backspace |
-      | #\\delete    |
-      | #\\escape    |
-      | #\\newline   |
-      | #\\null      |
-      | #\\return    |
-      | #\\space     |
-      | #\\tab       |
+      | value        | output         |
+      | #\\alarm     | #\\\\alarm     |
+      | #\\backspace | #\\\\backspace |
+      | #\\delete    | #\\\\delete    |
+      | #\\escape    | #\\\\escape    |
+      | #\\newline   | #\\\\newline   |
+      | #\\null      | #\\\\null      |
+      | #\\return    | #\\\\return    |
+      | #\\space     | #\\\\space     |
+      | #\\tab       | #\\\\tab       |
 
   Scenario: Write a string
     Given a file named "main.scm" with:
@@ -188,7 +188,7 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "#record"
 
-  Scenario Outline: Write a string
+  Scenario Outline: Write a quoted string
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
@@ -196,17 +196,17 @@ Feature: Write
       (write "<value>")
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "\"<value>\""
+    Then the stdout should contain exactly "\"<output>\""
 
     Examples:
-      | value         |
-      |               |
-      | foo           |
-      | Hello, world! |
-      | \\n           |
-      | \\t           |
-      | \\r           |
-      | \\n\\t\\r     |
+      | value         | output          |
+      |               |                 |
+      | foo           | foo             |
+      | Hello, world! | Hello, world!   |
+      | \\n           | \\\\n           |
+      | \\t           | \\\\t           |
+      | \\r           | \\\\r           |
+      | \\n\\t\\r     | \\\\n\\\\t\\\\r |
 
   Scenario: Write a symbol
     Given a file named "main.scm" with:
