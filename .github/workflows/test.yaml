@@ -74,13 +74,13 @@ jobs:
             host: gosh
             features:
               - gc_always
-            options: --tags ~@long
+            tags: ~@long
           - name: chibi
-            options: --tags ~@stak,@chibi
+            tags: ~@stak || @chibi
           - name: gauche
-            options: --tags ~@stak,@gauche
+            tags: ~@stak || @gauche
           - name: guile
-            options: --tags ~@stak,@guile
+            tags: ~@stak || @guile
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
@@ -95,8 +95,7 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
-          --
-          ${{ matrix.interpreter.options }}
+          -t '${{ matrix.interpreter.tags || '~@none' }}'
   self_host_integration_test:
     strategy:
       fail-fast: false
@@ -108,9 +107,9 @@ jobs:
           - name: stak
           - name: stak-tools
           - name: mstak
-            options: --tags ~@environment-variable --tags ~@float
+            tags: ~@environment-variable && ~@float
           - name: mstak-tools
-            options: --tags ~@environment-variable --tags ~@float
+            tags: ~@environment-variable && ~@float
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
@@ -121,8 +120,7 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
-          --
-          ${{ matrix.interpreter.options }}'
+          -t '${{ matrix.interpreter.tags || '~@none' }}'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
