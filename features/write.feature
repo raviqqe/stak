@@ -1,4 +1,5 @@
 Feature: Write
+
   Scenario: Write a byte
     Given a file named "main.scm" with:
       """scheme
@@ -155,11 +156,11 @@ Feature: Write
 
     Examples:
       | value |
-      | 0     |
-      | 1     |
-      | 42    |
-      | -1    |
-      | -42   |
+      |     0 |
+      |     1 |
+      |    42 |
+      |    -1 |
+      |   -42 |
 
   @stak
   Scenario: Write a procedure
@@ -310,8 +311,8 @@ Feature: Write
 
     Examples:
       | value          | output          |
-      | (#\\a)         | (#\\a)          |
-      | (#\\space)     | (#\\space)      |
+      | (#\\a)         | (#\\\\a)        |
+      | (#\\space)     | (#\\\\space)    |
       | ("foo")        | (\\"foo\\")     |
       | ((#\\a))       | ((#\\a))        |
       | ((#\\space))   | ((#\\space))    |
