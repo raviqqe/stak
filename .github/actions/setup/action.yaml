@@ -6,6 +6,9 @@ runs:
   using: composite
   steps:
     - uses: raviqqe/cargo-cache@v1
+    - uses: actions/setup-go@v5
+      with:
+        go-version: stable
     - uses: homebrew/actions/setup-homebrew@main
       with:
         stable: true
