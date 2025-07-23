@@ -74,13 +74,13 @@ jobs:
             host: gosh
             features:
               - gc_always
-            tags: not @long
+            tags: ~@long
           - name: chibi
-            tags: not @stak or @chibi
+            tags: ~@stak || @chibi
           - name: gauche
-            tags: not @stak or @gauche
+            tags: ~@stak || @gauche
           - name: guile
-            tags: not @stak or @guile
+            tags: ~@stak || @guile
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
@@ -95,7 +95,7 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
-          -t '${{ matrix.interpreter.tags || 'not @none' }}'
+          -t '${{ matrix.interpreter.tags || '~@none' }}'
   self_host_integration_test:
     strategy:
       fail-fast: false
@@ -107,9 +107,9 @@ jobs:
           - name: stak
           - name: stak-tools
           - name: mstak
-            tags: not @environment-variable and not @float
+            tags: ~@environment-variable && ~@float
           - name: mstak-tools
-            tags: not @environment-variable and not @float
+            tags: ~@environment-variable && ~@float
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
@@ -120,7 +120,7 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
-          -t '${{ matrix.interpreter.tags || 'not @none' }}'
+          -t '${{ matrix.interpreter.tags || '~@none' }}'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
