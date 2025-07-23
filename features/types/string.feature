@@ -150,8 +150,8 @@ Feature: String
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
-    # spell-checker: disable
 
+    # spell-checker: disable
     Examples:
       | to    | at | from | start | end | output |
       | A     | 0  |      |       |     | A      |

@@ -130,8 +130,8 @@ Feature: Bytevector
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
-    # spell-checker: disable
 
+    # spell-checker: disable
     Examples:
       | values    | arguments          | output |
       |           | 0 #u8()            |        |

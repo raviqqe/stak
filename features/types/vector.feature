@@ -152,8 +152,8 @@ Feature: Vector
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
-    # spell-checker: disable
 
+    # spell-checker: disable
     Examples:
       | values    | arguments        | output |
       | 0         | 0 #()            | A      |
@@ -180,8 +180,8 @@ Feature: Vector
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
-    # spell-checker: disable
 
+    # spell-checker: disable
     Examples:
       | values  | arguments | output |
       | 0       | 1         | B      |

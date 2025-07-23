@@ -131,8 +131,8 @@ Feature: AA tree
     When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
-    # spell-checker: disable
 
+    # spell-checker: disable
     Examples:
       | values  | output       |
       | 1 2 3   | BABABAAAA    |
@@ -164,8 +164,8 @@ Feature: AA tree
     When I successfully run `stak -l aa-tree.scm main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
-    # spell-checker: disable
 
+    # spell-checker: disable
     Examples:
       | values  | output  |
       |         |         |
