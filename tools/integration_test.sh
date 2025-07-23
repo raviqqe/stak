@@ -39,10 +39,6 @@ export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 start=$(epoch)
 
-if [ $# -eq 0 ]; then
-  git ls-files '**/*.feature' | xargs ls -S | parallel -q tools/cucumber.sh ${tags:+-t "$tags"}
-else
-  bundler exec cucumber --publish-quiet --strict-undefined "$@"
-fi
+go run github.com/raviqqe/aruba-go/cmd/agoa@latest ${tags:+-t "$tags"}
 
 echo Duration: $(expr $(epoch) - $start)s
