@@ -305,6 +305,7 @@ Feature: Exception
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @stak
   Scenario Outline: Check an error type
     Given a file named "main.scm" with:
       """scheme
