@@ -628,7 +628,7 @@
             (singleton-matches (filter-values (lambda (match) (not (ellipsis-match? match))) matches))
             (ellipsis-matches (filter-values ellipsis-match? matches)))
       (when (null? ellipsis-matches)
-       (error "no ellipsis pattern variables" template))
+       (syntax-error "no ellipsis pattern variables" template))
       (apply
        map
        (lambda matches (fill-template context (append matches singleton-matches) template))
@@ -670,7 +670,7 @@
          (lambda (use-context expression)
           (let loop ((rules rules))
            (unless (pair? rules)
-            (error "invalid syntax" expression))
+            (syntax-error "invalid syntax" expression))
            (let ((rule (car rules))
                  (rule-context (make-rule-context definition-context use-context literals)))
             (guard (value
@@ -694,7 +694,7 @@
                  names))))))))))
 
        (else
-        (error "unsupported macro transformer" transformer)))))
+        (syntax-error "unsupported macro transformer" transformer)))))
 
     (define (expand-outer-macro context expression)
      (if (pair? expression)
@@ -719,7 +719,7 @@
         (macro-context-append-dynamic-symbol! context expression))
        (let ((value (resolve expression)))
         (when (procedure? value)
-         (error "invalid syntax" expression))
+         (syntax-error "invalid syntax" expression))
         value))
 
       ((pair? expression)
