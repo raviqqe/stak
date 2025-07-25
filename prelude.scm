@@ -1986,6 +1986,7 @@
     raise-continuable
     read-error
     file-error
+    syntax-error
     read-error?
     file-error?
     guard
@@ -2067,6 +2068,7 @@
     (set! error (error-type #f))
     (define read-error (error-type 'read))
     (define file-error (error-type 'file))
+    (define syntax-error (error-type 'syntax))
 
     (define read-error? (error-type? 'read))
     (define file-error? (error-type? 'file))
@@ -2362,6 +2364,7 @@
     error
     read-error
     file-error
+    syntax-error
     read-error?
     file-error?
     guard
@@ -2416,7 +2419,12 @@
 
     write-value)
 
-  (import (stak base) (stak parameter) (stak io) (stak continue) (stak exception))
+  (import
+    (stak base)
+    (stak parameter)
+    (stak io)
+    (stak continue)
+    (stak exception))
 
   (begin
     ; Symbol table
