@@ -1,4 +1,5 @@
 Feature: Exception
+
   Scenario: Raise an error
     Given a file named "main.scm" with:
       """scheme
@@ -304,14 +305,29 @@ Feature: Exception
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario Outline: Check an error type
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context) (stak base))
+
+      (with-exception-handler
+        (lambda (error)
+          (write-u8 (if (<predicate> error) 65 66)))
+        (lambda () (<constructor> "foo")))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | constructor | predicate   |
+      | file-error  | file-error? |
+      | read-error  | read-error? |
+
   @stak
   Scenario Outline: Catch a runtime error
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme process-context) (stak base))
-
-      (define (foo x)
-        x)
 
       (with-exception-handler
         (lambda (error)
