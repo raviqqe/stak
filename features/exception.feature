@@ -308,7 +308,7 @@ Feature: Exception
   Scenario Outline: Check an error type
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme process-context) (stak base))
+      (import (scheme base))
 
       (with-exception-handler
         (lambda (error)
