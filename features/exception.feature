@@ -309,11 +309,12 @@ Feature: Exception
   Scenario Outline: Check an error type
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (scheme process-context))
 
       (with-exception-handler
         (lambda (error)
-          (write-u8 (if (<predicate> error) 65 66)))
+          (write-u8 (if (<predicate> error) 65 66))
+          (exit))
         (lambda () (<constructor> "foo")))
       """
     When I successfully run `stak main.scm`
