@@ -1,4 +1,5 @@
 Feature: Exception
+
   Scenario: Raise an error
     Given a file named "main.scm" with:
       """scheme

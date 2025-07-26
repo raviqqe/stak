@@ -1,4 +1,5 @@
 Feature: letrec-syntax
+
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
       """scheme

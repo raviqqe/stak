@@ -1,4 +1,5 @@
 Feature: let*
+
   Scenario: Bind a variable
     Given a file named "main.scm" with:
       """scheme

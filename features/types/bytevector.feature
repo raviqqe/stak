@@ -1,4 +1,5 @@
 Feature: Bytevector
+
   Scenario: Write a bytevector
     Given a file named "main.scm" with:
       """scheme

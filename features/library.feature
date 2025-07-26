@@ -1,4 +1,5 @@
 Feature: Library system
+
   Scenario: Define a library
     Given a file named "foo.scm" with:
       """scheme

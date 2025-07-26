@@ -1,5 +1,6 @@
 @stak
 Feature: Stak base library
+
   Scenario: Raise an error
     Given a file named "main.scm" with:
       """scheme

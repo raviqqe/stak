@@ -1,4 +1,5 @@
 Feature: case-lambda
+
   Scenario: Evaluate the first clause
     Given a file named "main.scm" with:
       """scheme

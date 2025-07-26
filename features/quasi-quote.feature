@@ -1,4 +1,5 @@
 Feature: Quasi-quote
+
   Scenario: Quote a number
     Given a file named "main.scm" with:
       """scheme

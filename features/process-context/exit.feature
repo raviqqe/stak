@@ -1,4 +1,5 @@
 Feature: Exit
+
   Rule: `exit`
     Scenario: Exit an interpreter
       Given a file named "main.scm" with:
