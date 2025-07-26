@@ -34,8 +34,4 @@ cargo build --profile release_test --features $features
 export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-start=$(epoch)
-
 go run github.com/raviqqe/aruba-go/cmd/agoa@latest ${tags:+-t "$tags"} "$@"
-
-echo Duration: $(expr $(epoch) - $start)s
