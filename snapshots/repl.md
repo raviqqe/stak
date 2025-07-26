@@ -3760,6 +3760,7 @@
   - when
   - unless
   - do
+  - syntax-error
   - base
   - library
   - r7rs
@@ -3945,6 +3946,7 @@
   - $$quote
   - $$set!
   - $$if
+  - $$syntax-error
   - $$syntax-rules
 - call 1 #f make-symbol-table
 - call 1 #f 1
@@ -6932,6 +6934,16 @@
                                           - call 1 #f cdr
                                           - call 2 #f 74
                                           - call 2 #f cons
+                                        - get 0
+                                        - constant $$syntax-error
+                                        - call 2 #f eqv?
+                                        - if
+                                          - get error
+                                          - get 6
+                                          - call 1 #f cadr
+                                          - get 7
+                                          - call 1 #f cddr
+                                          - call 3 #f apply
                                         - constant procedure 1 #f
                                           - get 0
                                           - call 1 #f procedure?
@@ -8203,6 +8215,7 @@
                                             - (when . when)
                                             - (unless . unless)
                                             - (do . do)
+                                            - (syntax-error . syntax-error)
                                             - (base . base)
                                             - (library . library)
                                             - (r7rs . r7rs)
@@ -8521,6 +8534,7 @@
                                             - (when . when)
                                             - (unless . unless)
                                             - (do . do)
+                                            - (syntax-error . syntax-error)
                                             - (base . base)
                                             - (library . library)
                                             - (r7rs . r7rs)
@@ -10179,6 +10193,21 @@
                                                   - ||
                                                   - ||
                                                 - ||
+                                            - list
+                                              - syntax-error
+                                              - syntax-rules
+                                              - ()
+                                              - list
+                                                - list
+                                                  - \_
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - $$syntax-error
+                                                  - ||
+                                                  - ||
+                                                  - ...
                                             - list
                                               - define-record-type
                                               - syntax-rules
