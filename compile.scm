@@ -796,6 +796,9 @@
              value))
            (cdr expression))))
 
+        (($$syntax-error)
+         (apply error (cadr expression) (cddr expression)))
+
         (else =>
          (lambda (value)
           (if (procedure? value)
