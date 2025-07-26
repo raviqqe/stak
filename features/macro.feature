@@ -590,7 +590,7 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (syntax-error "foo")
+      (lambda () (syntax-error "foo"))
       """
     When I run `stak main.scm`
     Then the exit status should not be 0
