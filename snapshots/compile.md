@@ -2020,6 +2020,9 @@
 - get symbol-type
 - call 1 #f ||
 - set symbol?
+- get eq?
+- call 1 #f ||
+- set symbol=?
 - get cdr
 - set symbol->string
 - constant procedure 1 #f
@@ -4230,6 +4233,7 @@
   - string<?
   - string>?
   - symbol?
+  - symbol=?
   - symbol->string
   - string->uninterned-symbol
   - define-record-type
@@ -8586,6 +8590,7 @@
                                             - (string<? . string<?)
                                             - (string>? . string>?)
                                             - (symbol? . symbol?)
+                                            - (symbol=? . symbol=?)
                                             - (symbol->string . symbol->string)
                                             - (string->uninterned-symbol . string->uninterned-symbol)
                                             - (string->symbol . string->symbol)
@@ -8924,6 +8929,7 @@
                                             - (string<? . string<?)
                                             - (string>? . string>?)
                                             - (symbol? . symbol?)
+                                            - (symbol=? . symbol=?)
                                             - (symbol->string . symbol->string)
                                             - (string->uninterned-symbol . string->uninterned-symbol)
                                             - (define-record-type . define-record-type)

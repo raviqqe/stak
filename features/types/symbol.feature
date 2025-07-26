@@ -29,3 +29,19 @@ Feature: Symbol
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Check symbol equality
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (symbol=? <symbols>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | symbols        | output |
+      | 'foo 'foo      | A      |
+      | 'foo 'bar      | B      |
+      | 'foo 'foo 'bar | B      |
