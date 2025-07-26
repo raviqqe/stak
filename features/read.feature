@@ -99,12 +99,12 @@ Feature: Read
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
-
     # TODO Add false cases.
+
     Examples:
       | bytes | output |
       |       | A      |
-      | 65    | A      |
+      |    65 | A      |
 
   Scenario Outline: Read a character
     Given a file named "main.scm" with:
@@ -200,14 +200,34 @@ Feature: Read
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
-
     # TODO Add false cases.
+
     Examples:
       | bytes           | output |
       |                 | A      |
-      | 65              | A      |
-      | 227 129 130     | A      |
+      |              65 | A      |
+      |     227 129 130 | A      |
       | 240 159 152 132 | A      |
+
+  Scenario Outline: Read a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-char (read-char))
+      """
+    And a file named "input.txt" with:
+      """text
+      <value>
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "<value>"
+
+    Examples:
+      | value | count |
+      | ABC   |     4 |
 
   @long
   Scenario Outline: Read a value
@@ -230,13 +250,13 @@ Feature: Read
       | value           |
       | #f              |
       | #t              |
-      | 0               |
-      | 1               |
-      | 2               |
-      | 42              |
-      | -1              |
-      | -2              |
-      | -42             |
+      |               0 |
+      |               1 |
+      |               2 |
+      |              42 |
+      |              -1 |
+      |              -2 |
+      |             -42 |
       | a               |
       | x               |
       | foo             |
