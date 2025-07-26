@@ -35,6 +35,7 @@
     when
     unless
     do
+    syntax-error
 
     base
     library
@@ -596,6 +597,11 @@
 
         ((_ "step" x y)
           y)))
+
+    (define-syntax syntax-error
+      (syntax-rules ()
+        ((_ message value ...)
+          ($$syntax-error message value ...))))
 
     ; Type IDs
 
@@ -2178,6 +2184,7 @@
     when
     unless
     do
+    syntax-error
 
     base
     library
