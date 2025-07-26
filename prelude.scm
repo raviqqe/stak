@@ -1788,9 +1788,9 @@
       (list->string
         (let loop ((count 0))
           (let ((x (read-char port)))
-            (if (eof-object? xs)
-              (eof-object)
-              (parse-char-bytes xs))))))
+            (if (eof-object? x)
+              '()
+              (cons x (loop (+ count 1))))))))
 
     ; Write
 
