@@ -2181,6 +2181,7 @@
     when
     unless
     do
+    syntax-error
 
     base
     library
