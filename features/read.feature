@@ -226,8 +226,12 @@ Feature: Read
     And the stdout should contain exactly "<value>"
 
     Examples:
-      | value | count |
-      | ABC   |     4 |
+      | value | count | output |
+      | A     |     1 |        |
+      | A     |     1 | A      |
+      | A     |     2 | A      |
+      | value | count |        |
+      | ABC   |     4 |        |
 
   @long
   Scenario Outline: Read a value
