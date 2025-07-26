@@ -1786,10 +1786,11 @@
       (define port (get-input-port rest))
 
       (list->string
-        (let ((xs (read-char-bytes port)))
-          (if (null? xs)
-            (eof-object)
-            (parse-char-bytes xs)))))
+        (let loop ((count 0))
+          (let ((x (read-char port)))
+            (if (eof-object? xs)
+              (eof-object)
+              (parse-char-bytes xs))))))
 
     ; Write
 
