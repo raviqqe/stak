@@ -30,7 +30,7 @@ Feature: Symbol
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Check symbol equality
+  Scenario Outline: Check symbol equality
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
