@@ -585,6 +585,17 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Raise a syntax error
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (syntax-error "foo")
+      """
+    When I run `stak main.scm`
+    Then the exit status should not be 0
+    And the stderr should contain "foo"
+
   Scenario: Re-define `define-syntax`
     Given a file named "main.scm" with:
       """scheme
