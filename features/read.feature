@@ -214,7 +214,7 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (write-char (read-char))
+      (write-string (read-string <count>))
       """
     And a file named "input.txt" with:
       """text
@@ -223,7 +223,7 @@ Feature: Read
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly "<value>"
+    And the stdout should contain exactly "<output>"
 
     Examples:
       | value | count | output |
