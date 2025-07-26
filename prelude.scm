@@ -2416,7 +2416,12 @@
 
     write-value)
 
-  (import (stak base) (stak parameter) (stak io) (stak continue) (stak exception))
+  (import
+    (stak base)
+    (stak parameter)
+    (stak io)
+    (stak continue)
+    (stak exception))
 
   (begin
     ; Symbol table
