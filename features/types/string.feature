@@ -1,4 +1,5 @@
 Feature: String
+
   Scenario: Write a string
     Given a file named "main.scm" with:
       """scheme

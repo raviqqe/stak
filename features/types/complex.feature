@@ -1,5 +1,6 @@
 @float
 Feature: Complex number
+
   Scenario Outline: Make a complex number
     Given a file named "main.scm" with:
       """scheme

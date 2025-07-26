@@ -1,4 +1,5 @@
 Feature: do
+
   Scenario: Use a `do` syntax with steps
     Given a file named "main.scm" with:
       """scheme

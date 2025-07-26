@@ -1,4 +1,5 @@
 Feature: SRFI 1
+
   Scenario Outline: Enumerate numbers
     Given a file named "main.scm" with:
       """scheme

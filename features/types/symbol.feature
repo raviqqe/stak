@@ -1,4 +1,5 @@
 Feature: Symbol
+
   Scenario: Write a symbol
     Given a file named "main.scm" with:
       """scheme

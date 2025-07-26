@@ -1,4 +1,5 @@
 Feature: if
+
   Scenario Outline: Use `if` expressions
     Given a file named "main.scm" with:
       """scheme
