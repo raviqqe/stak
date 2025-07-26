@@ -1782,6 +1782,15 @@
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
+    (define (read-string k . rest)
+      (define port (get-input-port rest))
+
+      (list->string
+        (let ((xs (read-char-bytes port)))
+          (if (null? xs)
+            (eof-object)
+            (parse-char-bytes xs)))))
+
     ; Write
 
     (define (get-output-port rest)
