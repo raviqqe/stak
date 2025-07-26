@@ -1580,6 +1580,7 @@
     read-char
     peek-char
     char-ready?
+    read-string
 
     write-u8
     write-char
@@ -2419,6 +2420,7 @@
     read-char
     peek-char
     char-ready?
+    read-string
 
     write-u8
     write-char
