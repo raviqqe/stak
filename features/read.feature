@@ -227,11 +227,12 @@ Feature: Read
 
     Examples:
       | value | count | output |
-      | A     |     1 |        |
+      | A     |     0 |        |
       | A     |     1 | A      |
       | A     |     2 | A      |
-      | value | count |        |
-      | ABC   |     4 |        |
+      | ABC   |     2 | AB     |
+      | ABC   |     3 | ABC    |
+      | ABC   |     4 | ABC    |
 
   @long
   Scenario Outline: Read a value
