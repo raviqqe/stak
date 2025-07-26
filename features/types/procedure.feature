@@ -1,4 +1,5 @@
 Feature: Procedure
+
   Scenario: Call a global procedure
     Given a file named "main.scm" with:
       """scheme

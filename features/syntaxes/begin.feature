@@ -1,4 +1,5 @@
 Feature: begin
+
   Scenario: Use a `begin` expression
     Given a file named "main.scm" with:
       """scheme

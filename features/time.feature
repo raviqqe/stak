@@ -1,4 +1,5 @@
 Feature: Time
+
   Scenario: Get a current second
     Given a file named "main.scm" with:
       """scheme

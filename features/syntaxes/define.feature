@@ -1,4 +1,5 @@
 Feature: define
+
   Scenario: Define a recursive procedure
     Given a file named "main.scm" with:
       """scheme

@@ -1,4 +1,5 @@
 Feature: set!
+
   Scenario: Set a global variable
     Given a file named "main.scm" with:
       """scheme

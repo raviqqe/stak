@@ -1,5 +1,6 @@
 @float
 Feature: Floating-point number
+
   Scenario Outline: Check a number class of floating point numbers
     Given a file named "main.scm" with:
       """scheme

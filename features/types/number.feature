@@ -1,4 +1,5 @@
 Feature: Number
+
   Scenario Outline: Check if a value is a number
     Given a file named "main.scm" with:
       """scheme

@@ -1,4 +1,5 @@
 Feature: Character
+
   Scenario Outline: Check if a value is a character
     Given a file named "main.scm" with:
       """scheme

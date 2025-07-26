@@ -1,4 +1,5 @@
 Feature: Write
+
   Scenario: Write a byte
     Given a file named "main.scm" with:
       """scheme

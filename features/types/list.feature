@@ -1,4 +1,5 @@
 Feature: List
+
   Scenario Outline: Use literals
     Given a file named "main.scm" with:
       """scheme
