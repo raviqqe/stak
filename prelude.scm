@@ -216,6 +216,7 @@
     string>?
 
     symbol?
+    symbol=?
     symbol->string
     string->uninterned-symbol
 
@@ -1361,6 +1362,8 @@
 
     (define symbol? (instance? symbol-type))
 
+    (define symbol=? (comparison-operator eq?))
+
     (define symbol->string cdr)
 
     (define (string->uninterned-symbol x)
@@ -2341,6 +2344,7 @@
     string>?
 
     symbol?
+    symbol=?
     symbol->string
     string->uninterned-symbol
     string->symbol
