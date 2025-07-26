@@ -1,4 +1,5 @@
 Feature: Multiple values
+
   Scenario: Pass multiple values to a continuation
     Given a file named "main.scm" with:
       """scheme

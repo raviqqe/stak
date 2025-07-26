@@ -1,4 +1,5 @@
 Feature: Smoke
+
   Scenario: Initialize constants in a correct order
     Given a file named "main.scm" with:
       """scheme

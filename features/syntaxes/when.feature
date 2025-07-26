@@ -1,4 +1,5 @@
 Feature: when
+
   Scenario: Evaluate a clause
     Given a file named "main.scm" with:
       """scheme

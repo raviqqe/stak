@@ -1,4 +1,5 @@
 Feature: Quote
+
   Scenario Outline: Quote a scalar value
     Given a file named "main.scm" with:
       """scheme

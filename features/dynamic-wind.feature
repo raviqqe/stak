@@ -1,4 +1,5 @@
 Feature: Dynamic wind
+
   Scenario: Run callbacks
     Given a file named "main.scm" with:
       """scheme

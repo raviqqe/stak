@@ -1,4 +1,5 @@
 Feature: Boolean
+
   Scenario Outline: Check if a value is a boolean
     Given a file named "main.scm" with:
       """scheme

@@ -1,4 +1,5 @@
 Feature: Inclusion
+
   Scenario: Include a file
     Given a file named "main.scm" with:
       """scheme

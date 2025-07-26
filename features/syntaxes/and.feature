@@ -1,4 +1,5 @@
 Feature: and
+
   Scenario Outline: Use an `and` operator
     Given a file named "main.scm" with:
       """scheme

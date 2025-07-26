@@ -1,4 +1,5 @@
 Feature: Macro
+
   Scenario: Match a rule
     Given a file named "main.scm" with:
       """scheme

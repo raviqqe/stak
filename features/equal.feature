@@ -1,4 +1,5 @@
 Feature: Equality
+
   Scenario Outline: Use an `eq?` procedure
     Given a file named "main.scm" with:
       """scheme

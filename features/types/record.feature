@@ -1,4 +1,5 @@
 Feature: Record
+
   Scenario Outline: Check if a record is a subtype
     Given a file named "main.scm" with:
       """scheme

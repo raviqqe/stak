@@ -1,4 +1,5 @@
 Feature: Vector
+
   Scenario: Make a vector
     Given a file named "main.scm" with:
       """scheme

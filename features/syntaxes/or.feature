@@ -1,4 +1,5 @@
 Feature: or
+
   Scenario Outline: Use an `or` operator
     Given a file named "main.scm" with:
       """scheme

@@ -1,4 +1,5 @@
 Feature: Lazy
+
   Scenario: Delay an expression
     Given a file named "main.scm" with:
       """scheme

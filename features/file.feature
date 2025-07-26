@@ -1,4 +1,5 @@
 Feature: File
+
   Scenario Outline: Open a file
     Given a file named "main.scm" with:
       """scheme

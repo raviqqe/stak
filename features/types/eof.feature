@@ -1,4 +1,5 @@
 Feature: EOF object
+
   Scenario: Check if a value is an EOF object
     Given a file named "main.scm" with:
       """scheme

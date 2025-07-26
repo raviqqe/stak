@@ -1,4 +1,5 @@
 Feature: Continuation
+
   Scenario: Call a continuation
     Given a file named "main.scm" with:
       """scheme
