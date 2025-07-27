@@ -373,7 +373,7 @@
             outer-clause
             :::))
 
-        ((_ () () outer-clause ...)
+        ((_ () () outer-clause :::)
           (define-syntax cond-expand
             (syntax-rules (and or not else r7rs library scheme base stak)
               ((_ (else body ...))
@@ -411,7 +411,7 @@
                   (else body ...)))
 
               outer-clause
-              ...
+              :::
 
               ((_ (feature body ...) clause ...)
                 (cond-expand clause ...)))))))
