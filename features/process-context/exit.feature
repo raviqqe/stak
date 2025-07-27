@@ -1,6 +1,7 @@
 Feature: Exit
 
   Rule: `exit`
+
     Scenario: Exit an interpreter
       Given a file named "main.scm" with:
         """scheme
@@ -47,6 +48,7 @@ Feature: Exit
       Then the stdout should contain exactly "AB"
 
   Rule: `emergency-exit`
+
     Scenario: Exit an interpreter
       Given a file named "main.scm" with:
         """scheme

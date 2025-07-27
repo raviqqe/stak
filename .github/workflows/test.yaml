@@ -85,7 +85,7 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     env:
-      STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
+      STAK_HOST: ${{ matrix.interpreter.host }}
       GUILE_AUTO_COMPILE: 0
     steps:
       - uses: actions/checkout@v4

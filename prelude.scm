@@ -1599,6 +1599,7 @@
     read-char
     peek-char
     char-ready?
+    read-string
 
     write-u8
     write-char
@@ -1800,6 +1801,16 @@
         (or
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
+
+    (define (read-string count . rest)
+      (define port (get-input-port rest))
+
+      (list->string
+        (let loop ((count count))
+          (let ((x (read-char port)))
+            (if (or (eof-object? x) (zero? count))
+              '()
+              (cons x (loop (- count 1))))))))
 
     ; Write
 
@@ -2428,6 +2439,7 @@
     read-char
     peek-char
     char-ready?
+    read-string
 
     write-u8
     write-char
@@ -2692,7 +2704,10 @@
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (scheme char) (only (stak base) boolean-or))
+  (import
+    (scheme base)
+    (scheme char)
+    (only (stak base) boolean-or))
 
   (begin
     (define (read . rest)
