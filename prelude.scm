@@ -357,6 +357,11 @@
         ((_ name value)
           ($$set! name value))))
 
+    (define-syntax expand-features
+      (syntax-rules ()
+        ((_ (feature ...) (library ...))
+          (relaxed-begin body ...))))
+
     (define-syntax cond-expand
       (syntax-rules (and or not else r7rs library scheme base stak)
         ((_ (else body ...))
