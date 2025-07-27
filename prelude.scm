@@ -1789,7 +1789,7 @@
       (list->string
         (let loop ((count 0))
           (let ((x (read-char port)))
-            (if (eof-object? x)
+            (if (or (eof-object? x) (zero? count))
               '()
               (cons x (loop (+ count 1))))))))
 
