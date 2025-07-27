@@ -373,61 +373,48 @@
             clause
             ...))
 
-        ((_ () () clause ...)
-          (expand-features "final"
-            (define-syntax cond-expand
-              (syntax-rules (and or not else r7rs library scheme base stak)
-                ((_ (else body ...))
-                  (relaxed-begin body ...))
+        ((_ () () outer-clause ...)
+          (define-syntax cond-expand
+            (syntax-rules (and or not else r7rs library scheme base stak)
+              ((_ (else body ...))
+                (relaxed-begin body ...))
 
-                ((_ ((and) body ...) clause ...)
-                  (relaxed-begin body ...))
+              ((_ ((and) body ...) clause ...)
+                (relaxed-begin body ...))
 
-                ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
-                  (cond-expand
-                    (requirement1
-                      (cond-expand
-                        ((and requirement2 ...) body ...)
-                        clause
-                        ...))
-                    clause
-                    ...))
+              ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
+                (cond-expand
+                  (requirement1
+                    (cond-expand
+                      ((and requirement2 ...) body ...)
+                      clause
+                      ...))
+                  clause
+                  ...))
 
-                ((_ ((or) body ...) clause ...)
-                  (cond-expand clause ...))
+              ((_ ((or) body ...) clause ...)
+                (cond-expand clause ...))
 
-                ((_ ((or requirement1 requirement2 ...) body ...) clause ...)
-                  (cond-expand
-                    (requirement1 body ...)
-                    ((or requirement2 ...) body ...)
-                    clause
-                    ...))
+              ((_ ((or requirement1 requirement2 ...) body ...) clause ...)
+                (cond-expand
+                  (requirement1 body ...)
+                  ((or requirement2 ...) body ...)
+                  clause
+                  ...))
 
-                ((_ ((not requirement) body ...) clause ...)
-                  (cond-expand
-                    (requirement
-                      (cond-expand
-                        clause
-                        ...))
-                    (else body ...)))
+              ((_ ((not requirement) body ...) clause ...)
+                (cond-expand
+                  (requirement
+                    (cond-expand
+                      clause
+                      ...))
+                  (else body ...)))
 
-                ((_ ((library (scheme base)) body ...) clause ...)
-                  (relaxed-begin body ...))
+              outer-clause
+              ...
 
-                ((_ ((library (name ...)) body ...) clause ...)
-                  (cond-expand clause ...))
-
-                ((_ (r7rs body ...) clause ...)
-                  (relaxed-begin body ...))
-
-                ((_ (stak body ...) clause ...)
-                  (relaxed-begin body ...))
-
-                ((_ (feature body ...) clause ...)
-                  (cond-expand clause ...))))))
-
-        ((_ "final" x)
-          x)))
+              ((_ (feature body ...) clause ...)
+                (cond-expand clause ...)))))))
 
     (expand-features
       (scheme
