@@ -358,20 +358,20 @@
           ($$set! name value))))
 
     (define-syntax expand-features
-      (syntax-rules ()
-        ((_ (feature1 feature2 ...) (library ...) clause ...)
-          (expand-features (feature2 ...) (library ...)
+      (syntax-rules ::: ()
+        ((_ (feature1 feature2 :::) (library :::) outer-clause :::)
+          (expand-features (feature2 :::) (library :::)
             ((_ (feature body ...) clause ...)
               (relaxed-begin body ...))
-            clause
-            ...))
+            outer-clause
+            :::))
 
-        ((_ () (library1 library2 ...) clause ...)
-          (expand-features () (library2 ...)
+        ((_ () (library1 library2 :::) outer-clause :::)
+          (expand-features () (library2 :::)
             ((_ ((library library1) body ...) clause ...)
               (relaxed-begin body ...))
-            clause
-            ...))
+            outer-clause
+            :::))
 
         ((_ () () outer-clause ...)
           (define-syntax cond-expand
