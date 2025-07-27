@@ -234,6 +234,31 @@ Feature: Read
       | ABC   | 3     | ABC    |
       | ABC   | 4     | ABC    |
 
+  Scenario Outline: Read a byte vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (equal? (read-bytevector <count>) #u8(<bytes>)) 65 66))
+      """
+    And a file named "input.txt" with:
+      """text
+      <value>
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
+
+    Examples:
+      | value | count | bytes    |
+      | A     | 0     |          |
+      | A     | 1     | 65       |
+      | A     | 2     | 65       |
+      | ABC   | 2     | 65 66    |
+      | ABC   | 3     | 65 66 67 |
+      | ABC   | 4     | 65 66 67 |
+
   @long
   Scenario Outline: Read a value
     Given a file named "main.scm" with:

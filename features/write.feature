@@ -248,7 +248,7 @@ Feature: Write
       | #(1 #(1 2) #(3 4 5)) |
 
   @gauche @guile @stak
-  Scenario Outline: Write a bytevector
+  Scenario Outline: Write a byte vector
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
