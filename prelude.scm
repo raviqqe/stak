@@ -359,24 +359,21 @@
 
     (define-syntax expand-features
       (syntax-rules ()
-        ((_ (feature ...) (library ...))
-          (expand-features "expand" (feature ...) (library ...) ()))
+        ((_ (feature1 feature2 ...) (library ...) clause ...)
+          (expand-features (feature2 ...) (library ...)
+            ((_ (feature body ...) clause ...)
+              (relaxed-begin body ...))
+            clause
+            ...))
 
-        ((_ "expand" (feature1 feature2 ...) (library ...) clause ...)
-          (expand-features "expand" (feature2 ...) (library ...)
-            (((_ (feature body ...) clause ...)
-                (relaxed-begin body ...))
-              clause
-              ...)))
+        ((_ () (library1 library2 ...) clause ...)
+          (expand-features () (library2 ...)
+            ((_ ((library library1) body ...) clause ...)
+              (relaxed-begin body ...))
+            clause
+            ...))
 
-        ((_ "expand" () (library1 library2 ...) clause ...)
-          (expand-features "expand" () (library2 ...)
-            (((_ ((library library1) body ...) clause ...)
-                (relaxed-begin body ...))
-              clause
-              ...)))
-
-        ((_ "expand" () () clause ...)
+        ((_ () () clause ...)
           (expand-features "final"
             (define-syntax cond-expand
               (syntax-rules (and or not else r7rs library scheme base stak)
