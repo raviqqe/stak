@@ -223,13 +223,14 @@ Feature: Read
     And the stdout should contain exactly "<output>"
 
     Examples:
-      | value | count | output |
-      | A     | 0     |        |
-      | A     | 1     | A      |
-      | A     | 2     | A      |
-      | ABC   | 2     | AB     |
-      | ABC   | 3     | ABC    |
-      | ABC   | 4     | ABC    |
+      | value    | count | output   |
+      | A        | 0     |          |
+      | A        | 1     | A        |
+      | A        | 2     | A        |
+      | ABC      | 2     | AB       |
+      | ABC      | 3     | ABC      |
+      | ABC      | 4     | ABC      |
+      | A😄あ      | 3     | A😄あ      |
 
   Scenario Outline: Read a byte vector
     Given a file named "main.scm" with:
