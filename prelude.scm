@@ -1805,7 +1805,7 @@
               '()
               (cons x (loop (- count 1))))))))
 
-    (define (read-bytevector! . rest)
+    (define (read-bytevector! xs . rest)
       (define port (get-input-port rest))
       (define start
         (if (or
@@ -1821,11 +1821,15 @@
           #f
           (caddr rest)))
 
-      (list->bytevector
-        (let loop ((count count))
-          (let ((x (read-u8 port)))
-            (if (or (eof-object? x) (zero? count))
-              '()
+      (do ((start start)
+           (count 0)
+           (xs (list-tail start (bytevector->list xs))))
+        ((or (null? xs)))
+        (let ((x (read-u8 port)))
+          (cond
+            ((or (eof-object? x) (zero? count))
+              count)
+            (else
               (cons x (loop (- count 1))))))))
 
     ; Write
