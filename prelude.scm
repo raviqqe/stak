@@ -360,7 +360,24 @@
     (define-syntax expand-features
       (syntax-rules ()
         ((_ (feature ...) (library ...))
-          (relaxed-begin body ...))))
+          (expand-features "expand" (feature ...) (library ...) ()))
+
+        ((_ "expand" (feature1 feature2 ...) (library ...) clause ...)
+          (expand-features "expand" (feature2 ...) (library ...)
+            (((_ (feature body ...) clause ...)
+                (relaxed-begin body ...))
+              clause
+              ...)))
+
+        ((_ "expand" () (library1 library2 ...) clause ...)
+          (expand-features "expand" () (library2 ...)
+            (((_ ((library library1) body ...) clause ...)
+                (relaxed-begin body ...))
+              clause
+              ...)))
+
+        ((_ "final" x)
+          x)))
 
     (expand-features
       (scheme
