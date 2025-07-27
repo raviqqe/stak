@@ -2659,6 +2659,52 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set char-ready?
+- constant procedure 1 #t
+  - constant procedure 1 #f
+    - get 2
+    - call 1 #f ||
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 4
+            - constant 0
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f eof-object?
+          - call 1 #f 1
+          - set 1
+          - if
+            - constant ()
+          - get 0
+          - get 3
+          - constant 1
+          - call 2 #f ||
+          - call 1 #f 6
+          - call 2 #f cons
+        - call 1 #f $$close
+        - get 5
+        - call 1 #f read-char
+        - call 1 #f 1
+      - call 1 #f $$close
+      - set 1
+      - get 5
+      - call 1 #f 1
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+    - set 1
+    - call 1 #f list->string
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set read-string
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
@@ -3719,6 +3765,7 @@
   - read-char
   - peek-char
   - char-ready?
+  - read-string
   - write-u8
   - write-char
   - write-string
@@ -8354,6 +8401,7 @@
                                             - (read-char . read-char)
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
+                                            - (read-string . read-string)
                                             - (write-u8 . write-u8)
                                             - (write-char . write-char)
                                             - (write-string . write-string)
@@ -8421,6 +8469,7 @@
                                             - (read-char . read-char)
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
+                                            - (read-string . read-string)
                                             - (write-u8 . write-u8)
                                             - (write-char . write-char)
                                             - (write-string . write-string)
