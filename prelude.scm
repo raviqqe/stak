@@ -2685,7 +2685,10 @@
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (scheme char) (only (stak base) boolean-or))
+  (import
+    (scheme base)
+    (scheme char)
+    (only (stak base) boolean-or))
 
   (begin
     (define (read . rest)
