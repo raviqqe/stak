@@ -361,7 +361,7 @@
       (syntax-rules ::: ()
         ((_ (feature1 feature2 :::) (library :::) outer-clause :::)
           (expand-features (feature2 :::) (library :::)
-            ((_ (feature body ...) clause ...)
+            ((_ (feature1 body ...) clause ...)
               (relaxed-begin body ...))
             outer-clause
             :::))
