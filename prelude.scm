@@ -1581,6 +1581,8 @@
     peek-char
     char-ready?
     read-string
+    read-bytevector
+    read-bytevector!
 
     write-u8
     write-char
@@ -1796,7 +1798,7 @@
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
 
-      (list->string
+      (list->bytevector
         (let loop ((count count))
           (let ((x (read-u8 port)))
             (if (or (eof-object? x) (zero? count))
@@ -2431,6 +2433,8 @@
     peek-char
     char-ready?
     read-string
+    read-bytevector
+    read-bytevector!
 
     write-u8
     write-char
