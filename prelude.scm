@@ -362,6 +362,14 @@
         ((_ (feature ...) (library ...))
           (relaxed-begin body ...))))
 
+    (expand-features
+      (scheme
+        stak)
+      ((scheme base)
+        (scheme read)
+        (scheme write)
+        (stak base)))
+
     (define-syntax cond-expand
       (syntax-rules (and or not else r7rs library scheme base stak)
         ((_ (else body ...))
