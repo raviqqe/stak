@@ -1783,15 +1783,15 @@
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
-    (define (read-string k . rest)
+    (define (read-string count . rest)
       (define port (get-input-port rest))
 
       (list->string
-        (let loop ((count 0))
+        (let loop ((count count))
           (let ((x (read-char port)))
             (if (or (eof-object? x) (zero? count))
               '()
-              (cons x (loop (+ count 1))))))))
+              (cons x (loop (- count 1))))))))
 
     ; Write
 
