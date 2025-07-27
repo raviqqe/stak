@@ -515,7 +515,10 @@
        expression)))
 
     (define (rename-variable name)
-     (string->uninterned-symbol (symbol->string name)))
+     (string->uninterned-symbol
+      (string-append
+       (string library-symbol-separator)
+       (resolve-symbol-string name))))
 
     (define (find-pattern-variables ellipsis bound-variables pattern)
      (define excluded-variables (cons ellipsis bound-variables))
