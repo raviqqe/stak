@@ -376,13 +376,14 @@
         ((_ () () outer-clause :::)
           (define-syntax cond-expand
             (syntax-rules (and or not else r7rs library scheme base stak)
-              ((_ (else body ...))
+              ; TODO Use `_`.
+              ((cond-expand (else body ...))
                 (relaxed-begin body ...))
 
-              ((_ ((and) body ...) clause ...)
+              ((cond-expand ((and) body ...) clause ...)
                 (relaxed-begin body ...))
 
-              ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
+              ((cond-expand ((and requirement1 requirement2 ...) body ...) clause ...)
                 (cond-expand
                   (requirement1
                     (cond-expand
@@ -392,17 +393,17 @@
                   clause
                   ...))
 
-              ((_ ((or) body ...) clause ...)
+              ((cond-expand ((or) body ...) clause ...)
                 (cond-expand clause ...))
 
-              ((_ ((or requirement1 requirement2 ...) body ...) clause ...)
+              ((cond-expand ((or requirement1 requirement2 ...) body ...) clause ...)
                 (cond-expand
                   (requirement1 body ...)
                   ((or requirement2 ...) body ...)
                   clause
                   ...))
 
-              ((_ ((not requirement) body ...) clause ...)
+              ((cond-expand ((not requirement) body ...) clause ...)
                 (cond-expand
                   (requirement
                     (cond-expand
@@ -413,7 +414,7 @@
               outer-clause
               :::
 
-              ((_ (feature body ...) clause ...)
+              ((cond-expand (feature body ...) clause ...)
                 (cond-expand clause ...)))))))
 
     (expand-features
