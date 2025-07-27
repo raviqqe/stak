@@ -209,9 +209,9 @@ Feature: Macro
             (define name
               '(x ...)))))
 
-      (foo x)
+      (foo y)
 
-      (write-u8 (if (equal? x '(x ...)) 65 66))
+      (write-u8 (if (equal? y '(x ...)) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
