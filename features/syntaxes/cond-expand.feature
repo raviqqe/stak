@@ -98,6 +98,7 @@ Feature: cond-expand
     Then the stdout should contain exactly "A"
 
   Rule: `and`
+
     Scenario: Expand no requirement
       Given a file named "main.scm" with:
         """scheme
@@ -135,6 +136,7 @@ Feature: cond-expand
       Then the stdout should contain exactly "A"
 
   Rule: `or`
+
     Scenario: Expand no requirement
       Given a file named "main.scm" with:
         """scheme

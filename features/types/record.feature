@@ -30,6 +30,7 @@ Feature: Record
       | vector?     |
 
   Rule: Record with no field
+
     Scenario: Define a record type
       Given a file named "main.scm" with:
         """scheme
@@ -71,6 +72,7 @@ Feature: Record
       Then the stdout should contain exactly "A"
 
   Rule: Record with fields
+
     Scenario: Define a record type
       Given a file named "main.scm" with:
         """scheme
