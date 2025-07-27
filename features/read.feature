@@ -216,10 +216,7 @@ Feature: Read
 
       (write-string (read-string <count>))
       """
-    And a file named "input.txt" with:
-      """text
-      <value>
-      """
+    And a file named "input.txt" with "<value>"
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
