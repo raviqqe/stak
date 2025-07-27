@@ -37,6 +37,7 @@ Feature: Multiple values
     Then the stdout should contain exactly "A"
 
   Rule: `define-values`
+
     Scenario: Define no value
       Given a file named "main.scm" with:
         """scheme
@@ -171,6 +172,7 @@ Feature: Multiple values
       Then the stdout should contain exactly "AB"
 
   Rule: `let-values`
+
     Scenario: Define no value
       Given a file named "main.scm" with:
         """scheme
