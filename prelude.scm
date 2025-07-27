@@ -1793,6 +1793,16 @@
               '()
               (cons x (loop (- count 1))))))))
 
+    (define (read-bytevector count . rest)
+      (define port (get-input-port rest))
+
+      (list->string
+        (let loop ((count count))
+          (let ((x (read-u8 port)))
+            (if (or (eof-object? x) (zero? count))
+              '()
+              (cons x (loop (- count 1))))))))
+
     ; Write
 
     (define (get-output-port rest)
