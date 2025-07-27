@@ -83,6 +83,7 @@ Feature: Evaluation
     Then the stdout should contain exactly "A"
 
   Rule: Environment
+
     @gauche @guile @stak
     Scenario: Use a `define` syntax with a variable
       Given a file named "main.scm" with:
@@ -146,6 +147,7 @@ Feature: Evaluation
       Then the stdout should contain exactly "A"
 
   Rule: Procedures
+
     Scenario: Use a `+` procedure
       Given a file named "main.scm" with:
         """scheme
@@ -182,6 +184,7 @@ Feature: Evaluation
       Then the stdout should contain exactly "A"
 
   Rule: Syntaxes
+
     Scenario: Use a `begin` syntax
       Given a file named "main.scm" with:
         """scheme
