@@ -206,8 +206,7 @@ Feature: Macro
       (define-syntax foo
         (syntax-rules ::: ()
           ((_ name)
-            (define name
-              '(x ...)))))
+            (define name '(x ...)))))
 
       (foo y)
 
