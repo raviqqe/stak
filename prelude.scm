@@ -368,7 +368,9 @@
       ((scheme base)
         (scheme read)
         (scheme write)
-        (stak base)))
+        (stak base)
+        (stak continue)
+        (stak exception)))
 
     (define-syntax cond-expand
       (syntax-rules (and or not else r7rs library scheme base stak)
