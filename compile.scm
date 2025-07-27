@@ -254,6 +254,8 @@
     (define (symbol-append . xs)
      (string->symbol (apply string-append (map symbol->string xs))))
 
+    (define symbol-name-separator #\#)
+
     ; Inclusion
 
     (define (include-files expression)
@@ -315,11 +317,11 @@
 
     ;; Procedures
 
-    (define library-symbol-separator #\%)
+    (define library-symbol-indicator #\%)
 
     (define (resolve-symbol-string name)
      (let* ((string (symbol->string name))
-            (position (memv-position library-symbol-separator (string->list string))))
+            (position (memv-position symbol-name-separator (string->list string))))
       (if position
        (string-copy string (+ position 1))
        string)))
@@ -418,7 +420,7 @@
        (else
         (let ((renamed (string->uninterned-symbol
                         (string-append
-                         (string library-symbol-separator)
+                         (string library-symbol-indicator symbol-name-separator)
                          (symbol->string name)))))
          (set! names (cons (cons name renamed) names))
          renamed))))
@@ -517,7 +519,7 @@
     (define (rename-variable name)
      (string->uninterned-symbol
       (string-append
-       (string library-symbol-separator)
+       (string symbol-name-separator)
        (resolve-symbol-string name))))
 
     (define (find-pattern-variables ellipsis bound-variables pattern)
@@ -1109,7 +1111,7 @@
     ; Library system
 
     (define (library-symbol? name)
-     (memv library-symbol-separator (string->list (symbol->string name))))
+     (memv library-symbol-indicator (string->list (symbol->string name))))
 
     (define library-predicates '(define-library import))
 
