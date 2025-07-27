@@ -104,7 +104,7 @@ Feature: Read
     Examples:
       | bytes | output |
       |       | A      |
-      |    65 | A      |
+      | 65    | A      |
 
   Scenario Outline: Read a character
     Given a file named "main.scm" with:
@@ -205,8 +205,8 @@ Feature: Read
     Examples:
       | bytes           | output |
       |                 | A      |
-      |              65 | A      |
-      |     227 129 130 | A      |
+      | 65              | A      |
+      | 227 129 130     | A      |
       | 240 159 152 132 | A      |
 
   Scenario Outline: Read a string
@@ -227,12 +227,12 @@ Feature: Read
 
     Examples:
       | value | count | output |
-      | A     |     0 |        |
-      | A     |     1 | A      |
-      | A     |     2 | A      |
-      | ABC   |     2 | AB     |
-      | ABC   |     3 | ABC    |
-      | ABC   |     4 | ABC    |
+      | A     | 0     |        |
+      | A     | 1     | A      |
+      | A     | 2     | A      |
+      | ABC   | 2     | AB     |
+      | ABC   | 3     | ABC    |
+      | ABC   | 4     | ABC    |
 
   @long
   Scenario Outline: Read a value
@@ -255,13 +255,13 @@ Feature: Read
       | value           |
       | #f              |
       | #t              |
-      |               0 |
-      |               1 |
-      |               2 |
-      |              42 |
-      |              -1 |
-      |              -2 |
-      |             -42 |
+      | 0               |
+      | 1               |
+      | 2               |
+      | 42              |
+      | -1              |
+      | -2              |
+      | -42             |
       | a               |
       | x               |
       | foo             |
