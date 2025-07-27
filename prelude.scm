@@ -361,14 +361,16 @@
       (syntax-rules ::: ()
         ((_ (feature1 feature2 :::) (library :::) outer-clause :::)
           (expand-features (feature2 :::) (library :::)
-            ((_ (feature1 body ...) clause ...)
+            ; TODO Use `_`.
+            ((cond-expand (feature1 body ...) clause ...)
               (relaxed-begin body ...))
             outer-clause
             :::))
 
         ((_ () (library1 library2 :::) outer-clause :::)
           (expand-features () (library2 :::)
-            ((_ ((library library1) body ...) clause ...)
+            ; TODO Use `_`.
+            ((cond-expand ((library library1) body ...) clause ...)
               (relaxed-begin body ...))
             outer-clause
             :::))
