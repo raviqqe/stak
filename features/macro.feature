@@ -198,6 +198,24 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Keep an original ellipsis with a custom ellipsis
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ::: ()
+          ((_ name)
+            (define name
+              '(x ...)))))
+
+      (foo x)
+
+      (write-u8 (if (equal? x '(x ...)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Match two ellipses at different levels
     Given a file named "main.scm" with:
       """scheme
