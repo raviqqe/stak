@@ -236,16 +236,11 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (equal? (read-bytevector <count>) #u8(<bytes>)) 65 66))
+      (parameterize ((current-input-port (open-input-string "<value>")))
+        (write-u8 (if (equal? (read-bytevector <count>) #u8(<bytes>)) 65 66)))
       """
-    And a file named "input.txt" with:
-      """text
-      <value>
-      """
-    When I run `stak main.scm` interactively
-    And I pipe in the file "input.txt"
-    Then the exit status should be 0
-    And the stdout should contain exactly "A"
+    When I successfully run `stak main.scm` interactively
+    Then the stdout should contain exactly "A"
 
     Examples:
       | value | count | bytes    |
