@@ -3248,9 +3248,11 @@
 - set open-output-bytevector
 - get ||
 - set get-output-bytevector
-- constant 2
-- constant 32
-- call 2 #f expt
+- constant 1024
+- constant 1024
+- constant 1024
+- constant 1024
+- call 4 #f \*
 - set ||
 - constant procedure 1 #f
   - get ||
