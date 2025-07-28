@@ -269,6 +269,9 @@ Feature: Read
     Examples:
       | original | input | start | end | output |
       |          |       |       |     |        |
+      | 0        | 1     |       |     | 1      |
+      | 0        | 1     | 0     |     | 1      |
+      | 0        | 1     | 0     | 1   | 1      |
 
   @long
   Scenario Outline: Read a value
