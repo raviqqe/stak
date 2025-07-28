@@ -232,6 +232,22 @@ Feature: Read
       | ABC      | 4     | ABC      |
       | A😄あ      | 3     | A😄あ      |
 
+  Scenario: Read a line
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-string (read-string <count>))
+      """
+    And a file named "input.txt" with:
+      """text
+      foo
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "<output>"
+
   Scenario Outline: Read a byte vector
     Given a file named "main.scm" with:
       """scheme

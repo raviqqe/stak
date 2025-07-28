@@ -1581,6 +1581,7 @@
     peek-char
     char-ready?
     read-string
+    read-line
     read-bytevector
     read-bytevector!
 
@@ -1794,6 +1795,16 @@
             (if (or (eof-object? x) (zero? count))
               '()
               (cons x (loop (- count 1))))))))
+
+    (define (read-line count . rest)
+      (define port (get-input-port rest))
+
+      (list->string
+        (let loop ()
+          (let ((x (read-char port)))
+            (if (or (eof-object? x) (eqv? count #\newline))
+              '()
+              (cons x (loop)))))))
 
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
