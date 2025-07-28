@@ -1826,7 +1826,7 @@
         ((or
             (null? xs)
             (and end (>= start end))))
-        (set-car! (read-u8 port))))
+        (set-car! xs (read-u8 port))))
 
     ; Write
 
