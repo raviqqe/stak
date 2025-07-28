@@ -2681,9 +2681,9 @@
     char-whitespace?
     char-lower-case?
     char-upper-case?
-    char-upcase
     char-downcase
     char-foldcase
+    char-upcase
     string-downcase
     string-foldcase
     string-upcase
