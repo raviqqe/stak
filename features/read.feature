@@ -237,20 +237,20 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (parameterize ((current-input-port (open-input-string "<value>")))
+      (parameterize ((current-input-port (open-input-bytevector #u8(<bytes>))))
         (write-u8 (if (equal? (read-bytevector <count>) #u8(<bytes>)) 65 66)))
       """
     When I successfully run `stak main.scm` interactively
     Then the stdout should contain exactly "A"
 
     Examples:
-      | value | count | bytes    |
-      | A     | 0     |          |
-      | A     | 1     | 65       |
-      | A     | 2     | 65       |
-      | ABC   | 2     | 65 66    |
-      | ABC   | 3     | 65 66 67 |
-      | ABC   | 4     | 65 66 67 |
+      | bytes | count |
+      |       | 0     |
+      | 1     | 1     |
+      | 1     | 2     |
+      | 1 2   | 2     |
+      | 1 2 3 | 3     |
+      | 1 2 3 | 4     |
 
   @long
   Scenario Outline: Read a value
