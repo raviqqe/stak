@@ -1822,13 +1822,13 @@
           (car (cddr rest))))
 
       (do ((start start (+ start 1))
-           (xs (list-tail start (bytevector->list xs)) (cdr xs)))
+           (xs (list-tail (bytevector->list xs) start) (cdr xs))
+           (x (peek-u8 port) (peek-u8 port)))
         ((or
             (null? xs)
+            (eof-object? x)
             (and end (>= start end))))
-        (let ((x (read-u8 port)))
-          (unless (eof-object? x)
-            (set-car! xs x)))))
+        (set-car! xs (read-u8 port))))
 
     ; Write
 
