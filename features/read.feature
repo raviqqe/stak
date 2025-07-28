@@ -267,11 +267,18 @@ Feature: Read
     Then the stdout should contain exactly "A"
 
     Examples:
-      | original | input | start | end | output |
-      |          |       |       |     |        |
-      | 0        | 1     |       |     | 1      |
-      | 0        | 1     | 0     |     | 1      |
-      | 0        | 1     | 0     | 1   | 1      |
+      | original | input   | start | end | output  |
+      |          |         |       |     |         |
+      | 0        | 1       |       |     | 1       |
+      | 0        | 1       | 0     |     | 1       |
+      | 0        | 1       | 0     | 1   | 1       |
+      | 0 0      | 1 2     |       | 0   | 1 2     |
+      | 0 0      | 1 2     | 0     | 1   | 1 0     |
+      | 0 0      | 1 2     | 1     |     | 0 1     |
+      | 0 0 0 0  | 1 2 3   | 1     | 3   | 0 1 2 0 |
+      | 0 0 0 0  | 1 2 3 4 | 1     |     | 0 1 2 3 |
+      | 0 0 0 0  | 1 2 3 4 | 1     | 4   | 0 1 2 3 |
+      | 0 0 0 0  | 1 2 3 4 | 1     | 5   | 0 1 2 3 |
 
   @long
   Scenario Outline: Read a value
