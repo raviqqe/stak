@@ -2683,7 +2683,12 @@
     char-upper-case?
     char-upcase
     char-downcase
+    char-foldcase
+    string-downcase
+    string-foldcase
+    string-upcase
     digit-value
+
     special-chars)
 
   (import (scheme base))
@@ -2735,6 +2740,13 @@
       (if (char-upper-case? x)
         (integer->char (+ (char->integer x) 32))
         x))
+
+    (define char-foldcase char-foldcase)
+
+    char-foldcase
+    string-downcase
+    string-foldcase
+    string-upcase
 
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))
