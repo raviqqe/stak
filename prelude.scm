@@ -1826,7 +1826,9 @@
         ((or
             (null? xs)
             (and end (>= start end))))
-        (set-car! xs (read-u8 port))))
+        (let ((x (read-u8 port)))
+          (unless (eof-object? x)
+            (set-car! xs x)))))
 
     ; Write
 
