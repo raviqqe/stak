@@ -1959,7 +1959,8 @@
   (import (stak base) (stak io))
 
   (begin
-    (define limit (expt 2 32))
+    ; TODO Use the `expt` procedure.
+    (define limit (* 1024 1024 1024 1024))
 
     (define (string->utf8 xs)
       (read-bytevector limit (open-input-string xs)))
