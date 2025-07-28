@@ -2705,6 +2705,163 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set read-string
+- constant procedure 1 #t
+  - constant procedure 1 #f
+    - get 2
+    - call 1 #f ||
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 4
+            - constant 0
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f eof-object?
+          - call 1 #f 1
+          - set 1
+          - if
+            - constant ()
+          - get 0
+          - get 3
+          - constant 1
+          - call 2 #f ||
+          - call 1 #f 6
+          - call 2 #f cons
+        - call 1 #f $$close
+        - get 5
+        - call 1 #f read-u8
+        - call 1 #f 1
+      - call 1 #f $$close
+      - set 1
+      - get 5
+      - call 1 #f 1
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+    - set 1
+    - call 1 #f list->bytevector
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set read-bytevector
+- constant procedure 1 #t
+  - constant procedure 3 #f
+    - get 4
+    - call 1 #f ||
+    - set 3
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 6
+      - call 1 #f cdr
+      - call 1 #f null?
+    - call 1 #f $$close
+    - get 5
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - constant 0
+      - continue
+    - get 4
+    - call 1 #f cadr
+    - set 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+        - get 8
+        - call 1 #f cddr
+        - call 1 #f null?
+      - call 1 #f $$close
+      - get 7
+      - call 1 #f cdr
+      - call 1 #f null?
+      - call 1 #f 1
+    - call 1 #f $$close
+    - get 5
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - constant #f
+      - continue
+    - get 4
+    - call 1 #f cddr
+    - call 1 #f car
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 3 #f
+        - constant procedure 1 #f
+          - get 0
+          - if
+            - get 0
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 10
+            - if
+              - get 6
+              - get 11
+              - call 2 #f >=
+            - constant #f
+          - call 1 #f $$close
+          - get 3
+          - call 1 #f eof-object?
+          - call 1 #f 1
+        - call 1 #f $$close
+        - get 2
+        - call 1 #f null?
+        - call 1 #f 1
+        - set 1
+        - if
+          - constant #f
+        - get 1
+        - get 9
+        - call 1 #f read-u8
+        - call 2 #f set-car!
+        - set 0
+        - get 2
+        - constant 1
+        - call 2 #f ||
+        - get 2
+        - call 1 #f cdr
+        - get 10
+        - call 1 #f peek-u8
+        - call 3 #f 7
+      - call 1 #f $$close
+      - set 1
+      - get 3
+      - get 8
+      - call 1 #f bytevector->list
+      - get 5
+      - call 2 #f list-tail
+      - get 6
+      - call 1 #f peek-u8
+      - call 3 #f 3
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - constant #f
+  - call 3 #f 3
+- call 1 #f $$close
+- set read-bytevector!
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
@@ -3763,6 +3920,8 @@
   - peek-char
   - char-ready?
   - read-string
+  - read-bytevector
+  - read-bytevector!
   - write-u8
   - write-char
   - write-string
@@ -8472,6 +8631,8 @@
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
                                             - (read-string . read-string)
+                                            - (read-bytevector . read-bytevector)
+                                            - (read-bytevector! . read-bytevector!)
                                             - (write-u8 . write-u8)
                                             - (write-char . write-char)
                                             - (write-string . write-string)
@@ -8540,6 +8701,8 @@
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
                                             - (read-string . read-string)
+                                            - (read-bytevector . read-bytevector)
+                                            - (read-bytevector! . read-bytevector!)
                                             - (write-u8 . write-u8)
                                             - (write-char . write-char)
                                             - (write-string . write-string)

@@ -1581,6 +1581,8 @@
     peek-char
     char-ready?
     read-string
+    read-bytevector
+    read-bytevector!
 
     write-u8
     write-char
@@ -1792,6 +1794,41 @@
             (if (or (eof-object? x) (zero? count))
               '()
               (cons x (loop (- count 1))))))))
+
+    (define (read-bytevector count . rest)
+      (define port (get-input-port rest))
+
+      (list->bytevector
+        (let loop ((count count))
+          (let ((x (read-u8 port)))
+            (if (or (eof-object? x) (zero? count))
+              '()
+              (cons x (loop (- count 1))))))))
+
+    (define (read-bytevector! xs . rest)
+      (define port (get-input-port rest))
+      (define start
+        (if (or
+             (null? rest)
+             (null? (cdr rest)))
+          0
+          (cadr rest)))
+      (define end
+        (if (or
+             (null? rest)
+             (null? (cdr rest))
+             (null? (cddr rest)))
+          #f
+          (car (cddr rest))))
+
+      (do ((start start (+ start 1))
+           (xs (list-tail (bytevector->list xs) start) (cdr xs))
+           (x (peek-u8 port) (peek-u8 port)))
+        ((or
+            (null? xs)
+            (eof-object? x)
+            (and end (>= start end))))
+        (set-car! xs (read-u8 port))))
 
     ; Write
 
@@ -2421,6 +2458,8 @@
     peek-char
     char-ready?
     read-string
+    read-bytevector
+    read-bytevector!
 
     write-u8
     write-char
