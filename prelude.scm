@@ -2741,9 +2741,8 @@
         (integer->char (+ (char->integer x) 32))
         x))
 
-    (define char-foldcase char-foldcase)
+    (define char-foldcase char-downcase)
 
-    char-foldcase
     string-downcase
     string-foldcase
     string-upcase
