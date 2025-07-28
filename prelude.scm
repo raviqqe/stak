@@ -2749,7 +2749,6 @@
 
     (define string-downcase (string-case char-downcase))
     (define string-upcase (string-case char-upcase))
-
     (define string-foldcase string-downcase)
 
     (define (digit-value x)
