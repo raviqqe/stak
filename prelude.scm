@@ -1959,11 +1959,13 @@
   (import (stak base) (stak io))
 
   (begin
+    (define limit (expt 2 32))
+
     (define (string->utf8 xs)
-      (read-bytevector (open-input-string xs)))
+      (read-bytevector limit (open-input-string xs)))
 
     (define (utf8->string xs)
-      (read-string (open-input-bytevector xs)))))
+      (read-string limit (open-input-bytevector xs)))))
 
 (define-library (stak continue)
   (export
