@@ -2372,6 +2372,8 @@
     vector->list
     string->vector
     vector->string
+    string->utf8
+    utf8->string
 
     bytevector
     bytevector?
@@ -2494,6 +2496,7 @@
     (stak base)
     (stak parameter)
     (stak io)
+    (stak unicode)
     (stak continue)
     (stak exception))
 
