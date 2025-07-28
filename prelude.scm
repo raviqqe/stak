@@ -2744,8 +2744,9 @@
     (define char-foldcase char-downcase)
 
     string-downcase
-    string-foldcase
     string-upcase
+
+    (define string-foldcase string-downcase)
 
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))
