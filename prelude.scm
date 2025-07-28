@@ -1953,6 +1953,18 @@
 
     (define get-output-bytevector port-data)))
 
+(define-library (stak unicode)
+  (export string->utf8 utf8->string)
+
+  (import (stak base) (stak io))
+
+  (begin
+    (define (string->utf8 xs)
+      (read-bytevector (open-input-string xs)))
+
+    (define (utf8->string xs)
+      (read-string (open-input-bytevector xs)))))
+
 (define-library (stak continue)
   (export
     call/cc
