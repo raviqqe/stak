@@ -1802,7 +1802,7 @@
       (list->string
         (let loop ()
           (let ((x (read-char port)))
-            (if (or (eof-object? x) (eqv? count #\newline))
+            (if (or (eof-object? x) (eqv? x #\newline))
               '()
               (cons x (loop)))))))
 
@@ -2486,6 +2486,7 @@
     peek-char
     char-ready?
     read-string
+    read-line
     read-bytevector
     read-bytevector!
 
