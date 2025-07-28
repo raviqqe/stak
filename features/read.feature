@@ -237,7 +237,7 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (write-string (read-string <count>))
+      (write-string (if (equal? (read-line) "foo") 65 66))
       """
     And a file named "input.txt" with:
       """text
@@ -246,7 +246,7 @@ Feature: Read
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly "<output>"
+    And the stdout should contain exactly "A"
 
   Scenario Outline: Read a byte vector
     Given a file named "main.scm" with:

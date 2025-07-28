@@ -1796,7 +1796,7 @@
               '()
               (cons x (loop (- count 1))))))))
 
-    (define (read-line count . rest)
+    (define (read-line . rest)
       (define port (get-input-port rest))
 
       (list->string
