@@ -23,4 +23,4 @@ winter-maybe-async = { version = "0.13.1" }
 workspace = true
 
 [dev-dependencies]
-tokio = { version = "1.46.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.47.0", features = ["macros", "rt-multi-thread"] }
