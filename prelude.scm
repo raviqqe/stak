@@ -2748,8 +2748,8 @@
         (list->string (map f (string->list xs)))))
 
     (define string-downcase (string-case char-downcase))
+    (define string-foldcase (string-case char-foldcase))
     (define string-upcase (string-case char-upcase))
-    (define string-foldcase string-downcase)
 
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))
