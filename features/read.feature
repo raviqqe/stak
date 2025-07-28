@@ -232,7 +232,7 @@ Feature: Read
       | ABC      | 4     | ABC      |
       | A😄あ      | 3     | A😄あ      |
 
-  Scenario: Read a line
+  Scenario: Read lines
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
