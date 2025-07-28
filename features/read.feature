@@ -237,16 +237,23 @@ Feature: Read
       """scheme
       (import (scheme base))
 
-      (write-string (if (equal? (read-line) "foo") 65 66))
+      (define (check x)
+        (write-string (if (equal? (read-line) x) 65 66)))
+
+      (check "foo")
+      (check "bar")
+      (check "baz")
       """
     And a file named "input.txt" with:
       """text
       foo
+      bar
+      baz
       """
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly "A"
+    And the stdout should contain exactly "AAA"
 
   Scenario Outline: Read a byte vector
     Given a file named "main.scm" with:
