@@ -1819,7 +1819,7 @@
              (null? (cdr rest))
              (null? (cddr rest)))
           #f
-          (caddr rest)))
+          (car (cddr rest))))
 
       (do ((start start (+ start 1))
            (xs (list-tail start (bytevector->list xs)) (cdr xs)))
