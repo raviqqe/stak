@@ -238,7 +238,7 @@ Feature: Read
       (import (scheme base))
 
       (define (check x)
-        (write-string (if (equal? (read-line) x) 65 66)))
+        (write-u8 (if (equal? (read-line) x) 65 66)))
 
       (check "foo")
       (check "bar")
