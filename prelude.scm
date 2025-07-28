@@ -2743,8 +2743,12 @@
 
     (define char-foldcase char-downcase)
 
-    string-downcase
-    string-upcase
+    (define (string-case f)
+      (lambda (xs)
+        (list->string (map f (string->list xs)))))
+
+    (define string-downcase (string-case char-downcase))
+    (define string-upcase (string-case char-upcase))
 
     (define string-foldcase string-downcase)
 
