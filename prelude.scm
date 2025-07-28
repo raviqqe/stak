@@ -1821,16 +1821,12 @@
           #f
           (caddr rest)))
 
-      (do ((start start)
-           (count 0)
-           (xs (list-tail start (bytevector->list xs))))
-        ((or (null? xs)))
-        (let ((x (read-u8 port)))
-          (cond
-            ((or (eof-object? x) (zero? count))
-              count)
-            (else
-              (cons x (loop (- count 1))))))))
+      (do ((start start (+ start 1))
+           (xs (list-tail start (bytevector->list xs)) (cdr xs)))
+        ((or
+            (null? xs)
+            (and end (>= start end))))
+        (set-car! (read-u8 port))))
 
     ; Write
 

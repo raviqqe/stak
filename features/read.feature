@@ -240,7 +240,7 @@ Feature: Read
       (parameterize ((current-input-port (open-input-bytevector #u8(<bytes>))))
         (write-u8 (if (equal? (read-bytevector <count>) #u8(<bytes>)) 65 66)))
       """
-    When I successfully run `stak main.scm` interactively
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -251,6 +251,24 @@ Feature: Read
       | 1 2   | 2     |
       | 1 2 3 | 3     |
       | 1 2 3 | 4     |
+
+  Scenario Outline: Read a byte vector in place
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (bytevector <original>))
+
+      (read-bytevector! xs (open-input-bytevector #u8(<input>)) <start> <end>)
+
+      (write-u8 (if (equal? xs #u8(<output>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | original | input | start | end | output |
+      |          |       |       |     |        |
 
   @long
   Scenario Outline: Read a value
