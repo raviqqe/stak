@@ -3248,16 +3248,22 @@
 - set open-output-bytevector
 - get ||
 - set get-output-bytevector
+- constant 2
+- constant 32
+- call 2 #f expt
+- set ||
 - constant procedure 1 #f
-  - get 0
+  - get ||
+  - get 1
   - call 1 #f open-input-string
-  - call 1 #f read-bytevector
+  - call 2 #f read-bytevector
 - call 1 #f $$close
 - set string->utf8
 - constant procedure 1 #f
-  - get 0
+  - get ||
+  - get 1
   - call 1 #f open-input-bytevector
-  - call 1 #f read-string
+  - call 2 #f read-string
 - call 1 #f $$close
 - set utf8->string
 - constant procedure 0 #f
