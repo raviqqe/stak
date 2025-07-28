@@ -345,3 +345,22 @@ Feature: String
       | ABC    | 0 2   | #\\A #\\B      |
       | ABC    | 1 3   | #\\B #\\C      |
       | ABC    | 1 2   | #\\B           |
+
+  Scenario Outline: Convert a string to a byte vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs "<string>")
+
+      (write-u8 (if (equal? (utf8->string (string->utf8 xs)) xs) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | string   |
+      |          |
+      | A        |
+      | ABC      |
+      | Aあ😄      |

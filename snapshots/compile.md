@@ -3248,6 +3248,26 @@
 - set open-output-bytevector
 - get ||
 - set get-output-bytevector
+- constant 1024
+- constant 1024
+- constant 1024
+- constant 1024
+- call 4 #f \*
+- set ||
+- constant procedure 1 #f
+  - get ||
+  - get 1
+  - call 1 #f open-input-string
+  - call 2 #f read-bytevector
+- call 1 #f $$close
+- set string->utf8
+- constant procedure 1 #f
+  - get ||
+  - get 1
+  - call 1 #f open-input-bytevector
+  - call 2 #f read-string
+- call 1 #f $$close
+- set utf8->string
 - constant procedure 0 #f
   - constant #f
 - call 1 #f $$close
@@ -4198,6 +4218,9 @@
   - call-with-current-continuation
   - dynamic-wind
   - parameterize
+  - unicode
+  - string->utf8
+  - utf8->string
   - io
   - eof-object
   - eof-object?
@@ -8787,6 +8810,8 @@
                                             - (vector->list . vector->list)
                                             - (string->vector . string->vector)
                                             - (vector->string . vector->string)
+                                            - (string->utf8 . string->utf8)
+                                            - (utf8->string . utf8->string)
                                             - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
@@ -8909,6 +8934,12 @@
                                             - (call-with-current-continuation . call-with-current-continuation)
                                             - (dynamic-wind . dynamic-wind)
                                             - (parameterize . parameterize)
+                                          - list
+                                            - list
+                                              - stak
+                                              - unicode
+                                            - (string->utf8 . string->utf8)
+                                            - (utf8->string . utf8->string)
                                           - list
                                             - list
                                               - stak

@@ -1953,6 +1953,21 @@
 
     (define get-output-bytevector port-data)))
 
+(define-library (stak unicode)
+  (export string->utf8 utf8->string)
+
+  (import (stak base) (stak io))
+
+  (begin
+    ; TODO Use the `expt` procedure.
+    (define limit (* 1024 1024 1024 1024))
+
+    (define (string->utf8 xs)
+      (read-bytevector limit (open-input-string xs)))
+
+    (define (utf8->string xs)
+      (read-string limit (open-input-bytevector xs)))))
+
 (define-library (stak continue)
   (export
     call/cc
@@ -2360,6 +2375,8 @@
     vector->list
     string->vector
     vector->string
+    string->utf8
+    utf8->string
 
     bytevector
     bytevector?
@@ -2482,6 +2499,7 @@
     (stak base)
     (stak parameter)
     (stak io)
+    (stak unicode)
     (stak continue)
     (stak exception))
 
