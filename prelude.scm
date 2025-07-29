@@ -3010,8 +3010,14 @@
           (write-string (number->string x)))
 
         ((pair? x)
-          (parameterize ((current-shares (cons-unique x xs)))
-            (write-list x)))
+          (case (current-mode)
+            ((recursive)
+              (parameterize ((current-shares (cons-unique x xs)))
+                (write-list x)))
+            ((shared)
+              (error "shared list not supported")
+              (else
+                (write-list x)))))
 
         ((procedure? x)
           (write-string "#procedure"))
@@ -3037,7 +3043,7 @@
               (parameterize ((current-shares (cons-unique x xs)))
                 (write-vector x)))
             ((shared)
-              (error "shared structure not supported")
+              (error "shared vector not supported")
               (else
                 (write-vector x)))))
 
