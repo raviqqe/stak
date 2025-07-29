@@ -2951,6 +2951,7 @@
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
+    (define current-display (make-parameter #f))
     (define current-shares (make-parameter '()))
 
     (define (cons-unique x xs)
@@ -2991,12 +2992,15 @@
           (write-sequence (bytevector->list x)))
 
         ((char? x)
-          (write-char #\#)
-          (write-char #\\)
-          (let ((pair (assoc x special-char-names)))
-            (if pair
-              (write-string (cdr pair))
-              (write-char x))))
+          (if (current-display)
+            (write-char x)
+            (begin
+              (write-char #\#)
+              (write-char #\\)
+              (let ((pair (assoc x special-char-names)))
+                (if pair
+                  (write-string (cdr pair))
+                  (write-char x))))))
 
         ((null? x)
           (write-sequence x))
@@ -3015,9 +3019,12 @@
           (write-string "#record"))
 
         ((string? x)
-          (write-char #\")
-          (for-each write-escaped-char (string->list x))
-          (write-char #\"))
+          (if (current-display)
+            (write-string x)
+            (begin
+              (write-char #\")
+              (for-each write-escaped-char (string->list x))
+              (write-char #\"))))
 
         ((symbol? x)
           (let ((string (symbol->string x)))
