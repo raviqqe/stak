@@ -2947,6 +2947,13 @@
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
+    (define current-shares (make-parameter '()))
+
+    (define (cons-unique x xs)
+      (if (memq x xs)
+        xs
+        (cons x xs)))
+
     (define (write x . rest)
       (define escaped-chars
         '((#\newline . #\n)
@@ -2995,7 +3002,8 @@
             (write-string (number->string x)))
 
           ((pair? x)
-            (write-list x))
+            (parameterize ((current-shares (cons-unique x xs)))
+              (write-list x)))
 
           ((procedure? x)
             (write-string "#procedure"))
@@ -3013,7 +3021,8 @@
               (write-string (if (zero? (string-length string)) "||" string))))
 
           ((vector? x)
-            (write-vector x))
+            (parameterize ((current-shares (cons-unique x xs)))
+              (write-vector x)))
 
           (else
             (error "unknown type to write")))))
