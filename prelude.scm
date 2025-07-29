@@ -2953,7 +2953,7 @@
 
     (define current-display (make-parameter #f))
     (define current-mode (make-parameter #f))
-    (define current-cycles (make-parameter '()))
+    (define current-shares (make-parameter '()))
 
     (define (cons-unique x xs)
       (if (memq x xs)
