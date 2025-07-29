@@ -3522,14 +3522,14 @@
               - call 1 #f write-char
               - set 0
               - get 0
-              - call 1 #f write-value
+              - call 1 #f write-irritant
             - call 1 #f $$close
             - get 8
             - call 1 #f error-object-irritants
             - call 2 #f for-each
             - continue
           - get 7
-          - call 1 #f write-value
+          - call 1 #f write-irritant
           - set 0
           - call 0 #f newline
           - set 0
@@ -3688,7 +3688,7 @@
   - call 1 #f ||
   - call 2 #f write-string
 - call 1 #f $$close
-- set write-value
+- set write-irritant
 - constant symbol-table
 - constant list
   - symbols
@@ -3953,7 +3953,7 @@
   - file-error?
   - guard
   - unwind
-  - write-value
+  - write-irritant
   - continue
   - call/cc
   - call-with-current-continuation
@@ -8743,7 +8743,7 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (write-value . write-value)
+                                            - (write-irritant . write-irritant)
                                           - list
                                             - list
                                               - stak
@@ -8760,7 +8760,7 @@
                                             - (file-error? . file-error?)
                                             - (guard . guard)
                                             - (unwind . unwind)
-                                            - (write-value . write-value)
+                                            - (write-irritant . write-irritant)
                                           - list
                                             - list
                                               - stak
@@ -12347,7 +12347,7 @@
 - call 1 #f $$close
 - set ||
 - get write
-- set write-value
+- set write-irritant
 - constant procedure 1 #f
   - get 0
   - constant 5
