@@ -3012,12 +3012,15 @@
         ((pair? x)
           (case (current-mode)
             ((recursive)
-              (parameterize ((current-shares (cons-unique x xs)))
-                (write-list x)))
+              (cond
+                ((memq x xs)
+                  (write-list x))
+                (else
+                  (write-list x))))
             ((shared)
-              (error "shared list not supported")
-              (else
-                (write-list x)))))
+              (error "shared list not supported"))
+            (else
+              (write-list x))))
 
         ((procedure? x)
           (write-string "#procedure"))
@@ -3043,9 +3046,9 @@
               (parameterize ((current-shares (cons-unique x xs)))
                 (write-vector x)))
             ((shared)
-              (error "shared vector not supported")
-              (else
-                (write-vector x)))))
+              (error "shared vector not supported"))
+            (else
+              (write-vector x))))
 
         (else
           (error "unknown type to write"))))
