@@ -376,7 +376,7 @@ Feature: String
     Then the stdout should contain exactly "A"
 
     Examples:
-      | predicate     | input | output |
-      | char-downcase | Ab    | ab     |
-      | char-foldcase | Ab    | ab     |
-      | char-upcase   | Ab    | AB     |
+      | predicate       | input | output |
+      | string-downcase | Ab    | ab     |
+      | string-foldcase | Ab    | ab     |
+      | string-upcase   | Ab    | AB     |
