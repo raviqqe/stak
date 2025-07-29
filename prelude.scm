@@ -2954,7 +2954,7 @@
         xs
         (cons x xs)))
 
-    (define (write-value x)
+    (define (write-data x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -3028,7 +3028,7 @@
 
     (define (write-simple x . rest)
       (parameterize ((current-output-port (get-output-port rest)))
-        foo))
+        (write-data foo)))
 
     (define (display x . rest)
       (parameterize ((current-write display)
@@ -3051,7 +3051,7 @@
 
       (define (write-quote char value)
         (write-char char)
-        ((current-write) value))
+        (write-data value))
 
       (if (or (null? xs) (null? (cdr xs)))
         (write-sequence xs)
@@ -3068,17 +3068,15 @@
             (write-sequence xs)))))
 
     (define (write-sequence xs)
-      (define write (current-write))
-
       (write-char #\()
 
       (when (pair? xs)
-        (write (car xs))
+        (write-data (car xs))
         (let loop ((xs (cdr xs)))
           (cond
             ((pair? xs)
               (write-char #\space)
-              (write (car xs))
+              (write-data (car xs))
               (loop (cdr xs)))
 
             ((null? xs)
@@ -3088,7 +3086,7 @@
               (write-char #\space)
               (write-char #\.)
               (write-char #\space)
-              (write xs)))))
+              (write-data xs)))))
 
       (write-char #\)))
 
