@@ -364,3 +364,19 @@ Feature: String
       | A        |
       | ABC      |
       | Aあ😄      |
+
+  Scenario Outline: Convert a string case
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (equal? (<predicate> "<input>") "<output>") 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | predicate     | input | output |
+      | char-downcase | Ab    | ab     |
+      | char-foldcase | Ab    | ab     |
+      | char-upcase   | Ab    | AB     |
