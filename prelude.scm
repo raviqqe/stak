@@ -2954,10 +2954,10 @@
         xs
         (cons x xs)))
 
-    (define (write-simple x . rest)
-      foo)
+    (define current-mode (make-parameter #f))
+    (define current-display (make-parameter #f))
 
-    (define (write x . rest)
+    (define (write-value display x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -2978,57 +2978,60 @@
               (write-char (cdr pair)))
             (write-char x))))
 
+      (cond
+        ((not x)
+          (write-string "#f"))
+
+        ((eq? x #t)
+          (write-string "#t"))
+
+        ((bytevector? x)
+          (write-string "#u8")
+          (write-sequence (bytevector->list x)))
+
+        ((char? x)
+          (write-char #\#)
+          (write-char #\\)
+          (let ((pair (assoc x special-char-names)))
+            (if pair
+              (write-string (cdr pair))
+              (write-char x))))
+
+        ((null? x)
+          (write-sequence x))
+
+        ((number? x)
+          (write-string (number->string x)))
+
+        ((pair? x)
+          (parameterize ((current-shares (cons-unique x xs)))
+            (write-list x)))
+
+        ((procedure? x)
+          (write-string "#procedure"))
+
+        ((record? x)
+          (write-string "#record"))
+
+        ((string? x)
+          (write-char #\")
+          (for-each write-escaped-char (string->list x))
+          (write-char #\"))
+
+        ((symbol? x)
+          (let ((string (symbol->string x)))
+            (write-string (if (zero? (string-length string)) "||" string))))
+
+        ((vector? x)
+          (parameterize ((current-shares (cons-unique x xs)))
+            (write-vector x)))
+
+        (else
+          (error "unknown type to write"))))
+
+    (define (write-simple x . rest)
       (parameterize ((current-output-port (get-output-port rest)))
-        (cond
-          ((not x)
-            (write-string "#f"))
-
-          ((eq? x #t)
-            (write-string "#t"))
-
-          ((bytevector? x)
-            (write-string "#u8")
-            (write-sequence (bytevector->list x)))
-
-          ((char? x)
-            (write-char #\#)
-            (write-char #\\)
-            (let ((pair (assoc x special-char-names)))
-              (if pair
-                (write-string (cdr pair))
-                (write-char x))))
-
-          ((null? x)
-            (write-sequence x))
-
-          ((number? x)
-            (write-string (number->string x)))
-
-          ((pair? x)
-            (parameterize ((current-shares (cons-unique x xs)))
-              (write-list x)))
-
-          ((procedure? x)
-            (write-string "#procedure"))
-
-          ((record? x)
-            (write-string "#record"))
-
-          ((string? x)
-            (write-char #\")
-            (for-each write-escaped-char (string->list x))
-            (write-char #\"))
-
-          ((symbol? x)
-            (let ((string (symbol->string x)))
-              (write-string (if (zero? (string-length string)) "||" string))))
-
-          ((vector? x)
-            (parameterize ((current-shares (cons-unique x xs)))
-              (write-vector x)))
-
-          (else
-            (error "unknown type to write")))))
+        foo))
 
     (define (display x . rest)
       (parameterize ((current-write display)
