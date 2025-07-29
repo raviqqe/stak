@@ -2996,7 +2996,7 @@
 
           ((symbol? x)
             (let ((string (symbol->string x)))
-              (display (if (zero? (string-length string)) "||" string))))
+              (write-string (if (zero? (string-length string)) "||" string))))
 
           ((vector? x)
             (write-vector x))
