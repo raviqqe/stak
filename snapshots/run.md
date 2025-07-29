@@ -2705,6 +2705,48 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set read-string
+- constant procedure 0 #t
+  - constant procedure 1 #f
+    - get 2
+    - call 1 #f ||
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 0 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 2
+            - constant #\newline
+            - call 2 #f eqv?
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f eof-object?
+          - call 1 #f 1
+          - set 1
+          - if
+            - constant ()
+          - get 0
+          - call 0 #f 4
+          - call 2 #f cons
+        - call 1 #f $$close
+        - get 4
+        - call 1 #f read-char
+        - call 1 #f 1
+      - call 1 #f $$close
+      - set 1
+      - call 0 #f 0
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+    - set 1
+    - call 1 #f list->string
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set read-line
 - constant procedure 1 #t
   - constant procedure 1 #f
     - get 2
@@ -3943,6 +3985,7 @@
   - peek-char
   - char-ready?
   - read-string
+  - read-line
   - read-bytevector
   - read-bytevector!
   - write-u8
@@ -8656,6 +8699,7 @@
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
                                             - (read-string . read-string)
+                                            - (read-line . read-line)
                                             - (read-bytevector . read-bytevector)
                                             - (read-bytevector! . read-bytevector!)
                                             - (write-u8 . write-u8)
@@ -8732,6 +8776,7 @@
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
                                             - (read-string . read-string)
+                                            - (read-line . read-line)
                                             - (read-bytevector . read-bytevector)
                                             - (read-bytevector! . read-bytevector!)
                                             - (write-u8 . write-u8)
