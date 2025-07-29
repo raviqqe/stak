@@ -2968,34 +2968,7 @@
               (write-char (cdr pair)))
             (write-char x))))
 
-      (parameterize ((current-write write)
-                     (current-output-port (get-output-port rest)))
-        (cond
-          ((char? x)
-            (write-char #\#)
-            (write-char #\\)
-            (let ((pair (assoc x special-char-names)))
-              (if pair
-                (display (cdr pair))
-                (write-char x))))
-
-          ((pair? x)
-            (write-list x))
-
-          ((string? x)
-            (write-char #\")
-            (for-each write-escaped-char (string->list x))
-            (write-char #\"))
-
-          ((vector? x)
-            (write-vector x))
-
-          (else
-            (display x)))))
-
-    (define (display x . rest)
-      (parameterize ((current-write display)
-                     (current-output-port (get-output-port rest)))
+      (parameterize ((current-output-port (get-output-port rest)))
         (cond
           ((not x)
             (write-string "#f"))
@@ -3008,13 +2981,18 @@
             (write-sequence (bytevector->list x)))
 
           ((char? x)
-            (write-char x))
+            (write-char #\#)
+            (write-char #\\)
+            (let ((pair (assoc x special-char-names)))
+              (if pair
+                (write-string (cdr pair))
+                (write-char x))))
 
           ((null? x)
             (write-sequence x))
 
           ((number? x)
-            (display (number->string x)))
+            (write-string (number->string x)))
 
           ((pair? x)
             (write-list x))
@@ -3026,17 +3004,32 @@
             (write-string "#record"))
 
           ((string? x)
-            (write-string x))
+            (write-char #\")
+            (for-each write-escaped-char (string->list x))
+            (write-char #\"))
 
           ((symbol? x)
             (let ((string (symbol->string x)))
-              (display (if (zero? (string-length string)) "||" string))))
+              (write-string (if (zero? (string-length string)) "||" string))))
 
           ((vector? x)
             (write-vector x))
 
           (else
-            (error "unknown type to display")))))
+            (error "unknown type to write")))))
+
+    (define (display x . rest)
+      (parameterize ((current-write display)
+                     (current-output-port (get-output-port rest)))
+        (cond
+          ((char? x)
+            (write-char x))
+
+          ((string? x)
+            (write-string x))
+
+          (else
+            (write x)))))
 
     (define current-write (make-parameter write))
 

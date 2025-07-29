@@ -2637,77 +2637,117 @@
     - constant procedure 1 #f
       - constant procedure 1 #f
         - constant procedure 0 #f
-          - get ||
+          - get 9
+          - call 1 #f ||
           - call 1 #f 4
         - call 1 #f ||
         - constant procedure 0 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - constant procedure 0 #f
-                - get 15
-                - call 1 #f ||
-                - call 1 #f 4
-              - call 1 #f ||
-              - constant procedure 0 #f
-                - get 17
-                - call 1 #f ||
-                - if
-                  - constant #\#
-                  - call 1 #f ||
-                  - set 0
-                  - constant #\\
-                  - call 1 #f ||
-                  - set 0
-                  - constant procedure 1 #f
-                    - get 0
-                    - if
-                      - get 0
-                      - call 1 #f ||
-                      - call 1 #f ||
-                    - get 19
-                    - call 1 #f ||
-                  - call 1 #f ||
-                  - get 18
-                  - get 15
-                  - call 2 #f ||
-                  - call 1 #f 1
-                - get 17
-                - call 1 #f ||
-                - if
-                  - get 17
-                  - call 1 #f ||
-                - get 17
-                - call 1 #f ||
-                - if
-                  - constant #\"
-                  - call 1 #f ||
-                  - set 0
-                  - get 12
-                  - get 18
-                  - call 1 #f ||
-                  - call 2 #f ||
-                  - set 0
-                  - constant #\"
-                  - call 1 #f ||
-                - get 17
-                - call 1 #f ||
-                - if
-                  - get 17
-                  - call 1 #f ||
-                - get 17
-                - call 1 #f ||
-              - call 1 #f ||
-              - constant procedure 0 #f
-                - get 3
-                - call 1 #f 6
-              - call 1 #f ||
-              - call 3 #f ||
+          - get 11
+          - constant #f
+          - call 2 #f ||
+          - if
+            - constant "#f"
             - call 1 #f ||
-            - call 0 #f 1
-            - call 1 #f 1
+          - get 11
+          - constant #t
+          - call 2 #f ||
+          - if
+            - constant "#t"
+            - call 1 #f ||
+          - get 11
           - call 1 #f ||
-          - get ||
-          - call 1 #f 1
+          - if
+            - constant "#u8"
+            - call 1 #f ||
+            - set 0
+            - get 11
+            - call 1 #f ||
+            - call 1 #f ||
+          - get 11
+          - call 1 #f ||
+          - if
+            - constant #\#
+            - call 1 #f ||
+            - set 0
+            - constant #\\
+            - call 1 #f ||
+            - set 0
+            - constant procedure 1 #f
+              - get 0
+              - if
+                - get 0
+                - call 1 #f ||
+                - call 1 #f ||
+              - get 13
+              - call 1 #f ||
+            - call 1 #f ||
+            - get 12
+            - get 9
+            - call 2 #f ||
+            - call 1 #f 1
+          - get 11
+          - call 1 #f ||
+          - if
+            - get 11
+            - call 1 #f ||
+          - get 11
+          - call 1 #f ||
+          - if
+            - get 11
+            - call 1 #f ||
+            - call 1 #f ||
+          - get 11
+          - call 1 #f ||
+          - if
+            - get 11
+            - call 1 #f ||
+          - get 11
+          - call 1 #f ||
+          - if
+            - constant "#procedure"
+            - call 1 #f ||
+          - get 11
+          - call 1 #f ||
+          - if
+            - constant "#record"
+            - call 1 #f ||
+          - get 11
+          - call 1 #f ||
+          - if
+            - constant #\"
+            - call 1 #f ||
+            - set 0
+            - get 6
+            - get 12
+            - call 1 #f ||
+            - call 2 #f ||
+            - set 0
+            - constant #\"
+            - call 1 #f ||
+          - get 11
+          - call 1 #f ||
+          - if
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f ||
+              - constant 0
+              - call 2 #f ||
+              - if
+                - constant "||"
+                - continue
+              - get 0
+              - call 1 #f ||
+            - call 1 #f ||
+            - get 12
+            - call 1 #f ||
+            - call 1 #f 1
+          - get 11
+          - call 1 #f ||
+          - if
+            - get 11
+            - call 1 #f ||
+          - constant "unknown type to write"
+          - call 1 #f ||
         - call 1 #f ||
         - constant procedure 0 #f
           - get 3
@@ -2725,129 +2765,6 @@
   - constant #f
   - constant #f
   - call 3 #f 3
-- call 1 #f ||
-- set ||
-- constant procedure 1 #t
-  - constant procedure 1 #f
-    - constant procedure 1 #f
-      - constant procedure 0 #f
-        - get ||
-        - call 1 #f 4
-      - call 1 #f ||
-      - constant procedure 0 #f
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - constant procedure 0 #f
-              - get 11
-              - call 1 #f ||
-              - call 1 #f 4
-            - call 1 #f ||
-            - constant procedure 0 #f
-              - get 13
-              - constant #f
-              - call 2 #f ||
-              - if
-                - constant "#f"
-                - call 1 #f ||
-              - get 13
-              - constant #t
-              - call 2 #f ||
-              - if
-                - constant "#t"
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - constant "#u8"
-                - call 1 #f ||
-                - set 0
-                - get 13
-                - call 1 #f ||
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - get 13
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - get 13
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - get 13
-                - call 1 #f ||
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - get 13
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - constant "#procedure"
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - constant "#record"
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - get 13
-                - call 1 #f ||
-              - get 13
-              - call 1 #f ||
-              - if
-                - constant procedure 1 #f
-                  - get 0
-                  - call 1 #f ||
-                  - constant 0
-                  - call 2 #f ||
-                  - if
-                    - constant "||"
-                    - continue
-                  - get 0
-                  - call 1 #f ||
-                - call 1 #f ||
-                - get 14
-                - call 1 #f ||
-                - call 1 #f 1
-              - get 13
-              - call 1 #f ||
-              - if
-                - get 13
-                - call 1 #f ||
-              - constant "unknown type to display"
-              - call 1 #f ||
-            - call 1 #f ||
-            - constant procedure 0 #f
-              - get 3
-              - call 1 #f 6
-            - call 1 #f ||
-            - call 3 #f ||
-          - call 1 #f ||
-          - call 0 #f 1
-          - call 1 #f 1
-        - call 1 #f ||
-        - get ||
-        - call 1 #f 1
-      - call 1 #f ||
-      - constant procedure 0 #f
-        - get 3
-        - call 1 #f 6
-      - call 1 #f ||
-      - call 3 #f ||
-    - call 1 #f ||
-    - call 0 #f 1
-    - call 1 #f 1
-  - call 1 #f ||
-  - get ||
-  - call 1 #f 1
 - call 1 #f ||
 - set ||
 - get ||
