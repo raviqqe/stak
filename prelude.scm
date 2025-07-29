@@ -2952,7 +2952,8 @@
       (if (null? rest) (current-output-port) (car rest)))
 
     (define current-display (make-parameter #f))
-    (define current-shares (make-parameter '()))
+    (define current-mode (make-parameter #f))
+    (define current-cycles (make-parameter '()))
 
     (define (cons-unique x xs)
       (if (memq x xs)
@@ -3031,8 +3032,14 @@
             (write-string (if (zero? (string-length string)) "||" string))))
 
         ((vector? x)
-          (parameterize ((current-shares (cons-unique x xs)))
-            (write-vector x)))
+          (case (current-mode)
+            ((recursive)
+              (parameterize ((current-shares (cons-unique x xs)))
+                (write-vector x)))
+            ((shared)
+              (error "shared structure not supported")
+            (else
+              (write-vector x))))
 
         (else
           (error "unknown type to write"))))
@@ -3042,7 +3049,13 @@
         (write-value x)))
 
     (define (write x . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
+      (parameterize ((current-mode 'recursive)
+                     (current-output-port (get-output-port rest)))
+        (write-value x)))
+
+    (define (write-shared x . rest)
+      (parameterize ((current-mode 'shared)
+                     (current-output-port (get-output-port rest)))
         (write-value x)))
 
     (define (display x . rest)
