@@ -125,6 +125,8 @@ Feature: Character
       | predicate     | input | output |
       | char-downcase | #\\A  | #\\a   |
       | char-downcase | #\\a  | #\\a   |
+      | char-foldcase | #\\A  | #\\a   |
+      | char-foldcase | #\\a  | #\\a   |
       | char-upcase   | #\\a  | #\\A   |
       | char-upcase   | #\\A  | #\\A   |
 
