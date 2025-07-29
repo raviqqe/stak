@@ -2954,6 +2954,9 @@
         xs
         (cons x xs)))
 
+    (define (write-simple x . rest)
+      foo)
+
     (define (write x . rest)
       (define escaped-chars
         '((#\newline . #\n)
