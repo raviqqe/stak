@@ -3002,7 +3002,7 @@
             (write-vector x))
 
           (else
-            (error "unknown type to display")))))
+            (error "unknown type to write")))))
 
     (define (display x . rest)
       (parameterize ((current-write display)
