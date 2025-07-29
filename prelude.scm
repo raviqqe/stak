@@ -3038,8 +3038,8 @@
                 (write-vector x)))
             ((shared)
               (error "shared structure not supported")
-            (else
-              (write-vector x))))
+              (else
+                (write-vector x)))))
 
         (else
           (error "unknown type to write"))))
