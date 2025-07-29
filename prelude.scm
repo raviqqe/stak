@@ -2971,14 +2971,14 @@
             (write-char #\\)
             (let ((pair (assoc x special-char-names)))
               (if pair
-                (display (cdr pair))
+                (write-string (cdr pair))
                 (write-char x))))
 
           ((null? x)
             (write-sequence x))
 
           ((number? x)
-            (display (number->string x)))
+            (write-string (number->string x)))
 
           ((pair? x)
             (write-list x))
