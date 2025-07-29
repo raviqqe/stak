@@ -2939,7 +2939,11 @@
         (read-raw)))))
 
 (define-library (scheme write)
-  (export display write)
+  (export
+    display
+    write
+    write-shared
+    write-simple)
 
   (import (scheme base) (scheme char))
 
@@ -3028,20 +3032,16 @@
 
     (define (write-simple x . rest)
       (parameterize ((current-output-port (get-output-port rest)))
-        (write-data foo)))
+        (write-data x)))
+
+    (define (write x . rest)
+      (parameterize ((current-output-port (get-output-port rest)))
+        (write-data x)))
 
     (define (display x . rest)
-      (parameterize ((current-write display)
+      (parameterize ((current-display #t)
                      (current-output-port (get-output-port rest)))
-        (cond
-          ((char? x)
-            (write-char x))
-
-          ((string? x)
-            (write-string x))
-
-          (else
-            (write x)))))
+        (write-data x)))
 
     (define (write-list xs)
       (define quotes
