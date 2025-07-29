@@ -2953,8 +2953,7 @@
               (write-char (cdr pair)))
             (write-char x))))
 
-      (parameterize ((current-write write)
-                     (current-output-port (get-output-port rest)))
+      (parameterize ((current-output-port (get-output-port rest)))
         (cond
           ((not x)
             (write-string "#f"))
