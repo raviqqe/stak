@@ -2693,9 +2693,14 @@
     char-whitespace?
     char-lower-case?
     char-upper-case?
-    char-upcase
     char-downcase
+    char-foldcase
+    char-upcase
+    string-downcase
+    string-foldcase
+    string-upcase
     digit-value
+
     special-chars)
 
   (import (scheme base))
@@ -2747,6 +2752,16 @@
       (if (char-upper-case? x)
         (integer->char (+ (char->integer x) 32))
         x))
+
+    (define char-foldcase char-downcase)
+
+    (define (string-case f)
+      (lambda (xs)
+        (list->string (map f (string->list xs)))))
+
+    (define string-downcase (string-case char-downcase))
+    (define string-foldcase (string-case char-foldcase))
+    (define string-upcase (string-case char-upcase))
 
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))

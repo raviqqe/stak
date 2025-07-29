@@ -4192,8 +4192,12 @@
   - char-whitespace?
   - char-lower-case?
   - char-upper-case?
-  - char-upcase
   - char-downcase
+  - char-foldcase
+  - char-upcase
+  - string-downcase
+  - string-foldcase
+  - string-upcase
   - digit-value
   - special-chars
   - case-lambda
@@ -4919,6 +4923,27 @@
   - get 0
 - call 1 #f $$close
 - set char-downcase
+- get char-downcase
+- set char-foldcase
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 2
+    - get 1
+    - call 1 #f string->list
+    - call 2 #f map
+    - call 1 #f list->string
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- get char-downcase
+- call 1 #f ||
+- set string-downcase
+- get char-foldcase
+- call 1 #f ||
+- set string-foldcase
+- get char-upcase
+- call 1 #f ||
+- set string-upcase
 - constant procedure 1 #f
   - get 0
   - call 1 #f char->integer
@@ -8636,8 +8661,12 @@
                                             - (char-whitespace? . char-whitespace?)
                                             - (char-lower-case? . char-lower-case?)
                                             - (char-upper-case? . char-upper-case?)
-                                            - (char-upcase . char-upcase)
                                             - (char-downcase . char-downcase)
+                                            - (char-foldcase . char-foldcase)
+                                            - (char-upcase . char-upcase)
+                                            - (string-downcase . string-downcase)
+                                            - (string-foldcase . string-foldcase)
+                                            - (string-upcase . string-upcase)
                                             - (digit-value . digit-value)
                                             - (special-chars . special-chars)
                                           - list
