@@ -2954,10 +2954,7 @@
         xs
         (cons x xs)))
 
-    (define current-mode (make-parameter #f))
-    (define current-display (make-parameter #f))
-
-    (define (write-value display x)
+    (define (write-value x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -3045,8 +3042,6 @@
 
           (else
             (write x)))))
-
-    (define current-write (make-parameter write))
 
     (define (write-list xs)
       (define quotes
