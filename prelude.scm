@@ -2075,7 +2075,7 @@
 
     unwind
 
-    write-value)
+    write-irritant)
 
   (import (stak base) (stak parameter) (stak io) (stak continue))
 
@@ -2110,9 +2110,9 @@
                       (for-each
                         (lambda (value)
                           (write-char #\space)
-                          (write-value value))
+                          (write-irritant value))
                         (error-object-irritants exception)))
-                    (write-value exception))
+                    (write-irritant exception))
                   (newline)
                   ($halt))))))
         (lambda (handler)
@@ -2221,7 +2221,7 @@
           (lambda () #f))))
 
     ; Dummy implementation
-    (define (write-value value . rest)
+    (define (write-irritant value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme base)
@@ -2505,7 +2505,7 @@
     open-output-bytevector
     get-output-bytevector
 
-    write-value)
+    write-irritant)
 
   (import
     (stak base)
@@ -3086,7 +3086,7 @@
       (write-char #\#)
       (write-sequence (vector->list xs)))
 
-    (set! write-value write)))
+    (set! write-irritant write)))
 
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
