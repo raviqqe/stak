@@ -3573,7 +3573,9 @@
           (primitive (+ 1000 index)))))))
 
 (define-library (srfi 1)
-  (export delete-duplicates iota)
+  (export
+    delete-duplicates
+    iota)
 
   (import (scheme base))
 
