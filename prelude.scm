@@ -2980,14 +2980,27 @@
       (let loop ((x x) (xs '()) (ys '()))
         (cond
           ((or (list? x) (vector? x))
-            (delete-duplicates
-              (append-map
-                (lambda (x)
-                  (loop
-                    x
-                    (cons x xs)
-                    (if (memq x xs) (cons x ys) ys)))
-                (if (list? x) x (vector->list x)))))
+            (let ((zs (cons x xs)))
+              (delete-duplicates
+                (append-map
+                  (lambda (x)
+                    (loop x zs (if (memq x xs) (cons x ys) ys)))
+                  (if (list? x) x (vector->list x))))))
+          (else
+            ys))))
+
+    (define (collect-shared-values x)
+      (let loop ((x x) (xs '()) (ys '()))
+        (cond
+          ((or (list? x) (vector? x))
+            (fold-left
+              (lambda (ys x)
+                (loop
+                  x
+                  (cons x xs)
+                  (if (memq x xs) (cons x ys) ys)))
+              ys
+              (if (list? x) x (vector->list x))))
           (else
             ys))))
 
