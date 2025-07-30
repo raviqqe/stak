@@ -2947,6 +2947,9 @@
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
+    (define (collect-recursive-values x)
+      foo)
+
     (define (write-value x)
       (define escaped-chars
         '((#\newline . #\n)
