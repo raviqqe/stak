@@ -1533,6 +1533,31 @@
     (define (write-message . xs)
       #f)))
 
+(define-library (srfi 1)
+  (export
+    delete-duplicates
+    iota)
+
+  (import (stak base))
+
+  (begin
+    (define (delete-duplicates xs)
+      (if (null? xs)
+        '()
+        (let ((ys (delete-duplicates (cdr xs))))
+          (if (memq (car xs) ys)
+            ys
+            (cons (car xs) ys)))))
+
+    (define (iota count . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
+
+      (let loop ((count count) (x start))
+        (if (> count 0)
+          (cons x (loop (- count 1) (+ x step)))
+          '())))))
+
 (define-library (stak parameter)
   (export make-parameter)
 
@@ -3571,28 +3596,3 @@
               ($$dynamic-symbols)
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
-
-(define-library (srfi 1)
-  (export
-    delete-duplicates
-    iota)
-
-  (import (scheme base))
-
-  (begin
-    (define (delete-duplicates xs)
-      (if (null? xs)
-        '()
-        (let ((ys (delete-duplicates (cdr xs))))
-          (if (memq (car xs) ys)
-            ys
-            (cons (car xs) ys)))))
-
-    (define (iota count . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
-
-      (let loop ((count count) (x start))
-        (if (> count 0)
-          (cons x (loop (- count 1) (+ x step)))
-          '())))))
