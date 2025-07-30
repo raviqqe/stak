@@ -4,7 +4,9 @@ set -e
 
 brew install lua@5.4 pkgconf uutils-coreutils uutils-findutils
 cargo install stak
-go mod download
+# Download the `agoa` command by running it.
+# https://github.com/actions/setup-go/issues/358
+go tool agoa --version
 
 echo LD_LIBRARY_PATH=$(brew --prefix lua@5.4)/lib:$LD_LIBRARY_PATH >>$GITHUB_ENV
 
