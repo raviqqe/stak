@@ -2980,17 +2980,14 @@
       (let loop ((x x) (xs '()) (ys '()))
         (cond
           ((or (list? x) (vector? x))
-            (let ((xs (if (list? x) x (vector->list x))))
-              (delete-duplicates
-                (append-map
-                  (lambda (x)
-                    (loop
-                      x
-                      (cons x xs)
-                      (if (memq x xs)
-                        (cons x ys)
-                        ys)))
-                  xs))))
+            (delete-duplicates
+              (append-map
+                (lambda (x)
+                  (loop
+                    x
+                    (cons x xs)
+                    (if (memq x xs) (cons x ys) ys)))
+                (if (list? x) x (vector->list x)))))
           (else
             ys))))
 
