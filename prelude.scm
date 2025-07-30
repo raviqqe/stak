@@ -2947,7 +2947,7 @@
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
-    (define (write x . rest)
+    (define (write-value x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -2968,70 +2968,71 @@
               (write-char (cdr pair)))
             (write-char x))))
 
+      (cond
+        ((not x)
+          (write-string "#f"))
+
+        ((eq? x #t)
+          (write-string "#t"))
+
+        ((bytevector? x)
+          (write-string "#u8")
+          (write-sequence (bytevector->list x)))
+
+        ((char? x)
+          (if (current-display)
+            (write-char x)
+            (begin
+              (write-char #\#)
+              (write-char #\\)
+              (let ((pair (assoc x special-char-names)))
+                (if pair
+                  (write-string (cdr pair))
+                  (write-char x))))))
+
+        ((null? x)
+          (write-sequence x))
+
+        ((number? x)
+          (write-string (number->string x)))
+
+        ((pair? x)
+          (write-list x))
+
+        ((procedure? x)
+          (write-string "#procedure"))
+
+        ((record? x)
+          (write-string "#record"))
+
+        ((string? x)
+          (if (current-display)
+            (write-string x)
+            (begin
+              (write-char #\")
+              (for-each write-escaped-char (string->list x))
+              (write-char #\"))))
+
+        ((symbol? x)
+          (let ((string (symbol->string x)))
+            (write-string (if (zero? (string-length string)) "||" string))))
+
+        ((vector? x)
+          (write-vector x))
+
+        (else
+          (error "unknown type to write"))))
+
+    (define current-display (make-parameter #f))
+
+    (define (write x . rest)
       (parameterize ((current-output-port (get-output-port rest)))
-        (cond
-          ((not x)
-            (write-string "#f"))
-
-          ((eq? x #t)
-            (write-string "#t"))
-
-          ((bytevector? x)
-            (write-string "#u8")
-            (write-sequence (bytevector->list x)))
-
-          ((char? x)
-            (write-char #\#)
-            (write-char #\\)
-            (let ((pair (assoc x special-char-names)))
-              (if pair
-                (write-string (cdr pair))
-                (write-char x))))
-
-          ((null? x)
-            (write-sequence x))
-
-          ((number? x)
-            (write-string (number->string x)))
-
-          ((pair? x)
-            (write-list x))
-
-          ((procedure? x)
-            (write-string "#procedure"))
-
-          ((record? x)
-            (write-string "#record"))
-
-          ((string? x)
-            (write-char #\")
-            (for-each write-escaped-char (string->list x))
-            (write-char #\"))
-
-          ((symbol? x)
-            (let ((string (symbol->string x)))
-              (write-string (if (zero? (string-length string)) "||" string))))
-
-          ((vector? x)
-            (write-vector x))
-
-          (else
-            (error "unknown type to write")))))
+        (write-value x)))
 
     (define (display x . rest)
-      (parameterize ((current-write display)
+      (parameterize ((current-display #t)
                      (current-output-port (get-output-port rest)))
-        (cond
-          ((char? x)
-            (write-char x))
-
-          ((string? x)
-            (write-string x))
-
-          (else
-            (write x)))))
-
-    (define current-write (make-parameter write))
+        (write-value x)))
 
     (define (write-list xs)
       (define quotes
@@ -3041,7 +3042,7 @@
 
       (define (write-quote char value)
         (write-char char)
-        ((current-write) value))
+        (write-value value))
 
       (if (or (null? xs) (null? (cdr xs)))
         (write-sequence xs)
@@ -3058,17 +3059,15 @@
             (write-sequence xs)))))
 
     (define (write-sequence xs)
-      (define write (current-write))
-
       (write-char #\()
 
       (when (pair? xs)
-        (write (car xs))
+        (write-value (car xs))
         (let loop ((xs (cdr xs)))
           (cond
             ((pair? xs)
               (write-char #\space)
-              (write (car xs))
+              (write-value (car xs))
               (loop (cdr xs)))
 
             ((null? xs)
@@ -3078,7 +3077,7 @@
               (write-char #\space)
               (write-char #\.)
               (write-char #\space)
-              (write xs)))))
+              (write-value xs)))))
 
       (write-char #\)))
 
