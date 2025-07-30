@@ -30,7 +30,7 @@ std = [
 ]
 
 [dependencies]
-clap = { version = "4.5.41", features = ["derive"], optional = true }
+clap = { version = "4.5.42", features = ["derive"], optional = true }
 libc = { version = "0.2.174", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
 stak-configuration = { version = "0.10.33", path = "../configuration" }
