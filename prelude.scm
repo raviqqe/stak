@@ -1535,12 +1535,16 @@
 
 (define-library (srfi 1)
   (export
+    append-map
     delete-duplicates
     iota)
 
   (import (stak base))
 
   (begin
+    (define (append-map f xs)
+      (apply append (map f xs)))
+
     (define (delete-duplicates xs)
       (if (null? xs)
         '()
@@ -2966,19 +2970,27 @@
 (define-library (scheme write)
   (export display write)
 
-  (import (scheme base) (scheme char))
+  (import (scheme base) (scheme char) (srfi 1))
 
   (begin
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
     (define (collect-recursive-values x)
-      (let loop ((xs '()) (ys '()))
+      (let loop ((x x) (xs '()) (ys '()))
         (cond
           ((or (list? x) (vector? x))
-            (loop
-              (cons x xs)
-              (if (memq x xs) (cons x ys) ys)))
+            (let ((xs (if (list? x) x (vector->list x))))
+              (delete-duplicates
+                (append-map
+                  (lambda (x)
+                    (loop
+                      x
+                      (cons x xs)
+                      (if (memq x xs)
+                        (cons x ys)
+                        ys)))
+                  xs))))
           (else
             ys))))
 
