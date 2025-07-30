@@ -357,56 +357,77 @@
         ((_ name value)
           ($$set! name value))))
 
-    (define-syntax cond-expand
-      (syntax-rules (and or not else r7rs library scheme base stak)
-        ((_ (else body ...))
-          (relaxed-begin body ...))
+    (define-syntax expand-features
+      (syntax-rules ::: ()
+        ((_ (feature1 feature2 :::) (library :::) outer-clause :::)
+          (expand-features (feature2 :::) (library :::)
+            ; TODO Use `_`.
+            ((cond-expand (feature1 body ...) clause ...)
+              (relaxed-begin body ...))
+            outer-clause
+            :::))
 
-        ((_ ((and) body ...) clause ...)
-          (relaxed-begin body ...))
+        ((_ () (library1 library2 :::) outer-clause :::)
+          (expand-features () (library2 :::)
+            ; TODO Use `_`.
+            ((cond-expand ((library library1) body ...) clause ...)
+              (relaxed-begin body ...))
+            outer-clause
+            :::))
 
-        ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
-          (cond-expand
-            (requirement1
-              (cond-expand
-                ((and requirement2 ...) body ...)
-                clause
-                ...))
-            clause
-            ...))
+        ((_ () () outer-clause :::)
+          (define-syntax cond-expand
+            (syntax-rules (and or not else r7rs library scheme base stak)
+              ; TODO Use `_`.
+              ((cond-expand (else body ...))
+                (relaxed-begin body ...))
 
-        ((_ ((or) body ...) clause ...)
-          (cond-expand clause ...))
+              ((cond-expand ((and) body ...) clause ...)
+                (relaxed-begin body ...))
 
-        ((_ ((or requirement1 requirement2 ...) body ...) clause ...)
-          (cond-expand
-            (requirement1 body ...)
-            ((or requirement2 ...) body ...)
-            clause
-            ...))
+              ((cond-expand ((and requirement1 requirement2 ...) body ...) clause ...)
+                (cond-expand
+                  (requirement1
+                    (cond-expand
+                      ((and requirement2 ...) body ...)
+                      clause
+                      ...))
+                  clause
+                  ...))
 
-        ((_ ((not requirement) body ...) clause ...)
-          (cond-expand
-            (requirement
-              (cond-expand
-                clause
-                ...))
-            (else body ...)))
+              ((cond-expand ((or) body ...) clause ...)
+                (cond-expand clause ...))
 
-        ((_ ((library (scheme base)) body ...) clause ...)
-          (relaxed-begin body ...))
+              ((cond-expand ((or requirement1 requirement2 ...) body ...) clause ...)
+                (cond-expand
+                  (requirement1 body ...)
+                  ((or requirement2 ...) body ...)
+                  clause
+                  ...))
 
-        ((_ ((library (name ...)) body ...) clause ...)
-          (cond-expand clause ...))
+              ((cond-expand ((not requirement) body ...) clause ...)
+                (cond-expand
+                  (requirement
+                    (cond-expand
+                      clause
+                      ...))
+                  (else body ...)))
 
-        ((_ (r7rs body ...) clause ...)
-          (relaxed-begin body ...))
+              outer-clause
+              :::
 
-        ((_ (stak body ...) clause ...)
-          (relaxed-begin body ...))
+              ((cond-expand (feature body ...) clause ...)
+                (cond-expand clause ...)))))))
 
-        ((_ (feature body ...) clause ...)
-          (cond-expand clause ...))))
+    (expand-features
+      (scheme
+        stak)
+      ((scheme base)
+        (scheme read)
+        (scheme write)
+        (stak base)
+        (stak continue)
+        (stak exception)))
 
     ;; Binding
 
