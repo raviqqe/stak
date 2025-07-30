@@ -2705,6 +2705,205 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set read-string
+- constant procedure 0 #t
+  - constant procedure 1 #f
+    - get 2
+    - call 1 #f ||
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 0 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 2
+            - constant #\newline
+            - call 2 #f eqv?
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f eof-object?
+          - call 1 #f 1
+          - set 1
+          - if
+            - constant ()
+          - get 0
+          - call 0 #f 4
+          - call 2 #f cons
+        - call 1 #f $$close
+        - get 4
+        - call 1 #f read-char
+        - call 1 #f 1
+      - call 1 #f $$close
+      - set 1
+      - call 0 #f 0
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+    - set 1
+    - call 1 #f list->string
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set read-line
+- constant procedure 1 #t
+  - constant procedure 1 #f
+    - get 2
+    - call 1 #f ||
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 4
+            - constant 0
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f eof-object?
+          - call 1 #f 1
+          - set 1
+          - if
+            - constant ()
+          - get 0
+          - get 3
+          - constant 1
+          - call 2 #f ||
+          - call 1 #f 6
+          - call 2 #f cons
+        - call 1 #f $$close
+        - get 5
+        - call 1 #f read-u8
+        - call 1 #f 1
+      - call 1 #f $$close
+      - set 1
+      - get 5
+      - call 1 #f 1
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+    - set 1
+    - call 1 #f list->bytevector
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set read-bytevector
+- constant procedure 1 #t
+  - constant procedure 3 #f
+    - get 4
+    - call 1 #f ||
+    - set 3
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 6
+      - call 1 #f cdr
+      - call 1 #f null?
+    - call 1 #f $$close
+    - get 5
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - constant 0
+      - continue
+    - get 4
+    - call 1 #f cadr
+    - set 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+        - get 8
+        - call 1 #f cddr
+        - call 1 #f null?
+      - call 1 #f $$close
+      - get 7
+      - call 1 #f cdr
+      - call 1 #f null?
+      - call 1 #f 1
+    - call 1 #f $$close
+    - get 5
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - constant #f
+      - continue
+    - get 4
+    - call 1 #f cddr
+    - call 1 #f car
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 3 #f
+        - constant procedure 1 #f
+          - get 0
+          - if
+            - get 0
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 10
+            - if
+              - get 6
+              - get 11
+              - call 2 #f >=
+            - constant #f
+          - call 1 #f $$close
+          - get 3
+          - call 1 #f eof-object?
+          - call 1 #f 1
+        - call 1 #f $$close
+        - get 2
+        - call 1 #f null?
+        - call 1 #f 1
+        - set 1
+        - if
+          - constant #f
+        - get 1
+        - get 9
+        - call 1 #f read-u8
+        - call 2 #f set-car!
+        - set 0
+        - get 2
+        - constant 1
+        - call 2 #f ||
+        - get 2
+        - call 1 #f cdr
+        - get 10
+        - call 1 #f peek-u8
+        - call 3 #f 7
+      - call 1 #f $$close
+      - set 1
+      - get 3
+      - get 8
+      - call 1 #f bytevector->list
+      - get 5
+      - call 2 #f list-tail
+      - get 6
+      - call 1 #f peek-u8
+      - call 3 #f 3
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - constant #f
+  - call 3 #f 3
+- call 1 #f $$close
+- set read-bytevector!
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
@@ -3091,6 +3290,26 @@
 - set open-output-bytevector
 - get ||
 - set get-output-bytevector
+- constant 1024
+- constant 1024
+- constant 1024
+- constant 1024
+- call 4 #f \*
+- set ||
+- constant procedure 1 #f
+  - get ||
+  - get 1
+  - call 1 #f open-input-string
+  - call 2 #f read-bytevector
+- call 1 #f $$close
+- set string->utf8
+- constant procedure 1 #f
+  - get ||
+  - get 1
+  - call 1 #f open-input-bytevector
+  - call 2 #f read-string
+- call 1 #f $$close
+- set utf8->string
 - constant procedure 0 #f
   - constant #f
 - call 1 #f $$close
@@ -3303,14 +3522,14 @@
               - call 1 #f write-char
               - set 0
               - get 0
-              - call 1 #f write-value
+              - call 1 #f write-irritant
             - call 1 #f $$close
             - get 8
             - call 1 #f error-object-irritants
             - call 2 #f for-each
             - continue
           - get 7
-          - call 1 #f write-value
+          - call 1 #f write-irritant
           - set 0
           - call 0 #f newline
           - set 0
@@ -3469,7 +3688,7 @@
   - call 1 #f ||
   - call 2 #f write-string
 - call 1 #f $$close
-- set write-value
+- set write-irritant
 - constant symbol-table
 - constant list
   - symbols
@@ -3973,8 +4192,12 @@
   - char-whitespace?
   - char-lower-case?
   - char-upper-case?
-  - char-upcase
   - char-downcase
+  - char-foldcase
+  - char-upcase
+  - string-downcase
+  - string-foldcase
+  - string-upcase
   - digit-value
   - special-chars
   - case-lambda
@@ -4035,12 +4258,15 @@
   - file-error?
   - guard
   - unwind
-  - write-value
+  - write-irritant
   - continue
   - call/cc
   - call-with-current-continuation
   - dynamic-wind
   - parameterize
+  - unicode
+  - string->utf8
+  - utf8->string
   - io
   - eof-object
   - eof-object?
@@ -4068,6 +4294,9 @@
   - peek-char
   - char-ready?
   - read-string
+  - read-line
+  - read-bytevector
+  - read-bytevector!
   - write-u8
   - write-char
   - write-string
@@ -4694,6 +4923,27 @@
   - get 0
 - call 1 #f $$close
 - set char-downcase
+- get char-downcase
+- set char-foldcase
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 2
+    - get 1
+    - call 1 #f string->list
+    - call 2 #f map
+    - call 1 #f list->string
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- get char-downcase
+- call 1 #f ||
+- set string-downcase
+- get char-foldcase
+- call 1 #f ||
+- set string-foldcase
+- get char-upcase
+- call 1 #f ||
+- set string-upcase
 - constant procedure 1 #f
   - get 0
   - call 1 #f char->integer
@@ -8411,8 +8661,12 @@
                                             - (char-whitespace? . char-whitespace?)
                                             - (char-lower-case? . char-lower-case?)
                                             - (char-upper-case? . char-upper-case?)
-                                            - (char-upcase . char-upcase)
                                             - (char-downcase . char-downcase)
+                                            - (char-foldcase . char-foldcase)
+                                            - (char-upcase . char-upcase)
+                                            - (string-downcase . string-downcase)
+                                            - (string-foldcase . string-foldcase)
+                                            - (string-upcase . string-upcase)
                                             - (digit-value . digit-value)
                                             - (special-chars . special-chars)
                                           - list
@@ -8628,6 +8882,8 @@
                                             - (vector->list . vector->list)
                                             - (string->vector . string->vector)
                                             - (vector->string . vector->string)
+                                            - (string->utf8 . string->utf8)
+                                            - (utf8->string . utf8->string)
                                             - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
                                             - (bytevector-append . bytevector-append)
@@ -8710,6 +8966,9 @@
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
                                             - (read-string . read-string)
+                                            - (read-line . read-line)
+                                            - (read-bytevector . read-bytevector)
+                                            - (read-bytevector! . read-bytevector!)
                                             - (write-u8 . write-u8)
                                             - (write-char . write-char)
                                             - (write-string . write-string)
@@ -8722,7 +8981,7 @@
                                             - (open-input-bytevector . open-input-bytevector)
                                             - (open-output-bytevector . open-output-bytevector)
                                             - (get-output-bytevector . get-output-bytevector)
-                                            - (write-value . write-value)
+                                            - (write-irritant . write-irritant)
                                           - list
                                             - list
                                               - stak
@@ -8739,7 +8998,7 @@
                                             - (file-error? . file-error?)
                                             - (guard . guard)
                                             - (unwind . unwind)
-                                            - (write-value . write-value)
+                                            - (write-irritant . write-irritant)
                                           - list
                                             - list
                                               - stak
@@ -8748,6 +9007,12 @@
                                             - (call-with-current-continuation . call-with-current-continuation)
                                             - (dynamic-wind . dynamic-wind)
                                             - (parameterize . parameterize)
+                                          - list
+                                            - list
+                                              - stak
+                                              - unicode
+                                            - (string->utf8 . string->utf8)
+                                            - (utf8->string . utf8->string)
                                           - list
                                             - list
                                               - stak
@@ -8778,6 +9043,9 @@
                                             - (peek-char . peek-char)
                                             - (char-ready? . char-ready?)
                                             - (read-string . read-string)
+                                            - (read-line . read-line)
+                                            - (read-bytevector . read-bytevector)
+                                            - (read-bytevector! . read-bytevector!)
                                             - (write-u8 . write-u8)
                                             - (write-char . write-char)
                                             - (write-string . write-string)
@@ -11853,7 +12121,7 @@
   - call 1 #f car
 - call 1 #f $$close
 - set ||
-- constant procedure 1 #t
+- constant procedure 1 #f
   - constant procedure 3 #f
     - constant list
       - (#\newline . #\n)
@@ -11891,104 +12159,160 @@
       - call 1 #f 1
     - call 1 #f $$close
     - set 1
-    - constant procedure 1 #f
+    - get 4
+    - constant #f
+    - call 2 #f eq?
+    - if
+      - constant "#f"
+      - call 1 #f write-string
+    - get 4
+    - constant #t
+    - call 2 #f eq?
+    - if
+      - constant "#t"
+      - call 1 #f write-string
+    - get 4
+    - call 1 #f bytevector?
+    - if
+      - constant "#u8"
+      - call 1 #f write-string
+      - set 0
+      - get 4
+      - call 1 #f bytevector->list
+      - call 1 #f ||
+    - get 4
+    - call 1 #f char?
+    - if
+      - call 0 #f ||
+      - if
+        - get 4
+        - call 1 #f write-char
+      - constant #\#
+      - call 1 #f write-char
+      - set 0
+      - constant #\\
+      - call 1 #f write-char
+      - set 0
       - constant procedure 1 #f
-        - constant procedure 0 #f
-          - get write
-          - call 1 #f 4
-        - call 1 #f $$close
-        - constant procedure 0 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - constant procedure 0 #f
-                - get 15
-                - call 1 #f ||
-                - call 1 #f 4
-              - call 1 #f $$close
-              - constant procedure 0 #f
-                - get 17
-                - call 1 #f char?
-                - if
-                  - constant #\#
-                  - call 1 #f write-char
-                  - set 0
-                  - constant #\\
-                  - call 1 #f write-char
-                  - set 0
-                  - constant procedure 1 #f
-                    - get 0
-                    - if
-                      - get 0
-                      - call 1 #f cdr
-                      - call 1 #f display
-                    - get 19
-                    - call 1 #f write-char
-                  - call 1 #f $$close
-                  - get 18
-                  - get 15
-                  - call 2 #f assoc
-                  - call 1 #f 1
-                - get 17
-                - call 1 #f pair?
-                - if
-                  - get 17
-                  - call 1 #f ||
-                - get 17
-                - call 1 #f string?
-                - if
-                  - constant #\"
-                  - call 1 #f write-char
-                  - set 0
-                  - get 12
-                  - get 18
-                  - call 1 #f string->list
-                  - call 2 #f for-each
-                  - set 0
-                  - constant #\"
-                  - call 1 #f write-char
-                - get 17
-                - call 1 #f vector?
-                - if
-                  - get 17
-                  - call 1 #f ||
-                - get 17
-                - call 1 #f display
-              - call 1 #f $$close
-              - constant procedure 0 #f
-                - get 3
-                - call 1 #f 6
-              - call 1 #f $$close
-              - call 3 #f dynamic-wind
-            - call 1 #f $$close
-            - call 0 #f 1
-            - call 1 #f 1
-          - call 1 #f $$close
-          - get current-output-port
-          - call 1 #f 1
-        - call 1 #f $$close
-        - constant procedure 0 #f
-          - get 3
-          - call 1 #f 6
-        - call 1 #f $$close
-        - call 3 #f dynamic-wind
+        - get 0
+        - if
+          - get 0
+          - call 1 #f cdr
+          - call 1 #f write-string
+        - get 6
+        - call 1 #f write-char
       - call 1 #f $$close
-      - call 0 #f 1
+      - get 5
+      - get 3
+      - call 2 #f assoc
       - call 1 #f 1
-    - call 1 #f $$close
-    - get ||
-    - call 1 #f 1
+    - get 4
+    - call 1 #f null?
+    - if
+      - get 4
+      - call 1 #f ||
+    - get 4
+    - call 1 #f number?
+    - if
+      - get 4
+      - call 1 #f number->string
+      - call 1 #f write-string
+    - get 4
+    - call 1 #f pair?
+    - if
+      - get 4
+      - call 1 #f ||
+    - get 4
+    - call 1 #f procedure?
+    - if
+      - constant "#procedure"
+      - call 1 #f write-string
+    - get 4
+    - call 1 #f record?
+    - if
+      - constant "#record"
+      - call 1 #f write-string
+    - get 4
+    - call 1 #f string?
+    - if
+      - call 0 #f ||
+      - if
+        - get 4
+        - call 1 #f write-string
+      - constant #\"
+      - call 1 #f write-char
+      - set 0
+      - get 0
+      - get 5
+      - call 1 #f string->list
+      - call 2 #f for-each
+      - set 0
+      - constant #\"
+      - call 1 #f write-char
+    - get 4
+    - call 1 #f symbol?
+    - if
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f string-length
+        - constant 0
+        - call 2 #f eq?
+        - if
+          - constant "||"
+          - continue
+        - get 0
+        - call 1 #f write-string
+      - call 1 #f $$close
+      - get 5
+      - call 1 #f symbol->string
+      - call 1 #f 1
+    - get 4
+    - call 1 #f vector?
+    - if
+      - get 4
+      - call 1 #f ||
+    - constant "unknown type to write"
+    - call 1 #f error
   - call 1 #f $$close
   - constant #f
   - constant #f
   - constant #f
   - call 3 #f 3
 - call 1 #f $$close
+- set ||
+- constant #f
+- call 1 #f make-parameter
+- set ||
+- constant procedure 1 #t
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - constant procedure 0 #f
+        - get 5
+        - call 1 #f ||
+        - call 1 #f 4
+      - call 1 #f $$close
+      - constant procedure 0 #f
+        - get 7
+        - call 1 #f ||
+      - call 1 #f $$close
+      - constant procedure 0 #f
+        - get 3
+        - call 1 #f 6
+      - call 1 #f $$close
+      - call 3 #f dynamic-wind
+    - call 1 #f $$close
+    - call 0 #f 1
+    - call 1 #f 1
+  - call 1 #f $$close
+  - get current-output-port
+  - call 1 #f 1
+- call 1 #f $$close
 - set write
 - constant procedure 1 #t
   - constant procedure 1 #f
     - constant procedure 1 #f
       - constant procedure 0 #f
-        - get display
+        - constant #t
         - call 1 #f 4
       - call 1 #f $$close
       - constant procedure 0 #f
@@ -12001,86 +12325,7 @@
             - call 1 #f $$close
             - constant procedure 0 #f
               - get 13
-              - constant #f
-              - call 2 #f eq?
-              - if
-                - constant "#f"
-                - call 1 #f write-string
-              - get 13
-              - constant #t
-              - call 2 #f eq?
-              - if
-                - constant "#t"
-                - call 1 #f write-string
-              - get 13
-              - call 1 #f bytevector?
-              - if
-                - constant "#u8"
-                - call 1 #f write-string
-                - set 0
-                - get 13
-                - call 1 #f bytevector->list
-                - call 1 #f ||
-              - get 13
-              - call 1 #f char?
-              - if
-                - get 13
-                - call 1 #f write-char
-              - get 13
-              - call 1 #f null?
-              - if
-                - get 13
-                - call 1 #f ||
-              - get 13
-              - call 1 #f number?
-              - if
-                - get 13
-                - call 1 #f number->string
-                - call 1 #f display
-              - get 13
-              - call 1 #f pair?
-              - if
-                - get 13
-                - call 1 #f ||
-              - get 13
-              - call 1 #f procedure?
-              - if
-                - constant "#procedure"
-                - call 1 #f write-string
-              - get 13
-              - call 1 #f record?
-              - if
-                - constant "#record"
-                - call 1 #f write-string
-              - get 13
-              - call 1 #f string?
-              - if
-                - get 13
-                - call 1 #f write-string
-              - get 13
-              - call 1 #f symbol?
-              - if
-                - constant procedure 1 #f
-                  - get 0
-                  - call 1 #f string-length
-                  - constant 0
-                  - call 2 #f eq?
-                  - if
-                    - constant "||"
-                    - continue
-                  - get 0
-                  - call 1 #f display
-                - call 1 #f $$close
-                - get 14
-                - call 1 #f symbol->string
-                - call 1 #f 1
-              - get 13
-              - call 1 #f vector?
-              - if
-                - get 13
-                - call 1 #f ||
-              - constant "unknown type to display"
-              - call 1 #f error
+              - call 1 #f ||
             - call 1 #f $$close
             - constant procedure 0 #f
               - get 3
@@ -12107,9 +12352,6 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set display
-- get write
-- call 1 #f make-parameter
-- set ||
 - constant procedure 1 #f
   - constant procedure 2 #f
     - constant list
@@ -12121,9 +12363,8 @@
       - get 1
       - call 1 #f write-char
       - set 0
-      - call 0 #f ||
-      - get 1
-      - call 1 #f 1
+      - get 0
+      - call 1 #f ||
     - call 1 #f $$close
     - set 1
     - constant procedure 1 #f
@@ -12180,66 +12421,60 @@
 - call 1 #f $$close
 - set ||
 - constant procedure 1 #f
-  - constant procedure 1 #f
-    - call 0 #f ||
-    - set 1
-    - constant #\(
-    - call 1 #f write-char
+  - constant #\(
+  - call 1 #f write-char
+  - set 0
+  - get 0
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f car
+    - call 1 #f ||
     - set 0
-    - get 2
-    - call 1 #f pair?
-    - if
-      - get 2
-      - call 1 #f car
-      - call 1 #f 1
-      - set 0
+    - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - call 1 #f pair?
-          - if
-            - constant #\space
-            - call 1 #f write-char
-            - set 0
-            - get 0
-            - call 1 #f car
-            - call 1 #f 5
-            - set 0
-            - get 0
-            - call 1 #f cdr
-            - call 1 #f 3
-          - get 0
-          - call 1 #f null?
-          - if
-            - constant #f
-          - constant #\space
-          - call 1 #f write-char
-          - set 0
-          - constant #\.
-          - call 1 #f write-char
-          - set 0
+        - get 0
+        - call 1 #f pair?
+        - if
           - constant #\space
           - call 1 #f write-char
           - set 0
           - get 0
-          - call 1 #f 5
-        - call 1 #f $$close
-        - set 1
-        - get 4
-        - call 1 #f cdr
-        - call 1 #f 1
+          - call 1 #f car
+          - call 1 #f ||
+          - set 0
+          - get 0
+          - call 1 #f cdr
+          - call 1 #f 3
+        - get 0
+        - call 1 #f null?
+        - if
+          - constant #f
+        - constant #\space
+        - call 1 #f write-char
+        - set 0
+        - constant #\.
+        - call 1 #f write-char
+        - set 0
+        - constant #\space
+        - call 1 #f write-char
+        - set 0
+        - get 0
+        - call 1 #f ||
       - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
       - set 1
-      - continue
+      - get 2
+      - call 1 #f cdr
+      - call 1 #f 1
+    - call 1 #f $$close
     - constant #f
-    - set 0
-    - constant #\)
-    - call 1 #f write-char
-  - call 1 #f $$close
+    - call 1 #f 1
+    - set 1
+    - continue
   - constant #f
-  - call 1 #f 1
+  - set 0
+  - constant #\)
+  - call 1 #f write-char
 - call 1 #f $$close
 - set ||
 - constant procedure 1 #f
@@ -12252,7 +12487,7 @@
 - call 1 #f $$close
 - set ||
 - get write
-- set write-value
+- set write-irritant
 - constant list
   - list
     - define

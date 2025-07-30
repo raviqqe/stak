@@ -1602,6 +1602,9 @@
     peek-char
     char-ready?
     read-string
+    read-line
+    read-bytevector
+    read-bytevector!
 
     write-u8
     write-char
@@ -1814,6 +1817,51 @@
               '()
               (cons x (loop (- count 1))))))))
 
+    (define (read-line . rest)
+      (define port (get-input-port rest))
+
+      (list->string
+        (let loop ()
+          (let ((x (read-char port)))
+            (if (or (eof-object? x) (eqv? x #\newline))
+              '()
+              (cons x (loop)))))))
+
+    (define (read-bytevector count . rest)
+      (define port (get-input-port rest))
+
+      (list->bytevector
+        (let loop ((count count))
+          (let ((x (read-u8 port)))
+            (if (or (eof-object? x) (zero? count))
+              '()
+              (cons x (loop (- count 1))))))))
+
+    (define (read-bytevector! xs . rest)
+      (define port (get-input-port rest))
+      (define start
+        (if (or
+             (null? rest)
+             (null? (cdr rest)))
+          0
+          (cadr rest)))
+      (define end
+        (if (or
+             (null? rest)
+             (null? (cdr rest))
+             (null? (cddr rest)))
+          #f
+          (car (cddr rest))))
+
+      (do ((start start (+ start 1))
+           (xs (list-tail (bytevector->list xs) start) (cdr xs))
+           (x (peek-u8 port) (peek-u8 port)))
+        ((or
+            (null? xs)
+            (eof-object? x)
+            (and end (>= start end))))
+        (set-car! xs (read-u8 port))))
+
     ; Write
 
     (define (get-output-port rest)
@@ -1937,6 +1985,21 @@
 
     (define get-output-bytevector port-data)))
 
+(define-library (stak unicode)
+  (export string->utf8 utf8->string)
+
+  (import (stak base) (stak io))
+
+  (begin
+    ; TODO Use the `expt` procedure.
+    (define limit (* 1024 1024 1024 1024))
+
+    (define (string->utf8 xs)
+      (read-bytevector limit (open-input-string xs)))
+
+    (define (utf8->string xs)
+      (read-string limit (open-input-bytevector xs)))))
+
 (define-library (stak continue)
   (export
     call/cc
@@ -2033,7 +2096,7 @@
 
     unwind
 
-    write-value)
+    write-irritant)
 
   (import (stak base) (stak parameter) (stak io) (stak continue))
 
@@ -2068,9 +2131,9 @@
                       (for-each
                         (lambda (value)
                           (write-char #\space)
-                          (write-value value))
+                          (write-irritant value))
                         (error-object-irritants exception)))
-                    (write-value exception))
+                    (write-irritant exception))
                   (newline)
                   ($halt))))))
         (lambda (handler)
@@ -2179,7 +2242,7 @@
           (lambda () #f))))
 
     ; Dummy implementation
-    (define (write-value value . rest)
+    (define (write-irritant value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme base)
@@ -2344,6 +2407,8 @@
     vector->list
     string->vector
     vector->string
+    string->utf8
+    utf8->string
 
     bytevector
     bytevector?
@@ -2442,6 +2507,9 @@
     peek-char
     char-ready?
     read-string
+    read-line
+    read-bytevector
+    read-bytevector!
 
     write-u8
     write-char
@@ -2458,12 +2526,13 @@
     open-output-bytevector
     get-output-bytevector
 
-    write-value)
+    write-irritant)
 
   (import
     (stak base)
     (stak parameter)
     (stak io)
+    (stak unicode)
     (stak continue)
     (stak exception))
 
@@ -2645,9 +2714,14 @@
     char-whitespace?
     char-lower-case?
     char-upper-case?
-    char-upcase
     char-downcase
+    char-foldcase
+    char-upcase
+    string-downcase
+    string-foldcase
+    string-upcase
     digit-value
+
     special-chars)
 
   (import (scheme base))
@@ -2699,6 +2773,16 @@
       (if (char-upper-case? x)
         (integer->char (+ (char->integer x) 32))
         x))
+
+    (define char-foldcase char-downcase)
+
+    (define (string-case f)
+      (lambda (xs)
+        (list->string (map f (string->list xs)))))
+
+    (define string-downcase (string-case char-downcase))
+    (define string-foldcase (string-case char-foldcase))
+    (define string-upcase (string-case char-upcase))
 
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))
@@ -2884,7 +2968,7 @@
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
-    (define (write x . rest)
+    (define (write-value x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -2905,77 +2989,71 @@
               (write-char (cdr pair)))
             (write-char x))))
 
-      (parameterize ((current-write write)
-                     (current-output-port (get-output-port rest)))
-        (cond
-          ((char? x)
-            (write-char #\#)
-            (write-char #\\)
-            (let ((pair (assoc x special-char-names)))
-              (if pair
-                (display (cdr pair))
-                (write-char x))))
+      (cond
+        ((not x)
+          (write-string "#f"))
 
-          ((pair? x)
-            (write-list x))
+        ((eq? x #t)
+          (write-string "#t"))
 
-          ((string? x)
-            (write-char #\")
-            (for-each write-escaped-char (string->list x))
-            (write-char #\"))
+        ((bytevector? x)
+          (write-string "#u8")
+          (write-sequence (bytevector->list x)))
 
-          ((vector? x)
-            (write-vector x))
+        ((char? x)
+          (if (current-display)
+            (write-char x)
+            (begin
+              (write-char #\#)
+              (write-char #\\)
+              (let ((pair (assoc x special-char-names)))
+                (if pair
+                  (write-string (cdr pair))
+                  (write-char x))))))
 
-          (else
-            (display x)))))
+        ((null? x)
+          (write-sequence x))
+
+        ((number? x)
+          (write-string (number->string x)))
+
+        ((pair? x)
+          (write-list x))
+
+        ((procedure? x)
+          (write-string "#procedure"))
+
+        ((record? x)
+          (write-string "#record"))
+
+        ((string? x)
+          (if (current-display)
+            (write-string x)
+            (begin
+              (write-char #\")
+              (for-each write-escaped-char (string->list x))
+              (write-char #\"))))
+
+        ((symbol? x)
+          (let ((string (symbol->string x)))
+            (write-string (if (zero? (string-length string)) "||" string))))
+
+        ((vector? x)
+          (write-vector x))
+
+        (else
+          (error "unknown type to write"))))
+
+    (define current-display (make-parameter #f))
+
+    (define (write x . rest)
+      (parameterize ((current-output-port (get-output-port rest)))
+        (write-value x)))
 
     (define (display x . rest)
-      (parameterize ((current-write display)
+      (parameterize ((current-display #t)
                      (current-output-port (get-output-port rest)))
-        (cond
-          ((not x)
-            (write-string "#f"))
-
-          ((eq? x #t)
-            (write-string "#t"))
-
-          ((bytevector? x)
-            (write-string "#u8")
-            (write-sequence (bytevector->list x)))
-
-          ((char? x)
-            (write-char x))
-
-          ((null? x)
-            (write-sequence x))
-
-          ((number? x)
-            (display (number->string x)))
-
-          ((pair? x)
-            (write-list x))
-
-          ((procedure? x)
-            (write-string "#procedure"))
-
-          ((record? x)
-            (write-string "#record"))
-
-          ((string? x)
-            (write-string x))
-
-          ((symbol? x)
-            (let ((string (symbol->string x)))
-              (display (if (zero? (string-length string)) "||" string))))
-
-          ((vector? x)
-            (write-vector x))
-
-          (else
-            (error "unknown type to display")))))
-
-    (define current-write (make-parameter write))
+        (write-value x)))
 
     (define (write-list xs)
       (define quotes
@@ -2985,7 +3063,7 @@
 
       (define (write-quote char value)
         (write-char char)
-        ((current-write) value))
+        (write-value value))
 
       (if (or (null? xs) (null? (cdr xs)))
         (write-sequence xs)
@@ -3002,17 +3080,15 @@
             (write-sequence xs)))))
 
     (define (write-sequence xs)
-      (define write (current-write))
-
       (write-char #\()
 
       (when (pair? xs)
-        (write (car xs))
+        (write-value (car xs))
         (let loop ((xs (cdr xs)))
           (cond
             ((pair? xs)
               (write-char #\space)
-              (write (car xs))
+              (write-value (car xs))
               (loop (cdr xs)))
 
             ((null? xs)
@@ -3022,7 +3098,7 @@
               (write-char #\space)
               (write-char #\.)
               (write-char #\space)
-              (write xs)))))
+              (write-value xs)))))
 
       (write-char #\)))
 
@@ -3030,7 +3106,7 @@
       (write-char #\#)
       (write-sequence (vector->list xs)))
 
-    (set! write-value write)))
+    (set! write-irritant write)))
 
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)

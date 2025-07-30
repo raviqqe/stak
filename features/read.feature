@@ -216,23 +216,99 @@ Feature: Read
 
       (write-string (read-string <count>))
       """
-    And a file named "input.txt" with:
-      """text
-      <value>
-      """
+    And a file named "input.txt" with "<value>"
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
 
     Examples:
-      | value | count | output |
-      | A     | 0     |        |
-      | A     | 1     | A      |
-      | A     | 2     | A      |
-      | ABC   | 2     | AB     |
-      | ABC   | 3     | ABC    |
-      | ABC   | 4     | ABC    |
+      | value    | count | output   |
+      | A        | 0     |          |
+      | A        | 1     | A        |
+      | A        | 2     | A        |
+      | ABC      | 2     | AB       |
+      | ABC      | 3     | ABC      |
+      | ABC      | 4     | ABC      |
+      | A😄あ      | 3     | A😄あ      |
+
+  Scenario: Read lines
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define (check x)
+        (write-u8 (if (equal? (read-line) x) 65 66)))
+
+      (check "foo")
+      (check "bar")
+      (check "baz")
+      """
+    And a file named "input.txt" with:
+      """text
+      foo
+      bar
+      baz
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "AAA"
+
+  Scenario Outline: Read a byte vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (parameterize ((current-input-port (open-input-bytevector #u8(<bytes>))))
+        (write-u8 (if (equal? (read-bytevector <count>) #u8(<bytes>)) 65 66)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | bytes | count |
+      |       | 0     |
+      | 1     | 1     |
+      | 1     | 2     |
+      | 1 2   | 2     |
+      | 1 2 3 | 3     |
+      | 1 2 3 | 4     |
+
+  Scenario Outline: Read a byte vector in place
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (bytevector <original>))
+
+      (read-bytevector! xs (open-input-bytevector #u8(<input>)) <start> <end>)
+
+      (write-u8 (if (equal? xs #u8(<output>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | original | input   | start | end | output  |
+      |          |         |       |     |         |
+      | 0        | 1       |       |     | 1       |
+      | 0        | 1       | 0     |     | 1       |
+      | 0        | 1       | 0     | 1   | 1       |
+      | 0 0      | 1 2     |       |     | 1 2     |
+      | 0 0      | 1 2     | 0     |     | 1 2     |
+      | 0 0      | 1 2     | 0     | 2   | 1 2     |
+      | 0 0      | 1 2     | 0     | 1   | 1 0     |
+      | 0 0      | 1 2     | 1     |     | 0 1     |
+      | 0 0 0 0  | 1 2 3   | 1     | 3   | 0 1 2 0 |
+      | 0 0 0 0  | 1 2 3 4 | 1     |     | 0 1 2 3 |
+      | 0 0 0 0  | 1 2 3 4 | 1     | 4   | 0 1 2 3 |
+
+    @stak
+    Examples:
+      | original | input   | start | end | output  |
+      | 0 0      | 1 2     | 0     | 3   | 1 2     |
+      | 0 0 0 0  | 1 2 3 4 | 1     | 5   | 0 1 2 3 |
 
   @long
   Scenario Outline: Read a value
