@@ -2948,7 +2948,14 @@
       (if (null? rest) (current-output-port) (car rest)))
 
     (define (collect-recursive-values x)
-      foo)
+      (let loop ((xs '()) (ys '()))
+        (cond
+          ((or (list? x) (vector? x))
+            (loop
+              (cons x xs)
+              (if (memq x xs) (cons x ys) ys)))
+          (else
+            ys))))
 
     (define (write-value x)
       (define escaped-chars
@@ -3566,11 +3573,19 @@
           (primitive (+ 1000 index)))))))
 
 (define-library (srfi 1)
-  (export iota)
+  (export delete-duplicates iota)
 
   (import (scheme base))
 
   (begin
+    (define (delete-duplicates xs)
+      (if (null? xs)
+        '()
+        (let ((ys (delete-duplicates (cdr xs))))
+          (if (memq (car xs) ys)
+            ys
+            (cons (car xs) ys)))))
+
     (define (iota count . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
