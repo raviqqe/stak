@@ -3085,19 +3085,12 @@
             (write-string (if (zero? (string-length string)) "||" string))))
 
         ((vector? x)
-          (if (memq x (current-cycles))
-            (write-cycle x)
-            (write-vector context x)))
+          (write-vector context x))
 
         (else
           (error "unknown type to write"))))
 
     (define current-display (make-parameter #f))
-
-    (define (display x . rest)
-      (parameterize ((current-display #t)
-                     (current-output-port (get-output-port rest)))
-        (write-value (make-write-context (collect-recursive-values x) '()) x)))
 
     (define (write-root f)
       (lambda (x . rest)
@@ -3107,6 +3100,10 @@
     (define write (write-root collect-recursive-values))
     (define write-shared (write-root collect-shared-values))
     (define write-simple (write-root (lambda (x) '())))
+
+    (define (display x . rest)
+      (parameterize ((current-display #t))
+        (apply write x rest)))
 
     (define (write-list context xs)
       (define quotes
