@@ -3026,6 +3026,13 @@
       (indices write-context-indices)
       (referenced write-context-referenced write-context-set-referenced!))
 
+    (define (write-context-share-index context x)
+      (cond
+        ((assq x (write-context-indices context)) =>
+          cdr)
+        (else
+          #f)))
+
     (define (write-value context x)
       (define escaped-chars
         '((#\newline . #\n)
@@ -3076,7 +3083,7 @@
           (write-string (number->string x)))
 
         ((pair? x)
-          (write-list context x))
+          (write-reference context write-list x))
 
         ((procedure? x)
           (write-string "#procedure"))
@@ -3104,10 +3111,10 @@
 
     (define (write-reference context f x)
       (cond
-        ((assq x (write-context-indices context)) =>
-          (lambda (pair)
+        ((write-context-share-index context x) =>
+          (lambda (index)
             (write-char #\#)
-            (write-string (number->string (cdr pair)))
+            (write-string (number->string index))
             (if (memq x (write-context-referenced context))
               (write-char #\#)
               (begin
@@ -3169,12 +3176,12 @@
         (write-value context (car xs))
         (let loop ((xs (cdr xs)))
           (cond
-            ((pair? xs)
+            ((null? xs)
+              #f)
+            ((and (pair? xs) (not (write-context-share-index context xs)))
               (write-char #\space)
               (write-value context (car xs))
               (loop (cdr xs)))
-            ((null? xs)
-              #f)
             (else
               (write-char #\space)
               (write-char #\.)
