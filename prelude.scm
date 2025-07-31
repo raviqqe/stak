@@ -2983,6 +2983,8 @@
     (define (collect-recursive-values x)
       (let loop ((x x) (xs '()) (ys '()))
         (cond
+          ((memq x ys)
+            '())
           ((or (list? x) (vector? x))
             (let ((zs (cons x xs)))
               (delete-duplicates
