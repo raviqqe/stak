@@ -3079,7 +3079,9 @@
             (write-string (if (zero? (string-length string)) "||" string))))
 
         ((vector? x)
-          (write-vector x))
+          (if (memq x (current-cycles))
+            (write-cycle x)
+            (write-vector x)))
 
         (else
           (error "unknown type to write"))))
