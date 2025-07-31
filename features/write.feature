@@ -324,14 +324,14 @@ Feature: Write
       | #(#(#\\space)) | #(#(#\\\\space)) |
       | #(#("foo"))    | #(#(\\"foo\\"))  |
 
-  @stak
-  Scenario: Write recursive values
+  @chibi @gauche @stak
+  Scenario: Write a recursive vector
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
 
-      (define x (cons 42 #f))
-      (set-cdr! x x)
+      (define x (vector 42 #f))
+      (vector-set! x 1 x)
 
       (write x)
       """
