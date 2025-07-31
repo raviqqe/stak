@@ -3104,6 +3104,23 @@
         (else
           (error "unknown type to write"))))
 
+    (define (write-reference context f x)
+      (cond
+        ((assq x (write-context-indices context)) =>
+          (lambda (pair)
+            (write-char #\#)
+            (write-string (number->string (cdr pair)))
+            (if (memq x (write-context-referenced context))
+              (write-char #\#)
+              (begin
+                (write-context-set-referenced!
+                  context
+                  (cons x (write-context-referenced context)))
+                (write-char #\=)
+                (f context x)))))
+        (else
+          (f context x))))
+
     (define current-display (make-parameter #f))
 
     (define (write-root f)
