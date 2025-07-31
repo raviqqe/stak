@@ -3033,6 +3033,11 @@
         (else
           #f)))
 
+    (define (write-context-reference! context x)
+      (write-context-set-referenced!
+        context
+        (cons x (write-context-referenced context))))
+
     (define (write-value context x)
       (define escaped-chars
         '((#\newline . #\n)
@@ -3118,9 +3123,7 @@
             (if (memq x (write-context-referenced context))
               (write-char #\#)
               (begin
-                (write-context-set-referenced!
-                  context
-                  (cons x (write-context-referenced context)))
+                (write-context-reference! context x)
                 (write-char #\=)
                 (f context x)))))
         (else
