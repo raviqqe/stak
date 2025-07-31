@@ -3088,13 +3088,15 @@
     (define current-display (make-parameter #f))
 
     (define (display x . rest)
-      (parameterize ((current-display #t)
+      (parameterize ((current-cycles (collect-recursive-values x))
+                     (current-display #t)
                      (current-output-port (get-output-port rest)))
         (write-value x)))
 
     (define (write-root f)
       (lambda (x . rest)
-        (parameterize ((current-output-port (get-output-port rest)))
+        (parameterize ((current-cycles foo)
+                       (current-output-port (get-output-port rest)))
           (let ((xs (f x)))
             (if (null? xs)
               (write-value x)
