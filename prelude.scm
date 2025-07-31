@@ -3009,9 +3009,10 @@
             ys))))
 
     (define-record-type write-context
-      (make-write-context indices)
+      (make-write-context indices referenced)
       write-context?
-      (indices write-context-indices write-context-set-indices!))
+      (indices write-context-indices)
+      (referenced write-context-referenced write-context-set-referenced!))
 
     (define (write-value context x)
       (define escaped-chars
@@ -3087,12 +3088,14 @@
           (cond
             ((assq x (write-context-indices context)) =>
               (lambda (pair)
-                (let ((index (cdr pair)))
-                  (set-cdr! pair (+ index 1))
+                (write-char #\#)
+                (write-string (number->string (cdr pair)))
+                (if (memq x (write-context-referenced context))
                   (write-char #\#)
-                  (write-string (number->string index))
-                  (write-char #\#)
-                  (when (zero? index)
+                  (begin
+                    (write-context-set-referenced!
+                      context
+                      (cons x (write-context-referenced context)))
                     (write-char #\=)
                     (write-vector context x)))))
             (else
@@ -3107,7 +3110,10 @@
       (lambda (x . rest)
         (parameterize ((current-output-port (get-output-port rest)))
           (write-value
-            (make-write-context (map (lambda (x) (cons x 0)) (f x)))
+            (make-write-context
+              (let ((xs (f x)))
+                (map cons xs (iota (length xs))))
+              '())
             x))))
 
     (define write (write-root collect-recursive-values))
