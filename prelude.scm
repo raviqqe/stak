@@ -3159,7 +3159,6 @@
             =>
             (lambda (pair)
               (write-quote (cdr pair) (cadr xs))))
-
           (else
             (write-sequence context xs)))))
 
