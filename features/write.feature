@@ -324,34 +324,6 @@ Feature: Write
       | #(#(#\\space)) | #(#(#\\\\space)) |
       | #(#("foo"))    | #(#(\\"foo\\"))  |
 
-  @chibi @gauche @stak
-  Scenario: Write a recursive pair
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme write))
-
-      (define x (cons 42 #f))
-      (set-cdr! x x)
-
-      (write x)
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "#0=(42 . #0#)"
-
-  @chibi @gauche @stak
-  Scenario: Write a recursive vector
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme write))
-
-      (define x (vector 42 #f))
-      (vector-set! x 1 x)
-
-      (write x)
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "#0=#(42 #0#)"
-
   @gauche @guile @stak
   Scenario Outline: Display a value
     Given a file named "main.scm" with:
@@ -389,3 +361,33 @@ Feature: Write
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
+
+  Rule: Recursive data structures
+
+    @chibi @gauche @stak
+    Scenario: Write a recursive pair
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x (cons 42 #f))
+        (set-cdr! x x)
+
+        (write x)
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "#0=(42 . #0#)"
+
+    @chibi @gauche @stak
+    Scenario: Write a recursive vector
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x (vector 42 #f))
+        (vector-set! x 1 x)
+
+        (write x)
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "#0=#(42 #0#)"
