@@ -2981,19 +2981,21 @@
       (if (null? rest) (current-output-port) (car rest)))
 
     (define (collect-recursive-values x)
-      (let loop ((x x) (xs '()) (ys '()))
+      (define (collect x xs)
         (cond
-          ((memq x ys)
-            '())
-          ((or (list? x) (vector? x))
-            (let ((zs (cons x xs)))
+          ((memq x xs)
+            (list x))
+          ((vector? x)
+            (let ((xs (cons x xs)))
               (delete-duplicates
                 (append-map
                   (lambda (x)
-                    (loop x zs (if (memq x xs) (cons x ys) ys)))
-                  (if (list? x) x (vector->list x))))))
+                    (collect x xs))
+                  (vector->list x)))))
           (else
-            ys))))
+            '())))
+
+      (collect x '()))
 
     (define (collect-shared-values x)
       (let loop ((x x) (xs '()) (ys '()))
