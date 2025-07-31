@@ -325,6 +325,20 @@ Feature: Write
       | #(#("foo"))    | #(#(\\"foo\\"))  |
 
   @chibi @gauche @stak
+  Scenario: Write a recursive pair
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write))
+
+      (define x (cons 42 #f))
+      (set-cdr! x x)
+
+      (write x)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "#0=(42 . #0#)"
+
+  @chibi @gauche @stak
   Scenario: Write a recursive vector
     Given a file named "main.scm" with:
       """scheme
@@ -336,7 +350,7 @@ Feature: Write
       (write x)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "#0=(42 #0#)"
+    Then the stdout should contain exactly "#0=#(42 #0#)"
 
   @gauche @guile @stak
   Scenario Outline: Display a value
