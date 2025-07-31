@@ -2998,19 +2998,21 @@
       (collect x '()))
 
     (define (collect-shared-values x)
-      (let loop ((x x) (xs '()) (ys '()))
+      (define (collect x xs)
         (cond
-          ((or (list? x) (vector? x))
-            (fold-left
-              (lambda (ys x)
-                (loop
-                  x
-                  (cons x xs)
-                  (if (memq x xs) (cons x ys) ys)))
-              ys
-              (if (list? x) x (vector->list x))))
+          ((memq x xs)
+            (list x))
+          ((vector? x)
+            (let ((xs (cons x xs)))
+              (delete-duplicates
+                (append-map
+                  (lambda (x)
+                    (collect x xs))
+                  (vector->list x)))))
           (else
-            ys))))
+            '())))
+
+      (collect x '()))
 
     (define-record-type write-context
       (make-write-context indices referenced)
