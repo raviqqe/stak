@@ -3009,10 +3009,9 @@
             ys))))
 
     (define-record-type write-context
-      (make-write-context cycles written)
+      (make-write-context indices)
       write-context?
-      (cycles write-context-cycles)
-      (written write-context-written write-context-set-written!))
+      (indices write-context-indices write-context-set-indices!))
 
     (define (write-value context x)
       (define escaped-chars
@@ -3085,7 +3084,19 @@
             (write-string (if (zero? (string-length string)) "||" string))))
 
         ((vector? x)
-          (write-vector context x))
+          (cond
+            ((assq x (write-context-indices context)) =>
+              (lambda (pair)
+                (let ((index (cdr pair)))
+                  (set-cdr! pair (+ index 1))
+                  (write-char #\#)
+                  (write-string (number->string index))
+                  (write-char #\#)
+                  (when (zero? index)
+                    (write-char #\=)
+                    (write-vector context x)))))
+            (else
+              (write-vector context x))))
 
         (else
           (error "unknown type to write"))))
@@ -3095,7 +3106,9 @@
     (define (write-root f)
       (lambda (x . rest)
         (parameterize ((current-output-port (get-output-port rest)))
-          (write-value (make-write-context (f x) '()) x))))
+          (write-value
+            (make-write-context (map (lambda (x) (cons x 0)) (f x)))
+            x))))
 
     (define write (write-root collect-recursive-values))
     (define write-shared (write-root collect-shared-values))
