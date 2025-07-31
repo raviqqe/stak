@@ -2985,6 +2985,12 @@
         (cond
           ((memq x xs)
             (list x))
+          ((pair? x)
+            (let ((xs (cons x xs)))
+              (delete-duplicates
+                (append
+                  (collect (car x) xs)
+                  (collect (cdr x) xs)))))
           ((vector? x)
             (let ((xs (cons x xs)))
               (delete-duplicates
