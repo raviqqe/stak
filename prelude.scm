@@ -3173,10 +3173,8 @@
               (write-char #\space)
               (write-value context (car xs))
               (loop (cdr xs)))
-
             ((null? xs)
               #f)
-
             (else
               (write-char #\space)
               (write-char #\.)
