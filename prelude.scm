@@ -3008,7 +3008,13 @@
           (else
             ys))))
 
-    (define (write-value x)
+    (define-record-type write-context
+      (make-write-context cycles written)
+      write-context?
+      (cycles write-context-cycles)
+      (written write-context-written write-context-set-written!))
+
+    (define (write-value context x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -3038,7 +3044,7 @@
 
         ((bytevector? x)
           (write-string "#u8")
-          (write-sequence (bytevector->list x)))
+          (write-sequence context (bytevector->list x)))
 
         ((char? x)
           (if (current-display)
@@ -3052,13 +3058,13 @@
                   (write-char x))))))
 
         ((null? x)
-          (write-sequence x))
+          (write-string "()"))
 
         ((number? x)
           (write-string (number->string x)))
 
         ((pair? x)
-          (write-list x))
+          (write-list context x))
 
         ((procedure? x)
           (write-string "#procedure"))
@@ -3081,42 +3087,39 @@
         ((vector? x)
           (if (memq x (current-cycles))
             (write-cycle x)
-            (write-vector x)))
+            (write-vector context x)))
 
         (else
           (error "unknown type to write"))))
 
-    (define current-cycles (make-parameter #f))
     (define current-display (make-parameter #f))
 
     (define (display x . rest)
-      (parameterize ((current-cycles (collect-recursive-values x))
-                     (current-display #t)
+      (parameterize ((current-display #t)
                      (current-output-port (get-output-port rest)))
-        (write-value x)))
+        (write-value (make-write-context (collect-recursive-values x) '()) x)))
 
     (define (write-root f)
       (lambda (x . rest)
-        (parameterize ((current-cycles (f x))
-                       (current-output-port (get-output-port rest)))
-          (write-value x))))
+        (parameterize ((current-output-port (get-output-port rest)))
+          (write-value (make-write-context (f x) '()) x))))
 
     (define write (write-root collect-recursive-values))
     (define write-shared (write-root collect-shared-values))
     (define write-simple (write-root (lambda (x) '())))
 
-    (define (write-list xs)
+    (define (write-list context xs)
       (define quotes
         '((quote . #\')
           (quasiquote . #\`)
           (unquote . #\,)))
 
-      (define (write-quote char value)
+      (define (write-quote char x)
         (write-char char)
-        (write-value value))
+        (write-value context x))
 
       (if (or (null? xs) (null? (cdr xs)))
-        (write-sequence xs)
+        (write-sequence context xs)
         (cond
           ((and
               (pair? (cdr xs))
@@ -3127,18 +3130,18 @@
               (write-quote (cdr pair) (cadr xs))))
 
           (else
-            (write-sequence xs)))))
+            (write-sequence context xs)))))
 
-    (define (write-sequence xs)
+    (define (write-sequence context xs)
       (write-char #\()
 
       (when (pair? xs)
-        (write-value (car xs))
+        (write-value context (car xs))
         (let loop ((xs (cdr xs)))
           (cond
             ((pair? xs)
               (write-char #\space)
-              (write-value (car xs))
+              (write-value context (car xs))
               (loop (cdr xs)))
 
             ((null? xs)
@@ -3148,13 +3151,13 @@
               (write-char #\space)
               (write-char #\.)
               (write-char #\space)
-              (write-value xs)))))
+              (write-value context xs)))))
 
       (write-char #\)))
 
-    (define (write-vector xs)
+    (define (write-vector context xs)
       (write-char #\#)
-      (write-sequence (vector->list xs)))
+      (write-sequence context (vector->list xs)))
 
     (set! write-irritant write)))
 
