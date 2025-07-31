@@ -2968,7 +2968,11 @@
         (read-raw)))))
 
 (define-library (scheme write)
-  (export display write)
+  (export
+    display
+    write
+    write-shared
+    write-simple)
 
   (import (scheme base) (scheme char) (srfi 1))
 
@@ -3080,16 +3084,25 @@
         (else
           (error "unknown type to write"))))
 
+    (define current-cycles (make-parameter #f))
     (define current-display (make-parameter #f))
-
-    (define (write x . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
-        (write-value x)))
 
     (define (display x . rest)
       (parameterize ((current-display #t)
                      (current-output-port (get-output-port rest)))
         (write-value x)))
+
+    (define (write-root f)
+      (lambda (x . rest)
+        (parameterize ((current-output-port (get-output-port rest)))
+          (let ((xs (f x)))
+            (if (null? xs)
+              (write-value x)
+              (write-value x))))))
+
+    (define write (write-root collect-recursive-values))
+    (define write-shared (write-root collect-shared-values))
+    (define write-simple (write-root (lambda (x) '())))
 
     (define (write-list xs)
       (define quotes
