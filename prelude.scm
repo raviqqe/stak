@@ -3085,7 +3085,8 @@
             (write-string (if (zero? (string-length string)) "||" string))))
 
         ((vector? x)
-          (write-vector context x))
+          (write-char #\#)
+          (write-sequence context (vector->list x)))
 
         (else
           (error "unknown type to write"))))
@@ -3151,10 +3152,6 @@
               (write-value context xs)))))
 
       (write-char #\)))
-
-    (define (write-vector context xs)
-      (write-char #\#)
-      (write-sequence context (vector->list xs)))
 
     (set! write-irritant write)))
 
