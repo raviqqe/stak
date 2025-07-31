@@ -363,7 +363,7 @@ Feature: Write
     Then the exit status should be 0
 
   @chibi @gauche @stak
-  Rule: Recursive data structures
+  Rule: Recursive values
 
     Scenario: Write a recursive pair
       Given a file named "main.scm" with:
@@ -404,3 +404,30 @@ Feature: Write
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "#0=#(42 #0#)"
+
+  @chibi @gauche @stak
+  Rule: Shared values
+
+    Scenario: Write a shared pair
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x (cons 42 #f))
+
+        (write-shared (cons x x))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "(#0=(42 . #f) . #0#)"
+
+    Scenario: Write a shared vector
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x #(42 #f))
+
+        (write-shared (vector x x))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "#(#0=#(42 #f) #0#)"
