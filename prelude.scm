@@ -3095,12 +3095,9 @@
 
     (define (write-root f)
       (lambda (x . rest)
-        (parameterize ((current-cycles foo)
+        (parameterize ((current-cycles (f x))
                        (current-output-port (get-output-port rest)))
-          (let ((xs (f x)))
-            (if (null? xs)
-              (write-value x)
-              (write-value x))))))
+          (write-value x))))
 
     (define write (write-root collect-recursive-values))
     (define write-shared (write-root collect-shared-values))
