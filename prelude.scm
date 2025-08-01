@@ -1533,6 +1533,35 @@
     (define (write-message . xs)
       #f)))
 
+(define-library (srfi 1)
+  (export
+    append-map
+    delete-duplicates
+    iota)
+
+  (import (stak base))
+
+  (begin
+    (define (append-map f xs)
+      (apply append (map f xs)))
+
+    (define (delete-duplicates xs)
+      (if (null? xs)
+        '()
+        (let ((ys (delete-duplicates (cdr xs))))
+          (if (memq (car xs) ys)
+            ys
+            (cons (car xs) ys)))))
+
+    (define (iota count . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
+
+      (let loop ((count count) (x start))
+        (if (> count 0)
+          (cons x (loop (- count 1) (+ x step)))
+          '())))))
+
 (define-library (stak parameter)
   (export make-parameter)
 
@@ -2939,15 +2968,38 @@
         (read-raw)))))
 
 (define-library (scheme write)
-  (export display write)
+  (export
+    display
+    write
+    write-shared
+    write-simple)
 
-  (import (scheme base) (scheme char))
+  (import (scheme base) (scheme char) (srfi 1))
 
   (begin
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
-    (define (write-value x)
+    (define-record-type write-context
+      (make-write-context display indices referenced)
+      write-context?
+      (display write-context-display)
+      (indices write-context-indices)
+      (referenced write-context-referenced write-context-set-referenced!))
+
+    (define (write-context-share-index context x)
+      (cond
+        ((assq x (write-context-indices context)) =>
+          cdr)
+        (else
+          #f)))
+
+    (define (write-context-reference! context x)
+      (write-context-set-referenced!
+        context
+        (cons x (write-context-referenced context))))
+
+    (define (write-value context x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -2977,10 +3029,10 @@
 
         ((bytevector? x)
           (write-string "#u8")
-          (write-sequence (bytevector->list x)))
+          (write-sequence context (bytevector->list x)))
 
         ((char? x)
-          (if (current-display)
+          (if (write-context-display context)
             (write-char x)
             (begin
               (write-char #\#)
@@ -2991,13 +3043,13 @@
                   (write-char x))))))
 
         ((null? x)
-          (write-sequence x))
+          (write-string "()"))
 
         ((number? x)
           (write-string (number->string x)))
 
         ((pair? x)
-          (write-list x))
+          (write-reference context write-list x))
 
         ((procedure? x)
           (write-string "#procedure"))
@@ -3006,7 +3058,7 @@
           (write-string "#record"))
 
         ((string? x)
-          (if (current-display)
+          (if (write-context-display context)
             (write-string x)
             (begin
               (write-char #\")
@@ -3018,34 +3070,38 @@
             (write-string (if (zero? (string-length string)) "||" string))))
 
         ((vector? x)
-          (write-vector x))
+          (write-reference context write-vector x))
 
         (else
           (error "unknown type to write"))))
 
-    (define current-display (make-parameter #f))
+    (define (write-reference context f x)
+      (cond
+        ((write-context-share-index context x) =>
+          (lambda (index)
+            (write-char #\#)
+            (write-string (number->string index))
+            (if (memq x (write-context-referenced context))
+              (write-char #\#)
+              (begin
+                (write-context-reference! context x)
+                (write-char #\=)
+                (f context x)))))
+        (else
+          (f context x))))
 
-    (define (write x . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
-        (write-value x)))
-
-    (define (display x . rest)
-      (parameterize ((current-display #t)
-                     (current-output-port (get-output-port rest)))
-        (write-value x)))
-
-    (define (write-list xs)
+    (define (write-list context xs)
       (define quotes
         '((quote . #\')
           (quasiquote . #\`)
           (unquote . #\,)))
 
-      (define (write-quote char value)
+      (define (write-quote char x)
         (write-char char)
-        (write-value value))
+        (write-value context x))
 
       (if (or (null? xs) (null? (cdr xs)))
-        (write-sequence xs)
+        (write-sequence context xs)
         (cond
           ((and
               (pair? (cdr xs))
@@ -3054,36 +3110,87 @@
             =>
             (lambda (pair)
               (write-quote (cdr pair) (cadr xs))))
-
           (else
-            (write-sequence xs)))))
+            (write-sequence context xs)))))
 
-    (define (write-sequence xs)
+    (define (write-sequence context xs)
       (write-char #\()
 
       (when (pair? xs)
-        (write-value (car xs))
+        (write-value context (car xs))
         (let loop ((xs (cdr xs)))
           (cond
-            ((pair? xs)
-              (write-char #\space)
-              (write-value (car xs))
-              (loop (cdr xs)))
-
             ((null? xs)
               #f)
-
+            ((and (pair? xs) (not (write-context-share-index context xs)))
+              (write-char #\space)
+              (write-value context (car xs))
+              (loop (cdr xs)))
             (else
               (write-char #\space)
               (write-char #\.)
               (write-char #\space)
-              (write-value xs)))))
+              (write-value context xs)))))
 
       (write-char #\)))
 
-    (define (write-vector xs)
+    (define (write-vector context xs)
       (write-char #\#)
-      (write-sequence (vector->list xs)))
+      (write-sequence context (vector->list xs)))
+
+    (define (collect-cycles f)
+      (lambda (x)
+        (define (collect x xs)
+          (cond
+            ((memq x (car xs))
+              (list x))
+            ((pair? x)
+              (let ((xs (f x xs)))
+                (delete-duplicates
+                  (append
+                    (collect (car x) xs)
+                    (collect (cdr x) xs)))))
+            ((vector? x)
+              (let ((xs (f x xs)))
+                (delete-duplicates
+                  (append-map
+                    (lambda (x)
+                      (collect x xs))
+                    (vector->list x)))))
+            (else
+              '())))
+
+        (collect x (list '()))))
+
+    (define collect-recursive
+      (collect-cycles
+        (lambda (x xs)
+          (list (cons x (car xs))))))
+
+    (define (write-root display collect-cycles)
+      (lambda (x . rest)
+        (parameterize ((current-output-port (get-output-port rest)))
+          (write-value
+            (make-write-context
+              display
+              (let ((xs (collect-cycles x)))
+                (map cons xs (iota (length xs))))
+              '())
+            x))))
+
+    (define write (write-root #f collect-recursive))
+
+    (define write-shared
+      (write-root
+        #f
+        (collect-cycles
+          (lambda (x xs)
+            (set-car! xs (delete-duplicates (cons x (car xs))))
+            xs))))
+
+    (define write-simple (write-root #f (lambda (x) '())))
+
+    (define display (write-root #t collect-recursive))
 
     (set! write-irritant write)))
 
@@ -3561,18 +3668,3 @@
               ($$dynamic-symbols)
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
-
-(define-library (srfi 1)
-  (export iota)
-
-  (import (scheme base))
-
-  (begin
-    (define (iota count . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
-
-      (let loop ((count count) (x start))
-        (if (> count 0)
-          (cons x (loop (- count 1) (+ x step)))
-          '())))))
