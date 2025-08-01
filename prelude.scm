@@ -2980,56 +2980,29 @@
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
-    (define (collect-recursive-values x)
-      (define (collect x xs)
-        (cond
-          ((memq x xs)
-            (list x))
-          ((pair? x)
-            (let ((xs (cons x xs)))
-              (delete-duplicates
-                (append
-                  (collect (car x) xs)
-                  (collect (cdr x) xs)))))
-          ((vector? x)
-            (let ((xs (cons x xs)))
-              (delete-duplicates
-                (append-map
-                  (lambda (x)
-                    (collect x xs))
-                  (vector->list x)))))
-          (else
-            '())))
+    (define (collect-values f)
+      (lambda (x)
+        (define (collect x xs)
+          (cond
+            ((memq x (car xs))
+              (list x))
+            ((pair? x)
+              (let ((xs (f x xs)))
+                (delete-duplicates
+                  (append
+                    (collect (car x) xs)
+                    (collect (cdr x) xs)))))
+            ((vector? x)
+              (let ((xs (f x xs)))
+                (delete-duplicates
+                  (append-map
+                    (lambda (x)
+                      (collect x xs))
+                    (vector->list x)))))
+            (else
+              '())))
 
-      (collect x '()))
-
-    (define (collect-shared-values x)
-      (define xs '())
-
-      (define (set-root! x)
-        (set! xs (delete-duplicates (cons x xs))))
-
-      (define (collect x)
-        (cond
-          ((memq x xs)
-            (list x))
-          ((pair? x)
-            (set-root! x)
-            (delete-duplicates
-              (append
-                (collect (car x))
-                (collect (cdr x)))))
-          ((vector? x)
-            (set-root! x)
-            (delete-duplicates
-              (append-map
-                (lambda (x)
-                  (collect x))
-                (vector->list x))))
-          (else
-            '())))
-
-      (collect x))
+        (collect x (list '()))))
 
     (define-record-type write-context
       (make-write-context indices referenced)
@@ -3152,8 +3125,17 @@
               '())
             x))))
 
-    (define write (write-root collect-recursive-values))
-    (define write-shared (write-root collect-shared-values))
+    (define write
+      (write-root
+        (collect-values
+          (lambda (x xs)
+            (list (cons x (car xs)))))))
+    (define write-shared
+      (write-root
+        (collect-values
+          (lambda (x xs)
+            (set-car! xs (delete-duplicates (cons x (car xs))))
+            xs))))
     (define write-simple (write-root (lambda (x) '())))
 
     (define (display x . rest)
