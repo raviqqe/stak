@@ -3162,9 +3162,10 @@
 
         (collect x (list '()))))
 
-    (define collect-recursive (collect-cycles
-                               (lambda (x xs)
-                                 (list (cons x (car xs))))))
+    (define collect-recursive
+      (collect-cycles
+        (lambda (x xs)
+          (list (cons x (car xs))))))
 
     (define (write-root display collect-cycles)
       (lambda (x . rest)
