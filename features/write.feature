@@ -365,7 +365,7 @@ Feature: Write
   @chibi @gauche @stak
   Rule: Recursive values
 
-    Scenario: Write a recursive pair
+    Scenario Outline: Write a recursive pair
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme write))
@@ -373,12 +373,17 @@ Feature: Write
         (define x (cons 42 #f))
         (set-cdr! x x)
 
-        (write x)
+        (<procedure> x)
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "#0=(42 . #0#)"
 
-    Scenario: Write recursive pairs
+      Examples:
+        | procedure    |
+        | write        |
+        | write-shared |
+
+    Scenario Outline: Write recursive pairs
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme write))
@@ -387,12 +392,17 @@ Feature: Write
         (set-cdr! (car x) x)
         (set-car! (cdr x) (cdr x))
 
-        (write x)
+        (<procedure> x)
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "#0=((123 . #0#) . #1=(#1# . 42))"
 
-    Scenario: Write a recursive vector
+      Examples:
+        | procedure    |
+        | write        |
+        | write-shared |
+
+    Scenario Outline: Write a recursive vector
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme write))
@@ -400,10 +410,15 @@ Feature: Write
         (define x (vector 42 #f))
         (vector-set! x 1 x)
 
-        (write x)
+        (<procedure> x)
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "#0=#(42 #0#)"
+
+      Examples:
+        | procedure    |
+        | write        |
+        | write-shared |
 
   @chibi @gauche @stak
   Rule: Shared values
