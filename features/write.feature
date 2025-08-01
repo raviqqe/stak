@@ -423,26 +423,36 @@ Feature: Write
   @chibi @gauche @stak
   Rule: Shared values
 
-    Scenario: Write a shared pair
+    Scenario Outline: Write a shared pair
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme write))
 
         (define x (cons 42 #f))
 
-        (write-shared (cons x x))
+        (<procedure> (cons x x))
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "(#0=(42 . #f) . #0#)"
+      Then the stdout should contain exactly "<output>"
 
-    Scenario: Write a shared vector
+      Examples:
+        | procedure    | output               |
+        | write        | ((42 . #f) 42 . #f)  |
+        | write-shared | (#0=(42 . #f) . #0#) |
+
+    Scenario Outline: Write a shared vector
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme write))
 
         (define x #(42 #f))
 
-        (write-shared (vector x x))
+        (<procedure> (vector x x))
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "#(#0=#(42 #f) #0#)"
+      Then the stdout should contain exactly "<output>"
+
+      Examples:
+        | procedure    | output               |
+        | write        | #(#(42 #f) #(42 #f)) |
+        | write-shared | #(#0=#(42 #f) #0#)   |
