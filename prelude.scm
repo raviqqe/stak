@@ -3162,6 +3162,10 @@
 
         (collect x (list '()))))
 
+    (define collect-recursive (collect-cycles
+                               (lambda (x xs)
+                                 (list (cons x (car xs))))))
+
     (define (write-root display collect-cycles)
       (lambda (x . rest)
         (parameterize ((current-output-port (get-output-port rest)))
@@ -3173,12 +3177,7 @@
               '())
             x))))
 
-    (define write
-      (write-root
-        #f
-        (collect-cycles
-          (lambda (x xs)
-            (list (cons x (car xs)))))))
+    (define write (write-root #f collect-recursive))
 
     (define write-shared
       (write-root
@@ -3190,12 +3189,7 @@
 
     (define write-simple (write-root #f (lambda (x) '())))
 
-    (define display
-      (write-root
-        #t
-        (collect-cycles
-          (lambda (x xs)
-            (list (cons x (car xs)))))))
+    (define display (write-root #t collect-recursive))
 
     (set! write-irritant write)))
 
