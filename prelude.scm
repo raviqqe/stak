@@ -2981,8 +2981,9 @@
       (if (null? rest) (current-output-port) (car rest)))
 
     (define-record-type write-context
-      (make-write-context indices referenced)
+      (make-write-context display indices referenced)
       write-context?
+      (display write-context-display)
       (indices write-context-indices)
       (referenced write-context-referenced write-context-set-referenced!))
 
@@ -3031,7 +3032,7 @@
           (write-sequence context (bytevector->list x)))
 
         ((char? x)
-          (if (current-display)
+          (if (write-context-display context)
             (write-char x)
             (begin
               (write-char #\#)
@@ -3057,7 +3058,7 @@
           (write-string "#record"))
 
         ((string? x)
-          (if (current-display)
+          (if (write-context-display context)
             (write-string x)
             (begin
               (write-char #\")
@@ -3137,9 +3138,7 @@
       (write-char #\#)
       (write-sequence context (vector->list xs)))
 
-    (define current-display (make-parameter #f))
-
-    (define (collect-values f)
+    (define (collect-cycles f)
       (lambda (x)
         (define (collect x xs)
           (cond
@@ -3163,32 +3162,40 @@
 
         (collect x (list '()))))
 
-    (define (write-root f)
+    (define (write-root display collect-cycles)
       (lambda (x . rest)
         (parameterize ((current-output-port (get-output-port rest)))
           (write-value
             (make-write-context
-              (let ((xs (f x)))
+              display
+              (let ((xs (collect-cycles x)))
                 (map cons xs (iota (length xs))))
               '())
             x))))
 
     (define write
       (write-root
-        (collect-values
+        #f
+        (collect-cycles
           (lambda (x xs)
             (list (cons x (car xs)))))))
+
     (define write-shared
       (write-root
-        (collect-values
+        #f
+        (collect-cycles
           (lambda (x xs)
             (set-car! xs (delete-duplicates (cons x (car xs))))
             xs))))
-    (define write-simple (write-root (lambda (x) '())))
 
-    (define (display x . rest)
-      (parameterize ((current-display #t))
-        (apply write x rest)))
+    (define write-simple (write-root #f (lambda (x) '())))
+
+    (define display
+      (write-root
+        #t
+        (collect-cycles
+          (lambda (x xs)
+            (list (cons x (car xs)))))))
 
     (set! write-irritant write)))
 
