@@ -14,7 +14,7 @@ async = ["stak-vm/async", "winter-maybe-async/async"]
 
 [dependencies]
 libm = { version = "0.2.15", default-features = false }
-stak-vm = { version = "0.10.33", path = "../vm" }
+stak-vm = { version = "0.10.34", path = "../vm" }
 winter-maybe-async = "0.13.1"
 
 [lints]
