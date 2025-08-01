@@ -3004,27 +3004,32 @@
       (collect x '()))
 
     (define (collect-shared-values x)
-      (define (collect x xs)
+      (define xs '())
+
+      (define (set-root! x)
+        (set! xs (delete-duplicates (cons x xs))))
+
+      (define (collect x)
         (cond
           ((memq x xs)
             (list x))
           ((pair? x)
-            (let ((xs (cons x xs)))
-              (delete-duplicates
-                (append
-                  (collect (car x) xs)
-                  (collect (cdr x) xs)))))
+            (set-root! x)
+            (delete-duplicates
+              (append
+                (collect (car x))
+                (collect (cdr x)))))
           ((vector? x)
-            (let ((xs (cons x xs)))
-              (delete-duplicates
-                (append-map
-                  (lambda (x)
-                    (collect x xs))
-                  (vector->list x)))))
+            (set-root! x)
+            (delete-duplicates
+              (append-map
+                (lambda (x)
+                  (collect x))
+                (vector->list x))))
           (else
             '())))
 
-      (collect x '()))
+      (collect x))
 
     (define-record-type write-context
       (make-write-context indices referenced)
