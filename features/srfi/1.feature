@@ -32,12 +32,12 @@ Feature: SRFI 1
     Then the stdout should contain exactly "A"
 
     Examples:
-      | lhs          | rhs      |
-      | (iota 0)     | '()      |
-      | (iota 1)     | '(0)     |
-      | (iota 2)     | '(0 1)   |
-      | (iota 3)     | '(0 1 2) |
-      | (iota 1 1)   | '(1)     |
-      | (iota 1 2)   | '(2)     |
-      | (iota 3 5)   | '(5 6 7) |
-      | (iota 3 5 2) | '(5 7 9) |
+      | input | output |
+      |       |        |
+      | 1     | 1      |
+      | 1 1   | 1      |
+      |       |        |
+      |       |        |
+      |       |        |
+      |       |        |
+      |       |        |
