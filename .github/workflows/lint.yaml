@@ -35,6 +35,11 @@ jobs:
       - uses: streetsidesoftware/cspell-action@v7
         with:
           files: "**/*.{feature,md,rs,scm,sh,toml}"
+  toml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npx tombi format --check .
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:
@@ -56,6 +61,7 @@ jobs:
       - scheme_format
       - gherkin_format
       - spell_check
+      - toml
       - unused_dependencies
     if: always()
     runs-on: ubuntu-latest

@@ -1,13 +1,26 @@
 [package]
 name = "stak-interpret"
-description = "Stak Scheme bytecode interpreter"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme bytecode interpreter"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+clap = { version = "4.5.42", features = ["derive"] }
+main_error = "0.1.2"
+stak-configuration = { version = "0.10.34", path = "../../configuration" }
+stak-device = { version = "0.10.34", features = ["std"], path = "../../device" }
+stak-file = { version = "0.10.34", features = ["std"], path = "../../file" }
+stak-process-context = { version = "0.10.34", features = [
+  "std",
+], path = "../../process_context" }
+stak-r7rs = { version = "0.10.34", path = "../../r7rs" }
+stak-time = { version = "0.10.34", features = ["std"], path = "../../time" }
+stak-vm = { version = "0.10.34", path = "../../vm" }
 
 [features]
 default = ["float"]
@@ -16,19 +29,6 @@ float62 = ["stak-vm/float62"]
 gc_always = ["stak-vm/gc_always"]
 trace_instruction = ["stak-vm/trace_instruction"]
 trace_memory = ["stak-vm/trace_memory"]
-
-[dependencies]
-clap = { version = "4.5.42", features = ["derive"] }
-main_error = "0.1.2"
-stak-configuration = { version = "0.10.34", path = "../../configuration" }
-stak-device = { version = "0.10.34", path = "../../device", features = ["std"] }
-stak-file = { version = "0.10.34", path = "../../file", features = ["std"] }
-stak-process-context = { version = "0.10.34", path = "../../process_context", features = [
-  "std",
-] }
-stak-r7rs = { version = "0.10.34", path = "../../r7rs" }
-stak-time = { version = "0.10.34", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.10.34", path = "../../vm" }
 
 [lints]
 workspace = true

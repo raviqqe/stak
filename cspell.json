@@ -89,6 +89,7 @@
     "srfi",
     "stak",
     "tokei",
+    "tombi",
     "uninlined",
     "uninterned",
     "unresolve",

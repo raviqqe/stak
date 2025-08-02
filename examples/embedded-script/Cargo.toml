@@ -1,8 +1,8 @@
 [package]
 name = "embedded-script"
 version.workspace = true
-publish = false
 edition.workspace = true
+publish = false
 
 [dependencies]
 any-fn = "0.6.1"

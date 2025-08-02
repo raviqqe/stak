@@ -1,16 +1,16 @@
 [package]
 name = "mstak"
-description = "Minimal Stak Scheme interpreter"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Minimal Stak Scheme interpreter"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
-stak-sac = { version = "0.10.0", path = "../../../sac", features = ["libc"] }
+stak-sac = { version = "0.10.0", features = ["libc"], path = "../../../sac" }
 
 [lints]
 workspace = true

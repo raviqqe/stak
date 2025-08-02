@@ -1,20 +1,20 @@
 [package]
 name = "stak-compile"
-description = "Stak Scheme bytecode compiler"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme bytecode compiler"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+stak-sac = { version = "0.10.34", features = ["std"], path = "../../sac" }
 
 [features]
 default = ["float"]
 float = ["stak-sac/float"]
-
-[dependencies]
-stak-sac = { version = "0.10.34", path = "../../sac", features = ["std"] }
 
 [lints]
 workspace = true

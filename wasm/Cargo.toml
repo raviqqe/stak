@@ -1,16 +1,43 @@
 [package]
 name = "stak-wasm"
-description = "Stak Scheme in WebAssembly"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme in WebAssembly"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [package.metadata.cargo-machete]
 ignored = ["wasm-bindgen-futures"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+cfg-elif = "0.6.3"
+stak-compiler = { version = "0.10.34", path = "../compiler" }
+stak-configuration = { version = "0.10.34", path = "../configuration" }
+stak-device = { version = "0.10.34", features = ["std"], path = "../device" }
+stak-file = { version = "0.10.34", path = "../file" }
+stak-macro = { version = "0.10.34", path = "../macro" }
+stak-module = { version = "0.10.34", path = "../module" }
+stak-process-context = { version = "0.10.34", path = "../process_context" }
+stak-r7rs = { version = "0.10.34", path = "../r7rs" }
+stak-time = { version = "0.10.34", path = "../time" }
+stak-vm = { version = "0.10.34", features = ["float"], path = "../vm" }
+wasm-bindgen = "0.2.97"
+wasm-bindgen-futures = "0.4.50"
+winter-maybe-async = "0.13.1"
+
+[dev-dependencies]
+stak-configuration = { path = "../configuration" }
+stak-macro = { path = "../macro" }
+wasm-bindgen-test = "0.3.47"
+
+[build-dependencies]
+stak-build = { version = "0.10.34", path = "../build" }
 
 [features]
 async = [
@@ -23,33 +50,6 @@ async = [
   "stak-time/async",
   "stak-vm/async",
 ]
-
-[lib]
-crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-cfg-elif = "0.6.3"
-stak-compiler = { version = "0.10.34", path = "../compiler" }
-stak-configuration = { version = "0.10.34", path = "../configuration" }
-stak-device = { version = "0.10.34", path = "../device", features = ["std"] }
-stak-file = { version = "0.10.34", path = "../file" }
-stak-macro = { version = "0.10.34", path = "../macro" }
-stak-module = { version = "0.10.34", path = "../module" }
-stak-process-context = { version = "0.10.34", path = "../process_context" }
-stak-r7rs = { version = "0.10.34", path = "../r7rs" }
-stak-time = { version = "0.10.34", path = "../time" }
-stak-vm = { version = "0.10.34", path = "../vm", features = ["float"] }
-wasm-bindgen = "0.2.97"
-wasm-bindgen-futures = "0.4.50"
-winter-maybe-async = "0.13.1"
-
-[dev-dependencies]
-stak-configuration = { path = "../configuration" }
-stak-macro = { path = "../macro" }
-wasm-bindgen-test = "0.3.47"
-
-[build-dependencies]
-stak-build = { version = "0.10.34", path = "../build" }
 
 [lints]
 workspace = true

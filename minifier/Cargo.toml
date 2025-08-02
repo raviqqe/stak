@@ -1,17 +1,17 @@
 [package]
 name = "stak-minifier"
-description = "Stak Scheme source code minifier"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme source code minifier"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 stak-configuration = { version = "0.10.34", path = "../configuration" }
-stak-device = { version = "0.10.34", path = "../device", features = ["std"] }
+stak-device = { version = "0.10.34", features = ["std"], path = "../device" }
 stak-file = { version = "0.10.34", path = "../file" }
 stak-macro = { version = "0.10.34", path = "../macro" }
 stak-process-context = { version = "0.10.34", path = "../process_context" }

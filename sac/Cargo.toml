@@ -1,13 +1,30 @@
 [package]
 name = "stak-sac"
-description = "Stand-Alone Complex for Stak Scheme"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stand-Alone Complex for Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+clap = { version = "4.5.42", features = ["derive"], optional = true }
+libc = { version = "0.2.174", default-features = false, optional = true }
+main_error = { version = "0.1.2", optional = true }
+stak-configuration = { version = "0.10.34", path = "../configuration" }
+stak-device = { version = "0.10.34", path = "../device" }
+stak-file = { version = "0.10.34", path = "../file" }
+stak-libc = { version = "0.10.34", optional = true, path = "../libc" }
+stak-macro = { version = "0.10.34", path = "../macro" }
+stak-process-context = { version = "0.10.34", path = "../process_context" }
+stak-r7rs = { version = "0.10.34", path = "../r7rs" }
+stak-time = { version = "0.10.34", path = "../time" }
+stak-vm = { version = "0.10.34", path = "../vm" }
+
+[dev-dependencies]
+stak = { path = "../root" }
 
 [features]
 float = ["stak-vm/float"]
@@ -28,23 +45,6 @@ std = [
   "stak-process-context/std",
   "stak-time/std",
 ]
-
-[dependencies]
-clap = { version = "4.5.42", features = ["derive"], optional = true }
-libc = { version = "0.2.174", default-features = false, optional = true }
-main_error = { version = "0.1.2", optional = true }
-stak-configuration = { version = "0.10.34", path = "../configuration" }
-stak-device = { version = "0.10.34", path = "../device" }
-stak-file = { version = "0.10.34", path = "../file" }
-stak-libc = { version = "0.10.34", path = "../libc", optional = true }
-stak-macro = { version = "0.10.34", path = "../macro" }
-stak-process-context = { version = "0.10.34", path = "../process_context" }
-stak-r7rs = { version = "0.10.34", path = "../r7rs" }
-stak-time = { version = "0.10.34", path = "../time" }
-stak-vm = { version = "0.10.34", path = "../vm" }
-
-[dev-dependencies]
-stak = { path = "../root" }
 
 [lints]
 workspace = true
