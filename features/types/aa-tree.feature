@@ -1,11 +1,5 @@
+@stak
 Feature: AA tree
-
-  Background:
-    Given I run the following script:
-      """sh
-      cp $STAK_ROOT/aa-tree.scm .
-      """
-    And the exit status should be 0
 
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
@@ -14,7 +8,7 @@ Feature: AA tree
 
       (aa-tree-empty <)
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
 
   Scenario: Check if a value is a tree
@@ -24,7 +18,7 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree? (aa-tree-empty <)) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
@@ -37,7 +31,7 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree-find tree 1) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "B"
 
@@ -52,7 +46,7 @@ Feature: AA tree
 
       (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
@@ -71,7 +65,7 @@ Feature: AA tree
           (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
@@ -90,7 +84,7 @@ Feature: AA tree
           (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
@@ -106,7 +100,7 @@ Feature: AA tree
 
       (write-u8 (if (eq? (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
@@ -129,7 +123,7 @@ Feature: AA tree
 
       (for-each check '(<values>))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
 
@@ -162,7 +156,7 @@ Feature: AA tree
 
       (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
