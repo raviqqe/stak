@@ -16,7 +16,6 @@ require (
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/cucumber/messages/go/v22 v22.0.0 // indirect
 	github.com/cucumber/messages/go/v24 v24.1.0 // indirect
-	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.4 // indirect

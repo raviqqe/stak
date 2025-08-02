@@ -16,8 +16,6 @@ github.com/cucumber/messages/go/v24 v24.1.0/go.mod h1:PR0+ygYqqyT1/C4EmioDdvgR8Y
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=
-github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
 github.com/gkampitakis/ciinfo v0.3.2 h1:JcuOPk8ZU7nZQjdUhctuhQofk7BGHuIy0c9Ez8BNhXs=
 github.com/gkampitakis/ciinfo v0.3.2/go.mod h1:1NIwaOcFChN4fa/B0hEBdAb6npDlFL8Bwx4dfRLRqAo=
 github.com/gkampitakis/go-diff v1.3.2 h1:Qyn0J9XJSDTgnsgHRdz9Zp24RaJeKMUHg2+PDZZdC4M=
@@ -55,12 +53,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/raviqqe/aruba-go v0.1.6 h1:8IohnNZK90tyDkaGy3kAWqvIDfTo+xOLOxk1eHzKQwQ=
 github.com/raviqqe/aruba-go v0.1.6/go.mod h1:OP3PQdU9HuhxLjAlraBXzhlF6xeB1LLmnVXq5rXFFDE=
-github.com/raviqqe/gherkin-format v0.0.0-20250727021022-fe9a6e6a767d h1:G7q3VJYzwlp5G/0N5A4h+mUiy0ent3SAw38Y9lb54dU=
-github.com/raviqqe/gherkin-format v0.0.0-20250727021022-fe9a6e6a767d/go.mod h1:qOt7A0CShqZfMLwqDKvjjgzooKlCx+hVDPAJgLF9RNo=
 github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c h1:oAfBCa8TeOeHhrKkfb1oXeaeFB7sUBc7empseK7Ks1I=
 github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c/go.mod h1:qOt7A0CShqZfMLwqDKvjjgzooKlCx+hVDPAJgLF9RNo=
-github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1 h1:RcnomRPmAc/1CdhjYSRpS9sl5O3zxb0pmczXKMX6Qlg=
-github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1/go.mod h1:14PqxZWbauQNrfTfQCuOayU5+eyQ95zbFJuOLVSzHek=
 github.com/raviqqe/gherkin2markdown v0.0.0-20250802200111-fb5f8b9fb747 h1:HWI634dm2st4v48LNJVu67v/HmNGHB24xuOjRzXZPyM=
 github.com/raviqqe/gherkin2markdown v0.0.0-20250802200111-fb5f8b9fb747/go.mod h1:ndObJp1BYXuEnyyRgXrNVDQ/o0k+5BoNPSn6ZtrlrB4=
 github.com/rogpeppe/go-internal v1.13.1 h1:KvO1DLK/DRN07sQ1LQKScxyZJuNnedQ5/wKSR38lUII=
