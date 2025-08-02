@@ -32,12 +32,10 @@ Feature: SRFI 1
     Then the stdout should contain exactly "A"
 
     Examples:
-      | input | output |
-      |       |        |
-      | 1     | 1      |
-      | 1 1   | 1      |
-      |       |        |
-      |       |        |
-      |       |        |
-      |       |        |
-      |       |        |
+      | input         | output |
+      |               |        |
+      | 1             | 1      |
+      | 1 1           | 1      |
+      | 1 1 2 2       | 1 2    |
+      | 1 2 1 2       | 1 2    |
+      | 1 2 1 3 3 2 3 | 1 2 3  |
