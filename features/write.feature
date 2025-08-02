@@ -361,3 +361,98 @@ Feature: Write
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
+
+  @chibi @gauche @stak
+  Rule: Recursive values
+
+    Scenario Outline: Write a recursive pair
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x (cons 42 #f))
+        (set-cdr! x x)
+
+        (<procedure> x)
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "#0=(42 . #0#)"
+
+      Examples:
+        | procedure    |
+        | write        |
+        | write-shared |
+
+    Scenario Outline: Write recursive pairs
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x (cons (cons 123 #f) (cons #f 42)))
+        (set-cdr! (car x) x)
+        (set-car! (cdr x) (cdr x))
+
+        (<procedure> x)
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "#0=((123 . #0#) . #1=(#1# . 42))"
+
+      Examples:
+        | procedure    |
+        | write        |
+        | write-shared |
+
+    Scenario Outline: Write a recursive vector
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x (vector 42 #f))
+        (vector-set! x 1 x)
+
+        (<procedure> x)
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "#0=#(42 #0#)"
+
+      Examples:
+        | procedure    |
+        | write        |
+        | write-shared |
+
+  @chibi @gauche @stak
+  Rule: Shared values
+
+    Scenario Outline: Write a shared pair
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x (cons 42 #f))
+
+        (<procedure> (cons x x))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "<output>"
+
+      Examples:
+        | procedure    | output               |
+        | write        | ((42 . #f) 42 . #f)  |
+        | write-shared | (#0=(42 . #f) . #0#) |
+
+    Scenario Outline: Write a shared vector
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (define x #(42 #f))
+
+        (<procedure> (vector x x))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "<output>"
+
+      Examples:
+        | procedure    | output               |
+        | write        | #(#(42 #f) #(42 #f)) |
+        | write-shared | #(#0=#(42 #f) #0#)   |

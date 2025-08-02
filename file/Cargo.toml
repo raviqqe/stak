@@ -1,29 +1,29 @@
 [package]
 name = "stak-file"
-description = "File system for Stak Scheme"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "File system for Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
-
-[features]
-async = ["stak-vm/async", "winter-maybe-async/async"]
-libc = ["dep:rustix"]
-std = []
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 heapless = { version = "0.8.0", default-features = false }
 rustix = { version = "1.0.8", default-features = false, features = [
   "fs",
 ], optional = true }
-stak-vm = { version = "0.10.33", path = "../vm" }
+stak-vm = { version = "0.10.34", path = "../vm" }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
 tempfile = "3.20.0"
+
+[features]
+async = ["stak-vm/async", "winter-maybe-async/async"]
+libc = ["dep:rustix"]
+std = []
 
 [lints]
 workspace = true

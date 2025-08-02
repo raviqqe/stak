@@ -1,26 +1,26 @@
 [package]
 name = "mstak-interpret"
-description = "Minimal Stak Scheme bytecode interpreter"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Minimal Stak Scheme bytecode interpreter"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 libc = { version = "0.2.174", default-features = false }
-stak-device = { version = "0.10.0", path = "../../../device", features = [
+stak-device = { version = "0.10.0", features = [
   "libc",
-] }
-stak-file = { version = "0.10.0", path = "../../../file", features = ["libc"] }
-stak-process-context = { version = "0.10.0", path = "../../../process_context", features = [
-  "libc",
-] }
-stak-r7rs = { version = "0.10.0", path = "../../../r7rs" }
-stak-time = { version = "0.10.0", path = "../../../time", features = ["libc"] }
+], path = "../../../device" }
+stak-file = { version = "0.10.0", features = ["libc"], path = "../../../file" }
 stak-libc = { version = "0.10.0", path = "../../../libc" }
+stak-process-context = { version = "0.10.0", features = [
+  "libc",
+], path = "../../../process_context" }
+stak-r7rs = { version = "0.10.0", path = "../../../r7rs" }
+stak-time = { version = "0.10.0", features = ["libc"], path = "../../../time" }
 stak-vm = { version = "0.10.0", path = "../../../vm" }
 
 [lints]

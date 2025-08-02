@@ -1,26 +1,26 @@
 [package]
 name = "stak-dynamic"
-description = "Dynamic primitives for Stak Scheme"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Dynamic primitives for Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
-
-[features]
-async = ["stak-vm/async", "winter-maybe-async/async"]
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 any-fn = { version = "0.6.1" }
 bitvec = "1.0.1"
 heapless = { version = "0.8.0", default-features = false }
-stak-vm = { version = "0.10.33", path = "../vm" }
+stak-vm = { version = "0.10.34", path = "../vm" }
 winter-maybe-async = { version = "0.13.1" }
-
-[lints]
-workspace = true
 
 [dev-dependencies]
 tokio = { version = "1.47.0", features = ["macros", "rt-multi-thread"] }
+
+[features]
+async = ["stak-vm/async", "winter-maybe-async/async"]
+
+[lints]
+workspace = true

@@ -1,19 +1,19 @@
 [package]
 name = "no-std-no-alloc"
 version.workspace = true
-publish = false
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+publish = false
 
 [dependencies]
 heapless = "0.8.0"
-stak = { version = "0.10.33", path = "../../root", default-features = false }
+stak = { version = "0.10.34", default-features = false, path = "../../root" }
 
 [build-dependencies]
-stak-build = { version = "0.10.33", path = "../../build" }
+stak-build = { version = "0.10.34", path = "../../build" }
 
 [lints]
 workspace = true

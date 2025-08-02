@@ -31,7 +31,6 @@ cd $(dirname $0)/..
 #   cargo build --release
 # )
 
-export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 go tool agoa ${tags:+-t "$tags"} "$@"

@@ -1554,6 +1554,35 @@
     (define (write-message . xs)
       #f)))
 
+(define-library (srfi 1)
+  (export
+    append-map
+    delete-duplicates
+    iota)
+
+  (import (stak base))
+
+  (begin
+    (define (append-map f xs)
+      (apply append (map f xs)))
+
+    (define (delete-duplicates xs)
+      (if (null? xs)
+        '()
+        (let ((ys (delete-duplicates (cdr xs))))
+          (if (memq (car xs) ys)
+            ys
+            (cons (car xs) ys)))))
+
+    (define (iota count . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
+
+      (let loop ((count count) (x start))
+        (if (> count 0)
+          (cons x (loop (- count 1) (+ x step)))
+          '())))))
+
 (define-library (stak parameter)
   (export make-parameter)
 
@@ -2960,15 +2989,38 @@
         (read-raw)))))
 
 (define-library (scheme write)
-  (export display write)
+  (export
+    display
+    write
+    write-shared
+    write-simple)
 
-  (import (scheme base) (scheme char))
+  (import (scheme base) (scheme char) (srfi 1))
 
   (begin
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
-    (define (write-value x)
+    (define-record-type write-context
+      (make-write-context display indices referenced)
+      write-context?
+      (display write-context-display)
+      (indices write-context-indices)
+      (referenced write-context-referenced write-context-set-referenced!))
+
+    (define (write-context-share-index context x)
+      (cond
+        ((assq x (write-context-indices context)) =>
+          cdr)
+        (else
+          #f)))
+
+    (define (write-context-reference! context x)
+      (write-context-set-referenced!
+        context
+        (cons x (write-context-referenced context))))
+
+    (define (write-value context x)
       (define escaped-chars
         '((#\newline . #\n)
           (#\tab . #\t)
@@ -2998,10 +3050,10 @@
 
         ((bytevector? x)
           (write-string "#u8")
-          (write-sequence (bytevector->list x)))
+          (write-sequence context (bytevector->list x)))
 
         ((char? x)
-          (if (current-display)
+          (if (write-context-display context)
             (write-char x)
             (begin
               (write-char #\#)
@@ -3012,13 +3064,13 @@
                   (write-char x))))))
 
         ((null? x)
-          (write-sequence x))
+          (write-string "()"))
 
         ((number? x)
           (write-string (number->string x)))
 
         ((pair? x)
-          (write-list x))
+          (write-reference context write-list x))
 
         ((procedure? x)
           (write-string "#procedure"))
@@ -3027,7 +3079,7 @@
           (write-string "#record"))
 
         ((string? x)
-          (if (current-display)
+          (if (write-context-display context)
             (write-string x)
             (begin
               (write-char #\")
@@ -3039,34 +3091,38 @@
             (write-string (if (zero? (string-length string)) "||" string))))
 
         ((vector? x)
-          (write-vector x))
+          (write-reference context write-vector x))
 
         (else
           (error "unknown type to write"))))
 
-    (define current-display (make-parameter #f))
+    (define (write-reference context f x)
+      (cond
+        ((write-context-share-index context x) =>
+          (lambda (index)
+            (write-char #\#)
+            (write-string (number->string index))
+            (if (memq x (write-context-referenced context))
+              (write-char #\#)
+              (begin
+                (write-context-reference! context x)
+                (write-char #\=)
+                (f context x)))))
+        (else
+          (f context x))))
 
-    (define (write x . rest)
-      (parameterize ((current-output-port (get-output-port rest)))
-        (write-value x)))
-
-    (define (display x . rest)
-      (parameterize ((current-display #t)
-                     (current-output-port (get-output-port rest)))
-        (write-value x)))
-
-    (define (write-list xs)
+    (define (write-list context xs)
       (define quotes
         '((quote . #\')
           (quasiquote . #\`)
           (unquote . #\,)))
 
-      (define (write-quote char value)
+      (define (write-quote char x)
         (write-char char)
-        (write-value value))
+        (write-value context x))
 
       (if (or (null? xs) (null? (cdr xs)))
-        (write-sequence xs)
+        (write-sequence context xs)
         (cond
           ((and
               (pair? (cdr xs))
@@ -3075,36 +3131,87 @@
             =>
             (lambda (pair)
               (write-quote (cdr pair) (cadr xs))))
-
           (else
-            (write-sequence xs)))))
+            (write-sequence context xs)))))
 
-    (define (write-sequence xs)
+    (define (write-sequence context xs)
       (write-char #\()
 
       (when (pair? xs)
-        (write-value (car xs))
+        (write-value context (car xs))
         (let loop ((xs (cdr xs)))
           (cond
-            ((pair? xs)
-              (write-char #\space)
-              (write-value (car xs))
-              (loop (cdr xs)))
-
             ((null? xs)
               #f)
-
+            ((and (pair? xs) (not (write-context-share-index context xs)))
+              (write-char #\space)
+              (write-value context (car xs))
+              (loop (cdr xs)))
             (else
               (write-char #\space)
               (write-char #\.)
               (write-char #\space)
-              (write-value xs)))))
+              (write-value context xs)))))
 
       (write-char #\)))
 
-    (define (write-vector xs)
+    (define (write-vector context xs)
       (write-char #\#)
-      (write-sequence (vector->list xs)))
+      (write-sequence context (vector->list xs)))
+
+    (define (collect-cycles f)
+      (lambda (x)
+        (define (collect x xs)
+          (cond
+            ((memq x (car xs))
+              (list x))
+            ((pair? x)
+              (let ((xs (f x xs)))
+                (delete-duplicates
+                  (append
+                    (collect (car x) xs)
+                    (collect (cdr x) xs)))))
+            ((vector? x)
+              (let ((xs (f x xs)))
+                (delete-duplicates
+                  (append-map
+                    (lambda (x)
+                      (collect x xs))
+                    (vector->list x)))))
+            (else
+              '())))
+
+        (collect x (list '()))))
+
+    (define collect-recursive
+      (collect-cycles
+        (lambda (x xs)
+          (list (cons x (car xs))))))
+
+    (define (write-root display collect-cycles)
+      (lambda (x . rest)
+        (parameterize ((current-output-port (get-output-port rest)))
+          (write-value
+            (make-write-context
+              display
+              (let ((xs (collect-cycles x)))
+                (map cons xs (iota (length xs))))
+              '())
+            x))))
+
+    (define write (write-root #f collect-recursive))
+
+    (define write-shared
+      (write-root
+        #f
+        (collect-cycles
+          (lambda (x xs)
+            (set-car! xs (delete-duplicates (cons x (car xs))))
+            xs))))
+
+    (define write-simple (write-root #f (lambda (x) '())))
+
+    (define display (write-root #t collect-recursive))
 
     (set! write-irritant write)))
 
@@ -3583,17 +3690,121 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
-(define-library (srfi 1)
-  (export iota)
+; TODO Implement this as SRFI-146.
+(define-library (stak aa-tree)
+  (export
+    aa-tree-empty
+    aa-tree?
+    aa-tree-find
+    aa-tree-insert!
+    aa-tree->list
+    list->aa-tree)
 
-  (import (scheme base))
+  (import (stak base))
 
   (begin
-    (define (iota count . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
+    (define-record-type aa-tree
+      (make-aa-tree root less)
+      aa-tree?
+      (root aa-tree-root aa-tree-set-root!)
+      (less aa-tree-less aa-tree-set-less!))
 
-      (let loop ((count count) (x start))
-        (if (> count 0)
-          (cons x (loop (- count 1) (+ x step)))
-          '())))))
+    (define-record-type aa-node
+      (make-aa-node value level left right)
+      aa-node?
+      (value aa-node-value aa-node-set-value!)
+      (level aa-node-level aa-node-set-level!)
+      (left aa-node-left aa-node-set-left!)
+      (right aa-node-right aa-node-set-right!))
+
+    (define (aa-tree-empty less)
+      (make-aa-tree #f less))
+
+    (define (aa-tree-find tree value)
+      (aa-node-find (aa-tree-root tree) value (aa-tree-less tree)))
+
+    (define (aa-node-find node value less?)
+      (and
+        node
+        (let ((node-value (aa-node-value node)))
+          (cond
+            ((less? value node-value)
+              (aa-node-find (aa-node-left node) value less?))
+
+            ((less? node-value value)
+              (aa-node-find (aa-node-right node) value less?))
+
+            (else
+              node-value)))))
+
+    (define (aa-tree-insert! tree value)
+      (aa-tree-set-root!
+        tree
+        (aa-node-insert!
+          (aa-tree-root tree)
+          value
+          (aa-tree-less tree))))
+
+    (define (list->aa-tree xs less?)
+      (define tree (aa-tree-empty less?))
+      (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
+      tree)
+
+    (define (aa-tree->list tree)
+      (aa-node->list (aa-tree-root tree) '()))
+
+    (define (aa-node->list node xs)
+      (if node
+        (aa-node->list
+          (aa-node-left node)
+          (cons
+            (aa-node-value node)
+            (aa-node->list (aa-node-right node) xs)))
+        xs))
+
+    (define (aa-node-insert! node value less?)
+      (if node
+        (let ((node-value (aa-node-value node)))
+          (cond
+            ((less? value node-value)
+              (aa-node-set-left!
+                node
+                (aa-node-insert! (aa-node-left node) value less?))
+              (aa-node-balance! node))
+
+            ((less? node-value value)
+              (aa-node-set-right!
+                node
+                (aa-node-insert! (aa-node-right node) value less?))
+              (aa-node-balance! node))
+
+            (else
+              node)))
+        (make-aa-node value 0 #f #f)))
+
+    (define (aa-node-balance! node)
+      (aa-node-split! (aa-node-skew! node)))
+
+    (define (aa-node-skew! node)
+      (let ((left (and node (aa-node-left node))))
+        (if (and
+             left
+             (= (aa-node-level node) (aa-node-level left)))
+          (begin
+            (aa-node-set-left! node (aa-node-right left))
+            (aa-node-set-right! left node)
+            left)
+          node)))
+
+    (define (aa-node-split! node)
+      (let* ((right (and node (aa-node-right node)))
+             (right-right (and right (aa-node-right right))))
+        (if (and
+             right-right
+             (= (aa-node-level node) (aa-node-level right-right)))
+          (begin
+            (aa-node-set-right! node (aa-node-left right))
+            (aa-node-set-left! right node)
+            (aa-node-set-level! right (+ (aa-node-level right) 1))
+            right)
+          node)))))

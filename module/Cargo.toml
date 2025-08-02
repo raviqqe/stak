@@ -1,13 +1,13 @@
 [package]
 name = "stak-module"
-description = "Modules in Stak Scheme"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Modules in Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 hmr = "0.2.3"

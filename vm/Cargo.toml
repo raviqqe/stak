@@ -1,13 +1,28 @@
 [package]
 name = "stak-vm"
-description = "Virtual machines for Stak Scheme"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Virtual machines for Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+cfg-elif = "0.6.3"
+nonbox = { version = "0.5.10", optional = true }
+stak-util = { version = "0.10.34", path = "../util" }
+winter-maybe-async = "0.13.1"
+
+[dev-dependencies]
+insta = "1.43.1"
+stak-device = { path = "../device" }
+stak-file = { path = "../file" }
+stak-macro = { path = "../macro" }
+stak-process-context = { path = "../process_context" }
+stak-r7rs = { path = "../r7rs" }
+stak-time = { path = "../time" }
 
 [features]
 async = [
@@ -25,21 +40,6 @@ gc_always = []
 profile = []
 trace_instruction = []
 trace_memory = []
-
-[dependencies]
-cfg-elif = "0.6.3"
-nonbox = { version = "0.5.10", optional = true }
-stak-util = { version = "0.10.33", path = "../util" }
-winter-maybe-async = "0.13.1"
-
-[dev-dependencies]
-insta = "1.43.1"
-stak-device = { path = "../device" }
-stak-file = { path = "../file" }
-stak-macro = { path = "../macro" }
-stak-process-context = { path = "../process_context" }
-stak-r7rs = { path = "../r7rs" }
-stak-time = { path = "../time" }
 
 [lints]
 workspace = true
