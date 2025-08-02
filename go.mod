@@ -23,7 +23,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/raviqqe/aruba-go v0.1.6 // indirect
 	github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c // indirect
-	github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1 // indirect
+	github.com/raviqqe/gherkin2markdown v0.0.0-20250802200111-fb5f8b9fb747 // indirect
 	github.com/samber/lo v1.51.0 // indirect
 	github.com/spf13/pflag v1.0.7 // indirect
 	github.com/willf/pad v0.0.0-20200313202418-172aa767f2a4 // indirect

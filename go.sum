@@ -61,6 +61,8 @@ github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c h1:oAfBCa8T
 github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c/go.mod h1:qOt7A0CShqZfMLwqDKvjjgzooKlCx+hVDPAJgLF9RNo=
 github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1 h1:RcnomRPmAc/1CdhjYSRpS9sl5O3zxb0pmczXKMX6Qlg=
 github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1/go.mod h1:14PqxZWbauQNrfTfQCuOayU5+eyQ95zbFJuOLVSzHek=
+github.com/raviqqe/gherkin2markdown v0.0.0-20250802200111-fb5f8b9fb747 h1:HWI634dm2st4v48LNJVu67v/HmNGHB24xuOjRzXZPyM=
+github.com/raviqqe/gherkin2markdown v0.0.0-20250802200111-fb5f8b9fb747/go.mod h1:ndObJp1BYXuEnyyRgXrNVDQ/o0k+5BoNPSn6ZtrlrB4=
 github.com/rogpeppe/go-internal v1.13.1 h1:KvO1DLK/DRN07sQ1LQKScxyZJuNnedQ5/wKSR38lUII=
 github.com/rogpeppe/go-internal v1.13.1/go.mod h1:uMEvuHeurkdAXX61udpOXGD/AzZDWNMNyH2VO9fmH0o=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
