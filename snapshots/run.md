@@ -3796,7 +3796,6 @@
   - definition-context
   - use-context
   - ellipsis-match
-  - value
   - ellipsis-pattern
   - element
   - variables
@@ -3820,6 +3819,20 @@
   - write-context
   - indices
   - referenced
+  - root
+  - less
+  - aa-node
+  - value
+  - level
+  - left
+  - right
+  - aa-tree
+  - aa-tree-empty
+  - aa-tree?
+  - aa-tree-find
+  - aa-tree-insert!
+  - aa-tree->list
+  - list->aa-tree
   - rust
   - r5rs
   - denominator
@@ -8115,6 +8128,16 @@
                                           - call 3 #f ||
                                         - call 1 #f $$close
                                         - constant list
+                                          - list
+                                            - list
+                                              - stak
+                                              - aa-tree
+                                            - (aa-tree-empty . aa-tree-empty)
+                                            - (aa-tree? . aa-tree?)
+                                            - (aa-tree-find . aa-tree-find)
+                                            - (aa-tree-insert! . aa-tree-insert!)
+                                            - (aa-tree->list . aa-tree->list)
+                                            - (list->aa-tree . list->aa-tree)
                                           - list
                                             - list
                                               - stak
@@ -12661,6 +12684,310 @@
   - call 2 #f ||
 - call 1 #f $$close
 - set current-second
+- constant aa-tree
+- constant list
+  - root
+  - less
+- call 2 #f cons
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set aa-tree?
+- get ||
+- constant root
+- call 2 #f ||
+- set ||
+- get ||
+- constant root
+- call 2 #f ||
+- set ||
+- get ||
+- constant less
+- call 2 #f ||
+- set ||
+- get ||
+- constant less
+- call 2 #f ||
+- set ||
+- constant aa-node
+- constant list
+  - value
+  - level
+  - left
+  - right
+- call 2 #f cons
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- constant value
+- call 2 #f ||
+- set ||
+- get ||
+- constant value
+- call 2 #f ||
+- set ||
+- get ||
+- constant level
+- call 2 #f ||
+- set ||
+- get ||
+- constant level
+- call 2 #f ||
+- set ||
+- get ||
+- constant left
+- call 2 #f ||
+- set ||
+- get ||
+- constant left
+- call 2 #f ||
+- set ||
+- get ||
+- constant right
+- call 2 #f ||
+- set ||
+- get ||
+- constant right
+- call 2 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant #f
+  - get 1
+  - call 2 #f ||
+- call 1 #f $$close
+- set aa-tree-empty
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - get 3
+  - call 1 #f ||
+  - call 3 #f ||
+- call 1 #f $$close
+- set aa-tree-find
+- constant procedure 3 #f
+  - get 2
+  - if
+    - constant procedure 1 #f
+      - get 3
+      - get 1
+      - call 2 #f 4
+      - if
+        - get 4
+        - call 1 #f ||
+        - get 4
+        - get 4
+        - call 3 #f ||
+      - get 0
+      - get 4
+      - call 2 #f 4
+      - if
+        - get 4
+        - call 1 #f ||
+        - get 4
+        - get 4
+        - call 3 #f ||
+      - get 0
+    - call 1 #f $$close
+    - get 3
+    - call 1 #f ||
+    - call 1 #f 1
+  - constant #f
+- call 1 #f $$close
+- set ||
+- constant procedure 2 #f
+  - get 1
+  - get 2
+  - call 1 #f ||
+  - get 2
+  - get 4
+  - call 1 #f ||
+  - call 3 #f ||
+  - call 2 #f ||
+- call 1 #f $$close
+- set aa-tree-insert!
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 2
+    - call 1 #f aa-tree-empty
+    - set 1
+    - constant procedure 1 #f
+      - get 2
+      - get 1
+      - call 2 #f aa-tree-insert!
+    - call 1 #f $$close
+    - get 4
+    - call 2 #f for-each
+    - set 0
+    - get 0
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set list->aa-tree
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - constant ()
+  - call 2 #f ||
+- call 1 #f $$close
+- set aa-tree->list
+- constant procedure 2 #f
+  - get 1
+  - if
+    - get 1
+    - call 1 #f ||
+    - get 2
+    - call 1 #f ||
+    - get 3
+    - call 1 #f ||
+    - get 3
+    - call 2 #f ||
+    - call 2 #f cons
+    - call 2 #f ||
+  - get 0
+- call 1 #f $$close
+- set ||
+- constant procedure 3 #f
+  - get 2
+  - if
+    - constant procedure 1 #f
+      - get 3
+      - get 1
+      - call 2 #f 4
+      - if
+        - get 4
+        - get 5
+        - call 1 #f ||
+        - get 5
+        - get 5
+        - call 3 #f ||
+        - call 2 #f ||
+        - set 0
+        - get 4
+        - call 1 #f ||
+      - get 0
+      - get 4
+      - call 2 #f 4
+      - if
+        - get 4
+        - get 5
+        - call 1 #f ||
+        - get 5
+        - get 5
+        - call 3 #f ||
+        - call 2 #f ||
+        - set 0
+        - get 4
+        - call 1 #f ||
+      - get 4
+    - call 1 #f $$close
+    - get 3
+    - call 1 #f ||
+    - call 1 #f 1
+  - get 1
+  - constant 0
+  - constant #f
+  - constant #f
+  - call 4 #f ||
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - call 1 #f ||
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 2
+      - call 1 #f ||
+      - get 1
+      - call 1 #f ||
+      - call 2 #f eq?
+      - continue
+    - constant #f
+    - if
+      - get 2
+      - get 1
+      - call 1 #f ||
+      - call 2 #f ||
+      - set 0
+      - get 0
+      - get 3
+      - call 2 #f ||
+      - set 0
+      - get 0
+    - get 2
+  - call 1 #f $$close
+  - get 1
+  - if
+    - get 1
+    - call 1 #f ||
+    - continue
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 4
+        - call 1 #f ||
+        - get 1
+        - call 1 #f ||
+        - call 2 #f eq?
+        - continue
+      - constant #f
+      - if
+        - get 4
+        - get 3
+        - call 1 #f ||
+        - call 2 #f ||
+        - set 0
+        - get 2
+        - get 5
+        - call 2 #f ||
+        - set 0
+        - get 2
+        - get 3
+        - call 1 #f ||
+        - constant 1
+        - call 2 #f ||
+        - call 2 #f ||
+        - set 0
+        - get 2
+      - get 4
+    - call 1 #f $$close
+    - get 1
+    - if
+      - get 1
+      - call 1 #f ||
+      - continue
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - get 1
+  - if
+    - get 1
+    - call 1 #f ||
+    - continue
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set ||
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 2
