@@ -39,8 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cargo install tombi
-      - run: tombi format --check .
+      - run: npx tombi format --check .
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:
