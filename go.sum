@@ -57,6 +57,8 @@ github.com/raviqqe/aruba-go v0.1.6 h1:8IohnNZK90tyDkaGy3kAWqvIDfTo+xOLOxk1eHzKQw
 github.com/raviqqe/aruba-go v0.1.6/go.mod h1:OP3PQdU9HuhxLjAlraBXzhlF6xeB1LLmnVXq5rXFFDE=
 github.com/raviqqe/gherkin-format v0.0.0-20250727021022-fe9a6e6a767d h1:G7q3VJYzwlp5G/0N5A4h+mUiy0ent3SAw38Y9lb54dU=
 github.com/raviqqe/gherkin-format v0.0.0-20250727021022-fe9a6e6a767d/go.mod h1:qOt7A0CShqZfMLwqDKvjjgzooKlCx+hVDPAJgLF9RNo=
+github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c h1:oAfBCa8TeOeHhrKkfb1oXeaeFB7sUBc7empseK7Ks1I=
+github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c/go.mod h1:qOt7A0CShqZfMLwqDKvjjgzooKlCx+hVDPAJgLF9RNo=
 github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1 h1:RcnomRPmAc/1CdhjYSRpS9sl5O3zxb0pmczXKMX6Qlg=
 github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1/go.mod h1:14PqxZWbauQNrfTfQCuOayU5+eyQ95zbFJuOLVSzHek=
 github.com/rogpeppe/go-internal v1.13.1 h1:KvO1DLK/DRN07sQ1LQKScxyZJuNnedQ5/wKSR38lUII=

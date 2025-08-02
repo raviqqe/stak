@@ -22,7 +22,7 @@ require (
 	github.com/hashicorp/go-memdb v1.3.4 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/raviqqe/aruba-go v0.1.6 // indirect
-	github.com/raviqqe/gherkin-format v0.0.0-20250727021022-fe9a6e6a767d // indirect
+	github.com/raviqqe/gherkin-format v0.0.0-20250802193130-b4aec416d73c // indirect
 	github.com/raviqqe/gherkin2markdown v0.0.0-20250718025159-65d12ce208c1 // indirect
 	github.com/samber/lo v1.51.0 // indirect
 	github.com/spf13/pflag v1.0.7 // indirect
