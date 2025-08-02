@@ -4,7 +4,7 @@ Feature: AA tree
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (aa-tree-empty <)
       """
@@ -14,7 +14,7 @@ Feature: AA tree
   Scenario: Check if a value is a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (write-u8 (if (aa-tree? (aa-tree-empty <)) 65 66))
       """
@@ -25,7 +25,7 @@ Feature: AA tree
   Scenario: Find no value
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -38,7 +38,7 @@ Feature: AA tree
   Scenario: Insert a value into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -53,7 +53,7 @@ Feature: AA tree
   Scenario: Insert a value into a left of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -72,7 +72,7 @@ Feature: AA tree
   Scenario: Insert a value into a right of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -91,7 +91,7 @@ Feature: AA tree
   Scenario: Insert a value into the same node of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -107,7 +107,7 @@ Feature: AA tree
   Scenario Outline: Insert values into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -152,7 +152,7 @@ Feature: AA tree
   Scenario Outline: Convert a list into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
       """
