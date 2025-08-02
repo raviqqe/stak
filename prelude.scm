@@ -3669,7 +3669,7 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
-(define-library (aa-tree)
+(define-library (stak aa-tree)
   (export
     aa-tree-empty
     aa-tree?
