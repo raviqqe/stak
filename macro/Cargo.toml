@@ -1,28 +1,16 @@
 [package]
 name = "stak-macro"
-description = "Macros to integrate Stak Scheme"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Macros to integrate Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [lib]
 proc-macro = true
-
-[features]
-async = [
-  "stak-compiler/async",
-  "stak-device/async",
-  "stak-file/async",
-  "stak-process-context/async",
-  "stak-r7rs/async",
-  "stak-time/async",
-  "stak-vm/async",
-]
-hot-reload = []
 
 [dependencies]
 cfg-elif = "0.6.3"
@@ -39,6 +27,18 @@ stak-process-context = { path = "../process_context" }
 stak-r7rs = { path = "../r7rs" }
 stak-time = { path = "../time" }
 stak-vm = { path = "../vm" }
+
+[features]
+async = [
+  "stak-compiler/async",
+  "stak-device/async",
+  "stak-file/async",
+  "stak-process-context/async",
+  "stak-r7rs/async",
+  "stak-time/async",
+  "stak-vm/async",
+]
+hot-reload = []
 
 [lints]
 workspace = true

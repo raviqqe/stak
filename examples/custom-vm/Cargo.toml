@@ -1,8 +1,8 @@
 [package]
 name = "custom-vm"
 version.workspace = true
-publish = false
 edition.workspace = true
+publish = false
 
 [dependencies]
 stak = { version = "0.10.34", path = "../../root" }

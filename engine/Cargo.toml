@@ -1,26 +1,13 @@
 [package]
 name = "stak-engine"
-description = "Stak Scheme scripting engine for Rust"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme scripting engine for Rust"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
-
-[features]
-async = [
-  "stak-device/async",
-  "stak-file/async",
-  "stak-time/async",
-  "stak-process-context/async",
-  "stak-r7rs/async",
-  "stak-vm/async",
-  "winter-maybe-async/async",
-]
-libc = ["stak-device/libc"]
-std = ["stak-device/std"]
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 any-fn = "0.6.1"
@@ -42,6 +29,19 @@ stak = { path = "../root" }
 
 [build-dependencies]
 stak-build = { version = "0.10.34", path = "../build" }
+
+[features]
+async = [
+  "stak-device/async",
+  "stak-file/async",
+  "stak-process-context/async",
+  "stak-r7rs/async",
+  "stak-time/async",
+  "stak-vm/async",
+  "winter-maybe-async/async",
+]
+libc = ["stak-device/libc"]
+std = ["stak-device/std"]
 
 [lints]
 workspace = true

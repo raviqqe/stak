@@ -1,13 +1,23 @@
 [package]
 name = "stak-r7rs"
-description = "Stak Scheme primitives for R7RS"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme primitives for R7RS"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+stak-device = { version = "0.10.34", path = "../device" }
+stak-file = { version = "0.10.34", path = "../file" }
+stak-inexact = { version = "0.10.34", path = "../inexact" }
+stak-native = { version = "0.10.34", path = "../native" }
+stak-process-context = { version = "0.10.34", path = "../process_context" }
+stak-time = { version = "0.10.34", path = "../time" }
+stak-vm = { version = "0.10.34", path = "../vm" }
+winter-maybe-async = "0.13.1"
 
 [features]
 async = [
@@ -20,13 +30,3 @@ async = [
   "stak-vm/async",
   "winter-maybe-async/async",
 ]
-
-[dependencies]
-stak-device = { version = "0.10.34", path = "../device" }
-stak-file = { version = "0.10.34", path = "../file" }
-stak-inexact = { version = "0.10.34", path = "../inexact" }
-stak-native = { version = "0.10.34", path = "../native" }
-stak-process-context = { version = "0.10.34", path = "../process_context" }
-stak-time = { version = "0.10.34", path = "../time" }
-stak-vm = { version = "0.10.34", path = "../vm" }
-winter-maybe-async = "0.13.1"

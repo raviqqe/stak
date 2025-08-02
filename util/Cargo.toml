@@ -1,13 +1,13 @@
 [package]
 name = "stak-util"
-description = "Stak Scheme utilities"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme utilities"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 cfg-elif = "0.6.3"

@@ -1,21 +1,21 @@
 [package]
 name = "stak-inexact"
-description = "Inexact number operations for Stak Scheme"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Inexact number operations for Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
-
-[features]
-async = ["stak-vm/async", "winter-maybe-async/async"]
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 libm = { version = "0.2.15", default-features = false }
 stak-vm = { version = "0.10.34", path = "../vm" }
 winter-maybe-async = "0.13.1"
+
+[features]
+async = ["stak-vm/async", "winter-maybe-async/async"]
 
 [lints]
 workspace = true

@@ -1,10 +1,10 @@
 [package]
 name = "stak-configuration"
-description = "Stak Scheme configuration"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme configuration"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true

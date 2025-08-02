@@ -1,19 +1,19 @@
 [package]
 name = "stak-decode"
-description = "Stak Scheme bytecode decoder"
-categories.workspace = true
+version.workspace = true
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
+description = "Stak Scheme bytecode decoder"
 readme.workspace = true
 repository.workspace = true
-version.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
-stak-sac = { version = "0.10.34", path = "../../sac", features = [
+stak-sac = { version = "0.10.34", features = [
   "float",
   "std",
-] }
+], path = "../../sac" }
 
 [lints]
 workspace = true
