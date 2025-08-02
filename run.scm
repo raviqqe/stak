@@ -16,7 +16,8 @@
   (scheme repl)
   (only (scheme time))
   (only (scheme write))
-  (only (srfi 1)))
+  (only (srfi 1))
+  (only (stak aa-tree)))
 
 (define (run path)
   (define file (open-input-file path))

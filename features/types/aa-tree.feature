@@ -1,50 +1,44 @@
+@stak
 Feature: AA tree
-
-  Background:
-    Given I run the following script:
-      """sh
-      cp $STAK_ROOT/aa-tree.scm .
-      """
-    And the exit status should be 0
 
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (aa-tree-empty <)
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
 
   Scenario: Check if a value is a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (write-u8 (if (aa-tree? (aa-tree-empty <)) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
   Scenario: Find no value
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
       (write-u8 (if (aa-tree-find tree 1) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "B"
 
   Scenario: Insert a value into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -52,14 +46,14 @@ Feature: AA tree
 
       (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
   Scenario: Insert a value into a left of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -71,14 +65,14 @@ Feature: AA tree
           (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
   Scenario: Insert a value into a right of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -90,14 +84,14 @@ Feature: AA tree
           (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
   Scenario: Insert a value into the same node of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -106,14 +100,14 @@ Feature: AA tree
 
       (write-u8 (if (eq? (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
   Scenario Outline: Insert values into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (define tree (aa-tree-empty <))
 
@@ -129,7 +123,7 @@ Feature: AA tree
 
       (for-each check '(<values>))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
 
@@ -158,11 +152,11 @@ Feature: AA tree
   Scenario Outline: Convert a list into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
       """
-    When I successfully run `stak -l aa-tree.scm main.scm`
+    When I successfully run `stak main.scm`
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 

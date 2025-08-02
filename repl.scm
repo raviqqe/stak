@@ -12,7 +12,8 @@
   (scheme repl)
   (only (scheme time))
   (scheme write)
-  (only (srfi 1)))
+  (only (srfi 1))
+  (only (stak aa-tree)))
 
 (define (write-value value)
   (if (error-object? value)
