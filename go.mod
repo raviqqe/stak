@@ -2,7 +2,11 @@ module github.com/raviqqe/stak
 
 go 1.24.5
 
-tool github.com/raviqqe/aruba-go/cmd/agoa
+tool (
+	github.com/raviqqe/aruba-go/cmd/agoa
+	github.com/raviqqe/gherkin-format
+	github.com/raviqqe/gherkin2markdown
+)
 
 require (
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
