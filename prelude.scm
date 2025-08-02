@@ -3669,6 +3669,7 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
+; TODO Implement this as SRFI-146.
 (define-library (stak aa-tree)
   (export
     aa-tree-empty
