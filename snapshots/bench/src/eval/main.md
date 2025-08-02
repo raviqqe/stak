@@ -3823,6 +3823,13 @@
   - loop
   - x
   - y
+  - aa-tree
+  - aa-tree-empty
+  - aa-tree?
+  - aa-tree-find
+  - aa-tree-insert!
+  - aa-tree->list
+  - list->aa-tree
   - rust
   - r5rs
   - denominator
@@ -8051,6 +8058,16 @@
                                           - call 3 #f ||
                                         - call 1 #f $$close
                                         - constant list
+                                          - list
+                                            - list
+                                              - stak
+                                              - aa-tree
+                                            - (aa-tree-empty . aa-tree-empty)
+                                            - (aa-tree? . aa-tree?)
+                                            - (aa-tree-find . aa-tree-find)
+                                            - (aa-tree-insert! . aa-tree-insert!)
+                                            - (aa-tree->list . aa-tree->list)
+                                            - (list->aa-tree . list->aa-tree)
                                           - list
                                             - list
                                               - stak
