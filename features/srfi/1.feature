@@ -116,6 +116,26 @@ Feature: SRFI 1
       | 3 5       | 5 6 7    |
       | 3 5 2     | 5 7 9    |
 
+  Scenario Outline: Calculate an index of an element
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (list-index even? <lists>) <index>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | lists    | index |
+      | '()      | #f    |
+      | '(1)     | #f    |
+      | '(1 3)   | #f    |
+      | '(2)     | 0     |
+      | '(1 2)   | 1     |
+      | '(1 2 3) | 1     |
+      | '(1 3 2) | 2     |
+
   Scenario Outline: Reduce numbers
     Given a file named "main.scm" with:
       """scheme
