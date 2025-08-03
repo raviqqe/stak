@@ -145,7 +145,6 @@
     length
     map
     for-each
-    filter
     list-ref
     list-set!
     list-head
@@ -947,15 +946,6 @@
             (apply f (map* car xs))
             (apply for-each f (map* cdr xs))))))
 
-    (define (filter f xs)
-      (if (null? xs)
-        '()
-        (let ((x (car xs))
-              (xs (filter f (cdr xs))))
-          (if (f x)
-            (cons x xs)
-            xs))))
-
     (define (list-ref xs index)
       (car (list-tail xs index)))
 
@@ -1537,6 +1527,7 @@
   (export
     append-map
     delete-duplicates
+    filter
     iota)
 
   (import (stak base))
@@ -1552,6 +1543,15 @@
           (if (memq (car xs) ys)
             ys
             (cons (car xs) ys)))))
+
+    (define (filter f xs)
+      (if (null? xs)
+        '()
+        (let ((x (car xs))
+              (xs (filter f (cdr xs))))
+          (if (f x)
+            (cons x xs)
+            xs))))
 
     (define (iota count . rest)
       (define start (if (null? rest) 0 (car rest)))
