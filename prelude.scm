@@ -1603,7 +1603,11 @@
           '())))
 
     (define (find f xs)
-      (car (find-tail f xs)))
+      (cond
+        ((find-tail f xs) =>
+          car)
+        (else
+          #f)))
 
     (define (find-tail f xs)
       (let loop ((xs xs))

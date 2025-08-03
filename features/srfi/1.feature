@@ -116,6 +116,44 @@ Feature: SRFI 1
       | 3 5       | 5 6 7    |
       | 3 5 2     | 5 7 9    |
 
+  Scenario Outline: Find an element
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (eq? (find even? '(<elements>)) <element>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | element |
+      |          | #f      |
+      | 1        | #f      |
+      | 1 3      | #f      |
+      | 2        | 2       |
+      | 1 2      | 2       |
+      | 1 3 4 5  | 4       |
+
+  Scenario Outline: Find a tail of a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (find-tail even? '(<elements>)) <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | value  |
+      |          | #f     |
+      | 1        | #f     |
+      | 1 3      | #f     |
+      | 2        | '(2)   |
+      | 1 2      | '(2)   |
+      | 1 3 4 5  | '(4 5) |
+
   Scenario Outline: Calculate an index of an element
     Given a file named "main.scm" with:
       """scheme
