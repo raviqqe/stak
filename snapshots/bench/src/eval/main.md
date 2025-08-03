@@ -3866,12 +3866,17 @@
   - parameter
   - make-parameter
   - srfi
-  - append-map
-  - delete-duplicates
-  - filter
-  - fold-right
   - iota
   - reduce
+  - fold-right
+  - append-map
+  - filter
+  - find
+  - find-tail
+  - any
+  - every
+  - list-index
+  - delete-duplicates
   - caaar
   - caadr
   - cadar
@@ -8637,12 +8642,17 @@
                                             - list
                                               - srfi
                                               - 1
-                                            - (append-map . append-map)
-                                            - (delete-duplicates . delete-duplicates)
-                                            - (filter . filter)
-                                            - (fold-right . fold-right)
                                             - (iota . iota)
                                             - (reduce . reduce)
+                                            - (fold-right . fold-right)
+                                            - (append-map . append-map)
+                                            - (filter . filter)
+                                            - (find . find)
+                                            - (find-tail . find-tail)
+                                            - (any . any)
+                                            - (every . every)
+                                            - (list-index . list-index)
+                                            - (delete-duplicates . delete-duplicates)
                                             - (fold . fold)
                                             - (reduce-right . reduce-right)
                                             - (cons . cons)
@@ -11681,6 +11691,104 @@
   - call 2 #f 2
 - call 1 #f $$close
 - set iota
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+      - call 1 #f car
+    - constant #f
+  - call 1 #f $$close
+  - get 2
+  - get 2
+  - call 2 #f find-tail
+  - call 1 #f 1
+- call 1 #f $$close
+- set find
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f null?
+      - if
+        - constant #f
+      - get 0
+      - call 1 #f car
+      - call 1 #f 6
+      - if
+        - get 0
+      - get 0
+      - call 1 #f cdr
+      - call 1 #f 3
+    - call 1 #f $$close
+    - set 1
+    - get 2
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set find-tail
+- constant procedure 2 #t
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - get null?
+      - get 2
+      - call 2 #f find-tail
+      - if
+        - constant #f
+      - get 7
+      - get car
+      - get 3
+      - call 2 #f map
+      - call 2 #f apply
+      - if
+        - get 0
+      - get cdr
+      - get 2
+      - call 2 #f map
+      - get 1
+      - constant 1
+      - call 2 #f ||
+      - call 2 #f 5
+    - call 1 #f $$close
+    - set 1
+    - get 3
+    - get 3
+    - call 2 #f cons
+    - constant 0
+    - call 2 #f 2
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set list-index
+- constant procedure 2 #t
+  - get list-index
+  - get 3
+  - get 3
+  - get 3
+  - call 4 #f apply
+  - if
+    - constant #t
+  - constant #f
+- call 1 #f $$close
+- set any
+- constant procedure 2 #t
+  - get any
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f 6
+    - constant #f
+    - call 2 #f eq?
+  - call 1 #f $$close
+  - get 3
+  - get 3
+  - call 4 #f apply
+  - constant #f
+  - call 2 #f eq?
+- call 1 #f $$close
+- set every
 - constant procedure 3 #f
   - get 0
   - call 1 #f null?
