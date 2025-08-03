@@ -904,10 +904,8 @@
             (cond
              ((null? expressions)
               (list expression))
-
              ((pair? expression)
               (cons expression (loop expressions)))
-
              (else
               (loop expressions)))))))
 
