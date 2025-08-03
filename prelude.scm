@@ -1594,15 +1594,34 @@
           (cons x (loop (- count 1) (+ x step)))
           '())))
 
-    (define (list-index f xs)
-      (let loop ((xs xs) (index 0))
+    (define (find f xs)
+      (car (find-tail f xs)))
+
+    (define (find-tail f xs)
+      (let loop ((xs xs))
         (cond
           ((null? xs)
             #f)
           ((f (car xs))
-            index)
+            xs)
           (else
-            (loop (cdr xs) (+ index 1))))))
+            (loop (cdr xs))))))
+
+    (define (list-index f x . xs)
+      (let loop ((xs (cons x xs)) (i 0))
+        (cond
+          ((find-tail null? xs)
+            #f)
+          ((apply f (map car xs))
+            i)
+          (else
+            (loop (map cdr xs) (+ i 1))))))
+
+    (define (any f x . xs)
+      (and (apply list-index f x xs) #t))
+
+    (define (all f x . xs)
+      (not (apply any (lambda (y) (not (f y))) x xs)))
 
     (define (reduce f y xs)
       (if (null? xs)
