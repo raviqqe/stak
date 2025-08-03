@@ -81,3 +81,39 @@ Feature: SRFI 1
       | 1 2       | 2        |
       | 3 5       | 5 6 7    |
       | 3 5 2     | 5 7 9    |
+
+  Scenario Outline: Reduce numbers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (reduce + #f '(<elements>)) <output>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | #f     |
+      | 0        | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |
+
+  Scenario Outline: Reduce numbers from right
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (reduce-right + #f '(<elements>)) <output>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | #f     |
+      | 0        | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |
