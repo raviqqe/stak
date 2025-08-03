@@ -87,7 +87,7 @@ Feature: SRFI 1
       """scheme
       (import (scheme base) (srfi 1))
 
-      (write-u8 (if (equal? (reduce + #f '(<elements>)) <output>)) 65 66))
+      (write-u8 (if (equal? (reduce + #f '(<elements>)) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
@@ -105,7 +105,7 @@ Feature: SRFI 1
       """scheme
       (import (scheme base) (srfi 1))
 
-      (write-u8 (if (equal? (reduce-right + #f '(<elements>)) <output>)) 65 66))
+      (write-u8 (if (equal? (reduce-right + #f '(<elements>)) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
