@@ -176,6 +176,8 @@ Feature: SRFI 1
       | =         | '(0 2) '(1 2 3)   | 1     |
       | =         | '(2 1 3) '(1 2 3) | 2     |
 
+  # TODO Test `any`.
+  # TODO Test `every`.
   Scenario Outline: Reduce numbers
     Given a file named "main.scm" with:
       """scheme
