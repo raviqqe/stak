@@ -1496,17 +1496,21 @@
 
 (define-library (srfi 1)
   (export
-    append-map
-    delete-duplicates
-    filter
-    fold-right
     iota
+
+    reduce
+    fold-right
+    append-map
+
+    filter
+
     find
     find-tail
     any
     every
     list-index
-    reduce
+
+    delete-duplicates
 
     ; Re-exports
     fold
