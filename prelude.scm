@@ -157,8 +157,7 @@
     assv
     append
     reverse
-    fold-left
-    fold-right
+    fold
     reduce-right
     memq-position
     memv-position
@@ -736,13 +735,13 @@
           (eq? x 0))))
 
     (define (arithmetic-operator f y)
-      (lambda xs (fold-left f y xs)))
+      (lambda xs (fold f y xs)))
 
     (define (inverse-arithmetic-operator f y)
       (lambda (x . xs)
         (if (null? xs)
           (f y x)
-          (fold-left f x xs))))
+          (fold f x xs))))
 
     (define + (arithmetic-operator $+ 0))
     (define - (inverse-arithmetic-operator $- 0))
@@ -862,7 +861,7 @@
 
     (define (extremum f)
       (lambda (x . xs)
-        (fold-left (lambda (x y) (if (f x y) x y)) x xs)))
+        (fold (lambda (x y) (if (f x y) x y)) x xs)))
     (define min (extremum $<))
     (define max (extremum (lambda (x y) ($< y x))))
 
@@ -1012,18 +1011,13 @@
         ((null? xs)
           ys)))
 
-    (define (fold-left f y xs)
+    (define (fold f y xs)
       (if (null? xs)
         y
-        (fold-left
+        (fold
           f
           (f y (car xs))
           (cdr xs))))
-
-    (define (fold-right f y xs)
-      (if (null? xs)
-        y
-        (f (fold-right f y (cdr xs)) (car xs))))
 
     (define (reduce-right f y xs)
       (if (null? xs)
@@ -1528,9 +1522,13 @@
     append-map
     delete-duplicates
     filter
+    fold-right
     iota
 
     ; Re-exports
+    fold
+    reduce-right
+
     cons
     list
     null?
@@ -1603,6 +1601,11 @@
             (cons x xs)
             xs))))
 
+    (define (fold-right f y xs)
+      (if (null? xs)
+        y
+        (f (fold-right f y (cdr xs)) (car xs))))
+
     (define (iota count . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
@@ -1610,7 +1613,15 @@
       (let loop ((count count) (x start))
         (if (> count 0)
           (cons x (loop (- count 1) (+ x step)))
-          '())))))
+          '())))
+
+    (define (reduce f y xs)
+      (if (null? xs)
+        y
+        (let loop ((x (car x)) (xs (cdr xs)))
+          (if (null? xs)
+            x
+            (loop (f x (car xs)) (cdr xs))))))))
 
 (define-library (stak parameter)
   (export make-parameter)
@@ -2444,9 +2455,6 @@
     assv
     append
     reverse
-    fold-left
-    fold-right
-    reduce-right
     list-copy
 
     vector?
