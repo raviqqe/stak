@@ -1334,25 +1334,25 @@
     (define-syntax define-record-type
       (syntax-rules ()
         ((_ id
-            (constructor field ...)
+            (constructor field1 ...)
             predicate
-            (field accessor ...)
+            (field2 accessor ...)
             ...)
           (begin
             (define id (cons 0 0))
             (define constructor (record-constructor id))
             (define predicate (record-predicate id))
-            (define-record-fields 0 (field accessor ...) ...)))))
+            (define-record-fields 0 (accessor ...) ...)))))
 
     (define-syntax define-record-fields
       (syntax-rules ()
         ((_ index)
           #f)
 
-        ((_ index (field1 accessor1 ...) (field2 accessor2 ...) ...)
+        ((_ index (accessor1 ...) (accessor2 ...) ...)
           (begin
-            (define-record-field field1 accessor1 ...)
-            (define-record-fields (+ index 1) (field2 accessor2 ...) ...)))))
+            (define-record-field index accessor1 ...)
+            (define-record-fields (+ index 1) (accessor2 ...) ...)))))
 
     (define-syntax define-record-field
       (syntax-rules ()
