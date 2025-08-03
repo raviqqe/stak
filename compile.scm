@@ -109,7 +109,7 @@
        (car xs)
        (list-head (cdr xs) (- n 1)))))
 
-    (define (list-position f xs)
+    (define (list-index f xs)
      (let loop ((xs xs) (index 0))
       (cond
        ((null? xs)
@@ -121,16 +121,12 @@
        (else
         (loop (cdr xs) (+ index 1))))))
 
-    (define (member-position x xs . rest)
-     (define eq? (if (null? rest) equal? (car rest)))
+    (define (equal-index f)
+     (lambda (x xs)
+      (list-index (lambda (y) (f x y)) xs)))
 
-     (list-position (lambda (y) (eq? x y)) xs))
-
-    (define (memv-position x xs)
-     (member-position x xs eqv?))
-
-    (define (memq-position x xs)
-     (member-position x xs eq?))
+    (define memv-index (equal-index eqv?))
+    (define memq-index (equal-index eq?))
 
     (define (append-map f xs)
      (apply append (map f xs)))
@@ -321,9 +317,9 @@
 
     (define (resolve-symbol-string name)
      (let* ((string (symbol->string name))
-            (position (memv-position symbol-name-separator (string->list string))))
-      (if position
-       (string-copy string (+ position 1))
+            (index (memv-index symbol-name-separator (string->list string))))
+      (if index
+       (string-copy string (+ index 1))
        string)))
 
     (define (built-in-symbol? name)
@@ -943,7 +939,7 @@
 
     ; If a variable is not in environment, it is considered to be global.
     (define (compilation-context-resolve context variable)
-     (or (memq-position variable (compilation-context-environment context)) variable))
+     (or (memq-index variable (compilation-context-environment context)) variable))
 
     ;; Procedures
 
@@ -1527,8 +1523,8 @@
       (set-cdr! pair (cddr pair))
       (encode-context-set-dictionary! context (cdr dictionary))))
 
-    (define (encode-context-position context value)
-     (memq-position value (encode-context-dictionary context)))
+    (define (encode-context-index context value)
+     (memq-index value (encode-context-dictionary context)))
 
     (define (encode-context-find-count context value)
      (assq value (encode-context-counts context)))
@@ -1676,7 +1672,7 @@
           (encode-rib context (rib-cdr value))
           (write-u8 (* 2 (rib-car value))))
 
-         ((and entry (encode-context-position context value)) =>
+         ((and entry (encode-context-index context value)) =>
           (lambda (index)
            (decrement-count! entry)
            (let ((removed (zero? (cdr entry))))
