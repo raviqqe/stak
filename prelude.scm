@@ -159,9 +159,6 @@
     reverse
     fold
     reduce-right
-    memq-index
-    memv-index
-    member-index
     list-copy
 
     vector?
@@ -1027,29 +1024,15 @@
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
 
-    ; TODO Define `list-index` from SRFI 1 instead.
-    (define (member-index x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
-
+    (define (memq-index x xs)
       (let loop ((xs xs) (index 0))
         (cond
           ((null? xs)
             #f)
-
           ((eq? x (car xs))
             index)
-
           (else
             (loop (cdr xs) (+ index 1))))))
-
-    (define (memq-index x xs)
-      (member-index x xs eq?))
-
-    (define (memv-index x xs)
-      (member-index x xs eqv?))
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))

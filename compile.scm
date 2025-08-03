@@ -114,10 +114,8 @@
       (cond
        ((null? xs)
         #f)
-
        ((f (car xs))
         index)
-
        (else
         (loop (cdr xs) (+ index 1))))))
 
