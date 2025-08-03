@@ -1773,7 +1773,7 @@
       (define target-procedure? procedure?))
 
      (else
-      (define-record-type rib
+      (define-record-type *rib*
        (rib car cdr tag)
        rib?
        (car rib-car)
