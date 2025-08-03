@@ -907,7 +907,7 @@
              ((not (pair? expression))
               (loop expressions))
              ((eq? (car expression) '$$begin)
-              (loop (cdr expression)))
+              (loop (append (cdr expression) expressions)))
              (else
               (cons expression (loop expressions))))))))
 
