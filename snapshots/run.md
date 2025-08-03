@@ -12145,29 +12145,12 @@
   - call 1 #f null?
   - if
     - get 1
-  - constant procedure 1 #f
-    - constant procedure 2 #f
-      - get 0
-      - call 1 #f null?
-      - if
-        - get 1
-      - get 1
-      - get 1
-      - call 1 #f car
-      - call 2 #f 9
-      - get 1
-      - call 1 #f cdr
-      - call 2 #f 5
-    - call 1 #f $$close
-    - set 1
-    - get 2
-    - call 1 #f car
-    - get 3
-    - call 1 #f cdr
-    - call 2 #f 2
-  - call 1 #f $$close
-  - constant #f
-  - call 1 #f 1
+  - get 2
+  - get 1
+  - call 1 #f car
+  - get 2
+  - call 1 #f cdr
+  - call 3 #f fold
 - call 1 #f $$close
 - set reduce
 - constant procedure 1 #f
