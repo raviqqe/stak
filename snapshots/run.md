@@ -326,7 +326,7 @@
     - get 3
     - get 3
     - get 2
-    - call 3 #f fold-left
+    - call 3 #f fold
   - call 1 #f $$close
 - call 1 #f $$close
 - set ||
@@ -341,7 +341,7 @@
     - get 4
     - get 2
     - get 2
-    - call 3 #f fold-left
+    - call 3 #f fold
   - call 1 #f $$close
 - call 1 #f $$close
 - set ||
@@ -585,7 +585,7 @@
     - call 1 #f $$close
     - get 2
     - get 2
-    - call 3 #f fold-left
+    - call 3 #f fold
   - call 1 #f $$close
 - call 1 #f $$close
 - set ||
@@ -830,29 +830,6 @@
 - call 1 #f $$close
 - set for-each
 - constant procedure 2 #f
-  - get 0
-  - call 1 #f null?
-  - if
-    - constant ()
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f 5
-    - if
-      - get 1
-      - get 1
-      - call 2 #f cons
-    - get 0
-  - call 1 #f $$close
-  - get 1
-  - call 1 #f car
-  - get 3
-  - get 3
-  - call 1 #f cdr
-  - call 2 #f filter
-  - call 2 #f 2
-- call 1 #f $$close
-- set filter
-- constant procedure 2 #f
   - get 1
   - get 1
   - call 2 #f list-tail
@@ -1055,24 +1032,9 @@
   - call 2 #f 5
   - get 2
   - call 1 #f cdr
-  - call 3 #f fold-left
+  - call 3 #f fold
 - call 1 #f $$close
-- set fold-left
-- constant procedure 3 #f
-  - get 0
-  - call 1 #f null?
-  - if
-    - get 1
-  - get 2
-  - get 2
-  - get 2
-  - call 1 #f cdr
-  - call 3 #f fold-right
-  - get 1
-  - call 1 #f car
-  - call 2 #f 4
-- call 1 #f $$close
-- set fold-right
+- set fold
 - constant procedure 3 #f
   - get 0
   - call 1 #f null?
@@ -3913,30 +3875,6 @@
   - special-chars
   - case-lambda
   - cxr
-  - caaar
-  - caadr
-  - cadar
-  - caddr
-  - cdaar
-  - cdadr
-  - cddar
-  - cdddr
-  - caaaar
-  - caaadr
-  - caadar
-  - caaddr
-  - cadaar
-  - cadadr
-  - caddar
-  - cadddr
-  - cdaaar
-  - cdaadr
-  - cdadar
-  - cdaddr
-  - cddaar
-  - cddadr
-  - cdddar
-  - cddddr
   - complex
   - make-rectangular
   - make-polar
@@ -4025,7 +3963,34 @@
   - srfi
   - append-map
   - delete-duplicates
+  - filter
+  - fold-right
   - iota
+  - reduce
+  - caaar
+  - caadr
+  - cadar
+  - caddr
+  - cdaar
+  - cdadr
+  - cddar
+  - cdddr
+  - caaaar
+  - caaadr
+  - caadar
+  - caaddr
+  - cadaar
+  - cadadr
+  - caddar
+  - cadddr
+  - cdaaar
+  - cdaadr
+  - cdadar
+  - cdaddr
+  - cddaar
+  - cddadr
+  - cdddar
+  - cddddr
   - syntax-rules
   - define-syntax
   - \_
@@ -4159,7 +4124,6 @@
   - length
   - map
   - for-each
-  - filter
   - list-ref
   - list-set!
   - list-head
@@ -4172,8 +4136,7 @@
   - assv
   - append
   - reverse
-  - fold-left
-  - fold-right
+  - fold
   - reduce-right
   - memq-position
   - memv-position
@@ -8651,9 +8614,6 @@
                                             - (assv . assv)
                                             - (append . append)
                                             - (reverse . reverse)
-                                            - (fold-left . fold-left)
-                                            - (fold-right . fold-right)
-                                            - (reduce-right . reduce-right)
                                             - (list-copy . list-copy)
                                             - (vector? . vector?)
                                             - (vector . vector)
@@ -8858,7 +8818,60 @@
                                               - 1
                                             - (append-map . append-map)
                                             - (delete-duplicates . delete-duplicates)
+                                            - (filter . filter)
+                                            - (fold-right . fold-right)
                                             - (iota . iota)
+                                            - (reduce . reduce)
+                                            - (fold . fold)
+                                            - (reduce-right . reduce-right)
+                                            - (cons . cons)
+                                            - (list . list)
+                                            - (null? . null?)
+                                            - (pair? . pair?)
+                                            - (car . car)
+                                            - (cdr . cdr)
+                                            - (caar . caar)
+                                            - (cadr . cadr)
+                                            - (cdar . cdar)
+                                            - (cddr . cddr)
+                                            - (caaar . caaar)
+                                            - (caadr . caadr)
+                                            - (cadar . cadar)
+                                            - (caddr . caddr)
+                                            - (cdaar . cdaar)
+                                            - (cdadr . cdadr)
+                                            - (cddar . cddar)
+                                            - (cdddr . cdddr)
+                                            - (caaaar . caaaar)
+                                            - (caaadr . caaadr)
+                                            - (caadar . caadar)
+                                            - (caaddr . caaddr)
+                                            - (cadaar . cadaar)
+                                            - (cadadr . cadadr)
+                                            - (caddar . caddar)
+                                            - (cadddr . cadddr)
+                                            - (cdaaar . cdaaar)
+                                            - (cdaadr . cdaadr)
+                                            - (cdadar . cdadar)
+                                            - (cdaddr . cdaddr)
+                                            - (cddaar . cddaar)
+                                            - (cddadr . cddadr)
+                                            - (cdddar . cdddar)
+                                            - (cddddr . cddddr)
+                                            - (list-ref . list-ref)
+                                            - (length . length)
+                                            - (append . append)
+                                            - (reverse . reverse)
+                                            - (map . map)
+                                            - (for-each . for-each)
+                                            - (member . member)
+                                            - (memq . memq)
+                                            - (memv . memv)
+                                            - (assoc . assoc)
+                                            - (assq . assq)
+                                            - (assv . assv)
+                                            - (set-car! . set-car!)
+                                            - (set-cdr! . set-cdr!)
                                           - list
                                             - list
                                               - stak
@@ -8996,7 +9009,6 @@
                                             - (length . length)
                                             - (map . map)
                                             - (for-each . for-each)
-                                            - (filter . filter)
                                             - (list-ref . list-ref)
                                             - (list-set! . list-set!)
                                             - (list-head . list-head)
@@ -9009,8 +9021,7 @@
                                             - (assv . assv)
                                             - (append . append)
                                             - (reverse . reverse)
-                                            - (fold-left . fold-left)
-                                            - (fold-right . fold-right)
+                                            - (fold . fold)
                                             - (reduce-right . reduce-right)
                                             - (memq-position . memq-position)
                                             - (memv-position . memv-position)
@@ -12033,6 +12044,44 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set delete-duplicates
+- constant procedure 2 #f
+  - get 0
+  - call 1 #f null?
+  - if
+    - constant ()
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f 5
+    - if
+      - get 1
+      - get 1
+      - call 2 #f cons
+    - get 0
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f car
+  - get 3
+  - get 3
+  - call 1 #f cdr
+  - call 2 #f filter
+  - call 2 #f 2
+- call 1 #f $$close
+- set filter
+- constant procedure 3 #f
+  - get 0
+  - call 1 #f null?
+  - if
+    - get 1
+  - get 2
+  - get 2
+  - get 2
+  - call 1 #f cdr
+  - call 3 #f fold-right
+  - get 1
+  - call 1 #f car
+  - call 2 #f 4
+- call 1 #f $$close
+- set fold-right
 - constant procedure 1 #t
   - constant procedure 2 #f
     - get 3
@@ -12091,6 +12140,36 @@
   - call 2 #f 2
 - call 1 #f $$close
 - set iota
+- constant procedure 3 #f
+  - get 0
+  - call 1 #f null?
+  - if
+    - get 1
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - get 0
+      - call 1 #f null?
+      - if
+        - get 1
+      - get 1
+      - get 1
+      - call 1 #f car
+      - call 2 #f 9
+      - get 1
+      - call 1 #f cdr
+      - call 2 #f 5
+    - call 1 #f $$close
+    - set 1
+    - get 2
+    - call 1 #f car
+    - get 3
+    - call 1 #f cdr
+    - call 2 #f 2
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set reduce
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
