@@ -904,10 +904,12 @@
             (cond
              ((null? expressions)
               (list expression))
-             ((pair? expression)
-              (cons expression (loop expressions)))
+             ((not (pair? expression))
+              (loop expressions))
+             ((eq? (car expression) '$$begin)
+              (loop (cdr expression)))
              (else
-              (loop expressions)))))))
+              (cons expression (loop expressions))))))))
 
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
