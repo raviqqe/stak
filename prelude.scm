@@ -1620,10 +1620,7 @@
     (define (reduce f y xs)
       (if (null? xs)
         y
-        (let loop ((x (car xs)) (xs (cdr xs)))
-          (if (null? xs)
-            x
-            (loop (f x (car xs)) (cdr xs))))))))
+        (fold f (car xs) (cdr xs))))))
 
 (define-library (stak parameter)
   (export make-parameter)

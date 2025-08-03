@@ -134,6 +134,7 @@ Feature: SRFI 1
       | 1 2      | 3      |
       | 1 2 3    | 6      |
 
+  @gauche @guile @stak
   Scenario Outline: Reduce numbers from right
     Given a file named "main.scm" with:
       """scheme
