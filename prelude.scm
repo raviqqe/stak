@@ -1524,6 +1524,7 @@
     filter
     fold-right
     iota
+    reduce
 
     ; Re-exports
     fold
