@@ -159,9 +159,9 @@
     reverse
     fold
     reduce-right
-    memq-position
-    memv-position
-    member-position
+    memq-index
+    memv-index
+    member-index
     list-copy
 
     vector?
@@ -1028,7 +1028,7 @@
             (f (loop (cdr xs)) (car xs))))))
 
     ; TODO Define `list-index` from SRFI 1 instead.
-    (define (member-position x xs . rest)
+    (define (member-index x xs . rest)
       (define eq?
         (if (null? rest)
           equal?
@@ -1045,11 +1045,11 @@
           (else
             (loop (cdr xs) (+ index 1))))))
 
-    (define (memq-position x xs)
-      (member-position x xs eq?))
+    (define (memq-index x xs)
+      (member-index x xs eq?))
 
-    (define (memv-position x xs)
-      (member-position x xs eqv?))
+    (define (memv-index x xs)
+      (member-index x xs eqv?))
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1406,7 +1406,7 @@
           (list-set! (cdr record) index value))))
 
     (define (field-index type field)
-      (memq-position field (cdr type)))
+      (memq-index field (cdr type)))
 
     ;; Tuple
 
