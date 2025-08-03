@@ -1027,6 +1027,7 @@
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
 
+    ; TODO Define `list-index` from SRFI 1 instead.
     (define (member-position x xs . rest)
       (define eq?
         (if (null? rest)
