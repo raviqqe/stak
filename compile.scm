@@ -132,7 +132,7 @@
     (define (memq-position x xs)
      (member-position x xs eq?))
 
-    (define (flat-map f xs)
+    (define (append-map f xs)
      (apply append (map f xs)))
 
     (define (relaxed-length xs)
@@ -266,7 +266,7 @@
             (eq? (car expression) 'include))
         (cons
          'begin
-         (flat-map
+         (append-map
           (lambda (name)
            (with-input-from-file name
             (lambda ()
@@ -378,7 +378,7 @@
       expression))
 
     (define (expand-library-bodies context names)
-     (flat-map
+     (append-map
       (lambda (name)
        (if (library-context-import! context name)
         (let ((library (library-context-find context name)))
@@ -389,9 +389,9 @@
       names))
 
     (define (collect-imported-names context sets)
-     (flat-map
+     (append-map
       (lambda (pair)
-       (flat-map
+       (append-map
         (lambda (names)
          (let ((name ((cdr pair) (car names))))
           (if name
@@ -402,7 +402,7 @@
 
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
-      (flat-map
+      (append-map
        cdr
        (filter
         (lambda (body) (eq? (car body) predicate))
@@ -1121,7 +1121,7 @@
             (sets
              (map
               parse-import-set
-              (flat-map
+              (append-map
                (lambda (expression)
                 (if (eq? (maybe-car expression) 'import)
                  (cdr expression)
@@ -1497,7 +1497,7 @@
       (make-marshal-context
        (append
         (metadata-symbols metadata)
-        (flat-map
+        (append-map
          (lambda (pair) (map cdr (cdr pair)))
          (metadata-libraries metadata)))
        '()

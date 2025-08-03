@@ -145,7 +145,6 @@
     length
     map
     for-each
-    filter
     list-ref
     list-set!
     list-head
@@ -158,8 +157,7 @@
     assv
     append
     reverse
-    fold-left
-    fold-right
+    fold
     reduce-right
     memq-position
     memv-position
@@ -737,13 +735,13 @@
           (eq? x 0))))
 
     (define (arithmetic-operator f y)
-      (lambda xs (fold-left f y xs)))
+      (lambda xs (fold f y xs)))
 
     (define (inverse-arithmetic-operator f y)
       (lambda (x . xs)
         (if (null? xs)
           (f y x)
-          (fold-left f x xs))))
+          (fold f x xs))))
 
     (define + (arithmetic-operator $+ 0))
     (define - (inverse-arithmetic-operator $- 0))
@@ -863,7 +861,7 @@
 
     (define (extremum f)
       (lambda (x . xs)
-        (fold-left (lambda (x y) (if (f x y) x y)) x xs)))
+        (fold (lambda (x y) (if (f x y) x y)) x xs)))
     (define min (extremum $<))
     (define max (extremum (lambda (x y) ($< y x))))
 
@@ -947,15 +945,6 @@
             (apply f (map* car xs))
             (apply for-each f (map* cdr xs))))))
 
-    (define (filter f xs)
-      (if (null? xs)
-        '()
-        (let ((x (car xs))
-              (xs (filter f (cdr xs))))
-          (if (f x)
-            (cons x xs)
-            xs))))
-
     (define (list-ref xs index)
       (car (list-tail xs index)))
 
@@ -1022,18 +1011,13 @@
         ((null? xs)
           ys)))
 
-    (define (fold-left f y xs)
+    (define (fold f y xs)
       (if (null? xs)
         y
-        (fold-left
+        (fold
           f
           (f y (car xs))
           (cdr xs))))
-
-    (define (fold-right f y xs)
-      (if (null? xs)
-        y
-        (f (fold-right f y (cdr xs)) (car xs))))
 
     (define (reduce-right f y xs)
       (if (null? xs)
@@ -1043,6 +1027,7 @@
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
 
+    ; TODO Define `list-index` from SRFI 1 instead.
     (define (member-position x xs . rest)
       (define eq?
         (if (null? rest)
@@ -1537,7 +1522,63 @@
   (export
     append-map
     delete-duplicates
-    iota)
+    filter
+    fold-right
+    iota
+    reduce
+
+    ; Re-exports
+    fold
+    reduce-right
+
+    cons
+    list
+    null?
+    pair?
+    car
+    cdr
+    caar
+    cadr
+    cdar
+    cddr
+    caaar
+    caadr
+    cadar
+    caddr
+    cdaar
+    cdadr
+    cddar
+    cdddr
+    caaaar
+    caaadr
+    caadar
+    caaddr
+    cadaar
+    cadadr
+    caddar
+    cadddr
+    cdaaar
+    cdaadr
+    cdadar
+    cdaddr
+    cddaar
+    cddadr
+    cdddar
+    cddddr
+    list-ref
+    length
+    append
+    reverse
+    map
+    for-each
+    member
+    memq
+    memv
+    assoc
+    assq
+    assv
+    set-car!
+    set-cdr!)
 
   (import (stak base))
 
@@ -1553,6 +1594,20 @@
             ys
             (cons (car xs) ys)))))
 
+    (define (filter f xs)
+      (if (null? xs)
+        '()
+        (let ((x (car xs))
+              (xs (filter f (cdr xs))))
+          (if (f x)
+            (cons x xs)
+            xs))))
+
+    (define (fold-right f y xs)
+      (if (null? xs)
+        y
+        (f (fold-right f y (cdr xs)) (car xs))))
+
     (define (iota count . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
@@ -1560,7 +1615,12 @@
       (let loop ((count count) (x start))
         (if (> count 0)
           (cons x (loop (- count 1) (+ x step)))
-          '())))))
+          '())))
+
+    (define (reduce f y xs)
+      (if (null? xs)
+        y
+        (fold f (car xs) (cdr xs))))))
 
 (define-library (stak parameter)
   (export make-parameter)
@@ -2394,9 +2454,6 @@
     assv
     append
     reverse
-    fold-left
-    fold-right
-    reduce-right
     list-copy
 
     vector?
