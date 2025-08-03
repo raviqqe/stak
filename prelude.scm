@@ -1501,6 +1501,7 @@
     filter
     fold-right
     iota
+    list-index
     reduce
 
     ; Re-exports
@@ -1592,6 +1593,16 @@
         (if (> count 0)
           (cons x (loop (- count 1) (+ x step)))
           '())))
+
+    (define (list-index f xs)
+      (let loop ((xs xs) (index 0))
+        (cond
+          ((null? xs)
+            #f)
+          ((f (car xs))
+            index)
+          (else
+            (loop (cdr xs) (+ index 1))))))
 
     (define (reduce f y xs)
       (if (null? xs)
