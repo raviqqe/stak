@@ -1528,7 +1528,57 @@
     append-map
     delete-duplicates
     filter
-    iota)
+    iota
+
+    ; Re-exports
+    cons
+    list
+    null?
+    pair?
+    car
+    cdr
+    caar
+    cadr
+    cdar
+    cddr
+    caaar
+    caadr
+    cadar
+    caddr
+    cdaar
+    cdadr
+    cddar
+    cdddr
+    caaaar
+    caaadr
+    caadar
+    caaddr
+    cadaar
+    cadadr
+    caddar
+    cadddr
+    cdaaar
+    cdaadr
+    cdadar
+    cdaddr
+    cddaar
+    cddadr
+    cdddar
+    cddddr
+    list-ref
+    length
+    append
+    reverse
+    map
+    for-each
+    member
+    memq
+    memv
+    assoc
+    assq
+    assv
+    set-car!
+    set-cdr!)
 
   (import (stak base))
 
