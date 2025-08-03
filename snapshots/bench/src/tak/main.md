@@ -606,54 +606,6 @@
   - call 1 #f 1
 - call 1 #f ||
 - set ||
-- constant procedure 2 #t
-  - constant procedure 1 #f
-    - get 2
-    - call 1 #f ||
-    - if
-      - get ||
-      - continue
-    - get 2
-    - call 1 #f ||
-    - set 1
-    - constant procedure 1 #f
-      - constant procedure 2 #f
-        - get 1
-        - call 1 #f ||
-        - if
-          - constant #f
-        - get 9
-        - get 2
-        - call 1 #f ||
-        - call 2 #f 7
-        - if
-          - get 0
-        - get 1
-        - call 1 #f ||
-        - get 1
-        - constant 1
-        - call 2 #f ||
-        - call 2 #f 5
-      - call 1 #f ||
-      - set 1
-      - get 5
-      - constant 0
-      - call 2 #f 2
-    - call 1 #f ||
-    - constant #f
-    - call 1 #f 1
-  - call 1 #f ||
-  - constant #f
-  - call 1 #f 1
-- call 1 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - get ||
-  - call 3 #f ||
-- call 1 #f ||
-- set ||
 - get ||
 - set ||
 - get ||
@@ -917,42 +869,23 @@
   - call 1 #f ||
 - call 1 #f ||
 - set ||
-- constant procedure 2 #f
+- constant procedure 1 #f
   - constant procedure 1 #f
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - get 3
-      - call 2 #f ||
+    - get 0
     - call 1 #f ||
+    - get 3
+    - call 2 #f ||
   - call 1 #f ||
-  - get 2
-  - get 2
-  - call 2 #f ||
-  - call 1 #f 1
 - call 1 #f ||
 - set ||
-- constant procedure 2 #f
-  - constant procedure 1 #f
-    - constant procedure 2 #f
-      - get 1
-      - call 1 #f ||
-      - get 4
-      - get 2
-      - call 3 #f ||
+- constant procedure 1 #f
+  - constant procedure 2 #f
+    - get 1
     - call 1 #f ||
+    - get 4
+    - get 2
+    - call 3 #f ||
   - call 1 #f ||
-  - get 2
-  - get 2
-  - call 2 #f ||
-  - call 1 #f 1
-- call 1 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 0
-  - get 2
-  - call 1 #f ||
-  - call 2 #f ||
 - call 1 #f ||
 - set ||
 - constant #f
@@ -1007,13 +940,8 @@
 - set ||
 - constant #f
 - set 0
-- constant port
-- constant list
-  - read
-  - write
-  - flush
-  - close
-  - data
+- constant 0
+- constant 0
 - call 2 #f ||
 - set ||
 - get ||
@@ -1021,10 +949,13 @@
 - set ||
 - constant #f
 - set 0
-- get ||
-- constant write
+- constant 0
+- constant 1
 - call 2 #f ||
+- call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant #f
 - set 0
 - constant #f
@@ -1247,33 +1178,39 @@
   - call 2 #f 2
 - call 1 #f ||
 - set ||
-- constant point
-- constant list
-  - depth
-  - before
-  - after
-  - parent
+- constant 0
+- constant 0
 - call 2 #f ||
 - set ||
 - get ||
 - call 1 #f ||
 - set ||
-- get ||
-- constant depth
-- call 2 #f ||
+- constant 0
+- call 1 #f ||
 - set ||
-- get ||
-- constant before
+- constant 0
+- constant 1
 - call 2 #f ||
+- call 1 #f ||
 - set ||
-- get ||
-- constant after
+- constant 0
+- constant 1
 - call 2 #f ||
-- set ||
-- get ||
-- constant parent
+- constant 1
 - call 2 #f ||
+- call 1 #f ||
 - set ||
+- constant 0
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant #f
+- set 0
 - constant 0
 - constant #f
 - constant #f
@@ -1349,11 +1286,8 @@
 - constant 40
 - call 1 #f ||
 - set ||
-- constant error-object
-- constant list
-  - type
-  - message
-  - irritants
+- constant 0
+- constant 0
 - call 2 #f ||
 - set ||
 - get ||
@@ -1362,14 +1296,20 @@
 - get ||
 - call 1 #f ||
 - set ||
-- get ||
-- constant message
+- constant 0
+- constant 1
 - call 2 #f ||
+- call 1 #f ||
 - set ||
-- get ||
-- constant irritants
+- constant 0
+- constant 1
 - call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -1512,6 +1452,8 @@
 - set ||
 - constant #f
 - set 0
+- constant #f
+- set 0
 - constant list
   - ("alarm" . #\alarm)
   - ("backspace" . #\backspace)
@@ -1621,32 +1563,37 @@
   - call 1 #f ||
 - call 1 #f ||
 - set ||
-- constant write-context
-- constant list
-  - display
-  - indices
-  - referenced
+- constant 0
+- constant 0
 - call 2 #f ||
 - set ||
 - get ||
 - call 1 #f ||
 - set ||
-- get ||
-- constant display
-- call 2 #f ||
+- constant 0
+- call 1 #f ||
 - set ||
-- get ||
-- constant indices
+- constant 0
+- constant 1
 - call 2 #f ||
+- call 1 #f ||
 - set ||
-- get ||
-- constant referenced
+- constant 0
+- constant 1
 - call 2 #f ||
-- set ||
-- get ||
-- constant referenced
+- constant 1
 - call 2 #f ||
+- call 1 #f ||
 - set ||
+- constant 0
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant #f
+- set 0
 - constant procedure 2 #f
   - constant procedure 1 #f
     - get 0

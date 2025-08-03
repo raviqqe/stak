@@ -159,9 +159,6 @@
     reverse
     fold
     reduce-right
-    memq-position
-    memv-position
-    member-position
     list-copy
 
     vector?
@@ -1027,30 +1024,6 @@
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
 
-    ; TODO Define `list-index` from SRFI 1 instead.
-    (define (member-position x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
-
-      (let loop ((xs xs) (index 0))
-        (cond
-          ((null? xs)
-            #f)
-
-          ((eq? x (car xs))
-            index)
-
-          (else
-            (loop (cdr xs) (+ index 1))))))
-
-    (define (memq-position x xs)
-      (member-position x xs eq?))
-
-    (define (memv-position x xs)
-      (member-position x xs eqv?))
-
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define end (if (or (null? rest) (null? (cdr rest))) #f (cadr rest)))
@@ -1361,52 +1334,55 @@
     (define-syntax define-record-type
       (syntax-rules ()
         ((_ id
-            (constructor field ...)
+            (constructor field1 ...)
             predicate
-            (field getter . rest)
+            (field2 accessor ...)
             ...)
           (begin
-            (define id (cons 'id '(field ...)))
+            (define id (cons 0 0))
             (define constructor (record-constructor id))
             (define predicate (record-predicate id))
+            (define-record-fields 0 (accessor ...) ...)))))
 
-            (define-record-field id field getter . rest)
-            ...))))
+    (define-syntax define-record-fields
+      (syntax-rules ()
+        ((_ index)
+          #f)
+
+        ((_ index (accessor1 ...) (accessor2 ...) ...)
+          (begin
+            (define-record-field index accessor1 ...)
+            (define-record-fields (+ index 1) (accessor2 ...) ...)))))
 
     (define-syntax define-record-field
       (syntax-rules ()
-        ((_ type field getter)
-          (define getter (record-getter type 'field)))
+        ((_ index getter)
+          (define getter (record-getter index)))
 
-        ((_ type field getter setter)
+        ((_ index getter setter)
           (begin
-            (define-record-field type field getter)
-            (define setter (record-setter type 'field))))))
+            (define-record-field index getter)
+            (define setter (record-setter index))))))
 
     (define record? (instance? record-type))
 
-    (define (record-constructor type)
+    (define (record-constructor id)
       (lambda xs
-        (data-rib record-type type xs)))
+        (data-rib record-type id xs)))
 
-    (define (record-predicate type)
+    (define (record-predicate id)
       (lambda (x)
         (and
           (record? x)
-          (eq? (car x) type))))
+          (eq? (car x) id))))
 
-    (define (record-getter type field)
-      (let ((index (field-index type field)))
-        (lambda (record)
-          (list-ref (cdr record) index))))
+    (define (record-getter index)
+      (lambda (record)
+        (list-ref (cdr record) index)))
 
-    (define (record-setter type field)
-      (let ((index (field-index type field)))
-        (lambda (record value)
-          (list-set! (cdr record) index value))))
-
-    (define (field-index type field)
-      (memq-position field (cdr type)))
+    (define (record-setter index)
+      (lambda (record value)
+        (list-set! (cdr record) index value)))
 
     ;; Tuple
 
