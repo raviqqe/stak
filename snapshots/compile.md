@@ -1996,8 +1996,6 @@
 - constant 0
 - call 1 #f ||
 - set ||
-- constant #f
-- set 0
 - constant procedure 0 #t
   - get 0
   - call 1 #f pair?
@@ -2091,8 +2089,6 @@
 - get eof-object
 - call 1 #f ||
 - set eof-object?
-- constant #f
-- set 0
 - constant procedure 1 #f
   - constant procedure 0 #f
     - get 1
@@ -2182,8 +2178,6 @@
 - call 2 #f ||
 - call 1 #f ||
 - set ||
-- constant #f
-- set 0
 - get ||
 - set input-port?
 - get ||
@@ -3295,8 +3289,6 @@
 - call 2 #f ||
 - call 1 #f ||
 - set ||
-- constant #f
-- set 0
 - constant 0
 - constant #f
 - constant #f
@@ -3397,8 +3389,6 @@
 - call 2 #f ||
 - call 1 #f ||
 - set error-object-irritants
-- constant #f
-- set 0
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -3630,8 +3620,6 @@
 - constant 0
 - call 1 #f ||
 - set ||
-- constant #f
-- set 0
 - constant procedure 1 #f
   - constant procedure 1 #t
     - constant procedure 1 #f
@@ -7671,13 +7659,25 @@
                                                     - call 1 #f list
                                                   - get 1
                                                   - call 1 #f pair?
+                                                  - constant #f
+                                                  - call 2 #f eq?
+                                                  - if
+                                                    - get 0
+                                                    - call 1 #f 6
+                                                  - get 1
+                                                  - call 1 #f car
+                                                  - constant $$begin
+                                                  - call 2 #f eq?
                                                   - if
                                                     - get 1
+                                                    - call 1 #f cdr
                                                     - get 1
-                                                    - call 1 #f 7
-                                                    - call 2 #f cons
-                                                  - get 0
-                                                  - call 1 #f 6
+                                                    - call 2 #f append
+                                                    - call 1 #f 6
+                                                  - get 1
+                                                  - get 1
+                                                  - call 1 #f 7
+                                                  - call 2 #f cons
                                                 - call 1 #f $$close
                                                 - get 1
                                                 - call 1 #f car
@@ -11904,8 +11904,6 @@
 - call 2 #f ||
 - call 1 #f ||
 - set ||
-- constant #f
-- set 0
 - constant procedure 0 #t
   - constant ()
   - call 1 #f make-symbol-table
@@ -12281,8 +12279,6 @@
 - call 2 #f ||
 - call 1 #f ||
 - set ||
-- constant #f
-- set 0
 - constant procedure 2 #f
   - constant procedure 1 #f
     - get 0
@@ -16070,19 +16066,38 @@
                         - expression
                     - list
                       - list
-                        - pair?
-                        - expression
+                        - not
+                        - list
+                          - pair?
+                          - expression
+                      - list
+                        - loop
+                        - expressions
+                    - list
+                      - list
+                        - eq?
+                        - list
+                          - car
+                          - expression
+                        - list
+                          - quote
+                          - $$begin
+                      - list
+                        - loop
+                        - list
+                          - append
+                          - list
+                            - cdr
+                            - expression
+                          - expressions
+                    - list
+                      - else
                       - list
                         - cons
                         - expression
                         - list
                           - loop
                           - expressions
-                    - list
-                      - else
-                      - list
-                        - loop
-                        - expressions
           - list
             - list
               - assq
