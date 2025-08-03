@@ -1501,6 +1501,10 @@
     filter
     fold-right
     iota
+    find
+    find-tail
+    any
+    every
     list-index
     reduce
 
@@ -1620,7 +1624,7 @@
     (define (any f x . xs)
       (and (apply list-index f x xs) #t))
 
-    (define (all f x . xs)
+    (define (every f x . xs)
       (not (apply any (lambda (y) (not (f y))) x xs)))
 
     (define (reduce f y xs)
