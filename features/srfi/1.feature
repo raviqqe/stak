@@ -127,15 +127,16 @@ Feature: SRFI 1
     Then the stdout should contain exactly "A"
 
     Examples:
-      | predicate | lists    | index |
-      | even?     | '()      | #f    |
-      | even?     | '(1)     | #f    |
-      | even?     | '(1 3)   | #f    |
-      | even?     | '(2)     | 0     |
-      | even?     | '(1 2)   | 1     |
-      | even?     | '(1 2 3) | 1     |
-      | even?     | '(1 3 2) | 2     |
-      | even?     | '(1 3 2) | 2     |
+      | predicate | lists             | index |
+      | even?     | '()               | #f    |
+      | even?     | '(1)              | #f    |
+      | even?     | '(1 3)            | #f    |
+      | even?     | '(2)              | 0     |
+      | even?     | '(1 2)            | 1     |
+      | even?     | '(1 2 3)          | 1     |
+      | even?     | '(1 3 2)          | 2     |
+      | =         | '(0 2) '(1 2 3)   | 1     |
+      | =         | '(2 1 3) '(1 2 3) | 2     |
 
   Scenario Outline: Reduce numbers
     Given a file named "main.scm" with:
