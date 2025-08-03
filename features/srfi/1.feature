@@ -61,6 +61,40 @@ Feature: SRFI 1
       | 1 2 3 4     | 1 3    |
       | 1 2 3 4 5 6 | 1 3 5  |
 
+  Scenario Outline: Reduce a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (fold + 0 '(<elements>)) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |
+
+  Scenario Outline: Fold a list from right
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (fold-right + 0 '(<elements>)) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |
+
   Scenario Outline: Enumerate numbers
     Given a file named "main.scm" with:
       """scheme
