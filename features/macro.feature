@@ -659,8 +659,8 @@ Feature: Macro
           ((define-begin name)
             (define-syntax name
               (syntax-rules ()
-                ((name expr ...)
-                  (begin expr ...)))))))
+                ((name x ...)
+                  (begin x ...)))))))
 
       (define-begin sequence)
 
