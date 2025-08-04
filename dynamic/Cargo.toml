@@ -17,7 +17,7 @@ stak-vm = { version = "0.10.34", path = "../vm" }
 winter-maybe-async = { version = "0.13.1" }
 
 [dev-dependencies]
-tokio = { version = "1.47.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread"] }
 
 [features]
 async = ["stak-vm/async", "winter-maybe-async/async"]

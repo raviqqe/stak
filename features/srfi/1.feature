@@ -1,22 +1,254 @@
 Feature: SRFI 1
 
-  Scenario Outline: Enumerate numbers
+  Scenario Outline: Map a function on a list and append elements
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (srfi 1))
 
-      (write-u8 (if (equal? <lhs> <rhs>) 65 66))
+      (write-u8
+        (if (equal?
+             (append-map (lambda (x) (list (* 2 x) (* x x))) '(<input>))
+             '(<output>))
+          65
+          66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
-      | lhs          | rhs      |
-      | (iota 0)     | '()      |
-      | (iota 1)     | '(0)     |
-      | (iota 2)     | '(0 1)   |
-      | (iota 3)     | '(0 1 2) |
-      | (iota 1 1)   | '(1)     |
-      | (iota 1 2)   | '(2)     |
-      | (iota 3 5)   | '(5 6 7) |
-      | (iota 3 5 2) | '(5 7 9) |
+      | input | output      |
+      |       |             |
+      | 1     | 2 1         |
+      | 1 2   | 2 1 4 4     |
+      | 1 2 3 | 2 1 4 4 6 9 |
+
+  Scenario Outline: Delete duplicates in a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (delete-duplicates '(<input>)) '(<output>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input         | output |
+      |               |        |
+      | 1             | 1      |
+      | 1 1           | 1      |
+      | 1 1 2 2       | 1 2    |
+      | 1 2 1 2       | 1 2    |
+      | 1 2 1 3 3 2 3 | 1 2 3  |
+
+  Scenario Outline: Filter a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (filter odd? '(<input>)) '(<output>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input       | output |
+      |             |        |
+      | 1           | 1      |
+      | 2           |        |
+      | 1 2         | 1      |
+      | 1 2 3       | 1 3    |
+      | 1 2 3 4     | 1 3    |
+      | 1 2 3 4 5 6 | 1 3 5  |
+
+  Scenario Outline: Reduce a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (fold + 0 '(<elements>)) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |
+
+  Scenario Outline: Fold a list from right
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (fold-right + 0 '(<elements>)) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |
+
+  Scenario Outline: Enumerate numbers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (iota <arguments>) '(<elements>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | arguments | elements |
+      | 0         |          |
+      | 1         | 0        |
+      | 2         | 0 1      |
+      | 3         | 0 1 2    |
+      | 1 1       | 1        |
+      | 1 2       | 2        |
+      | 3 5       | 5 6 7    |
+      | 3 5 2     | 5 7 9    |
+
+  Scenario Outline: Find an element
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (eq? (find even? '(<elements>)) <element>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | element |
+      |          | #f      |
+      | 1        | #f      |
+      | 1 3      | #f      |
+      | 2        | 2       |
+      | 1 2      | 2       |
+      | 1 3 4 5  | 4       |
+
+  Scenario Outline: Find a tail of a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (find-tail even? '(<elements>)) <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | value  |
+      |          | #f     |
+      | 1        | #f     |
+      | 1 3      | #f     |
+      | 2        | '(2)   |
+      | 1 2      | '(2)   |
+      | 1 3 4 5  | '(4 5) |
+
+  Scenario Outline: Check if any element meets a condition
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (any even? '(<elements>)) <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements  | value |
+      |           | #f    |
+      | 1         | #f    |
+      | 1 3       | #f    |
+      | 2         | #t    |
+      | 1 2       | #t    |
+      | 1 2 3 4 5 | #t    |
+
+  Scenario Outline: Check if every element meets a condition
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (every even? '(<elements>)) <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements  | value |
+      |           | #t    |
+      | 1         | #f    |
+      | 1 3       | #f    |
+      | 2         | #t    |
+      | 1 2       | #f    |
+      | 2 4 6     | #t    |
+      | 2 4 5     | #f    |
+      | 1 2 3 4 5 | #f    |
+
+  Scenario Outline: Calculate an index of an element
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (list-index <predicate> <lists>) <index>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | predicate | lists             | index |
+      | even?     | '()               | #f    |
+      | even?     | '(1)              | #f    |
+      | even?     | '(1 3)            | #f    |
+      | even?     | '(2)              | 0     |
+      | even?     | '(1 2)            | 1     |
+      | even?     | '(1 2 3)          | 1     |
+      | even?     | '(1 3 2)          | 2     |
+      | =         | '(0 2) '(1 2 3)   | 1     |
+      | =         | '(2 1 3) '(1 2 3) | 2     |
+
+  Scenario Outline: Reduce numbers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (reduce + 42 '(<elements>)) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | 42     |
+      | 0        | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |
+
+  @gauche @guile @stak
+  Scenario Outline: Reduce numbers from right
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (reduce-right + 42 '(<elements>)) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements | output |
+      |          | 42     |
+      | 0        | 0      |
+      | 1        | 1      |
+      | 1 2      | 3      |
+      | 1 2 3    | 6      |

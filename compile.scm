@@ -109,30 +109,24 @@
        (car xs)
        (list-head (cdr xs) (- n 1)))))
 
-    (define (list-position f xs)
+    (define (list-index f xs)
      (let loop ((xs xs) (index 0))
       (cond
        ((null? xs)
         #f)
-
        ((f (car xs))
         index)
-
        (else
         (loop (cdr xs) (+ index 1))))))
 
-    (define (member-position x xs . rest)
-     (define eq? (if (null? rest) equal? (car rest)))
+    (define (equal-index f)
+     (lambda (x xs)
+      (list-index (lambda (y) (f x y)) xs)))
 
-     (list-position (lambda (y) (eq? x y)) xs))
+    (define memv-index (equal-index eqv?))
+    (define memq-index (equal-index eq?))
 
-    (define (memv-position x xs)
-     (member-position x xs eqv?))
-
-    (define (memq-position x xs)
-     (member-position x xs eq?))
-
-    (define (flat-map f xs)
+    (define (append-map f xs)
      (apply append (map f xs)))
 
     (define (relaxed-length xs)
@@ -266,7 +260,7 @@
             (eq? (car expression) 'include))
         (cons
          'begin
-         (flat-map
+         (append-map
           (lambda (name)
            (with-input-from-file name
             (lambda ()
@@ -321,9 +315,9 @@
 
     (define (resolve-symbol-string name)
      (let* ((string (symbol->string name))
-            (position (memv-position symbol-name-separator (string->list string))))
-      (if position
-       (string-copy string (+ position 1))
+            (index (memv-index symbol-name-separator (string->list string))))
+      (if index
+       (string-copy string (+ index 1))
        string)))
 
     (define (built-in-symbol? name)
@@ -378,7 +372,7 @@
       expression))
 
     (define (expand-library-bodies context names)
-     (flat-map
+     (append-map
       (lambda (name)
        (if (library-context-import! context name)
         (let ((library (library-context-find context name)))
@@ -389,9 +383,9 @@
       names))
 
     (define (collect-imported-names context sets)
-     (flat-map
+     (append-map
       (lambda (pair)
-       (flat-map
+       (append-map
         (lambda (names)
          (let ((name ((cdr pair) (car names))))
           (if name
@@ -402,7 +396,7 @@
 
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
-      (flat-map
+      (append-map
        cdr
        (filter
         (lambda (body) (eq? (car body) predicate))
@@ -910,12 +904,12 @@
             (cond
              ((null? expressions)
               (list expression))
-
-             ((pair? expression)
-              (cons expression (loop expressions)))
-
+             ((not (pair? expression))
+              (loop expressions))
+             ((eq? (car expression) '$$begin)
+              (loop (append (cdr expression) expressions)))
              (else
-              (loop expressions)))))))
+              (cons expression (loop expressions))))))))
 
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
@@ -943,7 +937,7 @@
 
     ; If a variable is not in environment, it is considered to be global.
     (define (compilation-context-resolve context variable)
-     (or (memq-position variable (compilation-context-environment context)) variable))
+     (or (memq-index variable (compilation-context-environment context)) variable))
 
     ;; Procedures
 
@@ -1121,7 +1115,7 @@
             (sets
              (map
               parse-import-set
-              (flat-map
+              (append-map
                (lambda (expression)
                 (if (eq? (maybe-car expression) 'import)
                  (cdr expression)
@@ -1497,7 +1491,7 @@
       (make-marshal-context
        (append
         (metadata-symbols metadata)
-        (flat-map
+        (append-map
          (lambda (pair) (map cdr (cdr pair)))
          (metadata-libraries metadata)))
        '()
@@ -1527,8 +1521,8 @@
       (set-cdr! pair (cddr pair))
       (encode-context-set-dictionary! context (cdr dictionary))))
 
-    (define (encode-context-position context value)
-     (memq-position value (encode-context-dictionary context)))
+    (define (encode-context-index context value)
+     (memq-index value (encode-context-dictionary context)))
 
     (define (encode-context-find-count context value)
      (assq value (encode-context-counts context)))
@@ -1676,7 +1670,7 @@
           (encode-rib context (rib-cdr value))
           (write-u8 (* 2 (rib-car value))))
 
-         ((and entry (encode-context-position context value)) =>
+         ((and entry (encode-context-index context value)) =>
           (lambda (index)
            (decrement-count! entry)
            (let ((removed (zero? (cdr entry))))

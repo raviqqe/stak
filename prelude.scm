@@ -145,7 +145,6 @@
     length
     map
     for-each
-    filter
     list-ref
     list-set!
     list-head
@@ -158,12 +157,8 @@
     assv
     append
     reverse
-    fold-left
-    fold-right
+    fold
     reduce-right
-    memq-position
-    memv-position
-    member-position
     list-copy
 
     vector?
@@ -758,13 +753,13 @@
           (eq? x 0))))
 
     (define (arithmetic-operator f y)
-      (lambda xs (fold-left f y xs)))
+      (lambda xs (fold f y xs)))
 
     (define (inverse-arithmetic-operator f y)
       (lambda (x . xs)
         (if (null? xs)
           (f y x)
-          (fold-left f x xs))))
+          (fold f x xs))))
 
     (define + (arithmetic-operator $+ 0))
     (define - (inverse-arithmetic-operator $- 0))
@@ -884,7 +879,7 @@
 
     (define (extremum f)
       (lambda (x . xs)
-        (fold-left (lambda (x y) (if (f x y) x y)) x xs)))
+        (fold (lambda (x y) (if (f x y) x y)) x xs)))
     (define min (extremum $<))
     (define max (extremum (lambda (x y) ($< y x))))
 
@@ -968,15 +963,6 @@
             (apply f (map* car xs))
             (apply for-each f (map* cdr xs))))))
 
-    (define (filter f xs)
-      (if (null? xs)
-        '()
-        (let ((x (car xs))
-              (xs (filter f (cdr xs))))
-          (if (f x)
-            (cons x xs)
-            xs))))
-
     (define (list-ref xs index)
       (car (list-tail xs index)))
 
@@ -1043,18 +1029,13 @@
         ((null? xs)
           ys)))
 
-    (define (fold-left f y xs)
+    (define (fold f y xs)
       (if (null? xs)
         y
-        (fold-left
+        (fold
           f
           (f y (car xs))
           (cdr xs))))
-
-    (define (fold-right f y xs)
-      (if (null? xs)
-        y
-        (f (fold-right f y (cdr xs)) (car xs))))
 
     (define (reduce-right f y xs)
       (if (null? xs)
@@ -1063,29 +1044,6 @@
           (if (null? (cdr xs))
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
-
-    (define (member-position x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
-
-      (let loop ((xs xs) (index 0))
-        (cond
-          ((null? xs)
-            #f)
-
-          ((eq? x (car xs))
-            index)
-
-          (else
-            (loop (cdr xs) (+ index 1))))))
-
-    (define (memq-position x xs)
-      (member-position x xs eq?))
-
-    (define (memv-position x xs)
-      (member-position x xs eqv?))
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1397,52 +1355,55 @@
     (define-syntax define-record-type
       (syntax-rules ()
         ((_ id
-            (constructor field ...)
+            (constructor field1 ...)
             predicate
-            (field getter . rest)
+            (field2 accessor ...)
             ...)
           (begin
-            (define id (cons 'id '(field ...)))
+            (define id (cons 0 0))
             (define constructor (record-constructor id))
             (define predicate (record-predicate id))
+            (define-record-fields 0 (accessor ...) ...)))))
 
-            (define-record-field id field getter . rest)
-            ...))))
+    (define-syntax define-record-fields
+      (syntax-rules ()
+        ((_ index)
+          #f)
+
+        ((_ index (accessor1 ...) (accessor2 ...) ...)
+          (begin
+            (define-record-field index accessor1 ...)
+            (define-record-fields (+ index 1) (accessor2 ...) ...)))))
 
     (define-syntax define-record-field
       (syntax-rules ()
-        ((_ type field getter)
-          (define getter (record-getter type 'field)))
+        ((_ index getter)
+          (define getter (record-getter index)))
 
-        ((_ type field getter setter)
+        ((_ index getter setter)
           (begin
-            (define-record-field type field getter)
-            (define setter (record-setter type 'field))))))
+            (define-record-field index getter)
+            (define setter (record-setter index))))))
 
     (define record? (instance? record-type))
 
-    (define (record-constructor type)
+    (define (record-constructor id)
       (lambda xs
-        (data-rib record-type type xs)))
+        (data-rib record-type id xs)))
 
-    (define (record-predicate type)
+    (define (record-predicate id)
       (lambda (x)
         (and
           (record? x)
-          (eq? (car x) type))))
+          (eq? (car x) id))))
 
-    (define (record-getter type field)
-      (let ((index (field-index type field)))
-        (lambda (record)
-          (list-ref (cdr record) index))))
+    (define (record-getter index)
+      (lambda (record)
+        (list-ref (cdr record) index)))
 
-    (define (record-setter type field)
-      (let ((index (field-index type field)))
-        (lambda (record value)
-          (list-set! (cdr record) index value))))
-
-    (define (field-index type field)
-      (memq-position field (cdr type)))
+    (define (record-setter index)
+      (lambda (record value)
+        (list-set! (cdr record) index value)))
 
     ;; Tuple
 
@@ -1556,9 +1517,74 @@
 
 (define-library (srfi 1)
   (export
+    iota
+
+    reduce
+    fold-right
     append-map
+
+    filter
+
+    find
+    find-tail
+    any
+    every
+    list-index
+
     delete-duplicates
-    iota)
+
+    ; Re-exports
+    fold
+    reduce-right
+
+    cons
+    list
+    null?
+    pair?
+    car
+    cdr
+    caar
+    cadr
+    cdar
+    cddr
+    caaar
+    caadr
+    cadar
+    caddr
+    cdaar
+    cdadr
+    cddar
+    cdddr
+    caaaar
+    caaadr
+    caadar
+    caaddr
+    cadaar
+    cadadr
+    caddar
+    cadddr
+    cdaaar
+    cdaadr
+    cdadar
+    cdaddr
+    cddaar
+    cddadr
+    cdddar
+    cddddr
+    list-ref
+    length
+    append
+    reverse
+    map
+    for-each
+    member
+    memq
+    memv
+    assoc
+    assq
+    assv
+    set-car!
+    set-cdr!)
 
   (import (stak base))
 
@@ -1574,6 +1600,20 @@
             ys
             (cons (car xs) ys)))))
 
+    (define (filter f xs)
+      (if (null? xs)
+        '()
+        (let ((x (car xs))
+              (xs (filter f (cdr xs))))
+          (if (f x)
+            (cons x xs)
+            xs))))
+
+    (define (fold-right f y xs)
+      (if (null? xs)
+        y
+        (f (fold-right f y (cdr xs)) (car xs))))
+
     (define (iota count . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
@@ -1581,7 +1621,45 @@
       (let loop ((count count) (x start))
         (if (> count 0)
           (cons x (loop (- count 1) (+ x step)))
-          '())))))
+          '())))
+
+    (define (find f xs)
+      (cond
+        ((find-tail f xs) =>
+          car)
+        (else
+          #f)))
+
+    (define (find-tail f xs)
+      (let loop ((xs xs))
+        (cond
+          ((null? xs)
+            #f)
+          ((f (car xs))
+            xs)
+          (else
+            (loop (cdr xs))))))
+
+    (define (list-index f x . xs)
+      (let loop ((xs (cons x xs)) (i 0))
+        (cond
+          ((find-tail null? xs)
+            #f)
+          ((apply f (map car xs))
+            i)
+          (else
+            (loop (map cdr xs) (+ i 1))))))
+
+    (define (any f x . xs)
+      (and (apply list-index f x xs) #t))
+
+    (define (every f x . xs)
+      (not (apply any (lambda (y) (not (f y))) x xs)))
+
+    (define (reduce f y xs)
+      (if (null? xs)
+        y
+        (fold f (car xs) (cdr xs))))))
 
 (define-library (stak parameter)
   (export make-parameter)
@@ -2415,9 +2493,6 @@
     assv
     append
     reverse
-    fold-left
-    fold-right
-    reduce-right
     list-copy
 
     vector?

@@ -7,7 +7,7 @@ publish = false
 [dependencies]
 axum = "0.8.4"
 stak = { version = "0.10.34", path = "../../root" }
-tokio = { version = "1.47.0", features = ["rt-multi-thread"] }
+tokio = { version = "1.47.1", features = ["rt-multi-thread"] }
 
 [build-dependencies]
 stak-build = { version = "0.10.34", path = "../../build" }
