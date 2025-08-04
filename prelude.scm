@@ -378,7 +378,7 @@
           (define-syntax cond-expand
             (syntax-rules (and or not else r7rs library scheme base stak)
               ((cond-expand)
-                #f)
+                (syntax-error "unfulfilled cond-expand"))
 
               ; TODO Use `_`.
               ((cond-expand (else body ...))
