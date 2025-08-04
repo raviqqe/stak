@@ -355,7 +355,9 @@
     (define-syntax expand-features
       (syntax-rules ::: ()
         ((_ (feature1 feature2 :::) (library :::) outer-clause :::)
-          (expand-features (feature2 :::) (library :::)
+          (expand-features
+            (feature2 :::)
+            (library :::)
             ; TODO Use `_`.
             ((cond-expand (feature1 body ...) clause ...)
               (relaxed-begin body ...))
@@ -363,7 +365,9 @@
             :::))
 
         ((_ () (library1 library2 :::) outer-clause :::)
-          (expand-features () (library2 :::)
+          (expand-features
+            ()
+            (library2 :::)
             ; TODO Use `_`.
             ((cond-expand ((library library1) body ...) clause ...)
               (relaxed-begin body ...))
