@@ -377,6 +377,9 @@
         ((_ () () outer-clause :::)
           (define-syntax cond-expand
             (syntax-rules (and or not else r7rs library scheme base stak)
+              ((cond-expand)
+                #f)
+
               ; TODO Use `_`.
               ((cond-expand (else body ...))
                 (relaxed-begin body ...))
