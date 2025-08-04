@@ -674,20 +674,20 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (define-syntax define-begin
+      (define-syntax define-foo
         (syntax-rules ::: ()
-          ((define-begin name)
+          ((_ name)
             (define-syntax name
               (syntax-rules ()
                 ((name x)
                   (foo x)))))))
 
+      (define-foo bar)
+
       (define-syntax foo
         (syntax-rules ()
           ((_ x)
             x)))
-
-      (define-begin bar)
 
       (write-u8 (bar 65))
       """
