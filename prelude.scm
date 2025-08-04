@@ -422,8 +422,7 @@
                 (cond-expand clause ...)))))))
 
     (expand-features
-      (scheme
-        stak)
+      (scheme stak)
       ((scheme base)
         (scheme read)
         (scheme write)
