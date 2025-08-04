@@ -687,9 +687,9 @@ Feature: Macro
           ((_ x)
             x)))
 
-      (define-begin sequence)
+      (define-begin bar)
 
-      (write-u8 (sequence 1 2 3 65))
+      (write-u8 (bar 65))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
