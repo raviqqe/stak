@@ -648,3 +648,23 @@ Feature: Macro
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Define a nested syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax define-begin
+        (syntax-rules ::: ()
+          ((define-begin name)
+            (define-syntax name
+              (syntax-rules ()
+                ((name expr ...)
+                  (begin expr ...)))))))
+
+      (define-begin sequence)
+
+      (write-u8 (sequence 1 2 3 65))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
