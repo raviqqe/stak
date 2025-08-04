@@ -505,8 +505,8 @@
     (define (resolve-denotation context expression)
      (cond
       ((assq expression (macro-context-environment context)) =>
-       (lambda (pair)
-        (resolve-denotation context (cdr pair))))
+       cdr)
+
       (else
        expression)))
 
