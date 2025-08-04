@@ -154,8 +154,46 @@ Feature: SRFI 1
       | 1 2      | '(2)   |
       | 1 3 4 5  | '(4 5) |
 
-  # TODO Test `any`.
-  # TODO Test `every`.
+  Scenario Outline: Check if any element meets a condition
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (any even? '(<elements>)) <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements  | value |
+      |           | #f    |
+      | 1         | #f    |
+      | 1 3       | #f    |
+      | 2         | #t    |
+      | 1 2       | #t    |
+      | 1 2 3 4 5 | #t    |
+
+  Scenario Outline: Check if every element meets a condition
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (equal? (every even? '(<elements>)) <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | elements  | value |
+      |           | #t    |
+      | 1         | #f    |
+      | 1 3       | #f    |
+      | 2         | #t    |
+      | 1 2       | #f    |
+      | 2 4 6     | #t    |
+      | 2 4 5     | #f    |
+      | 1 2 3 4 5 | #f    |
+
   Scenario Outline: Calculate an index of an element
     Given a file named "main.scm" with:
       """scheme
