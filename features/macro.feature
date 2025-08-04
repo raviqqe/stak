@@ -675,7 +675,7 @@ Feature: Macro
       (import (scheme base))
 
       (define-syntax define-foo
-        (syntax-rules ::: ()
+        (syntax-rules ()
           ((_ name)
             (define-syntax name
               (syntax-rules ()
