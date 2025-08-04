@@ -1496,12 +1496,21 @@
 
 (define-library (srfi 1)
   (export
-    append-map
-    delete-duplicates
-    filter
-    fold-right
     iota
+
     reduce
+    fold-right
+    append-map
+
+    filter
+
+    find
+    find-tail
+    any
+    every
+    list-index
+
+    delete-duplicates
 
     ; Re-exports
     fold
@@ -1592,6 +1601,39 @@
         (if (> count 0)
           (cons x (loop (- count 1) (+ x step)))
           '())))
+
+    (define (find f xs)
+      (cond
+        ((find-tail f xs) =>
+          car)
+        (else
+          #f)))
+
+    (define (find-tail f xs)
+      (let loop ((xs xs))
+        (cond
+          ((null? xs)
+            #f)
+          ((f (car xs))
+            xs)
+          (else
+            (loop (cdr xs))))))
+
+    (define (list-index f x . xs)
+      (let loop ((xs (cons x xs)) (i 0))
+        (cond
+          ((find-tail null? xs)
+            #f)
+          ((apply f (map car xs))
+            i)
+          (else
+            (loop (map cdr xs) (+ i 1))))))
+
+    (define (any f x . xs)
+      (and (apply list-index f x xs) #t))
+
+    (define (every f x . xs)
+      (not (apply any (lambda (y) (not (f y))) x xs)))
 
     (define (reduce f y xs)
       (if (null? xs)
