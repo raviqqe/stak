@@ -3745,7 +3745,7 @@
           (primitive (+ 1000 index)))))))
 
 ; TODO Implement this as SRFI-146.
-(define-library (stak aa-tree)
+(define-library (srfi 146)
   (export
     aa-tree-empty
     aa-tree?
