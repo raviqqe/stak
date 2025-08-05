@@ -4,9 +4,9 @@ Feature: SRFI 146
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (aa-tree-empty <)
+      (mapping-empty <)
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
@@ -14,9 +14,9 @@ Feature: SRFI 146
   Scenario: Check if a value is a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (write-u8 (if (aa-tree? (aa-tree-empty <)) 65 66))
+      (write-u8 (if (mapping? (mapping-empty <)) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
@@ -25,11 +25,11 @@ Feature: SRFI 146
   Scenario: Find no value
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (define tree (aa-tree-empty <))
+      (define tree (mapping-empty <))
 
-      (write-u8 (if (aa-tree-find tree 1) 65 66))
+      (write-u8 (if (mapping-find tree 1) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
@@ -38,13 +38,13 @@ Feature: SRFI 146
   Scenario: Insert a value into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (define tree (aa-tree-empty <))
+      (define tree (mapping-empty <))
 
-      (aa-tree-insert! tree 1)
+      (mapping-insert! tree 1)
 
-      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
+      (write-u8 (if (= (mapping-find tree 1) 1) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
@@ -53,16 +53,16 @@ Feature: SRFI 146
   Scenario: Insert a value into a left of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (define tree (aa-tree-empty <))
+      (define tree (mapping-empty <))
 
-      (aa-tree-insert! tree 2)
-      (aa-tree-insert! tree 1)
+      (mapping-insert! tree 2)
+      (mapping-insert! tree 1)
 
       (for-each
         (lambda (x)
-          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (mapping-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I successfully run `stak main.scm`
@@ -72,16 +72,16 @@ Feature: SRFI 146
   Scenario: Insert a value into a right of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (define tree (aa-tree-empty <))
+      (define tree (mapping-empty <))
 
-      (aa-tree-insert! tree 1)
-      (aa-tree-insert! tree 2)
+      (mapping-insert! tree 1)
+      (mapping-insert! tree 2)
 
       (for-each
         (lambda (x)
-          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (mapping-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I successfully run `stak main.scm`
@@ -91,14 +91,14 @@ Feature: SRFI 146
   Scenario: Insert a value into the same node of a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (define tree (aa-tree-empty <))
+      (define tree (mapping-empty <))
 
-      (aa-tree-insert! tree 1)
-      (aa-tree-insert! tree 1)
+      (mapping-insert! tree 1)
+      (mapping-insert! tree 1)
 
-      (write-u8 (if (eq? (aa-tree-find tree 1) 1) 65 66))
+      (write-u8 (if (eq? (mapping-find tree 1) 1) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
@@ -107,17 +107,17 @@ Feature: SRFI 146
   Scenario Outline: Insert values into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (define tree (aa-tree-empty <))
+      (define tree (mapping-empty <))
 
       (define (check x)
-        (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
+        (write-u8 (if (eq? (mapping-find tree x) x) 65 66)))
 
       (for-each
         (lambda (x)
           (check x)
-          (aa-tree-insert! tree x)
+          (mapping-insert! tree x)
           (check x))
         '(<values>))
 
@@ -152,9 +152,9 @@ Feature: SRFI 146
   Scenario Outline: Convert a list into a tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (stak aa-tree))
+      (import (scheme base) (srfi 146))
 
-      (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
+      (write-u8 (if (equal? (mapping->list (list->mapping '(<values>) <)) '(<output>)) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the exit status should be 0
