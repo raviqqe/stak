@@ -3744,24 +3744,23 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
-; TODO Implement this as SRFI-146.
 (define-library (srfi 146)
   (export
-    aa-tree-empty
-    aa-tree?
-    aa-tree-find
-    aa-tree-insert!
-    aa-tree->list
-    list->aa-tree)
+    mapping-empty
+    mapping?
+    mapping-find
+    mapping-insert!
+    mapping->list
+    list->mapping)
 
   (import (stak base))
 
   (begin
-    (define-record-type aa-tree
-      (make-aa-tree root less)
-      aa-tree?
-      (root aa-tree-root aa-tree-set-root!)
-      (less aa-tree-less aa-tree-set-less!))
+    (define-record-type mapping
+      (make-mapping root less)
+      mapping?
+      (root mapping-root mapping-set-root!)
+      (less mapping-less mapping-set-less!))
 
     (define-record-type aa-node
       (make-aa-node value level left right)
@@ -3771,11 +3770,11 @@
       (left aa-node-left aa-node-set-left!)
       (right aa-node-right aa-node-set-right!))
 
-    (define (aa-tree-empty less)
-      (make-aa-tree #f less))
+    (define (mapping-empty less)
+      (make-mapping #f less))
 
-    (define (aa-tree-find tree value)
-      (aa-node-find (aa-tree-root tree) value (aa-tree-less tree)))
+    (define (mapping-find tree value)
+      (aa-node-find (mapping-root tree) value (mapping-less tree)))
 
     (define (aa-node-find node value less?)
       (and
@@ -3791,21 +3790,21 @@
             (else
               node-value)))))
 
-    (define (aa-tree-insert! tree value)
-      (aa-tree-set-root!
+    (define (mapping-insert! tree value)
+      (mapping-set-root!
         tree
         (aa-node-insert!
-          (aa-tree-root tree)
+          (mapping-root tree)
           value
-          (aa-tree-less tree))))
+          (mapping-less tree))))
 
-    (define (list->aa-tree xs less?)
-      (define tree (aa-tree-empty less?))
-      (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
+    (define (list->mapping xs less?)
+      (define tree (mapping-empty less?))
+      (for-each (lambda (x) (mapping-insert! tree x)) xs)
       tree)
 
-    (define (aa-tree->list tree)
-      (aa-node->list (aa-tree-root tree) '()))
+    (define (mapping->list tree)
+      (aa-node->list (mapping-root tree) '()))
 
     (define (aa-node->list node xs)
       (if node
