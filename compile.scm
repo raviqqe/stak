@@ -439,8 +439,9 @@
     ;; Types
 
     (define-record-type macro-state
-     (make-macro-state literals static-symbols dynamic-symbols)
+     (make-macro-state globals literals static-symbols dynamic-symbols)
      macro-state?
+     (globals macro-state-globals macro-state-set-globals!)
      (literals macro-state-literals macro-state-set-literals!)
      (static-symbols macro-state-static-symbols macro-state-set-static-symbols!)
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
@@ -463,12 +464,16 @@
       pair))
 
     (define (macro-context-set-last! context name denotation)
-     (unless (macro-context-set! context name denotation)
-      (let ((environment (macro-context-environment context))
-            (tail (list (cons name denotation))))
-       (if (null? environment)
-        (macro-context-set-environment! context tail)
-        (set-last-cdr! environment tail)))))
+     (let* ((state (macro-context-state context))
+            (globals (macro-state-globals state)))
+      (cond
+       ((assq name globals) =>
+        (lambda (pair)
+         (set-cdr! pair denotation)))
+       (else
+        (macro-state-set-globals!
+         state
+         (cons (cons name denotation) globals))))))
 
     (define (macro-context-append-literal! context name syntax)
      (define state (macro-context-state context))
@@ -508,6 +513,14 @@
        cdr)
       (else
        value)))
+
+    (define (resolve-denotation-value context value)
+     (let ((value (resolve-denotation context value)))
+      (cond
+       ((assq value (macro-state-globals (macro-context-state context))) =>
+        cdr)
+       (else
+        value))))
 
     (define (rename-variable name)
      (string->uninterned-symbol
@@ -690,13 +703,12 @@
                    (cdr pair)
                    (resolve-denotation definition-context (car pair))))
                  names))))))))))
-
        (else
         (error "unsupported macro transformer" transformer)))))
 
     (define (expand-outer-macro context expression)
      (if (pair? expression)
-      (let ((value (resolve-denotation context (car expression))))
+      (let ((value (resolve-denotation-value context (car expression))))
        (if (procedure? value)
         (let-values (((expression context) (value context expression)))
          (expand-outer-macro context expression))
@@ -709,7 +721,7 @@
       (expand-macro context expression))
 
      (define (resolve name)
-      (resolve-denotation context name))
+      (resolve-denotation-value context name))
 
      (cond
       ((symbol? expression)
@@ -724,7 +736,7 @@
        (case (resolve (car expression))
         (($$define)
          (let ((name (cadr expression)))
-          (macro-context-set! context name name)
+          (macro-context-set-last! context name name)
           (macro-context-append-static-symbol! context name)
           (expand (cons '$$set! (cdr expression)))))
 
@@ -1146,7 +1158,7 @@
     ; Macro system
 
     (define (expand-macros expression)
-     (let* ((context (make-macro-context (make-macro-state '() '() '()) '()))
+     (let* ((context (make-macro-context (make-macro-state '() '() '() '()) '()))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -1897,14 +1909,17 @@
              ; Macro system
 
              (define expand-macros
-              (let ((context (make-macro-context (make-macro-state '() '() '()) '())))
-               (for-each
-                (lambda (pair)
-                 (macro-context-set-last!
-                  context
-                  (car pair)
-                  (make-transformer context (cdr pair))))
-                ($$macros))
+              (let ((context
+                     (make-macro-context
+                      (make-macro-state
+                       (map-values
+                        (lambda (transformer)
+                         (make-transformer context transformer))
+                        ($$macros))
+                       '()
+                       '()
+                       '())
+                      '())))
                (lambda (expression)
                 (expand-macro context expression))))
 
