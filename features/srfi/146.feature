@@ -1,5 +1,5 @@
 @stak
-Feature: AA tree
+Feature: SRFI 146
 
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
