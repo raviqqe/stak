@@ -686,7 +686,29 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Define a nested syntax with a syntax undefined yet
+  Scenario: Capture an undefined global variable in a nested syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax define-foo
+        (syntax-rules ()
+          ((_ name)
+            (define-syntax name
+              (syntax-rules ()
+                ((name)
+                  x))))))
+
+      (define-foo bar)
+
+      (define x 65)
+
+      (write-u8 (bar))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Capture a undefined syntax in a nested syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
