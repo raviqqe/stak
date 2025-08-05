@@ -502,13 +502,12 @@
 
     ;; Procedures
 
-    (define (resolve-denotation context expression)
+    (define (resolve-denotation context value)
      (cond
-      ((assq expression (macro-context-environment context)) =>
+      ((assq value (macro-context-environment context)) =>
        cdr)
-
       (else
-       expression)))
+       value)))
 
     (define (rename-variable name)
      (string->uninterned-symbol

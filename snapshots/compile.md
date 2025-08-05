@@ -14687,13 +14687,13 @@
     - list
       - resolve-denotation
       - context
-      - expression
+      - value
     - list
       - cond
       - list
         - list
           - assq
-          - expression
+          - value
           - list
             - macro-context-environment
             - context
@@ -14701,7 +14701,7 @@
         - cdr
       - list
         - else
-        - expression
+        - value
   - list
     - define
     - list
