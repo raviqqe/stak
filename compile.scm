@@ -447,33 +447,26 @@
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
     (define-record-type macro-context
-     (make-macro-context state environment)
+     (make-macro-context state locals)
      macro-context?
      (state macro-context-state)
-     (environment macro-context-environment macro-context-set-environment!))
+     (locals macro-context-locals))
 
     (define (macro-context-append context pairs)
      (make-macro-context
       (macro-context-state context)
-      (append pairs (macro-context-environment context))))
+      (append pairs (macro-context-locals context))))
 
-    (define (macro-context-set! context name denotation)
-     (let* ((environment (macro-context-environment context))
-            (pair (assq name environment)))
+    (define (macro-context-set-local! context name denotation)
+     (let ((pair (assq name (macro-context-locals context))))
       (when pair (set-cdr! pair denotation))
       pair))
 
-    (define (macro-context-set-last! context name denotation)
-     (let* ((state (macro-context-state context))
-            (globals (macro-state-globals state)))
-      (cond
-       ((assq name globals) =>
-        (lambda (pair)
-         (set-cdr! pair denotation)))
-       (else
-        (macro-state-set-globals!
-         state
-         (cons (cons name denotation) globals))))))
+    (define (macro-context-set-global! context name denotation)
+     (let ((state (macro-context-state context)))
+      (macro-state-set-globals!
+       state
+       (cons (cons name denotation) (macro-state-globals state)))))
 
     (define (macro-context-append-literal! context name syntax)
      (define state (macro-context-state context))
@@ -509,7 +502,7 @@
 
     (define (resolve-denotation context value)
      (cond
-      ((assq value (macro-context-environment context)) =>
+      ((assq value (macro-context-locals context)) =>
        cdr)
       (else
        value)))
@@ -725,7 +718,8 @@
 
      (cond
       ((symbol? expression)
-       (unless (assq expression (macro-context-environment context))
+       (unless (assq expression (macro-context-locals context))
+        ; TODO Fix dynamic symbols.
         (macro-context-append-dynamic-symbol! context expression))
        (let ((value (resolve expression)))
         (when (procedure? value)
@@ -736,14 +730,14 @@
        (case (resolve (car expression))
         (($$define)
          (let ((name (cadr expression)))
-          (macro-context-set-last! context name name)
+          (macro-context-set-global! context name name)
           (macro-context-append-static-symbol! context name)
           (expand (cons '$$set! (cdr expression)))))
 
         (($$define-syntax)
          (let ((name (cadr expression))
                (transformer (caddr expression)))
-          (macro-context-set-last!
+          (macro-context-set-global!
            context
            name
            (make-transformer context transformer))
@@ -789,7 +783,7 @@
                    bindings))))
           (for-each
            (lambda (pair)
-            (macro-context-set!
+            (macro-context-set-local!
              context
              (car pair)
              (make-transformer context (cadr pair))))
@@ -1915,7 +1909,7 @@
                       '())))
                (for-each
                 (lambda (pair)
-                 (macro-context-set-last!
+                 (macro-context-set-global!
                   context
                   (car pair)
                   (make-transformer context (cdr pair))))
