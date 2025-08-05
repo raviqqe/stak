@@ -718,17 +718,17 @@ Feature: Macro
           ((_ name)
             (define-syntax name
               (syntax-rules ()
-                ((name x)
-                  (foo x)))))))
+                ((name)
+                  (foo)))))))
 
       (define-foo bar)
 
       (define-syntax foo
         (syntax-rules ()
-          ((_ x)
-            x)))
+          ((_)
+            65)))
 
-      (write-u8 (bar 65))
+      (write-u8 (bar))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
