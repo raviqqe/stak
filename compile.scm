@@ -510,7 +510,10 @@
     (define (resolve-denotation-value context value)
      (let ((value (resolve-denotation context value)))
       (cond
-       ((assq value (macro-state-globals (macro-context-state context))) =>
+       ((and
+         (symbol? value)
+         (assq value (macro-state-globals (macro-context-state context))))
+        =>
         cdr)
        (else
         value))))
@@ -718,12 +721,13 @@
 
      (cond
       ((symbol? expression)
-       (unless (assq expression (macro-context-locals context))
-        ; TODO Fix dynamic symbols.
-        (macro-context-append-dynamic-symbol! context expression))
        (let ((value (resolve expression)))
         (when (procedure? value)
          (error "invalid syntax" expression))
+        (when (and
+               (symbol? value)
+               (not (assq expression (macro-context-locals context))))
+         (macro-context-append-dynamic-symbol! context expression))
         value))
 
       ((pair? expression)
