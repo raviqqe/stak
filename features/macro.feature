@@ -363,11 +363,38 @@ Feature: Macro
 
       (define-syntax foo
         (syntax-rules ()
-          ((_) (foo 65))
-          ((_ x) x)
-          ((_ x y) (foo))))
+          ((_)
+            (foo 65))
+          ((_ x)
+            x)
+          ((_ x y)
+            (foo))))
 
       (write-u8 (foo))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Expand a macro mutually recursively
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_)
+            65)
+          ((_ x y ...)
+            (bar y ...))))
+
+      (define-syntax bar
+        (syntax-rules ()
+          ((_)
+            66)
+          ((_ x y ...)
+            (foo y ...))))
+
+      (write-u8 (foo 1 2 3 4))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
