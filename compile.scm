@@ -1911,15 +1911,15 @@
              (define expand-macros
               (let ((context
                      (make-macro-context
-                      (make-macro-state
-                       (map-values
-                        (lambda (transformer)
-                         (make-transformer context transformer))
-                        ($$macros))
-                       '()
-                       '()
-                       '())
+                      (make-macro-state '() '() '() '())
                       '())))
+               (for-each
+                (lambda (pair)
+                 (macro-context-set-last!
+                  context
+                  (car pair)
+                  (make-transformer context (cdr pair))))
+                ($$macros))
                (lambda (expression)
                 (expand-macro context expression))))
 
