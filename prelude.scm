@@ -428,7 +428,7 @@
     (expand-features
       cond-expand
       (and base else library not or r7rs scheme stak)
-      (scheme stak)
+      (r7rs scheme stak)
       ((scheme base)
         (scheme read)
         (scheme write)
