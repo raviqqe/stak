@@ -354,7 +354,7 @@
 
     (define-syntax expand-features
       (syntax-rules ::: ()
-        ((_ (feature1 feature2 :::) (library :::) outer-clause :::)
+        ((_ cond-expand (feature1 feature2 :::) (library :::) outer-clause :::)
           (expand-features
             (feature2 :::)
             (library :::)
@@ -364,7 +364,7 @@
             outer-clause
             :::))
 
-        ((_ () (library1 library2 :::) outer-clause :::)
+        ((_ cond-expand () (library1 library2 :::) outer-clause :::)
           (expand-features
             ()
             (library2 :::)
@@ -374,7 +374,7 @@
             outer-clause
             :::))
 
-        ((_ () () outer-clause :::)
+        ((_ cond-expand () () outer-clause :::)
           (define-syntax cond-expand
             (syntax-rules (and or not else r7rs library scheme base stak)
               ((cond-expand)
@@ -422,6 +422,7 @@
                 (cond-expand clause ...)))))))
 
     (expand-features
+      cond-expand
       (scheme stak)
       ((scheme base)
         (scheme read)
