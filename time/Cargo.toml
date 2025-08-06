@@ -13,7 +13,7 @@ categories.workspace = true
 rustix = { version = "1.0.8", default-features = false, features = [
   "time",
 ], optional = true }
-stak-vm = { version = "0.10.34", path = "../vm" }
+stak-vm = { version = "0.10.35", path = "../vm" }
 winter-maybe-async = "0.13.1"
 
 [features]
