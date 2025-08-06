@@ -378,9 +378,9 @@
             outer-clause
             :::))
 
-        ((_ cond-expand literals () () outer-clause :::)
+        ((_ cond-expand (and base else library not or r7rs scheme stak) () () outer-clause :::)
           (define-syntax cond-expand
-            (syntax-rules literals
+            (syntax-rules (and base else library not or r7rs scheme stak)
               ((cond-expand)
                 (syntax-error "unfulfilled cond-expand"))
 
