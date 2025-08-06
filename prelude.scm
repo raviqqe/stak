@@ -356,6 +356,7 @@
       (syntax-rules ::: ()
         ((_ cond-expand (feature1 feature2 :::) (library :::) outer-clause :::)
           (expand-features
+            cond-expand
             (feature2 :::)
             (library :::)
             ; TODO Use `_`.
@@ -366,6 +367,7 @@
 
         ((_ cond-expand () (library1 library2 :::) outer-clause :::)
           (expand-features
+            cond-expand
             ()
             (library2 :::)
             ; TODO Use `_`.
