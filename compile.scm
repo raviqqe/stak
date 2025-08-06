@@ -743,7 +743,7 @@
                (transformer (caddr expression)))
           (macro-context-set-global!
            context
-           (resolve-denotation context name)
+           name
            (make-transformer context transformer))
           (macro-context-append-literal! context name transformer)
           (macro-context-append-static-symbol! context name)
