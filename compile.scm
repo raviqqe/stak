@@ -439,36 +439,34 @@
     ;; Types
 
     (define-record-type macro-state
-     (make-macro-state literals static-symbols dynamic-symbols)
+     (make-macro-state globals literals static-symbols dynamic-symbols)
      macro-state?
+     (globals macro-state-globals macro-state-set-globals!)
      (literals macro-state-literals macro-state-set-literals!)
      (static-symbols macro-state-static-symbols macro-state-set-static-symbols!)
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
     (define-record-type macro-context
-     (make-macro-context state environment)
+     (make-macro-context state locals)
      macro-context?
      (state macro-context-state)
-     (environment macro-context-environment macro-context-set-environment!))
+     (locals macro-context-locals))
 
     (define (macro-context-append context pairs)
      (make-macro-context
       (macro-context-state context)
-      (append pairs (macro-context-environment context))))
+      (append pairs (macro-context-locals context))))
 
-    (define (macro-context-set! context name denotation)
-     (let* ((environment (macro-context-environment context))
-            (pair (assq name environment)))
+    (define (macro-context-set-local! context name denotation)
+     (let ((pair (assq name (macro-context-locals context))))
       (when pair (set-cdr! pair denotation))
       pair))
 
-    (define (macro-context-set-last! context name denotation)
-     (unless (macro-context-set! context name denotation)
-      (let ((environment (macro-context-environment context))
-            (tail (list (cons name denotation))))
-       (if (null? environment)
-        (macro-context-set-environment! context tail)
-        (set-last-cdr! environment tail)))))
+    (define (macro-context-set-global! context name denotation)
+     (let ((state (macro-context-state context)))
+      (macro-state-set-globals!
+       state
+       (cons (cons name denotation) (macro-state-globals state)))))
 
     (define (macro-context-append-literal! context name syntax)
      (define state (macro-context-state context))
@@ -502,13 +500,23 @@
 
     ;; Procedures
 
-    (define (resolve-denotation context expression)
+    (define (resolve-denotation context value)
      (cond
-      ((assq expression (macro-context-environment context)) =>
+      ((assq value (macro-context-locals context)) =>
        cdr)
-
       (else
-       expression)))
+       value)))
+
+    (define (resolve-denotation-value context value)
+     (let ((value (resolve-denotation context value)))
+      (cond
+       ((and
+         (symbol? value)
+         (assq value (macro-state-globals (macro-context-state context))))
+        =>
+        cdr)
+       (else
+        value))))
 
     (define (rename-variable name)
      (string->uninterned-symbol
@@ -691,13 +699,12 @@
                    (cdr pair)
                    (resolve-denotation definition-context (car pair))))
                  names))))))))))
-
        (else
         (error "unsupported macro transformer" transformer)))))
 
     (define (expand-outer-macro context expression)
      (if (pair? expression)
-      (let ((value (resolve-denotation context (car expression))))
+      (let ((value (resolve-denotation-value context (car expression))))
        (if (procedure? value)
         (let-values (((expression context) (value context expression)))
          (expand-outer-macro context expression))
@@ -710,29 +717,31 @@
       (expand-macro context expression))
 
      (define (resolve name)
-      (resolve-denotation context name))
+      (resolve-denotation-value context name))
 
      (cond
       ((symbol? expression)
-       (unless (assq expression (macro-context-environment context))
-        (macro-context-append-dynamic-symbol! context expression))
        (let ((value (resolve expression)))
         (when (procedure? value)
          (error "invalid syntax" expression))
+        (when (and
+               (symbol? value)
+               (not (assq expression (macro-context-locals context))))
+         (macro-context-append-dynamic-symbol! context expression))
         value))
 
       ((pair? expression)
        (case (resolve (car expression))
         (($$define)
          (let ((name (cadr expression)))
-          (macro-context-set! context name name)
+          (macro-context-set-global! context name name)
           (macro-context-append-static-symbol! context name)
           (expand (cons '$$set! (cdr expression)))))
 
         (($$define-syntax)
          (let ((name (cadr expression))
                (transformer (caddr expression)))
-          (macro-context-set-last!
+          (macro-context-set-global!
            context
            (resolve name)
            (make-transformer context transformer))
@@ -778,7 +787,7 @@
                    bindings))))
           (for-each
            (lambda (pair)
-            (macro-context-set!
+            (macro-context-set-local!
              context
              (car pair)
              (make-transformer context (cadr pair))))
@@ -1147,7 +1156,7 @@
     ; Macro system
 
     (define (expand-macros expression)
-     (let* ((context (make-macro-context (make-macro-state '() '() '()) '()))
+     (let* ((context (make-macro-context (make-macro-state '() '() '() '()) '()))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -1898,10 +1907,13 @@
              ; Macro system
 
              (define expand-macros
-              (let ((context (make-macro-context (make-macro-state '() '() '()) '())))
+              (let ((context
+                     (make-macro-context
+                      (make-macro-state '() '() '() '())
+                      '())))
                (for-each
                 (lambda (pair)
-                 (macro-context-set-last!
+                 (macro-context-set-global!
                   context
                   (car pair)
                   (make-transformer context (cdr pair))))

@@ -363,11 +363,38 @@ Feature: Macro
 
       (define-syntax foo
         (syntax-rules ()
-          ((_) (foo 65))
-          ((_ x) x)
-          ((_ x y) (foo))))
+          ((_)
+            (foo 65))
+          ((_ x)
+            x)
+          ((_ x y)
+            (foo))))
 
       (write-u8 (foo))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Expand a macro mutually recursively
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_)
+            65)
+          ((_ x y ...)
+            (bar y ...))))
+
+      (define-syntax bar
+        (syntax-rules ()
+          ((_)
+            66)
+          ((_ x y ...)
+            (foo y ...))))
+
+      (write-u8 (foo 1 2 3 4))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
@@ -659,12 +686,76 @@ Feature: Macro
           ((define-begin name)
             (define-syntax name
               (syntax-rules ()
-                ((name expr ...)
-                  (begin expr ...)))))))
+                ((name x ...)
+                  (begin x ...)))))))
 
       (define-begin sequence)
 
       (write-u8 (sequence 1 2 3 65))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Capture an undefined global variable
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_)
+            x)))
+
+      (define x 65)
+
+      (write-u8 (foo))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Capture an undefined global variable in a nested syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax define-foo
+        (syntax-rules ()
+          ((_ name)
+            (define-syntax name
+              (syntax-rules ()
+                ((name)
+                  x))))))
+
+      (define-foo bar)
+
+      (define x 65)
+
+      (write-u8 (bar))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Capture an undefined syntax in a nested syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax define-foo
+        (syntax-rules ()
+          ((_ name)
+            (define-syntax name
+              (syntax-rules ()
+                ((name)
+                  (foo)))))))
+
+      (define-foo bar)
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_)
+            65)))
+
+      (write-u8 (bar))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
