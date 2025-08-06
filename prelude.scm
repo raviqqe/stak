@@ -354,33 +354,20 @@
 
     (define-syntax expand-features
       (syntax-rules ::: ()
-        ((_ cond-expand literals (feature1 feature2 :::) (library :::) outer-clause :::)
+        ((_ cond-expand literals (feature1 feature2 :::) outer-clause :::)
           (expand-features
             cond-expand
             literals
             (feature2 :::)
-            (library :::)
             ; TODO Use `_`.
             ((cond-expand (feature1 body ...) clause ...)
               (relaxed-begin body ...))
             outer-clause
             :::))
 
-        ((_ cond-expand literals () (library1 library2 :::) outer-clause :::)
-          (expand-features
-            cond-expand
-            literals
-            ()
-            (library2 :::)
-            ; TODO Use `_`.
-            ((cond-expand ((library library1) body ...) clause ...)
-              (relaxed-begin body ...))
-            outer-clause
-            :::))
-
-        ((_ cond-expand (and base else library not or r7rs scheme stak) () () outer-clause :::)
+        ((_ cond-expand (and else not or literal :::) () outer-clause :::)
           (define-syntax cond-expand
-            (syntax-rules (and base else library not or r7rs scheme stak)
+            (syntax-rules (and else not or literal :::)
               ((cond-expand)
                 (syntax-error "unfulfilled cond-expand"))
 
@@ -427,14 +414,29 @@
 
     (expand-features
       cond-expand
-      (and base else library not or r7rs scheme stak)
-      (r7rs scheme stak)
-      ((scheme base)
-        (scheme read)
-        (scheme write)
-        (stak base)
-        (stak continue)
-        (stak exception)))
+      (and
+        else
+        not
+        or
+
+        base
+        continue
+        exception
+        library
+        r7rs
+        read
+        scheme
+        stak
+        write)
+      (r7rs
+        scheme
+        stak
+        (library (scheme base))
+        (library (scheme read))
+        (library (scheme write))
+        (library (stak base))
+        (library (stak continue))
+        (library (stak exception))))
 
     ;; Binding
 
