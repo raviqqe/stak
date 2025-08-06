@@ -354,10 +354,9 @@
 
     (define-syntax expand-features
       (syntax-rules ::: ()
-        ((_ cond-expand literals (feature1 feature2 :::) (library :::) outer-clause :::)
+        ((_ cond-expand (feature1 feature2 :::) (library :::) outer-clause :::)
           (expand-features
             cond-expand
-            literals
             (feature2 :::)
             (library :::)
             ; TODO Use `_`.
@@ -366,10 +365,9 @@
             outer-clause
             :::))
 
-        ((_ cond-expand literals () (library1 library2 :::) outer-clause :::)
+        ((_ cond-expand () (library1 library2 :::) outer-clause :::)
           (expand-features
             cond-expand
-            literals
             ()
             (library2 :::)
             ; TODO Use `_`.
@@ -378,9 +376,9 @@
             outer-clause
             :::))
 
-        ((_ cond-expand literals () () outer-clause :::)
+        ((_ cond-expand () () outer-clause :::)
           (define-syntax cond-expand
-            (syntax-rules literals
+            (syntax-rules (and or not else r7rs library scheme base stak)
               ((cond-expand)
                 (syntax-error "unfulfilled cond-expand"))
 
@@ -427,7 +425,6 @@
 
     (expand-features
       cond-expand
-      (and base else library not or r7rs scheme stak)
       (scheme stak)
       ((scheme base)
         (scheme read)
