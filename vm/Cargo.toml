@@ -12,7 +12,7 @@ categories.workspace = true
 [dependencies]
 cfg-elif = "0.6.3"
 nonbox = { version = "0.5.10", optional = true }
-stak-util = { version = "0.10.34", path = "../util" }
+stak-util = { version = "0.10.35", path = "../util" }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
