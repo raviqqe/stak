@@ -12,6 +12,43 @@
 - set $$\*
 - constant primitive 13
 - set $$/
+- constant procedure 0 #f
+  - constant list
+    - r7rs
+    - scheme
+    - stak
+    - list
+      - library
+      - list
+        - scheme
+        - base
+    - list
+      - library
+      - list
+        - scheme
+        - read
+    - list
+      - library
+      - list
+        - scheme
+        - write
+    - list
+      - library
+      - list
+        - stak
+        - base
+    - list
+      - library
+      - list
+        - stak
+        - continue
+    - list
+      - library
+      - list
+        - stak
+        - exception
+- call 1 #f $$close
+- set features
 - constant 0
 - set pair-type
 - constant 1
@@ -3952,7 +3989,6 @@
   - shake-tree
   - expression3
   - compile-metadata
-  - features
   - libraries
   - macros
   - optimizers
@@ -4236,6 +4272,7 @@
   - cddddr
   - syntax-rules
   - define-syntax
+  - syntax-error
   - \_
   - ...
   - define
@@ -4248,7 +4285,6 @@
   - unquote-splicing
   - quote
   - set!
-  - cond-expand
   - let
   - let\*
   - letrec
@@ -4267,7 +4303,8 @@
   - when
   - unless
   - do
-  - syntax-error
+  - cond-expand
+  - features
   - base
   - library
   - r7rs
@@ -4440,6 +4477,7 @@
   - write-message
   - $$...
   - $$define-syntax
+  - $$syntax-error
   - $$define-optimizer
   - $$define
   - $$lambda
@@ -4449,7 +4487,6 @@
   - $$quote
   - $$set!
   - $$if
-  - $$syntax-error
   - $$syntax-rules
 - call 1 #f make-symbol-table
 - call 1 #f 1
@@ -8679,6 +8716,7 @@
                                               - base
                                             - (syntax-rules . syntax-rules)
                                             - (define-syntax . define-syntax)
+                                            - (syntax-error . syntax-error)
                                             - (_ . _)
                                             - (... . ...)
                                             - (define . define)
@@ -8691,7 +8729,6 @@
                                             - (unquote-splicing . unquote-splicing)
                                             - (quote . quote)
                                             - (set! . set!)
-                                            - (cond-expand . cond-expand)
                                             - (let . let)
                                             - (let* . let*)
                                             - (letrec . letrec)
@@ -8709,7 +8746,8 @@
                                             - (when . when)
                                             - (unless . unless)
                                             - (do . do)
-                                            - (syntax-error . syntax-error)
+                                            - (cond-expand . cond-expand)
+                                            - (features . features)
                                             - (base . base)
                                             - (library . library)
                                             - (r7rs . r7rs)
@@ -9076,6 +9114,7 @@
                                               - base
                                             - (syntax-rules . syntax-rules)
                                             - (define-syntax . define-syntax)
+                                            - (syntax-error . syntax-error)
                                             - (_ . _)
                                             - (... . ...)
                                             - (define . define)
@@ -9088,7 +9127,6 @@
                                             - (unquote-splicing . unquote-splicing)
                                             - (quote . quote)
                                             - (set! . set!)
-                                            - (cond-expand . cond-expand)
                                             - (let . let)
                                             - (let* . let*)
                                             - (letrec . letrec)
@@ -9107,7 +9145,8 @@
                                             - (when . when)
                                             - (unless . unless)
                                             - (do . do)
-                                            - (syntax-error . syntax-error)
+                                            - (cond-expand . cond-expand)
+                                            - (features . features)
                                             - (base . base)
                                             - (library . library)
                                             - (r7rs . r7rs)
@@ -9355,6 +9394,21 @@
                                                   - $$define-syntax
                                                   - ||
                                                   - ||
+                                            - list
+                                              - syntax-error
+                                              - syntax-rules
+                                              - ()
+                                              - list
+                                                - list
+                                                  - \_
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - $$syntax-error
+                                                  - ||
+                                                  - ||
+                                                  - ...
                                             - list
                                               - ||
                                               - syntax-rules
@@ -9859,6 +9913,28 @@
                                                   - \_
                                                   - cond-expand
                                                   - ||
+                                                  - ||
+                                                - list
+                                                  - begin
+                                                  - list
+                                                    - define
+                                                    - list
+                                                      - features
+                                                    - list
+                                                      - quote
+                                                      - ||
+                                                  - list
+                                                    - ||
+                                                    - "cond"
+                                                    - cond-expand
+                                                    - ||
+                                                    - ||
+                                              - list
+                                                - list
+                                                  - \_
+                                                  - "cond"
+                                                  - cond-expand
+                                                  - ||
                                                   - list
                                                     - ||
                                                     - ||
@@ -9867,6 +9943,7 @@
                                                   - ||
                                                 - list
                                                   - ||
+                                                  - "cond"
                                                   - cond-expand
                                                   - ||
                                                   - list
@@ -9890,6 +9967,7 @@
                                               - list
                                                 - list
                                                   - \_
+                                                  - "cond"
                                                   - cond-expand
                                                   - list
                                                     - and
@@ -11058,21 +11136,6 @@
                                                   - ||
                                                   - ||
                                                 - ||
-                                            - list
-                                              - syntax-error
-                                              - syntax-rules
-                                              - ()
-                                              - list
-                                                - list
-                                                  - \_
-                                                  - ||
-                                                  - ||
-                                                  - ...
-                                                - list
-                                                  - $$syntax-error
-                                                  - ||
-                                                  - ||
-                                                  - ...
                                             - list
                                               - define-record-type
                                               - syntax-rules

@@ -4,6 +4,7 @@
   (export
     syntax-rules
     define-syntax
+    syntax-error
     _
     ...
     define
@@ -16,7 +17,6 @@
     unquote-splicing
     quote
     set!
-    cond-expand
     let
     let*
     letrec
@@ -35,7 +35,9 @@
     when
     unless
     do
-    syntax-error
+
+    cond-expand
+    features
 
     base
     library
@@ -244,6 +246,11 @@
         ((_ name value)
           ($$define-syntax name value))))
 
+    (define-syntax syntax-error
+      (syntax-rules ()
+        ((_ message value ...)
+          ($$syntax-error message value ...))))
+
     (define-syntax define-optimizer
       (syntax-rules ()
         ((_ name value)
@@ -354,8 +361,14 @@
 
     (define-syntax expand-features
       (syntax-rules ::: ()
-        ((_ cond-expand literals (feature1 feature2 :::) outer-clause :::)
+        ((_ cond-expand literals feature-values)
+          (begin
+            (define (features) 'feature-values)
+            (expand-features "cond" cond-expand literals feature-values)))
+
+        ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
           (expand-features
+            "cond"
             cond-expand
             literals
             (feature2 :::)
@@ -364,7 +377,7 @@
             outer-clause
             :::))
 
-        ((_ cond-expand (and else not or literal :::) () outer-clause :::)
+        ((_ "cond" cond-expand (and else not or literal :::) () outer-clause :::)
           (define-syntax cond-expand
             (syntax-rules (and else not or literal :::)
               ((cond-expand)
@@ -625,11 +638,6 @@
 
         ((_ "step" x y)
           y)))
-
-    (define-syntax syntax-error
-      (syntax-rules ()
-        ((_ message value ...)
-          ($$syntax-error message value ...))))
 
     ; Type IDs
 
@@ -2367,6 +2375,7 @@
   (export
     syntax-rules
     define-syntax
+    syntax-error
     _
     ...
     define
@@ -2379,7 +2388,6 @@
     unquote-splicing
     quote
     set!
-    cond-expand
     let
     let*
     letrec
@@ -2397,7 +2405,9 @@
     when
     unless
     do
-    syntax-error
+
+    cond-expand
+    features
 
     base
     library
