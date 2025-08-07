@@ -745,7 +745,12 @@
            context
            name
            (make-transformer context transformer))
-          (macro-context-append-literal! context name transformer)
+          (macro-context-append-literal!
+           context
+           name
+           (relaxed-deep-map
+            (lambda (value) (resolve-denotation context value))
+            transformer))
           (macro-context-append-static-symbol! context name)
           #f))
 
