@@ -359,7 +359,6 @@
             cond-expand
             literals
             (feature2 :::)
-            ; TODO Use `_`.
             ((cond-expand (feature1 body ...) clause ...)
               (relaxed-begin body ...))
             outer-clause
@@ -371,7 +370,6 @@
               ((cond-expand)
                 (syntax-error "unfulfilled cond-expand"))
 
-              ; TODO Use `_`.
               ((cond-expand (else body ...))
                 (relaxed-begin body ...))
 
@@ -1311,7 +1309,6 @@
                    (lambda (x pair) (<= (caar pair) x (cdar pair))))))
           (and
             y
-            ; TODO Fix performance.
             (let* ((y (car y))
                    (y (+ (- x (caar y)) (cdr y))))
               (and (< y radix) y)))))
