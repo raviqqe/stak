@@ -4,6 +4,7 @@
   (export
     syntax-rules
     define-syntax
+    syntax-error
     _
     ...
     define
@@ -16,7 +17,6 @@
     unquote-splicing
     quote
     set!
-    cond-expand
     let
     let*
     letrec
@@ -35,7 +35,9 @@
     when
     unless
     do
-    syntax-error
+
+    cond-expand
+    features
 
     base
     library
@@ -243,6 +245,11 @@
       (syntax-rules ()
         ((_ name value)
           ($$define-syntax name value))))
+
+    (define-syntax syntax-error
+      (syntax-rules ()
+        ((_ message value ...)
+          ($$syntax-error message value ...))))
 
     (define-syntax define-optimizer
       (syntax-rules ()
@@ -625,11 +632,6 @@
 
         ((_ "step" x y)
           y)))
-
-    (define-syntax syntax-error
-      (syntax-rules ()
-        ((_ message value ...)
-          ($$syntax-error message value ...))))
 
     ; Type IDs
 
