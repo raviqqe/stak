@@ -26,7 +26,7 @@
     "lucide-solid": "^0.536.0",
     "monaco-editor": "^0.52.2",
     "nanostores": "^1.0.1",
-    "solid-js": "^1.9.7",
+    "solid-js": "^1.9.8",
     "vite-plugin-wasm": "^3.5.0"
   },
   "devDependencies": {
