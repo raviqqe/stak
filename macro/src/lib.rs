@@ -21,10 +21,11 @@ impl Parse for IncludeModuleInput {
         let mut module = None;
 
         if input.parse::<Option<Token![,]>>()?.is_some()
-            && let Some(value) = input.parse()? {
-                input.parse::<Option<Token![,]>>()?;
-                module = Some(value);
-            };
+            && let Some(value) = input.parse()?
+        {
+            input.parse::<Option<Token![,]>>()?;
+            module = Some(value);
+        }
 
         Ok(Self { path, module })
     }
