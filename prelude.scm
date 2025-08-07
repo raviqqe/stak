@@ -884,7 +884,7 @@
         (gcd y (modulo x y))))
 
     (define (lcm x y)
-      x)
+      (/ (abs (* x y)) (gcd x y)))
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
