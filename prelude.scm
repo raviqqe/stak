@@ -880,8 +880,8 @@
 
     (define (gcd x y)
       (if (zero? y)
-        x
-        (gcd y (modulo x y))))
+        (abs x)
+        (gcd y (remainder x y))))
 
     (define (lcm x y)
       (/
