@@ -97,7 +97,7 @@ Feature: cond-expand
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Get feature values
+  Scenario: Examine features
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
