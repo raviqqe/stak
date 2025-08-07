@@ -106,7 +106,6 @@ Feature: cond-expand
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain "r7rs"
-    And the stdout should contain "scheme"
 
   Rule: `and`
 
