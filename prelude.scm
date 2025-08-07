@@ -883,7 +883,8 @@
         x
         (gcd y (modulo x y))))
 
-    (define (lcm x y))
+    (define (lcm x y)
+      x)
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
