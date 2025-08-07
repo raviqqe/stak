@@ -2375,6 +2375,7 @@
   (export
     syntax-rules
     define-syntax
+    syntax-error
     _
     ...
     define
@@ -2387,7 +2388,6 @@
     unquote-splicing
     quote
     set!
-    cond-expand
     let
     let*
     letrec
@@ -2405,7 +2405,9 @@
     when
     unless
     do
-    syntax-error
+
+    cond-expand
+    features
 
     base
     library
