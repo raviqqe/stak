@@ -361,8 +361,14 @@
 
     (define-syntax expand-features
       (syntax-rules ::: ()
-        ((_ cond-expand literals (feature1 feature2 :::) outer-clause :::)
+        ((_ cond-expand literals feature-values)
+          (begin
+            (define (features) 'feature-values)
+            (expand-features "cond" cond-expand literals feature-values)))
+
+        ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
           (expand-features
+            "cond"
             cond-expand
             literals
             (feature2 :::)
@@ -371,7 +377,7 @@
             outer-clause
             :::))
 
-        ((_ cond-expand (and else not or literal :::) () outer-clause :::)
+        ((_ "cond" cond-expand (and else not or literal :::) () outer-clause :::)
           (define-syntax cond-expand
             (syntax-rules (and else not or literal :::)
               ((cond-expand)

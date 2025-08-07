@@ -97,6 +97,17 @@ Feature: cond-expand
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Get feature values
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write))
+
+      (write (features))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain "r7rs"
+    And the stdout should contain "scheme"
+
   Rule: `and`
 
     Scenario: Expand no requirement
