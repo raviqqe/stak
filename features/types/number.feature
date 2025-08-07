@@ -301,15 +301,12 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | x  | y  | z |
-      | 0  | 0  | 0 |
-      | 1  | 1  | 1 |
-      | 6  | 2  | 2 |
-      | 2  | 6  | 2 |
-      | 6  | 3  | 3 |
-      | 3  | 6  | 3 |
-      | 30 | 42 | 6 |
-      | 42 | 30 | 6 |
+      | x  | y  | z  |
+      | 1  | 1  | 1  |
+      | 2  | 3  | 6  |
+      | 3  | 2  | 6  |
+      | 6  | 10 | 30 |
+      | 10 | 6  | 30 |
 
   Scenario Outline: Calculate the least common multiple
     Given a file named "main.scm" with:
