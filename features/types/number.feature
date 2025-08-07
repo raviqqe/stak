@@ -290,7 +290,7 @@ Feature: Number
       | 8     | 2    | 4         |
       | 9     | 3    | 0         |
 
-  Scenario Outline: Calculate a square root of an exact integer
+  Scenario Outline: Calculate the greatest common divisor
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -311,12 +311,12 @@ Feature: Number
       | 30 | 42 | 6 |
       | 42 | 30 | 6 |
 
-  Scenario Outline: Calculate a square root of an exact integer
+  Scenario Outline: Calculate the least common multiple
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (= (gcd <x> <y>) <z>) 65 66))
+      (write-u8 (if (= (lcm <x> <y>) <z>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "AA"
