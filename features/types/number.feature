@@ -298,7 +298,7 @@ Feature: Number
       (write-u8 (if (= (gcd <x> <y>) <z>) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "AA"
+    Then the stdout should contain exactly "A"
 
     Examples:
       | x  | y  | z |
@@ -319,7 +319,7 @@ Feature: Number
       (write-u8 (if (= (lcm <x> <y>) <z>) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "AA"
+    Then the stdout should contain exactly "A"
 
     Examples:
       | x  | y  | z |
