@@ -6944,7 +6944,13 @@
                                             - set 0
                                             - get 9
                                             - get 2
-                                            - get 2
+                                            - constant procedure 1 #f
+                                              - get 13
+                                              - get 1
+                                              - call 2 #f 34
+                                            - call 1 #f $$close
+                                            - get 3
+                                            - call 2 #f 80
                                             - call 3 #f 37
                                             - set 0
                                             - get 9
@@ -9511,21 +9517,236 @@
                                                   - ||
                                                   - ||
                                             - list
+                                              - ||
+                                              - syntax-rules
+                                              - ||
+                                              - ()
+                                              - list
+                                                - list
+                                                  - \_
+                                                  - cond-expand
+                                                  - ||
+                                                  - list
+                                                    - ||
+                                                    - ||
+                                                    - ||
+                                                  - ||
+                                                  - ||
+                                                - list
+                                                  - ||
+                                                  - cond-expand
+                                                  - ||
+                                                  - list
+                                                    - ||
+                                                    - ||
+                                                  - list
+                                                    - list
+                                                      - cond-expand
+                                                      - list
+                                                        - ||
+                                                        - ||
+                                                        - ...
+                                                      - ||
+                                                      - ...
+                                                    - list
+                                                      - ||
+                                                      - ||
+                                                      - ...
+                                                  - ||
+                                                  - ||
+                                              - list
+                                                - list
+                                                  - \_
+                                                  - cond-expand
+                                                  - list
+                                                    - and
+                                                    - else
+                                                    - not
+                                                    - or
+                                                    - ||
+                                                    - ||
+                                                  - ()
+                                                  - ||
+                                                  - ||
+                                                - list
+                                                  - define-syntax
+                                                  - cond-expand
+                                                  - list
+                                                    - syntax-rules
+                                                    - list
+                                                      - and
+                                                      - else
+                                                      - not
+                                                      - or
+                                                      - ||
+                                                      - ||
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                      - list
+                                                        - syntax-error
+                                                        - "unfulfilled cond-expand"
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - else
+                                                          - ||
+                                                          - ...
+                                                      - list
+                                                        - ||
+                                                        - ||
+                                                        - ...
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - list
+                                                            - and
+                                                          - ||
+                                                          - ...
+                                                        - ||
+                                                        - ...
+                                                      - list
+                                                        - ||
+                                                        - ||
+                                                        - ...
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - list
+                                                            - and
+                                                            - ||
+                                                            - ||
+                                                            - ...
+                                                          - ||
+                                                          - ...
+                                                        - ||
+                                                        - ...
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - ||
+                                                          - list
+                                                            - cond-expand
+                                                            - list
+                                                              - list
+                                                                - and
+                                                                - ||
+                                                                - ...
+                                                              - ||
+                                                              - ...
+                                                            - ||
+                                                            - ...
+                                                        - ||
+                                                        - ...
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - list
+                                                            - or
+                                                          - ||
+                                                          - ...
+                                                        - ||
+                                                        - ...
+                                                      - list
+                                                        - cond-expand
+                                                        - ||
+                                                        - ...
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - list
+                                                            - or
+                                                            - ||
+                                                            - ||
+                                                            - ...
+                                                          - ||
+                                                          - ...
+                                                        - ||
+                                                        - ...
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - ||
+                                                          - ||
+                                                          - ...
+                                                        - list
+                                                          - list
+                                                            - or
+                                                            - ||
+                                                            - ...
+                                                          - ||
+                                                          - ...
+                                                        - ||
+                                                        - ...
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - list
+                                                            - not
+                                                            - ||
+                                                          - ||
+                                                          - ...
+                                                        - ||
+                                                        - ...
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - ||
+                                                          - list
+                                                            - cond-expand
+                                                            - ||
+                                                            - ...
+                                                        - list
+                                                          - else
+                                                          - ||
+                                                          - ...
+                                                    - ||
+                                                    - ||
+                                                    - list
+                                                      - list
+                                                        - cond-expand
+                                                        - list
+                                                          - ||
+                                                          - ||
+                                                          - ...
+                                                        - ||
+                                                        - ...
+                                                      - list
+                                                        - cond-expand
+                                                        - ||
+                                                        - ...
+                                            - list
                                               - cond-expand
                                               - syntax-rules
                                               - list
                                                 - and
-                                                - or
-                                                - not
                                                 - else
-                                                - r7rs
-                                                - library
-                                                - scheme
+                                                - not
+                                                - or
                                                 - base
+                                                - ||
+                                                - ||
+                                                - library
+                                                - r7rs
+                                                - ||
+                                                - scheme
                                                 - stak
+                                                - ||
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
+                                                - list
+                                                  - syntax-error
+                                                  - "unfulfilled cond-expand"
+                                              - list
+                                                - list
+                                                  - cond-expand
                                                   - list
                                                     - else
                                                     - ||
@@ -9536,7 +9757,7 @@
                                                   - ...
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
                                                   - list
                                                     - list
                                                       - and
@@ -9550,7 +9771,7 @@
                                                   - ...
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
                                                   - list
                                                     - list
                                                       - and
@@ -9580,7 +9801,7 @@
                                                   - ...
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
                                                   - list
                                                     - list
                                                       - or
@@ -9594,7 +9815,7 @@
                                                   - ...
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
                                                   - list
                                                     - list
                                                       - or
@@ -9622,7 +9843,7 @@
                                                   - ...
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
                                                   - list
                                                     - list
                                                       - not
@@ -9645,7 +9866,92 @@
                                                     - ...
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
+                                                  - list
+                                                    - list
+                                                      - library
+                                                      - list
+                                                        - stak
+                                                        - ||
+                                                    - ||
+                                                    - ...
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                              - list
+                                                - list
+                                                  - cond-expand
+                                                  - list
+                                                    - list
+                                                      - library
+                                                      - list
+                                                        - stak
+                                                        - ||
+                                                    - ||
+                                                    - ...
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                              - list
+                                                - list
+                                                  - cond-expand
+                                                  - list
+                                                    - list
+                                                      - library
+                                                      - list
+                                                        - stak
+                                                        - base
+                                                    - ||
+                                                    - ...
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                              - list
+                                                - list
+                                                  - cond-expand
+                                                  - list
+                                                    - list
+                                                      - library
+                                                      - list
+                                                        - scheme
+                                                        - ||
+                                                    - ||
+                                                    - ...
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                              - list
+                                                - list
+                                                  - cond-expand
+                                                  - list
+                                                    - list
+                                                      - library
+                                                      - list
+                                                        - scheme
+                                                        - ||
+                                                    - ||
+                                                    - ...
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                              - list
+                                                - list
+                                                  - cond-expand
                                                   - list
                                                     - list
                                                       - library
@@ -9662,37 +9968,7 @@
                                                   - ...
                                               - list
                                                 - list
-                                                  - \_
-                                                  - list
-                                                    - list
-                                                      - library
-                                                      - list
-                                                        - ||
-                                                        - ...
-                                                    - ||
-                                                    - ...
-                                                  - ||
-                                                  - ...
-                                                - list
                                                   - cond-expand
-                                                  - ||
-                                                  - ...
-                                              - list
-                                                - list
-                                                  - \_
-                                                  - list
-                                                    - r7rs
-                                                    - ||
-                                                    - ...
-                                                  - ||
-                                                  - ...
-                                                - list
-                                                  - ||
-                                                  - ||
-                                                  - ...
-                                              - list
-                                                - list
-                                                  - \_
                                                   - list
                                                     - stak
                                                     - ||
@@ -9705,7 +9981,33 @@
                                                   - ...
                                               - list
                                                 - list
-                                                  - \_
+                                                  - cond-expand
+                                                  - list
+                                                    - scheme
+                                                    - ||
+                                                    - ...
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                              - list
+                                                - list
+                                                  - cond-expand
+                                                  - list
+                                                    - r7rs
+                                                    - ||
+                                                    - ...
+                                                  - ||
+                                                  - ...
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ...
+                                              - list
+                                                - list
+                                                  - cond-expand
                                                   - list
                                                     - ||
                                                     - ||
