@@ -1617,7 +1617,7 @@
     set-car!
     set-cdr!)
 
-  (import (stak base))
+  (import (stak base) (scheme cxr))
 
   (begin
     (define (append-map f xs)
@@ -2784,7 +2784,7 @@
     cdddar
     cddddr)
 
-  (import (scheme base))
+  (import (stak base))
 
   (begin
     (define (caaar x) (car (caar x)))
