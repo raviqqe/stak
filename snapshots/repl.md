@@ -3836,7 +3836,6 @@
   - digit-value
   - special-chars
   - case-lambda
-  - cxr
   - complex
   - make-rectangular
   - make-polar
@@ -3934,6 +3933,7 @@
   - every
   - list-index
   - delete-duplicates
+  - cxr
   - caaar
   - caadr
   - cadar
@@ -8416,34 +8416,6 @@
                                           - list
                                             - list
                                               - scheme
-                                              - cxr
-                                            - (caaar . caaar)
-                                            - (caadr . caadr)
-                                            - (cadar . cadar)
-                                            - (caddr . caddr)
-                                            - (cdaar . cdaar)
-                                            - (cdadr . cdadr)
-                                            - (cddar . cddar)
-                                            - (cdddr . cdddr)
-                                            - (caaaar . caaaar)
-                                            - (caaadr . caaadr)
-                                            - (caadar . caadar)
-                                            - (caaddr . caaddr)
-                                            - (cadaar . cadaar)
-                                            - (cadadr . cadadr)
-                                            - (caddar . caddar)
-                                            - (cadddr . cadddr)
-                                            - (cdaaar . cdaaar)
-                                            - (cdaadr . cdaadr)
-                                            - (cdadar . cdadar)
-                                            - (cdaddr . cdaddr)
-                                            - (cddaar . cddaar)
-                                            - (cddadr . cddadr)
-                                            - (cdddar . cdddar)
-                                            - (cddddr . cddddr)
-                                          - list
-                                            - list
-                                              - scheme
                                               - complex
                                             - (make-rectangular . make-rectangular)
                                             - (make-polar . make-polar)
@@ -8867,6 +8839,34 @@
                                             - (assv . assv)
                                             - (set-car! . set-car!)
                                             - (set-cdr! . set-cdr!)
+                                          - list
+                                            - list
+                                              - scheme
+                                              - cxr
+                                            - (caaar . caaar)
+                                            - (caadr . caadr)
+                                            - (cadar . cadar)
+                                            - (caddr . caddr)
+                                            - (cdaar . cdaar)
+                                            - (cdadr . cdadr)
+                                            - (cddar . cddar)
+                                            - (cdddr . cdddr)
+                                            - (caaaar . caaaar)
+                                            - (caaadr . caaadr)
+                                            - (caadar . caadar)
+                                            - (caaddr . caaddr)
+                                            - (cadaar . cadaar)
+                                            - (cadadr . cadadr)
+                                            - (caddar . caddar)
+                                            - (cadddr . cadddr)
+                                            - (cdaaar . cdaaar)
+                                            - (cdaadr . cdaadr)
+                                            - (cdadar . cdadar)
+                                            - (cdaddr . cdaddr)
+                                            - (cddaar . cddaar)
+                                            - (cddadr . cddadr)
+                                            - (cdddar . cdddar)
+                                            - (cddddr . cddddr)
                                           - list
                                             - list
                                               - stak

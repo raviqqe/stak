@@ -252,3 +252,13 @@ Feature: SRFI 1
       | 1        | 1      |
       | 1 2      | 3      |
       | 1 2 3    | 6      |
+
+  Scenario: Get a very tail of a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (eq? (cddddr '(x x x x)) '()) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
