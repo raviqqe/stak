@@ -1466,7 +1466,7 @@
 - set bytevector-u8-set!
 - get list->bytevector
 - call 1 #f ||
-- set ||
+- set make-bytevector
 - get list->bytevector
 - call 1 #f ||
 - set bytevector-append
@@ -4128,8 +4128,9 @@
   - vector->list
   - string->vector
   - vector->string
-  - bytevector
   - bytevector?
+  - bytevector
+  - make-bytevector
   - bytevector-append
   - bytevector-copy
   - bytevector-copy!
@@ -8035,10 +8036,12 @@
                                             - (_ . _)
                                             - (+ . +)
                                             - (- . -)
+                                            - (... . ...)
                                             - (/ . /)
                                             - (< . <)
                                             - (<= . <=)
                                             - (= . =)
+                                            - (=> . =>)
                                             - (> . >)
                                             - (>= . >=)
                                             - (abs . abs)
@@ -8100,6 +8103,7 @@
                                             - (char-downcase . char-downcase)
                                             - (char-lower-case? . char-lower-case?)
                                             - (char-numeric? . char-numeric?)
+                                            - (char-ready? . char-ready?)
                                             - (char-upcase . char-upcase)
                                             - (char-upper-case? . char-upper-case?)
                                             - (char-whitespace? . char-whitespace?)
@@ -8124,6 +8128,7 @@
                                             - (display . display)
                                             - (do . do)
                                             - (dynamic-wind . dynamic-wind)
+                                            - (else . else)
                                             - (eof-object? . eof-object?)
                                             - (eq? . eq?)
                                             - (equal? . equal?)
@@ -8233,6 +8238,7 @@
                                             - (substring . substring)
                                             - (symbol->string . symbol->string)
                                             - (symbol? . symbol?)
+                                            - (syntax-rules . syntax-rules)
                                             - (tan . tan)
                                             - (truncate . truncate)
                                             - (values . values)
@@ -8531,8 +8537,9 @@
                                             - (vector->string . vector->string)
                                             - (string->utf8 . string->utf8)
                                             - (utf8->string . utf8->string)
-                                            - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
+                                            - (bytevector . bytevector)
+                                            - (make-bytevector . make-bytevector)
                                             - (bytevector-append . bytevector-append)
                                             - (bytevector-copy . bytevector-copy)
                                             - (bytevector-copy! . bytevector-copy!)
@@ -8974,8 +8981,9 @@
                                             - (vector->list . vector->list)
                                             - (string->vector . string->vector)
                                             - (vector->string . vector->string)
-                                            - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
+                                            - (bytevector . bytevector)
+                                            - (make-bytevector . make-bytevector)
                                             - (bytevector-append . bytevector-append)
                                             - (bytevector-copy . bytevector-copy)
                                             - (bytevector-copy! . bytevector-copy!)
