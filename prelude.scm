@@ -4,6 +4,7 @@
   (export
     syntax-rules
     define-syntax
+    syntax-error
     _
     ...
     define
@@ -16,7 +17,6 @@
     unquote-splicing
     quote
     set!
-    cond-expand
     let
     let*
     letrec
@@ -35,7 +35,9 @@
     when
     unless
     do
-    syntax-error
+
+    cond-expand
+    features
 
     base
     library
@@ -116,6 +118,8 @@
     log
     square
     exact-integer-sqrt
+    gcd
+    lcm
     =
     <
     >
@@ -244,6 +248,11 @@
         ((_ name value)
           ($$define-syntax name value))))
 
+    (define-syntax syntax-error
+      (syntax-rules ()
+        ((_ message value ...)
+          ($$syntax-error message value ...))))
+
     (define-syntax define-optimizer
       (syntax-rules ()
         ((_ name value)
@@ -354,8 +363,14 @@
 
     (define-syntax expand-features
       (syntax-rules ::: ()
-        ((_ cond-expand literals (feature1 feature2 :::) outer-clause :::)
+        ((_ cond-expand literals feature-values)
+          (begin
+            (define (features) 'feature-values)
+            (expand-features "cond" cond-expand literals feature-values)))
+
+        ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
           (expand-features
+            "cond"
             cond-expand
             literals
             (feature2 :::)
@@ -364,7 +379,7 @@
             outer-clause
             :::))
 
-        ((_ cond-expand (and else not or literal :::) () outer-clause :::)
+        ((_ "cond" cond-expand (and else not or literal :::) () outer-clause :::)
           (define-syntax cond-expand
             (syntax-rules (and else not or literal :::)
               ((cond-expand)
@@ -626,11 +641,6 @@
         ((_ "step" x y)
           y)))
 
-    (define-syntax syntax-error
-      (syntax-rules ()
-        ((_ message value ...)
-          ($$syntax-error message value ...))))
-
     ; Type IDs
 
     (define pair-type 0)
@@ -867,6 +877,16 @@
     (define (exact-integer-sqrt x)
       (let ((y (floor (sqrt x))))
         (values y (- x (square y)))))
+
+    (define (gcd x y)
+      (if (zero? y)
+        (abs x)
+        (gcd y (remainder x y))))
+
+    (define (lcm x y)
+      (/
+        (abs (* x y))
+        (gcd x y)))
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
@@ -2367,6 +2387,7 @@
   (export
     syntax-rules
     define-syntax
+    syntax-error
     _
     ...
     define
@@ -2379,7 +2400,6 @@
     unquote-splicing
     quote
     set!
-    cond-expand
     let
     let*
     letrec
@@ -2397,7 +2417,9 @@
     when
     unless
     do
-    syntax-error
+
+    cond-expand
+    features
 
     base
     library
@@ -2464,6 +2486,8 @@
     expt
     square
     exact-integer-sqrt
+    gcd
+    lcm
     =
     <
     >
