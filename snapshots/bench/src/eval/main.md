@@ -579,6 +579,31 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set exact-integer-sqrt
+- constant procedure 2 #f
+  - get 0
+  - constant 0
+  - call 2 #f eq?
+  - if
+    - get 1
+    - call 1 #f abs
+  - get 0
+  - get 2
+  - get 2
+  - call 2 #f remainder
+  - call 2 #f gcd
+- call 1 #f $$close
+- set gcd
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f ||
+  - call 1 #f abs
+  - get 2
+  - get 2
+  - call 2 #f gcd
+  - call 2 #f ||
+- call 1 #f $$close
+- set lcm
 - get eq?
 - call 1 #f ||
 - set =
@@ -3741,9 +3766,7 @@
   - r5rs
   - denominator
   - exact->inexact
-  - gcd
   - inexact->exact
-  - lcm
   - null-environment
   - numerator
   - rationalize
@@ -4045,6 +4068,8 @@
   - log
   - square
   - exact-integer-sqrt
+  - gcd
+  - lcm
   - =
   - <
   - >
@@ -8475,6 +8500,8 @@
                                             - (expt . expt)
                                             - (square . square)
                                             - (exact-integer-sqrt . exact-integer-sqrt)
+                                            - (gcd . gcd)
+                                            - (lcm . lcm)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)
@@ -8887,6 +8914,8 @@
                                             - (log . log)
                                             - (square . square)
                                             - (exact-integer-sqrt . exact-integer-sqrt)
+                                            - (gcd . gcd)
+                                            - (lcm . lcm)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)
