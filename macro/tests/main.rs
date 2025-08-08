@@ -15,8 +15,9 @@ const BUFFER_SIZE: usize = 1 << 10;
 fn create_vm(
     heap: &mut [Value],
 ) -> Vm<
+    '_,
     SmallPrimitiveSet<
-        FixedBufferDevice<'_, BUFFER_SIZE, 0>,
+        FixedBufferDevice<'static, BUFFER_SIZE, 0>,
         VoidFileSystem,
         VoidProcessContext,
         VoidClock,
