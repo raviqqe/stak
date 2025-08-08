@@ -182,8 +182,9 @@
     string->vector
     vector->string
 
-    bytevector
     bytevector?
+    bytevector
+    make-bytevector
     bytevector-append
     bytevector-copy
     bytevector-copy!
@@ -2549,8 +2550,9 @@
     string->utf8
     utf8->string
 
-    bytevector
     bytevector?
+    bytevector
+    make-bytevector
     bytevector-append
     bytevector-copy
     bytevector-copy!
