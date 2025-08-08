@@ -17,6 +17,7 @@
     "assv",
     "astro",
     "astrojs",
+    "basenames",
     "bindgen",
     "bitvec",
     "bytecodes",
