@@ -16,7 +16,7 @@ fn create_vm(
     heap: &mut [Value],
 ) -> Vm<
     SmallPrimitiveSet<
-        FixedBufferDevice<BUFFER_SIZE, 0>,
+        FixedBufferDevice<'_, BUFFER_SIZE, 0>,
         VoidFileSystem,
         VoidProcessContext,
         VoidClock,
