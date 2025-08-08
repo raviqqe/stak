@@ -1547,6 +1547,61 @@
     (define (write-message . xs)
       #f)))
 
+(define-library (scheme cxr)
+  (export
+    caaar
+    caadr
+    cadar
+    caddr
+    cdaar
+    cdadr
+    cddar
+    cdddr
+    caaaar
+    caaadr
+    caadar
+    caaddr
+    cadaar
+    cadadr
+    caddar
+    cadddr
+    cdaaar
+    cdaadr
+    cdadar
+    cdaddr
+    cddaar
+    cddadr
+    cdddar
+    cddddr)
+
+  (import (stak base))
+
+  (begin
+    (define (caaar x) (car (caar x)))
+    (define (caadr x) (car (cadr x)))
+    (define (cadar x) (car (cdar x)))
+    (define (caddr x) (car (cddr x)))
+    (define (cdaar x) (cdr (caar x)))
+    (define (cdadr x) (cdr (cadr x)))
+    (define (cddar x) (cdr (cdar x)))
+    (define (cdddr x) (cdr (cddr x)))
+    (define (caaaar x) (car (caaar x)))
+    (define (caaadr x) (car (caadr x)))
+    (define (caadar x) (car (cadar x)))
+    (define (caaddr x) (car (caddr x)))
+    (define (cadaar x) (car (cdaar x)))
+    (define (cadadr x) (car (cdadr x)))
+    (define (caddar x) (car (cddar x)))
+    (define (cadddr x) (car (cdddr x)))
+    (define (cdaaar x) (cdr (caaar x)))
+    (define (cdaadr x) (cdr (caadr x)))
+    (define (cdadar x) (cdr (cadar x)))
+    (define (cdaddr x) (cdr (caddr x)))
+    (define (cddaar x) (cdr (cdaar x)))
+    (define (cddadr x) (cdr (cdadr x)))
+    (define (cdddar x) (cdr (cddar x)))
+    (define (cddddr x) (cdr (cdddr x)))))
+
 (define-library (srfi 1)
   (export
     iota
@@ -1618,7 +1673,7 @@
     set-car!
     set-cdr!)
 
-  (import (stak base))
+  (import (stak base) (scheme cxr))
 
   (begin
     (define (append-map f xs)
@@ -2758,61 +2813,6 @@
     (define magnitude abs)
     (define (angle x)
       (if (negative? x) (acos -1) 0))))
-
-(define-library (scheme cxr)
-  (export
-    caaar
-    caadr
-    cadar
-    caddr
-    cdaar
-    cdadr
-    cddar
-    cdddr
-    caaaar
-    caaadr
-    caadar
-    caaddr
-    cadaar
-    cadadr
-    caddar
-    cadddr
-    cdaaar
-    cdaadr
-    cdadar
-    cdaddr
-    cddaar
-    cddadr
-    cdddar
-    cddddr)
-
-  (import (scheme base))
-
-  (begin
-    (define (caaar x) (car (caar x)))
-    (define (caadr x) (car (cadr x)))
-    (define (cadar x) (car (cdar x)))
-    (define (caddr x) (car (cddr x)))
-    (define (cdaar x) (cdr (caar x)))
-    (define (cdadr x) (cdr (cadr x)))
-    (define (cddar x) (cdr (cdar x)))
-    (define (cdddr x) (cdr (cddr x)))
-    (define (caaaar x) (car (caaar x)))
-    (define (caaadr x) (car (caadr x)))
-    (define (caadar x) (car (cadar x)))
-    (define (caaddr x) (car (caddr x)))
-    (define (cadaar x) (car (cdaar x)))
-    (define (cadadr x) (car (cdadr x)))
-    (define (caddar x) (car (cddar x)))
-    (define (cadddr x) (car (cdddr x)))
-    (define (cdaaar x) (cdr (caaar x)))
-    (define (cdaadr x) (cdr (caadr x)))
-    (define (cdadar x) (cdr (cadar x)))
-    (define (cdaddr x) (cdr (caddr x)))
-    (define (cddaar x) (cdr (cdaar x)))
-    (define (cddadr x) (cdr (cdadr x)))
-    (define (cdddar x) (cdr (cddar x)))
-    (define (cddddr x) (cdr (cdddr x)))))
 
 (define-library (scheme case-lambda)
   (export case-lambda)
