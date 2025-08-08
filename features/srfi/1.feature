@@ -253,7 +253,8 @@ Feature: SRFI 1
       | 1 2      | 3      |
       | 1 2 3    | 6      |
 
-  Scenario: Get a very tail of a list
+  @gauche @guile @stak
+  Scenario: Get the fourth tail of a list
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (srfi 1))
