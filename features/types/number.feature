@@ -290,6 +290,49 @@ Feature: Number
       | 8     | 2    | 4         |
       | 9     | 3    | 0         |
 
+  Scenario Outline: Calculate the greatest common divisor
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (gcd <x> <y>) <z>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | x   | y   | z |
+      | 0   | 0   | 0 |
+      | 1   | 1   | 1 |
+      | 6   | 2   | 2 |
+      | 2   | 6   | 2 |
+      | 6   | 3   | 3 |
+      | 3   | 6   | 3 |
+      | 30  | 42  | 6 |
+      | 42  | 30  | 6 |
+      | -30 | 42  | 6 |
+      | -30 | -42 | 6 |
+
+  Scenario Outline: Calculate the least common multiple
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (lcm <x> <y>) <z>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | x  | y   | z  |
+      | 1  | 1   | 1  |
+      | 2  | 3   | 6  |
+      | 3  | 2   | 6  |
+      | 6  | 10  | 30 |
+      | 10 | 6   | 30 |
+      | -6 | 10  | 30 |
+      | -6 | -10 | 30 |
+
   Scenario Outline: Compare numbers
     Given a file named "main.scm" with:
       """scheme

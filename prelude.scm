@@ -118,6 +118,8 @@
     log
     square
     exact-integer-sqrt
+    gcd
+    lcm
     =
     <
     >
@@ -875,6 +877,16 @@
     (define (exact-integer-sqrt x)
       (let ((y (floor (sqrt x))))
         (values y (- x (square y)))))
+
+    (define (gcd x y)
+      (if (zero? y)
+        (abs x)
+        (gcd y (remainder x y))))
+
+    (define (lcm x y)
+      (/
+        (abs (* x y))
+        (gcd x y)))
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
@@ -2474,6 +2486,8 @@
     expt
     square
     exact-integer-sqrt
+    gcd
+    lcm
     =
     <
     >
