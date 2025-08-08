@@ -6,11 +6,11 @@ publish = false
 
 [dependencies]
 axum = "0.8.4"
-stak = { version = "0.10.35", path = "../../root" }
+stak = { version = "0.10.36", path = "../../root" }
 tokio = { version = "1.47.1", features = ["rt-multi-thread"] }
 
 [build-dependencies]
-stak-build = { version = "0.10.35", path = "../../build" }
+stak-build = { version = "0.10.36", path = "../../build" }
 
 [features]
 default = ["hot-reload"]
