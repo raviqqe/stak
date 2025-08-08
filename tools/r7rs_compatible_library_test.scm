@@ -22,7 +22,7 @@
     write))
 
 (define (read-libraries)
-  (with-input-from-file (string-append "tools/r7rs/" basename ".scm")
+  (with-input-from-file "prelude.scm"
     (lambda ()
       (let loop ((value (read)))
         (if (eof-object? value)
@@ -38,7 +38,8 @@
       (lambda ()
         (do ((value (read) (read)))
           ((eof-object? value))
-          (write value)))))
+          (write value)
+          (newline)))))
   basenames)
 
 (write (read-libraries))
