@@ -4087,13 +4087,12 @@
   - expand-macros
   - expression
   - imports
-  - aa-tree
-  - aa-tree-empty
-  - aa-tree?
-  - aa-tree-find
-  - aa-tree-insert!
-  - aa-tree->list
-  - list->aa-tree
+  - mapping-empty
+  - mapping?
+  - mapping-find
+  - mapping-insert!
+  - mapping->list
+  - list->mapping
   - rust
   - r5rs
   - denominator
@@ -8348,14 +8347,14 @@
                                         - constant list
                                           - list
                                             - list
-                                              - stak
-                                              - aa-tree
-                                            - (aa-tree-empty . aa-tree-empty)
-                                            - (aa-tree? . aa-tree?)
-                                            - (aa-tree-find . aa-tree-find)
-                                            - (aa-tree-insert! . aa-tree-insert!)
-                                            - (aa-tree->list . aa-tree->list)
-                                            - (list->aa-tree . list->aa-tree)
+                                              - srfi
+                                              - 146
+                                            - (mapping-empty . mapping-empty)
+                                            - (mapping? . mapping?)
+                                            - (mapping-find . mapping-find)
+                                            - (mapping-insert! . mapping-insert!)
+                                            - (mapping->list . mapping->list)
+                                            - (list->mapping . list->mapping)
                                           - list
                                             - list
                                               - stak
