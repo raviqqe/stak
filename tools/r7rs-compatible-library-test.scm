@@ -38,7 +38,6 @@
                            (symbol->string (cadar library))
                            ".scm")
       (lambda ()
-        (display ">>> ")
         (write (car library))
         (newline)
         (do ((value (read) (read)))
