@@ -182,8 +182,9 @@
     string->vector
     vector->string
 
-    bytevector
     bytevector?
+    bytevector
+    make-bytevector
     bytevector-append
     bytevector-copy
     bytevector-copy!
@@ -2604,8 +2605,9 @@
     string->utf8
     utf8->string
 
-    bytevector
     bytevector?
+    bytevector
+    make-bytevector
     bytevector-append
     bytevector-copy
     bytevector-copy!
@@ -3564,10 +3566,12 @@
     *
     +
     -
+    ...
     /
     <
     <=
     =
+    =>
     >
     >=
     abs
@@ -3629,6 +3633,7 @@
     char-downcase
     char-lower-case?
     char-numeric?
+    char-ready?
     char-upcase
     char-upper-case?
     char-whitespace?
@@ -3653,6 +3658,7 @@
     display
     do
     dynamic-wind
+    else
     eof-object?
     eq?
     equal?
@@ -3762,6 +3768,7 @@
     substring
     symbol->string
     symbol?
+    syntax-rules
     tan
     truncate
     values
