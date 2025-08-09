@@ -362,15 +362,15 @@
         ((_ name value)
           ($$set! name value))))
 
-    (define-syntax expand-features
+    (define-syntax define-features
       (syntax-rules ::: ()
         ((_ cond-expand literals feature-values)
           (begin
             (define (features) 'feature-values)
-            (expand-features "cond" cond-expand literals feature-values)))
+            (define-features "cond" cond-expand literals feature-values)))
 
         ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
-          (expand-features
+          (define-features
             "cond"
             cond-expand
             literals
@@ -426,7 +426,7 @@
               ((cond-expand (feature body ...) clause ...)
                 (cond-expand clause ...)))))))
 
-    (expand-features
+    (define-features
       cond-expand
       (and
         else
