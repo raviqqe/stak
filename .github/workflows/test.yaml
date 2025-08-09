@@ -177,7 +177,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: stak tools/r7rs-compatible-library-test.scm
+      - run: stak tools/r7rs-compatible-library-test.scm prelude.scm tools/r7rs
   profile:
     runs-on: ubuntu-latest
     steps:
