@@ -120,6 +120,8 @@
     exact-integer-sqrt
     gcd
     lcm
+    numerator
+    denominator
     =
     <
     >
@@ -888,6 +890,12 @@
       (/
         (abs (* x y))
         (gcd x y)))
+
+    (define (numerator x)
+      x)
+
+    (define (denominator x)
+      1)
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
@@ -2544,6 +2552,8 @@
     exact-integer-sqrt
     gcd
     lcm
+    numerator
+    denominator
     =
     <
     >

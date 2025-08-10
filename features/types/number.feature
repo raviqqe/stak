@@ -333,6 +333,26 @@ Feature: Number
       | -6 | 10  | 30 |
       | -6 | -10 | 30 |
 
+  Scenario: Calculate a numerator
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (numerator 42) 42) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Calculate a denominator
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (denominator 42) 1) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario Outline: Compare numbers
     Given a file named "main.scm" with:
       """scheme
