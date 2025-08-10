@@ -1216,8 +1216,11 @@
     (define (string->list x)
       (map integer->char (string->code-points x)))
 
-    (define (string-ref x index)
-      (integer->char (sequence-ref x index)))
+    (define (string-ref xs index)
+      (integer->char (sequence-ref xs index)))
+
+    (define (string-set! x index y)
+      (sequence-set! x index (integer->char y)))
 
     (define (make-string length . rest)
       ((make-sequence code-points->string)
@@ -1238,6 +1241,10 @@
           (integer-list<?
             (string->code-points x)
             (string->code-points y)))))
+
+    (define (string<=? . xs)
+      foo
+      foo)
 
     (define (integer-list<? x y)
       (and
