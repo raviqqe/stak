@@ -1222,7 +1222,7 @@
       (integer->char (sequence-ref xs index)))
 
     (define (string-set! x index y)
-      (sequence-set! x index (integer->char y)))
+      (sequence-set! x index (char->integer y)))
 
     (define (make-string length . rest)
       ((make-sequence code-points->string)
