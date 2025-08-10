@@ -120,6 +120,8 @@
     exact-integer-sqrt
     gcd
     lcm
+    numerator
+    denominator
     =
     <
     >
@@ -885,6 +887,16 @@
         (gcd y (remainder x y))))
 
     (define (lcm x y)
+      (/
+        (abs (* x y))
+        (gcd x y)))
+
+    (define (numerator x y)
+      (/
+        (abs (* x y))
+        (gcd x y)))
+
+    (define (denominator x y)
       (/
         (abs (* x y))
         (gcd x y)))
