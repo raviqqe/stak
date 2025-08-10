@@ -299,7 +299,7 @@ Feature: String
       | string<=? | "aa" "aa"      | A      |
       | string<=? | "aa" "ab"      | A      |
       | string<=? | "ab" "aa"      | B      |
-      | string<=? | "aa" "aa" "ab" | B      |
+      | string<=? | "aa" "aa" "ab" | A      |
       | string>=? | "aa" "aa"      | A      |
       | string>=? | "aa" "ab"      | B      |
       | string>=? | "ab" "aa"      | A      |
