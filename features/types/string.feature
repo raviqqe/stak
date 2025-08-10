@@ -276,30 +276,34 @@ Feature: String
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | procedure | strings     | output |
-      | string<?  | "" ""       | B      |
-      | string<?  | "" "a"      | A      |
-      | string<?  | "a" "b"     | A      |
-      | string<?  | "a" "aa"    | A      |
-      | string<?  | "aa" "aa"   | B      |
-      | string<?  | "aa" "ab"   | A      |
-      | string<?  | "aa" "aaa"  | A      |
-      | string<?  | "aaa" "aab" | A      |
-      | string>?  | "" ""       | B      |
-      | string>?  | "a" ""      | A      |
-      | string>?  | "a" "a"     | B      |
-      | string>?  | "b" "a"     | A      |
-      | string>?  | "aa" "a"    | A      |
-      | string>?  | "aa" "aa"   | B      |
-      | string>?  | "ab" "aa"   | A      |
-      | string>?  | "ba" "aa"   | A      |
-      | string>?  | "ba" "ab"   | A      |
-      | string<=? | "aa" "aa"   | A      |
-      | string<=? | "aa" "ab"   | A      |
-      | string<=? | "ab" "aa"   | B      |
-      | string>=? | "aa" "aa"   | A      |
-      | string>=? | "aa" "ab"   | B      |
-      | string>=? | "ab" "aa"   | A      |
+      | procedure | strings        | output |
+      | string<?  | "" ""          | B      |
+      | string<?  | "" "a"         | A      |
+      | string<?  | "a" "b"        | A      |
+      | string<?  | "a" "b" "c"    | A      |
+      | string<?  | "a" "aa"       | A      |
+      | string<?  | "aa" "aa"      | B      |
+      | string<?  | "aa" "ab"      | A      |
+      | string<?  | "aa" "aaa"     | A      |
+      | string<?  | "aaa" "aab"    | A      |
+      | string>?  | "" ""          | B      |
+      | string>?  | "a" ""         | A      |
+      | string>?  | "a" "a"        | B      |
+      | string>?  | "b" "a"        | A      |
+      | string>?  | "c" "b" "a"    | A      |
+      | string>?  | "aa" "a"       | A      |
+      | string>?  | "aa" "aa"      | B      |
+      | string>?  | "ab" "aa"      | A      |
+      | string>?  | "ba" "aa"      | A      |
+      | string>?  | "ba" "ab"      | A      |
+      | string<=? | "aa" "aa"      | A      |
+      | string<=? | "aa" "ab"      | A      |
+      | string<=? | "ab" "aa"      | B      |
+      | string<=? | "aa" "aa" "ab" | B      |
+      | string>=? | "aa" "aa"      | A      |
+      | string>=? | "aa" "ab"      | B      |
+      | string>=? | "ab" "aa"      | A      |
+      | string>=? | "ab" "aa" "aa" | A      |
 
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:
