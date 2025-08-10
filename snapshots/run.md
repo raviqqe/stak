@@ -604,6 +604,14 @@
   - call 2 #f ||
 - call 1 #f $$close
 - set lcm
+- constant procedure 1 #f
+  - get 0
+- call 1 #f $$close
+- set numerator
+- constant procedure 1 #f
+  - constant 1
+- call 1 #f $$close
+- set denominator
 - get eq?
 - call 1 #f ||
 - set =
@@ -3804,11 +3812,9 @@
   - list->aa-tree
   - rust
   - r5rs
-  - denominator
   - exact->inexact
   - inexact->exact
   - null-environment
-  - numerator
   - rationalize
   - scheme-report-environment
   - string-ci<=?
@@ -4107,6 +4113,8 @@
   - exact-integer-sqrt
   - gcd
   - lcm
+  - numerator
+  - denominator
   - =
   - <
   - >
@@ -8587,6 +8595,8 @@
                                             - (exact-integer-sqrt . exact-integer-sqrt)
                                             - (gcd . gcd)
                                             - (lcm . lcm)
+                                            - (numerator . numerator)
+                                            - (denominator . denominator)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)
@@ -9033,6 +9043,8 @@
                                             - (exact-integer-sqrt . exact-integer-sqrt)
                                             - (gcd . gcd)
                                             - (lcm . lcm)
+                                            - (numerator . numerator)
+                                            - (denominator . denominator)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)
