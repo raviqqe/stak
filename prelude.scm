@@ -2552,6 +2552,8 @@
     exact-integer-sqrt
     gcd
     lcm
+    numerator
+    denominator
     =
     <
     >
