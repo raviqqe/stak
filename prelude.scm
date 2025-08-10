@@ -203,6 +203,7 @@
     string-append
     string-length
     string-ref
+    string-set!
     number->string
     string->number
     string-copy
