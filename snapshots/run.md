@@ -1528,6 +1528,14 @@
   - call 1 #f integer->char
 - call 1 #f $$close
 - set string-ref
+- constant procedure 3 #f
+  - get 2
+  - get 2
+  - get 2
+  - call 1 #f char->integer
+  - call 3 #f ||
+- call 1 #f $$close
+- set string-set!
 - constant procedure 1 #t
   - get code-points->string
   - call 1 #f ||
@@ -1558,9 +1566,6 @@
   - call 1 #f list->string
 - call 1 #f $$close
 - set string-map
-- get equal?
-- call 1 #f ||
-- set string=?
 - constant procedure 2 #f
   - get 1
   - call 1 #f string->code-points
@@ -1568,8 +1573,7 @@
   - call 1 #f string->code-points
   - call 2 #f ||
 - call 1 #f $$close
-- call 1 #f ||
-- set string<?
+- set ||
 - constant procedure 2 #f
   - get 0
   - call 1 #f null?
@@ -1602,12 +1606,51 @@
   - constant #f
 - call 1 #f $$close
 - set ||
+- get equal?
+- call 1 #f ||
+- set string=?
+- get ||
+- call 1 #f ||
+- set string<?
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 3
+    - get 3
+    - call 2 #f ||
+  - call 1 #f $$close
+  - get 2
+  - get 2
+  - call 2 #f equal?
+  - call 1 #f 1
+- call 1 #f $$close
+- call 1 #f ||
+- set string<=?
 - constant procedure 2 #f
   - get 0
   - get 2
-  - call 2 #f string<?
+  - call 2 #f ||
 - call 1 #f $$close
+- call 1 #f ||
 - set string>?
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - get 4
+    - call 2 #f ||
+  - call 1 #f $$close
+  - get 2
+  - get 2
+  - call 2 #f equal?
+  - call 1 #f 1
+- call 1 #f $$close
+- call 1 #f ||
+- set string>=?
 - constant procedure 1 #t
   - constant procedure 3 #f
     - get 4
@@ -3774,9 +3817,6 @@
   - string-ci>=?
   - string-ci>?
   - string-fill!
-  - string-set!
-  - string<=?
-  - string>=?
   - load
   - repl
   - interaction-environment
@@ -4145,6 +4185,7 @@
   - string-append
   - string-length
   - string-ref
+  - string-set!
   - number->string
   - string->number
   - string-copy
@@ -4153,8 +4194,10 @@
   - make-string
   - string-for-each
   - string-map
-  - string=?
+  - string<=?
   - string<?
+  - string=?
+  - string>=?
   - string>?
   - symbol?
   - symbol=?
@@ -8619,6 +8662,7 @@
                                             - (string-append . string-append)
                                             - (string-length . string-length)
                                             - (string-ref . string-ref)
+                                            - (string-set! . string-set!)
                                             - (number->string . number->string)
                                             - (string->number . string->number)
                                             - (string-copy . string-copy)
@@ -8627,8 +8671,10 @@
                                             - (make-string . make-string)
                                             - (string-for-each . string-for-each)
                                             - (string-map . string-map)
-                                            - (string=? . string=?)
+                                            - (string<=? . string<=?)
                                             - (string<? . string<?)
+                                            - (string=? . string=?)
+                                            - (string>=? . string>=?)
                                             - (string>? . string>?)
                                             - (symbol? . symbol?)
                                             - (symbol=? . symbol=?)
@@ -9065,6 +9111,7 @@
                                             - (string-append . string-append)
                                             - (string-length . string-length)
                                             - (string-ref . string-ref)
+                                            - (string-set! . string-set!)
                                             - (number->string . number->string)
                                             - (string->number . string->number)
                                             - (string-copy . string-copy)
@@ -9073,8 +9120,10 @@
                                             - (make-string . make-string)
                                             - (string-for-each . string-for-each)
                                             - (string-map . string-map)
-                                            - (string=? . string=?)
+                                            - (string<=? . string<=?)
                                             - (string<? . string<?)
+                                            - (string=? . string=?)
+                                            - (string>=? . string>=?)
                                             - (string>? . string>?)
                                             - (symbol? . symbol?)
                                             - (symbol=? . symbol=?)
