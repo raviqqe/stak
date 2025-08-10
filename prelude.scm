@@ -1235,17 +1235,27 @@
 
     (define string=? (comparison-operator equal?))
 
-    (define (string-less? x y)
-      (integer-list<?
-        (string->code-points x)
-        (string->code-points y)))
-
     (define string<? (comparison-operator string-less?))
 
     (define string<=?
       (comparison-operator
         (lambda (x y)
           (or (equal? x y) (string-less? x y)))))
+
+    (define string>?
+      (comparison-operator
+        (lambda (x y)
+          (string-less? y x))))
+
+    (define string>=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? y x)))))
+
+    (define (string-less? x y)
+      (integer-list<?
+        (string->code-points x)
+        (string->code-points y)))
 
     (define (integer-list<? x y)
       (and
@@ -1256,9 +1266,6 @@
           (and
             (= (car x) (car y))
             (integer-list<? (cdr x) (cdr y))))))
-
-    (define (string>? . xs)
-      (apply string<? xs))
 
     ;;; Number
 
