@@ -270,28 +270,30 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (string<? "<left>" "<right>") 65 66))
+      (write-u8 (if (<procedure> <strings>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | procedure | left | right | output |
-      | string<?  |      | a     | A      |
-      | string<?  | a    | b     | A      |
-      | string<?  | a    | aa    | A      |
-      | string<?  | aa   | ab    | A      |
-      | string<?  | aa   | aaa   | A      |
-      | string<?  | aaa  | aab   | A      |
-      | string>?  |      |       | A      |
-      | string>?  | a    |       | A      |
-      | string>?  | a    | a     | A      |
-      | string>?  | b    | a     | A      |
-      | string>?  | aa   | a     | A      |
-      | string>?  | aa   | aa    | A      |
-      | string>?  | ab   | aa    | A      |
-      | string>?  | ba   | aa    | A      |
-      | string>?  | ba   | ab    | A      |
+      | procedure | strings     | output |
+      | string<?  | "" ""       | B      |
+      | string<?  | "" "a"      | A      |
+      | string<?  | "a" "b"     | A      |
+      | string<?  | "a" "aa"    | A      |
+      | string<?  | "aa" "aa"   | B      |
+      | string<?  | "aa" "ab"   | A      |
+      | string<?  | "aa" "aaa"  | A      |
+      | string<?  | "aaa" "aab" | A      |
+      | string>?  | "" ""       | B      |
+      | string>?  | "a" ""      | A      |
+      | string>?  | "a" "a"     | B      |
+      | string>?  | "b" "a"     | A      |
+      | string>?  | "aa" "a"    | A      |
+      | string>?  | "aa" "aa"   | B      |
+      | string>?  | "ab" "aa"   | A      |
+      | string>?  | "ba" "aa"   | A      |
+      | string>?  | "ba" "ab"   | A      |
 
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:

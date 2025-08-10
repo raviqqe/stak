@@ -1233,6 +1233,21 @@
     (define (string-map f xs)
       (list->string (map f (string->list xs))))
 
+    (define (string-less? x y)
+      (integer-list<?
+        (string->code-points x)
+        (string->code-points y)))
+
+    (define (integer-list<? x y)
+      (and
+        (not (null? y))
+        (boolean-or
+          (null? x)
+          (< (car x) (car y))
+          (and
+            (= (car x) (car y))
+            (integer-list<? (cdr x) (cdr y))))))
+
     (define string=? (comparison-operator equal?))
 
     (define string<? (comparison-operator string-less?))
@@ -1251,21 +1266,6 @@
       (comparison-operator
         (lambda (x y)
           (or (equal? x y) (string-less? y x)))))
-
-    (define (string-less? x y)
-      (integer-list<?
-        (string->code-points x)
-        (string->code-points y)))
-
-    (define (integer-list<? x y)
-      (and
-        (not (null? y))
-        (boolean-or
-          (null? x)
-          (< (car x) (car y))
-          (and
-            (= (car x) (car y))
-            (integer-list<? (cdr x) (cdr y))))))
 
     ;;; Number
 
