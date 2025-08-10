@@ -1240,13 +1240,12 @@
         (string->code-points x)
         (string->code-points y)))
 
-    (define string<?
-      (comparison-operator
-        string-less?))
+    (define string<? (comparison-operator string-less?))
 
-    (define (string<=? . xs)
-      foo
-      foo)
+    (define string<=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? x y)))))
 
     (define (integer-list<? x y)
       (and
