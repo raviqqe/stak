@@ -77,6 +77,27 @@ Feature: String
       | abc    | 1     | b      |
       | abc    | 2     | c      |
 
+  Scenario Outline: Set a character in a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs "abc")
+
+      (string-set! xs <index> #\<character>)
+
+      (write-u8 (if (equal? xs "<output>") 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | index | character | output |
+      | 0     | a         | aaa    |
+      | 0     | b         | baa    |
+      | 1     | b         | aba    |
+      | 2     | b         | aab    |
+
   Scenario Outline: Get a length of a string
     Given a file named "main.scm" with:
       """scheme
