@@ -23,8 +23,8 @@ const listItems = async (directory: string): Promise<Item[]> =>
 
           return (await stat(fullPath)).isDirectory()
             ? {
-                label: capitalize(name.replace("-", " ")),
                 items: await listItems(linkPath),
+                label: capitalize(name.replace("-", " ")),
               }
             : {
                 label:
@@ -42,60 +42,45 @@ const listItems = async (directory: string): Promise<Item[]> =>
 
 export default defineConfig({
   base: "/stak",
-  vite: {
-    plugins: [wasm()],
-    worker: {
-      format: "es",
-    },
-  },
   integrations: [
     sitemap(),
     solid(),
     starlight({
-      title: "Stak Scheme",
       customCss: ["./src/index.css"],
       favicon: "/icon.svg",
       head: [
         {
-          tag: "link",
           attrs: {
-            rel: "manifest",
             href: "/stak/manifest.json",
+            rel: "manifest",
           },
+          tag: "link",
         },
         {
-          tag: "meta",
           attrs: {
-            property: "og:image",
             content: "/stak/icon.svg",
+            property: "og:image",
           },
+          tag: "meta",
         },
         {
-          tag: "script",
           attrs: {
             "data-domain": "raviqqe.com",
             defer: true,
             src: "https://plausible.io/js/plausible.js",
           },
+          tag: "script",
         },
       ],
       logo: {
         src: "./public/icon.svg",
       },
-      social: [
-        {
-          icon: "github",
-          label: "GitHub",
-          href: "https://github.com/raviqqe/stak",
-        },
-      ],
       sidebar: [
         {
           label: "Home",
           link: "/",
         },
         {
-          label: "Guides",
           items: [
             {
               label: "Install",
@@ -118,13 +103,13 @@ export default defineConfig({
               link: "/writing-scheme-subset",
             },
           ],
+          label: "Guides",
         },
         {
           label: "Limitations",
           link: "/limitations",
         },
         {
-          label: "Demo",
           items: [
             {
               label: "Interpreter",
@@ -135,13 +120,22 @@ export default defineConfig({
               link: "/demo/compiler",
             },
           ],
+          label: "Demo",
         },
 
         {
-          label: "Examples",
           items: await listItems("examples"),
+          label: "Examples",
         },
       ],
+      social: [
+        {
+          href: "https://github.com/raviqqe/stak",
+          icon: "github",
+          label: "GitHub",
+        },
+      ],
+      title: "Stak Scheme",
     }),
   ],
   prefetch: { prefetchAll: true },
@@ -149,4 +143,10 @@ export default defineConfig({
     "/demo": "/interpreter-demo",
   },
   site: "https://raviqqe.com/stak",
+  vite: {
+    plugins: [wasm()],
+    worker: {
+      format: "es",
+    },
+  },
 });
