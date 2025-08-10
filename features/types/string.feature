@@ -294,9 +294,12 @@ Feature: String
       | string>?  | "ab" "aa"   | A      |
       | string>?  | "ba" "aa"   | A      |
       | string>?  | "ba" "ab"   | A      |
-      | string<=? | "ab" "ab"   | A      |
-      | string<=? | "ab" "ac"   | A      |
-      | string<=? | "ab" "ac"   | B      |
+      | string<=? | "aa" "aa"   | A      |
+      | string<=? | "aa" "ab"   | A      |
+      | string<=? | "ab" "aa"   | B      |
+      | string>=? | "aa" "aa"   | A      |
+      | string>=? | "aa" "ab"   | B      |
+      | string>=? | "ab" "aa"   | A      |
 
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:
