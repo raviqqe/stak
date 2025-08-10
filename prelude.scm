@@ -1257,7 +1257,8 @@
             (= (car x) (car y))
             (integer-list<? (cdr x) (cdr y))))))
 
-    (define (string>? x y) (string<? y x))
+    (define (string>? . xs)
+      (apply string<? xs))
 
     ;;; Number
 
