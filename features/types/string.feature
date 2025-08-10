@@ -93,10 +93,11 @@ Feature: String
 
     Examples:
       | index | character | output |
-      | 0     | a         | aaa    |
       | 0     | b         | baa    |
       | 1     | b         | aba    |
       | 2     | b         | aab    |
+      | 1     | 😄         | a😄a    |
+      | 0     | a         | aaa    |
 
   Scenario Outline: Get a length of a string
     Given a file named "main.scm" with:
