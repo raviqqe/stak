@@ -897,9 +897,7 @@
         (gcd x y)))
 
     (define (denominator x y)
-      (/
-        (abs (* x y))
-        (gcd x y)))
+      1)
 
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
