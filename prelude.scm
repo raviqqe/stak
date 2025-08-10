@@ -2650,8 +2650,10 @@
     make-string
     string-for-each
     string-map
-    string=?
+    string<=?
     string<?
+    string=?
+    string>=?
     string>?
 
     symbol?
