@@ -82,7 +82,7 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (define xs "abc")
+      (define xs "aaa")
 
       (string-set! xs <index> #\<character>)
 
