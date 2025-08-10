@@ -891,12 +891,10 @@
         (abs (* x y))
         (gcd x y)))
 
-    (define (numerator x y)
-      (/
-        (abs (* x y))
-        (gcd x y)))
+    (define (numerator x)
+      x)
 
-    (define (denominator x y)
+    (define (denominator x)
       1)
 
     (define = (comparison-operator eq?))
