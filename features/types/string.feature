@@ -265,7 +265,7 @@ Feature: String
       | aaa  | aab   |
       | aab  | aaa   |
 
-  Scenario Outline: Check a string order
+  Scenario Outline: Compare strings
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -273,38 +273,25 @@ Feature: String
       (write-u8 (if (string<? "<left>" "<right>") 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
-      | left | right |
-      |      | a     |
-      | a    | b     |
-      | a    | aa    |
-      | aa   | ab    |
-      | aa   | aaa   |
-      | aaa  | aab   |
-
-  Scenario Outline: Check a string order inverse
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (not (string<? "<left>" "<right>")) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-    Examples:
-      | left | right |
-      |      |       |
-      | a    |       |
-      | a    | a     |
-      | b    | a     |
-      | aa   | a     |
-      | aa   | aa    |
-      | ab   | aa    |
-      | ba   | aa    |
-      | ba   | ab    |
+      | procedure | left | right | output |
+      | string<?  |      | a     | A      |
+      | string<?  | a    | b     | A      |
+      | string<?  | a    | aa    | A      |
+      | string<?  | aa   | ab    | A      |
+      | string<?  | aa   | aaa   | A      |
+      | string<?  | aaa  | aab   | A      |
+      | string>?  |      |       | A      |
+      | string>?  | a    |       | A      |
+      | string>?  | a    | a     | A      |
+      | string>?  | b    | a     | A      |
+      | string>?  | aa   | a     | A      |
+      | string>?  | aa   | aa    | A      |
+      | string>?  | ab   | aa    | A      |
+      | string>?  | ba   | aa    | A      |
+      | string>?  | ba   | ab    | A      |
 
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:
