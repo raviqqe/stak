@@ -12,15 +12,15 @@ categories.workspace = true
 [dependencies]
 any-fn = "0.6.1"
 cfg-elif = "0.6.3"
-stak-device = { version = "0.10.35", path = "../device" }
-stak-dynamic = { version = "0.10.35", path = "../dynamic" }
-stak-file = { version = "0.10.35", path = "../file" }
-stak-module = { version = "0.10.35", path = "../module" }
-stak-process-context = { version = "0.10.35", path = "../process_context" }
-stak-r7rs = { version = "0.10.35", path = "../r7rs" }
-stak-time = { version = "0.10.35", path = "../time" }
-stak-util = { version = "0.10.35", path = "../util" }
-stak-vm = { version = "0.10.35", path = "../vm" }
+stak-device = { version = "0.10.37", path = "../device" }
+stak-dynamic = { version = "0.10.37", path = "../dynamic" }
+stak-file = { version = "0.10.37", path = "../file" }
+stak-module = { version = "0.10.37", path = "../module" }
+stak-process-context = { version = "0.10.37", path = "../process_context" }
+stak-r7rs = { version = "0.10.37", path = "../r7rs" }
+stak-time = { version = "0.10.37", path = "../time" }
+stak-util = { version = "0.10.37", path = "../util" }
+stak-vm = { version = "0.10.37", path = "../vm" }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
@@ -28,7 +28,7 @@ rand = "0.9.2"
 stak = { path = "../root" }
 
 [build-dependencies]
-stak-build = { version = "0.10.35", path = "../build" }
+stak-build = { version = "0.10.37", path = "../build" }
 
 [features]
 async = [

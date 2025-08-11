@@ -13,10 +13,10 @@ categories.workspace = true
 proc-macro = true
 
 [dependencies]
-proc-macro2 = { version = "1.0.95", features = ["proc-macro"] }
+proc-macro2 = { version = "1.0.96", features = ["proc-macro"] }
 quote = "1.0.40"
-stak-macro-util = { version = "0.10.35", path = "../macro-util" }
-stak-minifier = { version = "0.10.35", path = "../minifier" }
+stak-macro-util = { version = "0.10.37", path = "../macro-util" }
+stak-minifier = { version = "0.10.37", path = "../minifier" }
 syn = "2.0.104"
 
 [lints]

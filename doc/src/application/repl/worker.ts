@@ -11,12 +11,11 @@ const input = new ReadableStream<number>({
 const reader = input.getReader();
 
 const global = self as unknown as {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // biome-ignore-start lint/style/useNamingConvention: External API
   read_stdin: () => Promise<number>;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   write_stderr: (byte: number) => Promise<void>;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   write_stdout: (byte: number) => Promise<void>;
+  // biome-ignore-end lint/style/useNamingConvention: External API
 };
 
 global.read_stdin = async () => {

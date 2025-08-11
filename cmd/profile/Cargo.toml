@@ -12,16 +12,16 @@ categories.workspace = true
 [dependencies]
 clap = { version = "4.5.43", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.10.35", path = "../../configuration" }
-stak-device = { version = "0.10.35", features = ["std"], path = "../../device" }
-stak-file = { version = "0.10.35", features = ["std"], path = "../../file" }
-stak-process-context = { version = "0.10.35", features = [
+stak-configuration = { version = "0.10.37", path = "../../configuration" }
+stak-device = { version = "0.10.37", features = ["std"], path = "../../device" }
+stak-file = { version = "0.10.37", features = ["std"], path = "../../file" }
+stak-process-context = { version = "0.10.37", features = [
   "std",
 ], path = "../../process_context" }
-stak-profiler = { version = "0.10.35", path = "../../profiler" }
-stak-r7rs = { version = "0.10.35", path = "../../r7rs" }
-stak-time = { version = "0.10.35", features = ["std"], path = "../../time" }
-stak-vm = { version = "0.10.35", features = ["profile"], path = "../../vm" }
+stak-profiler = { version = "0.10.37", path = "../../profiler" }
+stak-r7rs = { version = "0.10.37", path = "../../r7rs" }
+stak-time = { version = "0.10.37", features = ["std"], path = "../../time" }
+stak-vm = { version = "0.10.37", features = ["profile"], path = "../../vm" }
 
 [features]
 default = ["float"]

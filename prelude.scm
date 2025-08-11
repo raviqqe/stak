@@ -120,6 +120,8 @@
     exact-integer-sqrt
     gcd
     lcm
+    numerator
+    denominator
     =
     <
     >
@@ -182,8 +184,9 @@
     string->vector
     vector->string
 
-    bytevector
     bytevector?
+    bytevector
+    make-bytevector
     bytevector-append
     bytevector-copy
     bytevector-copy!
@@ -200,8 +203,10 @@
     code-points->string
     string->list
     string-append
+    string-fill!
     string-length
     string-ref
+    string-set!
     number->string
     string->number
     string-copy
@@ -210,8 +215,10 @@
     make-string
     string-for-each
     string-map
-    string=?
+    string<=?
     string<?
+    string=?
+    string>=?
     string>?
 
     symbol?
@@ -361,15 +368,15 @@
         ((_ name value)
           ($$set! name value))))
 
-    (define-syntax expand-features
+    (define-syntax define-features
       (syntax-rules ::: ()
         ((_ cond-expand literals feature-values)
           (begin
             (define (features) 'feature-values)
-            (expand-features "cond" cond-expand literals feature-values)))
+            (define-features "cond" cond-expand literals feature-values)))
 
         ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
-          (expand-features
+          (define-features
             "cond"
             cond-expand
             literals
@@ -425,7 +432,7 @@
               ((cond-expand (feature body ...) clause ...)
                 (cond-expand clause ...)))))))
 
-    (expand-features
+    (define-features
       cond-expand
       (and
         else
@@ -888,6 +895,12 @@
         (abs (* x y))
         (gcd x y)))
 
+    (define (numerator x)
+      x)
+
+    (define (denominator x)
+      1)
+
     (define = (comparison-operator eq?))
     (define < (comparison-operator $<))
     (define > (comparison-operator (lambda (x y) ($< y x))))
@@ -1101,6 +1114,17 @@
     (define (sequence-set! xs index value)
       (list-set! (sequence->list xs) index value))
 
+    (define (sequence-fill! xs fill . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (sequence-length xs)
+          (cadr rest)))
+
+      (do ((xs (list-tail (sequence->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
+        ((or (null? xs) (<= count 0)))
+        (set-car! xs fill)))
+
     (define (make-sequence list->sequence)
       (lambda (length . rest)
         (list->sequence (apply make-list (cons length rest)))))
@@ -1145,6 +1169,7 @@
     (define list->vector (list->sequence vector-type))
     (define vector-ref sequence-ref)
     (define vector-set! sequence-set!)
+    (define vector-fill! sequence-fill!)
     (define make-vector (make-sequence list->vector))
     (define vector-append (sequence-append list->vector))
     (define vector-copy (sequence-copy list->vector))
@@ -1155,18 +1180,6 @@
 
     (define (vector-map f xs)
       (list->vector (map f (vector->list xs))))
-
-    (define (vector-fill! xs fill . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end
-        (if (or (null? rest) (null? (cdr rest)))
-          (vector-length xs)
-          (cadr rest)))
-
-      (do ((xs (list-tail (vector->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
-        ((or (null? xs) (<= count 0))
-          #f)
-        (set-car! xs fill)))
 
     (define (string->vector xs . rest)
       (apply vector-copy (list->vector (string->list xs)) rest))
@@ -1215,8 +1228,14 @@
     (define (string->list x)
       (map integer->char (string->code-points x)))
 
-    (define (string-ref x index)
-      (integer->char (sequence-ref x index)))
+    (define (string-ref xs index)
+      (integer->char (sequence-ref xs index)))
+
+    (define (string-set! x index y)
+      (sequence-set! x index (char->integer y)))
+
+    (define (string-fill! xs fill . rest)
+      (apply sequence-fill! xs (char->integer fill) rest))
 
     (define (make-string length . rest)
       ((make-sequence code-points->string)
@@ -1229,14 +1248,10 @@
     (define (string-map f xs)
       (list->string (map f (string->list xs))))
 
-    (define string=? (comparison-operator equal?))
-
-    (define string<?
-      (comparison-operator
-        (lambda (x y)
-          (integer-list<?
-            (string->code-points x)
-            (string->code-points y)))))
+    (define (string-less? x y)
+      (integer-list<?
+        (string->code-points x)
+        (string->code-points y)))
 
     (define (integer-list<? x y)
       (and
@@ -1248,7 +1263,24 @@
             (= (car x) (car y))
             (integer-list<? (cdr x) (cdr y))))))
 
-    (define (string>? x y) (string<? y x))
+    (define string=? (comparison-operator equal?))
+
+    (define string<? (comparison-operator string-less?))
+
+    (define string<=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? x y)))))
+
+    (define string>?
+      (comparison-operator
+        (lambda (x y)
+          (string-less? y x))))
+
+    (define string>=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? y x)))))
 
     ;;; Number
 
@@ -1546,6 +1578,61 @@
     (define (write-message . xs)
       #f)))
 
+(define-library (scheme cxr)
+  (export
+    caaar
+    caadr
+    cadar
+    caddr
+    cdaar
+    cdadr
+    cddar
+    cdddr
+    caaaar
+    caaadr
+    caadar
+    caaddr
+    cadaar
+    cadadr
+    caddar
+    cadddr
+    cdaaar
+    cdaadr
+    cdadar
+    cdaddr
+    cddaar
+    cddadr
+    cdddar
+    cddddr)
+
+  (import (stak base))
+
+  (begin
+    (define (caaar x) (car (caar x)))
+    (define (caadr x) (car (cadr x)))
+    (define (cadar x) (car (cdar x)))
+    (define (caddr x) (car (cddr x)))
+    (define (cdaar x) (cdr (caar x)))
+    (define (cdadr x) (cdr (cadr x)))
+    (define (cddar x) (cdr (cdar x)))
+    (define (cdddr x) (cdr (cddr x)))
+    (define (caaaar x) (car (caaar x)))
+    (define (caaadr x) (car (caadr x)))
+    (define (caadar x) (car (cadar x)))
+    (define (caaddr x) (car (caddr x)))
+    (define (cadaar x) (car (cdaar x)))
+    (define (cadadr x) (car (cdadr x)))
+    (define (caddar x) (car (cddar x)))
+    (define (cadddr x) (car (cdddr x)))
+    (define (cdaaar x) (cdr (caaar x)))
+    (define (cdaadr x) (cdr (caadr x)))
+    (define (cdadar x) (cdr (cadar x)))
+    (define (cdaddr x) (cdr (caddr x)))
+    (define (cddaar x) (cdr (cdaar x)))
+    (define (cddadr x) (cdr (cdadr x)))
+    (define (cdddar x) (cdr (cddar x)))
+    (define (cddddr x) (cdr (cdddr x)))))
+
 (define-library (srfi 1)
   (export
     iota
@@ -1617,7 +1704,7 @@
     set-car!
     set-cdr!)
 
-  (import (stak base))
+  (import (stak base) (scheme cxr))
 
   (begin
     (define (append-map f xs)
@@ -2488,6 +2575,8 @@
     exact-integer-sqrt
     gcd
     lcm
+    numerator
+    denominator
     =
     <
     >
@@ -2549,8 +2638,9 @@
     string->utf8
     utf8->string
 
-    bytevector
     bytevector?
+    bytevector
+    make-bytevector
     bytevector-append
     bytevector-copy
     bytevector-copy!
@@ -2565,8 +2655,10 @@
     list->string
     string->list
     string-append
+    string-fill!
     string-length
     string-ref
+    string-set!
     number->string
     string->number
     string-copy
@@ -2575,8 +2667,10 @@
     make-string
     string-for-each
     string-map
-    string=?
+    string<=?
     string<?
+    string=?
+    string>=?
     string>?
 
     symbol?
@@ -2756,61 +2850,6 @@
     (define magnitude abs)
     (define (angle x)
       (if (negative? x) (acos -1) 0))))
-
-(define-library (scheme cxr)
-  (export
-    caaar
-    caadr
-    cadar
-    caddr
-    cdaar
-    cdadr
-    cddar
-    cdddr
-    caaaar
-    caaadr
-    caadar
-    caaddr
-    cadaar
-    cadadr
-    caddar
-    cadddr
-    cdaaar
-    cdaadr
-    cdadar
-    cdaddr
-    cddaar
-    cddadr
-    cdddar
-    cddddr)
-
-  (import (scheme base))
-
-  (begin
-    (define (caaar x) (car (caar x)))
-    (define (caadr x) (car (cadr x)))
-    (define (cadar x) (car (cdar x)))
-    (define (caddr x) (car (cddr x)))
-    (define (cdaar x) (cdr (caar x)))
-    (define (cdadr x) (cdr (cadr x)))
-    (define (cddar x) (cdr (cdar x)))
-    (define (cdddr x) (cdr (cddr x)))
-    (define (caaaar x) (car (caaar x)))
-    (define (caaadr x) (car (caadr x)))
-    (define (caadar x) (car (cadar x)))
-    (define (caaddr x) (car (caddr x)))
-    (define (cadaar x) (car (cdaar x)))
-    (define (cadadr x) (car (cdadr x)))
-    (define (caddar x) (car (cddar x)))
-    (define (cadddr x) (car (cdddr x)))
-    (define (cdaaar x) (cdr (caaar x)))
-    (define (cdaadr x) (cdr (caadr x)))
-    (define (cdadar x) (cdr (cadar x)))
-    (define (cdaddr x) (cdr (caddr x)))
-    (define (cddaar x) (cdr (cdaar x)))
-    (define (cddadr x) (cdr (cdadr x)))
-    (define (cdddar x) (cdr (cddar x)))
-    (define (cddddr x) (cdr (cdddr x)))))
 
 (define-library (scheme case-lambda)
   (export case-lambda)
@@ -3564,10 +3603,12 @@
     *
     +
     -
+    ...
     /
     <
     <=
     =
+    =>
     >
     >=
     abs
@@ -3629,6 +3670,7 @@
     char-downcase
     char-lower-case?
     char-numeric?
+    char-ready?
     char-upcase
     char-upper-case?
     char-whitespace?
@@ -3653,6 +3695,7 @@
     display
     do
     dynamic-wind
+    else
     eof-object?
     eq?
     equal?
@@ -3762,6 +3805,7 @@
     substring
     symbol->string
     symbol?
+    syntax-rules
     tan
     truncate
     values

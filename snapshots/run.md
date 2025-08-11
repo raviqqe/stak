@@ -604,6 +604,14 @@
   - call 2 #f ||
 - call 1 #f $$close
 - set lcm
+- constant procedure 1 #f
+  - get 0
+- call 1 #f $$close
+- set numerator
+- constant procedure 1 #f
+  - constant 1
+- call 1 #f $$close
+- set denominator
 - get eq?
 - call 1 #f ||
 - set =
@@ -1202,6 +1210,80 @@
   - call 3 #f list-set!
 - call 1 #f $$close
 - set ||
+- constant procedure 2 #t
+  - constant procedure 2 #f
+    - get 3
+    - call 1 #f null?
+    - if
+      - constant 0
+      - continue
+    - get 3
+    - call 1 #f car
+    - set 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 5
+      - call 1 #f cdr
+      - call 1 #f null?
+    - call 1 #f $$close
+    - get 4
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - get 5
+      - call 1 #f ||
+      - continue
+    - get 3
+    - call 1 #f cadr
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 2 #f
+        - constant procedure 1 #f
+          - get 0
+          - if
+            - get 0
+          - get 2
+          - constant 0
+          - call 2 #f <=
+        - call 1 #f $$close
+        - get 2
+        - call 1 #f null?
+        - call 1 #f 1
+        - set 1
+        - if
+          - constant #f
+        - get 1
+        - get 10
+        - call 2 #f set-car!
+        - set 0
+        - get 1
+        - call 1 #f cdr
+        - get 1
+        - constant 1
+        - call 2 #f ||
+        - call 2 #f 5
+      - call 1 #f $$close
+      - set 1
+      - get 7
+      - call 1 #f ||
+      - get 4
+      - call 2 #f list-tail
+      - get 3
+      - get 5
+      - call 2 #f ||
+      - call 2 #f 2
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - call 2 #f 2
+- call 1 #f $$close
+- set ||
 - constant procedure 1 #f
   - constant procedure 1 #t
     - get make-list
@@ -1327,6 +1409,8 @@
 - set vector-ref
 - get ||
 - set vector-set!
+- get ||
+- set vector-fill!
 - get list->vector
 - call 1 #f ||
 - set make-vector
@@ -1353,80 +1437,6 @@
   - call 1 #f list->vector
 - call 1 #f $$close
 - set vector-map
-- constant procedure 2 #t
-  - constant procedure 2 #f
-    - get 3
-    - call 1 #f null?
-    - if
-      - constant 0
-      - continue
-    - get 3
-    - call 1 #f car
-    - set 2
-    - constant procedure 1 #f
-      - get 0
-      - if
-        - get 0
-      - get 5
-      - call 1 #f cdr
-      - call 1 #f null?
-    - call 1 #f $$close
-    - get 4
-    - call 1 #f null?
-    - call 1 #f 1
-    - set 1
-    - if
-      - get 5
-      - call 1 #f vector-length
-      - continue
-    - get 3
-    - call 1 #f cadr
-    - set 1
-    - constant procedure 1 #f
-      - constant procedure 2 #f
-        - constant procedure 1 #f
-          - get 0
-          - if
-            - get 0
-          - get 2
-          - constant 0
-          - call 2 #f <=
-        - call 1 #f $$close
-        - get 2
-        - call 1 #f null?
-        - call 1 #f 1
-        - set 1
-        - if
-          - constant #f
-        - get 1
-        - get 10
-        - call 2 #f set-car!
-        - set 0
-        - get 1
-        - call 1 #f cdr
-        - get 1
-        - constant 1
-        - call 2 #f ||
-        - call 2 #f 5
-      - call 1 #f $$close
-      - set 1
-      - get 7
-      - call 1 #f vector->list
-      - get 4
-      - call 2 #f list-tail
-      - get 3
-      - get 5
-      - call 2 #f ||
-      - call 2 #f 2
-    - call 1 #f $$close
-    - constant #f
-    - call 1 #f 1
-  - call 1 #f $$close
-  - constant #f
-  - constant #f
-  - call 2 #f 2
-- call 1 #f $$close
-- set vector-fill!
 - constant procedure 1 #t
   - get vector-copy
   - get 2
@@ -1466,7 +1476,7 @@
 - set bytevector-u8-set!
 - get list->bytevector
 - call 1 #f ||
-- set ||
+- set make-bytevector
 - get list->bytevector
 - call 1 #f ||
 - set bytevector-append
@@ -1528,6 +1538,23 @@
   - call 1 #f integer->char
 - call 1 #f $$close
 - set string-ref
+- constant procedure 3 #f
+  - get 2
+  - get 2
+  - get 2
+  - call 1 #f char->integer
+  - call 3 #f ||
+- call 1 #f $$close
+- set string-set!
+- constant procedure 2 #t
+  - get ||
+  - get 3
+  - get 3
+  - call 1 #f char->integer
+  - get 3
+  - call 4 #f apply
+- call 1 #f $$close
+- set string-fill!
 - constant procedure 1 #t
   - get code-points->string
   - call 1 #f ||
@@ -1558,9 +1585,6 @@
   - call 1 #f list->string
 - call 1 #f $$close
 - set string-map
-- get equal?
-- call 1 #f ||
-- set string=?
 - constant procedure 2 #f
   - get 1
   - call 1 #f string->code-points
@@ -1568,8 +1592,7 @@
   - call 1 #f string->code-points
   - call 2 #f ||
 - call 1 #f $$close
-- call 1 #f ||
-- set string<?
+- set ||
 - constant procedure 2 #f
   - get 0
   - call 1 #f null?
@@ -1602,12 +1625,51 @@
   - constant #f
 - call 1 #f $$close
 - set ||
+- get equal?
+- call 1 #f ||
+- set string=?
+- get ||
+- call 1 #f ||
+- set string<?
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 3
+    - get 3
+    - call 2 #f ||
+  - call 1 #f $$close
+  - get 2
+  - get 2
+  - call 2 #f equal?
+  - call 1 #f 1
+- call 1 #f $$close
+- call 1 #f ||
+- set string<=?
 - constant procedure 2 #f
   - get 0
   - get 2
-  - call 2 #f string<?
+  - call 2 #f ||
 - call 1 #f $$close
+- call 1 #f ||
 - set string>?
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - get 4
+    - call 2 #f ||
+  - call 1 #f $$close
+  - get 2
+  - get 2
+  - call 2 #f equal?
+  - call 1 #f 1
+- call 1 #f $$close
+- call 1 #f ||
+- set string>=?
 - constant procedure 1 #t
   - constant procedure 3 #f
     - get 4
@@ -3760,11 +3822,9 @@
   - list->mapping
   - rust
   - r5rs
-  - denominator
   - exact->inexact
   - inexact->exact
   - null-environment
-  - numerator
   - rationalize
   - scheme-report-environment
   - string-ci<=?
@@ -3772,10 +3832,6 @@
   - string-ci=?
   - string-ci>=?
   - string-ci>?
-  - string-fill!
-  - string-set!
-  - string<=?
-  - string>=?
   - load
   - repl
   - interaction-environment
@@ -3835,7 +3891,6 @@
   - digit-value
   - special-chars
   - case-lambda
-  - cxr
   - complex
   - make-rectangular
   - make-polar
@@ -3933,6 +3988,7 @@
   - every
   - list-index
   - delete-duplicates
+  - cxr
   - caaar
   - caadr
   - cadar
@@ -4066,6 +4122,8 @@
   - exact-integer-sqrt
   - gcd
   - lcm
+  - numerator
+  - denominator
   - =
   - <
   - >
@@ -4124,8 +4182,9 @@
   - vector->list
   - string->vector
   - vector->string
-  - bytevector
   - bytevector?
+  - bytevector
+  - make-bytevector
   - bytevector-append
   - bytevector-copy
   - bytevector-copy!
@@ -4141,8 +4200,10 @@
   - code-points->string
   - string->list
   - string-append
+  - string-fill!
   - string-length
   - string-ref
+  - string-set!
   - number->string
   - string->number
   - string-copy
@@ -4151,8 +4212,10 @@
   - make-string
   - string-for-each
   - string-map
-  - string=?
+  - string<=?
   - string<?
+  - string=?
+  - string>=?
   - string>?
   - symbol?
   - symbol=?
@@ -8098,10 +8161,12 @@
                                             - (_ . _)
                                             - (+ . +)
                                             - (- . -)
+                                            - (... . ...)
                                             - (/ . /)
                                             - (< . <)
                                             - (<= . <=)
                                             - (= . =)
+                                            - (=> . =>)
                                             - (> . >)
                                             - (>= . >=)
                                             - (abs . abs)
@@ -8163,6 +8228,7 @@
                                             - (char-downcase . char-downcase)
                                             - (char-lower-case? . char-lower-case?)
                                             - (char-numeric? . char-numeric?)
+                                            - (char-ready? . char-ready?)
                                             - (char-upcase . char-upcase)
                                             - (char-upper-case? . char-upper-case?)
                                             - (char-whitespace? . char-whitespace?)
@@ -8187,6 +8253,7 @@
                                             - (display . display)
                                             - (do . do)
                                             - (dynamic-wind . dynamic-wind)
+                                            - (else . else)
                                             - (eof-object? . eof-object?)
                                             - (eq? . eq?)
                                             - (equal? . equal?)
@@ -8296,6 +8363,7 @@
                                             - (substring . substring)
                                             - (symbol->string . symbol->string)
                                             - (symbol? . symbol?)
+                                            - (syntax-rules . syntax-rules)
                                             - (tan . tan)
                                             - (truncate . truncate)
                                             - (values . values)
@@ -8412,34 +8480,6 @@
                                               - scheme
                                               - case-lambda
                                             - (case-lambda . case-lambda)
-                                          - list
-                                            - list
-                                              - scheme
-                                              - cxr
-                                            - (caaar . caaar)
-                                            - (caadr . caadr)
-                                            - (cadar . cadar)
-                                            - (caddr . caddr)
-                                            - (cdaar . cdaar)
-                                            - (cdadr . cdadr)
-                                            - (cddar . cddar)
-                                            - (cdddr . cdddr)
-                                            - (caaaar . caaaar)
-                                            - (caaadr . caaadr)
-                                            - (caadar . caadar)
-                                            - (caaddr . caaddr)
-                                            - (cadaar . cadaar)
-                                            - (cadadr . cadadr)
-                                            - (caddar . caddar)
-                                            - (cadddr . cadddr)
-                                            - (cdaaar . cdaaar)
-                                            - (cdaadr . cdaadr)
-                                            - (cdadar . cdadar)
-                                            - (cdaddr . cdaddr)
-                                            - (cddaar . cddaar)
-                                            - (cddadr . cddadr)
-                                            - (cdddar . cdddar)
-                                            - (cddddr . cddddr)
                                           - list
                                             - list
                                               - scheme
@@ -8565,6 +8605,8 @@
                                             - (exact-integer-sqrt . exact-integer-sqrt)
                                             - (gcd . gcd)
                                             - (lcm . lcm)
+                                            - (numerator . numerator)
+                                            - (denominator . denominator)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)
@@ -8622,8 +8664,9 @@
                                             - (vector->string . vector->string)
                                             - (string->utf8 . string->utf8)
                                             - (utf8->string . utf8->string)
-                                            - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
+                                            - (bytevector . bytevector)
+                                            - (make-bytevector . make-bytevector)
                                             - (bytevector-append . bytevector-append)
                                             - (bytevector-copy . bytevector-copy)
                                             - (bytevector-copy! . bytevector-copy!)
@@ -8637,8 +8680,10 @@
                                             - (list->string . list->string)
                                             - (string->list . string->list)
                                             - (string-append . string-append)
+                                            - (string-fill! . string-fill!)
                                             - (string-length . string-length)
                                             - (string-ref . string-ref)
+                                            - (string-set! . string-set!)
                                             - (number->string . number->string)
                                             - (string->number . string->number)
                                             - (string-copy . string-copy)
@@ -8647,8 +8692,10 @@
                                             - (make-string . make-string)
                                             - (string-for-each . string-for-each)
                                             - (string-map . string-map)
-                                            - (string=? . string=?)
+                                            - (string<=? . string<=?)
                                             - (string<? . string<?)
+                                            - (string=? . string=?)
+                                            - (string>=? . string>=?)
                                             - (string>? . string>?)
                                             - (symbol? . symbol?)
                                             - (symbol=? . symbol=?)
@@ -8868,6 +8915,34 @@
                                             - (set-cdr! . set-cdr!)
                                           - list
                                             - list
+                                              - scheme
+                                              - cxr
+                                            - (caaar . caaar)
+                                            - (caadr . caadr)
+                                            - (cadar . cadar)
+                                            - (caddr . caddr)
+                                            - (cdaar . cdaar)
+                                            - (cdadr . cdadr)
+                                            - (cddar . cddar)
+                                            - (cdddr . cdddr)
+                                            - (caaaar . caaaar)
+                                            - (caaadr . caaadr)
+                                            - (caadar . caadar)
+                                            - (caaddr . caaddr)
+                                            - (cadaar . cadaar)
+                                            - (cadadr . cadadr)
+                                            - (caddar . caddar)
+                                            - (cadddr . cadddr)
+                                            - (cdaaar . cdaaar)
+                                            - (cdaadr . cdaadr)
+                                            - (cdadar . cdadar)
+                                            - (cdaddr . cdaddr)
+                                            - (cddaar . cddaar)
+                                            - (cddadr . cddadr)
+                                            - (cdddar . cdddar)
+                                            - (cddddr . cddddr)
+                                          - list
+                                            - list
                                               - stak
                                               - base
                                             - (syntax-rules . syntax-rules)
@@ -8979,6 +9054,8 @@
                                             - (exact-integer-sqrt . exact-integer-sqrt)
                                             - (gcd . gcd)
                                             - (lcm . lcm)
+                                            - (numerator . numerator)
+                                            - (denominator . denominator)
                                             - (= . =)
                                             - (< . <)
                                             - (> . >)
@@ -9037,8 +9114,9 @@
                                             - (vector->list . vector->list)
                                             - (string->vector . string->vector)
                                             - (vector->string . vector->string)
-                                            - (bytevector . bytevector)
                                             - (bytevector? . bytevector?)
+                                            - (bytevector . bytevector)
+                                            - (make-bytevector . make-bytevector)
                                             - (bytevector-append . bytevector-append)
                                             - (bytevector-copy . bytevector-copy)
                                             - (bytevector-copy! . bytevector-copy!)
@@ -9054,8 +9132,10 @@
                                             - (code-points->string . code-points->string)
                                             - (string->list . string->list)
                                             - (string-append . string-append)
+                                            - (string-fill! . string-fill!)
                                             - (string-length . string-length)
                                             - (string-ref . string-ref)
+                                            - (string-set! . string-set!)
                                             - (number->string . number->string)
                                             - (string->number . string->number)
                                             - (string-copy . string-copy)
@@ -9064,8 +9144,10 @@
                                             - (make-string . make-string)
                                             - (string-for-each . string-for-each)
                                             - (string-map . string-map)
-                                            - (string=? . string=?)
+                                            - (string<=? . string<=?)
                                             - (string<? . string<?)
+                                            - (string=? . string=?)
+                                            - (string>=? . string>=?)
                                             - (string>? . string>?)
                                             - (symbol? . symbol?)
                                             - (symbol=? . symbol=?)
