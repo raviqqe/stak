@@ -203,6 +203,7 @@
     code-points->string
     string->list
     string-append
+    string-fill!
     string-length
     string-ref
     string-set!
@@ -2667,6 +2668,7 @@
     list->string
     string->list
     string-append
+    string-fill!
     string-length
     string-ref
     string-set!
