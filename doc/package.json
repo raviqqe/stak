@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.4",
-    "@raviqqe/biome-config": "^2.0.14",
+    "@raviqqe/biome-config": "^2.0.15",
     "@types/node": "^24.2.1",
     "eslint": "^9.32.0",
     "eslint-plugin-solid": "^0.14.5",
