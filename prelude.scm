@@ -205,6 +205,7 @@
     string-append
     string-length
     string-ref
+    string-set!
     number->string
     string->number
     string-copy
@@ -213,8 +214,10 @@
     make-string
     string-for-each
     string-map
-    string=?
+    string<=?
     string<?
+    string=?
+    string>=?
     string>?
 
     symbol?
@@ -1224,8 +1227,11 @@
     (define (string->list x)
       (map integer->char (string->code-points x)))
 
-    (define (string-ref x index)
-      (integer->char (sequence-ref x index)))
+    (define (string-ref xs index)
+      (integer->char (sequence-ref xs index)))
+
+    (define (string-set! x index y)
+      (sequence-set! x index (char->integer y)))
 
     (define (make-string length . rest)
       ((make-sequence code-points->string)
@@ -1238,14 +1244,10 @@
     (define (string-map f xs)
       (list->string (map f (string->list xs))))
 
-    (define string=? (comparison-operator equal?))
-
-    (define string<?
-      (comparison-operator
-        (lambda (x y)
-          (integer-list<?
-            (string->code-points x)
-            (string->code-points y)))))
+    (define (string-less? x y)
+      (integer-list<?
+        (string->code-points x)
+        (string->code-points y)))
 
     (define (integer-list<? x y)
       (and
@@ -1257,7 +1259,24 @@
             (= (car x) (car y))
             (integer-list<? (cdr x) (cdr y))))))
 
-    (define (string>? x y) (string<? y x))
+    (define string=? (comparison-operator equal?))
+
+    (define string<? (comparison-operator string-less?))
+
+    (define string<=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? x y)))))
+
+    (define string>?
+      (comparison-operator
+        (lambda (x y)
+          (string-less? y x))))
+
+    (define string>=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? y x)))))
 
     ;;; Number
 
@@ -2634,6 +2653,7 @@
     string-append
     string-length
     string-ref
+    string-set!
     number->string
     string->number
     string-copy
@@ -2642,8 +2662,10 @@
     make-string
     string-for-each
     string-map
-    string=?
+    string<=?
     string<?
+    string=?
+    string>=?
     string>?
 
     symbol?

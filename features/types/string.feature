@@ -77,6 +77,32 @@ Feature: String
       | abc    | 1     | b      |
       | abc    | 2     | c      |
 
+  Scenario Outline: Set a character in a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (string #\a #\a #\a))
+
+      (string-set! xs <index> #\<character>)
+
+      (write-u8 (if (equal? xs "<output>") 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | index | character | output |
+      | 0     | b         | baa    |
+      | 1     | b         | aba    |
+      | 2     | b         | aab    |
+      | 0     | a         | aaa    |
+
+    @gauche @guile @stak
+    Examples:
+      | index | character | output |
+      | 1     | 😄         | a😄a    |
+
   Scenario Outline: Get a length of a string
     Given a file named "main.scm" with:
       """scheme
@@ -265,46 +291,45 @@ Feature: String
       | aaa  | aab   |
       | aab  | aaa   |
 
-  Scenario Outline: Check a string order
+  Scenario Outline: Compare strings
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (string<? "<left>" "<right>") 65 66))
+      (write-u8 (if (<procedure> <strings>) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
-      | left | right |
-      |      | a     |
-      | a    | b     |
-      | a    | aa    |
-      | aa   | ab    |
-      | aa   | aaa   |
-      | aaa  | aab   |
-
-  Scenario Outline: Check a string order inverse
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (not (string<? "<left>" "<right>")) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-    Examples:
-      | left | right |
-      |      |       |
-      | a    |       |
-      | a    | a     |
-      | b    | a     |
-      | aa   | a     |
-      | aa   | aa    |
-      | ab   | aa    |
-      | ba   | aa    |
-      | ba   | ab    |
+      | procedure | strings        | output |
+      | string<?  | "" ""          | B      |
+      | string<?  | "" "a"         | A      |
+      | string<?  | "a" "b"        | A      |
+      | string<?  | "a" "b" "c"    | A      |
+      | string<?  | "a" "aa"       | A      |
+      | string<?  | "aa" "aa"      | B      |
+      | string<?  | "aa" "ab"      | A      |
+      | string<?  | "aa" "aaa"     | A      |
+      | string<?  | "aaa" "aab"    | A      |
+      | string>?  | "" ""          | B      |
+      | string>?  | "a" ""         | A      |
+      | string>?  | "a" "a"        | B      |
+      | string>?  | "b" "a"        | A      |
+      | string>?  | "c" "b" "a"    | A      |
+      | string>?  | "aa" "a"       | A      |
+      | string>?  | "aa" "aa"      | B      |
+      | string>?  | "ab" "aa"      | A      |
+      | string>?  | "ba" "aa"      | A      |
+      | string>?  | "ba" "ab"      | A      |
+      | string<=? | "aa" "aa"      | A      |
+      | string<=? | "aa" "ab"      | A      |
+      | string<=? | "ab" "aa"      | B      |
+      | string<=? | "aa" "aa" "ab" | A      |
+      | string>=? | "aa" "aa"      | A      |
+      | string>=? | "aa" "ab"      | B      |
+      | string>=? | "ab" "aa"      | A      |
+      | string>=? | "ab" "aa" "aa" | A      |
 
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:
