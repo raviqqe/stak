@@ -1113,6 +1113,18 @@
     (define (sequence-set! xs index value)
       (list-set! (sequence->list xs) index value))
 
+    (define (sequence-fill! xs fill . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (sequence-length xs)
+          (cadr rest)))
+
+      (do ((xs (list-tail (sequence->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
+        ((or (null? xs) (<= count 0))
+          #f)
+        (set-car! xs fill)))
+
     (define (make-sequence list->sequence)
       (lambda (length . rest)
         (list->sequence (apply make-list (cons length rest)))))
@@ -1157,6 +1169,7 @@
     (define list->vector (list->sequence vector-type))
     (define vector-ref sequence-ref)
     (define vector-set! sequence-set!)
+    (define vector-fill! sequence-fill!)
     (define make-vector (make-sequence list->vector))
     (define vector-append (sequence-append list->vector))
     (define vector-copy (sequence-copy list->vector))
