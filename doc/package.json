@@ -7,7 +7,7 @@
     "start": "astro dev",
     "build": "tools/build.sh",
     "preview": "astro preview",
-    "lint": "npm run lint:biome && eslint --cache src",
+    "lint": "npm run lint:biome && eslint --cache",
     "lint:biome": "biome ci",
     "format": "biome format --write ."
   },
@@ -31,8 +31,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.4",
-    "@raviqqe/biome-config": "^2.0.4",
-    "@raviqqe/eslint-config": "^4.1.17",
+    "@raviqqe/biome-config": "^2.0.14",
     "@types/node": "^24.2.1",
     "eslint": "^9.32.0",
     "eslint-plugin-solid": "^0.14.5",
