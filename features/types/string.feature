@@ -405,3 +405,25 @@ Feature: String
       | string-downcase | Ab    | ab     |
       | string-foldcase | Ab    | ab     |
       | string-upcase   | Ab    | AB     |
+
+  Scenario Outline: Fill a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (string <characters>))
+
+      (string-fill! xs <arguments>)
+
+      (write-string xs)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values              | arguments | output |
+      | #\\A                | #\\a      | a      |
+      | #\\A #\\B           | #\\a 0    | aB     |
+      | #\\A #\\B           | #\\a 1    | Aa     |
+      | #\\A #\\B #\\C      | #\\a      | aaa    |
+      | #\\A #\\B #\\C #\\D | #\\a 1 3  | AaaD   |

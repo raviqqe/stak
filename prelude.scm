@@ -1122,8 +1122,7 @@
           (cadr rest)))
 
       (do ((xs (list-tail (sequence->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
-        ((or (null? xs) (<= count 0))
-          #f)
+        ((or (null? xs) (<= count 0)))
         (set-car! xs fill)))
 
     (define (make-sequence list->sequence)
@@ -1248,7 +1247,7 @@
       (sequence-set! x index (char->integer y)))
 
     (define (string-fill! xs fill . rest)
-      (apply sequence-fill! (char->integer fill) rest))
+      (apply sequence-fill! xs (char->integer fill) rest))
 
     (define (make-string length . rest)
       ((make-sequence code-points->string)
