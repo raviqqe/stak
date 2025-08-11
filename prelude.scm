@@ -1246,6 +1246,9 @@
     (define (string-set! x index y)
       (sequence-set! x index (char->integer y)))
 
+    (define (string-fill! xs fill . rest)
+      (apply sequence-fill! (char->integer fill) rest))
+
     (define (make-string length . rest)
       ((make-sequence code-points->string)
         length
