@@ -22,7 +22,7 @@
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.12.9",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.39.9",
     "lucide-solid": "^0.539.0",
     "monaco-editor": "^0.52.2",
     "nanostores": "^1.0.1",
