@@ -25,6 +25,7 @@
     "bytevectors",
     "cdylib",
     "chibi",
+    "classnames",
     "clippy",
     "codecov",
     "codegen",
