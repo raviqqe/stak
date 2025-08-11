@@ -411,7 +411,7 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (define xs (string <characters>))
+      (define xs (string-copy "<string>"))
 
       (string-fill! xs <arguments>)
 
@@ -421,9 +421,9 @@ Feature: String
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | values              | arguments | output |
-      | #\\A                | #\\a      | a      |
-      | #\\A #\\B           | #\\a 0    | aB     |
-      | #\\A #\\B           | #\\a 1    | Aa     |
-      | #\\A #\\B #\\C      | #\\a      | aaa    |
-      | #\\A #\\B #\\C #\\D | #\\a 1 3  | AaaD   |
+      | string | arguments | output |
+      | A      | #\\a      | a      |
+      | AB     | #\\a 0    | aa     |
+      | AB     | #\\a 1    | Aa     |
+      | ABC    | #\\a      | aaa    |
+      | ABCD   | #\\a 1 3  | AaaD   |
