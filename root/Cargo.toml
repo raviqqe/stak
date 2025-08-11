@@ -10,17 +10,17 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-device = { version = "0.10.36", path = "../device" }
-stak-dynamic = { version = "0.10.36", optional = true, path = "../dynamic" }
-stak-engine = { version = "0.10.36", optional = true, path = "../engine" }
-stak-file = { version = "0.10.36", path = "../file" }
-stak-macro = { version = "0.10.36", path = "../macro" }
-stak-module = { version = "0.10.36", path = "../module" }
-stak-process-context = { version = "0.10.36", path = "../process_context" }
-stak-r7rs = { version = "0.10.36", path = "../r7rs" }
-stak-sac = { version = "0.10.36", path = "../sac" }
-stak-time = { version = "0.10.36", path = "../time" }
-stak-vm = { version = "0.10.36", path = "../vm" }
+stak-device = { version = "0.10.37", path = "../device" }
+stak-dynamic = { version = "0.10.37", optional = true, path = "../dynamic" }
+stak-engine = { version = "0.10.37", optional = true, path = "../engine" }
+stak-file = { version = "0.10.37", path = "../file" }
+stak-macro = { version = "0.10.37", path = "../macro" }
+stak-module = { version = "0.10.37", path = "../module" }
+stak-process-context = { version = "0.10.37", path = "../process_context" }
+stak-r7rs = { version = "0.10.37", path = "../r7rs" }
+stak-sac = { version = "0.10.37", path = "../sac" }
+stak-time = { version = "0.10.37", path = "../time" }
+stak-vm = { version = "0.10.37", path = "../vm" }
 
 [dev-dependencies]
 any-fn = "0.6.1"
@@ -28,7 +28,7 @@ rand = "0.9.2"
 stak-build = { path = "../build" }
 
 [build-dependencies]
-stak-build = { version = "0.10.36", path = "../build" }
+stak-build = { version = "0.10.37", path = "../build" }
 
 [features]
 alloc = ["dep:stak-dynamic", "dep:stak-engine"]
