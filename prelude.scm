@@ -203,6 +203,7 @@
     code-points->string
     string->list
     string-append
+    string-fill!
     string-length
     string-ref
     string-set!
@@ -1113,6 +1114,17 @@
     (define (sequence-set! xs index value)
       (list-set! (sequence->list xs) index value))
 
+    (define (sequence-fill! xs fill . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (sequence-length xs)
+          (cadr rest)))
+
+      (do ((xs (list-tail (sequence->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
+        ((or (null? xs) (<= count 0)))
+        (set-car! xs fill)))
+
     (define (make-sequence list->sequence)
       (lambda (length . rest)
         (list->sequence (apply make-list (cons length rest)))))
@@ -1157,6 +1169,7 @@
     (define list->vector (list->sequence vector-type))
     (define vector-ref sequence-ref)
     (define vector-set! sequence-set!)
+    (define vector-fill! sequence-fill!)
     (define make-vector (make-sequence list->vector))
     (define vector-append (sequence-append list->vector))
     (define vector-copy (sequence-copy list->vector))
@@ -1167,18 +1180,6 @@
 
     (define (vector-map f xs)
       (list->vector (map f (vector->list xs))))
-
-    (define (vector-fill! xs fill . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end
-        (if (or (null? rest) (null? (cdr rest)))
-          (vector-length xs)
-          (cadr rest)))
-
-      (do ((xs (list-tail (vector->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
-        ((or (null? xs) (<= count 0))
-          #f)
-        (set-car! xs fill)))
 
     (define (string->vector xs . rest)
       (apply vector-copy (list->vector (string->list xs)) rest))
@@ -1232,6 +1233,9 @@
 
     (define (string-set! x index y)
       (sequence-set! x index (char->integer y)))
+
+    (define (string-fill! xs fill . rest)
+      (apply sequence-fill! xs (char->integer fill) rest))
 
     (define (make-string length . rest)
       ((make-sequence code-points->string)
@@ -2651,6 +2655,7 @@
     list->string
     string->list
     string-append
+    string-fill!
     string-length
     string-ref
     string-set!

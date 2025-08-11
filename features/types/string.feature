@@ -82,7 +82,7 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (define xs (string #\a #\a #\a))
+      (define xs (string-copy "aaa"))
 
       (string-set! xs <index> #\<character>)
 
@@ -405,3 +405,25 @@ Feature: String
       | string-downcase | Ab    | ab     |
       | string-foldcase | Ab    | ab     |
       | string-upcase   | Ab    | AB     |
+
+  Scenario Outline: Fill a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs (string-copy "<string>"))
+
+      (string-fill! xs <arguments>)
+
+      (write-string xs)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | string | arguments | output |
+      | A      | #\\a      | a      |
+      | AB     | #\\a 0    | aa     |
+      | AB     | #\\a 1    | Aa     |
+      | ABC    | #\\a      | aaa    |
+      | ABCD   | #\\a 1 3  | AaaD   |
