@@ -13,7 +13,7 @@ harness = false
 name = "embed"
 
 [dependencies]
-mlua = { version = "0.11.1", features = ["lua54"] }
+mlua = { version = "0.11.2", features = ["lua54"] }
 stak = { version = "0.10.37", path = "../root" }
 stak-compiler = { version = "0.10.37", path = "../compiler" }
 
