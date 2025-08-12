@@ -21,7 +21,7 @@ jobs:
           - --features async
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: cargo build --locked ${{ matrix.options }}
       - run: cargo test --no-run --locked ${{ matrix.options }}
@@ -43,13 +43,13 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: tools/coverage.sh
       - uses: codecov/codecov-action@v5
@@ -88,7 +88,7 @@ jobs:
       STAK_HOST: ${{ matrix.interpreter.host }}
       GUILE_AUTO_COMPILE: 0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: >
@@ -114,7 +114,7 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: >
           tools/integration_test.sh
@@ -124,13 +124,13 @@ jobs:
   self_host_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: tools/self_host_test.sh
   minimal:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: cargo build
         working-directory: cmd/minimal
@@ -147,7 +147,7 @@ jobs:
   wasm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
         with:
@@ -162,26 +162,26 @@ jobs:
   decode:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: tools/decode_test.sh
   r7rs_compatible_compiler:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: tools/r7rs_compatible_compiler_test.sh
   r7rs_compatible_library:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: stak tools/r7rs-compatible-library-test.scm prelude.scm tools/r7rs
   profile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: tools/profile_test.sh
   test:
