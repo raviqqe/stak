@@ -2895,6 +2895,11 @@
     char-downcase
     char-foldcase
     char-upcase
+    string-ci=?
+    string-ci<?
+    string-ci>?
+    string-ci<=?
+    string-ci>=?
     string-downcase
     string-foldcase
     string-upcase
