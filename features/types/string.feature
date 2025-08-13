@@ -331,6 +331,46 @@ Feature: String
       | string>=? | "ab" "aa"      | A      |
       | string>=? | "ab" "aa" "aa" | A      |
 
+  Scenario Outline: Compare strings ignoring letter cases
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (<procedure> <strings>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | procedure    | strings        | output |
+      | string-ci<?  | "" ""          | B      |
+      | string-ci<?  | "" "a"         | A      |
+      | string-ci<?  | "a" "b"        | A      |
+      | string-ci<?  | "a" "b" "c"    | A      |
+      | string-ci<?  | "a" "aa"       | A      |
+      | string-ci<?  | "aa" "aa"      | B      |
+      | string-ci<?  | "aa" "ab"      | A      |
+      | string-ci<?  | "aa" "aaa"     | A      |
+      | string-ci<?  | "aaa" "aab"    | A      |
+      | string-ci>?  | "" ""          | B      |
+      | string-ci>?  | "a" ""         | A      |
+      | string-ci>?  | "a" "a"        | B      |
+      | string-ci>?  | "b" "a"        | A      |
+      | string-ci>?  | "c" "b" "a"    | A      |
+      | string-ci>?  | "aa" "a"       | A      |
+      | string-ci>?  | "aa" "aa"      | B      |
+      | string-ci>?  | "ab" "aa"      | A      |
+      | string-ci>?  | "ba" "aa"      | A      |
+      | string-ci>?  | "ba" "ab"      | A      |
+      | string-ci<=? | "aa" "aa"      | A      |
+      | string-ci<=? | "aa" "ab"      | A      |
+      | string-ci<=? | "ab" "aa"      | B      |
+      | string-ci<=? | "aa" "aa" "ab" | A      |
+      | string-ci>=? | "aa" "aa"      | A      |
+      | string-ci>=? | "aa" "ab"      | B      |
+      | string-ci>=? | "ab" "aa"      | A      |
+      | string-ci>=? | "ab" "aa" "aa" | A      |
+
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:
       """scheme
