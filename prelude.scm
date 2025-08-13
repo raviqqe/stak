@@ -2908,7 +2908,7 @@
 
     special-chars)
 
-  (import (scheme base))
+  (import (scheme base) (stak base))
 
   ; TODO Support Unicode.
   (begin
