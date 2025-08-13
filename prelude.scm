@@ -2923,15 +2923,15 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define (char-compare-ci compare)
+    (define (char-ci-compare compare)
       (lambda xs
         (apply compare (map char-downcase xs))))
 
-    (define char-ci=? (char-compare-ci char=?))
-    (define char-ci<? (char-compare-ci char<?))
-    (define char-ci>? (char-compare-ci char>?))
-    (define char-ci<=? (char-compare-ci char<=?))
-    (define char-ci>=? (char-compare-ci char>=?))
+    (define char-ci=? (char-ci-compare char=?))
+    (define char-ci<? (char-ci-compare char<?))
+    (define char-ci>? (char-ci-compare char>?))
+    (define char-ci<=? (char-ci-compare char<=?))
+    (define char-ci>=? (char-ci-compare char>=?))
 
     (define (char-alphabetic? x)
       (or (char-lower-case? x) (char-upper-case? x)))
