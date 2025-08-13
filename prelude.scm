@@ -127,6 +127,7 @@
     >
     <=
     >=
+    comparison-operator
     min
     max
 
@@ -2882,11 +2883,11 @@
 
 (define-library (scheme char)
   (export
-    char-ci=?
-    char-ci<?
-    char-ci>?
     char-ci<=?
+    char-ci<?
+    char-ci=?
     char-ci>=?
+    char-ci>?
     char-alphabetic?
     char-numeric?
     char-whitespace?
@@ -2895,6 +2896,11 @@
     char-downcase
     char-foldcase
     char-upcase
+    string-ci<=?
+    string-ci<?
+    string-ci=?
+    string-ci>=?
+    string-ci>?
     string-downcase
     string-foldcase
     string-upcase
@@ -2902,7 +2908,7 @@
 
     special-chars)
 
-  (import (scheme base))
+  (import (scheme base) (stak base))
 
   ; TODO Support Unicode.
   (begin
@@ -2916,16 +2922,6 @@
         ("return" . #\return)
         ("space" . #\space)
         ("tab" . #\tab)))
-
-    (define (char-compare-ci compare)
-      (lambda xs
-        (apply compare (map char-downcase xs))))
-
-    (define char-ci=? (char-compare-ci char=?))
-    (define char-ci<? (char-compare-ci char<?))
-    (define char-ci>? (char-compare-ci char>?))
-    (define char-ci<=? (char-compare-ci char<=?))
-    (define char-ci>=? (char-compare-ci char>=?))
 
     (define (char-alphabetic? x)
       (or (char-lower-case? x) (char-upper-case? x)))
@@ -2954,6 +2950,20 @@
 
     (define char-foldcase char-downcase)
 
+    (define (compare-ci convert)
+      (lambda (compare)
+        (comparison-operator
+          (lambda (x y)
+            (compare (convert x) (convert y))))))
+
+    (define char-ci-compare (compare-ci char-downcase))
+
+    (define char-ci<=? (char-ci-compare char<=?))
+    (define char-ci<? (char-ci-compare char<?))
+    (define char-ci=? (char-ci-compare char=?))
+    (define char-ci>=? (char-ci-compare char>=?))
+    (define char-ci>? (char-ci-compare char>?))
+
     (define (string-case f)
       (lambda (xs)
         (list->string (map f (string->list xs)))))
@@ -2961,6 +2971,14 @@
     (define string-downcase (string-case char-downcase))
     (define string-foldcase (string-case char-foldcase))
     (define string-upcase (string-case char-upcase))
+
+    (define string-ci-compare (compare-ci string-downcase))
+
+    (define string-ci<=? (string-ci-compare string<=?))
+    (define string-ci<? (string-ci-compare string<?))
+    (define string-ci=? (string-ci-compare string=?))
+    (define string-ci>=? (string-ci-compare string>=?))
+    (define string-ci>? (string-ci-compare string>?))
 
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))
