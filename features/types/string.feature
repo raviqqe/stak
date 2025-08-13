@@ -350,7 +350,7 @@ Feature: String
       | string-ci<?  | "a" "AA"       | A      |
       | string-ci<?  | "AA" "aa"      | B      |
       | string-ci<?  | "aa" "AB"      | A      |
-      | string-ci<?  | "aa" " AAA"    | A      |
+      | string-ci<?  | "aa" "AAA"     | A      |
       | string-ci<?  | "aaa" "AAB"    | A      |
       | string-ci>?  | "" ""          | B      |
       | string-ci>?  | "a" ""         | A      |
