@@ -127,6 +127,7 @@
     >
     <=
     >=
+    comparison-operator
     min
     max
 
@@ -2963,24 +2964,11 @@
       (lambda (x y)
         (f (string-downcase x) (string-downcase y))))
 
-    (define string-ci=? (comparison-operator equal?))
-
-    (define string-ci<? (comparison-operator string-less?))
-
-    (define string-ci<=?
-      (comparison-operator
-        (lambda (x y)
-          (or (equal? x y) (string-less? x y)))))
-
-    (define string-ci>?
-      (comparison-operator
-        (lambda (x y)
-          (string-less? y x))))
-
-    (define string-ci>=?
-      (comparison-operator
-        (lambda (x y)
-          (or (equal? x y) (string-less? y x)))))
+    (define string-ci<=? (comparison-operator (string-ci-compare string<=?)))
+    (define string-ci<? (comparison-operator (string-ci-compare string<?)))
+    (define string-ci=? (comparison-operator (string-ci-compare string=?)))
+    (define string-ci>=? (comparison-operator (string-ci-compare string>=?)))
+    (define string-ci>? (comparison-operator (string-ci-compare string>?)))
 
     (define (string-case f)
       (lambda (xs)
