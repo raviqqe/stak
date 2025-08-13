@@ -345,31 +345,31 @@ Feature: String
       | procedure    | strings        | output |
       | string-ci<?  | "" ""          | B      |
       | string-ci<?  | "" "a"         | A      |
-      | string-ci<?  | "a" "b"        | A      |
-      | string-ci<?  | "a" "b" "c"    | A      |
-      | string-ci<?  | "a" "aa"       | A      |
-      | string-ci<?  | "aa" "aa"      | B      |
-      | string-ci<?  | "aa" "ab"      | A      |
-      | string-ci<?  | "aa" "aaa"     | A      |
-      | string-ci<?  | "aaa" "aab"    | A      |
+      | string-ci<?  | "a" "B"        | A      |
+      | string-ci<?  | "a" "B" "C"    | A      |
+      | string-ci<?  | "a" "AA"       | A      |
+      | string-ci<?  | "AA" "aa"      | B      |
+      | string-ci<?  | "aa" "AB"      | A      |
+      | string-ci<?  | "aa" " AAA"    | A      |
+      | string-ci<?  | "aaa" "AAB"    | A      |
       | string-ci>?  | "" ""          | B      |
       | string-ci>?  | "a" ""         | A      |
-      | string-ci>?  | "a" "a"        | B      |
-      | string-ci>?  | "b" "a"        | A      |
-      | string-ci>?  | "c" "b" "a"    | A      |
-      | string-ci>?  | "aa" "a"       | A      |
-      | string-ci>?  | "aa" "aa"      | B      |
-      | string-ci>?  | "ab" "aa"      | A      |
-      | string-ci>?  | "ba" "aa"      | A      |
-      | string-ci>?  | "ba" "ab"      | A      |
-      | string-ci<=? | "aa" "aa"      | A      |
-      | string-ci<=? | "aa" "ab"      | A      |
-      | string-ci<=? | "ab" "aa"      | B      |
-      | string-ci<=? | "aa" "aa" "ab" | A      |
-      | string-ci>=? | "aa" "aa"      | A      |
-      | string-ci>=? | "aa" "ab"      | B      |
-      | string-ci>=? | "ab" "aa"      | A      |
-      | string-ci>=? | "ab" "aa" "aa" | A      |
+      | string-ci>?  | "A" "a"        | B      |
+      | string-ci>?  | "B" "a"        | A      |
+      | string-ci>?  | "C" "b" "a"    | A      |
+      | string-ci>?  | "AA" "a"       | A      |
+      | string-ci>?  | "aa" "AA"      | B      |
+      | string-ci>?  | "AB" "aa"      | A      |
+      | string-ci>?  | "BA" "aa"      | A      |
+      | string-ci>?  | "BA" "ab"      | A      |
+      | string-ci<=? | "aa" "AA"      | A      |
+      | string-ci<=? | "aa" "AB"      | A      |
+      | string-ci<=? | "AB" "aa"      | B      |
+      | string-ci<=? | "aa" "AA" "AB" | A      |
+      | string-ci>=? | "AA" "aa"      | A      |
+      | string-ci>=? | "aa" "AB"      | B      |
+      | string-ci>=? | "AB" "aa"      | A      |
+      | string-ci>=? | "AB" "aa" "aa" | A      |
 
   Scenario Outline: Convert a vector to a string
     Given a file named "main.scm" with:
