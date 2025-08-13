@@ -230,7 +230,7 @@
     - call 1 #f 1
   - call 1 #f $$close
 - call 1 #f $$close
-- set ||
+- set comparison-operator
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 0
@@ -282,7 +282,7 @@
 - call 1 #f $$close
 - set not
 - get eq?
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set boolean=?
 - constant procedure 1 #f
   - get 0
@@ -613,17 +613,17 @@
 - call 1 #f $$close
 - set denominator
 - get eq?
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set =
 - get ||
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set <
 - constant procedure 2 #f
   - get 0
   - get 2
   - call 2 #f ||
 - call 1 #f $$close
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set >
 - constant procedure 2 #f
   - get 0
@@ -632,7 +632,7 @@
   - constant #f
   - call 2 #f eq?
 - call 1 #f $$close
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set <=
 - constant procedure 2 #f
   - get 1
@@ -641,7 +641,7 @@
   - constant #f
   - call 2 #f eq?
 - call 1 #f $$close
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set >=
 - constant procedure 1 #f
   - constant procedure 1 #t
@@ -1626,10 +1626,10 @@
 - call 1 #f $$close
 - set ||
 - get equal?
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set string=?
 - get ||
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set string<?
 - constant procedure 2 #f
   - constant procedure 1 #f
@@ -1645,14 +1645,14 @@
   - call 2 #f equal?
   - call 1 #f 1
 - call 1 #f $$close
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set string<=?
 - constant procedure 2 #f
   - get 0
   - get 2
   - call 2 #f ||
 - call 1 #f $$close
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set string>?
 - constant procedure 2 #f
   - constant procedure 1 #f
@@ -1668,7 +1668,7 @@
   - call 2 #f equal?
   - call 1 #f 1
 - call 1 #f $$close
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set string>=?
 - constant procedure 1 #t
   - constant procedure 3 #f
@@ -2052,7 +2052,7 @@
 - call 1 #f ||
 - set symbol?
 - get eq?
-- call 1 #f ||
+- call 1 #f comparison-operator
 - set symbol=?
 - get cdr
 - set symbol->string
@@ -3828,11 +3828,6 @@
   - null-environment
   - rationalize
   - scheme-report-environment
-  - string-ci<=?
-  - string-ci<?
-  - string-ci=?
-  - string-ci>=?
-  - string-ci>?
   - load
   - repl
   - interaction-environment
@@ -3886,6 +3881,11 @@
   - char-downcase
   - char-foldcase
   - char-upcase
+  - string-ci=?
+  - string-ci<?
+  - string-ci>?
+  - string-ci<=?
+  - string-ci>=?
   - string-downcase
   - string-foldcase
   - string-upcase
@@ -4130,6 +4130,7 @@
   - >
   - <=
   - > =
+  - comparison-operator
   - min
   - max
   - char?
@@ -4351,6 +4352,36 @@
 - set char-downcase
 - get char-downcase
 - set char-foldcase
+- constant procedure 1 #f
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f string-downcase
+    - get 1
+    - call 1 #f string-downcase
+    - call 2 #f 5
+  - call 1 #f $$close
+- call 1 #f $$close
+- set ||
+- get string<=?
+- call 1 #f ||
+- call 1 #f comparison-operator
+- set string-ci<=?
+- get string<?
+- call 1 #f ||
+- call 1 #f comparison-operator
+- set string-ci<?
+- get string=?
+- call 1 #f ||
+- call 1 #f comparison-operator
+- set string-ci=?
+- get string>=?
+- call 1 #f ||
+- call 1 #f comparison-operator
+- set string-ci>=?
+- get string>?
+- call 1 #f ||
+- call 1 #f comparison-operator
+- set string-ci>?
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 2
@@ -8471,6 +8502,11 @@
                                             - (char-downcase . char-downcase)
                                             - (char-foldcase . char-foldcase)
                                             - (char-upcase . char-upcase)
+                                            - (string-ci=? . string-ci=?)
+                                            - (string-ci<? . string-ci<?)
+                                            - (string-ci>? . string-ci>?)
+                                            - (string-ci<=? . string-ci<=?)
+                                            - (string-ci>=? . string-ci>=?)
                                             - (string-downcase . string-downcase)
                                             - (string-foldcase . string-foldcase)
                                             - (string-upcase . string-upcase)
@@ -9062,6 +9098,7 @@
                                             - (> . >)
                                             - (<= . <=)
                                             - (>= . >=)
+                                            - (comparison-operator . comparison-operator)
                                             - (min . min)
                                             - (max . max)
                                             - (char? . char?)
