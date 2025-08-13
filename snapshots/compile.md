@@ -4203,11 +4203,11 @@
   - write-simple
   - read
   - char
-  - char-ci=?
-  - char-ci<?
-  - char-ci>?
   - char-ci<=?
+  - char-ci<?
+  - char-ci=?
   - char-ci>=?
+  - char-ci>?
   - char-alphabetic?
   - char-numeric?
   - char-whitespace?
@@ -4216,11 +4216,11 @@
   - char-downcase
   - char-foldcase
   - char-upcase
-  - string-ci=?
-  - string-ci<?
-  - string-ci>?
   - string-ci<=?
+  - string-ci<?
+  - string-ci=?
   - string-ci>=?
+  - string-ci>?
   - string-downcase
   - string-foldcase
   - string-upcase
@@ -4875,31 +4875,6 @@
   - ("tab" . #\tab)
 - set special-chars
 - constant procedure 1 #f
-  - constant procedure 0 #t
-    - get 2
-    - get char-downcase
-    - get 2
-    - call 2 #f map
-    - call 2 #f apply
-  - call 1 #f $$close
-- call 1 #f $$close
-- set ||
-- get char=?
-- call 1 #f ||
-- set char-ci=?
-- get char<?
-- call 1 #f ||
-- set char-ci<?
-- get char>?
-- call 1 #f ||
-- set char-ci>?
-- get char<=?
-- call 1 #f ||
-- set char-ci<=?
-- get char>=?
-- call 1 #f ||
-- set char-ci>=?
-- constant procedure 1 #f
   - constant procedure 1 #f
     - get 0
     - if
@@ -4970,35 +4945,36 @@
 - get char-downcase
 - set char-foldcase
 - constant procedure 1 #f
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f string-downcase
-    - get 1
-    - call 1 #f string-downcase
-    - call 2 #f 5
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - get 1
+      - call 1 #f 6
+      - get 1
+      - call 1 #f 7
+      - call 2 #f 5
+    - call 1 #f $$close
+    - call 1 #f comparison-operator
   - call 1 #f $$close
 - call 1 #f $$close
 - set ||
-- get string<=?
+- get char-downcase
 - call 1 #f ||
-- call 1 #f comparison-operator
-- set string-ci<=?
-- get string<?
+- set ||
+- get char<=?
 - call 1 #f ||
-- call 1 #f comparison-operator
-- set string-ci<?
-- get string=?
+- set char-ci<=?
+- get char<?
 - call 1 #f ||
-- call 1 #f comparison-operator
-- set string-ci=?
-- get string>=?
+- set char-ci<?
+- get char=?
 - call 1 #f ||
-- call 1 #f comparison-operator
-- set string-ci>=?
-- get string>?
+- set char-ci=?
+- get char>=?
 - call 1 #f ||
-- call 1 #f comparison-operator
-- set string-ci>?
+- set char-ci>=?
+- get char>?
+- call 1 #f ||
+- set char-ci>?
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 2
@@ -5018,6 +4994,24 @@
 - get char-upcase
 - call 1 #f ||
 - set string-upcase
+- get string-downcase
+- call 1 #f ||
+- set ||
+- get string<=?
+- call 1 #f ||
+- set string-ci<=?
+- get string<?
+- call 1 #f ||
+- set string-ci<?
+- get string=?
+- call 1 #f ||
+- set string-ci=?
+- get string>=?
+- call 1 #f ||
+- set string-ci>=?
+- get string>?
+- call 1 #f ||
+- set string-ci>?
 - constant procedure 1 #f
   - get 0
   - call 1 #f char->integer
@@ -8757,11 +8751,11 @@
                                             - list
                                               - scheme
                                               - char
-                                            - (char-ci=? . char-ci=?)
-                                            - (char-ci<? . char-ci<?)
-                                            - (char-ci>? . char-ci>?)
                                             - (char-ci<=? . char-ci<=?)
+                                            - (char-ci<? . char-ci<?)
+                                            - (char-ci=? . char-ci=?)
                                             - (char-ci>=? . char-ci>=?)
+                                            - (char-ci>? . char-ci>?)
                                             - (char-alphabetic? . char-alphabetic?)
                                             - (char-numeric? . char-numeric?)
                                             - (char-whitespace? . char-whitespace?)
@@ -8770,11 +8764,11 @@
                                             - (char-downcase . char-downcase)
                                             - (char-foldcase . char-foldcase)
                                             - (char-upcase . char-upcase)
-                                            - (string-ci=? . string-ci=?)
-                                            - (string-ci<? . string-ci<?)
-                                            - (string-ci>? . string-ci>?)
                                             - (string-ci<=? . string-ci<=?)
+                                            - (string-ci<? . string-ci<?)
+                                            - (string-ci=? . string-ci=?)
                                             - (string-ci>=? . string-ci>=?)
+                                            - (string-ci>? . string-ci>?)
                                             - (string-downcase . string-downcase)
                                             - (string-foldcase . string-foldcase)
                                             - (string-upcase . string-upcase)
