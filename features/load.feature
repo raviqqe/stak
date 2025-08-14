@@ -1,4 +1,4 @@
-
+@chibi @gauche @stak
 Feature: Load
 
   Scenario: Load a file
