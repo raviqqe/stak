@@ -14,7 +14,7 @@ heapless = { version = "0.8.0", default-features = false }
 rustix = { version = "1.0.8", default-features = false, features = [
   "fs",
 ], optional = true }
-stak-vm = { version = "0.10.37", path = "../vm" }
+stak-vm = { version = "0.10.38", path = "../vm" }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
