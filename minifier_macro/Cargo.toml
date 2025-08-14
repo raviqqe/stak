@@ -13,7 +13,7 @@ categories.workspace = true
 proc-macro = true
 
 [dependencies]
-proc-macro2 = { version = "1.0.96", features = ["proc-macro"] }
+proc-macro2 = { version = "1.0.97", features = ["proc-macro"] }
 quote = "1.0.40"
 stak-macro-util = { version = "0.10.37", path = "../macro-util" }
 stak-minifier = { version = "0.10.37", path = "../minifier" }
