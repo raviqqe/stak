@@ -218,7 +218,6 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "foo"
 
-  
   Scenario: Write an empty symbol
     Given a file named "main.scm" with:
       """scheme
@@ -362,7 +361,7 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the exit status should be 0
 
-  
+  @chibi @gauche @stak
   Rule: Recursive values
 
     Scenario Outline: Write a recursive pair
@@ -420,7 +419,7 @@ Feature: Write
         | write        |
         | write-shared |
 
-  
+  @chibi @gauche @stak
   Rule: Shared values
 
     Scenario Outline: Write a shared pair
