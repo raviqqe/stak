@@ -219,9 +219,10 @@ Feature: Floating-point number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | input | output |
-      | 0 0   | 0      |
-      | 42 0  | 42     |
+      | input       | output |
+      | 0 0         | 0      |
+      | 42 0        | 42     |
+      | 42 (/ 1 10) | 42     |
 
   Scenario Outline: Convert a floating point number to a string
     Given a file named "main.scm" with:
