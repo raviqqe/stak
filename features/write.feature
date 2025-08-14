@@ -218,6 +218,7 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "foo"
 
+  @chibi @gauche @stak
   Scenario: Write an empty symbol
     Given a file named "main.scm" with:
       """scheme
