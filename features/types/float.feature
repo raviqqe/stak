@@ -208,6 +208,21 @@ Feature: Floating-point number
       | -1.51 | -2     |
       | -1.9  | -2     |
 
+  Scenario Outline: Rationalize a number
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (= (rationalize <input>) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | 0 0   | 0      |
+      | 42 0  | 42     |
+
   Scenario Outline: Convert a floating point number to a string
     Given a file named "main.scm" with:
       """scheme
