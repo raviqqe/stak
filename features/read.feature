@@ -1,6 +1,5 @@
 Feature: Read
 
-  
   Scenario: Read a byte
     Given a file named "main.scm" with:
       """scheme
@@ -17,7 +16,6 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  
   Scenario: Read bytes
     Given a file named "main.scm" with:
       """scheme
@@ -36,7 +34,6 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "ABC"
 
-  
   Scenario: Peek a byte
     Given a file named "main.scm" with:
       """scheme
@@ -53,7 +50,6 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  
   Scenario: Peek a byte multiple times
     Given a file named "main.scm" with:
       """scheme
@@ -71,7 +67,6 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "AA"
 
-  
   Scenario: Peek and read bytes
     Given a file named "main.scm" with:
       """scheme

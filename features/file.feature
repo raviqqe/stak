@@ -76,7 +76,6 @@ Feature: File
       | open-output-file        |
       | open-binary-output-file |
 
-  
   Scenario: Call a thunk with an input file
     Given a file named "main.scm" with:
       """scheme
