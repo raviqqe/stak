@@ -223,6 +223,7 @@ Feature: Floating-point number
       | 0 0         | 0      |
       | 42 0        | 42     |
       | 42 (/ 1 10) | 42     |
+      | 0.1 0       | 0.1    |
 
   Scenario Outline: Convert a floating point number to a string
     Given a file named "main.scm" with:
