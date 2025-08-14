@@ -533,6 +533,10 @@
   - get 0
 - call 1 #f $$close
 - set inexact
+- constant procedure 2 #f
+  - get 1
+- call 1 #f $$close
+- set rationalize
 - constant procedure 1 #f
   - get 0
   - call 1 #f negative?
@@ -3826,7 +3830,6 @@
   - exact->inexact
   - inexact->exact
   - null-environment
-  - rationalize
   - scheme-report-environment
   - load
   - repl
@@ -4113,6 +4116,7 @@
   - floor/
   - ceiling
   - round
+  - rationalize
   - exact
   - inexact
   - abs
@@ -8628,6 +8632,7 @@
                                             - (floor/ . floor/)
                                             - (ceiling . ceiling)
                                             - (round . round)
+                                            - (rationalize . rationalize)
                                             - (exact . exact)
                                             - (inexact . inexact)
                                             - (abs . abs)
@@ -9075,6 +9080,7 @@
                                             - (floor/ . floor/)
                                             - (ceiling . ceiling)
                                             - (round . round)
+                                            - (rationalize . rationalize)
                                             - (exact . exact)
                                             - (inexact . inexact)
                                             - (abs . abs)

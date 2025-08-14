@@ -110,6 +110,7 @@
     floor/
     ceiling
     round
+    rationalize
     exact
     inexact
     abs
@@ -867,6 +868,9 @@
 
     (define exact round)
     (define (inexact x)
+      x)
+
+    (define (rationalize x y)
       x)
 
     (define (abs x)
@@ -2568,6 +2572,7 @@
     floor/
     ceiling
     round
+    rationalize
     exact
     inexact
     abs
