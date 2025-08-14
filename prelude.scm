@@ -3867,121 +3867,120 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
-; TODO Implement this as SRFI-146.
-(define-library (stak aa-tree)
+(define-library (srfi 146)
   (export
-    aa-tree-empty
-    aa-tree?
-    aa-tree-find
-    aa-tree-insert!
-    aa-tree->list
-    list->aa-tree)
+    mapping-empty
+    mapping?
+    mapping-find
+    mapping-insert!
+    mapping->list
+    list->mapping)
 
   (import (stak base))
 
   (begin
-    (define-record-type aa-tree
-      (make-aa-tree root less)
-      aa-tree?
-      (root aa-tree-root aa-tree-set-root!)
-      (less aa-tree-less aa-tree-set-less!))
+    (define-record-type mapping
+      (make-mapping root less)
+      mapping?
+      (root mapping-root mapping-set-root!)
+      (less mapping-less mapping-set-less!))
 
-    (define-record-type aa-node
-      (make-aa-node value level left right)
-      aa-node?
-      (value aa-node-value aa-node-set-value!)
-      (level aa-node-level aa-node-set-level!)
-      (left aa-node-left aa-node-set-left!)
-      (right aa-node-right aa-node-set-right!))
+    (define-record-type node
+      (make-node value level left right)
+      node?
+      (value node-value node-set-value!)
+      (level node-level node-set-level!)
+      (left node-left node-set-left!)
+      (right node-right node-set-right!))
 
-    (define (aa-tree-empty less)
-      (make-aa-tree #f less))
+    (define (mapping-empty less)
+      (make-mapping #f less))
 
-    (define (aa-tree-find tree value)
-      (aa-node-find (aa-tree-root tree) value (aa-tree-less tree)))
+    (define (mapping-find tree value)
+      (node-find (mapping-root tree) value (mapping-less tree)))
 
-    (define (aa-node-find node value less?)
+    (define (node-find node value less?)
       (and
         node
-        (let ((node-value (aa-node-value node)))
+        (let ((node-value (node-value node)))
           (cond
             ((less? value node-value)
-              (aa-node-find (aa-node-left node) value less?))
+              (node-find (node-left node) value less?))
 
             ((less? node-value value)
-              (aa-node-find (aa-node-right node) value less?))
+              (node-find (node-right node) value less?))
 
             (else
               node-value)))))
 
-    (define (aa-tree-insert! tree value)
-      (aa-tree-set-root!
+    (define (mapping-insert! tree value)
+      (mapping-set-root!
         tree
-        (aa-node-insert!
-          (aa-tree-root tree)
+        (node-insert!
+          (mapping-root tree)
           value
-          (aa-tree-less tree))))
+          (mapping-less tree))))
 
-    (define (list->aa-tree xs less?)
-      (define tree (aa-tree-empty less?))
-      (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
+    (define (list->mapping xs less?)
+      (define tree (mapping-empty less?))
+      (for-each (lambda (x) (mapping-insert! tree x)) xs)
       tree)
 
-    (define (aa-tree->list tree)
-      (aa-node->list (aa-tree-root tree) '()))
+    (define (mapping->list tree)
+      (node->list (mapping-root tree) '()))
 
-    (define (aa-node->list node xs)
+    (define (node->list node xs)
       (if node
-        (aa-node->list
-          (aa-node-left node)
+        (node->list
+          (node-left node)
           (cons
-            (aa-node-value node)
-            (aa-node->list (aa-node-right node) xs)))
+            (node-value node)
+            (node->list (node-right node) xs)))
         xs))
 
-    (define (aa-node-insert! node value less?)
+    (define (node-insert! node value less?)
       (if node
-        (let ((node-value (aa-node-value node)))
+        (let ((node-value (node-value node)))
           (cond
             ((less? value node-value)
-              (aa-node-set-left!
+              (node-set-left!
                 node
-                (aa-node-insert! (aa-node-left node) value less?))
-              (aa-node-balance! node))
+                (node-insert! (node-left node) value less?))
+              (node-balance! node))
 
             ((less? node-value value)
-              (aa-node-set-right!
+              (node-set-right!
                 node
-                (aa-node-insert! (aa-node-right node) value less?))
-              (aa-node-balance! node))
+                (node-insert! (node-right node) value less?))
+              (node-balance! node))
 
             (else
               node)))
-        (make-aa-node value 0 #f #f)))
+        (make-node value 0 #f #f)))
 
-    (define (aa-node-balance! node)
-      (aa-node-split! (aa-node-skew! node)))
+    (define (node-balance! node)
+      (node-split! (node-skew! node)))
 
-    (define (aa-node-skew! node)
-      (let ((left (and node (aa-node-left node))))
+    (define (node-skew! node)
+      (let ((left (and node (node-left node))))
         (if (and
              left
-             (= (aa-node-level node) (aa-node-level left)))
+             (= (node-level node) (node-level left)))
           (begin
-            (aa-node-set-left! node (aa-node-right left))
-            (aa-node-set-right! left node)
+            (node-set-left! node (node-right left))
+            (node-set-right! left node)
             left)
           node)))
 
-    (define (aa-node-split! node)
-      (let* ((right (and node (aa-node-right node)))
-             (right-right (and right (aa-node-right right))))
+    (define (node-split! node)
+      (let* ((right (and node (node-right node)))
+             (right-right (and right (node-right right))))
         (if (and
              right-right
-             (= (aa-node-level node) (aa-node-level right-right)))
+             (= (node-level node) (node-level right-right)))
           (begin
-            (aa-node-set-right! node (aa-node-left right))
-            (aa-node-set-left! right node)
-            (aa-node-set-level! right (+ (aa-node-level right) 1))
+            (node-set-right! node (node-left right))
+            (node-set-left! right node)
+            (node-set-level! right (+ (node-level right) 1))
             right)
           node)))))

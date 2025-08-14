@@ -3818,13 +3818,12 @@
   - $$dynamic-symbols
   - define-library
   - import
-  - aa-tree
-  - aa-tree-empty
-  - aa-tree?
-  - aa-tree-find
-  - aa-tree-insert!
-  - aa-tree->list
-  - list->aa-tree
+  - mapping-empty
+  - mapping?
+  - mapping-find
+  - mapping-insert!
+  - mapping->list
+  - list->mapping
   - rust
   - r5rs
   - exact->inexact
@@ -8172,14 +8171,14 @@
                                         - constant list
                                           - list
                                             - list
-                                              - stak
-                                              - aa-tree
-                                            - (aa-tree-empty . aa-tree-empty)
-                                            - (aa-tree? . aa-tree?)
-                                            - (aa-tree-find . aa-tree-find)
-                                            - (aa-tree-insert! . aa-tree-insert!)
-                                            - (aa-tree->list . aa-tree->list)
-                                            - (list->aa-tree . list->aa-tree)
+                                              - srfi
+                                              - 146
+                                            - (mapping-empty . mapping-empty)
+                                            - (mapping? . mapping?)
+                                            - (mapping-find . mapping-find)
+                                            - (mapping-insert! . mapping-insert!)
+                                            - (mapping->list . mapping->list)
+                                            - (list->mapping . list->mapping)
                                           - list
                                             - list
                                               - stak
@@ -13183,7 +13182,7 @@
 - set ||
 - get ||
 - call 1 #f ||
-- set aa-tree?
+- set mapping?
 - constant 0
 - call 1 #f ||
 - set ||
@@ -13263,7 +13262,7 @@
   - get 1
   - call 2 #f ||
 - call 1 #f $$close
-- set aa-tree-empty
+- set mapping-empty
 - constant procedure 2 #f
   - get 1
   - call 1 #f ||
@@ -13272,7 +13271,7 @@
   - call 1 #f ||
   - call 3 #f ||
 - call 1 #f $$close
-- set aa-tree-find
+- set mapping-find
 - constant procedure 3 #f
   - get 2
   - if
@@ -13313,16 +13312,16 @@
   - call 3 #f ||
   - call 2 #f ||
 - call 1 #f $$close
-- set aa-tree-insert!
+- set mapping-insert!
 - constant procedure 2 #f
   - constant procedure 1 #f
     - get 2
-    - call 1 #f aa-tree-empty
+    - call 1 #f mapping-empty
     - set 1
     - constant procedure 1 #f
       - get 2
       - get 1
-      - call 2 #f aa-tree-insert!
+      - call 2 #f mapping-insert!
     - call 1 #f $$close
     - get 4
     - call 2 #f for-each
@@ -13332,14 +13331,14 @@
   - constant #f
   - call 1 #f 1
 - call 1 #f $$close
-- set list->aa-tree
+- set list->mapping
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
   - constant ()
   - call 2 #f ||
 - call 1 #f $$close
-- set aa-tree->list
+- set mapping->list
 - constant procedure 2 #f
   - get 1
   - if
