@@ -16,6 +16,7 @@ env:
     --accepted-status-codes 200,403
     --buffer-size 8192
     --max-retries 5
+    --exclude https://r7rs.org
     --exclude https://www.gnu.org/software/.*
 jobs:
   rust_build:
