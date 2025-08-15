@@ -11,6 +11,12 @@ permissions:
 concurrency:
   group: document-${{ github.ref }}
   cancel-in-progress: true
+env:
+  MUFFET_OPTIONS: >
+    --accepted-status-codes 200,403
+    --buffer-size 8192
+    --max-retries 5
+    --exclude https://www.gnu.org/software/.*
 jobs:
   rust_build:
     runs-on: ubuntu-latest
@@ -51,24 +57,14 @@ jobs:
       - run: tools/document.sh -l
       - run: npm run preview &
         working-directory: doc
-      - run: >
-          go run github.com/raviqqe/muffet/v2@latest
-          --accepted-status-codes 200,403
-          --buffer-size 8192
-          --exclude https://www.gnu.org/software/.*
-          http://localhost:4321/stak/
+      - run: go tool muffet $MUFFET_OPTIONS http://localhost:4321/stak/
   web_release_test:
     needs:
       - web_build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - run: >
-          go run github.com/raviqqe/muffet/v2@latest
-          --accepted-status-codes 200,403
-          --buffer-size 8192
-          --exclude https://www.gnu.org/software/.*
-          https://raviqqe.github.io/stak
+      - run: go tool muffet $MUFFET_OPTIONS https://raviqqe.github.io/stak
   document:
     needs:
       - rust_build
