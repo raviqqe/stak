@@ -52,7 +52,7 @@ jobs:
       - run: npm run preview &
         working-directory: doc
       - run: >
-          go run github.com/raviqqe/muffet/v2@latest
+          go tool muffet
           --accepted-status-codes 200,403
           --buffer-size 8192
           --exclude https://www.gnu.org/software/.*
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: >
-          go run github.com/raviqqe/muffet/v2@latest
+          go tool muffet
           --accepted-status-codes 200,403
           --buffer-size 8192
           --exclude https://www.gnu.org/software/.*
