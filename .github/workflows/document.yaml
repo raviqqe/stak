@@ -61,9 +61,9 @@ jobs:
   web_release_test:
     needs:
       - web_build
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
       - run: go tool muffet $MUFFET_OPTIONS https://raviqqe.github.io/stak
   document:
     needs:
