@@ -2,7 +2,7 @@
   --me-padding: 0.5rem;
 
   font-size: 0.8rem;
-  border: 1px solid gray;
+  border: 0.1rem solid gray;
   border-radius: 0.5rem;
   overflow: hidden;
 }
