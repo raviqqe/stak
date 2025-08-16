@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "tsc && tools/build.sh",
+    "build": "tools/build.sh && tsc",
     "preview": "astro preview",
     "lint": "npm run lint:biome && eslint --cache",
     "lint:biome": "biome ci",
