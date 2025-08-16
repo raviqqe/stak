@@ -20,21 +20,19 @@ interface Props {
   value?: string;
 }
 
-export const CodeEditor = (props: Props): JSX.Element => {
-  let dark = false;
-
-  return (
-    <Editor
-      {...props}
-      class={classNames(styles.main, props.class)}
-      onChange={(event) => props.onChange(event.target.value)}
-      onHighlight={(text) =>
-        highlighter.codeToHtml(text, {
-          lang: "scheme",
-          structure: "inline",
-          theme: dark ? "github-dark" : "github-light",
-        })
-      }
-    />
-  );
-};
+export const CodeEditor = (props: Props): JSX.Element => (
+  <Editor
+    {...props}
+    class={classNames(styles.main, props.class)}
+    onChange={(event) => props.onChange(event.target.value)}
+    onHighlight={(text) =>
+      highlighter.codeToHtml(text, {
+        lang: "scheme",
+        structure: "inline",
+        theme: window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "github-dark"
+          : "github-light",
+      })
+    }
+  />
+);
