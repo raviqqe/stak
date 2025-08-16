@@ -4,10 +4,12 @@
   }
 
   .textArea {
+    --padding: 0.6em;
+
     composes: boxShadow;
     font-family: monospace;
     font-size: 0.85rem;
-    padding: 1em;
+    padding: var(--padding);
     box-sizing: border-box;
     overflow: auto;
     border: 0.1rem solid gray;
