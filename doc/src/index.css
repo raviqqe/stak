@@ -1,3 +1,4 @@
 .sl-markdown-content img {
+  /* biome-ignore lint/complexity/noImportantStyles: No other way to override */
   display: initial !important;
 }
