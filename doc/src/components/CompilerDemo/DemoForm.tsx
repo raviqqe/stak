@@ -2,12 +2,12 @@ import { useStore } from "@nanostores/solid";
 import { Boxes, CirclePlay } from "lucide-solid";
 import type { JSX } from "solid-js";
 import * as store from "../../stores/compiler.js";
-import { Button } from "../Button.jsx";
-import { ButtonGroup } from "../ButtonGroup.jsx";
+import { Button } from "../Button.js";
+import { ButtonGroup } from "../ButtonGroup.js";
 import { CodeEditor } from "../CodeEditor.js";
-import { ErrorMessage } from "../ErrorMessage.jsx";
-import { Field } from "../Field.jsx";
-import { Label } from "../Label.jsx";
+import { ErrorMessage } from "../ErrorMessage.js";
+import { Field } from "../Field.js";
+import { Label } from "../Label.js";
 import styles from "./DemoForm.module.css";
 
 export const DemoForm = (): JSX.Element => {
@@ -24,7 +24,7 @@ export const DemoForm = (): JSX.Element => {
         <CodeEditor
           class={styles.program}
           id="source"
-          onChange={(source) => store.source.set(source)}
+          onInput={(source) => store.source.set(source)}
           value={source()}
         />
         <ErrorMessage>{error()}</ErrorMessage>

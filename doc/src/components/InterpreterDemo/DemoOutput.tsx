@@ -2,8 +2,8 @@ import { useStore } from "@nanostores/solid";
 import type { JSX } from "solid-js";
 import * as store from "../../stores/interpreter.js";
 import { ErrorMessage } from "../ErrorMessage.js";
-import { Field } from "../Field.jsx";
-import { Label } from "../Label.jsx";
+import { Field } from "../Field.js";
+import { Label } from "../Label.js";
 import styles from "./DemoOutput.module.css";
 
 export const DemoOutput = (): JSX.Element => {
