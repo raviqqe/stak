@@ -4,7 +4,7 @@
   }
 
   .textArea {
-    --padding: 0.6em;
+    --padding: 0.8em;
 
     composes: boxShadow;
     font-family: monospace;
