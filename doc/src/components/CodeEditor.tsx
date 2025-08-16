@@ -1,13 +1,13 @@
 import { Editor } from "@monza-editor/solid";
 import classNames from "classnames";
+import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
 import type { JSX } from "solid-js";
 import styles from "./CodeEditor.module.css";
-import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
 
 const highlighter = await createHighlighterCore({
+  engine: createJavaScriptRegexEngine(),
   langs: [import("@shikijs/langs/scheme")],
   themes: [import("@shikijs/themes/nord")],
-  engine: createJavaScriptRegexEngine(),
 });
 
 interface Props {
