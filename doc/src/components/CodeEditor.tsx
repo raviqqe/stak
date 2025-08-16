@@ -7,7 +7,10 @@ import styles from "./CodeEditor.module.css";
 const highlighter = await createHighlighterCore({
   engine: createJavaScriptRegexEngine(),
   langs: [import("@shikijs/langs/scheme")],
-  themes: [import("@shikijs/themes/nord")],
+  themes: [
+    import("@shikijs/themes/github-dark"),
+    import("@shikijs/themes/github-light"),
+  ],
 });
 
 interface Props {
