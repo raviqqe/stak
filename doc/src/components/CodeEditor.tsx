@@ -16,7 +16,7 @@ const highlighter = await createHighlighterCore({
 interface Props {
   class?: string;
   id?: string;
-  onChange: (text: string) => void;
+  onInput: (text: string) => void;
   value?: string;
 }
 
@@ -24,7 +24,6 @@ export const CodeEditor = (props: Props): JSX.Element => (
   <Editor
     {...props}
     class={classNames(styles.main, props.class)}
-    onChange={(event) => props.onChange(event.target.value)}
     onHighlight={(text) =>
       highlighter.codeToHtml(text, {
         lang: "scheme",
@@ -34,5 +33,6 @@ export const CodeEditor = (props: Props): JSX.Element => (
           : "github-light",
       })
     }
+    onInput={(event) => props.onInput(event.target.value)}
   />
 );

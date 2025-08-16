@@ -24,7 +24,7 @@ export const DemoForm = (): JSX.Element => {
         <CodeEditor
           class={styles.program}
           id="source"
-          onChange={(source) => store.source.set(source)}
+          onInput={(source) => store.source.set(source)}
           value={source()}
         />
         <ErrorMessage>{error()}</ErrorMessage>

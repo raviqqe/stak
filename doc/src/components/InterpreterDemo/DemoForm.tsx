@@ -16,7 +16,7 @@ export const DemoForm = (): JSX.Element => {
         <CodeEditor
           class={styles.textArea}
           id="source"
-          onChange={(source) => store.source.set(source)}
+          onInput={(source) => store.source.set(source)}
           value={source()}
         />
       </Field>
