@@ -1,5 +1,5 @@
 import { Editor } from "@monza-editor/solid";
-import { type JSX } from "solid-js";
+import type { JSX } from "solid-js";
 
 interface Props {
   class?: string;
