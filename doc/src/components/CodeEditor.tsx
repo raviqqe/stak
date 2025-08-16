@@ -15,7 +15,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
       onHighlight={(text: string) => text}
       id={props.id}
       {...props}
-      onChange={(event) => props.onChange(event.target?.value ?? "")}
+      onChange={(event) => props.onChange(event.target.value ?? "")}
     />
   );
 };
