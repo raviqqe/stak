@@ -1,7 +1,7 @@
 .main {
   composes: textArea from "../system.module.css";
 
-  --me-padding: 0.5rem;
+  --me-padding: var(--padding);
 
   padding: 0;
 }
