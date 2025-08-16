@@ -12,7 +12,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
   return (
     <Editor
       class={props.class}
-      highlight={(text: string) => text}
+      onHighlight={(text: string) => text}
       id={props.id}
       {...props}
     />
