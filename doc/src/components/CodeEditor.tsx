@@ -1,11 +1,5 @@
-import { editor } from "monaco-editor";
-import {
-  createEffect,
-  createMemo,
-  createUniqueId,
-  type JSX,
-  onMount,
-} from "solid-js";
+import { Editor } from "monza-editor";
+import { createEffect, type JSX, onMount } from "solid-js";
 
 interface Props {
   autoBrackets?: boolean;
@@ -16,17 +10,7 @@ interface Props {
 }
 
 export const CodeEditor = (props: Props): JSX.Element => {
-  let instance: ReturnType<typeof editor.create> | undefined;
-
-  const id = createMemo(() => props.id ?? createUniqueId());
-
   onMount(() => {
-    const element = document.getElementById(id());
-
-    if (!element) {
-      throw new Error("Editor element not found");
-    }
-
     instance = editor.create(element, {
       autoClosingBrackets: props.autoBrackets === false ? "never" : undefined,
       automaticLayout: true,
@@ -52,5 +36,5 @@ export const CodeEditor = (props: Props): JSX.Element => {
     }
   });
 
-  return <div class={props.class} id={id()} />;
+  return <Editor class={props.class} />;
 };
