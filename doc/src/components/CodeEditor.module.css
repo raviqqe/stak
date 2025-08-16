@@ -1,8 +1,7 @@
 .main {
+  composes: textArea from "../system.module.css";
+
   --me-padding: 0.5rem;
 
-  font-size: 0.8rem;
-  border: 0.1rem solid gray;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  padding: 0;
 }
