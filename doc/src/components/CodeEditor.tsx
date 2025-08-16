@@ -8,12 +8,10 @@ interface Props {
   value?: string;
 }
 
-export const CodeEditor = (props: Props): JSX.Element => {
-  return (
-    <Editor
-      {...props}
-      onChange={(event) => props.onChange(event.target.value)}
-      onHighlight={(text: string) => text}
-    />
-  );
-};
+export const CodeEditor = (props: Props): JSX.Element => (
+  <Editor
+    {...props}
+    onChange={(event) => props.onChange(event.target.value)}
+    onHighlight={(text: string) => text}
+  />
+);
