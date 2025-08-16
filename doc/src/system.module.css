@@ -7,7 +7,7 @@
     composes: boxShadow;
     font-family: monospace;
     font-size: 0.85rem;
-    padding: 0.5rem;
+    padding: 0.8rem;
     box-sizing: border-box;
     overflow: auto;
     border: 0.1rem solid gray;
