@@ -3,7 +3,5 @@
 
   --me-padding: 0.5rem;
 
-  @layer main {
-    padding: 0;
-  }
+  padding: 0;
 }
