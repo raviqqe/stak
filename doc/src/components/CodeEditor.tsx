@@ -18,6 +18,8 @@ interface Props {
 }
 
 export const CodeEditor = (props: Props): JSX.Element => {
+  let dark = false;
+
   return (
     <Editor
       {...props}
@@ -27,7 +29,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
         highlighter.codeToHtml(text, {
           lang: "scheme",
           structure: "inline",
-          theme: "nord",
+          theme: dark ? "github-dark" : "github-light",
         })
       }
     />
