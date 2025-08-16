@@ -15,7 +15,7 @@
     "@astrojs/sitemap": "^3.5.0",
     "@astrojs/solid-js": "^5.1.0",
     "@astrojs/starlight": "^0.35.2",
-    "@monza-editor/solid": "^0.2.2",
+    "@monza-editor/solid": "^0.2.3",
     "@nanostores/solid": "^1.0.0",
     "@raviqqe/stak": "^0.10.38",
     "@solid-primitives/resize-observer": "^2.1.3",
