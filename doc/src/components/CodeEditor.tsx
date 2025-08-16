@@ -9,5 +9,12 @@ interface Props {
 }
 
 export const CodeEditor = (props: Props): JSX.Element => {
-  return <Editor class={props.class} highlight={(text) => text} {...props} />;
+  return (
+    <Editor
+      class={props.class}
+      highlight={(text) => text}
+      id={props.id}
+      {...props}
+    />
+  );
 };
