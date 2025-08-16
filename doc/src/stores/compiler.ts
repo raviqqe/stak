@@ -29,7 +29,7 @@ export const bytecodesReady = computed(
 
 export const compiling = computed(bytecodes, (output) => output === null);
 
-const output = atom<Uint8Array | null>(new Uint8Array());
+const output = atom<Uint8Array<ArrayBuffer> | null>(new Uint8Array());
 
 export const input = atom("10");
 export const textOutput = computed(output, (output) =>
