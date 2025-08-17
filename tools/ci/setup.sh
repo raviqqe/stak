@@ -9,6 +9,7 @@ cargo install stak
 go tool agoa --version
 go tool gherkin-format -version
 go tool gherkin2markdown --version
+go tool muffet --version
 
 echo LD_LIBRARY_PATH=$(brew --prefix lua@5.4)/lib:$LD_LIBRARY_PATH >>$GITHUB_ENV
 
