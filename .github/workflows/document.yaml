@@ -61,8 +61,6 @@ jobs:
         working-directory: doc
       - run: go tool muffet $MUFFET_OPTIONS http://localhost:4321/stak/
   web_release_test:
-    needs:
-      - web_build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
