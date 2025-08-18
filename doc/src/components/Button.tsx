@@ -7,14 +7,19 @@ interface Props {
   onClick: () => void;
 }
 
-export const Button: FunctionComponent<Props> = (props) => (
+export const Button: FunctionComponent<Props> = ({
+  children,
+  disabled,
+  icon,
+  onClick,
+}) => (
   <button
     class={styles.root}
-    disabled={props.disabled}
-    onClick={() => props.onClick()}
+    disabled={disabled}
+    onClick={() => onClick()}
     type="button"
   >
-    {props.icon}
-    {props.children}
+    {icon}
+    {children}
   </button>
 );
