@@ -1,4 +1,4 @@
-import { runWorker } from "../application/run-worker.js";
+import { runWorker } from "./run-worker.js";
 import Worker from "./compile/worker.js?worker";
 
 export const compile = async (
