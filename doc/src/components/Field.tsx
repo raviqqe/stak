@@ -1,8 +1,7 @@
 import type { JSX } from "preact";
 import styles from "./Field.module.css";
 
-interface Props {
-  children: JSX.Element;
+interface Props extends JSX.ElementChildrenAttribute {
   style?: JSX.CSSProperties;
 }
 

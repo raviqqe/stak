@@ -1,8 +1,7 @@
 import type { JSX } from "preact";
 import styles from "./Label.module.css";
 
-interface Props {
-  children: JSX.Element;
+interface Props extends JSX.ElementChildrenAttribute {
   for: string;
 }
 

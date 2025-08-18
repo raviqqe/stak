@@ -1,10 +1,10 @@
 import * as xterm from "@xterm/xterm";
-import { createEffect, createMemo, type JSX, onMount } from "preact";
+import type { JSX } from "preact";
 import "@xterm/xterm/css/xterm.css";
-import { createResizeObserver } from "@preact-primitives/resize-observer";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
+import { effect, computed } from "@preact/signals";
 
 const inputDelay = 20;
 const terminalOptions: xterm.ITerminalOptions = {
@@ -20,26 +20,27 @@ interface Props {
 }
 
 export const Terminal = (props: Props): JSX.Element => {
-  const outputs = createMemo(() => props.output.tee());
+  const outputs = computed(() => props.output.tee());
   const terminal = new xterm.Terminal(terminalOptions);
   const fitAddon = new FitAddon();
   terminal.loadAddon(fitAddon);
 
   let element: HTMLDivElement | null = null;
 
-  onMount(() => {
+  effect(() => {
     if (!element) {
       return;
     }
 
     terminal.open(element);
     fitAddon.fit();
-    createResizeObserver(element, () => fitAddon.fit());
+
+    element?.addEventListener("resize", () => fitAddon.fit());
   });
 
   const line: string[] = [];
 
-  createEffect(() => {
+  effect(() => {
     const writer = props.input.getWriter();
 
     terminal.onData(async (data) => {
@@ -58,15 +59,15 @@ export const Terminal = (props: Props): JSX.Element => {
     });
   });
 
-  createEffect(() => {
+  effect(() => {
     void (async (output: ReadableStream<string>) => {
       for await (const data of output) {
         terminal.write(data === "\n" ? "\r\n" : data);
       }
-    })(outputs()[0]);
+    })(outputs.value[0]);
   });
 
-  createEffect(() => {
+  effect(() => {
     void (async (output: ReadableStream<string>) => {
       await output.values().next();
 
@@ -79,7 +80,7 @@ export const Terminal = (props: Props): JSX.Element => {
 
         terminal.input("\r");
       }
-    })(outputs()[1]);
+    })(outputs.value[1]);
   });
 
   return (

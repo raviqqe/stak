@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
-import { type JSX, onMount } from "preact";
+import type { JSX } from "preact";
+import { useEffect } from "preact/hooks";
 import * as store from "../../stores/repl.js";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
@@ -22,8 +23,9 @@ export const DemoForm = (): JSX.Element => {
   const input = new TransformStream<string, string>();
   const output = useStore(store.output);
 
-  onMount(() =>
-    store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
+  useEffect(
+    () => store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
+    [],
   );
 
   return (
@@ -34,7 +36,7 @@ export const DemoForm = (): JSX.Element => {
           id="repl"
           initialInput={source}
           input={input.writable}
-          output={output().pipeThrough(new TextDecoderStream())}
+          output={output.pipeThrough(new TextDecoderStream())}
         />
       </Field>
     </form>

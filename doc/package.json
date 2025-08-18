@@ -15,6 +15,7 @@
     "@astrojs/preact": "^4.1.0",
     "@astrojs/sitemap": "^3.5.0",
     "@astrojs/starlight": "^0.35.2",
+    "@preact/signals": "^2.2.1",
     "@raviqqe/stak": "^0.10.38",
     "@shikijs/langs": "^3.9.2",
     "@shikijs/themes": "^3.9.2",
