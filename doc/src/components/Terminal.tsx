@@ -32,17 +32,17 @@ export const Terminal: FunctionComponent<Props> = ({
   const ref = useSignalRef<HTMLDivElement | null>(null);
 
   useSignalEffect(() => {
-    if (!ref.current) {
+    if (!ref.value) {
       return;
     }
 
     const fitAddon = new FitAddon();
 
     terminal.loadAddon(fitAddon);
-    terminal.open(ref.current);
+    terminal.open(ref.value);
     fitAddon.fit();
 
-    ref.current.addEventListener("resize", () => fitAddon.fit());
+    ref.value.addEventListener("resize", () => fitAddon.fit());
   });
 
   const line: string[] = [];
