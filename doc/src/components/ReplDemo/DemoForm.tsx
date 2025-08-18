@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { useSignalEffect } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 import type { JSX } from "preact";
 import * as store from "../../stores/repl.js";
 import { Field } from "../Field.js";
@@ -24,8 +24,9 @@ export const DemoForm = (): JSX.Element => {
   const input = useMemo(() => new TransformStream<string, string>(), []);
   const output = useStore(store.output);
 
-  useSignalEffect(() =>
-    store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
+  useEffect(
+    () => store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
+    [],
   );
 
   const outputStream = useMemo(

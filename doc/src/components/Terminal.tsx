@@ -1,11 +1,10 @@
 import "@xterm/xterm/css/xterm.css";
 import * as xterm from "@xterm/xterm";
-import type { FunctionComponent } from "preact";
-import { useComputed, useSignalEffect } from "@preact/signals";
-import { useSignalRef } from "@preact/signals/utils";
+import { createRef, type FunctionComponent } from "preact";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
+import { useEffect, useMemo } from "preact/hooks";
 
 const inputDelay = 20;
 const terminalOptions: xterm.ITerminalOptions = {
@@ -26,14 +25,14 @@ export const Terminal: FunctionComponent<Props> = ({
   output,
   initialInput,
 }) => {
-  const outputs = useComputed(() => output.tee());
+  const outputs = useMemo(() => output.tee(), [output]);
   const terminal = new xterm.Terminal(terminalOptions);
   const fitAddon = new FitAddon();
   terminal.loadAddon(fitAddon);
 
-  const ref = useSignalRef<HTMLDivElement | null>(null);
+  const ref = createRef();
 
-  useSignalEffect(() => {
+  useEffect(() => {
     if (!ref.current) {
       return;
     }
@@ -42,11 +41,11 @@ export const Terminal: FunctionComponent<Props> = ({
     fitAddon.fit();
 
     ref.current.addEventListener("resize", () => fitAddon.fit());
-  });
+  }, [ref.current]);
 
   const line: string[] = [];
 
-  useSignalEffect(() => {
+  useEffect(() => {
     const writer = input.getWriter();
 
     terminal.onData(async (data) => {
@@ -63,19 +62,19 @@ export const Terminal: FunctionComponent<Props> = ({
         terminal.write(data);
       }
     });
-  });
+  }, []);
 
-  useSignalEffect(() => {
+  useEffect(() => {
     void (async () => {
-      for await (const data of outputs.value[0]) {
+      for await (const data of outputs[0]) {
         terminal.write(data === "\n" ? "\r\n" : data);
       }
     })();
-  });
+  }, []);
 
-  useSignalEffect(() => {
+  useEffect(() => {
     void (async () => {
-      await outputs.value[1].values().next();
+      await outputs[1].values().next();
 
       for (const line of initialInput ?? []) {
         await delay(inputDelay);
@@ -87,7 +86,7 @@ export const Terminal: FunctionComponent<Props> = ({
         terminal.input("\r");
       }
     })();
-  });
+  }, []);
 
   return <div class={styles.root} id={id} ref={ref} />;
 };
