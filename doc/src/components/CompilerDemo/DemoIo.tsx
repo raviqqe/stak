@@ -1,4 +1,4 @@
-import { useStore } from "@nanostores/solid";
+import { useStore } from "@nanostores/preact";
 import type { JSX } from "preact";
 import * as store from "../../stores/compiler.js";
 import { ErrorMessage } from "../ErrorMessage.js";

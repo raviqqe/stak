@@ -1,4 +1,4 @@
-import { useStore } from "@nanostores/solid";
+import { useStore } from "@nanostores/preact";
 import { type JSX, onMount } from "preact";
 import * as store from "../../stores/repl.js";
 import { Field } from "../Field.js";

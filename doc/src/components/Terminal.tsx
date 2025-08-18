@@ -1,7 +1,7 @@
 import * as xterm from "@xterm/xterm";
 import { createEffect, createMemo, type JSX, onMount } from "preact";
 import "@xterm/xterm/css/xterm.css";
-import { createResizeObserver } from "@solid-primitives/resize-observer";
+import { createResizeObserver } from "@preact-primitives/resize-observer";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";

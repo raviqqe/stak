@@ -1,4 +1,4 @@
-import { useStore } from "@nanostores/solid";
+import { useStore } from "@nanostores/preact";
 import type { JSX } from "preact";
 import * as store from "../../stores/interpreter.js";
 import { CodeEditor } from "../CodeEditor.js";

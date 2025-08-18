@@ -1,4 +1,4 @@
-import { Editor } from "@monza-editor/solid";
+import { Editor } from "@monza-editor/preact";
 import classNames from "classnames";
 import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
 import type { JSX } from "preact";
