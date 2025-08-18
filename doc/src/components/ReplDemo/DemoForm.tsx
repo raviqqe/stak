@@ -28,6 +28,11 @@ export const DemoForm = (): JSX.Element => {
     store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
   );
 
+  const outputStream = useMemo(
+    () => output.pipeThrough(new TextDecoderStream()),
+    [output],
+  );
+
   return (
     <form class={styles.root}>
       <Field style={{ flex: 1 }}>
@@ -36,7 +41,7 @@ export const DemoForm = (): JSX.Element => {
           id="repl"
           initialInput={source}
           input={input.writable}
-          output={output.pipeThrough(new TextDecoderStream())}
+          output={outputStream}
         />
       </Field>
     </form>
