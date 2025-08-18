@@ -66,16 +66,16 @@ export const Terminal: FunctionComponent<Props> = ({
   });
 
   useSignalEffect(() => {
-    void (async (output: ReadableStream<string>) => {
-      for await (const data of output) {
+    void (async () => {
+      for await (const data of outputs.value[0]) {
         terminal.write(data === "\n" ? "\r\n" : data);
       }
-    })(outputs.value[0]);
+    })();
   });
 
   useSignalEffect(() => {
-    void (async (output: ReadableStream<string>) => {
-      await output.values().next();
+    void (async () => {
+      await outputs.value[1].values().next();
 
       for (const line of initialInput ?? []) {
         await delay(inputDelay);
@@ -86,7 +86,7 @@ export const Terminal: FunctionComponent<Props> = ({
 
         terminal.input("\r");
       }
-    })(outputs.value[1]);
+    })();
   });
 
   return <div class={styles.root} id={id} ref={ref} />;
