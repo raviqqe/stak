@@ -1,11 +1,7 @@
-import type { JSX } from "preact";
+import type { FunctionComponent } from "preact";
 import styles from "./Label.module.css";
 
-interface Props extends JSX.ElementChildrenAttribute {
-  for: string;
-}
-
-export const Label = (props: Props): JSX.Element => (
+export const Label: FunctionComponent<{ for: string }> = (props) => (
   <label class={styles.root} for={props.for}>
     {props.children}
   </label>
