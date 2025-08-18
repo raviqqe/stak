@@ -46,24 +46,21 @@ export const Terminal: FunctionComponent<Props> = ({
   });
 
   const line: string[] = [];
+  const writer = input.getWriter();
 
-  useSignalEffect(() => {
-    const writer = input.getWriter();
-
-    terminal.onData(async (data) => {
-      if (data === "\r") {
-        await writer.write([...line.splice(0), "\n"].join(""));
-        terminal.write("\r\n");
-      } else if (data === "\x7f") {
-        if (line.length) {
-          line.pop();
-          terminal.write("\b \b");
-        }
-      } else {
-        line.push(...data);
-        terminal.write(data);
+  terminal.onData(async (data) => {
+    if (data === "\r") {
+      await writer.write([...line.splice(0), "\n"].join(""));
+      terminal.write("\r\n");
+    } else if (data === "\x7f") {
+      if (line.length) {
+        line.pop();
+        terminal.write("\b \b");
       }
-    });
+    } else {
+      line.push(...data);
+      terminal.write(data);
+    }
   });
 
   void (async () => {
