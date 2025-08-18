@@ -15,9 +15,10 @@ env:
   MUFFET_OPTIONS: >
     --accepted-status-codes 200,403
     --buffer-size 8192
-    --max-retries 5
     --exclude https://r7rs.org
     --exclude https://www.gnu.org/software/.*
+    --header user-agent:muffet
+    --max-retries 5
 jobs:
   rust_build:
     runs-on: ubuntu-latest
