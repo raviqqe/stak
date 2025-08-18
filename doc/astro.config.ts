@@ -1,5 +1,6 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
+import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
 import solid from "@astrojs/solid-js";
 import starlight from "@astrojs/starlight";
@@ -137,6 +138,7 @@ export default defineConfig({
       ],
       title: "Stak Scheme",
     }),
+    preact(),
   ],
   prefetch: { prefetchAll: true },
   redirects: {
