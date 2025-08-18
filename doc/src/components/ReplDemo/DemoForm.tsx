@@ -6,6 +6,7 @@ import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import { Terminal } from "../Terminal.js";
 import styles from "./DemoForm.module.css";
+import { useMemo } from "preact/hooks";
 
 const source = [
   "(import (scheme base))",
@@ -20,7 +21,7 @@ const source = [
 ];
 
 export const DemoForm = (): JSX.Element => {
-  const input = new TransformStream<string, string>();
+  const input = useMemo(() => new TransformStream<string, string>(), []);
   const output = useStore(store.output);
 
   effect(() =>
