@@ -1,10 +1,6 @@
-import type { JSX } from "solid-js";
+import type { FunctionComponent } from "preact";
 import styles from "./ButtonGroup.module.css";
 
-interface Props {
-  children: JSX.Element;
-}
-
-export const ButtonGroup = (props: Props): JSX.Element => (
-  <div class={styles.root}>{props.children}</div>
+export const ButtonGroup: FunctionComponent = ({ children }) => (
+  <div class={styles.root}>{children}</div>
 );

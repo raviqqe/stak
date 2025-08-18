@@ -1,13 +1,11 @@
-import type { JSX } from "solid-js";
+import type { FunctionComponent } from "preact";
 import styles from "./Label.module.css";
 
-interface Props {
-  children: JSX.Element;
-  for: string;
-}
-
-export const Label = (props: Props): JSX.Element => (
+export const Label: FunctionComponent<{ for: string }> = ({
+  children,
+  ...props
+}) => (
   <label class={styles.root} for={props.for}>
-    {props.children}
+    {children}
   </label>
 );

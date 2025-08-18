@@ -1,5 +1,5 @@
-import { runWorker } from "../application/run-worker.js";
 import Worker from "./interpret/worker.js?worker";
+import { runWorker } from "./run-worker.js";
 
 export const interpret = async (
   program: Uint8Array,

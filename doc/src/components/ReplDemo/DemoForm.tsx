@@ -1,6 +1,6 @@
-import { useStore } from "@nanostores/solid";
-import { type JSX, onMount } from "solid-js";
-import * as store from "../../stores/repl.js";
+import type { FunctionComponent } from "preact";
+import { useId } from "preact/hooks";
+import { runRepl } from "../../application/repl.js";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import { Terminal } from "../Terminal.js";
@@ -18,23 +18,20 @@ const source = [
   "(fibonacci 10)",
 ];
 
-export const DemoForm = (): JSX.Element => {
+export const DemoForm: FunctionComponent = () => {
   const input = new TransformStream<string, string>();
-  const output = useStore(store.output);
-
-  onMount(() =>
-    store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
-  );
+  const output = runRepl(input.readable.pipeThrough(new TextEncoderStream()));
+  const id = useId();
 
   return (
     <form class={styles.root}>
       <Field style={{ flex: 1 }}>
-        <Label for="repl">Try it out!</Label>
+        <Label for={id}>Try it out!</Label>
         <Terminal
-          id="repl"
+          id={id}
           initialInput={source}
           input={input.writable}
-          output={output().pipeThrough(new TextDecoderStream())}
+          output={output.pipeThrough(new TextDecoderStream())}
         />
       </Field>
     </form>
