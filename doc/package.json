@@ -23,7 +23,7 @@
     "@shikijs/themes": "^3.9.2",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
-    "astro": "^5.13.0",
+    "astro": "^5.13.2",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.39.9",
     "lucide-preact": "^0.539.0",
