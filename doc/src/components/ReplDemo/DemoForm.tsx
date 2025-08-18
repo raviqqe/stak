@@ -1,12 +1,10 @@
-import { useStore } from "@nanostores/preact";
-import { useEffect } from "preact/hooks";
 import type { JSX } from "preact";
-import * as store from "../../stores/repl.js";
+import { useId } from "preact/hooks";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import { Terminal } from "../Terminal.js";
 import styles from "./DemoForm.module.css";
-import { useMemo } from "preact/hooks";
+import { runRepl } from "../../application/repl.js";
 
 const source = [
   "(import (scheme base))",
@@ -21,28 +19,19 @@ const source = [
 ];
 
 export const DemoForm = (): JSX.Element => {
-  const input = useMemo(() => new TransformStream<string, string>(), []);
-  const output = useStore(store.output);
-
-  useEffect(
-    () => store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
-    [],
-  );
-
-  const outputStream = useMemo(
-    () => output.pipeThrough(new TextDecoderStream()),
-    [output],
-  );
+  const input = new TransformStream<string, string>();
+  const output = runRepl(input.readable.pipeThrough(new TextEncoderStream()));
+  const id = useId();
 
   return (
     <form class={styles.root}>
       <Field style={{ flex: 1 }}>
-        <Label for="repl">Try it out!</Label>
+        <Label for={id}>Try it out!</Label>
         <Terminal
-          id="repl"
+          id={id}
           initialInput={source}
           input={input.writable}
-          output={outputStream}
+          output={output.pipeThrough(new TextDecoderStream())}
         />
       </Field>
     </form>

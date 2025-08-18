@@ -1,4 +1,4 @@
-import { runStreamWorker } from "../application/run-worker.js";
+import { runStreamWorker } from "./run-worker.js";
 import Worker from "./repl/worker.js?worker";
 
 export const runRepl = (

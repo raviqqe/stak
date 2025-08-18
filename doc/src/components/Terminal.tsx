@@ -25,10 +25,8 @@ export const Terminal: FunctionComponent<Props> = ({
   output,
   initialInput,
 }) => {
+  const terminal = useMemo(() => new xterm.Terminal(terminalOptions), []);
   const outputs = useMemo(() => output.tee(), [output]);
-  const terminal = new xterm.Terminal(terminalOptions);
-  const fitAddon = new FitAddon();
-  terminal.loadAddon(fitAddon);
 
   const ref = createRef();
 
@@ -37,6 +35,9 @@ export const Terminal: FunctionComponent<Props> = ({
       return;
     }
 
+    const fitAddon = new FitAddon();
+
+    terminal.loadAddon(fitAddon);
     terminal.open(ref.current);
     fitAddon.fit();
 
@@ -66,14 +67,6 @@ export const Terminal: FunctionComponent<Props> = ({
 
   useEffect(() => {
     void (async () => {
-      for await (const data of outputs[0]) {
-        terminal.write(data === "\n" ? "\r\n" : data);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    void (async () => {
       await outputs[1].values().next();
 
       for (const line of initialInput ?? []) {
@@ -87,6 +80,14 @@ export const Terminal: FunctionComponent<Props> = ({
       }
     })();
   }, []);
+
+  useEffect(() => {
+    void (async () => {
+      for await (const data of outputs[0]) {
+        terminal.write(data === "\n" ? "\r\n" : data);
+      }
+    })();
+  }, [outputs]);
 
   return <div class={styles.root} id={id} ref={ref} />;
 };
