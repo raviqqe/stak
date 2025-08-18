@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import { Boxes, CirclePlay } from "lucide-preact";
-import type { JSX } from "preact";
+import type { FunctionComponent } from "preact";
 import * as store from "../../stores/compiler.js";
 import { Button } from "../Button.js";
 import { ButtonGroup } from "../ButtonGroup.js";
@@ -10,7 +10,7 @@ import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import styles from "./DemoForm.module.css";
 
-export const DemoForm = (): JSX.Element => {
+export const DemoForm: FunctionComponent = () => {
   const source = useStore(store.source);
   const bytecodesReady = useStore(store.bytecodesReady);
   const compiling = useStore(store.compiling);
