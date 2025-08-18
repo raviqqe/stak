@@ -1,10 +1,11 @@
 import "@xterm/xterm/css/xterm.css";
 import * as xterm from "@xterm/xterm";
-import { createRef, type FunctionComponent } from "preact";
+import type { FunctionComponent } from "preact";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
-import { useEffect, useMemo } from "preact/hooks";
+import { useSignalEffect } from "@preact/signals";
+import { useSignalRef } from "@preact/signals/utils";
 
 const inputDelay = 20;
 const terminalOptions: xterm.ITerminalOptions = {
@@ -25,12 +26,12 @@ export const Terminal: FunctionComponent<Props> = ({
   output,
   initialInput,
 }) => {
-  const terminal = useMemo(() => new xterm.Terminal(terminalOptions), []);
-  const outputs = useMemo(() => output.tee(), [output]);
+  const terminal = new xterm.Terminal(terminalOptions);
+  const outputs = output.tee();
 
-  const ref = createRef();
+  const ref = useSignalRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
+  useSignalEffect(() => {
     if (!ref.current) {
       return;
     }
@@ -42,11 +43,11 @@ export const Terminal: FunctionComponent<Props> = ({
     fitAddon.fit();
 
     ref.current.addEventListener("resize", () => fitAddon.fit());
-  }, [ref.current]);
+  });
 
   const line: string[] = [];
 
-  useEffect(() => {
+  useSignalEffect(() => {
     const writer = input.getWriter();
 
     terminal.onData(async (data) => {
@@ -63,9 +64,17 @@ export const Terminal: FunctionComponent<Props> = ({
         terminal.write(data);
       }
     });
-  }, []);
+  });
 
-  useEffect(() => {
+  useSignalEffect(() => {
+    void (async () => {
+      for await (const data of outputs[0]) {
+        terminal.write(data === "\n" ? "\r\n" : data);
+      }
+    })();
+  });
+
+  useSignalEffect(() => {
     void (async () => {
       await outputs[1].values().next();
 
@@ -79,15 +88,7 @@ export const Terminal: FunctionComponent<Props> = ({
         terminal.input("\r");
       }
     })();
-  }, []);
-
-  useEffect(() => {
-    void (async () => {
-      for await (const data of outputs[0]) {
-        terminal.write(data === "\n" ? "\r\n" : data);
-      }
-    })();
-  }, [outputs]);
+  });
 
   return <div class={styles.root} id={id} ref={ref} />;
 };
