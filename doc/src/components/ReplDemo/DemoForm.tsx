@@ -1,10 +1,10 @@
-import type { FunctionComponent, JSX } from "preact";
+import type { FunctionComponent } from "preact";
 import { useId } from "preact/hooks";
+import { runRepl } from "../../application/repl.js";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import { Terminal } from "../Terminal.js";
 import styles from "./DemoForm.module.css";
-import { runRepl } from "../../application/repl.js";
 
 const source = [
   "(import (scheme base))",
