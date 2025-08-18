@@ -72,9 +72,7 @@ export const Terminal: FunctionComponent<Props> = ({
         terminal.write(data === "\n" ? "\r\n" : data);
       }
     })();
-  });
 
-  useSignalEffect(() => {
     void (async () => {
       await outputs[1].values().next();
 
