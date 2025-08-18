@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import type { JSX } from "preact";
+import type { FunctionComponent } from "preact";
 import * as store from "../../stores/compiler.js";
 import { ErrorMessage } from "../ErrorMessage.js";
 import { Field } from "../Field.js";
@@ -8,7 +8,7 @@ import { Link } from "../Link.js";
 import { TextArea } from "../TextArea.js";
 import styles from "./DemoIo.module.css";
 
-export const DemoIo = (): JSX.Element => {
+export const DemoIo: FunctionComponent = () => {
   const input = useStore(store.input);
   const output = useStore(store.textOutput);
   const outputUrl = useStore(store.outputUrlStore);

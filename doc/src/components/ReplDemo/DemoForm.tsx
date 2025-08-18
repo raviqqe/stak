@@ -1,4 +1,4 @@
-import type { JSX } from "preact";
+import type { FunctionComponent, JSX } from "preact";
 import { useId } from "preact/hooks";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
@@ -18,7 +18,7 @@ const source = [
   "(fibonacci 10)",
 ];
 
-export const DemoForm = (): JSX.Element => {
+export const DemoForm: FunctionComponent = () => {
   const input = new TransformStream<string, string>();
   const output = runRepl(input.readable.pipeThrough(new TextEncoderStream()));
   const id = useId();
