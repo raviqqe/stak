@@ -1,11 +1,11 @@
 import { useStore } from "@nanostores/preact";
 import type { JSX } from "preact";
-import { useEffect } from "preact/hooks";
 import * as store from "../../stores/repl.js";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import { Terminal } from "../Terminal.js";
 import styles from "./DemoForm.module.css";
+import { effect } from "@preact/signals";
 
 const source = [
   "(import (scheme base))",
@@ -23,9 +23,8 @@ export const DemoForm = (): JSX.Element => {
   const input = new TransformStream<string, string>();
   const output = useStore(store.output);
 
-  useEffect(
-    () => store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
-    [],
+  effect(() =>
+    store.input.set(input.readable.pipeThrough(new TextEncoderStream())),
   );
 
   return (
