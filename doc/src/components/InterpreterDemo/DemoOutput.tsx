@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/solid";
-import type { JSX } from "solid-js";
+import type { JSX } from "preact";
 import * as store from "../../stores/interpreter.js";
 import { ErrorMessage } from "../ErrorMessage.js";
 import { Field } from "../Field.js";

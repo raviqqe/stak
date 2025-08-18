@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import type { JSX } from "preact";
 import styles from "./ButtonGroup.module.css";
 
 interface Props {

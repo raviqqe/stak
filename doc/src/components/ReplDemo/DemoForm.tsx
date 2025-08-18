@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/solid";
-import { type JSX, onMount } from "solid-js";
+import { type JSX, onMount } from "preact";
 import * as store from "../../stores/repl.js";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";

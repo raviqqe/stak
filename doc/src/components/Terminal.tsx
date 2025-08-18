@@ -1,5 +1,5 @@
 import * as xterm from "@xterm/xterm";
-import { createEffect, createMemo, type JSX, onMount } from "solid-js";
+import { createEffect, createMemo, type JSX, onMount } from "preact";
 import "@xterm/xterm/css/xterm.css";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { FitAddon } from "@xterm/addon-fit";

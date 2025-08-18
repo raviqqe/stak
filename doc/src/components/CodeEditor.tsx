@@ -1,7 +1,7 @@
 import { Editor } from "@monza-editor/solid";
 import classNames from "classnames";
 import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
-import type { JSX } from "solid-js";
+import type { JSX } from "preact";
 import styles from "./CodeEditor.module.css";
 
 const highlighter = await createHighlighterCore({
