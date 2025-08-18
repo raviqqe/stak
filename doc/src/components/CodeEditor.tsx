@@ -1,7 +1,8 @@
+import "monza-editor/style.css";
 import { Editor } from "@monza-editor/preact";
 import classNames from "classnames";
-import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
 import type { JSX } from "preact";
+import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
 import styles from "./CodeEditor.module.css";
 
 const highlighter = await createHighlighterCore({

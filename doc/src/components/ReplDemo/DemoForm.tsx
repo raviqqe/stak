@@ -1,11 +1,11 @@
 import { useStore } from "@nanostores/preact";
+import { effect } from "@preact/signals";
 import type { JSX } from "preact";
 import * as store from "../../stores/repl.js";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import { Terminal } from "../Terminal.js";
 import styles from "./DemoForm.module.css";
-import { effect } from "@preact/signals";
 
 const source = [
   "(import (scheme base))",

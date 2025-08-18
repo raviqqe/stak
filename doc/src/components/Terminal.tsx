@@ -1,10 +1,10 @@
 import * as xterm from "@xterm/xterm";
 import type { JSX } from "preact";
 import "@xterm/xterm/css/xterm.css";
+import { computed, effect } from "@preact/signals";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
-import { effect, computed } from "@preact/signals";
 
 const inputDelay = 20;
 const terminalOptions: xterm.ITerminalOptions = {
