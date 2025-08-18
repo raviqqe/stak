@@ -1,12 +1,11 @@
-import type { JSX } from "preact";
+import type { FunctionComponent, JSX } from "preact";
 import styles from "./Field.module.css";
 
-interface Props extends JSX.ElementChildrenAttribute {
-  style?: JSX.CSSProperties;
-}
-
-export const Field = (props: Props): JSX.Element => (
-  <div class={styles.root} style={props.style}>
-    {props.children}
+export const Field: FunctionComponent<{ style?: JSX.CSSProperties }> = ({
+  children,
+  style,
+}) => (
+  <div class={styles.root} style={style}>
+    {children}
   </div>
 );
