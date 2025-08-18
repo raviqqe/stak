@@ -1,14 +1,13 @@
-import type { JSX } from "preact";
+import type { FunctionComponent, JSX } from "preact";
 import styles from "./Button.module.css";
 
 interface Props {
-  children: JSX.Element;
   disabled?: boolean;
   icon?: JSX.Element;
   onClick: () => void;
 }
 
-export const Button = (props: Props): JSX.Element => (
+export const Button: FunctionComponent<Props> = (props) => (
   <button
     class={styles.root}
     disabled={props.disabled}

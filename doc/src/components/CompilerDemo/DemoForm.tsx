@@ -25,20 +25,20 @@ export const DemoForm = (): JSX.Element => {
           class={styles.program}
           id="source"
           onInput={(source) => store.source.set(source)}
-          value={source()}
+          value={source}
         />
-        <ErrorMessage>{error()}</ErrorMessage>
+        <ErrorMessage>{error}</ErrorMessage>
       </Field>
       <ButtonGroup>
-        <Button disabled={compiling()} icon={<Boxes />} onClick={store.compile}>
-          {compiling() ? "Compiling..." : "Compile"}
+        <Button disabled={compiling} icon={<Boxes />} onClick={store.compile}>
+          {compiling ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={!bytecodesReady() || interpreting()}
+          disabled={!bytecodesReady || interpreting}
           icon={<CirclePlay />}
           onClick={store.interpret}
         >
-          {interpreting() ? "Interpreting..." : "Interpret"}
+          {interpreting ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>
     </form>

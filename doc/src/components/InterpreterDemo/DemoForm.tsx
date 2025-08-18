@@ -17,7 +17,7 @@ export const DemoForm = (): JSX.Element => {
           class={styles.textArea}
           id="source"
           onInput={(source) => store.source.set(source)}
-          value={source()}
+          value={source}
         />
       </Field>
     </form>
