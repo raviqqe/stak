@@ -1,7 +1,8 @@
-import * as xterm from "@xterm/xterm";
-import type { JSX } from "preact";
 import "@xterm/xterm/css/xterm.css";
-import { computed, effect } from "@preact/signals";
+import * as xterm from "@xterm/xterm";
+import type { FunctionComponent } from "preact";
+import { useComputed, useSignalEffect } from "@preact/signals";
+import { useSignalRef } from "@preact/signals/utils";
 import { FitAddon } from "@xterm/addon-fit";
 import { delay } from "es-toolkit";
 import styles from "./Terminal.module.css";
@@ -19,29 +20,34 @@ interface Props {
   output: ReadableStream<string>;
 }
 
-export const Terminal = (props: Props): JSX.Element => {
-  const outputs = computed(() => props.output.tee());
+export const Terminal: FunctionComponent<Props> = ({
+  id,
+  input,
+  output,
+  initialInput,
+}) => {
+  const outputs = useComputed(() => output.tee());
   const terminal = new xterm.Terminal(terminalOptions);
   const fitAddon = new FitAddon();
   terminal.loadAddon(fitAddon);
 
-  let element: HTMLDivElement | null = null;
+  const ref = useSignalRef<HTMLDivElement | null>(null);
 
-  effect(() => {
-    if (!element) {
+  useSignalEffect(() => {
+    if (!ref.current) {
       return;
     }
 
-    terminal.open(element);
+    terminal.open(ref.current);
     fitAddon.fit();
 
-    element?.addEventListener("resize", () => fitAddon.fit());
+    ref.current.addEventListener("resize", () => fitAddon.fit());
   });
 
   const line: string[] = [];
 
-  effect(() => {
-    const writer = props.input.getWriter();
+  useSignalEffect(() => {
+    const writer = input.getWriter();
 
     terminal.onData(async (data) => {
       if (data === "\r") {
@@ -59,7 +65,7 @@ export const Terminal = (props: Props): JSX.Element => {
     });
   });
 
-  effect(() => {
+  useSignalEffect(() => {
     void (async (output: ReadableStream<string>) => {
       for await (const data of output) {
         terminal.write(data === "\n" ? "\r\n" : data);
@@ -67,11 +73,11 @@ export const Terminal = (props: Props): JSX.Element => {
     })(outputs.value[0]);
   });
 
-  effect(() => {
+  useSignalEffect(() => {
     void (async (output: ReadableStream<string>) => {
       await output.values().next();
 
-      for (const line of props.initialInput ?? []) {
+      for (const line of initialInput ?? []) {
         await delay(inputDelay);
 
         for (const character of line) {
@@ -83,13 +89,5 @@ export const Terminal = (props: Props): JSX.Element => {
     })(outputs.value[1]);
   });
 
-  return (
-    <div
-      class={styles.root}
-      id={props.id}
-      ref={(value) => {
-        element = value;
-      }}
-    />
-  );
+  return <div class={styles.root} id={id} ref={ref} />;
 };
