@@ -31,7 +31,7 @@ export const DemoIo = (): JSX.Element => {
         <pre class={styles.output} id="output">
           {output}
         </pre>
-        {outputUrl && <Link href={outputUrl ?? ""}>Download</Link>}
+        {outputUrl && <Link href={outputUrl}>Download</Link>}
         <ErrorMessage>{error}</ErrorMessage>
       </Field>
     </div>
