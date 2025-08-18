@@ -139,9 +139,6 @@ export default defineConfig({
     }),
   ],
   prefetch: { prefetchAll: true },
-  redirects: {
-    "/demo": "/interpreter-demo",
-  },
   site: "https://raviqqe.com/stak",
   vite: {
     plugins: [wasm()],
