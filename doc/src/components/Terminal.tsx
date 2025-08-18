@@ -66,27 +66,25 @@ export const Terminal: FunctionComponent<Props> = ({
     });
   });
 
-  useSignalEffect(() => {
-    void (async () => {
-      for await (const data of outputs[0]) {
-        terminal.write(data === "\n" ? "\r\n" : data);
+  void (async () => {
+    for await (const data of outputs[0]) {
+      terminal.write(data === "\n" ? "\r\n" : data);
+    }
+  })();
+
+  void (async () => {
+    await outputs[1].values().next();
+
+    for (const line of initialInput ?? []) {
+      await delay(inputDelay);
+
+      for (const character of line) {
+        terminal.input(character);
       }
-    })();
 
-    void (async () => {
-      await outputs[1].values().next();
-
-      for (const line of initialInput ?? []) {
-        await delay(inputDelay);
-
-        for (const character of line) {
-          terminal.input(character);
-        }
-
-        terminal.input("\r");
-      }
-    })();
-  });
+      terminal.input("\r");
+    }
+  })();
 
   return <div class={styles.root} id={id} ref={ref} />;
 };
