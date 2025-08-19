@@ -25,7 +25,7 @@
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.13.2",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.39.9",
+    "es-toolkit": "^1.39.10",
     "lucide-preact": "^0.539.0",
     "nanostores": "^1.0.1",
     "preact": "^10.27.0",
