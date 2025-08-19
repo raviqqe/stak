@@ -17,6 +17,7 @@ env:
     --buffer-size 8192
     --exclude https://r7rs.org
     --exclude https://www.gnu.org/software/.*
+    --header accept:*/*
     --header user-agent:muffet
     --max-retries 5
 jobs:
