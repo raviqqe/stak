@@ -15,9 +15,11 @@ env:
   MUFFET_OPTIONS: >
     --accepted-status-codes 200,403
     --buffer-size 8192
-    --max-retries 5
     --exclude https://r7rs.org
     --exclude https://www.gnu.org/software/.*
+    --header accept:text/html,*/*
+    --header user-agent:muffet
+    --max-retries 5
 jobs:
   rust_build:
     runs-on: ubuntu-latest
@@ -60,8 +62,6 @@ jobs:
         working-directory: doc
       - run: go tool muffet $MUFFET_OPTIONS http://localhost:4321/stak/
   web_release_test:
-    needs:
-      - web_build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
