@@ -28,7 +28,7 @@
     "es-toolkit": "^1.39.10",
     "lucide-preact": "^0.539.0",
     "nanostores": "^1.0.1",
-    "preact": "^10.27.0",
+    "preact": "^10.27.1",
     "shiki": "^3.9.2",
     "vite-plugin-wasm": "^3.5.0"
   },
