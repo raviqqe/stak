@@ -19,8 +19,6 @@
     "@nanostores/preact": "^1.0.0",
     "@preact/signals": "^2.2.1",
     "@raviqqe/stak": "^0.10.38",
-    "@shikijs/langs": "^3.9.2",
-    "@shikijs/themes": "^3.9.2",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.13.2",
@@ -30,7 +28,6 @@
     "nanostores": "^1.0.1",
     "preact": "^10.27.1",
     "prismjs": "^1.30.0",
-    "shiki": "^3.9.2",
     "vite-plugin-wasm": "^3.5.0"
   },
   "devDependencies": {
