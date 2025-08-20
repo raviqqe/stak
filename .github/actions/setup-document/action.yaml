@@ -6,6 +6,10 @@ runs:
   using: composite
   steps:
     - uses: pnpm/action-setup@v4
+      working-directory: doc
     - uses: actions/setup-node@v4
+      with:
+        node-version-file: doc/package.json
     - run: pnpm i --frozen-lockfile
       shell: bash
+      working-directory: doc
