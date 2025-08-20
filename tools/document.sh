@@ -37,5 +37,5 @@ done
 
 cd doc
 
-npm ci
-npm run build -- ${localhost:+--site http://localhost:4321/stak}
+pnpm i --frozen-lockfile
+node --run build -- ${localhost:+--site http://localhost:4321/stak}

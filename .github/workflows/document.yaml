@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup-document
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
       - uses: actions/upload-pages-artifact@v3
@@ -41,24 +41,21 @@ jobs:
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
   web_lint:
-    defaults:
-      run:
-        working-directory: doc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
-      - uses: actions/setup-node@v4
-      - run: npm ci
-      - run: npm run lint
+      - uses: ./.github/actions/setup-document
+      - run: node --run lint
+        working-directory: doc
   web_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup-document
       - run: tools/document.sh -l
-      - run: npm run preview &
+      - run: node --run preview &
         working-directory: doc
       - run: go tool muffet $MUFFET_OPTIONS http://localhost:4321/stak/
   web_release_test:
