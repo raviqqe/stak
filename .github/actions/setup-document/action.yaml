@@ -1,0 +1,9 @@
+name: stak/setup-scheme
+description: Sets up Scheme implementations
+inputs: {}
+outputs: {}
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v4
