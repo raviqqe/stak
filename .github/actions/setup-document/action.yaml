@@ -11,6 +11,7 @@ runs:
     - uses: actions/setup-node@v4
       with:
         cache: pnpm
+        cache-dependency-path: doc/pnpm-lock.yaml
         node-version-file: doc/package.json
     - run: pnpm i --frozen-lockfile
       shell: bash
