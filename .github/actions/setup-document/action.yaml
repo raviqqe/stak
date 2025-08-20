@@ -1,5 +1,5 @@
-name: stak/setup-scheme
-description: Sets up Scheme implementations
+name: stak/setup-document
+description: Sets up Node.js for documentation
 inputs: {}
 outputs: {}
 runs:
