@@ -29,6 +29,7 @@
     "lucide-preact": "^0.540.0",
     "nanostores": "^1.0.1",
     "preact": "^10.27.1",
+    "prismjs": "^1.30.0",
     "shiki": "^3.9.2",
     "vite-plugin-wasm": "^3.5.0"
   },
@@ -36,6 +37,7 @@
     "@biomejs/biome": "^2.2.0",
     "@raviqqe/biome-config": "^2.0.16",
     "@types/node": "^24.3.0",
+    "@types/prismjs": "^1.26.5",
     "eslint": "^9.33.0",
     "eslint-plugin-solid": "^0.14.5",
     "typescript": "^5.9.2"
