@@ -6,7 +6,8 @@ runs:
   using: composite
   steps:
     - uses: pnpm/action-setup@v4
-      working-directory: doc
+      with:
+        package_json_file: doc/package.json
     - uses: actions/setup-node@v4
       with:
         node-version-file: doc/package.json
