@@ -1,6 +1,6 @@
 use super::{FileDescriptor, FileError, FileSystem, utility::decode_path};
 use core::ffi::CStr;
-use heapless::{IndexMap, Vec};
+use heapless::{Vec, index_map::FnvIndexMap};
 use rustix::{
     fd::{AsFd, BorrowedFd, OwnedFd},
     fs::{self, Access, Mode, OFlags},
@@ -30,7 +30,7 @@ impl AsRef<CStr> for CString {
 #[derive(Debug, Default)]
 pub struct LibcFileSystem<const N: usize = DEFAULT_FILE_CAPACITY> {
     descriptor: FileDescriptor,
-    files: IndexMap<FileDescriptor, OwnedFd, N>,
+    files: FnvIndexMap<FileDescriptor, OwnedFd, N>,
 }
 
 impl LibcFileSystem {
