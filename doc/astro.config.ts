@@ -1,7 +1,7 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
+import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
-import solid from "@astrojs/solid-js";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import { capitalize, sortBy } from "es-toolkit";
@@ -43,8 +43,8 @@ const listItems = async (directory: string): Promise<Item[]> =>
 export default defineConfig({
   base: "/stak",
   integrations: [
+    preact(),
     sitemap(),
-    solid(),
     starlight({
       customCss: ["./src/index.css"],
       favicon: "/icon.svg",
@@ -139,9 +139,6 @@ export default defineConfig({
     }),
   ],
   prefetch: { prefetchAll: true },
-  redirects: {
-    "/demo": "/interpreter-demo",
-  },
   site: "https://raviqqe.com/stak",
   vite: {
     plugins: [wasm()],

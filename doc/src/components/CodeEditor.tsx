@@ -1,7 +1,8 @@
-import { Editor } from "@monza-editor/solid";
+import "monza-editor/style.css";
+import { Editor } from "@monza-editor/preact";
 import classNames from "classnames";
+import type { FunctionComponent } from "preact";
 import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
-import type { JSX } from "solid-js";
 import styles from "./CodeEditor.module.css";
 
 const highlighter = await createHighlighterCore({
@@ -20,7 +21,7 @@ interface Props {
   value?: string;
 }
 
-export const CodeEditor = (props: Props): JSX.Element => (
+export const CodeEditor: FunctionComponent<Props> = ({ onInput, ...props }) => (
   <Editor
     {...props}
     class={classNames(styles.main, props.class)}
@@ -33,6 +34,6 @@ export const CodeEditor = (props: Props): JSX.Element => (
           : "github-light",
       })
     }
-    onInput={(event) => props.onInput(event.target.value)}
+    onInput={(event) => onInput(event.target.value)}
   />
 );

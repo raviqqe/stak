@@ -1,0 +1,18 @@
+name: stak/setup-document
+description: Sets up Node.js for documentation
+inputs: {}
+outputs: {}
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        package_json_file: doc/package.json
+    - uses: actions/setup-node@v4
+      with:
+        cache: pnpm
+        cache-dependency-path: doc/pnpm-lock.yaml
+        node-version-file: doc/package.json
+    - run: pnpm i --frozen-lockfile
+      shell: bash
+      working-directory: doc

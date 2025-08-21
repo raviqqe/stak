@@ -1,13 +1,11 @@
-import type { JSX } from "solid-js";
+import type { FunctionComponent } from "preact";
 import styles from "./Link.module.css";
 
-interface Props {
-  children: JSX.Element;
-  href: string;
-}
-
-export const Link = (props: Props): JSX.Element => (
-  <a class={styles.root} href={props.href} rel="noreferrer" target="_blank">
-    {props.children}
+export const Link: FunctionComponent<{ href: string }> = ({
+  children,
+  href,
+}) => (
+  <a class={styles.root} href={href} rel="noreferrer" target="_blank">
+    {children}
   </a>
 );

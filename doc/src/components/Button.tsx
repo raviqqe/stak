@@ -1,21 +1,25 @@
-import type { JSX } from "solid-js";
+import type { FunctionComponent, JSX } from "preact";
 import styles from "./Button.module.css";
 
 interface Props {
-  children: JSX.Element;
   disabled?: boolean;
   icon?: JSX.Element;
   onClick: () => void;
 }
 
-export const Button = (props: Props): JSX.Element => (
+export const Button: FunctionComponent<Props> = ({
+  children,
+  disabled,
+  icon,
+  onClick,
+}) => (
   <button
     class={styles.root}
-    disabled={props.disabled}
-    onClick={() => props.onClick()}
+    disabled={disabled}
+    onClick={() => onClick()}
     type="button"
   >
-    {props.icon}
-    {props.children}
+    {icon}
+    {children}
   </button>
 );

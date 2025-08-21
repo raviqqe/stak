@@ -1,10 +1,6 @@
-import type { JSX } from "solid-js";
+import type { FunctionComponent } from "preact";
 import styles from "./ErrorMessage.module.css";
 
-interface Props {
-  children: JSX.Element;
-}
-
-export const ErrorMessage = (props: Props): JSX.Element => (
-  <>{props.children && <p class={styles.root}>{props.children}</p>}</>
+export const ErrorMessage: FunctionComponent = ({ children }) => (
+  <>{children && <p class={styles.root}>{children}</p>}</>
 );

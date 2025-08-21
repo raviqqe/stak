@@ -1,6 +1,6 @@
-import { useStore } from "@nanostores/solid";
-import { Boxes, CirclePlay } from "lucide-solid";
-import type { JSX } from "solid-js";
+import { useStore } from "@nanostores/preact";
+import { Boxes, CirclePlay } from "lucide-preact";
+import type { FunctionComponent } from "preact";
 import * as store from "../../stores/compiler.js";
 import { Button } from "../Button.js";
 import { ButtonGroup } from "../ButtonGroup.js";
@@ -10,7 +10,7 @@ import { Field } from "../Field.js";
 import { Label } from "../Label.js";
 import styles from "./DemoForm.module.css";
 
-export const DemoForm = (): JSX.Element => {
+export const DemoForm: FunctionComponent = () => {
   const source = useStore(store.source);
   const bytecodesReady = useStore(store.bytecodesReady);
   const compiling = useStore(store.compiling);
@@ -25,20 +25,20 @@ export const DemoForm = (): JSX.Element => {
           class={styles.program}
           id="source"
           onInput={(source) => store.source.set(source)}
-          value={source()}
+          value={source}
         />
-        <ErrorMessage>{error()}</ErrorMessage>
+        <ErrorMessage>{error}</ErrorMessage>
       </Field>
       <ButtonGroup>
-        <Button disabled={compiling()} icon={<Boxes />} onClick={store.compile}>
-          {compiling() ? "Compiling..." : "Compile"}
+        <Button disabled={compiling} icon={<Boxes />} onClick={store.compile}>
+          {compiling ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={!bytecodesReady() || interpreting()}
+          disabled={!bytecodesReady || interpreting}
           icon={<CirclePlay />}
           onClick={store.interpret}
         >
-          {interpreting() ? "Interpreting..." : "Interpret"}
+          {interpreting ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>
     </form>

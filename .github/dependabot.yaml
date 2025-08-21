@@ -31,5 +31,8 @@ updates:
         patterns:
           - astro
           - "@astrojs/*"
+        patterns:
+          - shiki
+          - "@shikijs/*"
     schedule:
       interval: daily

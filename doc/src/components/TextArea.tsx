@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import type { JSX } from "solid-js";
+import type { FunctionComponent, JSX } from "preact";
 import styles from "./TextArea.module.css";
 
 interface Props {
@@ -10,14 +10,20 @@ interface Props {
   value?: string;
 }
 
-export const TextArea = (props: Props): JSX.Element => (
+export const TextArea: FunctionComponent<Props> = ({
+  id,
+  onChange,
+  style,
+  value,
+  ...props
+}) => (
   <textarea
     class={classNames(styles.root, props.class)}
-    id={props.id}
-    onInput={(event) => props.onChange(event.currentTarget.value)}
-    style={props.style}
-    value={props.value}
+    id={id}
+    onInput={(event) => onChange(event.currentTarget.value)}
+    style={style}
+    value={value}
   >
-    {props.value}
+    {value}
   </textarea>
 );

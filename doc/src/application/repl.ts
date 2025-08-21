@@ -1,5 +1,5 @@
-import { runStreamWorker } from "../application/run-worker.js";
 import Worker from "./repl/worker.js?worker";
+import { runStreamWorker } from "./run-worker.js";
 
 export const runRepl = (
   input: ReadableStream<Uint8Array>,
