@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-heapless = { version = "0.8.0", default-features = false }
+heapless = { version = "0.9.1", default-features = false }
 rustix = { version = "1.0.8", default-features = false, features = [
   "fs",
 ], optional = true }
