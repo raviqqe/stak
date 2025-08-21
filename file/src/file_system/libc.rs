@@ -1,6 +1,6 @@
 use super::{FileDescriptor, FileError, FileSystem, utility::decode_path};
 use core::ffi::CStr;
-use heapless::{FnvIndexMap, Vec};
+use heapless::{Vec, index_map::FnvIndexMap};
 use rustix::{
     fd::{AsFd, BorrowedFd, OwnedFd},
     fs::{self, Access, Mode, OFlags},
