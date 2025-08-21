@@ -36,7 +36,7 @@ build_chibi() (
   cd tmp
   git_clone https://github.com/ashinn/chibi-scheme
   cd chibi-scheme
-  make chibi-scheme-static
+  make DSEXP_USE_NO_FEATURES=1 chibi-scheme-static
 )
 
 build_stak() (
