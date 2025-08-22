@@ -37,7 +37,7 @@ build_chibi() (
   git_clone https://github.com/ashinn/chibi-scheme
   cd chibi-scheme
   # spell-checker: disable-next-line
-  make DSEXP_USE_NO_FEATURES=1 chibi-scheme-static
+  make SEXP_USE_NO_FEATURES=1 chibi-scheme-static
 )
 
 build_stak() (
