@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 filter_existent_paths() (
   for path in "$@"; do
@@ -51,9 +51,12 @@ build_chibi() (
     SEXP_USE_STRING_STREAMS; do
     flags="$flags -D$flag=0"
   done
-
-  make CFLAGS=-Os CPPFLAGS="$flags" chibi-scheme-static
   # spell-checker: enable
+
+  (
+    set -x
+    make CFLAGS=-Os CPPFLAGS="$flags" chibi-scheme-static
+  )
 )
 
 build_stak() (
