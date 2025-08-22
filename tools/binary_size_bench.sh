@@ -36,8 +36,24 @@ build_chibi() (
   cd tmp
   git_clone https://github.com/ashinn/chibi-scheme
   cd chibi-scheme
-  # spell-checker: disable-next-line
-  make CFLAGS=-Os CPPFLAGS=-DSEXP_USE_NO_FEATURES=1 chibi-scheme-static
+
+  flags=
+
+  # spell-checker: disable
+  for flag in \
+    SEXP_USE_BIGNUMS \
+    SEXP_USE_DL \
+    SEXP_USE_FULL_SOURCE_INFO \
+    SEXP_USE_GREEN_THREADS \
+    SEXP_USE_PACKED_STRINGS \
+    SEXP_USE_RATIOS \
+    SEXP_USE_SEND_FILE \
+    SEXP_USE_STRING_STREAMS; do
+    flags="$flags -D$flag=0"
+  done
+
+  make CFLAGS=-Os CPPFLAGS=$flags chibi-scheme-static
+  # spell-checker: enable
 )
 
 build_stak() (
