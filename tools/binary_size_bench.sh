@@ -52,7 +52,7 @@ build_chibi() (
     flags="$flags -D$flag=0"
   done
 
-  make CFLAGS=-Os CPPFLAGS=$flags chibi-scheme-static
+  make CFLAGS=-Os CPPFLAGS="$flags" chibi-scheme-static
   # spell-checker: enable
 )
 
