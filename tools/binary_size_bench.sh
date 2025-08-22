@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 filter_existent_paths() (
   for path in "$@"; do
