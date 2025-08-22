@@ -53,10 +53,8 @@ build_chibi() (
   done
   # spell-checker: enable
 
-  (
-    set -x
-    make CFLAGS=-Os CPPFLAGS="$flags" chibi-scheme-static
-  )
+  set -x
+  make CFLAGS=-Os CPPFLAGS="$flags" chibi-scheme-static
 )
 
 build_stak() (
