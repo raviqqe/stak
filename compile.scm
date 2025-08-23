@@ -1758,12 +1758,16 @@
 
     ; Main
 
-    (define (main source)
+    (define (main options source)
      (define expression1 (include-files source))
      (define-values (expression2 libraries) (expand-libraries expression1))
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
      (define features (detect-features expression3))
-     (define-values (expression4 optimizers) (optimize (shake-tree features expression3)))
+     (define-values (expression4 optimizers)
+      (optimize
+       (if (memq 'shake-tree options)
+        (shake-tree features expression3)
+        expression3)))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
 
      (encode
@@ -1975,14 +1979,17 @@
         '(scheme read)
         '(scheme write))))
 
-  (let ((arguments (command-line)))
-    (when (or
-           (member "-h" arguments)
-           (member "--help" arguments))
-      (write-string "The Stak Scheme bytecode compiler.\n\n")
-      (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
-      (exit)))
+  (define arguments (command-line))
 
-  (compile (incept (read-source))))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "The Stak Scheme bytecode compiler.\n\n")
+    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+    (exit))
+
+  (compile
+    (if (member "--shake-tree" arguments) '(shake-tree) '())
+    (incept (read-source))))
 
 (main)

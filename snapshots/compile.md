@@ -4077,7 +4077,7 @@
   - expression1
   - expression2
   - detect-features
-  - shake-tree
+  - options
   - expression3
   - compile-metadata
   - libraries
@@ -4153,6 +4153,7 @@
   - expand-macros
   - expression
   - imports
+  - shake-tree
   - aa-tree
   - aa-tree-empty
   - aa-tree?
@@ -19778,6 +19779,7 @@
     - define
     - list
       - main
+      - options
       - source
     - list
       - define
@@ -19816,8 +19818,17 @@
       - list
         - optimize
         - list
-          - shake-tree
-          - features
+          - if
+          - list
+            - memq
+            - list
+              - quote
+              - shake-tree
+            - options
+          - list
+            - shake-tree
+            - features
+            - expression3
           - expression3
     - list
       - define
@@ -20857,7 +20868,7 @@
 - call 1 #f $$close
 - set ||
 - constant procedure 0 #f
-  - constant procedure 1 #f
+  - constant procedure 2 #f
     - get ||
     - constant list
       - scheme
@@ -20879,41 +20890,48 @@
       - write
     - call 6 #f environment
     - call 2 #f eval
+    - set 2
+    - call 0 #f command-line
     - set 1
     - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-        - constant "--help"
-        - get 3
-        - call 2 #f member
-      - call 1 #f $$close
-      - constant "-h"
-      - get 2
-      - call 2 #f member
-      - call 1 #f 1
-      - set 1
+      - get 0
       - if
-        - constant "The Stak Scheme bytecode compiler.\n\n"
-        - call 1 #f write-string
-        - set 0
-        - constant "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"
-        - call 1 #f write-string
-        - set 0
-        - call 0 #f exit
-      - constant #f
+        - get 0
+      - constant "--help"
+      - get 3
+      - call 2 #f member
     - call 1 #f $$close
-    - call 0 #f command-line
+    - constant "-h"
+    - get 2
+    - call 2 #f member
     - call 1 #f 1
     - set 1
+    - if
+      - constant "The Stak Scheme bytecode compiler.\n\n"
+      - call 1 #f write-string
+      - set 0
+      - constant "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"
+      - call 1 #f write-string
+      - set 0
+      - call 0 #f exit
+      - continue
+    - constant #f
     - set 0
+    - constant "--shake-tree"
+    - get 1
+    - call 2 #f member
+    - if
+      - constant list
+        - shake-tree
+      - continue
+    - constant ()
     - call 0 #f ||
     - call 1 #f ||
-    - call 1 #f 1
+    - call 2 #f 3
   - call 1 #f $$close
   - constant #f
-  - call 1 #f 1
+  - constant #f
+  - call 2 #f 2
 - call 1 #f $$close
 - set main
 - call 0 #f main
