@@ -1758,12 +1758,16 @@
 
     ; Main
 
-    (define (main source)
+    (define (main options source)
      (define expression1 (include-files source))
      (define-values (expression2 libraries) (expand-libraries expression1))
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
      (define features (detect-features expression3))
-     (define-values (expression4 optimizers) (optimize (shake-tree features expression3)))
+     (define-values (expression4 optimizers)
+      (optimize
+       (if (memq 'tree-shake options)
+        (shake-tree features expression3)
+        expression3)))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
 
      (encode
