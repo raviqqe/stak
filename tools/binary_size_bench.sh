@@ -40,7 +40,7 @@ build_chibi() (
   flags=
 
   # spell-checker: disable-next-line
-  make CFLAGS=-Os CPPFLAGS='-DSEXP_USE_FLONUMS=1 -DSEXP_USE_NO_FEATURES=1' chibi-scheme-static
+  make CFLAGS='-Os -DSEXP_USE_FLONUMS=1 -DSEXP_USE_NO_FEATURES=1' chibi-scheme-static
 )
 
 build_stak() (
