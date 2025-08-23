@@ -29,9 +29,10 @@ export const CodeEditor: FunctionComponent<Props> = ({ onInput, ...props }) => (
       highlighter.codeToHtml(text, {
         lang: "scheme",
         structure: "inline",
-        theme: window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "github-dark"
-          : "github-light",
+        theme:
+          document.querySelector("html")?.getAttribute("data-theme") === "dark"
+            ? "github-dark"
+            : "github-light",
       })
     }
     onInput={(event) => onInput(event.target.value)}
