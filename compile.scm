@@ -1765,7 +1765,7 @@
      (define features (detect-features expression3))
      (define-values (expression4 optimizers)
       (optimize
-       (if (memq 'tree-shake options)
+       (if (memq 'shake-tree options)
         (shake-tree features expression3)
         expression3)))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
@@ -1979,14 +1979,16 @@
         '(scheme read)
         '(scheme write))))
 
-  (let ((arguments (command-line)))
-    (when (or
-           (member "-h" arguments)
-           (member "--help" arguments))
-      (write-string "The Stak Scheme bytecode compiler.\n\n")
-      (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
-      (exit)))
+  (define arguments (command-line))
 
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "The Stak Scheme bytecode compiler.\n\n")
+    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+    (exit))
+
+  (member "--shake-tree" ,foo)
   (lambda)
   (command-line)
 
