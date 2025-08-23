@@ -20,9 +20,9 @@ shift 1
 
 compile() (
   if [ -n "$STAK_HOST" ]; then
-    $STAK_HOST $directory/compile.scm
+    $STAK_HOST $directory/compile.scm "$@"
   else
-    $target_directory/stak-compile
+    $target_directory/stak-compile "$@"
   fi
 )
 
