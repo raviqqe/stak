@@ -1988,10 +1988,8 @@
     (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
     (exit))
 
-  (member "--shake-tree" arguments)
-  (lambda)
-  (command-line)
-
-  (compile (incept (read-source))))
+  (compile
+    (if (member "--shake-tree" arguments) '(shake-tree) '())
+    (incept (read-source))))
 
 (main)
