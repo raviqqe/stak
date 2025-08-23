@@ -19,12 +19,14 @@ script=$1
 shift 1
 
 compile() (
+  options=$STAK_COMPILE_OPTIONS
+
   if [ -n "$STAK_HOST" ]; then
-    $STAK_HOST $directory/compile.scm "$@"
+    $STAK_HOST $directory/compile.scm $options
   else
-    $target_directory/stak-compile "$@"
+    $target_directory/stak-compile $options
   fi
 )
 
-cat $directory/prelude.scm $libraries $script | compile $STAK_COMPILE_OPTIONS >main.bc
+cat $directory/prelude.scm $libraries $script | compile >main.bc
 $target_directory/stak-interpret main.bc "$@"
