@@ -1987,6 +1987,7 @@
       (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
       (exit)))
 
+  (lambda)
   (command-line)
 
   (compile (incept (read-source))))
