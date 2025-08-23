@@ -3,6 +3,7 @@
 set -e
 
 directory=$(dirname $0)/../../..
+target_directory=$directory/target/release_test
 
 while getopts l: option; do
   case $option in
@@ -17,5 +18,15 @@ shift $(expr $OPTIND - 1)
 script=$1
 shift 1
 
-cat $directory/prelude.scm $libraries $script | stak-compile >main.bc
-stak-interpret main.bc "$@"
+compile() (
+  options=$STAK_COMPILE_OPTIONS
+
+  if [ -n "$STAK_HOST" ]; then
+    $STAK_HOST $directory/compile.scm $options
+  else
+    $target_directory/stak-compile $options
+  fi
+)
+
+cat $directory/prelude.scm $libraries $script | compile >main.bc
+$target_directory/stak-interpret main.bc "$@"

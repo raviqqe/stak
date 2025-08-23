@@ -7,6 +7,8 @@ on:
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
+env:
+  GUILE_AUTO_COMPILE: 0
 jobs:
   build:
     strategy:
@@ -69,12 +71,15 @@ jobs:
           - name: stak-tools
             host: gosh
           - name: stak-tools
-            host: guile
+            host: gosh
+            compile_options: --shake-tree
           - name: stak-tools
             host: gosh
             features:
               - gc_always
             tags: ~@long
+          - name: stak-tools
+            host: guile
           - name: chibi
             tags: ~@stak,@chibi
           - name: gauche
@@ -86,7 +91,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST: ${{ matrix.interpreter.host }}
-      GUILE_AUTO_COMPILE: 0
+      STAK_COMPILE_OPTIONS: ${{ matrix.interpreter.compile_options }}
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
