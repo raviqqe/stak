@@ -10,7 +10,7 @@ filter_existent_paths() (
   done
 )
 
-list_dynamic_libraries() {
+list_dynamic_libraries() (
   case $(uname) in
   Darwin)
     otool -L "$@" | tail -n +2 | grep -o '.*\.dylib'
@@ -19,7 +19,7 @@ list_dynamic_libraries() {
     ldd /bin/ls | grep -o '/lib/[^ ]*'
     ;;
   esac
-}
+)
 
 git_clone() (
   directory=$(basename $1)
