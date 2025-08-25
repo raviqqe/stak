@@ -54,8 +54,8 @@ importers:
         specifier: ^0.541.0
         version: 0.541.0(preact@10.27.1)
       monza-editor:
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.5.2
+        version: 0.5.2
       nanostores:
         specifier: ^1.0.1
         version: 1.0.1
@@ -1711,6 +1711,9 @@ packages:
 
   monza-editor@0.5.0:
     resolution: {integrity: sha512-QC2xm18KilpgHHBhoUhMIiBjUvH42hlPyjUnvtZ77yd2A8oYbHN1uCyr7arChExvcwMv4lMUW/QX6iJXq0frdQ==}
+
+  monza-editor@0.5.2:
+    resolution: {integrity: sha512-K8GK7kSg+wJhFtAmQExUIOIiWl5RAMS7lR1y/IAH94+SlQQD5xIpsXStjhxD/gTmgpdxZ81nDe8ukGKXj5/tQQ==}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -4405,6 +4408,8 @@ snapshots:
       - supports-color
 
   monza-editor@0.5.0: {}
+
+  monza-editor@0.5.2: {}
 
   mrmime@2.0.1: {}
 
