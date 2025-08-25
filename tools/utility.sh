@@ -32,8 +32,9 @@ log_version() {
 log_versions() {
   log_version chibi-scheme -V
   log_version gsi -v
+  log_version gosh -V
 
-  for command in gosh guile lua micropython mruby python3 ruby stak; do
+  for command in guile lua micropython mruby python3 ruby stak; do
     log_version $command --version
   done
 }
