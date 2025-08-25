@@ -2,6 +2,8 @@
 
 set -ex
 
+export GUILE_AUTO_COMPILE=0
+
 feature=
 
 while getopts f: option; do
