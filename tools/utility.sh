@@ -49,7 +49,9 @@ setup_bench() (
     cat prelude.scm $file | stak-compile >${file%.scm}.bc
   done
 
-  for command in chibi-scheme gsi gosh guile lua micropython mruby python3 ruby stak; do
+  log chibi-scheme -V
+
+  for command in gsi gosh guile lua micropython mruby python3 ruby stak; do
     if which command >/dev/null; then
       log $command --version
     fi
