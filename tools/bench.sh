@@ -55,6 +55,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
   hyperfine \
     --shell none \
     --warmup 5 \
+    --runs 10 \
     --export-markdown $output_directory/$(dirname $base).md \
     --export-json $output_directory/$(dirname $base).json \
     --input ../../compile.scm \
