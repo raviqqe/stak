@@ -23,21 +23,22 @@ build_binary() (
   cargo build --release "$@"
 )
 
-log_version() {
+log_version() (
   if which $1 >/dev/null; then
     log "$@"
   fi
-}
+)
 
-log_versions() {
+log_versions() (
   log_version chibi-scheme -V
   log_version gsi -v
   log_version gosh -V
+  log_version lua -v
 
-  for command in guile lua micropython mruby python3 ruby stak; do
+  for command in guile micropython mruby python3 ruby stak; do
     log_version $command --version
   done
-}
+)
 
 setup_bench() (
   [ $# -le 1 ]
@@ -65,5 +66,6 @@ setup_bench() (
     cat prelude.scm $file | stak-compile >${file%.scm}.bc
   done
 
+  set +x
   log_versions
 )
