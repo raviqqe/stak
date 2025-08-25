@@ -35,7 +35,7 @@ jobs:
       - uses: ./.github/actions/setup-document
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: doc/dist
       - uses: actions/deploy-pages@v4
