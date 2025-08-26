@@ -1300,7 +1300,7 @@
       (tree-shake-context-append! context (map cdr (append-map cdr libraries)))
       (filter
        (lambda (pair)
-        (memq symbol (tree-shake-context-symbols context)))
+        (memq (car pair) (tree-shake-context-symbols context)))
        macros)))
 
     ; Feature detection
