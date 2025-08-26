@@ -1281,17 +1281,14 @@
         (shake-sequence context locals expression)
         expression))))
 
-    (define (shake-syntax-tree literals)
-     (let* ((dependencies
-             (map
-              (lambda (literal)
-               (cons
-                (car literal)
-                (find-library-symbols '() (cdr expression))))
-              literals))
-            (context (make-tree-shake-context dependencies '())))
-      (tree-shake-context-append! context (or (assq #f dependencies) '()))
-      (shake-expression context '() expression)))
+    (define (shake-syntax-tree libraries macros)
+     (let* ((exports (map cdr (append-map cdr libraries)))
+            (dependencies
+             (map-values
+              (lambda (expression)
+               (find-library-symbols '() expression))
+              macros)))
+      (debug exports dependencies)))
 
     (define (shake-tree features expression)
      (if (memq 'libraries features)
@@ -1781,6 +1778,8 @@
         (shake-tree features expression3)
         expression3)))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
+
+     (shake-syntax-tree libraries macros)
 
      (encode
       (marshal
