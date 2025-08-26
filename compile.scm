@@ -1782,9 +1782,14 @@
        (if (memq 'shake-tree options)
         (shake-tree features expression3)
         expression3)))
-     (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression4))
-
-     (shake-syntax-tree libraries macros)
+     (define metadata
+      (compile-metadata
+       features
+       libraries
+       (shake-syntax-tree libraries macros)
+       optimizers
+       dynamic-symbols
+       expression4))
 
      (encode
       (marshal
