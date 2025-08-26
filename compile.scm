@@ -1288,7 +1288,7 @@
                (cons
                 (car literal)
                 (find-library-symbols '() (cdr expression))))
-              foo))
+              literals))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (or (assq #f dependencies) '()))
       (shake-expression context '() expression)))
