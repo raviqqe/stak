@@ -1282,12 +1282,13 @@
         expression))))
 
     (define (shake-syntax-tree libraries macros)
-     (let* ((exports (map cdr (append-map cdr libraries)))
-            (dependencies
+     (let* ((dependencies
              (map-values
               (lambda (expression)
                (find-library-symbols '() expression))
-              macros)))
+              macros))
+            (context (make-tree-shake-context dependencies '())))
+      (tree-shake-context-append! context (map cdr (append-map cdr libraries)))
       (debug exports dependencies)))
 
     (define (shake-tree features expression)
