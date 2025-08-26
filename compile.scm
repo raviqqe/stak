@@ -1281,6 +1281,12 @@
         (shake-sequence context locals expression)
         expression))))
 
+    (define (shake-syntax-tree literals)
+     (let* ((dependencies (find-symbol-dependencies expression))
+            (context (make-tree-shake-context dependencies '())))
+      (tree-shake-context-append! context (or (assq #f dependencies) '()))
+      (shake-expression context '() expression)))
+
     (define (shake-tree features expression)
      (if (memq 'libraries features)
       expression
