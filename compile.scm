@@ -1295,6 +1295,7 @@
       expression
       (let* ((dependencies (find-symbol-dependencies expression))
              (context (make-tree-shake-context dependencies '())))
+       ; There is no global symbol corresponding to `#f` if no library symbol is found.
        (tree-shake-context-append! context (or (assq #f dependencies) '()))
        (shake-expression context '() expression))))
 
