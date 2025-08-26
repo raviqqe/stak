@@ -1282,7 +1282,9 @@
         expression))))
 
     (define (shake-syntax-tree literals)
-     (let* ((dependencies (find-symbol-dependencies expression))
+     (let* ((dependencies
+             (map
+              (lambda (literal) (find-library-symbols '() (caddr expression)))))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (or (assq #f dependencies) '()))
       (shake-expression context '() expression)))
