@@ -3914,6 +3914,7 @@
   - rules
   - optimizer
   - relaxed-map
+  - $$define-optimizer
   - optimization-context-append!
   - optimization-context-append-literal!
   - predicate
@@ -3964,19 +3965,19 @@
   - tree-shake-context-set-symbols!
   - tree-shake-context-dependencies
   - merge-multi-maps
-  - find-library-symbols
   - first
   - expressions
   - parameter-names
   - parameters
-  - tree-shake-context-symbols
   - shake-sequence
   - locals
   - find-symbol-dependencies
-  - make-tree-shake-context
-  - tree-shake-context-append!
-  - dependencies
   - shake-expression
+  - find-library-symbols
+  - make-tree-shake-context
+  - dependencies
+  - tree-shake-context-append!
+  - tree-shake-context-symbols
   - $$dynamic-symbols
   - $$symbols
   - loop
@@ -4080,6 +4081,7 @@
   - options
   - expression3
   - compile-metadata
+  - shake-syntax-tree
   - libraries
   - macros
   - optimizers
@@ -4572,7 +4574,6 @@
   - $$...
   - $$define-syntax
   - $$syntax-error
-  - $$define-optimizer
   - $$define
   - $$lambda
   - $$let-syntax
@@ -9559,19 +9560,6 @@
                                                   - ||
                                                   - ...
                                             - list
-                                              - ||
-                                              - syntax-rules
-                                              - ()
-                                              - list
-                                                - list
-                                                  - \_
-                                                  - ||
-                                                  - ||
-                                                - list
-                                                  - $$define-optimizer
-                                                  - ||
-                                                  - ||
-                                            - list
                                               - define
                                               - syntax-rules
                                               - ()
@@ -10052,235 +10040,6 @@
                                                   - $$set!
                                                   - ||
                                                   - ||
-                                            - list
-                                              - ||
-                                              - syntax-rules
-                                              - ||
-                                              - ()
-                                              - list
-                                                - list
-                                                  - \_
-                                                  - cond-expand
-                                                  - ||
-                                                  - ||
-                                                - list
-                                                  - begin
-                                                  - list
-                                                    - define
-                                                    - list
-                                                      - features
-                                                    - list
-                                                      - quote
-                                                      - ||
-                                                  - list
-                                                    - ||
-                                                    - "cond"
-                                                    - cond-expand
-                                                    - ||
-                                                    - ||
-                                              - list
-                                                - list
-                                                  - \_
-                                                  - "cond"
-                                                  - cond-expand
-                                                  - ||
-                                                  - list
-                                                    - ||
-                                                    - ||
-                                                    - ||
-                                                  - ||
-                                                  - ||
-                                                - list
-                                                  - ||
-                                                  - "cond"
-                                                  - cond-expand
-                                                  - ||
-                                                  - list
-                                                    - ||
-                                                    - ||
-                                                  - list
-                                                    - list
-                                                      - cond-expand
-                                                      - list
-                                                        - ||
-                                                        - ||
-                                                        - ...
-                                                      - ||
-                                                      - ...
-                                                    - list
-                                                      - ||
-                                                      - ||
-                                                      - ...
-                                                  - ||
-                                                  - ||
-                                              - list
-                                                - list
-                                                  - \_
-                                                  - "cond"
-                                                  - cond-expand
-                                                  - list
-                                                    - and
-                                                    - else
-                                                    - not
-                                                    - or
-                                                    - ||
-                                                    - ||
-                                                  - ()
-                                                  - ||
-                                                  - ||
-                                                - list
-                                                  - define-syntax
-                                                  - cond-expand
-                                                  - list
-                                                    - syntax-rules
-                                                    - list
-                                                      - and
-                                                      - else
-                                                      - not
-                                                      - or
-                                                      - ||
-                                                      - ||
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                      - list
-                                                        - syntax-error
-                                                        - "unfulfilled cond-expand"
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - else
-                                                          - ||
-                                                          - ...
-                                                      - list
-                                                        - ||
-                                                        - ||
-                                                        - ...
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - list
-                                                            - and
-                                                          - ||
-                                                          - ...
-                                                        - ||
-                                                        - ...
-                                                      - list
-                                                        - ||
-                                                        - ||
-                                                        - ...
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - list
-                                                            - and
-                                                            - ||
-                                                            - ||
-                                                            - ...
-                                                          - ||
-                                                          - ...
-                                                        - ||
-                                                        - ...
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - ||
-                                                          - list
-                                                            - cond-expand
-                                                            - list
-                                                              - list
-                                                                - and
-                                                                - ||
-                                                                - ...
-                                                              - ||
-                                                              - ...
-                                                            - ||
-                                                            - ...
-                                                        - ||
-                                                        - ...
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - list
-                                                            - or
-                                                          - ||
-                                                          - ...
-                                                        - ||
-                                                        - ...
-                                                      - list
-                                                        - cond-expand
-                                                        - ||
-                                                        - ...
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - list
-                                                            - or
-                                                            - ||
-                                                            - ||
-                                                            - ...
-                                                          - ||
-                                                          - ...
-                                                        - ||
-                                                        - ...
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - ||
-                                                          - ||
-                                                          - ...
-                                                        - list
-                                                          - list
-                                                            - or
-                                                            - ||
-                                                            - ...
-                                                          - ||
-                                                          - ...
-                                                        - ||
-                                                        - ...
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - list
-                                                            - not
-                                                            - ||
-                                                          - ||
-                                                          - ...
-                                                        - ||
-                                                        - ...
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - ||
-                                                          - list
-                                                            - cond-expand
-                                                            - ||
-                                                            - ...
-                                                        - list
-                                                          - else
-                                                          - ||
-                                                          - ...
-                                                    - ||
-                                                    - ||
-                                                    - list
-                                                      - list
-                                                        - cond-expand
-                                                        - list
-                                                          - ||
-                                                          - ||
-                                                          - ...
-                                                        - ||
-                                                        - ...
-                                                      - list
-                                                        - cond-expand
-                                                        - ||
-                                                        - ...
                                             - list
                                               - cond-expand
                                               - syntax-rules
@@ -18036,6 +17795,63 @@
           - expression
   - list
     - define
+    - list
+      - shake-syntax-tree
+      - libraries
+      - macros
+    - list
+      - let\*
+      - list
+        - list
+          - dependencies
+          - list
+            - map-values
+            - list
+              - lambda
+              - list
+                - expression
+              - list
+                - find-library-symbols
+                - list
+                  - quote
+                  - ()
+                - expression
+            - macros
+        - list
+          - context
+          - list
+            - make-tree-shake-context
+            - dependencies
+            - list
+              - quote
+              - ()
+      - list
+        - tree-shake-context-append!
+        - context
+        - list
+          - map
+          - cdr
+          - list
+            - append-map
+            - cdr
+            - libraries
+      - list
+        - filter
+        - list
+          - lambda
+          - list
+            - pair
+          - list
+            - memq
+            - list
+              - car
+              - pair
+            - list
+              - tree-shake-context-symbols
+              - context
+        - macros
+  - list
+    - define
     - features
     - list
       - quote
@@ -19837,7 +19653,10 @@
         - compile-metadata
         - features
         - libraries
-        - macros
+        - list
+          - shake-syntax-tree
+          - libraries
+          - macros
         - optimizers
         - dynamic-symbols
         - expression4
