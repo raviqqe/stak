@@ -1298,7 +1298,7 @@
               macros))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (map cdr (append-map cdr libraries)))
-      (debug dependencies)))
+      (filter (lambda (pair) (memq symbol (tree-shake-context-symbols context))) macros)))
 
     ; Feature detection
 
