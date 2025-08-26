@@ -1289,7 +1289,7 @@
               macros))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (map cdr (append-map cdr libraries)))
-      (debug exports dependencies)))
+      (debug dependencies)))
 
     (define (shake-tree features expression)
      (if (memq 'libraries features)
