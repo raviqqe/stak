@@ -1281,6 +1281,15 @@
         (shake-sequence context locals expression)
         expression))))
 
+    (define (shake-tree features expression)
+     (if (memq 'libraries features)
+      expression
+      (let* ((dependencies (find-symbol-dependencies expression))
+             (context (make-tree-shake-context dependencies '())))
+       ; There is no global symbol corresponding to `#f` if no library symbol is found.
+       (tree-shake-context-append! context (or (assq #f dependencies) '()))
+       (shake-expression context '() expression))))
+
     (define (shake-syntax-tree libraries macros)
      (let* ((dependencies
              (map-values
@@ -1290,15 +1299,6 @@
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (map cdr (append-map cdr libraries)))
       (debug dependencies)))
-
-    (define (shake-tree features expression)
-     (if (memq 'libraries features)
-      expression
-      (let* ((dependencies (find-symbol-dependencies expression))
-             (context (make-tree-shake-context dependencies '())))
-       ; There is no global symbol corresponding to `#f` if no library symbol is found.
-       (tree-shake-context-append! context (or (assq #f dependencies) '()))
-       (shake-expression context '() expression))))
 
     ; Feature detection
 
