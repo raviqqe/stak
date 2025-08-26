@@ -1285,7 +1285,9 @@
      (let* ((dependencies
              (map
               (lambda (literal)
-               (find-library-symbols '() (cdr expression)))
+               (cons
+                (car literal)
+                (find-library-symbols '() (cdr expression))))
               foo))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (or (assq #f dependencies) '()))
