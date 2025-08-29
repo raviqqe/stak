@@ -27,8 +27,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1(preact@10.27.1)
       '@raviqqe/stak':
-        specifier: ^0.10.38
-        version: 0.10.38
+        specifier: ^0.10.39
+        version: 0.10.39
       '@shikijs/langs':
         specifier: ^3.12.0
         version: 3.12.0
@@ -776,8 +776,8 @@ packages:
     peerDependencies:
       '@biomejs/biome': ^2.1.4
 
-  '@raviqqe/stak@0.10.38':
-    resolution: {integrity: sha512-AN4EwHylt30j7WR8wMlmiAR3kDjj82HXFWzLMkd5K7tAXUPAK8HSNiB2lMFs3QocH08isTk+I46CDaBgTB5hbg==}
+  '@raviqqe/stak@0.10.39':
+    resolution: {integrity: sha512-9ntVbnS2rQ/GWYcxh/TNMHqmRlxzlDBZTnhhT1gUhj8BXl3XSV/wWC6o1y6fsk3sJUhE9FZcdUjLAFo7xi84Yw==}
 
   '@rollup/pluginutils@4.2.1':
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -3024,7 +3024,7 @@ snapshots:
     dependencies:
       '@biomejs/biome': 2.2.2
 
-  '@raviqqe/stak@0.10.38': {}
+  '@raviqqe/stak@0.10.39': {}
 
   '@rollup/pluginutils@4.2.1':
     dependencies:
