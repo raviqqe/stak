@@ -1,18 +1,12 @@
 import "monza-editor/style.css";
 import { Editor } from "@monza-editor/preact";
 import classNames from "classnames";
+import { highlight } from "picolight";
+import { scheme } from "picolight/languages/scheme";
+import { githubDark } from "picolight/themes/github-dark";
+import { githubLight } from "picolight/themes/github-light";
 import type { FunctionComponent } from "preact";
-import { createHighlighterCore, createJavaScriptRegexEngine } from "shiki";
 import styles from "./CodeEditor.module.css";
-
-const highlighter = await createHighlighterCore({
-  engine: createJavaScriptRegexEngine(),
-  langs: [import("@shikijs/langs/scheme")],
-  themes: [
-    import("@shikijs/themes/github-dark"),
-    import("@shikijs/themes/github-light"),
-  ],
-});
 
 interface Props {
   class?: string;
@@ -26,14 +20,13 @@ export const CodeEditor: FunctionComponent<Props> = ({ onInput, ...props }) => (
     {...props}
     class={classNames(styles.main, props.class)}
     onHighlight={(text) =>
-      highlighter.codeToHtml(text, {
-        lang: "scheme",
-        structure: "inline",
-        theme:
-          document.querySelector("html")?.getAttribute("data-theme") === "dark"
-            ? "github-dark"
-            : "github-light",
-      })
+      highlight(
+        text,
+        scheme,
+        document.querySelector("html")?.getAttribute("data-theme") === "dark"
+          ? githubDark
+          : githubLight,
+      ).outerHTML
     }
     onInput={(event) => onInput(event.target.value)}
   />

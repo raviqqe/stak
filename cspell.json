@@ -86,6 +86,7 @@
     "optarg",
     "optind",
     "otool",
+    "picolight",
     "preact",
     "println",
     "quasiquote",
