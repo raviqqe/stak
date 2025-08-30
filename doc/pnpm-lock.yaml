@@ -29,12 +29,6 @@ importers:
       '@raviqqe/stak':
         specifier: ^0.10.39
         version: 0.10.39
-      '@shikijs/langs':
-        specifier: ^3.12.0
-        version: 3.12.0
-      '@shikijs/themes':
-        specifier: ^3.12.0
-        version: 3.12.0
       '@xterm/addon-fit':
         specifier: ^0.10.0
         version: 0.10.0(@xterm/xterm@5.5.0)
@@ -65,9 +59,6 @@ importers:
       preact:
         specifier: ^10.27.1
         version: 10.27.1
-      shiki:
-        specifier: ^3.12.0
-        version: 3.12.0
       vite-plugin-wasm:
         specifier: ^3.5.0
         version: 3.5.0(vite@6.3.5(@types/node@24.3.0))
