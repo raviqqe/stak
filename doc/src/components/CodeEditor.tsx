@@ -15,23 +15,19 @@ interface Props {
   value?: string;
 }
 
-export const CodeEditor: FunctionComponent<Props> = ({ onInput, ...props }) => {
-  const html = document.querySelector("html");
-
-  return (
-    <Editor
-      {...props}
-      class={classNames(styles.main, props.class)}
-      onHighlight={(text) =>
-        highlight(
-          text,
-          scheme,
-          html?.getAttribute("data-theme") === "dark"
-            ? githubDark
-            : githubLight,
-        ).outerHTML
-      }
-      onInput={(event) => onInput(event.target.value)}
-    />
-  );
-};
+export const CodeEditor: FunctionComponent<Props> = ({ onInput, ...props }) => (
+  <Editor
+    {...props}
+    class={classNames(styles.main, props.class)}
+    onHighlight={(text) =>
+      highlight(
+        text,
+        scheme,
+        document.querySelector("html")?.getAttribute("data-theme") === "dark"
+          ? githubDark
+          : githubLight,
+      ).outerHTML
+    }
+    onInput={(event) => onInput(event.target.value)}
+  />
+);
