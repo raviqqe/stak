@@ -59,6 +59,9 @@ importers:
       nanostores:
         specifier: ^1.0.1
         version: 1.0.1
+      picolight:
+        specifier: ^0.2.1
+        version: 0.2.1
       preact:
         specifier: ^10.27.1
         version: 10.27.1
@@ -1811,6 +1814,9 @@ packages:
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
+  picolight@0.2.1:
+    resolution: {integrity: sha512-j9PCrqyCX2q1IMyYPfF8lx3XpO4trK0wijeWrWtLaMMtKQLMedRtnocn74oxdmVpNQwUCJHh4nCEi8qT8eQVNg==}
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -4509,6 +4515,8 @@ snapshots:
       entities: 6.0.1
 
   picocolors@1.1.1: {}
+
+  picolight@0.2.1: {}
 
   picomatch@2.3.1: {}
 
