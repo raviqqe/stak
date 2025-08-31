@@ -26,6 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: wasm/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: wasm/package.json
       - run: cargo install wasm-pack
       - run: wasm-pack build --target web wasm -- --features async
       - run: |
@@ -33,13 +39,10 @@ jobs:
           mv /tmp/package.json pkg
         working-directory: wasm
       - run: wasm-pack pack wasm
-      - uses: js-devtools/npm-publish@v3
+      - uses: raviqqe/pnpm-publish@v2
         with:
-          access: public
-          package: wasm/pkg
-          provenance: true
-          token: ${{ secrets.NPM_TOKEN }}
-        if: github.ref == 'refs/heads/main'
+          directory: wasm
+          release: ${{ github.ref == 'refs/heads/main' }}
   goreleaser:
     permissions:
       contents: write
