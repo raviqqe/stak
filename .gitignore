@@ -1,5 +1,8 @@
 *.bc
 *.info
+.astro
 .cargo_cache
+dist
+node_modules
 target
 tmp
