@@ -29,6 +29,9 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           package_json_file: wasm/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: wasm/package.json
       - run: cargo install wasm-pack
       - run: wasm-pack build --target web wasm -- --features async
       - run: |
