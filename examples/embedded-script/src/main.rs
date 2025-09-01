@@ -61,7 +61,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
     // Initialize a heap memory.
-    let mut heap = vec![Default::default(); HEAP_SIZE];
+    let mut heap = [Default::default(); HEAP_SIZE];
     // Define Rust functions to pass to the engine.
     let mut functions = [
         ("make-person", r#fn(Person::new)),
