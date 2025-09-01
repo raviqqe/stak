@@ -525,7 +525,8 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
             Number::from_i64(-((integer >> 2) as i64))
         } else {
             let integer = integer >> 2;
-            let mantissa = if integer.is_multiple_of(2) { 1.0 } else { -1.0 } * (integer >> 12) as f64;
+            let mantissa =
+                if integer.is_multiple_of(2) { 1.0 } else { -1.0 } * (integer >> 12) as f64;
             let exponent = ((integer >> 1) % (1 << 11)) as isize - 1023;
 
             Number::from_f64(if exponent < 0 {
