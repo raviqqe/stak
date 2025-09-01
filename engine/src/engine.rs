@@ -13,10 +13,7 @@ pub struct Engine<'a, 'b, H: Heap> {
 
 impl<'a, 'b, H: Heap> Engine<'a, 'b, H> {
     /// Creates a scripting engine.
-    pub fn new(
-        heap: H,
-        functions: &'a mut [(&'a str, AnyFn<'b>)],
-    ) -> Result<Self, Error> {
+    pub fn new(heap: H, functions: &'a mut [(&'a str, AnyFn<'b>)]) -> Result<Self, Error> {
         Ok(Self {
             vm: Vm::new(heap, EnginePrimitiveSet::new(functions))?,
         })
