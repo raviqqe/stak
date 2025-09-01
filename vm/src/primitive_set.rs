@@ -1,5 +1,5 @@
 use crate::{
-    Exception, Value,
+    Exception,
     memory::{Heap, Memory},
 };
 use winter_maybe_async::maybe_async;
