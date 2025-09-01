@@ -234,7 +234,7 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
     }
 
     #[inline]
-    const fn is_out_of_memory(&self) -> bool {
+    fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
@@ -245,7 +245,7 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
     }
 
     #[inline]
-    const fn space_size(&self) -> usize {
+    fn space_size(&self) -> usize {
         self.size() / 2
     }
 
@@ -257,13 +257,13 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
 
     /// Returns an allocation start index.
     #[inline]
-    pub const fn allocation_start(&self) -> usize {
+    pub fn allocation_start(&self) -> usize {
         if self.space { self.space_size() } else { 0 }
     }
 
     /// Returns an allocation end index.
     #[inline]
-    pub const fn allocation_end(&self) -> usize {
+    pub fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
@@ -282,7 +282,7 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
         assert_heap_index!(self, index, G);
 
         *self
-            .heap()
+            .heap_mut()
             .get_mut(index)
             .ok_or(Error::InvalidMemoryAccess)? = value;
 
@@ -505,7 +505,7 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
     }
 }
 
-impl<T: AsRef<[Value]>> Write for Memory<T> {
+impl<T: AsRef<[Value]> + AsMut<[Value]>> Write for Memory<T> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
         (|| -> Result<(), Error> {
             let mut list = self.null()?;
