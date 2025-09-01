@@ -53,8 +53,9 @@ fn run(
     output: &mut Vec<u8>,
     error: &mut Vec<u8>,
 ) -> Result<(), SmallError> {
+    let mut heap = vec![Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        [Default::default(); HEAP_SIZE],
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, output, error),
             VoidFileSystem::new(),
