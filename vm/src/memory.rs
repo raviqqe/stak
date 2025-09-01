@@ -51,7 +51,7 @@ pub struct Memory<T> {
     heap: T,
 }
 
-impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
+impl<T: Heap> Memory<T> {
     /// Creates a memory.
     pub fn new(heap: T) -> Result<Self, Error> {
         let mut memory = Self {
@@ -505,7 +505,7 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
     }
 }
 
-impl<T: AsRef<[Value]> + AsMut<[Value]>> Write for Memory<T> {
+impl<T: Heap> Write for Memory<T> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
         (|| -> Result<(), Error> {
             let mut list = self.null()?;
@@ -529,7 +529,7 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Write for Memory<T> {
     }
 }
 
-impl<T: AsRef<[Value]> + AsMut<[Value]>> Display for Memory<T> {
+impl<T: Heap> Display for Memory<T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -562,6 +562,12 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Display for Memory<T> {
         Ok(())
     }
 }
+
+pub trait Heap: AsRef<[Value]> + AsMut<[Value]> {}
+
+impl Heap for &mut [Value] {}
+
+impl Heap for alloc::vec::Vec<Value> {}
 
 #[cfg(test)]
 mod tests {

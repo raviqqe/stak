@@ -5,7 +5,7 @@ use crate::{
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     instruction::Instruction,
-    memory::Memory,
+    memory::{Heap, Memory},
     number::Number,
     primitive_set::PrimitiveSet,
     r#type::Type,
@@ -13,7 +13,10 @@ use crate::{
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::fmt::{self, Display, Formatter, Write};
+use core::{
+    fmt::{self, Display, Formatter, Write},
+    marker::PhantomData,
+};
 use stak_util::block_on;
 use winter_maybe_async::{maybe_async, maybe_await};
 
@@ -46,23 +49,25 @@ struct Arity {
 }
 
 /// A virtual machine.
-pub struct Vm<'a, T: PrimitiveSet> {
+pub struct Vm<'a, T: PrimitiveSet, H> {
     primitive_set: T,
-    memory: Memory<'a>,
+    memory: Memory<H>,
     #[cfg(feature = "profile")]
     profiler: Option<RefCell<&'a mut dyn Profiler>>,
+    _profiler: PhantomData<&'a ()>,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<'a, T: PrimitiveSet> Vm<'a, H, T> {
+impl<'a, T: PrimitiveSet, H: Heap> Vm<'a, T, H> {
     /// Creates a virtual machine.
-    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, Error> {
+    pub fn new(heap: H, primitive_set: T) -> Result<Self, Error> {
         Ok(Self {
             primitive_set,
             memory: Memory::new(heap)?,
             #[cfg(feature = "profile")]
             profiler: None,
+            _profiler: Default::default(),
         })
     }
 
@@ -548,7 +553,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, H, T> {
     }
 }
 
-impl<T: PrimitiveSet> Display for Vm<'_, T> {
+impl<T: PrimitiveSet, H: Heap> Display for Vm<'_, T, H> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(formatter, "{}", &self.memory)
     }
