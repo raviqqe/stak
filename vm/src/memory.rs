@@ -563,6 +563,7 @@ impl<H: Heap> Display for Memory<H> {
     }
 }
 
+/// A heap memory.
 pub trait Heap: AsRef<[Value]> + AsMut<[Value]> {}
 
 impl Heap for &mut [Value] {}
