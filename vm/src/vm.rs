@@ -49,7 +49,7 @@ struct Arity {
 }
 
 /// A virtual machine.
-pub struct Vm<'a, T: PrimitiveSet, H> {
+pub struct Vm<'a, T: PrimitiveSet<H>, H = &'a mut [Value]> {
     primitive_set: T,
     memory: Memory<H>,
     #[cfg(feature = "profile")]
@@ -59,7 +59,7 @@ pub struct Vm<'a, T: PrimitiveSet, H> {
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<'a, T: PrimitiveSet, H: Heap> Vm<'a, T, H> {
+impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
     /// Creates a virtual machine.
     pub fn new(heap: H, primitive_set: T) -> Result<Self, Error> {
         Ok(Self {
@@ -73,7 +73,7 @@ impl<'a, T: PrimitiveSet, H: Heap> Vm<'a, T, H> {
 
     /// Sets a profiler.
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut dyn Profiler) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn Profiler<H>) -> Self {
         Self {
             profiler: Some(profiler.into()),
             ..self

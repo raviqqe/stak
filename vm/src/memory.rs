@@ -41,19 +41,19 @@ macro_rules! assert_heap_value {
 }
 
 /// A memory on a virtual machine.
-pub struct Memory<T> {
+pub struct Memory<H> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
     register: Cons,
     allocation_index: usize,
     space: bool,
-    heap: T,
+    heap: H,
 }
 
-impl<T: Heap> Memory<T> {
+impl<H: Heap> Memory<H> {
     /// Creates a memory.
-    pub fn new(heap: T) -> Result<Self, Error> {
+    pub fn new(heap: H) -> Result<Self, Error> {
         let mut memory = Self {
             code: NEVER,
             stack: NEVER,
@@ -505,7 +505,7 @@ impl<T: Heap> Memory<T> {
     }
 }
 
-impl<T: Heap> Write for Memory<T> {
+impl<H: Heap> Write for Memory<H> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
         (|| -> Result<(), Error> {
             let mut list = self.null()?;
@@ -529,7 +529,7 @@ impl<T: Heap> Write for Memory<T> {
     }
 }
 
-impl<T: Heap> Display for Memory<T> {
+impl<H: Heap> Display for Memory<H> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
