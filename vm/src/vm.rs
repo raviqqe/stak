@@ -565,13 +565,13 @@ mod tests {
 
     struct FakePrimitiveSet {}
 
-    impl PrimitiveSet for FakePrimitiveSet {
+    impl<H: Heap> PrimitiveSet<H> for FakePrimitiveSet {
         type Error = Error;
 
         #[maybe_async]
         fn operate(
             &mut self,
-            _memory: &mut Memory<'_>,
+            _memory: &mut Memory<H>,
             _primitive: usize,
         ) -> Result<(), Self::Error> {
             Ok(())
