@@ -41,17 +41,17 @@ macro_rules! assert_heap_value {
 }
 
 /// A memory on a virtual machine.
-pub struct Memory<'a> {
+pub struct Memory<H> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
     register: Cons,
     allocation_index: usize,
     space: bool,
-    heap: &'a mut [Value],
+    heap: H,
 }
 
-impl<'a> Memory<'a> {
+impl<H> Memory<H> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
