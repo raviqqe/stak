@@ -144,11 +144,11 @@ impl<'a, 'b, H: Heap> DynamicPrimitiveSet<'a, 'b, H> {
     }
 }
 
-impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
+impl<H: Heap> PrimitiveSet<H> for DynamicPrimitiveSet<'_, '_, H> {
     type Error = DynamicError;
 
     #[maybe_async]
-    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         if primitive == 0 {
             memory.set_register(memory.null()?);
 
