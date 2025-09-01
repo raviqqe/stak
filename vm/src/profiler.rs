@@ -1,9 +1,9 @@
-use crate::{Cons, Error, Memory, memory::Heap};
+use crate::{Cons, Error, Memory};
 
 /// A profiler.
-pub trait Profiler {
+pub trait Profiler<T> {
     /// Profiles a call.
-    fn profile_call<T: Heap>(
+    fn profile_call(
         &mut self,
         memory: &Memory<T>,
         call_code: Cons,
@@ -11,7 +11,7 @@ pub trait Profiler {
     ) -> Result<(), Error>;
 
     /// Profiles a return.
-    fn profile_return<T: Heap>(&mut self, memory: &Memory<T>) -> Result<(), Error>;
+    fn profile_return(&mut self, memory: &Memory<T>) -> Result<(), Error>;
 
     /// Profiles a call.
     fn profile_event(&mut self, name: &str) -> Result<(), Error>;

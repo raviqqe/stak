@@ -53,7 +53,7 @@ pub struct Vm<'a, T: PrimitiveSet, H> {
     primitive_set: T,
     memory: Memory<H>,
     #[cfg(feature = "profile")]
-    profiler: Option<RefCell<&'a mut dyn Profiler>>,
+    profiler: Option<RefCell<&'a mut dyn Profiler<H>>>,
     _profiler: PhantomData<&'a ()>,
 }
 
