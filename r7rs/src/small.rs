@@ -69,7 +69,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     // We mark this `inline(always)` to make sure inline the `set_field` functions
     // everywhere.
     #[inline(always)]
-    fn set_field<'a, H: Heap>(
+    fn set_field<H: Heap>(
         memory: &mut Memory<H>,
         set_field: fn(&mut Memory<H>, Value, Value) -> Result<(), stak_vm::Error>,
     ) -> Result<(), Error> {
@@ -80,7 +80,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
-    fn tag<'a, H: Heap>(
+    fn tag<H: Heap>(
         memory: &mut Memory<H>,
         field: impl Fn(&Memory<H>, Value) -> Result<Value, stak_vm::Error>,
     ) -> Result<(), Error> {
