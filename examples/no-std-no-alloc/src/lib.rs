@@ -47,9 +47,8 @@ fn run_vm(
     bytecodes: &[u8],
     device: &mut FixedBufferDevice<BUFFER_SIZE, BUFFER_SIZE>,
 ) -> Result<(), SmallError> {
-    let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        &mut heap,
+        [Default::default(); HEAP_SIZE],
         SmallPrimitiveSet::new(
             // Attach an I/O device.
             device,
