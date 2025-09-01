@@ -6,7 +6,7 @@ use rustix::{
     fs::{self, Access, Mode, OFlags},
     io::{self, Errno},
 };
-use stak_vm::{Memory, Value};
+use stak_vm::{Heap, Memory, Value};
 
 const PATH_SIZE: usize = 128;
 const DEFAULT_FILE_CAPACITY: usize = 32;
@@ -118,8 +118,8 @@ impl FileSystem for LibcFileSystem {
         }
     }
 
-    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
-        let mut path = decode_path::<PATH_SIZE>(memory, list).ok_or(FileError::PathDecode)?;
+    fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error> {
+        let mut path = decode_path::<PATH_SIZE, _>(memory, list).ok_or(FileError::PathDecode)?;
 
         path.push(0).map_err(|_| FileError::PathDecode)?;
 

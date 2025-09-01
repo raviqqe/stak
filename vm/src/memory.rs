@@ -41,19 +41,19 @@ macro_rules! assert_heap_value {
 }
 
 /// A memory on a virtual machine.
-pub struct Memory<'a> {
+pub struct Memory<H> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
     register: Cons,
     allocation_index: usize,
     space: bool,
-    heap: &'a mut [Value],
+    heap: H,
 }
 
-impl<'a> Memory<'a> {
+impl<H: Heap> Memory<H> {
     /// Creates a memory.
-    pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
+    pub fn new(heap: H) -> Result<Self, Error> {
         let mut memory = Self {
             code: NEVER,
             stack: NEVER,
@@ -69,6 +69,14 @@ impl<'a> Memory<'a> {
         memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
 
         Ok(memory)
+    }
+
+    fn heap(&self) -> &[Value] {
+        self.heap.as_ref()
+    }
+
+    fn heap_mut(&mut self) -> &mut [Value] {
+        self.heap.as_mut()
     }
 
     /// Returns a code.
@@ -226,18 +234,18 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    const fn is_out_of_memory(&self) -> bool {
+    fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
     /// Returns a heap size.
     #[inline]
-    pub const fn size(&self) -> usize {
-        self.heap.len()
+    pub fn size(&self) -> usize {
+        self.heap().len()
     }
 
     #[inline]
-    const fn space_size(&self) -> usize {
+    fn space_size(&self) -> usize {
         self.size() / 2
     }
 
@@ -249,13 +257,13 @@ impl<'a> Memory<'a> {
 
     /// Returns an allocation start index.
     #[inline]
-    pub const fn allocation_start(&self) -> usize {
+    pub fn allocation_start(&self) -> usize {
         if self.space { self.space_size() } else { 0 }
     }
 
     /// Returns an allocation end index.
     #[inline]
-    pub const fn allocation_end(&self) -> usize {
+    pub fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
@@ -263,7 +271,7 @@ impl<'a> Memory<'a> {
     fn get<const G: bool>(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index, G);
 
-        self.heap
+        self.heap()
             .get(index)
             .copied()
             .ok_or(Error::InvalidMemoryAccess)
@@ -273,7 +281,10 @@ impl<'a> Memory<'a> {
     fn set<const G: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index, G);
 
-        *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value;
+        *self
+            .heap_mut()
+            .get_mut(index)
+            .ok_or(Error::InvalidMemoryAccess)? = value;
 
         Ok(())
     }
@@ -494,7 +505,7 @@ impl<'a> Memory<'a> {
     }
 }
 
-impl Write for Memory<'_> {
+impl<H: Heap> Write for Memory<H> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
         (|| -> Result<(), Error> {
             let mut list = self.null()?;
@@ -518,7 +529,7 @@ impl Write for Memory<'_> {
     }
 }
 
-impl Display for Memory<'_> {
+impl<H: Heap> Display for Memory<H> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -552,6 +563,16 @@ impl Display for Memory<'_> {
     }
 }
 
+/// A heap memory.
+pub trait Heap: AsRef<[Value]> + AsMut<[Value]> {}
+
+impl Heap for &mut [Value] {}
+
+impl<const N: usize> Heap for [Value; N] {}
+
+#[cfg(feature = "alloc")]
+impl Heap for alloc::vec::Vec<Value> {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -573,16 +594,14 @@ mod tests {
 
     #[test]
     fn create() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_snapshot!(memory);
     }
 
     #[test]
     fn create_list() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         let list = memory
             .cons(Number::from_i64(1).into(), memory.null().unwrap())
@@ -604,8 +623,7 @@ mod tests {
 
     #[test]
     fn convert_false() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(false).unwrap())
@@ -617,8 +635,7 @@ mod tests {
 
     #[test]
     fn convert_true() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(true).unwrap())
@@ -630,8 +647,7 @@ mod tests {
 
     #[test]
     fn convert_null() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.null().unwrap()).to_cons().unwrap(),
@@ -639,7 +655,7 @@ mod tests {
         );
     }
 
-    fn assert_raw_string(memory: &Memory, mut cons: Cons, string: &str) {
+    fn assert_raw_string<H: Heap>(memory: &Memory<H>, mut cons: Cons, string: &str) {
         for character in string.chars() {
             assert_eq!(
                 memory.car(cons).unwrap().assume_number().to_i64(),
@@ -653,8 +669,7 @@ mod tests {
 
     #[test]
     fn build_string() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         let string = memory.build_string("foo").unwrap();
 
@@ -665,8 +680,7 @@ mod tests {
 
     #[test]
     fn format_string() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -677,8 +691,7 @@ mod tests {
 
     #[test]
     fn format_two_strings() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -692,8 +705,7 @@ mod tests {
     fn format_templated_string() {
         const FOO: usize = 42;
 
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -707,8 +719,7 @@ mod tests {
 
         #[test]
         fn push_and_pop() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -718,8 +729,7 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -735,8 +745,7 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory
                 .allocate(Number::default().into(), Number::default().into())
@@ -748,8 +757,7 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -760,8 +768,7 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -773,8 +780,7 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
