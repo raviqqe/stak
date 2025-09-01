@@ -41,7 +41,7 @@ macro_rules! assert_heap_value {
 }
 
 /// A memory on a virtual machine.
-pub struct Memory<H> {
+pub struct Memory<H: AsMut<[Value]>> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
