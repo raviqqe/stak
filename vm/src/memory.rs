@@ -624,8 +624,7 @@ mod tests {
 
     #[test]
     fn convert_false() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(false).unwrap())
@@ -637,8 +636,7 @@ mod tests {
 
     #[test]
     fn convert_true() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(true).unwrap())
@@ -650,8 +648,7 @@ mod tests {
 
     #[test]
     fn convert_null() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.null().unwrap()).to_cons().unwrap(),
@@ -673,8 +670,7 @@ mod tests {
 
     #[test]
     fn build_string() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         let string = memory.build_string("foo").unwrap();
 
@@ -685,8 +681,7 @@ mod tests {
 
     #[test]
     fn format_string() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -697,8 +692,7 @@ mod tests {
 
     #[test]
     fn format_two_strings() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -712,8 +706,7 @@ mod tests {
     fn format_templated_string() {
         const FOO: usize = 42;
 
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -727,8 +720,7 @@ mod tests {
 
         #[test]
         fn push_and_pop() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -738,8 +730,7 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -755,8 +746,7 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory
                 .allocate(Number::default().into(), Number::default().into())
@@ -768,8 +758,7 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -780,8 +769,7 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -793,8 +781,7 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
