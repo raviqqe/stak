@@ -18,8 +18,8 @@ importers:
         specifier: ^0.35.2
         version: 0.35.2(astro@5.13.5(@types/node@24.3.0)(rollup@4.50.0)(typescript@5.9.2))
       '@monza-editor/preact':
-        specifier: ^0.1.6
-        version: 0.1.6
+        specifier: ^0.1.8
+        version: 0.1.8
       '@nanostores/preact':
         specifier: ^1.0.0
         version: 1.0.0(nanostores@1.0.1)(preact@10.27.1)
@@ -696,8 +696,8 @@ packages:
   '@mdx-js/mdx@3.1.0':
     resolution: {integrity: sha512-/QxEhPAvGwbQmy1Px8F899L5Uc2KZ6JtXwlCgJmjSTBedwOZkByYcBG4GceIGPXRDsmfxhHazuS+hlOShRLeDw==}
 
-  '@monza-editor/preact@0.1.6':
-    resolution: {integrity: sha512-AqxpuTBL+3zNHmZYlbRmiaY5eH+bbnfYHvyK/DQ3FAvSphYYncfwW13/NbJFHsC78EWkjN+6g/TRURuJJ5xxiQ==}
+  '@monza-editor/preact@0.1.8':
+    resolution: {integrity: sha512-9TT1UV/jL8mLhALbKYQZSep0vzphxI3fSVkUDS0BVhILnt5ZhnD4FqdADHu+wqEhI/FW10WBDqzdPGetWT7xaQ==}
 
   '@nanostores/preact@1.0.0':
     resolution: {integrity: sha512-woHYvSwau1YtO9AEnGsh/jRPU2u5DTfNSrDHtKMZOeDUWV6EJfvyv7dJ7AaMps2I9uJcY6OlqXKkA9qTctEjyw==}
@@ -1712,11 +1712,11 @@ packages:
   micromark@4.0.2:
     resolution: {integrity: sha512-zpe98Q6kvavpCr1NPVSCMebCKfD7CA2NqZ+rykeNhONIJBpc1tFKt9hucLGwha3jNTNI8lHpctWJWoimVF4PfA==}
 
-  monza-editor@0.5.0:
-    resolution: {integrity: sha512-QC2xm18KilpgHHBhoUhMIiBjUvH42hlPyjUnvtZ77yd2A8oYbHN1uCyr7arChExvcwMv4lMUW/QX6iJXq0frdQ==}
-
   monza-editor@0.5.2:
     resolution: {integrity: sha512-K8GK7kSg+wJhFtAmQExUIOIiWl5RAMS7lR1y/IAH94+SlQQD5xIpsXStjhxD/gTmgpdxZ81nDe8ukGKXj5/tQQ==}
+
+  monza-editor@0.5.4:
+    resolution: {integrity: sha512-lH1vJjEeryIGxO4zBOKHUEhvsnI2lMKWdpMF6tG7w+TI8CZN/yeovY9nkCOIR0afKh+DEioKfGjBgrvWD44xFA==}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -2959,9 +2959,9 @@ snapshots:
       - acorn
       - supports-color
 
-  '@monza-editor/preact@0.1.6':
+  '@monza-editor/preact@0.1.8':
     dependencies:
-      monza-editor: 0.5.0
+      monza-editor: 0.5.4
       preact: 10.27.1
 
   '@nanostores/preact@1.0.0(nanostores@1.0.1)(preact@10.27.1)':
@@ -4421,9 +4421,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  monza-editor@0.5.0: {}
-
   monza-editor@0.5.2: {}
+
+  monza-editor@0.5.4: {}
 
   mrmime@2.0.1: {}
 
