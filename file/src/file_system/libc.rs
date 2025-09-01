@@ -108,7 +108,7 @@ impl FileSystem for LibcFileSystem {
 
         path.push(0).map_err(|_| FileError::PathDecode)?;
 
-        Ok(CString::new(path))
+        CString::from_bytes_with_nul(&path).map_err(|_| FileError::PathDecode)
     }
 }
 
