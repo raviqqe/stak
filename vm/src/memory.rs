@@ -593,16 +593,14 @@ mod tests {
 
     #[test]
     fn create() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_snapshot!(memory);
     }
 
     #[test]
     fn create_list() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         let list = memory
             .cons(Number::from_i64(1).into(), memory.null().unwrap())
