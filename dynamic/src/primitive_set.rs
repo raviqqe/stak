@@ -3,26 +3,26 @@ use alloc::{boxed::Box, string::String, vec, vec::Vec};
 use any_fn::AnyFn;
 use bitvec::bitvec;
 use core::any::TypeId;
-use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
+use stak_vm::{Cons, Error, Heap, Memory, Number, PrimitiveSet, Type, Value};
 use winter_maybe_async::maybe_async;
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 type ArgumentVec<T> = heapless::Vec<T, MAXIMUM_ARGUMENT_COUNT>;
-type SchemeType = (
+type SchemeType<H> = (
     TypeId,
-    Box<dyn Fn(&Memory, Value) -> Result<Option<any_fn::Value>, DynamicError>>,
-    Box<dyn Fn(&mut Memory, any_fn::Value) -> Result<Value, DynamicError>>,
+    Box<dyn Fn(&Memory<H>, Value) -> Result<Option<any_fn::Value>, DynamicError>>,
+    Box<dyn Fn(&mut Memory<H>, any_fn::Value) -> Result<Value, DynamicError>>,
 );
 
 /// A dynamic primitive set equipped with native functions in Rust.
-pub struct DynamicPrimitiveSet<'a, 'b> {
+pub struct DynamicPrimitiveSet<'a, 'b, H> {
     functions: &'a mut [(&'a str, AnyFn<'b>)],
-    types: Vec<SchemeType>,
+    types: Vec<SchemeType<H>>,
     values: Vec<Option<any_fn::Value>>,
 }
 
-impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
+impl<'a, 'b, H: Heap> DynamicPrimitiveSet<'a, 'b, H> {
     /// Creates a primitive set.
     pub fn new(functions: &'a mut [(&'a str, AnyFn<'b>)]) -> Self {
         let mut set = Self {
@@ -56,7 +56,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
     /// Scheme to Rust, and vice versa. Marshalling values can lead to the loss
     /// of information (e.g. floating-point numbers in Scheme marshalled
     /// into integers in Rust.)
-    pub fn register_type<T: SchemeValue + 'static>(&mut self) {
+    pub fn register_type<T: SchemeValue<H> + 'static>(&mut self) {
         self.types.push((
             TypeId::of::<T>(),
             Box::new(|memory, value| Ok(T::from_scheme(memory, value)?.map(any_fn::value))),
@@ -64,7 +64,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         ));
     }
 
-    fn collect_garbages(&mut self, memory: &Memory) -> Result<(), Error> {
+    fn collect_garbages(&mut self, memory: &Memory<H>) -> Result<(), Error> {
         let mut marks = bitvec![0; self.values.len()];
 
         for index in 0..(memory.allocation_index() / 2) {
@@ -91,7 +91,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         self.values.iter().position(Option::is_none)
     }
 
-    fn allocate(&mut self, memory: &Memory) -> Result<usize, Error> {
+    fn allocate(&mut self, memory: &Memory<H>) -> Result<usize, Error> {
         Ok(if let Some(index) = self.find_free() {
             index
         } else if let Some(index) = {
@@ -107,7 +107,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
 
     fn convert_from_scheme(
         &self,
-        memory: &Memory,
+        memory: &Memory<H>,
         value: Value,
         type_id: TypeId,
     ) -> Result<Option<any_fn::Value>, DynamicError> {
@@ -122,7 +122,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
 
     fn convert_into_scheme(
         &mut self,
-        memory: &mut Memory,
+        memory: &mut Memory<H>,
         value: any_fn::Value,
     ) -> Result<Value, DynamicError> {
         for (id, _, into) in &self.types {
@@ -265,14 +265,13 @@ mod tests {
             ("foo-baz", r#fn(Foo::baz)),
         ];
 
-        DynamicPrimitiveSet::new(&mut functions);
+        DynamicPrimitiveSet::<[Value; 0]>::new(&mut functions);
     }
 
     #[test]
     fn allocate_two() {
-        let mut heap = [Default::default(); HEAP_SIZE];
         let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
 
         let index = primitive_set.allocate(&memory).unwrap();
         primitive_set.values[index] = Some(value(42usize));
@@ -298,20 +297,18 @@ mod tests {
 
         #[test]
         fn collect_none() {
-            let mut heap = [Default::default(); HEAP_SIZE];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
 
             primitive_set
-                .collect_garbages(&Memory::new(&mut heap).unwrap())
+                .collect_garbages(&Memory::new([Default::default(); HEAP_SIZE]).unwrap())
                 .unwrap();
         }
 
         #[tokio::test]
         async fn collect_one() {
-            let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
 
             maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
@@ -328,10 +325,9 @@ mod tests {
 
         #[tokio::test]
         async fn keep_one() {
-            let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
 
             maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
