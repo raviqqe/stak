@@ -14,10 +14,9 @@
 //! const HEAP_SIZE: usize = 1 << 16;
 //! const BUFFER_SIZE: usize = 1 << 10;
 //!
-//! let mut heap = [Default::default(); HEAP_SIZE];
 //! let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
 //! let mut vm = Vm::new(
-//!     &mut heap,
+//!     [Default::default(); HEAP_SIZE],
 //!     SmallPrimitiveSet::new(
 //!         device,
 //!         VoidFileSystem::new(),
