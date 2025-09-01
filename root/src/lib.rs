@@ -61,7 +61,7 @@ pub mod device {
     //! ) -> Result<(), SmallError> {
     //!     let mut heap = [Default::default(); HEAP_SIZE];
     //!     let mut vm = Vm::new(
-    //!         &mut heap,
+    //!         heap.as_mut(),
     //!         SmallPrimitiveSet::new(
     //!             // Create and attach an in-memory I/O device.
     //!             ReadWriteDevice::new(input, output, error),
