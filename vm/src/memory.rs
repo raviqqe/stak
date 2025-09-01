@@ -568,6 +568,8 @@ pub trait Heap: AsRef<[Value]> + AsMut<[Value]> {}
 
 impl Heap for &mut [Value] {}
 
+impl<const N: usize> Heap for [Value; N] {}
+
 impl Heap for alloc::vec::Vec<Value> {}
 
 #[cfg(test)]
@@ -792,7 +794,7 @@ mod tests {
         #[test]
         fn collect_cycle() {
             let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(heap).unwrap();
 
             let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
