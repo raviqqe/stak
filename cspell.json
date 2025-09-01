@@ -114,7 +114,7 @@
     "usize",
     "uutils",
     "valgrind",
-    "varint"
-    "zigbuild",
+    "varint",
+    "zigbuild"
   ]
 }
