@@ -185,7 +185,7 @@ pub mod vm {
     //!     let mut heap = [Default::default(); HEAP_SIZE];
     //!     // Create a virtual machine with its heap memory primitive procedures.
     //!     let mut vm = Vm::new(
-    //!         &mut heap,
+    //!         heap.as_mut(),
     //!         SmallPrimitiveSet::new(
     //!             // Attach standard input, output, and error of this process to a virtual machine.
     //!             StdioDevice::new(),
