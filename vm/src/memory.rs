@@ -654,7 +654,7 @@ mod tests {
         );
     }
 
-    fn assert_raw_string(memory: &Memory, mut cons: Cons, string: &str) {
+    fn assert_raw_string<H: Heap>(memory: &Memory<H>, mut cons: Cons, string: &str) {
         for character in string.chars() {
             assert_eq!(
                 memory.car(cons).unwrap().assume_number().to_i64(),
