@@ -32,13 +32,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: wasm/package.json
-      - run: cargo install wasm-pack
-      - run: wasm-pack build --target web wasm -- --features async
-      - run: |
-          jq '. + input' pkg/package.json package.json > /tmp/package.json
-          mv /tmp/package.json pkg
-        working-directory: wasm
-      - run: wasm-pack pack wasm
+      - run: tools/build_wasm.sh
       - uses: raviqqe/pnpm-publish@v2
         with:
           directory: wasm
