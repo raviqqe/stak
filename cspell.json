@@ -55,6 +55,7 @@
     "ftell",
     "getopts",
     "gettime",
+    "goreleaser",
     "heapless",
     "imag",
     "indoc",
@@ -70,6 +71,7 @@
     "micropython",
     "minifier",
     "mlua",
+    "mlugg",
     "mmap",
     "mmaps",
     "monza",
@@ -113,5 +115,6 @@
     "uutils",
     "valgrind",
     "varint"
+    "zigbuild",
   ]
 }
