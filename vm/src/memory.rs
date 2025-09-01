@@ -51,7 +51,7 @@ pub struct Memory<T> {
     heap: T,
 }
 
-impl<T: AsMut<Value>> Memory<T> {
+impl<T: AsRef<[Value]> + AsMut<[Value]>> Memory<T> {
     /// Creates a memory.
     pub fn new(heap: T) -> Result<Self, Error> {
         let mut memory = Self {
@@ -69,6 +69,14 @@ impl<T: AsMut<Value>> Memory<T> {
         memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
 
         Ok(memory)
+    }
+
+    fn heap(&self) -> &[Value] {
+        self.heap.as_ref()
+    }
+
+    fn heap_mut(&mut self) -> &mut [Value] {
+        self.heap.as_mut()
     }
 
     /// Returns a code.
@@ -232,8 +240,8 @@ impl<T: AsMut<Value>> Memory<T> {
 
     /// Returns a heap size.
     #[inline]
-    pub const fn size(&self) -> usize {
-        self.heap.len()
+    pub fn size(&self) -> usize {
+        self.heap().len()
     }
 
     #[inline]
@@ -263,7 +271,7 @@ impl<T: AsMut<Value>> Memory<T> {
     fn get<const G: bool>(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index, G);
 
-        self.heap
+        self.heap()
             .get(index)
             .copied()
             .ok_or(Error::InvalidMemoryAccess)
@@ -273,7 +281,10 @@ impl<T: AsMut<Value>> Memory<T> {
     fn set<const G: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index, G);
 
-        *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value;
+        *self
+            .heap()
+            .get_mut(index)
+            .ok_or(Error::InvalidMemoryAccess)? = value;
 
         Ok(())
     }
@@ -494,7 +505,7 @@ impl<T: AsMut<Value>> Memory<T> {
     }
 }
 
-impl Write for Memory<'_> {
+impl<T: AsRef<[Value]>> Write for Memory<T> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
         (|| -> Result<(), Error> {
             let mut list = self.null()?;
