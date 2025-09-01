@@ -529,7 +529,7 @@ impl<T: AsRef<[Value]> + AsMut<[Value]>> Write for Memory<T> {
     }
 }
 
-impl Display for Memory<'_> {
+impl<T: AsRef<[Value]> + AsMut<[Value]>> Display for Memory<T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
