@@ -32,7 +32,7 @@ impl<T: Device, H: Heap> PrimitiveSet<H> for DevicePrimitiveSet<T> {
     type Error = PrimitiveError;
 
     #[maybe_async]
-    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::READ => {
                 let byte =
