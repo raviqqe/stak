@@ -31,7 +31,7 @@ stak-build = { path = "../build" }
 stak-build = { version = "0.10.40", path = "../build" }
 
 [features]
-alloc = ["dep:stak-dynamic", "dep:stak-engine"]
+alloc = ["dep:stak-dynamic", "dep:stak-engine", "stak-vm/alloc"]
 async = [
   "stak-device/async",
   "stak-dynamic/async",
