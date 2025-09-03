@@ -3040,7 +3040,7 @@
                             (cdr (assoc (list->string x) special-chars))))))))
 
                 ((#\!)
-                  (skip-comment))
+                  (skip-line-comment))
 
                 (else
                   (list->vector (read-list)))))
@@ -3142,12 +3142,12 @@
                 (peek-non-whitespace-char)))
 
             ((eqv? char #\;)
-              (skip-comment))
+              (skip-line-comment))
 
             (else
               char))))
 
-      (define (skip-comment)
+      (define (skip-line-comment)
         (let ((char (read-char)))
           (cond
             ((eof-object? char)
@@ -3157,7 +3157,7 @@
               (peek-non-whitespace-char))
 
             (else
-              (skip-comment)))))
+              (skip-line-comment)))))
 
       (parameterize ((current-input-port
                        (if (null? rest) (current-input-port) (car rest))))
