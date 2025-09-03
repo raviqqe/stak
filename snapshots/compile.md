@@ -19909,41 +19909,82 @@
 - call 2 #f cons
 - set ||
 - constant procedure 0 #f
-  - call 0 #f peek-char
-  - constant #\#
-  - call 2 #f eqv?
-  - if
+  - constant procedure 1 #f
     - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 1 #f
+        - get 0
+        - if
           - get 0
-          - if
-            - get 0
-          - get 2
-          - call 1 #f eof-object?
-        - call 1 #f $$close
-        - get 1
-        - constant #\newline
+        - get 2
+        - constant list
+          - #\newline
+          - #\space
+          - #\tab
+        - call 2 #f memv
+        - constant #f
+        - call 2 #f eq?
+      - call 1 #f $$close
+      - get 1
+      - call 1 #f eof-object?
+      - call 1 #f 1
+      - set 1
+      - if
+        - constant #f
+      - call 0 #f read-char
+      - constant #\newline
+      - call 2 #f eqv?
+      - if
+        - call 0 #f peek-char
+        - constant #\#
         - call 2 #f eqv?
+        - continue
+      - constant #f
+      - if
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - if
+                - get 0
+              - get 2
+              - constant #\newline
+              - call 2 #f eqv?
+            - call 1 #f $$close
+            - get 1
+            - call 1 #f eof-object?
+            - call 1 #f 1
+            - set 1
+            - if
+              - constant #f
+            - call 0 #f read-char
+            - call 1 #f 3
+          - call 1 #f $$close
+          - set 1
+          - call 0 #f read-char
+          - call 1 #f 1
+        - call 1 #f $$close
+        - constant #f
         - call 1 #f 1
         - set 1
-        - if
-          - constant #f
-        - call 0 #f read-char
-        - call 1 #f 3
-      - call 1 #f $$close
-      - set 1
-      - call 0 #f read-char
-      - call 1 #f 1
+        - continue
+      - constant #f
+      - set 0
+      - call 0 #f peek-char
+      - call 1 #f 3
     - call 1 #f $$close
-    - constant #f
-    - call 1 #f 1
     - set 1
-    - continue
+    - call 0 #f peek-char
+    - call 1 #f 1
+  - call 1 #f $$close
   - constant #f
-  - set 0
+  - call 1 #f 1
+- call 1 #f $$close
+- set ||
+- constant procedure 0 #f
   - constant procedure 1 #f
     - constant procedure 0 #f
+      - call 0 #f ||
+      - set 0
       - constant procedure 1 #f
         - get 0
         - call 1 #f eof-object?
