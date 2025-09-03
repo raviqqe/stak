@@ -3141,6 +3141,11 @@
             ((eqv? char #\;)
               (skip-comment))
 
+            ((and
+                (eqv? char #\#)
+                (eqv? (peek-char) #\!))
+              (peek-non-whitespace-char))
+
             (else
               char))))
 
