@@ -1836,27 +1836,11 @@
 
 ; Source code reading
 
-(define (skip-blank)
-  (do ((x (peek-char) (peek-char)))
-    ((or
-        (eof-object? x)
-        (not (memv x '(#\newline #\space #\tab)))))
-    (when (and
-           (eqv? (read-char) #\newline)
-           (eqv? (peek-char) #\#))
-      ; Skip a shebang.
-      (do ((x (read-char) (read-char)))
-        ((or
-            (eof-object? x)
-            (eqv? x #\newline)))))))
-
 (define (read-all)
-  (let loop ()
-    (skip-blank)
-    (let ((x (read)))
-      (if (eof-object? x)
-        '()
-        (cons x (loop))))))
+  (let ((x (read)))
+    (if (eof-object? x)
+      '()
+      (cons x (read-all)))))
 
 (define (read-source)
   (cons
