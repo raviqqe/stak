@@ -28,7 +28,7 @@ compile() (
 )
 
 cat $directory/prelude.scm $libraries $script |
-  grep -v ^#!.* |
+  grep -v '^#!.*' |
   compile >main.bc
 
 stak-interpret main.bc "$@"
