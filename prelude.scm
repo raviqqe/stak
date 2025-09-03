@@ -3138,13 +3138,12 @@
                 (read-char)
                 (peek-non-whitespace-char)))
 
-            ((eqv? char #\;)
+            ((or
+                (eqv? char #\;)
+                (and
+                  (eqv? char #\#)
+                  (eqv? (peek-char) #\!)))
               (skip-comment))
-
-            ((and
-                (eqv? char #\#)
-                (eqv? (peek-char) #\!))
-              (peek-non-whitespace-char))
 
             (else
               char))))
