@@ -1844,13 +1844,13 @@
     (when (and
            (eqv? (read-char) #\newline)
            (eqv? (peek-char) #\#))
+      ; Skip a shebang.
       (do ((x (read-char) (read-char)))
         ((or
             (eof-object? x)
             (eqv? x #\newline)))))))
 
 (define (read-all)
-  ; Skip a shebang.
   (let loop ()
     (skip-blank)
     (let ((x (read)))
