@@ -26,6 +26,7 @@ Feature: Comment
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @stak
   Scenario: Skip a shebang
     Given a file named "main.scm" with:
       """scheme
