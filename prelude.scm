@@ -3159,6 +3159,20 @@
             (else
               (skip-line-comment)))))
 
+      (define (skip-block-comment)
+        (let ((char (read-char)))
+          (cond
+            ((eof-object? char)
+              (error "|# expected"))
+
+            ((and
+                (eqv? char #\|)
+                (eqv? (peek-char) #\#))
+              (peek-non-whitespace-char))
+
+            (else
+              (skip-block-comment)))))
+
       (parameterize ((current-input-port
                        (if (null? rest) (current-input-port) (car rest))))
         (read-raw)))))
