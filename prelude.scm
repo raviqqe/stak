@@ -3018,6 +3018,11 @@
                   (read-char)
                   #t)
 
+                ((#\u)
+                  (read-char)
+                  (read-char)
+                  (list->bytevector (read-list)))
+
                 ((#\\)
                   (read-char)
                   (let ((char (peek-char)))
@@ -3034,10 +3039,8 @@
                           (else
                             (cdr (assoc (list->string x) special-chars))))))))
 
-                ((#\u)
-                  (read-char)
-                  (read-char)
-                  (list->bytevector (read-list)))
+                ((#\!)
+                  (skip-comment))
 
                 (else
                   (list->vector (read-list)))))
@@ -3138,11 +3141,7 @@
                 (read-char)
                 (peek-non-whitespace-char)))
 
-            ((or
-                (eqv? char #\;)
-                (and
-                  (eqv? char #\#)
-                  (eqv? (peek-char) #\!)))
+            ((eqv? char #\;)
               (skip-comment))
 
             (else
