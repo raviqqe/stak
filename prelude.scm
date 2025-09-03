@@ -3042,6 +3042,9 @@
                 ((#\!)
                   (skip-line-comment))
 
+                ((#\|)
+                  (skip-block-comment))
+
                 (else
                   (list->vector (read-list)))))
 
