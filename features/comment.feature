@@ -17,7 +17,7 @@ Feature: Comment
   Scenario: Skip a shebang
     Given a file named "main.scm" with:
       """scheme
-      #!/usr/bin/evn stak
+      #!/usr/bin/env stak
 
       (import (scheme base))
 
