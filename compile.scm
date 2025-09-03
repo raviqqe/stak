@@ -1837,10 +1837,17 @@
 ; Source code reading
 
 (define (read-all)
-  (let ((x (read)))
-    (if (eof-object? x)
-      '()
-      (cons x (read-all)))))
+  ; Skip a shebang.
+  (when (eqv? (peek-char) #\#)
+    (do ((x (read-char) (read-char)))
+      ((or
+          (eqv? x #\newline)
+          (eof-object? x)))))
+  (let loop ()
+    (let ((x (read)))
+      (if (eof-object? x)
+        '()
+        (cons x (loop))))))
 
 (define (read-source)
   (cons
