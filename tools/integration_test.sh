@@ -31,6 +31,6 @@ cargo build --profile release_test --features $features
   cargo build --release
 )
 
-export PATH=$PWD/tools/scheme/$interpreter:$PWD/target:$PATH
+export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 go tool agoa ${tags:+-t "$tags"} "$@"
