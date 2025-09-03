@@ -4693,7 +4693,7 @@
 - call 1 #f $$close
 - set digit-value
 - constant procedure 0 #t
-  - constant procedure 6 #f
+  - constant procedure 7 #f
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -4704,7 +4704,7 @@
         - constant #\(
         - call 2 #f eqv?
         - if
-          - call 0 #f 7
+          - call 0 #f 8
         - get 0
         - constant #\#
         - call 2 #f eqv?
@@ -4726,6 +4726,16 @@
               - call 0 #f read-char
               - set 0
               - constant #t
+            - get 0
+            - constant #\u
+            - call 2 #f eqv?
+            - if
+              - call 0 #f read-char
+              - set 0
+              - call 0 #f read-char
+              - set 0
+              - call 0 #f 10
+              - call 1 #f list->bytevector
             - get 0
             - constant #\\
             - call 2 #f eqv?
@@ -4755,22 +4765,22 @@
                   - call 2 #f assoc
                   - call 1 #f cdr
                 - call 1 #f $$close
-                - call 0 #f 11
+                - call 0 #f 12
                 - call 1 #f 1
               - call 1 #f $$close
               - call 0 #f peek-char
               - call 1 #f 1
             - get 0
-            - constant #\u
+            - constant #\!
             - call 2 #f eqv?
             - if
-              - call 0 #f read-char
-              - set 0
-              - call 0 #f read-char
-              - set 0
-              - call 0 #f 9
-              - call 1 #f list->bytevector
-            - call 0 #f 9
+              - call 0 #f 6
+            - get 0
+            - constant #\|
+            - call 2 #f eqv?
+            - if
+              - call 0 #f 5
+            - call 0 #f 10
             - call 1 #f list->vector
           - call 1 #f $$close
           - call 0 #f peek-char
@@ -4782,7 +4792,7 @@
           - call 0 #f read-char
           - set 0
           - constant quote
-          - call 0 #f 9
+          - call 0 #f 10
           - call 2 #f list
         - get 0
         - constant #\`
@@ -4791,7 +4801,7 @@
           - call 0 #f read-char
           - set 0
           - constant quasiquote
-          - call 0 #f 9
+          - call 0 #f 10
           - call 2 #f list
         - get 0
         - constant #\,
@@ -4806,16 +4816,16 @@
             - call 0 #f read-char
             - set 0
             - constant unquote-splicing
-            - call 0 #f 9
+            - call 0 #f 10
             - call 2 #f list
           - constant unquote
-          - call 0 #f 9
+          - call 0 #f 10
           - call 2 #f list
         - get 0
         - constant #\"
         - call 2 #f eqv?
         - if
-          - call 0 #f 5
+          - call 0 #f 6
         - constant procedure 1 #f
           - constant procedure 1 #f
             - get 0
@@ -4828,14 +4838,14 @@
           - call 1 #f string->number
           - call 1 #f 1
         - call 1 #f $$close
-        - call 0 #f 7
+        - call 0 #f 8
         - call 1 #f list->string
         - call 1 #f 1
       - call 1 #f $$close
-      - call 0 #f 3
+      - call 0 #f 4
       - call 1 #f 1
     - call 1 #f $$close
-    - set 6
+    - set 7
     - constant procedure 0 #f
       - constant procedure 1 #f
         - constant procedure 0 #f
@@ -4868,16 +4878,16 @@
                   - set 0
                   - get 0
                 - call 1 #f $$close
-                - call 0 #f 14
+                - call 0 #f 15
                 - call 1 #f 1
               - get 0
               - call 0 #f 6
               - call 2 #f cons
             - call 1 #f $$close
-            - call 0 #f 12
+            - call 0 #f 13
             - call 1 #f 1
           - call 1 #f $$close
-          - call 0 #f 6
+          - call 0 #f 7
           - call 1 #f 1
         - call 1 #f $$close
         - set 1
@@ -4897,7 +4907,7 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f $$close
-    - set 5
+    - set 6
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -4918,13 +4928,13 @@
         - if
           - constant ()
         - call 0 #f read-char
-        - call 0 #f 7
+        - call 0 #f 8
         - call 2 #f cons
       - call 1 #f $$close
       - call 0 #f peek-char
       - call 1 #f 1
     - call 1 #f $$close
-    - set 4
+    - set 5
     - constant procedure 0 #f
       - call 0 #f read-char
       - constant #\"
@@ -4997,7 +5007,7 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f $$close
-    - set 3
+    - set 4
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -5005,18 +5015,18 @@
         - if
           - call 0 #f read-char
           - set 0
-          - call 0 #f 4
+          - call 0 #f 5
         - get 0
         - constant #\;
         - call 2 #f eqv?
         - if
-          - call 0 #f 3
+          - call 0 #f 4
         - get 0
       - call 1 #f $$close
       - call 0 #f peek-char
       - call 1 #f 1
     - call 1 #f $$close
-    - set 2
+    - set 3
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -5027,7 +5037,33 @@
         - constant #\newline
         - call 2 #f eqv?
         - if
-          - call 0 #f 4
+          - call 0 #f 5
+        - call 0 #f 4
+      - call 1 #f $$close
+      - call 0 #f read-char
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set 2
+    - constant procedure 0 #f
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f eof-object?
+        - if
+          - constant "|# expected"
+          - call 1 #f error
+        - get 0
+        - constant #\|
+        - call 2 #f eqv?
+        - if
+          - call 0 #f peek-char
+          - constant #\#
+          - call 2 #f eqv?
+          - continue
+        - constant #f
+        - if
+          - call 0 #f read-char
+          - set 0
+          - call 0 #f 5
         - call 0 #f 3
       - call 1 #f $$close
       - call 0 #f read-char
@@ -5037,17 +5073,17 @@
     - constant procedure 1 #f
       - constant procedure 1 #f
         - constant procedure 0 #f
-          - get 12
+          - get 13
           - call 1 #f null?
           - if
             - call 0 #f current-input-port
             - continue
-          - get 12
+          - get 13
           - call 1 #f car
           - call 1 #f 4
         - call 1 #f $$close
         - constant procedure 0 #f
-          - call 0 #f 11
+          - call 0 #f 12
         - call 1 #f $$close
         - constant procedure 0 #f
           - get 3
@@ -5067,7 +5103,8 @@
   - constant #f
   - constant #f
   - constant #f
-  - call 6 #f 6
+  - constant #f
+  - call 7 #f 7
 - call 1 #f $$close
 - set read
 - constant procedure 0 #f

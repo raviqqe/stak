@@ -1,5 +1,1 @@
-#!/bin/sh
-
-set -e
-
-$(dirname $0)/../../../cmd/minimal/target/release/mstak-interpret "$@"
+../../../cmd/minimal/target/release/mstak-interpret
