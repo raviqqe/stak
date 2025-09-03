@@ -3168,6 +3168,7 @@
             ((and
                 (eqv? char #\|)
                 (eqv? (peek-char) #\#))
+              (read-char)
               (peek-non-whitespace-char))
 
             (else
