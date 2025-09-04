@@ -941,7 +941,10 @@
       ((pair? expression)
        (case (car expression)
         (($$lambda)
-         (cadr expression))
+         (filter
+          (lambda (name)
+           (memq name bound-variables))
+          (cadr expression)))
         (($$quote)
          '())
         (else
@@ -967,17 +970,18 @@
       ((pair? expression)
        (case (car expression)
         (($$lambda)
-         (let ((parameters (cadr expression))
-               (body (analyze-expressions bound-variables (cddr expression))))
+         (let* ((parameters (cadr expression))
+                (body
+                 (analyze-expressions
+                  (unique (append (parameter-names parameters) bound-variables))
+                  (cddr expression))))
           (cons
            '$$lambda
            (cons
             (unique
              (append-map
               (lambda (expression)
-               (find-free-variables
-                (unique (append (parameter-names parameters) bound-variables))
-                expression))
+               (find-free-variables bound-variables expression))
               body))
             (cons parameters body)))))
         (($$quote)
