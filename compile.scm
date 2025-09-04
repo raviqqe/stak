@@ -1142,7 +1142,9 @@
              (cdddr expression)
              '())
             '())
-           (call-rib (compile-arity 1 #f) '$$close continuation))))
+           (if (null? (cadr expression))
+            continuation
+            (call-rib (compile-arity 1 #f) '$$close continuation)))))
 
         (($$libraries)
          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
