@@ -1395,7 +1395,7 @@
 
     (define (find-free-variables expressions)
      ; TODO
-     expressions)
+     '())
 
     (define (analyze-expressions bound-variables expressions)
      (map
