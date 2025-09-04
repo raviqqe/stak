@@ -931,6 +931,43 @@
         (else
          expression)))))
 
+    ; Free variable analysis
+
+    (define (find-free-variables expressions)
+     ; TODO
+     '())
+
+    (define (analyze-expressions bound-variables expressions)
+     (map
+      (lambda (expression)
+       (analyze-expression bound-variables expression))
+      expressions))
+
+    (define (analyze-expression bound-variables expression)
+     (cond
+      ((pair? expression)
+       (case (car expression)
+        (($$lambda)
+         (let ((body (analyze-expressions bound-variables (cddr expression))))
+          (cons
+           '$$lambda
+           (cons
+            (find-free-variables body)
+            (cons
+             (cadr expression)
+             body)))))
+        (($$quote)
+         expression)
+        (else
+         (cons
+          (analyze-expression bound-variables (car expression))
+          (analyze-expression bound-variables (cdr expression))))))
+      (else
+       expression)))
+
+    (define (analyze-free-variables expression)
+     (analyze-expression '() expression))
+
     ; Compilation
 
     ;; Context
@@ -1390,43 +1427,6 @@
       macros
       optimizers
       dynamic-symbols))
-
-    ; Free variable analysis
-
-    (define (find-free-variables expressions)
-     ; TODO
-     '())
-
-    (define (analyze-expressions bound-variables expressions)
-     (map
-      (lambda (expression)
-       (analyze-expression bound-variables expression))
-      expressions))
-
-    (define (analyze-expression bound-variables expression)
-     (cond
-      ((pair? expression)
-       (case (car expression)
-        (($$lambda)
-         (let ((body (analyze-expressions bound-variables (cddr expression))))
-          (cons
-           '$$lambda
-           (cons
-            (find-free-variables body)
-            (cons
-             (cadr expression)
-             body)))))
-        (($$quote)
-         expression)
-        (else
-         (cons
-          (analyze-expression bound-variables (car expression))
-          (analyze-expression bound-variables (cdr expression))))))
-      (else
-       expression)))
-
-    (define (analyze-free-variables expression)
-     (analyze-expression '() expression))
 
     ; Compilation
 
@@ -2014,8 +2014,9 @@
                 (make-procedure
                  (compile-arity 0 #f)
                  (compile
-                  (optimize
-                   (expand-macros expression)))
+                  (analyze-free-variables
+                   (optimize
+                    (expand-macros expression))))
                  '())
                 imports)))))))
         (cdr expression)))
