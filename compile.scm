@@ -1790,6 +1790,14 @@
        optimizers
        dynamic-symbols
        expression4))
+     (define analyze-free-variables
+      (compile-metadata
+       features
+       libraries
+       (shake-syntax-tree libraries macros)
+       optimizers
+       dynamic-symbols
+       expression4))
 
      (encode
       (marshal
