@@ -933,9 +933,28 @@
 
     ; Free variable analysis
 
-    (define (find-free-variables expressions)
-     ; TODO
-     '())
+    (define (find-free-variables bound-variables expression)
+     (define (find expression)
+      (find-free-variables bound-variables expression))
+
+     (cond
+      ((pair? expression)
+       (case (car expression)
+        (($$lambda)
+         (cadr expression))
+        (($$quote)
+         '())
+        (else
+         (unique
+          (append
+           (find (car expression))
+           (find (cdr expression)))))))
+      ((symbol? expression)
+       (if (memq expression bound-variables)
+        (list expression)
+        '()))
+      (else
+       '())))
 
     (define (analyze-expressions bound-variables expressions)
      (map
@@ -948,14 +967,19 @@
       ((pair? expression)
        (case (car expression)
         (($$lambda)
-         (let ((body (analyze-expressions bound-variables (cddr expression))))
+         (let ((parameters (cadr expression))
+               (body (analyze-expressions bound-variables (cddr expression))))
           (cons
            '$$lambda
            (cons
-            (find-free-variables body)
-            (cons
-             (cadr expression)
-             body)))))
+            (unique
+             (append-map
+              (lambda (expression)
+               (find-free-variables
+                (unique (append (parameter-names parameters) bound-variables))
+                expression))
+              body))
+            (cons parameters body)))))
         (($$quote)
          expression)
         (else
