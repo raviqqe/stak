@@ -1391,6 +1391,11 @@
       optimizers
       dynamic-symbols))
 
+    ; Free variable analysis
+
+    (define (analyze-free-variables expression)
+     expression)
+
     ; Compilation
 
     (define (compile metadata expression)
