@@ -1063,7 +1063,7 @@
             (compile-expression context (cadddr expression) continuation)))))
 
         (($$lambda)
-         (let ((parameters (cadr expression)))
+         (let ((parameters (caddr expression)))
           (constant-rib
            (make-procedure
             (compile-arity
@@ -1074,7 +1074,7 @@
               context
               ; #f is for a frame.
               (reverse (cons #f (parameter-names parameters))))
-             (cddr expression)
+             (cdddr expression)
              '())
             '())
            (call-rib (compile-arity 1 #f) '$$close continuation))))
@@ -1393,8 +1393,40 @@
 
     ; Free variable analysis
 
+    (define (find-free-variables expressions)
+     ; TODO
+     expressions)
+
+    (define (analyze-expressions bound-variables expressions)
+     (map
+      (lambda (expression)
+       (analyze-expression bound-variables expression))
+      expressions))
+
+    (define (analyze-expression bound-variables expression)
+     (cond
+      ((pair? expression)
+       (case (car expression)
+        (($$lambda)
+         (let ((body (analyze-expressions bound-variables (cddr expression))))
+          (cons
+           '$$lambda
+           (cons
+            (find-free-variables body)
+            (cons
+             (cadr expression)
+             body)))))
+        (($$quote)
+         expression)
+        (else
+         (cons
+          (analyze-expression bound-variables (car expression))
+          (analyze-expression bound-variables (cdr expression))))))
+      (else
+       expression)))
+
     (define (analyze-free-variables expression)
-     expression)
+     (analyze-expression '() expression))
 
     ; Compilation
 
