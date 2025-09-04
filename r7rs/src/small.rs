@@ -10,7 +10,7 @@ use stak_inexact::InexactPrimitiveSet;
 use stak_native::{EqualPrimitiveSet, ListPrimitiveSet, TypeCheckPrimitiveSet};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
-use stak_vm::{Memory, Number, PrimitiveSet, Tag, Type, Value};
+use stak_vm::{Heap, Memory, Number, PrimitiveSet, Tag, Type, Value};
 use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A primitive set that covers [the R7RS small](https://standards.scheme.org/corrected-r7rs/r7rs.html).
@@ -50,8 +50,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         self.device.device_mut()
     }
 
-    fn operate_comparison(
-        memory: &mut Memory,
+    fn operate_comparison<H: Heap>(
+        memory: &mut Memory<H>,
         operate: fn(Number, Number) -> bool,
     ) -> Result<(), Error> {
         let [x, y] = memory.pop_numbers()?;
@@ -60,7 +60,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
-    fn rib(memory: &mut Memory, car: Value, cdr: Value, tag: Tag) -> Result<(), Error> {
+    fn rib<H: Heap>(memory: &mut Memory<H>, car: Value, cdr: Value, tag: Tag) -> Result<(), Error> {
         let rib = memory.allocate(car, cdr.set_tag(tag))?;
         memory.push(rib.into())?;
         Ok(())
@@ -69,9 +69,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     // We mark this `inline(always)` to make sure inline the `set_field` functions
     // everywhere.
     #[inline(always)]
-    fn set_field<'a>(
-        memory: &mut Memory<'a>,
-        set_field: fn(&mut Memory<'a>, Value, Value) -> Result<(), stak_vm::Error>,
+    fn set_field<H: Heap>(
+        memory: &mut Memory<H>,
+        set_field: fn(&mut Memory<H>, Value, Value) -> Result<(), stak_vm::Error>,
     ) -> Result<(), Error> {
         let [x, y] = memory.pop_many()?;
 
@@ -80,9 +80,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
-    fn tag<'a>(
-        memory: &mut Memory<'a>,
-        field: impl Fn(&Memory<'a>, Value) -> Result<Value, stak_vm::Error>,
+    fn tag<H: Heap>(
+        memory: &mut Memory<H>,
+        field: impl Fn(&Memory<H>, Value) -> Result<Value, stak_vm::Error>,
     ) -> Result<(), Error> {
         memory.operate_top(|memory, value| {
             Ok(if let Some(cons) = field(memory, value)?.to_cons() {
@@ -97,13 +97,13 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     }
 }
 
-impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
+impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet<H>
     for SmallPrimitiveSet<D, F, P, C>
 {
     type Error = Error;
 
     #[maybe_async]
-    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = memory.pop_many()?;

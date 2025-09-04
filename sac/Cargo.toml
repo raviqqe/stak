@@ -10,18 +10,18 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-clap = { version = "4.5.46", features = ["derive"], optional = true }
+clap = { version = "4.5.47", features = ["derive"], optional = true }
 libc = { version = "0.2.175", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
-stak-configuration = { version = "0.10.40", path = "../configuration" }
-stak-device = { version = "0.10.40", path = "../device" }
-stak-file = { version = "0.10.40", path = "../file" }
-stak-libc = { version = "0.10.40", optional = true, path = "../libc" }
-stak-macro = { version = "0.10.40", path = "../macro" }
-stak-process-context = { version = "0.10.40", path = "../process_context" }
-stak-r7rs = { version = "0.10.40", path = "../r7rs" }
-stak-time = { version = "0.10.40", path = "../time" }
-stak-vm = { version = "0.10.40", path = "../vm" }
+stak-configuration = { version = "0.11.0", path = "../configuration" }
+stak-device = { version = "0.11.0", path = "../device" }
+stak-file = { version = "0.11.0", path = "../file" }
+stak-libc = { version = "0.11.0", optional = true, path = "../libc" }
+stak-macro = { version = "0.11.0", path = "../macro" }
+stak-process-context = { version = "0.11.0", path = "../process_context" }
+stak-r7rs = { version = "0.11.0", path = "../r7rs" }
+stak-time = { version = "0.11.0", path = "../time" }
+stak-vm = { version = "0.11.0", path = "../vm" }
 
 [dev-dependencies]
 stak = { path = "../root" }

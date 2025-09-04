@@ -1,30 +1,15 @@
 use super::{FileDescriptor, FileError, FileSystem, utility::decode_path};
 use core::ffi::CStr;
-use heapless::{Vec, index_map::FnvIndexMap};
+use heapless::{CString, index_map::FnvIndexMap};
 use rustix::{
     fd::{AsFd, BorrowedFd, OwnedFd},
     fs::{self, Access, Mode, OFlags},
     io::{self, Errno},
 };
-use stak_vm::{Memory, Value};
+use stak_vm::{Heap, Memory, Value};
 
 const PATH_SIZE: usize = 128;
 const DEFAULT_FILE_CAPACITY: usize = 32;
-
-// TODO Use `heapless::CString`.
-pub struct CString(Vec<u8, PATH_SIZE>);
-
-impl CString {
-    const fn new(vector: Vec<u8, PATH_SIZE>) -> Self {
-        Self(vector)
-    }
-}
-
-impl AsRef<CStr> for CString {
-    fn as_ref(&self) -> &CStr {
-        CStr::from_bytes_with_nul(&self.0).expect("null-terminated string")
-    }
-}
 
 /// A file system based on the libc API.
 #[derive(Debug, Default)]
@@ -50,7 +35,7 @@ impl LibcFileSystem {
 
 impl FileSystem for LibcFileSystem {
     type Path = CStr;
-    type PathBuf = CString;
+    type PathBuf = CString<PATH_SIZE>;
     type Error = FileError;
 
     fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
@@ -118,12 +103,12 @@ impl FileSystem for LibcFileSystem {
         }
     }
 
-    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
-        let mut path = decode_path::<PATH_SIZE>(memory, list).ok_or(FileError::PathDecode)?;
+    fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error> {
+        let mut path = decode_path::<PATH_SIZE, _>(memory, list).ok_or(FileError::PathDecode)?;
 
         path.push(0).map_err(|_| FileError::PathDecode)?;
 
-        Ok(CString::new(path))
+        CString::from_bytes_with_nul(&path).map_err(|_| FileError::PathDecode)
     }
 }
 

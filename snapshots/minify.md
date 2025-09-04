@@ -2126,7 +2126,7 @@
 - call 1 #f ||
 - set ||
 - constant procedure 0 #t
-  - constant procedure 6 #f
+  - constant procedure 7 #f
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -2137,7 +2137,7 @@
         - constant #\(
         - call 2 #f ||
         - if
-          - call 0 #f 7
+          - call 0 #f 8
         - get 0
         - constant #\#
         - call 2 #f ||
@@ -2159,6 +2159,16 @@
               - call 0 #f ||
               - set 0
               - constant #t
+            - get 0
+            - constant #\u
+            - call 2 #f ||
+            - if
+              - call 0 #f ||
+              - set 0
+              - call 0 #f ||
+              - set 0
+              - call 0 #f 10
+              - call 1 #f ||
             - get 0
             - constant #\\
             - call 2 #f ||
@@ -2188,22 +2198,22 @@
                   - call 2 #f ||
                   - call 1 #f ||
                 - call 1 #f ||
-                - call 0 #f 11
+                - call 0 #f 12
                 - call 1 #f 1
               - call 1 #f ||
               - call 0 #f ||
               - call 1 #f 1
             - get 0
-            - constant #\u
+            - constant #\!
             - call 2 #f ||
             - if
-              - call 0 #f ||
-              - set 0
-              - call 0 #f ||
-              - set 0
-              - call 0 #f 9
-              - call 1 #f ||
-            - call 0 #f 9
+              - call 0 #f 6
+            - get 0
+            - constant #\|
+            - call 2 #f ||
+            - if
+              - call 0 #f 5
+            - call 0 #f 10
             - call 1 #f ||
           - call 1 #f ||
           - call 0 #f ||
@@ -2215,7 +2225,7 @@
           - call 0 #f ||
           - set 0
           - constant quote
-          - call 0 #f 9
+          - call 0 #f 10
           - call 2 #f ||
         - get 0
         - constant #\`
@@ -2224,7 +2234,7 @@
           - call 0 #f ||
           - set 0
           - constant quasiquote
-          - call 0 #f 9
+          - call 0 #f 10
           - call 2 #f ||
         - get 0
         - constant #\,
@@ -2239,16 +2249,16 @@
             - call 0 #f ||
             - set 0
             - constant unquote-splicing
-            - call 0 #f 9
+            - call 0 #f 10
             - call 2 #f ||
           - constant unquote
-          - call 0 #f 9
+          - call 0 #f 10
           - call 2 #f ||
         - get 0
         - constant #\"
         - call 2 #f ||
         - if
-          - call 0 #f 5
+          - call 0 #f 6
         - constant procedure 1 #f
           - constant procedure 1 #f
             - get 0
@@ -2261,14 +2271,14 @@
           - call 1 #f ||
           - call 1 #f 1
         - call 1 #f ||
-        - call 0 #f 7
+        - call 0 #f 8
         - call 1 #f ||
         - call 1 #f 1
       - call 1 #f ||
-      - call 0 #f 3
+      - call 0 #f 4
       - call 1 #f 1
     - call 1 #f ||
-    - set 6
+    - set 7
     - constant procedure 0 #f
       - constant procedure 1 #f
         - constant procedure 0 #f
@@ -2301,16 +2311,16 @@
                   - set 0
                   - get 0
                 - call 1 #f ||
-                - call 0 #f 14
+                - call 0 #f 15
                 - call 1 #f 1
               - get 0
               - call 0 #f 6
               - call 2 #f ||
             - call 1 #f ||
-            - call 0 #f 12
+            - call 0 #f 13
             - call 1 #f 1
           - call 1 #f ||
-          - call 0 #f 6
+          - call 0 #f 7
           - call 1 #f 1
         - call 1 #f ||
         - set 1
@@ -2330,7 +2340,7 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f ||
-    - set 5
+    - set 6
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -2351,13 +2361,13 @@
         - if
           - constant ()
         - call 0 #f ||
-        - call 0 #f 7
+        - call 0 #f 8
         - call 2 #f ||
       - call 1 #f ||
       - call 0 #f ||
       - call 1 #f 1
     - call 1 #f ||
-    - set 4
+    - set 5
     - constant procedure 0 #f
       - call 0 #f ||
       - constant #\"
@@ -2430,7 +2440,7 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f ||
-    - set 3
+    - set 4
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -2438,18 +2448,18 @@
         - if
           - call 0 #f ||
           - set 0
-          - call 0 #f 4
+          - call 0 #f 5
         - get 0
         - constant #\;
         - call 2 #f ||
         - if
-          - call 0 #f 3
+          - call 0 #f 4
         - get 0
       - call 1 #f ||
       - call 0 #f ||
       - call 1 #f 1
     - call 1 #f ||
-    - set 2
+    - set 3
     - constant procedure 0 #f
       - constant procedure 1 #f
         - get 0
@@ -2460,7 +2470,33 @@
         - constant #\newline
         - call 2 #f ||
         - if
-          - call 0 #f 4
+          - call 0 #f 5
+        - call 0 #f 4
+      - call 1 #f ||
+      - call 0 #f ||
+      - call 1 #f 1
+    - call 1 #f ||
+    - set 2
+    - constant procedure 0 #f
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f ||
+        - if
+          - constant "|# expected"
+          - call 1 #f ||
+        - get 0
+        - constant #\|
+        - call 2 #f ||
+        - if
+          - call 0 #f ||
+          - constant #\#
+          - call 2 #f ||
+          - continue
+        - constant #f
+        - if
+          - call 0 #f ||
+          - set 0
+          - call 0 #f 5
         - call 0 #f 3
       - call 1 #f ||
       - call 0 #f ||
@@ -2470,17 +2506,17 @@
     - constant procedure 1 #f
       - constant procedure 1 #f
         - constant procedure 0 #f
-          - get 12
+          - get 13
           - call 1 #f ||
           - if
             - call 0 #f ||
             - continue
-          - get 12
+          - get 13
           - call 1 #f ||
           - call 1 #f 4
         - call 1 #f ||
         - constant procedure 0 #f
-          - call 0 #f 11
+          - call 0 #f 12
         - call 1 #f ||
         - constant procedure 0 #f
           - get 3
@@ -2500,7 +2536,8 @@
   - constant #f
   - constant #f
   - constant #f
-  - call 6 #f 6
+  - constant #f
+  - call 7 #f 7
 - call 1 #f ||
 - set ||
 - constant procedure 2 #f

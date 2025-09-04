@@ -3018,6 +3018,11 @@
                   (read-char)
                   #t)
 
+                ((#\u)
+                  (read-char)
+                  (read-char)
+                  (list->bytevector (read-list)))
+
                 ((#\\)
                   (read-char)
                   (let ((char (peek-char)))
@@ -3034,10 +3039,11 @@
                           (else
                             (cdr (assoc (list->string x) special-chars))))))))
 
-                ((#\u)
-                  (read-char)
-                  (read-char)
-                  (list->bytevector (read-list)))
+                ((#\!)
+                  (skip-line-comment))
+
+                ((#\|)
+                  (skip-block-comment))
 
                 (else
                   (list->vector (read-list)))))
@@ -3139,12 +3145,12 @@
                 (peek-non-whitespace-char)))
 
             ((eqv? char #\;)
-              (skip-comment))
+              (skip-line-comment))
 
             (else
               char))))
 
-      (define (skip-comment)
+      (define (skip-line-comment)
         (let ((char (read-char)))
           (cond
             ((eof-object? char)
@@ -3154,7 +3160,22 @@
               (peek-non-whitespace-char))
 
             (else
-              (skip-comment)))))
+              (skip-line-comment)))))
+
+      (define (skip-block-comment)
+        (let ((char (read-char)))
+          (cond
+            ((eof-object? char)
+              (error "|# expected"))
+
+            ((and
+                (eqv? char #\|)
+                (eqv? (peek-char) #\#))
+              (read-char)
+              (peek-non-whitespace-char))
+
+            (else
+              (skip-block-comment)))))
 
       (parameterize ((current-input-port
                        (if (null? rest) (current-input-port) (car rest))))
