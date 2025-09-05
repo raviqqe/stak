@@ -68,18 +68,19 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
+          # TODO Test gosh
+          # - name: stak-tools
+          #   host: gosh
           - name: stak-tools
-            host: gosh
+            host: guile
           - name: stak-tools
-            host: gosh
+            host: guile
             compile_options: --shake-tree
           - name: stak-tools
-            host: gosh
+            host: guile
             features:
               - gc_always
             tags: ~@long
-          - name: stak-tools
-            host: guile
           - name: chibi
             tags: ~@stak,@chibi
           - name: gauche

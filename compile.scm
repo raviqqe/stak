@@ -931,6 +931,71 @@
         (else
          expression)))))
 
+    ; Free variable analysis
+
+    (define (find-free-variables bound-variables expression)
+     (define (find expression)
+      (find-free-variables bound-variables expression))
+
+     (cond
+      ((pair? expression)
+       (case (car expression)
+        (($$lambda)
+         (filter
+          (lambda (name)
+           (memq name bound-variables))
+          (cadr expression)))
+        (($$quote)
+         '())
+        (else
+         (unique
+          (append
+           (find (car expression))
+           (find (cdr expression)))))))
+      ((symbol? expression)
+       (if (memq expression bound-variables)
+        (list expression)
+        '()))
+      (else
+       '())))
+
+    (define (analyze-expressions bound-variables expressions)
+     (map
+      (lambda (expression)
+       (analyze-expression bound-variables expression))
+      expressions))
+
+    (define (analyze-expression bound-variables expression)
+     (cond
+      ((pair? expression)
+       (case (car expression)
+        (($$lambda)
+         (let* ((parameters (cadr expression))
+                (body
+                 (analyze-expressions
+                  (unique (append (parameter-names parameters) bound-variables))
+                  (cddr expression))))
+          (cons
+           '$$lambda
+           (cons
+            (unique
+             (append-map
+              (lambda (expression)
+               (find-free-variables bound-variables expression))
+              body))
+            (cons parameters body)))))
+        (($$quote)
+         expression)
+        (else
+         (cons
+          (analyze-expression bound-variables (car expression))
+          (analyze-expression bound-variables (cdr expression))))))
+      (else
+       expression)))
+
+    (define (analyze-free-variables expression)
+     (analyze-expression '() expression))
+
     ; Compilation
 
     ;; Context
@@ -1063,7 +1128,7 @@
             (compile-expression context (cadddr expression) continuation)))))
 
         (($$lambda)
-         (let ((parameters (cadr expression)))
+         (let ((parameters (caddr expression)))
           (constant-rib
            (make-procedure
             (compile-arity
@@ -1074,10 +1139,12 @@
               context
               ; #f is for a frame.
               (reverse (cons #f (parameter-names parameters))))
-             (cddr expression)
+             (cdddr expression)
              '())
             '())
-           (call-rib (compile-arity 1 #f) '$$close continuation))))
+           (if (null? (cadr expression))
+            continuation
+            (call-rib (compile-arity 1 #f) '$$close continuation)))))
 
         (($$libraries)
          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
@@ -1790,6 +1857,7 @@
        optimizers
        dynamic-symbols
        expression4))
+     (define expression5 (analyze-free-variables expression4))
 
      (encode
       (marshal
@@ -1798,7 +1866,7 @@
         #f
         (build-primitives
          primitives
-         (compile metadata expression4))))))
+         (compile metadata expression5))))))
 
     main))
 
@@ -1976,8 +2044,9 @@
                 (make-procedure
                  (compile-arity 0 #f)
                  (compile
-                  (optimize
-                   (expand-macros expression)))
+                  (analyze-free-variables
+                   (optimize
+                    (expand-macros expression))))
                  '())
                 imports)))))))
         (cdr expression)))

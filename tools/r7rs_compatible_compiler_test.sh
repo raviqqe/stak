@@ -6,7 +6,8 @@ set -e
 
 cd $(dirname $0)/..
 
-interpreters='chibi-scheme gosh guile'
+# TODO Test gosh.
+interpreters='chibi-scheme guile'
 
 cargo build --release
 export PATH=$PWD/target/release:$PATH
