@@ -2334,11 +2334,12 @@
     (define $halt (primitive 40))
 
     (define-record-type error-object
-      (make-error-object type message irritants)
+      (make-error-object type message irritants backtrace)
       error-object?
       (type error-object-type)
       (message error-object-message)
-      (irritants error-object-irritants))
+      (irritants error-object-irritants)
+      (backtrace error-object-backtrace))
 
     (define (convert-exception-handler handler)
       (lambda (pair)
@@ -2371,7 +2372,13 @@
           (set-cdr!
             '()
             (lambda (message)
-              (handler (cons #f (make-error-object 'runtime (code-points->string message) '())))))
+              (handler
+                (cons #f
+                  (make-error-object
+                    'runtime
+                    (code-points->string message)
+                    '()
+                    #f)))))
           handler)))
 
     (define (with-exception-handler handler thunk)
@@ -2392,7 +2399,7 @@
 
     (define (error-type type)
       (lambda (message . rest)
-        (raise (make-error-object type message rest))))
+        (raise (make-error-object type message rest backtrace))))
 
     (define (error-type? type)
       (lambda (error)
