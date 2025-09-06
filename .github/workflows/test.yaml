@@ -74,10 +74,10 @@ jobs:
           - name: stak-tools
             host: guile
           - name: stak-tools
-            host: guile
+            compile_options: --debug
+          - name: stak-tools
             compile_options: --shake-tree
           - name: stak-tools
-            host: guile
             features:
               - gc_always
             tags: ~@long
@@ -91,7 +91,7 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     env:
-      STAK_HOST: ${{ matrix.interpreter.host }}
+      STAK_HOST: ${{ matrix.interpreter.host || 'guile' }}
       STAK_COMPILE_OPTIONS: ${{ matrix.interpreter.compile_options }}
     steps:
       - uses: actions/checkout@v5

@@ -12963,6 +12963,8 @@
   - call 0 #f jiffies-per-second
   - call 2 #f ||
 - set current-second
+- constant 1
+- set ||
 - constant procedure 0 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -12973,7 +12975,7 @@
           - constant ()
         - get 0
         - call 1 #f rib-tag
-        - constant 1
+        - get ||
         - call 2 #f eq?
         - if
           - constant procedure 1 #f

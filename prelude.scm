@@ -2500,6 +2500,8 @@
   (import (stak base) (stak exception))
 
   (begin
+    (define frame-tag 1)
+
     (set! backtrace
       (lambda ()
         (let ((stack (cdr (close (lambda () #f)))))
@@ -2508,7 +2510,7 @@
               (cond
                 ((null? stack)
                   '())
-                ((= (rib-tag stack) 1)
+                ((= (rib-tag stack) frame-tag)
                   (cons
                     (let ((procedure (car (caar stack))))
                       (and (not (number? procedure)) procedure))
