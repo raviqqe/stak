@@ -2492,7 +2492,7 @@
   (begin
     (set! backtrace
       (lambda ()
-        (lambda #f #f)
+        (lambda () #f)
         '()))))
 
 (define-library (scheme base)
