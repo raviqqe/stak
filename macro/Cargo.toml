@@ -5,7 +5,7 @@ edition.workspace = true
 description = "Macros to integrate Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-license-file.workspace = true
+license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 

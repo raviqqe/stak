@@ -43,7 +43,7 @@ version = "0.11.1"
 edition = "2024"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
-license-file = "LICENSE"
+license = "MIT"
 keywords = ["interpreter", "language", "scheme"]
 categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 
