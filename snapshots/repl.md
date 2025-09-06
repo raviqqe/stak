@@ -3408,8 +3408,22 @@
               - if
                 - call 0 #f newline
                 - set 0
+                - constant " stack trace: "
+                - call 1 #f write-string
+                - set 0
                 - get 0
+                - call 1 #f car
                 - call 1 #f write-irritant
+                - set 0
+                - constant procedure 1 #f
+                  - constant " -> "
+                  - call 1 #f write-string
+                  - set 0
+                  - get 0
+                  - call 1 #f write-irritant
+                - get 1
+                - call 1 #f cdr
+                - call 2 #f for-each
               - constant #f
             - get 8
             - call 1 #f ||

@@ -1633,8 +1633,22 @@
               - if
                 - call 0 #f ||
                 - set 0
+                - constant " stack trace: "
+                - call 1 #f ||
+                - set 0
                 - get 0
                 - call 1 #f ||
+                - call 1 #f ||
+                - set 0
+                - constant procedure 1 #f
+                  - constant " -> "
+                  - call 1 #f ||
+                  - set 0
+                  - get 0
+                  - call 1 #f ||
+                - get 1
+                - call 1 #f ||
+                - call 2 #f ||
               - constant #f
             - get 8
             - call 1 #f ||

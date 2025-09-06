@@ -3408,8 +3408,22 @@
               - if
                 - call 0 #f newline
                 - set 0
+                - constant " stack trace: "
+                - call 1 #f write-string
+                - set 0
                 - get 0
+                - call 1 #f car
                 - call 1 #f write-irritant
+                - set 0
+                - constant procedure 1 #f
+                  - constant " -> "
+                  - call 1 #f write-string
+                  - set 0
+                  - get 0
+                  - call 1 #f write-irritant
+                - get 1
+                - call 1 #f cdr
+                - call 2 #f for-each
               - constant #f
             - get 8
             - call 1 #f ||
@@ -3638,7 +3652,6 @@
   - $$-
   - $$\*
   - $$/
-  - debug
   - call-instruction
   - constant
   - type
@@ -3829,11 +3842,11 @@
   - raw-optimizers
   - raw-dynamic-symbols
   - make-metadata
-  - library-symbol?
-  - symbol
   - unique
   - find-quoted-symbols
   - find-symbols
+  - library-symbol?
+  - symbol
   - marshal-context
   - marshal-context?
   - symbols
@@ -3996,6 +4009,7 @@
   - expand-macros
   - expression
   - imports
+  - debug
   - shake-tree
   - mapping
   - mapping-empty
@@ -18248,35 +18262,58 @@
     - list
       - make-metadata
       - list
-        - filter
+        - let
         - list
-          - lambda
           - list
-            - symbol
-          - list
-            - not
+            - symbols
             - list
-              - library-symbol?
+              - unique
+              - list
+                - append
+                - list
+                  - list
+                    - if
+                    - list
+                      - memq
+                      - list
+                        - quote
+                        - debug
+                      - features
+                    - find-symbols
+                    - find-quoted-symbols
+                  - expression
+                - list
+                  - find-symbols
+                  - libraries
+                - list
+                  - find-symbols
+                  - macros
+                - list
+                  - find-symbols
+                  - optimizers
+                - list
+                  - find-symbols
+                  - dynamic-symbols
+        - list
+          - filter
+          - list
+            - lambda
+            - list
               - symbol
-        - list
-          - unique
-          - list
-            - append
             - list
-              - find-quoted-symbols
-              - expression
-            - list
-              - find-symbols
-              - libraries
-            - list
-              - find-symbols
-              - macros
-            - list
-              - find-symbols
-              - optimizers
-            - list
-              - find-symbols
-              - dynamic-symbols
+              - or
+              - list
+                - memq
+                - list
+                  - quote
+                  - debug
+                - features
+              - list
+                - not
+                - list
+                  - library-symbol?
+                  - symbol
+          - symbols
       - libraries
       - macros
       - optimizers
@@ -19730,8 +19767,11 @@
       - define
       - features
       - list
-        - detect-features
-        - expression3
+        - append
+        - options
+        - list
+          - detect-features
+          - expression3
     - list
       - define-values
       - list
@@ -20848,14 +20888,21 @@
       - continue
     - constant #f
     - set 0
-    - constant "--shake-tree"
+    - constant "--debug"
     - get 1
     - call 2 #f member
     - if
-      - constant list
-        - shake-tree
+      - constant debug
       - continue
-    - constant ()
+    - constant #f
+    - constant "--shake-tree"
+    - get 2
+    - call 2 #f member
+    - if
+      - constant shake-tree
+      - continue
+    - constant #f
+    - call 2 #f list
     - call 0 #f ||
     - call 1 #f ||
     - call 2 #f 3
