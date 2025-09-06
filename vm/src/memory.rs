@@ -595,14 +595,16 @@ mod tests {
 
     #[test]
     fn create() {
-        let memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let memory = Memory::new(heap.as_mut()).unwrap();
 
         assert_snapshot!(memory);
     }
 
     #[test]
     fn create_list() {
-        let mut memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let mut memory = Memory::new(heap.as_mut()).unwrap();
 
         let list = memory
             .cons(Number::from_i64(1).into(), memory.null().unwrap())
@@ -624,7 +626,8 @@ mod tests {
 
     #[test]
     fn convert_false() {
-        let memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let memory = Memory::new(heap.as_mut()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(false).unwrap())
@@ -636,7 +639,8 @@ mod tests {
 
     #[test]
     fn convert_true() {
-        let memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let memory = Memory::new(heap.as_mut()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(true).unwrap())
@@ -648,7 +652,8 @@ mod tests {
 
     #[test]
     fn convert_null() {
-        let memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let memory = Memory::new(heap.as_mut()).unwrap();
 
         assert_eq!(
             Value::from(memory.null().unwrap()).to_cons().unwrap(),
