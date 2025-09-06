@@ -60,7 +60,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
-    // Initialize a heap memory.
+    // Initialize a heap memory for a Scheme scripting engine.
     let mut heap = [Default::default(); HEAP_SIZE];
     // Define Rust functions to pass to the engine.
     let mut functions = [
@@ -70,7 +70,7 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
         ("person-throw-pie", r#fn(Person::throw_pie)),
     ];
     // Initialize the engine.
-    let mut engine = Engine::new(heap.as_mut(), &mut functions)?;
+    let mut engine = Engine::new(&mut heap, &mut functions)?;
 
     // Finally, run the module!
     engine.run(module)

@@ -5,7 +5,7 @@ edition.workspace = true
 description = "Devices for Stak Scheme"
 readme.workspace = true
 repository.workspace = true
-license-file.workspace = true
+license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
@@ -13,7 +13,7 @@ categories.workspace = true
 rustix = { version = "1.0.8", default-features = false, features = [
   "stdio",
 ], optional = true }
-stak-vm = { version = "0.11.0", path = "../vm" }
+stak-vm = { version = "0.11.1", path = "../vm" }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]

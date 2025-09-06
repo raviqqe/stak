@@ -16,7 +16,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
 
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut vm = Vm::new(
-        heap.as_mut(),
+        &mut heap,
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(reader, writer, empty()),
             VoidFileSystem::new(),

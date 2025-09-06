@@ -2,7 +2,7 @@ mod primitive;
 
 pub use self::primitive::Primitive;
 use crate::ProcessContext;
-use stak_vm::{Error, Heap, Memory, PrimitiveSet};
+use stak_vm::{Error, Memory, PrimitiveSet};
 use winter_maybe_async::maybe_async;
 
 /// A primitive set for process context.
@@ -17,11 +17,11 @@ impl<T: ProcessContext> ProcessContextPrimitiveSet<T> {
     }
 }
 
-impl<T: ProcessContext, H: Heap> PrimitiveSet<H> for ProcessContextPrimitiveSet<T> {
+impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
     type Error = Error;
 
     #[maybe_async]
-    fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::COMMAND_LINE => {
                 memory.set_register(memory.null()?);

@@ -5,12 +5,12 @@ edition.workspace = true
 description = "Stak Scheme source code minifier"
 readme.workspace = true
 repository.workspace = true
-license-file.workspace = true
+license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-sac = { version = "0.11.0", features = ["std"], path = "../../sac" }
+stak-sac = { version = "0.11.1", features = ["std"], path = "../../sac" }
 
 [features]
 default = ["float"]
