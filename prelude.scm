@@ -2497,7 +2497,7 @@
     (set! backtrace
       (lambda ()
         (let ((stack (cdr (close (lambda () #f)))))
-          (let loop ((stack stack) (frames '()))
+          (let loop ((stack stack))
             (cond
               ((null? stack)
                 '())
