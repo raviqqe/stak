@@ -3336,6 +3336,15 @@
 - call 2 #f ||
 - call 1 #f ||
 - set error-object-irritants
+- constant 0
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set ||
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -3417,7 +3426,8 @@
     - get 2
     - call 1 #f code-points->string
     - constant ()
-    - call 3 #f ||
+    - constant #f
+    - call 4 #f ||
     - call 2 #f cons
     - call 1 #f 4
   - call 1 #f $$close
@@ -3496,7 +3506,8 @@
     - get 3
     - get 2
     - get 2
-    - call 3 #f ||
+    - get ||
+    - call 4 #f ||
     - call 1 #f raise
   - call 1 #f $$close
 - set ||
