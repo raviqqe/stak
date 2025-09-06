@@ -1449,16 +1449,20 @@
      (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
 
      (make-metadata
-      (filter
-       (lambda (symbol)
-        (not (library-symbol? symbol)))
-       (unique
-        (append
-         (find-quoted-symbols expression)
-         (find-symbols libraries)
-         (find-symbols macros)
-         (find-symbols optimizers)
-         (find-symbols dynamic-symbols))))
+      (let ((symbols
+             (unique
+              (append
+               ((if (memq 'debug features) find-symbols find-quoted-symbols) expression)
+               (find-symbols libraries)
+               (find-symbols macros)
+               (find-symbols optimizers)
+               (find-symbols dynamic-symbols)))))
+       (filter
+        (lambda (symbol)
+         (or
+          (memq 'debug features)
+          (not (library-symbol? symbol))))
+        symbols))
       libraries
       macros
       optimizers
@@ -1849,7 +1853,7 @@
      (define expression1 (include-files source))
      (define-values (expression2 libraries) (expand-libraries expression1))
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
-     (define features (detect-features expression3))
+     (define features (append options (detect-features expression3)))
      (define-values (expression4 optimizers)
       (optimize
        (if (memq 'shake-tree options)
