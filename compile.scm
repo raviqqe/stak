@@ -1436,7 +1436,13 @@
 
      (unique (find expression)))
 
-    (define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
+    (define (compile-metadata
+             features
+             raw-libraries
+             raw-macros
+             raw-optimizers
+             raw-dynamic-symbols
+             expression)
      (define libraries (if (memq 'libraries features) raw-libraries '()))
      (define macros (if (memq 'macros features) raw-macros '()))
      (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
@@ -2079,7 +2085,9 @@
     (exit))
 
   (compile
-    (if (member "--shake-tree" arguments) '(shake-tree) '())
+    (list
+      (and (member "--debug" arguments) 'debug)
+      (and (member "--shake-tree" arguments) 'shake-tree))
     (incept (read-source))))
 
 (main)
