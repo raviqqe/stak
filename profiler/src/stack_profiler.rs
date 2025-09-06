@@ -1,5 +1,5 @@
 use crate::{COLUMN_SEPARATOR, FRAME_SEPARATOR, ProcedureOperation};
-use stak_vm::{Cons, Error, Heap, Memory, Profiler, StackSlot};
+use stak_vm::{Cons, Error, Memory, Profiler, StackSlot};
 use std::{io::Write, time::Instant};
 
 /// A stack profiler.
@@ -34,7 +34,7 @@ impl<T: Write> StackProfiler<T> {
         .unwrap();
     }
 
-    fn write_procedure<H: Heap>(&mut self, memory: &Memory<H>, code: Cons) -> Result<(), Error> {
+    fn write_procedure(&mut self, memory: &Memory, code: Cons) -> Result<(), Error> {
         let operand = memory.car(code)?;
 
         if let Some(symbol) = operand.to_cons() {
@@ -55,7 +55,7 @@ impl<T: Write> StackProfiler<T> {
         Ok(())
     }
 
-    fn write_stack<H: Heap>(&mut self, memory: &Memory<H>) -> Result<(), Error> {
+    fn write_stack(&mut self, memory: &Memory) -> Result<(), Error> {
         let mut stack = memory.stack();
         let mut first = true;
 
@@ -79,10 +79,10 @@ impl<T: Write> StackProfiler<T> {
     }
 }
 
-impl<T: Write, H: Heap> Profiler<H> for StackProfiler<T> {
+impl<T: Write> Profiler for StackProfiler<T> {
     fn profile_call(
         &mut self,
-        memory: &Memory<H>,
+        memory: &Memory,
         call_code: Cons,
         r#return: bool,
     ) -> Result<(), Error> {
@@ -106,7 +106,7 @@ impl<T: Write, H: Heap> Profiler<H> for StackProfiler<T> {
         Ok(())
     }
 
-    fn profile_return(&mut self, memory: &Memory<H>) -> Result<(), Error> {
+    fn profile_return(&mut self, memory: &Memory) -> Result<(), Error> {
         write!(self.writer, "{}", ProcedureOperation::Return).unwrap();
         self.write_column_separator();
         self.write_stack(memory)?;

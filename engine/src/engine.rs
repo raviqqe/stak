@@ -3,17 +3,20 @@ use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
 use stak_util::block_on;
-use stak_vm::{Error, Heap, Vm};
+use stak_vm::{Error, Value, Vm};
 use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A scripting engine.
-pub struct Engine<'a, 'b, H: Heap> {
-    vm: Vm<'a, EnginePrimitiveSet<'a, 'b, H>, H>,
+pub struct Engine<'a, 'b> {
+    vm: Vm<'a, EnginePrimitiveSet<'a, 'b>>,
 }
 
-impl<'a, 'b, H: Heap> Engine<'a, 'b, H> {
+impl<'a, 'b> Engine<'a, 'b> {
     /// Creates a scripting engine.
-    pub fn new(heap: H, functions: &'a mut [(&'a str, AnyFn<'b>)]) -> Result<Self, Error> {
+    pub fn new(
+        heap: &'a mut [Value],
+        functions: &'a mut [(&'a str, AnyFn<'b>)],
+    ) -> Result<Self, Error> {
         Ok(Self {
             vm: Vm::new(heap, EnginePrimitiveSet::new(functions))?,
         })
@@ -43,7 +46,7 @@ impl<'a, 'b, H: Heap> Engine<'a, 'b, H> {
     ///
     /// For more information, see
     /// [`DynamicPrimitiveSet`][stak_dynamic::DynamicPrimitiveSet].
-    pub fn register_type<T: SchemeValue<H> + 'static>(&mut self) {
+    pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.vm
             .primitive_set_mut()
             .dynamic_mut()

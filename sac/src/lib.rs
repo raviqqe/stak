@@ -79,7 +79,7 @@ macro_rules! main {
 
             let mut heap = vec![Default::default(); arguments.heap_size];
             let mut vm = Vm::new(
-                heap.as_mut(),
+                &mut heap,
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
                     OsFileSystem::new(),

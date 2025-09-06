@@ -1,7 +1,7 @@
 use super::utility::decode_path;
 use crate::{FileDescriptor, FileSystem};
 use core::str;
-use stak_vm::{Heap, Memory, Value};
+use stak_vm::{Memory, Value};
 use std::{
     collections::HashMap,
     fs::{File, OpenOptions, remove_file},
@@ -86,10 +86,10 @@ impl FileSystem for OsFileSystem {
         Ok(path.exists())
     }
 
-    fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
         Ok(PathBuf::from(
             str::from_utf8(
-                &decode_path::<PATH_SIZE, _>(memory, list)
+                &decode_path::<PATH_SIZE>(memory, list)
                     .ok_or_else(|| io::Error::new(ErrorKind::InvalidData, "path too long"))?,
             )
             .map_err(|error| io::Error::new(ErrorKind::InvalidData, error))?,
