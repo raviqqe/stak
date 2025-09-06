@@ -2473,7 +2473,7 @@
 
     ; Dummy implementation
     (define (write-irritant value . rest)
-      (write-string "<unknown>" (get-output-port rest)))))
+      (write-string "<unknown>" rest))))
 
 (define-library (scheme base)
   (export
