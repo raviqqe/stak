@@ -177,7 +177,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    #[inline]
     fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand()?;
 
@@ -188,7 +187,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    #[inline]
     fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons()?;
         let value = self.memory.car(operand)?;
@@ -201,7 +199,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    #[inline]
     fn set(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons()?;
         let value = self.memory.pop()?;
@@ -214,7 +211,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    #[inline]
     fn r#if(&mut self) -> Result<(), Error> {
         let cons = self.memory.stack();
 
@@ -226,7 +222,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    #[inline(always)]
     #[maybe_async]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null()?;
@@ -325,7 +320,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    #[inline]
     const fn parse_arity(info: usize) -> Arity {
         Arity {
             count: info / 2,
@@ -333,12 +327,10 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         }
     }
 
-    #[inline]
     const fn build_arity(arity: Arity) -> usize {
         2 * arity.count + arity.variadic as usize
     }
 
-    #[inline]
     fn advance_code(&mut self) -> Result<(), Error> {
         let mut code = self.memory.cdr(self.memory.code())?.assume_cons();
 

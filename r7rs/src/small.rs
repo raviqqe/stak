@@ -68,7 +68,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
 
     // We mark this `inline(always)` to make sure inline the `set_field` functions
     // everywhere.
-    #[inline(always)]
     fn set_field<H: Heap>(
         memory: &mut Memory<H>,
         set_field: fn(&mut Memory<H>, Value, Value) -> Result<(), stak_vm::Error>,

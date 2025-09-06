@@ -80,43 +80,36 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Returns a code.
-    #[inline]
     pub const fn code(&self) -> Cons {
         self.code
     }
 
     /// Sets a code.
-    #[inline]
     pub const fn set_code(&mut self, value: Cons) {
         self.code = value;
     }
 
     /// Returns a register.
-    #[inline]
     pub const fn register(&self) -> Cons {
         self.register
     }
 
     /// Sets a register.
-    #[inline]
     pub const fn set_register(&mut self, value: Cons) {
         self.register = value;
     }
 
     /// Returns a stack.
-    #[inline]
     pub const fn stack(&self) -> Cons {
         self.stack
     }
 
     /// Sets a stack.
-    #[inline]
     pub const fn set_stack(&mut self, value: Cons) {
         self.stack = value;
     }
 
     /// Returns a boolean value.
-    #[inline]
     pub fn boolean(&self, value: bool) -> Result<Cons, Error> {
         Ok(if value {
             self.cdr(self.r#false)?.assume_cons()
@@ -126,19 +119,16 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Returns a null value.
-    #[inline]
     pub fn null(&self) -> Result<Cons, Error> {
         Ok(self.car(self.r#false)?.assume_cons())
     }
 
     /// Sets a false value.
-    #[inline]
     pub(crate) const fn set_false(&mut self, cons: Cons) {
         self.r#false = cons;
     }
 
     /// Pushes a value to a stack.
-    #[inline(always)]
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;
 
@@ -146,7 +136,6 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Pops a value from a stack.
-    #[inline]
     pub fn pop(&mut self) -> Result<Value, Error> {
         debug_assert_ne!(self.stack, self.null()?);
 
@@ -178,7 +167,6 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Peeks a value at the top of a stack.
-    #[inline]
     pub fn top(&self) -> Result<Value, Error> {
         debug_assert_ne!(self.stack, self.null()?);
 
@@ -186,19 +174,16 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Sets a value at the top of a stack.
-    #[inline]
     pub fn set_top(&mut self, value: Value) -> Result<(), Error> {
         self.set_car(self.stack, value)
     }
 
     /// Allocates a cons with a default tag of [`Type::Pair`].
-    #[inline]
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
         self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
 
     /// Allocates a cons.
-    #[inline]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
@@ -214,7 +199,6 @@ impl<H: Heap> Memory<H> {
         Ok(cons)
     }
 
-    #[inline]
     fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);
@@ -233,41 +217,34 @@ impl<H: Heap> Memory<H> {
         Ok(cons)
     }
 
-    #[inline]
     fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
     /// Returns a heap size.
-    #[inline]
     pub fn size(&self) -> usize {
         self.heap().len()
     }
 
-    #[inline]
     fn space_size(&self) -> usize {
         self.size() / 2
     }
 
     /// Returns the current allocation index relative an allocation start index.
-    #[inline]
     pub const fn allocation_index(&self) -> usize {
         self.allocation_index
     }
 
     /// Returns an allocation start index.
-    #[inline]
     pub fn allocation_start(&self) -> usize {
         if self.space { self.space_size() } else { 0 }
     }
 
     /// Returns an allocation end index.
-    #[inline]
     pub fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
-    #[inline]
     fn get<const G: bool>(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index, G);
 
@@ -277,7 +254,6 @@ impl<H: Heap> Memory<H> {
             .ok_or(Error::InvalidMemoryAccess)
     }
 
-    #[inline]
     fn set<const G: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index, G);
 
@@ -290,40 +266,33 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Returns a value of a `car` field in a cons.
-    #[inline]
     pub fn car(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<false>(cons.index())
     }
 
     /// Returns a value of a `cdr` field in a cons.
-    #[inline]
     pub fn cdr(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<false>(cons.index() + 1)
     }
 
-    #[inline]
     fn garbage_car(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<true>(cons.index())
     }
 
-    #[inline]
     fn garbage_cdr(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<true>(cons.index() + 1)
     }
 
     /// Returns a value of a `car` field in a value assumed as a cons.
-    #[inline]
     pub fn car_value(&self, cons: Value) -> Result<Value, Error> {
         self.car(cons.assume_cons())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
-    #[inline]
     pub fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
         self.cdr(cons.assume_cons())
     }
 
-    #[inline]
     fn set_field<const G: bool>(
         &mut self,
         cons: Cons,
@@ -334,13 +303,11 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Sets a value to a `car` field in a cons.
-    #[inline]
     pub fn set_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<false>(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
-    #[inline]
     pub fn set_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         // Keep an existing tag.
         self.set_field::<false>(
@@ -351,35 +318,29 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
-    #[inline]
     pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<false>(cons, 1, value)
     }
 
-    #[inline]
     fn set_garbage_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<true>(cons, 0, value)
     }
 
-    #[inline]
     fn set_garbage_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<true>(cons, 1, value)
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
-    #[inline(always)]
     pub fn set_car_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
         self.set_car(cons.assume_cons(), value)
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
-    #[inline(always)]
     pub fn set_cdr_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
         self.set_cdr(cons.assume_cons(), value)
     }
 
     /// Returns a tail of a list.
-    #[inline(always)]
     pub fn tail(&self, mut list: Cons, mut index: usize) -> Result<Cons, Error> {
         while index > 0 {
             list = self.cdr(list)?.assume_cons();
