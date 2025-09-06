@@ -20,8 +20,9 @@ static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
 // significantly as we increase heap sizes. So we should keep bytecode sizes of
 // Scheme programs as small as possible to minimize the latencies.
 fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallError> {
+    let mut heap = [Default::default(); N];
     let mut vm = Vm::new(
-        [Default::default(); N],
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             VoidDevice::new(),
             VoidFileSystem::new(),
