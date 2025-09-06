@@ -3546,10 +3546,10 @@
 - set 1
 - set 0
 - constant procedure 1 #t
+  - get write-string
   - constant "<unknown>"
-  - get 1
-  - call 1 #f ||
-  - call 2 #f write-string
+  - get 2
+  - call 3 #f apply
 - set write-irritant
 - constant 0
 - constant 0

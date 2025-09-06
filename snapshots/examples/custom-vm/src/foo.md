@@ -953,10 +953,10 @@
 - set 1
 - set 0
 - constant procedure 1 #t
+  - get ||
   - constant "<unknown>"
-  - get 1
-  - call 1 #f ||
-  - call 2 #f ||
+  - get 2
+  - call 3 #f ||
 - set ||
 - constant "Hello, foo\n"
 - call 1 #f ||

@@ -2488,7 +2488,7 @@
 
     ; Dummy implementation
     (define (write-irritant value . rest)
-      (write-string "<unknown>" (get-output-port rest)))))
+      (apply write-string "<unknown>" rest))))
 
 (define-library (stak backtrace)
   (import (stak base) (stak exception))
