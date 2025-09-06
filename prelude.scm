@@ -2326,6 +2326,7 @@
 
     unwind
 
+    make-error
     write-irritant)
 
   (import (stak base) (stak parameter) (stak io) (stak continue))
@@ -2340,6 +2341,9 @@
       (message error-object-message)
       (irritants error-object-irritants)
       (backtrace error-object-backtrace))
+
+    (define (make-error type message irritants)
+      (make-error-object type message irritants '()))
 
     (define (convert-exception-handler handler)
       (lambda (pair)
@@ -2374,11 +2378,7 @@
             (lambda (message)
               (handler
                 (cons #f
-                  (make-error-object
-                    'runtime
-                    (code-points->string message)
-                    '()
-                    #f)))))
+                  (make-error 'runtime (code-points->string message) '())))))
           handler)))
 
     (define (with-exception-handler handler thunk)
@@ -2399,7 +2399,7 @@
 
     (define (error-type type)
       (lambda (message . rest)
-        (raise (make-error-object type message rest backtrace))))
+        (raise (make-error type message rest))))
 
     (define (error-type? type)
       (lambda (error)
