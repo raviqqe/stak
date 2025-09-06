@@ -2371,7 +2371,13 @@
                       (let ((backtrace (error-object-backtrace exception)))
                         (unless (null? backtrace)
                           (newline)
-                          (write-irritant backtrace))))
+                          (write-string "  stack trace: ")
+                          (write-irritant (car backtrace))
+                          (for-each
+                            (lambda (value)
+                              (write-string " -> ")
+                              (write-irritant value))
+                            (cdr backtrace)))))
                     (write-irritant exception))
                   (newline)
                   ($halt))))))
@@ -2497,19 +2503,18 @@
     (set! backtrace
       (lambda ()
         (let ((stack (cdr (close (lambda () #f)))))
-          (let loop ((stack stack))
-            (cond
-              ((null? stack)
-                '())
-              ((= (rib-tag stack) 1)
-                (cons
-                  (let ((procedure (car (caar stack))))
-                    (if (number? procedure)
-                      '(local)
-                      procedure))
-                  (loop (cdar stack))))
-              (else
-                (loop (cdr stack))))))))))
+          (cdr
+            (let loop ((stack stack))
+              (cond
+                ((null? stack)
+                  '())
+                ((= (rib-tag stack) 1)
+                  (cons
+                    (let ((procedure (car (caar stack))))
+                      (and (not (number? procedure)) procedure))
+                    (loop (cdar stack))))
+                (else
+                  (loop (cdr stack)))))))))))
 
 (define-library (scheme base)
   (export
