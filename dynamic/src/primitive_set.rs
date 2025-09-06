@@ -265,13 +265,14 @@ mod tests {
             ("foo-baz", r#fn(Foo::baz)),
         ];
 
-        DynamicPrimitiveSet::<[Value; 0]>::new(&mut functions);
+        DynamicPrimitiveSet::<&mut [Value]>::new(&mut functions);
     }
 
     #[test]
     fn allocate_two() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut memory = Memory::new(heap.as_mut()).unwrap();
         let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
-        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
 
         let index = primitive_set.allocate(&memory).unwrap();
         primitive_set.values[index] = Some(value(42usize));
@@ -297,18 +298,20 @@ mod tests {
 
         #[test]
         fn collect_none() {
+            let mut heap = [Default::default(); HEAP_SIZE];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
 
             primitive_set
-                .collect_garbages(&Memory::new([Default::default(); HEAP_SIZE]).unwrap())
+                .collect_garbages(&Memory::new(heap.as_mut()).unwrap())
                 .unwrap();
         }
 
         #[tokio::test]
         async fn collect_one() {
+            let mut heap = [Default::default(); HEAP_SIZE];
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
-            let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
 
             maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
@@ -325,9 +328,10 @@ mod tests {
 
         #[tokio::test]
         async fn keep_one() {
+            let mut heap = [Default::default(); HEAP_SIZE];
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
-            let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
 
             maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 

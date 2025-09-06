@@ -670,7 +670,8 @@ mod tests {
 
     #[test]
     fn build_string() {
-        let mut memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let mut memory = Memory::new(heap.as_mut()).unwrap();
 
         let string = memory.build_string("foo").unwrap();
 
@@ -681,7 +682,8 @@ mod tests {
 
     #[test]
     fn format_string() {
-        let mut memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let mut memory = Memory::new(heap.as_mut()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -692,7 +694,8 @@ mod tests {
 
     #[test]
     fn format_two_strings() {
-        let mut memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let mut memory = Memory::new(heap.as_mut()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -706,7 +709,8 @@ mod tests {
     fn format_templated_string() {
         const FOO: usize = 42;
 
-        let mut memory = Memory::new(create_heap()).unwrap();
+        let mut heap = create_heap();
+        let mut memory = Memory::new(heap.as_mut()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -720,7 +724,8 @@ mod tests {
 
         #[test]
         fn push_and_pop() {
-            let mut memory = Memory::new(create_heap()).unwrap();
+            let mut heap = create_heap();
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -730,7 +735,8 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut memory = Memory::new(create_heap()).unwrap();
+            let mut heap = create_heap();
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -746,7 +752,8 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut memory = Memory::new(create_heap()).unwrap();
+            let mut heap = create_heap();
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
 
             memory
                 .allocate(Number::default().into(), Number::default().into())
@@ -758,7 +765,8 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut memory = Memory::new(create_heap()).unwrap();
+            let mut heap = create_heap();
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -769,7 +777,8 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut memory = Memory::new(create_heap()).unwrap();
+            let mut heap = create_heap();
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -781,7 +790,8 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut memory = Memory::new(create_heap()).unwrap();
+            let mut heap = create_heap();
+            let mut memory = Memory::new(heap.as_mut()).unwrap();
 
             let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
