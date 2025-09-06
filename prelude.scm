@@ -2503,7 +2503,10 @@
                 '())
               ((= (rib-tag stack) 1)
                 (cons
-                  (car (caar stack))
+                  (let ((procedure (car (caar stack))))
+                    (if (number? procedure)
+                      '(local)
+                      procedure))
                   (loop (cdar stack))))
               (else
                 (loop (cdr stack))))))))))
