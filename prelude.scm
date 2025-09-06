@@ -2492,8 +2492,17 @@
   (begin
     (set! backtrace
       (lambda ()
-        (lambda () #f)
-        '()))))
+        (let ((stack (cdr (close (lambda () #f)))))
+          (let loop ((stack stack) (frames '()))
+            (cond
+              ((null? stack)
+                '())
+              ((= (rib-tag stack) 1)
+                (cons
+                  (car (caar stack))
+                  (loop (cdar stack))))
+              (else
+                (loop (cdr stack))))))))))
 
 (define-library (scheme base)
   (export
