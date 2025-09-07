@@ -2505,19 +2505,18 @@
 
     (set! backtrace
       (lambda ()
-        (let ((stack (cdr (close (lambda () #f)))))
-          (cdr
-            (let loop ((stack stack))
-              (cond
-                ((null? stack)
-                  '())
-                ((= (rib-tag stack) frame-tag)
-                  (cons
-                    (let ((procedure (car (caar stack))))
-                      (and (not (number? procedure)) procedure))
-                    (loop (cdar stack))))
-                (else
-                  (loop (cdr stack)))))))))))
+        (cdr
+          (let loop ((stack (cdr (close (lambda () #f)))))
+            (cond
+              ((null? stack)
+                '())
+              ((= (rib-tag stack) frame-tag)
+                (cons
+                  (let ((procedure (car (caar stack))))
+                    (and (not (number? procedure)) procedure))
+                  (loop (cdar stack))))
+              (else
+                (loop (cdr stack))))))))))
 
 (define-library (scheme base)
   (export
