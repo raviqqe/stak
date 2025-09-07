@@ -3346,7 +3346,7 @@
 - call 1 #f ||
 - set ||
 - constant procedure 0 #f
-  - constant ()
+  - constant #f
 - set backtrace
 - constant procedure 1 #f
   - constant procedure 1 #f
@@ -3402,9 +3402,6 @@
             - set 0
             - constant procedure 1 #f
               - get 0
-              - call 1 #f null?
-              - constant #f
-              - call 2 #f eq?
               - if
                 - call 0 #f newline
                 - set 0

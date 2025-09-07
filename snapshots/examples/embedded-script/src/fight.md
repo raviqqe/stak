@@ -900,7 +900,7 @@
 - call 1 #f ||
 - set ||
 - constant procedure 0 #f
-  - constant ()
+  - constant #f
 - set ||
 - constant procedure 1 #f
   - constant procedure 1 #f
@@ -956,9 +956,6 @@
             - set 0
             - constant procedure 1 #f
               - get 0
-              - call 1 #f ||
-              - constant #f
-              - call 2 #f ||
               - if
                 - call 0 #f ||
                 - set 0
