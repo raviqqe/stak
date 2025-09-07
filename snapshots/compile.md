@@ -3839,17 +3839,17 @@
   - raw-optimizers
   - raw-dynamic-symbols
   - make-metadata
+  - library-symbol?
+  - symbol
   - unique
   - find-quoted-symbols
   - find-symbols
-  - library-symbol?
-  - symbol
   - marshal-context
   - marshal-context?
-  - symbols
   - constants
   - continuations
   - marshal-context-symbols
+  - symbols
   - resolve-symbol-string
   - bytes->list
   - marshal-context-set-constants!
@@ -3927,7 +3927,6 @@
   - expression1
   - expression2
   - detect-features
-  - options
   - expression3
   - compile-metadata
   - shake-syntax-tree
@@ -3938,6 +3937,7 @@
   - expression4
   - encode
   - marshal
+  - options
   - build-primitives
   - primitives
   - metadata
@@ -18259,58 +18259,35 @@
     - list
       - make-metadata
       - list
-        - let
+        - filter
         - list
+          - lambda
           - list
-            - symbols
-            - list
-              - unique
-              - list
-                - append
-                - list
-                  - list
-                    - if
-                    - list
-                      - memq
-                      - list
-                        - quote
-                        - debug
-                      - features
-                    - find-symbols
-                    - find-quoted-symbols
-                  - expression
-                - list
-                  - find-symbols
-                  - libraries
-                - list
-                  - find-symbols
-                  - macros
-                - list
-                  - find-symbols
-                  - optimizers
-                - list
-                  - find-symbols
-                  - dynamic-symbols
-        - list
-          - filter
+            - symbol
           - list
-            - lambda
+            - not
             - list
+              - library-symbol?
               - symbol
+        - list
+          - unique
+          - list
+            - append
             - list
-              - or
-              - list
-                - memq
-                - list
-                  - quote
-                  - debug
-                - features
-              - list
-                - not
-                - list
-                  - library-symbol?
-                  - symbol
-          - symbols
+              - find-quoted-symbols
+              - expression
+            - list
+              - find-symbols
+              - libraries
+            - list
+              - find-symbols
+              - macros
+            - list
+              - find-symbols
+              - optimizers
+            - list
+              - find-symbols
+              - dynamic-symbols
       - libraries
       - macros
       - optimizers
@@ -18439,17 +18416,28 @@
           - list
             - marshal
             - list
-              - if
+              - let
               - list
-                - memq
-                - value
                 - list
-                  - marshal-context-symbols
-                  - context
+                  - symbols
+                  - list
+                    - marshal-context-symbols
+                    - context
               - list
-                - resolve-symbol-string
-                - value
-              - ""
+                - if
+                - list
+                  - or
+                  - list
+                    - not
+                    - symbols
+                  - list
+                    - memq
+                    - value
+                    - symbols
+                - list
+                  - resolve-symbol-string
+                  - value
+                - ""
       - list
         - list
           - char?
@@ -18754,6 +18742,7 @@
     - define
     - list
       - marshal
+      - options
       - metadata
       - codes
     - list
@@ -18761,25 +18750,35 @@
       - list
         - make-marshal-context
         - list
-          - append
+          - and
           - list
-            - metadata-symbols
-            - metadata
+            - not
+            - list
+              - memq
+              - list
+                - quote
+                - debug
+              - options
           - list
-            - append-map
+            - append
             - list
-              - lambda
-              - list
-                - pair
-              - list
-                - map
-                - cdr
-                - list
-                  - cdr
-                  - pair
-            - list
-              - metadata-libraries
+              - metadata-symbols
               - metadata
+            - list
+              - append-map
+              - list
+                - lambda
+                - list
+                  - pair
+                - list
+                  - map
+                  - cdr
+                  - list
+                    - cdr
+                    - pair
+              - list
+                - metadata-libraries
+                - metadata
         - list
           - quote
           - ()
@@ -19764,11 +19763,8 @@
       - define
       - features
       - list
-        - append
-        - options
-        - list
-          - detect-features
-          - expression3
+        - detect-features
+        - expression3
     - list
       - define-values
       - list
@@ -19813,6 +19809,7 @@
       - encode
       - list
         - marshal
+        - options
         - metadata
         - list
           - cons-rib
