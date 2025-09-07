@@ -1436,7 +1436,13 @@
 
      (unique (find expression)))
 
-    (define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
+    (define (compile-metadata
+             features
+             raw-libraries
+             raw-macros
+             raw-optimizers
+             raw-dynamic-symbols
+             expression)
      (define libraries (if (memq 'libraries features) raw-libraries '()))
      (define macros (if (memq 'macros features) raw-macros '()))
      (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
@@ -1495,9 +1501,10 @@
         symbol-type
         (marshal #f)
         (marshal
-         (if (memq value (marshal-context-symbols context))
-          (resolve-symbol-string value)
-          ""))))
+         (let ((symbols (marshal-context-symbols context)))
+          (if (or (not symbols) (memq value symbols))
+           (resolve-symbol-string value)
+           "")))))
 
       ((char? value)
        (data-rib char-type (char->integer value) (marshal '())))
@@ -1581,14 +1588,16 @@
         (marshal (rib-cdr value) data)
         (rib-tag value)))))
 
-    (define (marshal metadata codes)
+    (define (marshal options metadata codes)
      (marshal-rib
       (make-marshal-context
-       (append
-        (metadata-symbols metadata)
-        (append-map
-         (lambda (pair) (map cdr (cdr pair)))
-         (metadata-libraries metadata)))
+       (and
+        (not (memq 'debug options))
+        (append
+         (metadata-symbols metadata)
+         (append-map
+          (lambda (pair) (map cdr (cdr pair)))
+          (metadata-libraries metadata))))
        '()
        '())
       codes
@@ -1861,6 +1870,7 @@
 
      (encode
       (marshal
+       options
        metadata
        (cons-rib
         #f
@@ -2079,7 +2089,9 @@
     (exit))
 
   (compile
-    (if (member "--shake-tree" arguments) '(shake-tree) '())
+    (list
+      (and (member "--debug" arguments) 'debug)
+      (and (member "--shake-tree" arguments) 'shake-tree))
     (incept (read-source))))
 
 (main)

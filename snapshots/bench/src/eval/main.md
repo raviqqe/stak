@@ -3336,6 +3336,18 @@
 - call 2 #f ||
 - call 1 #f ||
 - set error-object-irritants
+- constant 0
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 0 #f
+  - constant #f
+- set backtrace
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -3387,6 +3399,33 @@
             - get 8
             - call 1 #f error-object-irritants
             - call 2 #f for-each
+            - set 0
+            - constant procedure 1 #f
+              - get 0
+              - if
+                - call 0 #f newline
+                - set 0
+                - constant " backtrace: "
+                - call 1 #f write-string
+                - set 0
+                - get 0
+                - call 1 #f car
+                - call 1 #f write-irritant
+                - set 0
+                - constant procedure 1 #f
+                  - constant " -> "
+                  - call 1 #f write-string
+                  - set 0
+                  - get 0
+                  - call 1 #f write-irritant
+                - get 1
+                - call 1 #f cdr
+                - call 2 #f for-each
+              - constant #f
+            - get 8
+            - call 1 #f ||
+            - call 1 #f 1
+            - set 1
             - continue
           - get 7
           - call 1 #f write-irritant
@@ -3417,7 +3456,8 @@
     - get 2
     - call 1 #f code-points->string
     - constant ()
-    - call 3 #f ||
+    - call 0 #f backtrace
+    - call 4 #f ||
     - call 2 #f cons
     - call 1 #f 4
   - call 1 #f $$close
@@ -3496,7 +3536,8 @@
     - get 3
     - get 2
     - get 2
-    - call 3 #f ||
+    - call 0 #f backtrace
+    - call 4 #f ||
     - call 1 #f raise
   - call 1 #f $$close
 - set ||
@@ -3737,6 +3778,7 @@
   - file-error?
   - guard
   - unwind
+  - backtrace
   - write-irritant
   - continue
   - call/cc
@@ -8636,6 +8678,10 @@
                                           - list
                                             - list
                                               - stak
+                                              - backtrace
+                                          - list
+                                            - list
+                                              - stak
                                               - exception
                                             - (error-object? . error-object?)
                                             - (error-object-message . error-object-message)
@@ -8649,6 +8695,7 @@
                                             - (file-error? . file-error?)
                                             - (guard . guard)
                                             - (unwind . unwind)
+                                            - (backtrace . backtrace)
                                             - (write-irritant . write-irritant)
                                           - list
                                             - list

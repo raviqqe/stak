@@ -890,6 +890,18 @@
 - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant 0
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 0 #f
+  - constant #f
+- set ||
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -941,6 +953,33 @@
             - get 8
             - call 1 #f ||
             - call 2 #f ||
+            - set 0
+            - constant procedure 1 #f
+              - get 0
+              - if
+                - call 0 #f ||
+                - set 0
+                - constant " backtrace: "
+                - call 1 #f ||
+                - set 0
+                - get 0
+                - call 1 #f ||
+                - call 1 #f ||
+                - set 0
+                - constant procedure 1 #f
+                  - constant " -> "
+                  - call 1 #f ||
+                  - set 0
+                  - get 0
+                  - call 1 #f ||
+                - get 1
+                - call 1 #f ||
+                - call 2 #f ||
+              - constant #f
+            - get 8
+            - call 1 #f ||
+            - call 1 #f 1
+            - set 1
             - continue
           - get 7
           - call 1 #f ||
@@ -971,7 +1010,8 @@
     - get 2
     - call 1 #f ||
     - constant ()
-    - call 3 #f ||
+    - call 0 #f ||
+    - call 4 #f ||
     - call 2 #f ||
     - call 1 #f 4
   - call 1 #f ||
@@ -997,7 +1037,8 @@
     - get 3
     - get 2
     - get 2
-    - call 3 #f ||
+    - call 0 #f ||
+    - call 4 #f ||
     - call 1 #f ||
   - call 1 #f ||
 - set ||
