@@ -2387,7 +2387,8 @@
             '()
             (lambda (message)
               (handler
-                (cons #f
+                (cons
+                  #f
                   (make-error-object
                     'runtime
                     (code-points->string message)
