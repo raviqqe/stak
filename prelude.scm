@@ -2343,7 +2343,7 @@
       (backtrace error-object-backtrace))
 
     (define (backtrace)
-      '())
+      #f)
 
     (define (convert-exception-handler handler)
       (lambda (pair)
@@ -2369,7 +2369,7 @@
                           (write-irritant value))
                         (error-object-irritants exception))
                       (let ((backtrace (error-object-backtrace exception)))
-                        (unless (null? backtrace)
+                        (when backtrace
                           (newline)
                           (write-string "  backtrace: ")
                           (write-irritant (car backtrace))
