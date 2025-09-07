@@ -13,6 +13,7 @@
   (only (scheme time))
   (scheme write)
   (only (srfi 1))
+  (only (stak backtrace))
   (only (stak mapping)))
 
 (define (write-value value)
