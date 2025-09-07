@@ -104,15 +104,14 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
-          -t '${{ matrix.interpreter.tags && format('{0} && ~@niche', matrix.interpreter.tags) || '~@niche' }}'
+          -t '${{ matrix.interpreter.tags || '~@none' }}'
   niche_integration_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
-      - run: echo PATH=$PWD/target/release_test:$PATH >> ${{ github.env }}
-      - run: tools/integration_test.sh -t @niche
+      - run: tools/niche_integration_test.sh
   self_host_integration_test:
     strategy:
       fail-fast: false
