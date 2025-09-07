@@ -3408,7 +3408,7 @@
               - if
                 - call 0 #f newline
                 - set 0
-                - constant " stack trace: "
+                - constant " backtrace: "
                 - call 1 #f write-string
                 - set 0
                 - get 0

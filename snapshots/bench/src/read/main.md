@@ -1633,7 +1633,7 @@
               - if
                 - call 0 #f ||
                 - set 0
-                - constant " stack trace: "
+                - constant " backtrace: "
                 - call 1 #f ||
                 - set 0
                 - get 0
