@@ -101,7 +101,7 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
-          -t '${{ matrix.interpreter.tags + ' && ~@niche' || '~@niche' }}'
+          -t '${{ join([matrix.interpreter.tags, '~@niche'], ' && ') || '~@niche' }}'
   niche_integration_test:
     runs-on: ubuntu-latest
     steps:
