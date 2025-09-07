@@ -102,6 +102,7 @@ jobs:
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
           -t '${{ matrix.interpreter.tags || '~@none' }}'
+          -t ~@niche
   self_host_integration_test:
     strategy:
       fail-fast: false

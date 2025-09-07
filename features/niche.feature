@@ -1,6 +1,6 @@
-Feature: Special functionalities
+@niche
+Feature: Niche functionalities
 
-  @stak
   Scenario: Dump a stack trace on an error
     Given a file named "main.scm" with:
       """scheme
