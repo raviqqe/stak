@@ -12870,7 +12870,7 @@
   - constant #f
   - call 1 #f 1
   - set 1
-  - call 1 #f cdr
+  - call 1 #f cddr
 - set backtrace
 - constant 0
 - constant 0
