@@ -3,7 +3,7 @@ mod primitive;
 
 pub use self::{error::PrimitiveError, primitive::Primitive};
 use crate::Device;
-use stak_vm::{Memory, Number, PrimitiveSet};
+use stak_vm::{Heap, Memory, Number, PrimitiveSet};
 use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A primitive set for a device.
@@ -28,11 +28,11 @@ impl<T: Device> DevicePrimitiveSet<T> {
     }
 }
 
-impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
+impl<T: Device, H: Heap> PrimitiveSet<H> for DevicePrimitiveSet<T> {
     type Error = PrimitiveError;
 
     #[maybe_async]
-    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::READ => {
                 let byte =

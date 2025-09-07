@@ -14,7 +14,7 @@ pub use libc::LibcFileSystem;
 pub use memory::MemoryFileSystem;
 #[cfg(feature = "std")]
 pub use os::OsFileSystem;
-use stak_vm::{Memory, Value};
+use stak_vm::{Heap, Memory, Value};
 pub use void::VoidFileSystem;
 
 /// A file descriptor.
@@ -53,5 +53,5 @@ pub trait FileSystem {
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error>;
 
     /// Decodes a path.
-    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error>;
+    fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error>;
 }

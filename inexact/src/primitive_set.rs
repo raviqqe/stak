@@ -1,6 +1,6 @@
 use crate::primitive::Primitive;
 use libm::{acos, asin, atan, cos, exp, log, sin, sqrt, tan};
-use stak_vm::{Error, Memory, Number, PrimitiveSet};
+use stak_vm::{Error, Heap, Memory, Number, PrimitiveSet};
 use winter_maybe_async::maybe_async;
 
 /// A primitive set for inexact number operations.
@@ -15,11 +15,17 @@ impl InexactPrimitiveSet {
 }
 
 impl InexactPrimitiveSet {
-    fn operate_unary(memory: &mut Memory<'_>, calculate: fn(f64) -> f64) -> Result<(), Error> {
+    fn operate_unary<H: Heap>(
+        memory: &mut Memory<H>,
+        calculate: fn(f64) -> f64,
+    ) -> Result<(), Error> {
         memory.operate_unary(|x| Number::from_f64(calculate(x.to_f64())))
     }
 
-    fn operate_condition(memory: &mut Memory<'_>, calculate: fn(f64) -> bool) -> Result<(), Error> {
+    fn operate_condition<H: Heap>(
+        memory: &mut Memory<H>,
+        calculate: fn(f64) -> bool,
+    ) -> Result<(), Error> {
         memory.operate_top(|memory, x| {
             Ok(memory
                 .boolean(calculate(x.assume_number().to_f64()))?
@@ -28,11 +34,11 @@ impl InexactPrimitiveSet {
     }
 }
 
-impl PrimitiveSet for InexactPrimitiveSet {
+impl<H: Heap> PrimitiveSet<H> for InexactPrimitiveSet {
     type Error = Error;
 
     #[maybe_async]
-    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::EXPONENTIATION => Self::operate_unary(memory, exp)?,
             Primitive::LOGARITHM => Self::operate_unary(memory, log)?,

@@ -1,34 +1,37 @@
 use super::DynamicError;
 use alloc::string::String;
-use stak_vm::{Memory, Number, Type, Value};
+use stak_vm::{Heap, Memory, Number, Type, Value};
 
 /// A trait to convert Rust values from and into Scheme values.
-pub trait SchemeValue: Sized {
+pub trait SchemeValue<H>: Sized {
     /// Converts a Scheme value into a Rust value.
-    fn from_scheme(memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError>;
+    fn from_scheme(memory: &Memory<H>, value: Value) -> Result<Option<Self>, DynamicError>;
 
     /// Converts a Rust value into a Scheme value.
-    fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError>;
+    fn into_scheme(self, memory: &mut Memory<H>) -> Result<Value, DynamicError>;
 }
 
-impl SchemeValue for bool {
-    fn from_scheme(memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
+impl<H: Heap> SchemeValue<H> for bool {
+    fn from_scheme(memory: &Memory<H>, value: Value) -> Result<Option<Self>, DynamicError> {
         Ok(Some(value == memory.boolean(false)?.into()))
     }
 
-    fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError> {
+    fn into_scheme(self, memory: &mut Memory<H>) -> Result<Value, DynamicError> {
         Ok(memory.boolean(self)?.into())
     }
 }
 
 macro_rules! implement_integer {
     ($type:ty) => {
-        impl SchemeValue for $type {
-            fn from_scheme(_memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
+        impl<H> SchemeValue<H> for $type {
+            fn from_scheme(
+                _memory: &Memory<H>,
+                value: Value,
+            ) -> Result<Option<Self>, DynamicError> {
                 Ok(Some(value.assume_number().to_i64() as _))
             }
 
-            fn into_scheme(self, _memory: &mut Memory) -> Result<Value, DynamicError> {
+            fn into_scheme(self, _memory: &mut Memory<H>) -> Result<Value, DynamicError> {
                 Ok(Number::from_i64(self as _).into())
             }
         }
@@ -48,12 +51,15 @@ implement_integer!(usize);
 
 macro_rules! implement_float {
     ($type:ty) => {
-        impl SchemeValue for $type {
-            fn from_scheme(_memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
+        impl<H> SchemeValue<H> for $type {
+            fn from_scheme(
+                _memory: &Memory<H>,
+                value: Value,
+            ) -> Result<Option<Self>, DynamicError> {
                 Ok(Some(value.assume_number().to_f64() as _))
             }
 
-            fn into_scheme(self, _memory: &mut Memory) -> Result<Value, DynamicError> {
+            fn into_scheme(self, _memory: &mut Memory<H>) -> Result<Value, DynamicError> {
                 Ok(Number::from_f64(self as _).into())
             }
         }
@@ -63,8 +69,8 @@ macro_rules! implement_float {
 implement_float!(f32);
 implement_float!(f64);
 
-impl SchemeValue for String {
-    fn from_scheme(memory: &Memory, value: Value) -> Result<Option<Self>, DynamicError> {
+impl<H: Heap> SchemeValue<H> for String {
+    fn from_scheme(memory: &Memory<H>, value: Value) -> Result<Option<Self>, DynamicError> {
         let cons = value.assume_cons();
         let mut string = Self::with_capacity(memory.car(cons)?.assume_number().to_i64() as _);
         let mut cons = memory.cdr(cons)?.assume_cons();
@@ -81,7 +87,7 @@ impl SchemeValue for String {
         Ok(Some(string))
     }
 
-    fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError> {
+    fn into_scheme(self, memory: &mut Memory<H>) -> Result<Value, DynamicError> {
         let mut length = 0;
         let mut cons = memory.null()?;
 
@@ -108,8 +114,7 @@ mod tests {
 
         #[test]
         fn ascii() {
-            let mut heap = [Default::default(); 256];
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new([Default::default(); 256]).unwrap();
             let string = "tomato";
 
             let value = String::from(string).into_scheme(&mut memory).unwrap();
@@ -122,8 +127,7 @@ mod tests {
 
         #[test]
         fn unicode() {
-            let mut heap = [Default::default(); 256];
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new([Default::default(); 256]).unwrap();
             let string = "あ阿😄";
 
             let value = String::from(string).into_scheme(&mut memory).unwrap();

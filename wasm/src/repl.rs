@@ -36,7 +36,7 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
     let mut heap = vec![Default::default(); heap_size];
 
     let mut vm = Vm::new(
-        &mut heap,
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             JsDevice {},
             VoidFileSystem::new(),

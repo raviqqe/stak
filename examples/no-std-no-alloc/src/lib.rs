@@ -49,7 +49,7 @@ fn run_vm(
 ) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        &mut heap,
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             // Attach an I/O device.
             device,

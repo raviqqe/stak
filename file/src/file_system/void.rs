@@ -1,5 +1,5 @@
 use crate::{FileDescriptor, FileError, FileSystem};
-use stak_vm::{Memory, Value};
+use stak_vm::{Heap, Memory, Value};
 
 /// A file system that does nothing and fails every operation.
 #[derive(Debug)]
@@ -45,7 +45,7 @@ impl FileSystem for VoidFileSystem {
         Err(FileError::Exists)
     }
 
-    fn decode_path(_: &Memory, _: Value) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path<H: Heap>(_: &Memory<H>, _: Value) -> Result<Self::PathBuf, Self::Error> {
         Err(FileError::PathDecode)
     }
 }

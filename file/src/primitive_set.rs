@@ -4,7 +4,7 @@ mod primitive;
 pub use self::primitive::Primitive;
 use crate::{FileError, FileSystem};
 pub use error::PrimitiveError;
-use stak_vm::{Error, Memory, Number, PrimitiveSet};
+use stak_vm::{Error, Heap, Memory, Number, PrimitiveSet};
 use winter_maybe_async::maybe_async;
 
 /// A primitive set for a file system.
@@ -19,11 +19,11 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
     }
 }
 
-impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
+impl<T: FileSystem, H: Heap> PrimitiveSet<H> for FilePrimitiveSet<T> {
     type Error = PrimitiveError;
 
     #[maybe_async]
-    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::OPEN_FILE => {
                 let [list, output] = memory.pop_many()?;

@@ -1,7 +1,7 @@
 use super::utility::decode_path;
 use crate::{FileDescriptor, FileError, FileSystem};
 use heapless::Vec;
-use stak_vm::{Memory, Value};
+use stak_vm::{Heap, Memory, Value};
 
 const PATH_SIZE: usize = 128;
 
@@ -110,7 +110,7 @@ impl FileSystem for MemoryFileSystem<'_> {
         Ok(false)
     }
 
-    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error> {
         decode_path(memory, list).ok_or(FileError::PathDecode)
     }
 }

@@ -14,10 +14,9 @@
 //! const HEAP_SIZE: usize = 1 << 16;
 //! const BUFFER_SIZE: usize = 1 << 10;
 //!
-//! let mut heap = [Default::default(); HEAP_SIZE];
 //! let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
 //! let mut vm = Vm::new(
-//!     &mut heap,
+//!     [Default::default(); HEAP_SIZE],
 //!     SmallPrimitiveSet::new(
 //!         device,
 //!         VoidFileSystem::new(),
@@ -44,7 +43,7 @@
 #![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
-#[cfg(test)]
+#[cfg(any(feature = "alloc", test))]
 extern crate alloc;
 #[cfg(any(feature = "trace_instruction", test))]
 extern crate std;
@@ -67,7 +66,7 @@ mod vm;
 pub use cons::{Cons, Tag};
 pub use error::Error;
 pub use exception::Exception;
-pub use memory::Memory;
+pub use memory::{Heap, Memory};
 pub use number::Number;
 pub use primitive_set::PrimitiveSet;
 pub use profiler::Profiler;
