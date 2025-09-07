@@ -41,6 +41,7 @@ Feature: Niche functionalities
       """sh
       cat prelude.scm main.scm | stak-compile > main.bc
       """
+    And I run `stak-interpret main.bc`
     Then the exit status should be 1
     And the stderr should contain "foo"
     And the stderr should contain "unknown"
