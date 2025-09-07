@@ -2,7 +2,11 @@
 Feature: Niche functionalities
 
   Background:
-    Given I successfully run `cp $STAK_ROOT/prelude.scm .`
+    Given I run the following script:
+      """sh
+      cp $STAK_ROOT/prelude.scm .
+      """
+    And the exit status should be 0
 
   Scenario: Dump a stack trace on an error
     Given a file named "main.scm" with:
