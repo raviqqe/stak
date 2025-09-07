@@ -7,7 +7,7 @@ Feature: Niche functionalities
       (import (scheme base) (scheme write) (stak backtrace))
 
       (define (foo)
-        (error "my error" 42)
+        (error "foo")
         #f)
 
       (define (bar)
@@ -24,4 +24,5 @@ Feature: Niche functionalities
       """
     When I run `stak main.scm`
     Then the exit status should be 1
+    And the stderr should contain "foo"
     And the stderr should contain "backtrace: error -> foo -> bar -> baz"
