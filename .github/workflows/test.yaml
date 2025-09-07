@@ -204,6 +204,7 @@ jobs:
       - build
       - unit_test
       - integration_test
+      - niche_integration_test
       - self_host_test
       - wasm
       - minimal
