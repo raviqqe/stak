@@ -34,7 +34,7 @@ Feature: Load
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "foobar"
 
-  Scenario: Load a file in an loaded file
+  Scenario: Load a file in a loaded file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval) (scheme load))
