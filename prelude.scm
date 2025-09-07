@@ -2371,7 +2371,7 @@
                       (let ((backtrace (error-object-backtrace exception)))
                         (unless (null? backtrace)
                           (newline)
-                          (write-string "  stack trace: ")
+                          (write-string "  backtrace: ")
                           (write-irritant (car backtrace))
                           (for-each
                             (lambda (value)
