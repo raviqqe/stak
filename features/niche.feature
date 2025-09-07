@@ -18,10 +18,10 @@ Feature: Niche functionalities
         (bar)
         #f)
 
-      (baz)
-
-      (write-string "foo")
+      (let ()
+        (baz)
+        #f)
       """
     When I run `stak main.scm`
     Then the exit status should be 1
-    And the stderr should contain "backtrace: error -> foo -> bar -> "
+    And the stderr should contain "backtrace: error -> foo -> bar -> baz"
