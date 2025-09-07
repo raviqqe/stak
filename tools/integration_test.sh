@@ -16,7 +16,7 @@ while getopts f:i:t: option; do
     interpreter=$OPTARG
     ;;
   t)
-    tags="$tags -t $OPTARG"
+    tags=$OPTARG
     ;;
   esac
 done
@@ -33,4 +33,4 @@ cargo build --profile release_test --features $features
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-go tool agoa $tags "$@"
+go tool agoa ${tags:+-t "$tags"} "$@"
