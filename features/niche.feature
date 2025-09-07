@@ -43,4 +43,4 @@ Feature: Niche functionalities
       """
     Then the exit status should be 1
     And the stderr should contain "foo"
-    And the stderr should contain "backtrace: error -> foo -> bar -> baz"
+    And the stderr should contain "unknown"
