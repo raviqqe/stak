@@ -5,10 +5,10 @@ edition.workspace = true
 publish = false
 
 [dependencies]
-stak = { version = "0.11.2", path = "../../root" }
+stak = { path = "../../root", version = "0.11.2" }
 
 [build-dependencies]
-stak-build = { version = "0.11.2", path = "../../build" }
+stak-build = { path = "../../build", version = "0.11.2" }
 
 [lints]
 workspace = true
