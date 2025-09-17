@@ -272,7 +272,7 @@ mod tests {
     fn allocate_two() {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(&mut heap);
 
         let index = primitive_set.allocate(&memory).unwrap();
         primitive_set.values[index] = Some(value(42usize));
@@ -302,7 +302,7 @@ mod tests {
             let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
 
             primitive_set
-                .collect_garbages(&Memory::new(&mut heap).unwrap())
+                .collect_garbages(&Memory::new(&mut heap))
                 .unwrap();
         }
 
@@ -311,7 +311,7 @@ mod tests {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap);
 
             maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
@@ -331,7 +331,7 @@ mod tests {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap);
 
             maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 

@@ -109,7 +109,7 @@ mod tests {
         #[test]
         fn ascii() {
             let mut heap = [Default::default(); 256];
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap);
             let string = "tomato";
 
             let value = String::from(string).into_scheme(&mut memory).unwrap();
@@ -123,7 +123,7 @@ mod tests {
         #[test]
         fn unicode() {
             let mut heap = [Default::default(); 256];
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap);
             let string = "あ阿😄";
 
             let value = String::from(string).into_scheme(&mut memory).unwrap();
