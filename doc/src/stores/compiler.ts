@@ -22,10 +22,7 @@ export const source = atom(
 
 const bytecode = atom<Uint8Array | null>(new Uint8Array());
 
-export const bytecodeReady = computed(
-  bytecode,
-  (bytecode) => bytecode?.length,
-);
+export const bytecodeReady = computed(bytecode, (bytecode) => bytecode?.length);
 
 export const compiling = computed(bytecode, (output) => output === null);
 
