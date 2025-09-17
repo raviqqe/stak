@@ -32,7 +32,6 @@ fn create_vm(
             VoidClock::new(),
         ),
     )
-    .unwrap()
 }
 
 mod bare {
