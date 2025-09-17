@@ -24,8 +24,7 @@
 //!         VoidProcessContext::new(),
 //!         VoidClock::new(),
 //!     ),
-//! )
-//! .unwrap();
+//! );
 //!
 //! const BYTECODE: &[u8] = compile_r7rs!(
 //!     r#"
