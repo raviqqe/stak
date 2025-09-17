@@ -23,7 +23,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(BYTECODE.iter().copied())?;
     vm.run()?;

@@ -38,7 +38,7 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()?;
@@ -65,7 +65,7 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
             MemoryProcessContext::new(&["scheme", MAIN_FILE], &[]),
             VoidClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(
         include_module!("run.scm", stak_module)

@@ -40,7 +40,7 @@ fn main() -> Result<(), MainError> {
             OsProcessContext::new(),
             OsClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(read(&arguments.file)?)?;
 

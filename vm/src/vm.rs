@@ -57,13 +57,13 @@ pub struct Vm<'a, T: PrimitiveSet> {
 // volatile variables live across garbage collections.
 impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Creates a virtual machine.
-    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, Error> {
-        Ok(Self {
+    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Self {
+        Self {
             primitive_set,
-            memory: Memory::new(heap)?,
+            memory: Memory::new(heap),
             #[cfg(feature = "profile")]
             profiler: None,
-        })
+        }
     }
 
     /// Sets a profiler.

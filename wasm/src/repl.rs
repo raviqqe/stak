@@ -43,7 +43,7 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(
         include_module!("repl.scm", stak_module)

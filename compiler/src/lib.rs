@@ -53,7 +53,7 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
 

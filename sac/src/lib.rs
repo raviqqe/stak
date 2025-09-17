@@ -86,7 +86,7 @@ macro_rules! main {
                     OsProcessContext::new(),
                     OsClock::new(),
                 ),
-            )?;
+            );
 
             vm.initialize(include_r7rs!($path).iter().copied())?;
 
@@ -140,8 +140,7 @@ macro_rules! libc_main {
                     LibcProcessContext::new(argc, argv),
                     LibcClock::new(),
                 ),
-            )
-            .unwrap();
+            );
 
             vm.initialize(include_r7rs!($path).iter().copied()).unwrap();
             vm.run().unwrap();

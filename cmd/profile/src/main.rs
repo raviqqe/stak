@@ -90,7 +90,7 @@ fn main() -> Result<(), MainError> {
                     OsProcessContext::new(),
                     OsClock::new(),
                 ),
-            )?
+            )
             .with_profiler(&mut profiler);
 
             vm.initialize(read(&arguments.bytecode_file)?)?;

@@ -3,7 +3,7 @@ use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
 use stak_util::block_on;
-use stak_vm::{Error, Value, Vm};
+use stak_vm::{Value, Vm};
 use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A scripting engine.
@@ -13,13 +13,10 @@ pub struct Engine<'a, 'b> {
 
 impl<'a, 'b> Engine<'a, 'b> {
     /// Creates a scripting engine.
-    pub fn new(
-        heap: &'a mut [Value],
-        functions: &'a mut [(&'a str, AnyFn<'b>)],
-    ) -> Result<Self, Error> {
-        Ok(Self {
-            vm: Vm::new(heap, EnginePrimitiveSet::new(functions))?,
-        })
+    pub fn new(heap: &'a mut [Value], functions: &'a mut [(&'a str, AnyFn<'b>)]) -> Self {
+        Self {
+            vm: Vm::new(heap, EnginePrimitiveSet::new(functions)),
+        }
     }
 
     /// Runs a module synchronously.
