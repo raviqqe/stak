@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
+fn run(bytecode: &[u8]) -> Result<(), SmallError> {
     let mut heap = vec![Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
@@ -36,7 +36,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
         ),
     )?;
 
-    vm.initialize(bytecodes.iter().copied())?;
+    vm.initialize(bytecode.iter().copied())?;
     vm.run()
 }
 

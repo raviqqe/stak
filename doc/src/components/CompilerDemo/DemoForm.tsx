@@ -12,7 +12,7 @@ import styles from "./DemoForm.module.css";
 
 export const DemoForm: FunctionComponent = () => {
   const source = useStore(store.source);
-  const bytecodesReady = useStore(store.bytecodesReady);
+  const bytecodeReady = useStore(store.bytecodeReady);
   const compiling = useStore(store.compiling);
   const interpreting = useStore(store.interpretingStore);
   const error = useStore(store.compilerError);
@@ -34,7 +34,7 @@ export const DemoForm: FunctionComponent = () => {
           {compiling ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={!bytecodesReady || interpreting}
+          disabled={!bytecodeReady || interpreting}
           icon={<CirclePlay />}
           onClick={store.interpret}
         >

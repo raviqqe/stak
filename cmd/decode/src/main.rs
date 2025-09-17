@@ -1,6 +1,6 @@
 //! A command to decode a bytecode file.
 //!
-//! It decodes a program in bytecodes and prints it in Markdown. This command is
+//! It decodes a program in bytecode and prints it in Markdown. This command is
 //! primarily for debugging.
 //!
 //! # Usage

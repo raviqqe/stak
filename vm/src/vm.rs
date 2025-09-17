@@ -85,7 +85,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         &mut self.primitive_set
     }
 
-    /// Runs bytecodes on a virtual machine synchronously.
+    /// Runs bytecode on a virtual machine synchronously.
     ///
     /// # Panics
     ///
@@ -94,7 +94,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         block_on!(self.run_async())
     }
 
-    /// Runs bytecodes on a virtual machine.
+    /// Runs bytecode on a virtual machine.
     #[cfg_attr(not(feature = "async"), doc(hidden))]
     #[maybe_async]
     pub fn run_async(&mut self) -> Result<(), T::Error> {
@@ -426,7 +426,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    /// Initializes a virtual machine with bytecodes of a program.
+    /// Initializes a virtual machine with bytecode of a program.
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");

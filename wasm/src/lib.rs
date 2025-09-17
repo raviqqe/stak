@@ -23,9 +23,9 @@ pub fn compile(source: &str) -> Result<Vec<u8>, JsError> {
     Ok(target)
 }
 
-/// Interprets bytecodes with standard input and returns its standard output.
+/// Interprets bytecode with standard input and returns its standard output.
 #[wasm_bindgen]
-pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
+pub fn interpret(bytecode: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
     let mut heap = vec![Default::default(); heap_size];
     let mut output = vec![];
     let mut error = vec![];
@@ -40,7 +40,7 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
         ),
     )?;
 
-    vm.initialize(bytecodes.iter().copied())?;
+    vm.initialize(bytecode.iter().copied())?;
     vm.run()?;
 
     Ok(output)
