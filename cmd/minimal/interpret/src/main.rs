@@ -52,8 +52,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
             unsafe { LibcProcessContext::new(argc, argv) },
             LibcClock::new(),
         ),
-    )
-    .unwrap();
+    );
 
     // SAFETY: `file` is from `argv` and guaranteed to have a C string.
     let mmap = Mmap::new(unsafe { CStr::from_ptr(file as _) }).unwrap();
