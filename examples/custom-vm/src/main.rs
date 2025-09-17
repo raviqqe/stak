@@ -34,7 +34,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()

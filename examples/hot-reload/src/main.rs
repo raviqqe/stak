@@ -62,7 +62,7 @@ fn run(
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
+    );
 
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()
