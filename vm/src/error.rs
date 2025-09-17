@@ -11,7 +11,7 @@ pub enum Error {
     ArgumentCount,
     /// A cons expected.
     ConsExpected,
-    /// An unexpected end of bytecodes.
+    /// An unexpected end of bytecode.
     BytecodeEnd,
     /// A format error.
     Format(fmt::Error),
@@ -51,7 +51,7 @@ impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
-            Self::BytecodeEnd => write!(formatter, "unexpected end of bytecodes"),
+            Self::BytecodeEnd => write!(formatter, "unexpected end of bytecode"),
             Self::ConsExpected => write!(formatter, "cons expected"),
             Self::Format(error) => write!(formatter, "{error}"),
             Self::InvalidMemoryAccess => write!(formatter, "invalid memory access"),

@@ -18,7 +18,7 @@ fn compile_source() {
 }
 
 #[wasm_bindgen_test]
-fn run_bytecodes() {
+fn run_bytecode() {
     const BYTECODE: &[u8] = compile_r7rs!(
         r#"
             (import (scheme write))

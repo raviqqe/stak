@@ -48,7 +48,7 @@ async fn calculate(input: String) -> response::Result<(StatusCode, String)> {
 }
 
 fn run(
-    bytecodes: &[u8],
+    bytecode: &[u8],
     input: &[u8],
     output: &mut Vec<u8>,
     error: &mut Vec<u8>,
@@ -64,7 +64,7 @@ fn run(
         ),
     )?;
 
-    vm.initialize(bytecodes.iter().copied())?;
+    vm.initialize(bytecode.iter().copied())?;
     vm.run()
 }
 

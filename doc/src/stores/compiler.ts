@@ -20,14 +20,11 @@ export const source = atom(
   `.trim(),
 );
 
-const bytecodes = atom<Uint8Array | null>(new Uint8Array());
+const bytecode = atom<Uint8Array | null>(new Uint8Array());
 
-export const bytecodesReady = computed(
-  bytecodes,
-  (bytecodes) => bytecodes?.length,
-);
+export const bytecodeReady = computed(bytecode, (bytecode) => bytecode?.length);
 
-export const compiling = computed(bytecodes, (output) => output === null);
+export const compiling = computed(bytecode, (output) => output === null);
 
 const output = atom<Uint8Array<ArrayBuffer> | null>(new Uint8Array());
 
@@ -47,7 +44,7 @@ export const compilerError = atom("");
 export const interpreterError = atom("");
 
 export const compile = async (): Promise<void> => {
-  bytecodes.set(null);
+  bytecode.set(null);
   compilerError.set("");
 
   let value = new Uint8Array();
@@ -58,11 +55,11 @@ export const compile = async (): Promise<void> => {
     compilerError.set((error as Error).message);
   }
 
-  bytecodes.set(value);
+  bytecode.set(value);
 };
 
 export const interpret = async (): Promise<void> => {
-  const bytecodeValue = bytecodes.get();
+  const bytecodeValue = bytecode.get();
 
   if (!bytecodeValue) {
     return;

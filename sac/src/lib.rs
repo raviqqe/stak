@@ -33,7 +33,7 @@ pub mod __private {
 ///
 /// The R7RS standard libraries are based on [the `std` crate](https://doc.rust-lang.org/std/).
 ///
-/// The given source file is compiled into bytecodes and bundled into a
+/// The given source file is compiled into bytecode and bundled into a
 /// resulting binary.
 ///
 /// # Examples
@@ -99,7 +99,7 @@ macro_rules! main {
 ///
 /// The R7RS standard libraries are based on [the `libc` crate](https://docs.rs/libc).
 ///
-/// The given source file is compiled into bytecodes and bundled into a
+/// The given source file is compiled into bytecode and bundled into a
 /// resulting binary.
 #[cfg(feature = "libc")]
 #[macro_export]

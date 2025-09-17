@@ -44,7 +44,7 @@ pub fn fibonacci(number: usize) -> Result<usize, FibonacciError> {
 }
 
 fn run_vm(
-    bytecodes: &[u8],
+    bytecode: &[u8],
     device: &mut FixedBufferDevice<BUFFER_SIZE, BUFFER_SIZE>,
 ) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
@@ -61,7 +61,7 @@ fn run_vm(
         ),
     )?;
 
-    vm.initialize(bytecodes.iter().copied())?;
+    vm.initialize(bytecode.iter().copied())?;
     vm.run()
 }
 

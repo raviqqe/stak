@@ -4,7 +4,7 @@
 //!
 //! # Examples
 //!
-//! To build all R7RS Scheme files into bytecodes, add [the following `build.rs` build script](https://doc.rust-lang.org/cargo/reference/build-scripts.html)
+//! To build all R7RS Scheme files into bytecode, add [the following `build.rs` build script](https://doc.rust-lang.org/cargo/reference/build-scripts.html)
 //! in your crate. Then, you can include them into source files in Rust
 //! using the [`stak::include_module`][include_module] macro.
 //!
