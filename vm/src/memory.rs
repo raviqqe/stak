@@ -53,8 +53,8 @@ pub struct Memory<'a> {
 
 impl<'a> Memory<'a> {
     /// Creates a memory.
-    pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
-        let mut memory = Self {
+    pub fn new(heap: &'a mut [Value]) -> Self {
+        Self {
             code: NEVER,
             stack: NEVER,
             r#false: NEVER,
@@ -62,13 +62,7 @@ impl<'a> Memory<'a> {
             allocation_index: 0,
             space: false,
             heap,
-        };
-
-        // Initialize a fake false value.
-        let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
-        memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
-
-        Ok(memory)
+        }
     }
 
     /// Returns a code.
