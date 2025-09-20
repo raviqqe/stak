@@ -953,9 +953,9 @@ dependencies = [
 
 [[package]]
 name = "nonbox"
-version = "0.5.10"
+version = "0.5.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00a1e8c84d8aeb4ec354397389bd76938171b0df15ad864e30520386ca16dcd4"
+checksum = "3ca8b54b4e9c9c012a789d475d46994577570d5492fed9f2b3f8f403eb68e12a"
 
 [[package]]
 name = "noop-executor"
@@ -1245,7 +1245,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
@@ -1780,7 +1780,7 @@ dependencies = [
  "getrandom",
  "once_cell",
  "rustix",
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
