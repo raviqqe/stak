@@ -15,6 +15,7 @@ env:
   MUFFET_OPTIONS: >
     --accepted-status-codes 200,403
     --buffer-size 8192
+    --exclude https://codspeed.io/stak
     --exclude https://r7rs.org
     --exclude https://www.gnu.org/software/.*
     --header accept:text/html,*/*
