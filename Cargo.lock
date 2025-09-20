@@ -959,9 +959,9 @@ checksum = "00a1e8c84d8aeb4ec354397389bd76938171b0df15ad864e30520386ca16dcd4"
 
 [[package]]
 name = "noop-executor"
-version = "0.1.0"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d38c94f32c818a514051ceac7c15c85f37c9977c0075c791f26a12426ca6032"
+checksum = "2210df1456ef75748760c6c7edf157afeb1cb6d3878fa0a36274db1e2e615600"
 
 [[package]]
 name = "notify"
