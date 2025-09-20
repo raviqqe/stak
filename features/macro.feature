@@ -770,7 +770,7 @@ Feature: Macro
           ((_ name)
             (define-syntax name
               (syntax-rules ()
-                ((name)
+                ((_ name)
                   (define-syntax name
                     (syntax-rules ()
                       ((name)
