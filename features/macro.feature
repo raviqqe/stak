@@ -760,7 +760,7 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Capture an undefined global variable in a nested syntax
+  Scenario: Define a deeply nested syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -776,11 +776,12 @@ Feature: Macro
                       ((name)
                         x)))))))))
 
-      (define-foo bar)
+      (define-foo define-bar)
+      (define-bar baz)
 
       (define x 65)
 
-      (write-u8 (bar))
+      (write-u8 (baz))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
