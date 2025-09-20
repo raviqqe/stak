@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-cfg-elif = "0.6.3"
+cfg-elif = "0.6.5"
 nonbox = { version = "0.5.12", optional = true }
 stak-util = { path = "../util", version = "0.11.2" }
 winter-maybe-async = "0.13.1"

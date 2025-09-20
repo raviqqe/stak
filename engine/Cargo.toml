@@ -11,7 +11,7 @@ categories.workspace = true
 
 [dependencies]
 any-fn = "0.6.3"
-cfg-elif = "0.6.3"
+cfg-elif = "0.6.5"
 stak-device = { path = "../device", version = "0.11.2" }
 stak-dynamic = { path = "../dynamic", version = "0.11.2" }
 stak-file = { path = "../file", version = "0.11.2" }
