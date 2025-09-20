@@ -231,9 +231,9 @@ dependencies = [
 
 [[package]]
 name = "cfg-elif"
-version = "0.6.3"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48e4c88374f9089549688b990b079b53e13178ba952757332da543601c8f2313"
+checksum = "6c9631f8ebf7c3b5f9e3199d2158babd5b9f500b8821c44fb2090101f14a9e92"
 
 [[package]]
 name = "cfg-if"
@@ -1245,7 +1245,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
@@ -1780,7 +1780,7 @@ dependencies = [
  "getrandom",
  "once_cell",
  "rustix",
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
