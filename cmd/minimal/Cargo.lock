@@ -16,9 +16,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "cfg-elif"
-version = "0.6.3"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48e4c88374f9089549688b990b079b53e13178ba952757332da543601c8f2313"
+checksum = "6c9631f8ebf7c3b5f9e3199d2158babd5b9f500b8821c44fb2090101f14a9e92"
 
 [[package]]
 name = "errno"
@@ -90,9 +90,9 @@ dependencies = [
 
 [[package]]
 name = "noop-executor"
-version = "0.1.0"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d38c94f32c818a514051ceac7c15c85f37c9977c0075c791f26a12426ca6032"
+checksum = "2210df1456ef75748760c6c7edf157afeb1cb6d3878fa0a36274db1e2e615600"
 
 [[package]]
 name = "proc-macro2"
