@@ -45,6 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
+      # spell-checker: disable-next-line
       - uses: bnjbvr/cargo-machete@main
   readme:
     runs-on: ubuntu-latest
