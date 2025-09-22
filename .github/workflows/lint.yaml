@@ -36,8 +36,8 @@ jobs:
         with:
           files: "**/*.{feature,md,rs,scm,sh,toml}"
   toml:
-    runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - run: npx tombi format --check .
