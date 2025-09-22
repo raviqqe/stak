@@ -29,7 +29,7 @@
     "lucide-preact": "^0.544.0",
     "monza-editor": "^0.5.5",
     "nanostores": "^1.0.1",
-    "picolight": "^0.2.5",
+    "picolight": "^0.2.6",
     "preact": "^10.27.2",
     "vite-plugin-wasm": "^3.5.0"
   },
