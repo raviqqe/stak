@@ -36,6 +36,7 @@ jobs:
         with:
           files: "**/*.{feature,md,rs,scm,sh,toml}"
   toml:
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -45,6 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
+      # spell-checker: disable-next-line
       - uses: bnjbvr/cargo-machete@main
   readme:
     runs-on: ubuntu-latest
@@ -66,4 +68,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - run: for result in ${{ join(needs.*.result, ' ') }}; do [ $result = success ]; done
+      - run: |
+          for result in ${{ join(needs.*.result, ' ') }}; do
+            [ $result = success -o $result = skipped ]
+          done
