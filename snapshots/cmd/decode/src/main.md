@@ -3001,6 +3001,8 @@
       - get 0
       - call 1 #f ||
       - get 5
+      - constant 1
+      - call 2 #f ||
       - call 2 #f ||
       - set 0
       - get 0
@@ -3030,8 +3032,6 @@
     - set 0
     - get 1
     - get 1
-    - constant 1
-    - call 2 #f ||
     - call 2 #f ||
   - get 1
   - get 1
