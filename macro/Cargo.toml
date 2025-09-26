@@ -21,12 +21,12 @@ stak-macro-util = { workspace = true }
 syn = "2.0.106"
 
 [dev-dependencies]
-stak-device = { path = "../device" }
-stak-file = { path = "../file" }
-stak-process-context = { path = "../process_context" }
-stak-r7rs = { path = "../r7rs" }
-stak-time = { path = "../time" }
-stak-vm = { path = "../vm" }
+stak-device = { workspace = true }
+stak-file = { workspace = true }
+stak-process-context = { workspace = true }
+stak-r7rs = { workspace = true }
+stak-time = { workspace = true }
+stak-vm = { workspace = true }
 
 [features]
 async = [

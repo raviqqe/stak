@@ -32,8 +32,8 @@ wasm-bindgen-futures = "0.4.50"
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
-stak-configuration = { path = "../configuration" }
-stak-macro = { path = "../macro" }
+stak-configuration = { workspace = true }
+stak-macro = { workspace = true }
 wasm-bindgen-test = "0.3.47"
 
 [build-dependencies]

@@ -24,7 +24,7 @@ stak-time = { workspace = true }
 stak-vm = { workspace = true }
 
 [dev-dependencies]
-stak = { path = "../root" }
+stak = { workspace = true }
 
 [features]
 float = ["stak-vm/float"]

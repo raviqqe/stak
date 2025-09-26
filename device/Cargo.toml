@@ -17,7 +17,7 @@ stak-vm = { workspace = true }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
-stak-util = { path = "../util" }
+stak-util = { workspace = true }
 
 [features]
 async = ["stak-vm/async", "winter-maybe-async/async"]
