@@ -12,6 +12,8 @@ update_bytecode() (
 
 update_cargo_toml() (
   for main_file in $(git ls-files '*/src/main.rs'); do
+    cargo_file=$(dirname $main_file)/../Cargo.toml
+
     for profile in dev release; do
       cat <<EOF
 [profile.$profile]
@@ -26,13 +28,11 @@ opt-level = 3
 debug-assertions = false
 overflow-checks = false
 EOF
-    done >>$(dirname $main_file)/../Cargo.toml
+    done >>$cargo_file
+
+    git add $cargo_file
   done
-
-  git add .
 )
-
-cargo install cargo-workspaces
 
 update_bytecode
 update_cargo_toml
@@ -44,6 +44,6 @@ git commit -m release
 for directory in . cmd/minimal; do
   (
     cd $directory
-    cargo workspaces publish -y --from-git "$@"
+    cargo publish --workspace "$@"
   )
 done
