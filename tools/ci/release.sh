@@ -41,9 +41,11 @@ git config user.email action@github.com
 git config user.name 'GitHub Action'
 git commit -m release
 
+cargo install cargo-workspaces
+
 for directory in . cmd/minimal; do
   (
     cd $directory
-    cargo publish --workspace "$@"
+    cargo workspaces publish -y --from-git "$@"
   )
 done
