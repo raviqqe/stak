@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-sac = { workspace = true, features = ["libc"] }
+stak-sac = { workspace = true }
 
 [lints]
 workspace = true

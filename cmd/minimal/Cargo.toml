@@ -21,7 +21,7 @@ stak-process-context = { path = "../../process-context", version = "0.11.3", fea
   "libc",
 ] }
 stak-r7rs = { path = "../../r7rs", version = "0.11.3" }
-stak-sac = { path = "../../sac", version = "0.11.3" }
+stak-sac = { path = "../../sac", version = "0.11.3", features = ["libc"] }
 stak-time = { path = "../../time", version = "0.11.3", features = ["libc"] }
 stak-vm = { path = "../../vm", version = "0.11.3" }
 
