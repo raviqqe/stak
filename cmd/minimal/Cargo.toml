@@ -11,6 +11,20 @@ license = "MIT"
 keywords = ["interpreter", "language", "scheme"]
 categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 
+[workspace.dependencies]
+stak-device = { path = "../../device", version = "0.11.3", features = [
+  "libc",
+] }
+stak-file = { path = "../../file", version = "0.11.3", features = ["libc"] }
+stak-libc = { path = "../../libc", version = "0.11.3" }
+stak-process-context = { path = "../../process-context", version = "0.11.3", features = [
+  "libc",
+] }
+stak-r7rs = { path = "../../r7rs", version = "0.11.3" }
+stak-sac = { path = "../../sac", version = "0.11.3" }
+stak-time = { path = "../../time", version = "0.11.3", features = ["libc"] }
+stak-vm = { path = "../../vm", version = "0.11.3" }
+
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
 cargo = "deny"
