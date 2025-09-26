@@ -11,17 +11,17 @@ categories.workspace = true
 
 [dependencies]
 libc = { version = "0.2.176", default-features = false }
-stak-device = { path = "../../../device", version = "0.11.0", features = [
+stak-device = { workspace = true, features = [
   "libc",
 ] }
-stak-file = { path = "../../../file", version = "0.11.0", features = ["libc"] }
-stak-libc = { path = "../../../libc", version = "0.11.0" }
-stak-process-context = { path = "../../../process_context", version = "0.11.0", features = [
+stak-file = { workspace = true, features = ["libc"] }
+stak-libc = { workspace = true }
+stak-process-context = { workspace = true, features = [
   "libc",
 ] }
-stak-r7rs = { path = "../../../r7rs", version = "0.11.0" }
-stak-time = { path = "../../../time", version = "0.11.0", features = ["libc"] }
-stak-vm = { path = "../../../vm", version = "0.11.0" }
+stak-r7rs = { workspace = true }
+stak-time = { workspace = true, features = ["libc"] }
+stak-vm = { workspace = true }
 
 [lints]
 workspace = true

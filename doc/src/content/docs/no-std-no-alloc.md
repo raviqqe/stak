@@ -17,7 +17,7 @@ To disable `std` and `alloc` features of the Stak Scheme library, you need to di
 For a full list of features available, see [the Rust documentation of the `stak` crate](https://docs.rs/stak).
 
 ```toml
-stak = { version = "SOME_VERSION", default-features = false, features = [
+stak = { workspace = true, default-features = false, features = [
   # List all the features you need.
   "float",
 ] }
