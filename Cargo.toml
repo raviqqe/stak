@@ -47,6 +47,9 @@ license = "MIT"
 keywords = ["interpreter", "language", "scheme"]
 categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 
+[workspace.dependencies]
+stak = { path = "root", version = "0.11.3" }
+
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
 cargo = "deny"
