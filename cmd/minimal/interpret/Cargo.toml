@@ -11,16 +11,12 @@ categories.workspace = true
 
 [dependencies]
 libc = { version = "0.2.176", default-features = false }
-stak-device = { workspace = true, features = [
-  "libc",
-] }
-stak-file = { workspace = true, features = ["libc"] }
+stak-device = { workspace = true }
+stak-file = { workspace = true }
 stak-libc = { workspace = true }
-stak-process-context = { workspace = true, features = [
-  "libc",
-] }
+stak-process-context = { workspace = true }
 stak-r7rs = { workspace = true }
-stak-time = { workspace = true, features = ["libc"] }
+stak-time = { workspace = true }
 stak-vm = { workspace = true }
 
 [lints]
