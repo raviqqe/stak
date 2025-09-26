@@ -29,7 +29,7 @@ log tokei \
   macro-util \
   module \
   native \
-  process_context \
+  process-context \
   r7rs \
   root \
   sac \

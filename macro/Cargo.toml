@@ -16,17 +16,17 @@ proc-macro = true
 cfg-elif = "0.6.5"
 proc-macro2 = { version = "1.0.101", features = ["proc-macro"] }
 quote = "1.0.40"
-stak-compiler = { path = "../compiler", version = "0.11.3" }
-stak-macro-util = { path = "../macro-util", version = "0.11.3" }
+stak-compiler = { workspace = true }
+stak-macro-util = { workspace = true }
 syn = "2.0.106"
 
 [dev-dependencies]
-stak-device = { path = "../device" }
-stak-file = { path = "../file" }
-stak-process-context = { path = "../process_context" }
-stak-r7rs = { path = "../r7rs" }
-stak-time = { path = "../time" }
-stak-vm = { path = "../vm" }
+stak-device = { workspace = true }
+stak-file = { workspace = true }
+stak-process-context = { workspace = true }
+stak-r7rs = { workspace = true }
+stak-time = { workspace = true }
+stak-vm = { workspace = true }
 
 [features]
 async = [
