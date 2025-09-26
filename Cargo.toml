@@ -60,6 +60,7 @@ stak-inexact = { path = "inexact", version = "0.11.3" }
 stak-libc = { path = "libc", version = "0.11.3" }
 stak-macro = { path = "macro", version = "0.11.3" }
 stak-macro-util = { path = "macro-util", version = "0.11.3" }
+stak-minifier = { path = "minifier", version = "0.11.3" }
 stak-module = { path = "module", version = "0.11.3" }
 stak-native = { path = "native", version = "0.11.3" }
 stak-process-context = { path = "process-context", version = "0.11.3" }
