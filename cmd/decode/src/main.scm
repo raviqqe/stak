@@ -213,7 +213,7 @@
     (begin
       (write-string "list")
       (newline)
-      (display-list data (+ depth 1)))
+      (display-list data depth))
     (display-data data depth)))
 
 (define (display-code code continuation depth)
