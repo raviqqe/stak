@@ -206,7 +206,7 @@
     ((null? xs))
     (display-indent depth)
     (display "- ")
-    (display-top-data (car xs) depth)))
+    (display-top-data (car xs) (+ depth 1))))
 
 (define (display-top-data data depth)
   (if (and (pair? data) (list? data))
