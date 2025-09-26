@@ -10,7 +10,7 @@ publish = false
 
 [dependencies]
 heapless = "0.9.1"
-stak = { workspace = true, default-features = false }
+stak = { path = "../../root", default-features = false }
 
 [build-dependencies]
 stak-build = { workspace = true }
