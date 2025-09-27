@@ -68,7 +68,6 @@
     "memq",
     "memv",
     "micropython",
-    "minifier",
     "mlua",
     "mlugg",
     "mmap",

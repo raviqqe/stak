@@ -1565,39 +1565,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stak-minifier"
-version = "0.11.4"
-dependencies = [
- "pretty_assertions",
- "stak-configuration",
- "stak-device",
- "stak-file",
- "stak-macro",
- "stak-process-context",
- "stak-r7rs",
- "stak-time",
- "stak-vm",
-]
-
-[[package]]
-name = "stak-minifier-macro"
-version = "0.11.4"
-dependencies = [
- "proc-macro2",
- "quote",
- "stak-macro-util",
- "stak-minifier",
- "syn",
-]
-
-[[package]]
-name = "stak-minify"
-version = "0.11.4"
-dependencies = [
- "stak-sac",
-]
-
-[[package]]
 name = "stak-module"
 version = "0.11.4"
 dependencies = [
