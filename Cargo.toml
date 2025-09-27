@@ -79,6 +79,11 @@ use_self = "deny"
 missing_docs = "deny"
 warnings = "deny"
 
+[profile.dev.build-override]
+opt-level = 3
+debug-assertions = false
+overflow-checks = false
+
 [profile.release]
 lto = true
 panic = "abort"
@@ -96,11 +101,6 @@ debug-assertions = true
 overflow-checks = true
 
 [profile.release_test.build-override]
-opt-level = 3
-debug-assertions = false
-overflow-checks = false
-
-[profile.dev.build-override]
 opt-level = 3
 debug-assertions = false
 overflow-checks = false
