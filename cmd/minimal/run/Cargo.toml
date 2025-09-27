@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-sac = { path = "../../../sac", version = "0.11.0", features = ["libc"] }
+stak-sac = { workspace = true }
 
 [lints]
 workspace = true
