@@ -47,30 +47,6 @@ license = "MIT"
 keywords = ["interpreter", "language", "scheme"]
 categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 
-[workspace.dependencies]
-stak = { path = "root" }
-stak-build = { path = "build" }
-stak-compiler = { path = "compiler" }
-stak-configuration = { path = "configuration" }
-stak-device = { path = "device" }
-stak-dynamic = { path = "dynamic" }
-stak-engine = { path = "engine" }
-stak-file = { path = "file" }
-stak-inexact = { path = "inexact" }
-stak-libc = { path = "libc" }
-stak-macro = { path = "macro" }
-stak-macro-util = { path = "macro-util" }
-stak-minifier = { path = "minifier" }
-stak-module = { path = "module" }
-stak-native = { path = "native" }
-stak-process-context = { path = "process-context" }
-stak-profiler = { path = "profiler" }
-stak-r7rs = { path = "r7rs" }
-stak-sac = { path = "sac" }
-stak-time = { path = "time" }
-stak-util = { path = "util" }
-stak-vm = { path = "vm" }
-
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
 cargo = "deny"
