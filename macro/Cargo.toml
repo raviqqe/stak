@@ -23,7 +23,7 @@ syn = "2.0.106"
 [dev-dependencies]
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
-stak-process-context = { path = "../process_context" }
+stak-process-context = { path = "../process-context" }
 stak-r7rs = { path = "../r7rs" }
 stak-time = { path = "../time" }
 stak-vm = { path = "../vm" }

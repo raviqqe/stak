@@ -20,7 +20,7 @@ insta = "1.43.2"
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
-stak-process-context = { path = "../process_context" }
+stak-process-context = { path = "../process-context" }
 stak-r7rs = { path = "../r7rs" }
 stak-time = { path = "../time" }
 

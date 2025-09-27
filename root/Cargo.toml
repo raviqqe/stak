@@ -16,7 +16,7 @@ stak-engine = { path = "../engine", version = "0.11.3", optional = true }
 stak-file = { path = "../file", version = "0.11.3" }
 stak-macro = { path = "../macro", version = "0.11.3" }
 stak-module = { path = "../module", version = "0.11.3" }
-stak-process-context = { path = "../process_context", version = "0.11.3" }
+stak-process-context = { path = "../process-context", version = "0.11.3" }
 stak-r7rs = { path = "../r7rs", version = "0.11.3" }
 stak-sac = { path = "../sac", version = "0.11.3" }
 stak-time = { path = "../time", version = "0.11.3" }
