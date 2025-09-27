@@ -14,14 +14,14 @@ name = "embed"
 
 [dependencies]
 mlua = { version = "0.11.3", features = ["lua54"] }
-stak = { workspace = true }
-stak-compiler = { workspace = true }
+stak = { path = "../root", version = "0.11.3" }
+stak-compiler = { path = "../compiler", version = "0.11.3" }
 
 [dev-dependencies]
 criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
 
 [build-dependencies]
-stak-build = { workspace = true }
+stak-build = { path = "../build", version = "0.11.3" }
 
 [lints]
 workspace = true

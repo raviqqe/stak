@@ -10,25 +10,25 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-device = { workspace = true }
-stak-dynamic = { workspace = true, optional = true }
-stak-engine = { workspace = true, optional = true }
-stak-file = { workspace = true }
-stak-macro = { workspace = true }
-stak-module = { workspace = true }
-stak-process-context = { workspace = true }
-stak-r7rs = { workspace = true }
-stak-sac = { workspace = true }
-stak-time = { workspace = true }
-stak-vm = { workspace = true }
+stak-device = { path = "../device", version = "0.11.3" }
+stak-dynamic = { path = "../dynamic", version = "0.11.3", optional = true }
+stak-engine = { path = "../engine", version = "0.11.3", optional = true }
+stak-file = { path = "../file", version = "0.11.3" }
+stak-macro = { path = "../macro", version = "0.11.3" }
+stak-module = { path = "../module", version = "0.11.3" }
+stak-process-context = { path = "../process_context", version = "0.11.3" }
+stak-r7rs = { path = "../r7rs", version = "0.11.3" }
+stak-sac = { path = "../sac", version = "0.11.3" }
+stak-time = { path = "../time", version = "0.11.3" }
+stak-vm = { path = "../vm", version = "0.11.3" }
 
 [dev-dependencies]
 any-fn = "0.6.3"
 rand = "0.9.2"
-stak-build = { workspace = true }
+stak-build = { path = "../build" }
 
 [build-dependencies]
-stak-build = { workspace = true }
+stak-build = { path = "../build", version = "0.11.3" }
 
 [features]
 default = ["float", "std"]

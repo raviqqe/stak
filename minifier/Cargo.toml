@@ -10,14 +10,14 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-configuration = { workspace = true }
-stak-device = { workspace = true, features = ["std"] }
-stak-file = { workspace = true }
-stak-macro = { workspace = true }
-stak-process-context = { workspace = true }
-stak-r7rs = { workspace = true }
-stak-time = { workspace = true }
-stak-vm = { workspace = true }
+stak-configuration = { path = "../configuration", version = "0.11.3" }
+stak-device = { path = "../device", version = "0.11.3", features = ["std"] }
+stak-file = { path = "../file", version = "0.11.3" }
+stak-macro = { path = "../macro", version = "0.11.3" }
+stak-process-context = { path = "../process_context", version = "0.11.3" }
+stak-r7rs = { path = "../r7rs", version = "0.11.3" }
+stak-time = { path = "../time", version = "0.11.3" }
+stak-vm = { path = "../vm", version = "0.11.3" }
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
