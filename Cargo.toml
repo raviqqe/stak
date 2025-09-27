@@ -48,28 +48,28 @@ keywords = ["interpreter", "language", "scheme"]
 categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 
 [workspace.dependencies]
-stak = { path = "root", version = "0.11.4" }
-stak-build = { path = "build", version = "0.11.4" }
-stak-compiler = { path = "compiler", version = "0.11.4" }
-stak-configuration = { path = "configuration", version = "0.11.4" }
-stak-device = { path = "device", version = "0.11.4" }
-stak-dynamic = { path = "dynamic", version = "0.11.4" }
-stak-engine = { path = "engine", version = "0.11.4" }
-stak-file = { path = "file", version = "0.11.4" }
-stak-inexact = { path = "inexact", version = "0.11.4" }
-stak-libc = { path = "libc", version = "0.11.4" }
-stak-macro = { path = "macro", version = "0.11.4" }
-stak-macro-util = { path = "macro-util", version = "0.11.4" }
-stak-minifier = { path = "minifier", version = "0.11.4" }
-stak-module = { path = "module", version = "0.11.4" }
-stak-native = { path = "native", version = "0.11.4" }
-stak-process-context = { path = "process-context", version = "0.11.4" }
-stak-profiler = { path = "profiler", version = "0.11.4" }
-stak-r7rs = { path = "r7rs", version = "0.11.4" }
-stak-sac = { path = "sac", version = "0.11.4" }
-stak-time = { path = "time", version = "0.11.4" }
-stak-util = { path = "util", version = "0.11.4" }
-stak-vm = { path = "vm", version = "0.11.4" }
+stak = { path = "root" }
+stak-build = { path = "build" }
+stak-compiler = { path = "compiler" }
+stak-configuration = { path = "configuration" }
+stak-device = { path = "device" }
+stak-dynamic = { path = "dynamic" }
+stak-engine = { path = "engine" }
+stak-file = { path = "file" }
+stak-inexact = { path = "inexact" }
+stak-libc = { path = "libc" }
+stak-macro = { path = "macro" }
+stak-macro-util = { path = "macro-util" }
+stak-minifier = { path = "minifier" }
+stak-module = { path = "module" }
+stak-native = { path = "native" }
+stak-process-context = { path = "process-context" }
+stak-profiler = { path = "profiler" }
+stak-r7rs = { path = "r7rs" }
+stak-sac = { path = "sac" }
+stak-time = { path = "time" }
+stak-util = { path = "util" }
+stak-vm = { path = "vm" }
 
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
