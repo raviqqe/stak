@@ -18,8 +18,8 @@ importers:
         specifier: ^0.36.0
         version: 0.36.0(astro@5.14.1(@types/node@24.5.2)(rollup@4.52.3)(typescript@5.9.2))
       '@monza-editor/preact':
-        specifier: ^0.1.8
-        version: 0.1.8
+        specifier: ^0.1.9
+        version: 0.1.9
       '@nanostores/preact':
         specifier: ^1.0.0
         version: 1.0.0(nanostores@1.0.1)(preact@10.27.2)
@@ -591,8 +591,8 @@ packages:
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
 
-  '@monza-editor/preact@0.1.8':
-    resolution: {integrity: sha512-9TT1UV/jL8mLhALbKYQZSep0vzphxI3fSVkUDS0BVhILnt5ZhnD4FqdADHu+wqEhI/FW10WBDqzdPGetWT7xaQ==}
+  '@monza-editor/preact@0.1.9':
+    resolution: {integrity: sha512-q15llzdgN60cb4YNY/swKKgxx0iKwi4q0mFpKLEpyaSjUXCnpEJpyTJJXCmIq0u1QOZzpKHyL4vgSe6BvQNLpA==}
 
   '@nanostores/preact@1.0.0':
     resolution: {integrity: sha512-woHYvSwau1YtO9AEnGsh/jRPU2u5DTfNSrDHtKMZOeDUWV6EJfvyv7dJ7AaMps2I9uJcY6OlqXKkA9qTctEjyw==}
@@ -1599,9 +1599,6 @@ packages:
 
   micromark@4.0.2:
     resolution: {integrity: sha512-zpe98Q6kvavpCr1NPVSCMebCKfD7CA2NqZ+rykeNhONIJBpc1tFKt9hucLGwha3jNTNI8lHpctWJWoimVF4PfA==}
-
-  monza-editor@0.5.4:
-    resolution: {integrity: sha512-lH1vJjEeryIGxO4zBOKHUEhvsnI2lMKWdpMF6tG7w+TI8CZN/yeovY9nkCOIR0afKh+DEioKfGjBgrvWD44xFA==}
 
   monza-editor@0.5.5:
     resolution: {integrity: sha512-VsJuvlfQrDzfe47VMFKMAhIobajW4Ht8X1YWaYdL7wvSvgGyin/zql6khbriQMQ76SoJCim8x99BlgbCSSR86A==}
@@ -2762,9 +2759,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@monza-editor/preact@0.1.8':
+  '@monza-editor/preact@0.1.9':
     dependencies:
-      monza-editor: 0.5.4
+      monza-editor: 0.5.5
       preact: 10.27.2
 
   '@nanostores/preact@1.0.0(nanostores@1.0.1)(preact@10.27.2)':
@@ -4211,8 +4208,6 @@ snapshots:
       micromark-util-types: 2.0.2
     transitivePeerDependencies:
       - supports-color
-
-  monza-editor@0.5.4: {}
 
   monza-editor@0.5.5: {}
 
