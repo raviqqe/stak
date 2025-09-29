@@ -1,6 +1,6 @@
 //! Utilities to build executable binaries from bytecode files.
 
-#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
+#![cfg_attr(all(doc, not(doctest)), feature(doc_cfg))]
 #![no_std]
 
 #[cfg(feature = "std")]
