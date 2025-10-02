@@ -238,6 +238,7 @@ Feature: Read
       (check "foo")
       (check "bar")
       (check "baz")
+      (check (eof-object))
       """
     And a file named "input.txt" with:
       """text
@@ -248,7 +249,7 @@ Feature: Read
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly "AAA"
+    And the stdout should contain exactly "AAAA"
 
   Scenario Outline: Read a byte vector
     Given a file named "main.scm" with:

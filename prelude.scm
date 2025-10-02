@@ -2050,12 +2050,14 @@
     (define (read-line . rest)
       (define port (get-input-port rest))
 
-      (list->string
-        (let loop ()
-          (let ((x (read-char port)))
-            (if (or (eof-object? x) (eqv? x #\newline))
-              '()
-              (cons x (loop)))))))
+      (if (eof-object? (peek-char port))
+        (eof-object)
+        (list->string
+          (let loop ()
+            (let ((x (read-char port)))
+              (if (or (eof-object? x) (eqv? x #\newline))
+                '()
+                (cons x (loop))))))))
 
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
