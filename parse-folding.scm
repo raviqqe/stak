@@ -19,7 +19,6 @@
         (parse-tokens)))
     (let loop ()
       (let ((line (read-line)))
-        (write line)
         (cond
           ((eof-object? line)
             '())
