@@ -10,13 +10,13 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-configuration = { path = "../configuration", version = "0.11.5" }
-stak-device = { path = "../device", version = "0.11.5", features = ["std"] }
-stak-file = { path = "../file", version = "0.11.5" }
-stak-process-context = { path = "../process-context", version = "0.11.5" }
-stak-r7rs = { path = "../r7rs", version = "0.11.5" }
-stak-time = { path = "../time", version = "0.11.5" }
-stak-vm = { path = "../vm", version = "0.11.5" }
+stak-configuration = { path = "../configuration", version = "0.11.6" }
+stak-device = { path = "../device", version = "0.11.6", features = ["std"] }
+stak-file = { path = "../file", version = "0.11.6" }
+stak-process-context = { path = "../process-context", version = "0.11.6" }
+stak-r7rs = { path = "../r7rs", version = "0.11.6" }
+stak-time = { path = "../time", version = "0.11.6" }
+stak-vm = { path = "../vm", version = "0.11.6" }
 
 [dev-dependencies]
 indoc = "2.0.6"
