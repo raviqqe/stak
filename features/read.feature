@@ -238,6 +238,7 @@ Feature: Read
       (check "foo")
       (check "bar")
       (check "baz")
+      (check (eof-object))
       """
     And a file named "input.txt" with:
       """text
