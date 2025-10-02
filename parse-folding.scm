@@ -4,7 +4,8 @@
   (scheme write))
 
 (define (parse-tokens)
-  (while (memv (peek-char) '(#\; #\space))
+  (do ((character (peek-char)))
+    ((memv character '(#\; #\space)))
     (read-char))
   (let ((token (read)))
     (if (eof-object? token)
