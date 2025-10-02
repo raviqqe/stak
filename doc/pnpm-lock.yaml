@@ -10,13 +10,13 @@ importers:
     dependencies:
       '@astrojs/preact':
         specifier: ^4.1.1
-        version: 4.1.1(@babel/core@7.28.4)(@types/node@24.6.1)(preact@10.27.2)
+        version: 4.1.1(@babel/core@7.28.4)(@types/node@24.6.2)(preact@10.27.2)
       '@astrojs/sitemap':
         specifier: ^3.6.0
         version: 3.6.0
       '@astrojs/starlight':
         specifier: ^0.36.0
-        version: 0.36.0(astro@5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3))
+        version: 0.36.0(astro@5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3))
       '@monza-editor/preact':
         specifier: ^0.1.9
         version: 0.1.9
@@ -37,7 +37,7 @@ importers:
         version: 5.5.0
       astro:
         specifier: ^5.14.1
-        version: 5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3)
+        version: 5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3)
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -61,7 +61,7 @@ importers:
         version: 10.27.2
       vite-plugin-wasm:
         specifier: ^3.5.0
-        version: 3.5.0(vite@6.3.6(@types/node@24.6.1))
+        version: 3.5.0(vite@6.3.6(@types/node@24.6.2))
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.2.4
@@ -70,8 +70,8 @@ importers:
         specifier: ^2.0.18
         version: 2.0.18(@biomejs/biome@2.2.4)
       '@types/node':
-        specifier: ^24.6.1
-        version: 24.6.1
+        specifier: ^24.6.2
+        version: 24.6.2
       sharp:
         specifier: ^0.34.4
         version: 0.34.4
@@ -857,8 +857,8 @@ packages:
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
-  '@types/node@24.6.1':
-    resolution: {integrity: sha512-ljvjjs3DNXummeIaooB4cLBKg2U6SPI6Hjra/9rRIy7CpM0HpLtG9HptkMKAb4HYWy5S7HUvJEuWgr/y0U8SHw==}
+  '@types/node@24.6.2':
+    resolution: {integrity: sha512-d2L25Y4j+W3ZlNAeMKcy7yDsK425ibcAOO2t7aPTz6gNMH0z2GThtwENCDc0d/Pw9wgyRqE5Px1wkV7naz8ang==}
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
@@ -2242,12 +2242,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.3.6(astro@5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3))':
+  '@astrojs/mdx@4.3.6(astro@5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.7
       '@mdx-js/mdx': 3.1.1
       acorn: 8.15.0
-      astro: 5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3)
+      astro: 5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -2261,13 +2261,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/preact@4.1.1(@babel/core@7.28.4)(@types/node@24.6.1)(preact@10.27.2)':
+  '@astrojs/preact@4.1.1(@babel/core@7.28.4)(@types/node@24.6.2)(preact@10.27.2)':
     dependencies:
-      '@preact/preset-vite': 2.10.2(@babel/core@7.28.4)(preact@10.27.2)(vite@6.3.6(@types/node@24.6.1))
+      '@preact/preset-vite': 2.10.2(@babel/core@7.28.4)(preact@10.27.2)(vite@6.3.6(@types/node@24.6.2))
       '@preact/signals': 2.3.1(preact@10.27.2)
       preact: 10.27.2
       preact-render-to-string: 6.6.1(preact@10.27.2)
-      vite: 6.3.6(@types/node@24.6.1)
+      vite: 6.3.6(@types/node@24.6.2)
     transitivePeerDependencies:
       - '@babel/core'
       - '@types/node'
@@ -2293,17 +2293,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.76
 
-  '@astrojs/starlight@0.36.0(astro@5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3))':
+  '@astrojs/starlight@0.36.0(astro@5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.7
-      '@astrojs/mdx': 4.3.6(astro@5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3))
+      '@astrojs/mdx': 4.3.6(astro@5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3))
       '@astrojs/sitemap': 3.6.0
       '@pagefind/default-ui': 1.4.0
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3)
-      astro-expressive-code: 0.41.3(astro@5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3))
+      astro: 5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3)
+      astro-expressive-code: 0.41.3(astro@5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -2791,18 +2791,18 @@ snapshots:
   '@pagefind/windows-x64@1.4.0':
     optional: true
 
-  '@preact/preset-vite@2.10.2(@babel/core@7.28.4)(preact@10.27.2)(vite@6.3.6(@types/node@24.6.1))':
+  '@preact/preset-vite@2.10.2(@babel/core@7.28.4)(preact@10.27.2)(vite@6.3.6(@types/node@24.6.2))':
     dependencies:
       '@babel/core': 7.28.4
       '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.4)
       '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.4)
-      '@prefresh/vite': 2.4.10(preact@10.27.2)(vite@6.3.6(@types/node@24.6.1))
+      '@prefresh/vite': 2.4.10(preact@10.27.2)(vite@6.3.6(@types/node@24.6.2))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.4)
       debug: 4.4.3
       picocolors: 1.1.1
-      vite: 6.3.6(@types/node@24.6.1)
-      vite-prerender-plugin: 0.5.12(vite@6.3.6(@types/node@24.6.1))
+      vite: 6.3.6(@types/node@24.6.2)
+      vite-prerender-plugin: 0.5.12(vite@6.3.6(@types/node@24.6.2))
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -2822,7 +2822,7 @@ snapshots:
 
   '@prefresh/utils@1.2.1': {}
 
-  '@prefresh/vite@2.4.10(preact@10.27.2)(vite@6.3.6(@types/node@24.6.1))':
+  '@prefresh/vite@2.4.10(preact@10.27.2)(vite@6.3.6(@types/node@24.6.2))':
     dependencies:
       '@babel/core': 7.28.4
       '@prefresh/babel-plugin': 0.5.2
@@ -2830,7 +2830,7 @@ snapshots:
       '@prefresh/utils': 1.2.1
       '@rollup/pluginutils': 4.2.1
       preact: 10.27.2
-      vite: 6.3.6(@types/node@24.6.1)
+      vite: 6.3.6(@types/node@24.6.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -2968,7 +2968,7 @@ snapshots:
 
   '@types/fontkit@2.0.8':
     dependencies:
-      '@types/node': 24.6.1
+      '@types/node': 24.6.2
 
   '@types/hast@3.0.4':
     dependencies:
@@ -2990,13 +2990,13 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
-  '@types/node@24.6.1':
+  '@types/node@24.6.2':
     dependencies:
       undici-types: 7.13.0
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 24.6.1
+      '@types/node': 24.6.2
 
   '@types/unist@2.0.11': {}
 
@@ -3041,12 +3041,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.41.3(astro@5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3)):
+  astro-expressive-code@0.41.3(astro@5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3)):
     dependencies:
-      astro: 5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3)
+      astro: 5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3)
       rehype-expressive-code: 0.41.3
 
-  astro@5.14.1(@types/node@24.6.1)(rollup@4.52.3)(typescript@5.9.3):
+  astro@5.14.1(@types/node@24.6.2)(rollup@4.52.3)(typescript@5.9.3):
     dependencies:
       '@astrojs/compiler': 2.13.0
       '@astrojs/internal-helpers': 0.7.3
@@ -3102,8 +3102,8 @@ snapshots:
       unist-util-visit: 5.0.0
       unstorage: 1.17.1
       vfile: 6.0.3
-      vite: 6.3.6(@types/node@24.6.1)
-      vitefu: 1.1.1(vite@6.3.6(@types/node@24.6.1))
+      vite: 6.3.6(@types/node@24.6.2)
+      vitefu: 1.1.1(vite@6.3.6(@types/node@24.6.2))
       xxhash-wasm: 1.1.0
       yargs-parser: 21.1.1
       yocto-spinner: 0.2.3
@@ -4790,11 +4790,11 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-plugin-wasm@3.5.0(vite@6.3.6(@types/node@24.6.1)):
+  vite-plugin-wasm@3.5.0(vite@6.3.6(@types/node@24.6.2)):
     dependencies:
-      vite: 6.3.6(@types/node@24.6.1)
+      vite: 6.3.6(@types/node@24.6.2)
 
-  vite-prerender-plugin@0.5.12(vite@6.3.6(@types/node@24.6.1)):
+  vite-prerender-plugin@0.5.12(vite@6.3.6(@types/node@24.6.2)):
     dependencies:
       kolorist: 1.8.0
       magic-string: 0.30.19
@@ -4802,9 +4802,9 @@ snapshots:
       simple-code-frame: 1.3.0
       source-map: 0.7.6
       stack-trace: 1.0.0-pre2
-      vite: 6.3.6(@types/node@24.6.1)
+      vite: 6.3.6(@types/node@24.6.2)
 
-  vite@6.3.6(@types/node@24.6.1):
+  vite@6.3.6(@types/node@24.6.2):
     dependencies:
       esbuild: 0.25.10
       fdir: 6.5.0(picomatch@4.0.3)
@@ -4813,12 +4813,12 @@ snapshots:
       rollup: 4.52.3
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 24.6.1
+      '@types/node': 24.6.2
       fsevents: 2.3.3
 
-  vitefu@1.1.1(vite@6.3.6(@types/node@24.6.1)):
+  vitefu@1.1.1(vite@6.3.6(@types/node@24.6.2)):
     optionalDependencies:
-      vite: 6.3.6(@types/node@24.6.1)
+      vite: 6.3.6(@types/node@24.6.2)
 
   web-namespaces@2.0.1: {}
 
