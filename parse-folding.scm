@@ -4,13 +4,15 @@
   (scheme write))
 
 (define (parse-tokens)
-  (do ((character (peek-char)))
-    ((memv character '(#\; #\space)))
-    (read-char))
-  (let ((token (read)))
-    (if (eof-object? token)
+  (let loop ()
+    (do ((character (peek-char) (peek-char)))
+      ((not (memv character '(#\; #\space))))
+      (read-char))
+
+    (if (eqv? (peek-char) #\#)
       '()
-      (cons token (loop)))))
+      (let ((token (read)))
+        (cons token (loop))))))
 
 (define (parse)
   (map
