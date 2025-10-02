@@ -2603,6 +2603,11 @@
     - get 2
     - call 1 #f ||
     - set 1
+    - get 0
+    - call 1 #f peek-char
+    - call 1 #f eof-object?
+    - if
+      - call 0 #f eof-object
     - constant procedure 1 #f
       - constant procedure 0 #f
         - constant procedure 1 #f
