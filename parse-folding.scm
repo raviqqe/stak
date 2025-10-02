@@ -3,12 +3,19 @@
   (scheme read)
   (scheme write))
 
-(define (parse-line line)
-  line)
+(define (parse-tokens)
+  (while (memv (peek-char) '(#\; #\space))
+    (read-char))
+  (let ((token (read)))
+    (if (eof-object? token)
+      '()
+      (cons token (loop)))))
 
 (define (parse)
   (map
-    parse-line
+    (lambda (line)
+      (parameterize ((current-input-port (open-input-string line)))
+        (parse-tokens)))
     (let loop ()
       (let ((line (read-line)))
         (write line)
