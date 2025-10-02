@@ -3,11 +3,15 @@
   (scheme read)
   (scheme write))
 
-(define (read-all)
+(define (parse-line line)
+  line)
+
+(define (parse)
   (map
-    (lambda (line) line)
+    parse-line
     (let loop ()
       (let ((line (read-line)))
+        (write line)
         (cond
           ((eof-object? line)
             '())
@@ -16,4 +20,4 @@
           (else
             (cons line (loop))))))))
 
-(write (read-all))
+(write (parse))
