@@ -69,25 +69,23 @@
               records))))
     (reverse
       (map
-        (lambda (records)
-          (if (null? (cdr records))
-            (car records)
-            (cons (last records) (car records))))
-        (let loop ((records records) (last #f) (groups '()))
+        (lambda (group)
+          (if (null? (cddr group))
+            (cadr group)
+            (let ((records (cdr group)))
+              (cons (last records) (car records)))))
+        (let loop ((records records) (groups '()))
           (if (null? records)
             groups
             (let ((record (car records)))
               (loop
                 (cdr records)
-                record
-                (if last
+                (if (pair? groups)
                   (let ((group (car groups)))
                     (cond
-                      ((= (car record) (+ (car last) 1))
+                      ((= (car record) (+ (caadr group) 1))
                         (cons
-                          (cons
-                            (car group)
-                            (cons record (cdr group)))
+                          (cons 1 (cons record (cdr group)))
                           (cdr groups)))
                       (else
                         (cons (list #f record) groups))))
