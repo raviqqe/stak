@@ -75,9 +75,9 @@
             (loop
               (cdr records)
               record
-              (if (and last (= (car record) (car last)))
-                (cons record groups)
-                (cons record groups)))))))))
+              (if (and last (= (car record) (+ (car last) 1)))
+                (cons (cons record (car groups)) (cdr groups))
+                (cons (list record) groups)))))))))
 
 (write
   (group-records
