@@ -59,11 +59,7 @@
   (let ((records
           (map
             (lambda (record)
-              (cons
-                (car record)
-                (if (null? (cdddr record))
-                  (caddr record)
-                  (cddr record))))
+              (cons (car record) (cddr record)))
             (filter
               (lambda (record)
                 (member (cadr record) '("C" "F")))
@@ -87,15 +83,15 @@
                 (cdr records)
                 (if (and
                      (pair? groups)
-                     (number? (cdr record))
-                     (number? (cdadar groups)))
+                     (number? (cadr record))
+                     (number? (car (cdadar groups))))
                   (let* ((group (car groups))
                          (step (car group))
                          (step? (lambda (count)
                                  (and
                                    (or (not step) (= step count))
                                    (= (car record) (+ (caadr group) count))
-                                   (= (cdr record) (+ (cdadr group) count))))))
+                                   (= (cadr record) (+ (cadadr group) count))))))
                     (cond
                       ((step? 1)
                         (cons
