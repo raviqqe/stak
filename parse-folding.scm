@@ -83,9 +83,12 @@
                 (if (and
                      (pair? groups)
                      (number? (cdr record)))
-                  (let ((group (car groups)))
+                  (let* ((group (car groups))
+                         (step (car group)))
                     (cond
-                      ((= (car record) (+ (caadr group) 1))
+                      ((and
+                          (or (not step) (= step 1))
+                          (= (car record) (+ (caadr group) 1)))
                         (cons
                           (cons 1 (cons record (cdr group)))
                           (cdr groups)))
