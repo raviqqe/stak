@@ -88,17 +88,17 @@
                      (pair? groups)
                      (number? (cdr record)))
                   (let* ((group (car groups))
-                         (step (car group)))
+                         (step (car group))
+                         (step? (lambda (count)
+                                 (and
+                                   (or (not step) (= step count))
+                                   (= (car record) (+ (caadr group) count))))))
                     (cond
-                      ((and
-                          (or (not step) (= step 1))
-                          (= (car record) (+ (caadr group) 1)))
+                      ((step? 1)
                         (cons
                           (cons 1 (cons record (cdr group)))
                           (cdr groups)))
-                      ((and
-                          (or (not step) (= step 2))
-                          (= (car record) (+ (caadr group) 2)))
+                      ((step? 2)
                         (cons
                           (cons 2 (cons record (cdr group)))
                           (cdr groups)))
