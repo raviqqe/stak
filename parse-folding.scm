@@ -75,7 +75,7 @@
             (loop
               (cdr records)
               record
-              (if (not last)
+              (if (and last (= (car record) (car last)))
                 (cons record groups)
                 (cons record groups)))))))))
 
