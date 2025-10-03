@@ -76,8 +76,8 @@
               (cdr records)
               record
               (if (not last)
-                (cons record groups))
-              (cons record groups))))))))
+                (cons record groups)
+                (cons record groups)))))))))
 
 (write
   (group-records
