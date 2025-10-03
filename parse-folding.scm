@@ -70,7 +70,7 @@
     (reverse
       (map
         (lambda (group)
-          (if (null? (cddr group))
+          (if (not (car group))
             (cadr group)
             (let ((records (cdr group)))
               (cons (last records) (car records)))))
