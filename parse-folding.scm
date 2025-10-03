@@ -80,9 +80,15 @@
               (loop
                 (cdr records)
                 record
-                (if (and last (= (car record) (+ (car last) 1)))
-                  (cons (cons record (car groups)) (cdr groups))
-                  (cons (list record) groups))))))))))
+                (if last
+                  (cond
+                    ((= (car record) (+ (car last) 1))
+                      (cons (cons record (car groups)) (cdr groups)))
+                    (else
+                      (cons (list #f record) groups)))
+                  (cons
+                    (list #f record)
+                    groups))))))))))
 
 (write
   (group-records
