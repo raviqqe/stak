@@ -69,19 +69,18 @@
               records))))
     (reverse
       (let loop ((records records) (last #f) (groups '()))
-        (cond
-          ((null? records)
-            groups)
-          ((not last)
-            (loop
-              (cdr records)
-              (car records)
-              (cons (car records) groups)))
-          (else
-            (loop
-              (cdr records)
-              (car records)
-              (cons (car records) groups))))))))
+        (if (null? records)
+          groups
+          (let ((record (car records)))
+            (if (not last)
+              (loop
+                (cdr records)
+                record
+                (cons record groups))
+              (loop
+                (cdr records)
+                record
+                (cons record groups)))))))))
 
 (write
   (group-records
