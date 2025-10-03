@@ -25,7 +25,7 @@
       (let ((token (parse-token)))
         (cons token (loop))))))
 
-(define (parse)
+(define (read-records)
   (map
     (lambda (line)
       (parameterize ((current-input-port (open-input-string line)))
@@ -40,4 +40,7 @@
           (else
             (cons line (loop))))))))
 
-(write (parse))
+(define (parse xs)
+  xs)
+
+(write (parse (read-records)))
