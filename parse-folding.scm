@@ -1,6 +1,7 @@
 (import
   (scheme base)
   (scheme char)
+  (scheme cxr)
   (scheme read)
   (scheme write)
   (srfi 1))
@@ -86,13 +87,15 @@
                 (cdr records)
                 (if (and
                      (pair? groups)
-                     (number? (cdr record)))
+                     (number? (cdr record))
+                     (number? (cdadar groups)))
                   (let* ((group (car groups))
                          (step (car group))
                          (step? (lambda (count)
                                  (and
                                    (or (not step) (= step count))
-                                   (= (car record) (+ (caadr group) count))))))
+                                   (= (car record) (+ (caadr group) count))
+                                   (= (cdr record) (+ (cdadr group) count))))))
                     (cond
                       ((step? 1)
                         (cons
