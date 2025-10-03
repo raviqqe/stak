@@ -91,7 +91,8 @@
                                  (and
                                    (or (not step) (= step count))
                                    (= (car record) (+ (caadr group) count))
-                                   (= (cadr record) (+ (cadadr group) count))))))
+                                   (= (cadr record) (+ (cadadr group) count))
+                                   (equal? (cddr record) (cddadr group))))))
                     (cond
                       ((step? 1)
                         (cons
