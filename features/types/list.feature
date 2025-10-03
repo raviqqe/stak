@@ -394,3 +394,19 @@ Feature: List
       | second    | 2     |
       | third     | 3     |
       | fourth    | 4     |
+
+  Scenario Outline: Get the last element
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (srfi 1))
+
+      (write-u8 (if (= (last '(values)) <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values | value |
+      | 1      | 1     |
+      | 1 2    | 2     |
+      | 1 2 3  | 3     |
