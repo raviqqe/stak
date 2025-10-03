@@ -74,7 +74,10 @@
             (if (not step)
               (cadr group)
               (let ((records (cdr group)))
-                (cons (last records) (car records))))))
+                (cons step
+                  (cons
+                    (last records)
+                    (car records)))))))
         (let loop ((records records) (groups '()))
           (if (null? records)
             groups
