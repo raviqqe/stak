@@ -75,12 +75,12 @@
           ((not last)
             (loop
               (cdr records)
-              (car record)
+              (car records)
               (cons (car records) groups)))
           (else
             (loop
               (cdr records)
-              (car record)
+              (car records)
               (cons (car records) groups))))))))
 
 (write
