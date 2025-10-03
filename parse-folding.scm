@@ -80,7 +80,7 @@
             (let ((record (car records)))
               (loop
                 (cdr records)
-                (if (pair? groups)
+                (if (and (pair? groups) (number? (cdr record)))
                   (let ((group (car groups)))
                     (cond
                       ((= (car record) (+ (caadr group) 1))
