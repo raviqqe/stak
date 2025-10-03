@@ -67,20 +67,21 @@
               (lambda (record)
                 (member (cadr record) '("C" "F")))
               records))))
-    (let loop ((records records) (last #f) (groups '()))
-      (cond
-        ((null? records)
-          groups)
-        ((not last)
-          (loop
-            (cdr records)
-            (car record)
-            (cons (car records) groups)))
-        (else
-          (loop
-            (cdr records)
-            (car record)
-            (cons (car records) groups)))))))
+    (reverse
+      (let loop ((records records) (last #f) (groups '()))
+        (cond
+          ((null? records)
+            groups)
+          ((not last)
+            (loop
+              (cdr records)
+              (car record)
+              (cons (car records) groups)))
+          (else
+            (loop
+              (cdr records)
+              (car record)
+              (cons (car records) groups))))))))
 
 (write
   (group-records
