@@ -400,7 +400,7 @@ Feature: List
       """scheme
       (import (scheme base) (srfi 1))
 
-      (write-u8 (if (= (last '(values)) <value>) 65 66))
+      (write-u8 (if (= (last '(<values>)) <value>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
