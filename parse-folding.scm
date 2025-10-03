@@ -3,6 +3,15 @@
   (scheme read)
   (scheme write))
 
+(define (parse-token)
+  (let loop ()
+    (if (or
+         (char-alphabetic? (peek-char))
+         (char-numeric? (peek-char)))
+      '()
+      (let ((token (parse-token)))
+        (cons token (loop))))))
+
 (define (parse-tokens)
   (let loop ()
     (do ((character (peek-char) (peek-char)))
@@ -11,7 +20,7 @@
 
     (if (eqv? (peek-char) #\#)
       '()
-      (let ((token (read)))
+      (let ((token (parse-token)))
         (cons token (loop))))))
 
 (define (parse)
