@@ -68,7 +68,10 @@
                 (member (cadr record) '("C" "F")))
               records))))
     (reverse
-      (map reverse
+      (map (lambda (records)
+            (if (null? (cdr records))
+              (car records)
+              (cons (car records) (last records))))
         (let loop ((records records) (last #f) (groups '()))
           (if (null? records)
             groups
