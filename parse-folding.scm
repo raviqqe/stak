@@ -43,7 +43,7 @@
 (define (parse-character-code code)
   (string->number code 16))
 
-(define (parse records)
+(define (parse-records records)
   (map
     (lambda (record)
       (cons
@@ -53,4 +53,10 @@
           (map parse-character-code (cddr record)))))
     records))
 
-(write (parse (read-records)))
+(define (group-records records)
+  records)
+
+(write
+  (group-records
+    (parse-records
+      (read-records))))
