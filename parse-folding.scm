@@ -55,6 +55,9 @@
           (map parse-character-code (cddr record)))))
     records))
 
+(define (list->pair record)
+  (cons (car record) (cadr record)))
+
 (define (group-records records)
   (let ((records
           (map
@@ -69,12 +72,14 @@
         (lambda (group)
           (let ((step (car group)))
             (if (not step)
-              (cadr group)
+              (list->pair (cadr group))
               (let ((records (cdr group)))
                 (cons step
                   (cons
-                    (last records)
-                    (car records)))))))
+                    (list->pair (last records))
+                    (cons
+                      (list->pair (car records))
+                      (cddar records))))))))
         (let loop ((records records) (groups '()))
           (if (null? records)
             groups
