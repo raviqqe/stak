@@ -40,7 +40,17 @@
           (else
             (cons line (loop))))))))
 
+(define (parse-character-code code)
+  (string->number code 16))
+
 (define (parse records)
-  records)
+  (map
+    (lambda (record)
+      (cons
+        (parse-character-code (car record))
+        (cons
+          (cadr record)
+          (map parse-character-code (cddr record)))))
+    records))
 
 (write (parse (read-records)))
