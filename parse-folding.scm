@@ -1,16 +1,18 @@
 (import
   (scheme base)
+  (scheme char)
   (scheme read)
   (scheme write))
 
 (define (parse-token)
-  (let loop ()
-    (if (or
-         (char-alphabetic? (peek-char))
-         (char-numeric? (peek-char)))
-      '()
-      (let ((token (parse-token)))
-        (cons token (loop))))))
+  (list->string
+    (let loop ()
+      (if (or
+           (char-alphabetic? (peek-char))
+           (char-numeric? (peek-char)))
+        (let ((character (read-char)))
+          (cons character (loop)))
+        '()))))
 
 (define (parse-tokens)
   (let loop ()
