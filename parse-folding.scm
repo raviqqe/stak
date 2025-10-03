@@ -68,16 +68,17 @@
                 (member (cadr record) '("C" "F")))
               records))))
     (reverse
-      (let loop ((records records) (last #f) (groups '()))
-        (if (null? records)
-          groups
-          (let ((record (car records)))
-            (loop
-              (cdr records)
-              record
-              (if (and last (= (car record) (+ (car last) 1)))
-                (cons (cons record (car groups)) (cdr groups))
-                (cons (list record) groups)))))))))
+      (map reverse
+        (let loop ((records records) (last #f) (groups '()))
+          (if (null? records)
+            groups
+            (let ((record (car records)))
+              (loop
+                (cdr records)
+                record
+                (if (and last (= (car record) (+ (car last) 1)))
+                  (cons (cons record (car groups)) (cdr groups))
+                  (cons (list record) groups))))))))))
 
 (write
   (group-records
