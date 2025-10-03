@@ -72,15 +72,12 @@
         (if (null? records)
           groups
           (let ((record (car records)))
-            (if (not last)
-              (loop
-                (cdr records)
-                record
+            (loop
+              (cdr records)
+              record
+              (if (not last)
                 (cons record groups))
-              (loop
-                (cdr records)
-                record
-                (cons record groups)))))))))
+              (cons record groups))))))))
 
 (write
   (group-records
