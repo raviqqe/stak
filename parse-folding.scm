@@ -92,6 +92,12 @@
                         (cons
                           (cons 1 (cons record (cdr group)))
                           (cdr groups)))
+                      ((and
+                          (or (not step) (= step 2))
+                          (= (car record) (+ (caadr group) 2)))
+                        (cons
+                          (cons 2 (cons record (cdr group)))
+                          (cdr groups)))
                       (else
                         (cons (list #f record) groups))))
                   (cons
