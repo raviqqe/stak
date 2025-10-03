@@ -54,7 +54,8 @@
     records))
 
 (define (group-records records)
-  records)
+  (let loop ((individuals '()) (groups '()))
+    records))
 
 (write
   (group-records
