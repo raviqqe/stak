@@ -40,7 +40,7 @@
           (else
             (cons line (loop))))))))
 
-(define (parse xs)
-  xs)
+(define (parse records)
+  records)
 
 (write (parse (read-records)))
