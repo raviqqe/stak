@@ -2,7 +2,8 @@
   (scheme base)
   (scheme char)
   (scheme read)
-  (scheme write))
+  (scheme write)
+  (srfi 1))
 
 (define (parse-token)
   (list->string
@@ -54,8 +55,22 @@
     records))
 
 (define (group-records records)
-  (let loop ((last #f) (groups '()))
-    records))
+  (let ((records
+          (map
+            (lambda (record)
+              (cons
+                (car record)
+                (if (null? (cdddr record))
+                  (caddr record)
+                  (cddr record))))
+            (filter
+              (lambda (record)
+                (member (cadr record) '("C" "F")))
+              records))))
+    (let loop ((last #f) (groups '()))
+      (if (and last)
+        records
+        records))))
 
 (write
   (group-records
