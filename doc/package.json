@@ -20,7 +20,7 @@
     "@monza-editor/preact": "^0.1.9",
     "@nanostores/preact": "^1.0.0",
     "@preact/signals": "^2.3.1",
-    "@raviqqe/stak": "^0.11.5",
+    "@raviqqe/stak": "^0.11.6",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.14.1",
@@ -34,7 +34,7 @@
     "vite-plugin-wasm": "^3.5.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.4",
+    "@biomejs/biome": "^2.2.5",
     "@raviqqe/biome-config": "^2.0.18",
     "@types/node": "^24.6.2",
     "sharp": "^0.34.4",
