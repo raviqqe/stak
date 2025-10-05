@@ -200,6 +200,12 @@ jobs:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: tools/profile_test.sh
+  unicode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup
+      - run: tools/build_unicode.sh
   test:
     needs:
       - build
@@ -213,6 +219,7 @@ jobs:
       - r7rs_compatible_compiler
       - r7rs_compatible_library
       - profile
+      - unicode
     if: always()
     runs-on: ubuntu-latest
     steps:

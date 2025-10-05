@@ -1765,35 +1765,6 @@
   - ("space" . #\space)
   - ("tab" . #\tab)
 - set ||
-- constant procedure 2 #f
-  - get ||
-  - get 2
-  - get 2
-  - call 2 #f ||
-  - call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f ||
-  - if
-    - constant ()
-  - constant procedure 1 #f
-    - get 2
-    - call 1 #f ||
-    - get 1
-    - call 2 #f ||
-    - if
-      - get 0
-    - get 2
-    - call 1 #f ||
-    - get 1
-    - call 2 #f ||
-  - call 1 #f ||
-  - get 1
-  - call 1 #f ||
-  - call 1 #f ||
-  - call 1 #f 1
-- set ||
 - constant procedure 1 #t
   - constant procedure 2 #f
     - get 3
@@ -1850,6 +1821,35 @@
   - constant #f
   - constant #f
   - call 2 #f 2
+- set ||
+- constant procedure 2 #f
+  - get ||
+  - get 2
+  - get 2
+  - call 2 #f ||
+  - call 2 #f ||
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - if
+    - constant ()
+  - constant procedure 1 #f
+    - get 2
+    - call 1 #f ||
+    - get 1
+    - call 2 #f ||
+    - if
+      - get 0
+    - get 2
+    - call 1 #f ||
+    - get 1
+    - call 2 #f ||
+  - call 1 #f ||
+  - get 1
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f 1
 - set ||
 - constant procedure 1 #f
   - get 0

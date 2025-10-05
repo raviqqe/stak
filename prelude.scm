@@ -1642,16 +1642,23 @@
   (export
     iota
 
-    reduce
-    fold-right
+    first
+    second
+    third
+    fourth
+    last
+    last-pair
+
     append-map
+    fold-right
+    reduce
 
     filter
 
-    find
-    find-tail
     any
     every
+    find
+    find-tail
     list-index
 
     delete-duplicates
@@ -1712,6 +1719,28 @@
   (import (stak base) (scheme cxr))
 
   (begin
+    (define (iota count . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
+
+      (let loop ((count count) (x start))
+        (if (> count 0)
+          (cons x (loop (- count 1) (+ x step)))
+          '())))
+
+    (define first car)
+    (define second cadr)
+    (define third caddr)
+    (define fourth cadddr)
+
+    (define (last-pair xs)
+      (if (pair? (cdr xs))
+        (last-pair (cdr xs))
+        xs))
+
+    (define (last xs)
+      (car (last-pair xs)))
+
     (define (append-map f xs)
       (apply append (map f xs)))
 
@@ -1736,15 +1765,6 @@
       (if (null? xs)
         y
         (f (fold-right f y (cdr xs)) (car xs))))
-
-    (define (iota count . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
-
-      (let loop ((count count) (x start))
-        (if (> count 0)
-          (cons x (loop (- count 1) (+ x step)))
-          '())))
 
     (define (find f xs)
       (cond

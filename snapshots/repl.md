@@ -3836,14 +3836,20 @@
   - make-parameter
   - srfi
   - iota
-  - reduce
-  - fold-right
+  - first
+  - second
+  - third
+  - fourth
+  - last
+  - last-pair
   - append-map
+  - fold-right
+  - reduce
   - filter
-  - find
-  - find-tail
   - any
   - every
+  - find
+  - find-tail
   - list-index
   - delete-duplicates
   - cxr
@@ -8829,14 +8835,20 @@
                                               - srfi
                                               - 1
                                             - (iota . iota)
-                                            - (reduce . reduce)
-                                            - (fold-right . fold-right)
+                                            - (first . first)
+                                            - (second . second)
+                                            - (third . third)
+                                            - (fourth . fourth)
+                                            - (last . last)
+                                            - (last-pair . last-pair)
                                             - (append-map . append-map)
+                                            - (fold-right . fold-right)
+                                            - (reduce . reduce)
                                             - (filter . filter)
-                                            - (find . find)
-                                            - (find-tail . find-tail)
                                             - (any . any)
                                             - (every . every)
+                                            - (find . find)
+                                            - (find-tail . find-tail)
                                             - (list-index . list-index)
                                             - (delete-duplicates . delete-duplicates)
                                             - (fold . fold)
@@ -12057,6 +12069,86 @@
   - call 0 #f jiffies-per-second
   - call 2 #f ||
 - set current-second
+- constant procedure 1 #t
+  - constant procedure 2 #f
+    - get 3
+    - call 1 #f null?
+    - if
+      - constant 0
+      - continue
+    - get 3
+    - call 1 #f car
+    - set 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 5
+      - call 1 #f cdr
+      - call 1 #f null?
+    - call 1 #f $$close
+    - get 4
+    - call 1 #f null?
+    - call 1 #f 1
+    - set 1
+    - if
+      - constant 1
+      - continue
+    - get 3
+    - call 1 #f cadr
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 2 #f
+        - constant 0
+        - get 2
+        - call 2 #f ||
+        - if
+          - get 0
+          - get 2
+          - constant 1
+          - call 2 #f ||
+          - get 2
+          - get 8
+          - call 2 #f ||
+          - call 2 #f 6
+          - call 2 #f cons
+        - constant ()
+      - call 1 #f $$close
+      - set 1
+      - get 6
+      - get 4
+      - call 2 #f 2
+    - call 1 #f $$close
+    - constant #f
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - call 2 #f 2
+- set iota
+- get car
+- set first
+- get cadr
+- set second
+- get caddr
+- set third
+- get cadddr
+- set fourth
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdr
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f cdr
+    - call 1 #f last-pair
+  - get 0
+- set last-pair
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f last-pair
+  - call 1 #f car
+- set last
 - constant procedure 2 #f
   - get append
   - get 2
@@ -12122,63 +12214,6 @@
   - call 1 #f car
   - call 2 #f 4
 - set fold-right
-- constant procedure 1 #t
-  - constant procedure 2 #f
-    - get 3
-    - call 1 #f null?
-    - if
-      - constant 0
-      - continue
-    - get 3
-    - call 1 #f car
-    - set 2
-    - constant procedure 1 #f
-      - get 0
-      - if
-        - get 0
-      - get 5
-      - call 1 #f cdr
-      - call 1 #f null?
-    - call 1 #f $$close
-    - get 4
-    - call 1 #f null?
-    - call 1 #f 1
-    - set 1
-    - if
-      - constant 1
-      - continue
-    - get 3
-    - call 1 #f cadr
-    - set 1
-    - constant procedure 1 #f
-      - constant procedure 2 #f
-        - constant 0
-        - get 2
-        - call 2 #f ||
-        - if
-          - get 0
-          - get 2
-          - constant 1
-          - call 2 #f ||
-          - get 2
-          - get 8
-          - call 2 #f ||
-          - call 2 #f 6
-          - call 2 #f cons
-        - constant ()
-      - call 1 #f $$close
-      - set 1
-      - get 6
-      - get 4
-      - call 2 #f 2
-    - call 1 #f $$close
-    - constant #f
-    - call 1 #f 1
-  - call 1 #f $$close
-  - constant #f
-  - constant #f
-  - call 2 #f 2
-- set iota
 - constant procedure 2 #f
   - constant procedure 1 #f
     - get 0
