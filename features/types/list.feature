@@ -422,8 +422,11 @@ Feature: List
     Then the stdout should contain exactly "A"
 
     Examples:
-      | values    | value   |
-      | 1         | (1)     |
-      | 1 2       | (2)     |
-      | 1 2 3     | (3)     |
+      | values | value |
+      | 1      | (1)   |
+      | 1 2    | (2)   |
+      | 1 2 3  | (3)   |
+
+    @gauche @guile @stak
+    Examples:
       | 1 2 3 . 4 | (3 . 4) |
