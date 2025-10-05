@@ -429,4 +429,5 @@ Feature: List
 
     @gauche @guile @stak
     Examples:
+      | values    | value   |
       | 1 2 3 . 4 | (3 . 4) |
