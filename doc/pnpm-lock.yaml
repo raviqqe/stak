@@ -24,8 +24,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(nanostores@1.0.1)(preact@10.27.2)
       '@preact/signals':
-        specifier: ^2.3.1
-        version: 2.3.1(preact@10.27.2)
+        specifier: ^2.3.2
+        version: 2.3.2(preact@10.27.2)
       '@raviqqe/stak':
         specifier: ^0.11.6
         version: 0.11.6
@@ -643,11 +643,11 @@ packages:
       '@babel/core': 7.x
       vite: 2.x || 3.x || 4.x || 5.x || 6.x || 7.x
 
-  '@preact/signals-core@1.12.0':
-    resolution: {integrity: sha512-etWpENXm469RHMWIZGblgWrapbIGcRcbccEGGaLkFez3PjlI3XkBrUtSiNFsIfV/DN16PxMOxbWAZUIaLFyJDg==}
+  '@preact/signals-core@1.12.1':
+    resolution: {integrity: sha512-BwbTXpj+9QutoZLQvbttRg5x3l5468qaV2kufh+51yha1c53ep5dY4kTuZR35+3pAZxpfQerGJiQqg34ZNZ6uA==}
 
-  '@preact/signals@2.3.1':
-    resolution: {integrity: sha512-nyuRIGmcwM/HjvFHhN2xUWfyla9D4llHt+prWoxjQfD6b5prO7CFPlG/xjJkP31Oic4KQXfH9SIhJFP9cy4lmg==}
+  '@preact/signals@2.3.2':
+    resolution: {integrity: sha512-Q22avIn4z0BQnmFeo6Y5HCnJTo8VufN84zN51OtqeNgZOVCYgdwEOcJKVX1x/IrjRVxUnOy6Ubn7H5aVFujXaQ==}
     peerDependencies:
       preact: '>= 10.25.0 || >=11.0.0-0'
 
@@ -2264,7 +2264,7 @@ snapshots:
   '@astrojs/preact@4.1.1(@babel/core@7.28.4)(@types/node@24.6.2)(preact@10.27.2)':
     dependencies:
       '@preact/preset-vite': 2.10.2(@babel/core@7.28.4)(preact@10.27.2)(vite@6.3.6(@types/node@24.6.2))
-      '@preact/signals': 2.3.1(preact@10.27.2)
+      '@preact/signals': 2.3.2(preact@10.27.2)
       preact: 10.27.2
       preact-render-to-string: 6.6.1(preact@10.27.2)
       vite: 6.3.6(@types/node@24.6.2)
@@ -2807,11 +2807,11 @@ snapshots:
       - preact
       - supports-color
 
-  '@preact/signals-core@1.12.0': {}
+  '@preact/signals-core@1.12.1': {}
 
-  '@preact/signals@2.3.1(preact@10.27.2)':
+  '@preact/signals@2.3.2(preact@10.27.2)':
     dependencies:
-      '@preact/signals-core': 1.12.0
+      '@preact/signals-core': 1.12.1
       preact: 10.27.2
 
   '@prefresh/babel-plugin@0.5.2': {}
