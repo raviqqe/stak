@@ -77,7 +77,7 @@
                      (start (list->pair (last records)))
                      (end (list->pair (car records))))
                 (append
-                  (list step start end)
+                  (list 'step step start (+ (- (car end) (car start)) 1))
                   (cddar records))))))
         (let loop ((records records) (groups '()))
           (if (null? records)
