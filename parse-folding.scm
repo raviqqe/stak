@@ -76,12 +76,9 @@
               (let* ((records (cdr group))
                      (start (list->pair (last records)))
                      (end (list->pair (car records))))
-                (cons step
-                  (cons
-                    start
-                    (cons
-                      end
-                      (cddar records))))))))
+                (append
+                  (list step start end)
+                  (cddar records))))))
         (let loop ((records records) (groups '()))
           (if (null? records)
             groups
