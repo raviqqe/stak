@@ -80,8 +80,8 @@
                   (list
                     'step
                     step
-                    start
-                    (+ (/ (- (car end) (car start)) step) 1))
+                    (+ (/ (- (car end) (car start)) step) 1)
+                    start)
                   (cddar records))))))
         (let loop ((records records) (groups '()))
           (if (null? records)
