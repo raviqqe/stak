@@ -49,6 +49,7 @@
     "foldcase",
     "fopen",
     "fread",
+    "frontmatter",
     "fseek",
     "fstat",
     "ftell",
