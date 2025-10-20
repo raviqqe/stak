@@ -68,64 +68,57 @@
       records)))
 
 (define (group-records records)
-  (let ((records
-          (map
-            (lambda (record)
-              (cons (car record) (cddr record)))
-            (filter
-              (lambda (record)
-                (member (cadr record) '("C" "F")))
-              records))))
-    (reverse
-      (map
-        (lambda (group)
-          (let ((step (car group)))
-            (if (not step)
-              (list->pair (cadr group))
-              (let* ((records (cdr group))
-                     (start (list->pair (last records)))
-                     (end (list->pair (car records))))
-                (append
-                  (list
-                    'step
-                    step
-                    (+ (/ (- (car end) (car start)) step) 1)
-                    start)
-                  (cddar records))))))
-        (let loop ((records records) (groups '()))
-          (if (null? records)
-            groups
-            (let ((record (car records)))
-              (loop
-                (cdr records)
-                (if (and
-                     (pair? groups)
-                     (number? (cadr record))
-                     (number? (car (cdadar groups))))
-                  (let* ((group (car groups))
-                         (step (car group))
-                         (step? (lambda (count)
-                                 (and
-                                   (or (not step) (= step count))
-                                   (= (car record) (+ (caadr group) count))
-                                   (= (cadr record) (+ (cadadr group) count))
-                                   (equal? (cddr record) (cddadr group))))))
-                    (cond
-                      ((step? 1)
-                        (cons
-                          (cons 1 (cons record (cdr group)))
-                          (cdr groups)))
-                      ((step? 2)
-                        (cons
-                          (cons 2 (cons record (cdr group)))
-                          (cdr groups)))
-                      (else
-                        (cons (list #f record) groups))))
-                  (cons
-                    (list #f record)
-                    groups))))))))))
+  (reverse
+    (map
+      (lambda (group)
+        (let ((step (car group)))
+          (if (not step)
+            (list->pair (cadr group))
+            (let* ((records (cdr group))
+                   (start (list->pair (last records)))
+                   (end (list->pair (car records))))
+              (append
+                (list
+                  'step
+                  step
+                  (+ (/ (- (car end) (car start)) step) 1)
+                  start)
+                (cddar records))))))
+      (let loop ((records records) (groups '()))
+        (if (null? records)
+          groups
+          (let ((record (car records)))
+            (loop
+              (cdr records)
+              (if (and
+                   (pair? groups)
+                   (number? (cadr record))
+                   (number? (car (cdadar groups))))
+                (let* ((group (car groups))
+                       (step (car group))
+                       (step? (lambda (count)
+                               (and
+                                 (or (not step) (= step count))
+                                 (= (car record) (+ (caadr group) count))
+                                 (= (cadr record) (+ (cadadr group) count))
+                                 (equal? (cddr record) (cddadr group))))))
+                  (cond
+                    ((step? 1)
+                      (cons
+                        (cons 1 (cons record (cdr group)))
+                        (cdr groups)))
+                    ((step? 2)
+                      (cons
+                        (cons 2 (cons record (cdr group)))
+                        (cdr groups)))
+                    (else
+                      (cons (list #f record) groups))))
+                (cons
+                  (list #f record)
+                  groups)))))))))
 
 (write
   (group-records
-    (parse-records
-      (read-records))))
+    (filter-records
+      (parse-records
+        (read-records)))))
