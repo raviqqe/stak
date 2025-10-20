@@ -73,13 +73,16 @@
           (let ((step (car group)))
             (if (not step)
               (list->pair (cadr group))
-              (let ((records (cdr group)))
-                (cons step
-                  (cons
-                    (list->pair (last records))
-                    (cons
-                      (list->pair (car records))
-                      (cddar records))))))))
+              (let* ((records (cdr group))
+                     (start (list->pair (last records)))
+                     (end (list->pair (car records))))
+                (append
+                  (list
+                    'step
+                    step
+                    (+ (/ (- (car end) (car start)) step) 1)
+                    start)
+                  (cddar records))))))
         (let loop ((records records) (groups '()))
           (if (null? records)
             groups
