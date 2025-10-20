@@ -58,6 +58,15 @@
 (define (list->pair record)
   (cons (car record) (cadr record)))
 
+(define (filter-records records)
+  (map
+    (lambda (record)
+      (cons (car record) (cddr record)))
+    (filter
+      (lambda (record)
+        (member (cadr record) '("C" "F")))
+      records)))
+
 (define (group-records records)
   (let ((records
           (map
