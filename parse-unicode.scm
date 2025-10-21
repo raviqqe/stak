@@ -90,23 +90,30 @@
           (loop current (car records) (cdr records)))))))
 
 (define (group-records records)
-  (let loop ((current (car records))
+  (let loop ((record (car records))
              (count 0)
              (records (cdr records)))
     (cond
       ((null? records)
-        (list current))
-      ((equal? current (car records))
-        (loop current (+ count 1) (cdr records)))
+        (list record))
+      ((pair? record)
+        (cons
+          record
+          (loop (car records) 0 (cdr records))))
+      ((and
+          (number? record)
+          (equal? record (car records)))
+        (loop record (+ count 1) (cdr records)))
       (else
         (cons
           (if (zero? count)
-            current
-            (cons 'group (cons (+ count 1) current)))
+            record
+            (list 'repeat count current))
           (loop (car records) 0 (cdr records)))))))
 
 (write
-  (differentiate-records
-    (filter-records
-      (parse-records
-        (read-records)))))
+  (group-records
+    (differentiate-records
+      (filter-records
+        (parse-records
+          (read-records))))))
