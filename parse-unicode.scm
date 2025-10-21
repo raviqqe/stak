@@ -95,12 +95,12 @@
         (if (and
              (number? record)
              (equal? record (car records)))
-          (loop (+ count 1) records))
-        (cons
-          (if (pair? record)
-            record
-            (cons count record))
-          (loop 0 records))))))
+          (loop (+ count 1) records)
+          (cons
+            (if (pair? record)
+              record
+              (cons count record))
+            (loop 0 records)))))))
 
 (write
   (group-records
