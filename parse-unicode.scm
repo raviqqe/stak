@@ -110,7 +110,7 @@
             (cons
               (if (zero? count)
                 record
-                (cons 'repeat (cons count record))
+                (cons 'repeat (cons count record)))
               (loop record 0 records))))))))
 
 (write
