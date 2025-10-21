@@ -149,6 +149,7 @@ Feature: Character
       | #\\z    | #\\z    |
       | #\\{    | #\\{    |
       | #\\À    | #\\à    |
+      | #\\Ý    | #\\ý    |
       | #\\𞤡    | #\\𞥃    |
 
   Scenario Outline: Extract a digit value
