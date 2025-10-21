@@ -58,6 +58,22 @@
 (define (list->pair record)
   (cons (car record) (cadr record)))
 
+(define (differentiate-records records)
+  (cons
+    (car records)
+    (let loop ((previous (car records))
+               (current (cadr records))
+               (records (cddr records)))
+      (if (null? records)
+        '()
+        (cons
+          (cons
+            (- (car current) (car previous))
+            (cons
+              (- (cadr current) (cadr previous))
+              (cddr current)))
+          (loop current (car records) (cdr records)))))))
+
 (define (filter-records records)
   (map
     (lambda (record)
@@ -118,7 +134,7 @@
                   groups)))))))))
 
 (write
-  (group-records
+  (differentiate-records
     (filter-records
       (parse-records
         (read-records)))))
