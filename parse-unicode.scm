@@ -92,19 +92,15 @@
       '()
       (let ((record (car records))
             (records (cdr records)))
-        (cond
-          ((pair? record)
-            (cons
-              record
-              (loop 0 records)))
-          ((and
-              (number? record)
-              (equal? record (car records)))
-            (loop (+ count 1) records))
-          (else
-            (cons
-              (cons count record)
-              (loop 0 records))))))))
+        (if (and
+             (number? record)
+             (equal? record (car records)))
+          (loop (+ count 1) records))
+        (cons
+          (if (pair? record)
+            record
+            (cons count record))
+          (loop 0 records))))))
 
 (write
   (group-records
