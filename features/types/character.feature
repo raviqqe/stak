@@ -155,7 +155,7 @@ Feature: Character
     @stak
     Examples:
       | input | output |
-      | #\\Þ  | "ss"   |
+      | #\\ß  | "ss"   |
 
   Scenario Outline: Extract a digit value
     Given a file named "main.scm" with:
