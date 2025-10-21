@@ -68,13 +68,10 @@
       records)))
 
 (define (differentiate-records records)
-  (cons
-    (car records)
-    (let loop ((previous (car records))
-               (current (cadr records))
-               (records (cddr records)))
-      (if (null? records)
-        '()
+  (let loop ((previous '(0 0)) (records records))
+    (if (null? records)
+      '()
+      (let ((current (car records)))
         (cons
           (let ((record
                   (cons
@@ -87,7 +84,7 @@
                  (equal? (cddr previous) (cddr current)))
               (car record)
               record))
-          (loop current (car records) (cdr records)))))))
+          (loop current (cdr records)))))))
 
 (define (group-records records)
   (let loop ((record #f)
