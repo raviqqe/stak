@@ -108,7 +108,7 @@
         (cons
           (if (zero? count)
             record
-            (list 'repeat count current))
+            (list 'repeat count record))
           (loop (car records) 0 (cdr records)))))))
 
 (write
