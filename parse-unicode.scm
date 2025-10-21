@@ -108,9 +108,7 @@
             (loop record (+ count 1) records))
           (else
             (cons
-              (if (zero? count)
-                record
-                (cons 'repeat (cons count record)))
+              (cons count record)
               (loop record 0 records))))))))
 
 (write
