@@ -152,6 +152,11 @@ Feature: Character
       | #\\Ý    | #\\ý    |
       | #\\𞤡    | #\\𞥃    |
 
+    @stak
+    Examples:
+      | input | output |
+      | #\\Þ  | "ss"   |
+
   Scenario Outline: Extract a digit value
     Given a file named "main.scm" with:
       """scheme
