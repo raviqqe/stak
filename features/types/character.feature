@@ -139,15 +139,16 @@ Feature: Character
     Then the stdout should contain exactly "A"
 
     Examples:
-      | input | output |
-      | #\\@  | #\\@   |
-      | #\\A  | #\\a   |
-      | #\\Z  | #\\z   |
-      | #\\[  | #\\[   |
-      | #\\`  | #\\`   |
-      | #\\a  | #\\a   |
-      | #\\z  | #\\z   |
-      | #\\{  | #\\{   |
+      | input   | output  |
+      | #\\@    | #\\@    |
+      | #\\A    | #\\a    |
+      | #\\Z    | #\\z    |
+      | #\\[    | #\\[    |
+      | #\\`    | #\\`    |
+      | #\\a    | #\\a    |
+      | #\\z    | #\\z    |
+      | #\\{    | #\\{    |
+      | #\\𞤡    | #\\𞥃    |
 
   Scenario Outline: Extract a digit value
     Given a file named "main.scm" with:
