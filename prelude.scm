@@ -2993,7 +2993,7 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define folds
+    (define fold-steps
       '((65 97)
         (repeat 24 . 1)
         (91 834)
@@ -3378,8 +3378,9 @@
     (define (char-foldcase x)
       (define x (char->integer x))
 
-      (let loop ((codes '(0 0)) (step (car folds)))
-        (let* ((increment
+      (let loop ((codes '(0 0)) (steps fold-steps))
+        (let* ((step (car steps))
+               (increment
                  (lambda (count)
                    (cons
                      (+ (car codes) count)
@@ -3398,9 +3399,26 @@
                      (cons
                        foo
                        (+ (car code) step))))))
-          (if (= (car codes))
-            foo
-            foo))))
+          (cond
+            ((not (= x (car codes)))
+              (loop
+                codes
+                (if (and
+                     (pair? step)
+                     (eq? (car step) 'repeat)
+                     (>= (cadr step) 0))
+                  (cons
+                    (cons
+                      'repeat
+                      (cons
+                        (- (cadr step) 1)
+                        (cddr step)))
+                    (cdr steps))
+                  (cdr steps))))
+            ((null? (cddr codes))
+              (integer->char (cadr codes)))
+            (else
+              (code-points->string (cdr codes)))))))
 
     (define (compare-ci convert)
       (lambda (compare)
