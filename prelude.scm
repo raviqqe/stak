@@ -3380,25 +3380,19 @@
 
       (let loop ((codes '(0 0)) (steps fold-steps))
         (let* ((step (car steps))
-               (increment
-                 (lambda (count)
-                   (cons
-                     (+ (car codes) count)
-                     (cons
-                       (+ (cadr codes) count)
-                       (cddr codes)))))
                (codes
-                 (cond
-                   ((number? step)
-                     (increment step))
-                   ((and
-                       (eq? (car step) 'repeat)
-                       (>= (cadr step) 0))
-                     (increment (cddr step)))
-                   (else
+                 (if (and
+                      (number? (cdr step))
+                      (>= (car step) 0))
+                   (let ((count (cdr step)))
                      (cons
-                       foo
-                       (+ (car code) step))))))
+                       (+ (car codes) count)
+                       (cons
+                         (+ (cadr codes) count)
+                         (cddr codes))))
+                   (cons
+                     foo
+                     (+ (car code) step)))))
           (cond
             ((not (= x (car codes)))
               (loop
