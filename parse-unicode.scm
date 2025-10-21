@@ -73,17 +73,17 @@
       '()
       (let ((current (car records)))
         (cons
-          (let ((record
+          (let ((step
                   (cons
                     (- (car current) (car previous))
                     (cons
                       (- (cadr current) (cadr previous))
                       (cddr current)))))
             (if (and
-                 (= (car record) (cadr record))
+                 (= (car step) (cadr step))
                  (equal? (cddr previous) (cddr current)))
-              (car record)
-              record))
+              (car step)
+              step))
           (loop current (cdr records)))))))
 
 (define (group-records records)
