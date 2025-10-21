@@ -76,11 +76,17 @@
       (if (null? records)
         '()
         (cons
-          (cons
-            (- (car current) (car previous))
-            (cons
-              (- (cadr current) (cadr previous))
-              (cddr current)))
+          (let ((record
+                  (cons
+                    (- (car current) (car previous))
+                    (cons
+                      (- (cadr current) (cadr previous))
+                      (cddr current)))))
+            (if (and
+                 (null? (cddr record))
+                 (= (car record) (cadr record)))
+              (car record)
+              record))
           (loop current (car records) (cdr records)))))))
 
 (define (group-records records)
@@ -100,8 +106,7 @@
           (loop (car records) 0 (cdr records)))))))
 
 (write
-  (group-records
-    (differentiate-records
-      (filter-records
-        (parse-records
-          (read-records))))))
+  (differentiate-records
+    (filter-records
+      (parse-records
+        (read-records)))))
