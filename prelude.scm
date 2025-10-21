@@ -3375,42 +3375,44 @@
         (integer->char (+ (char->integer x) 32))
         x))
 
-    (define (char-foldcase x)
-      (let ((x (char->integer x)))
+    (define (char-foldcase char)
+      (let ((code (char->integer char)))
         (let loop ((codes '(0 0)) (steps fold-steps))
-          (let* ((step (car steps))
-                 (codes
-                   (if (and
-                        (number? (cdr step))
-                        (>= (car step) 0))
-                     (let ((count (cdr step)))
-                       (cons
-                         (+ (car codes) count)
+          (if (null? steps)
+            char
+            (let* ((step (car steps))
+                   (codes
+                     (if (and
+                          (number? (cdr step))
+                          (>= (car step) 0))
+                       (let ((count (cdr step)))
                          (cons
-                           (+ (cadr codes) count)
-                           (cddr codes))))
-                     (cons
-                       (+ (car codes) (car step))
+                           (+ (car codes) count)
+                           (cons
+                             (+ (cadr codes) count)
+                             (cddr codes))))
                        (cons
-                         (+ (cadr codes) (cadr step))
-                         (cddr step))))))
-            (cond
-              ((not (= x (car codes)))
-                (loop
-                  codes
-                  (if (and
-                       (number? (cdr step))
-                       (> (car step) 0))
-                    (cons
+                         (+ (car codes) (car step))
+                         (cons
+                           (+ (cadr codes) (cadr step))
+                           (cddr step))))))
+              (cond
+                ((not (= code (car codes)))
+                  (loop
+                    codes
+                    (if (and
+                         (number? (cdr step))
+                         (> (car step) 0))
                       (cons
-                        (- (car step) 1)
-                        (cdr step))
-                      (cdr steps))
-                    (cdr steps))))
-              ((null? (cddr codes))
-                (integer->char (cadr codes)))
-              (else
-                (code-points->string (cdr codes))))))))
+                        (cons
+                          (- (car step) 1)
+                          (cdr step))
+                        (cdr steps))
+                      (cdr steps))))
+                ((null? (cddr codes))
+                  (integer->char (cadr codes)))
+                (else
+                  (code-points->string (cdr codes)))))))))
 
     (define (compare-ci convert)
       (lambda (compare)
