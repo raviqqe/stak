@@ -3348,7 +3348,7 @@
         (0 . 21889)
         (30 . 1)
         (31393 31395)
-        (31 . 1)))
+        (32 . 1)))
 
     (define (char-alphabetic? x)
       (or (char-lower-case? x) (char-upper-case? x)))
