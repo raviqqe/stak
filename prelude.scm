@@ -3391,8 +3391,10 @@
                          (+ (cadr codes) count)
                          (cddr codes))))
                    (cons
-                     foo
-                     (+ (car code) step)))))
+                     (+ (car codes) (car step))
+                     (cons
+                       (+ (cadr codes) (cadr step))
+                       (cddr step))))))
           (cond
             ((not (= x (car codes)))
               (loop
