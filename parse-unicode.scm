@@ -83,8 +83,8 @@
                       (- (cadr current) (cadr previous))
                       (cddr current)))))
             (if (and
-                 (null? (cddr record))
-                 (= (car record) (cadr record)))
+                 (= (car record) (cadr record))
+                 (equal? (cddr previous) (cddr current)))
               (car record)
               record))
           (loop current (car records) (cdr records)))))))
