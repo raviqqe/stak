@@ -87,9 +87,7 @@
           (loop current (cdr records)))))))
 
 (define (group-records records)
-  (let loop ((record #f)
-             (count 0)
-             (records records))
+  (let loop ((count 0) (records records))
     (if (null? records)
       '()
       (let ((record (car records))
@@ -98,15 +96,15 @@
           ((pair? record)
             (cons
               record
-              (loop record 0 records)))
+              (loop 0 records)))
           ((and
               (number? record)
               (equal? record (car records)))
-            (loop record (+ count 1) records))
+            (loop (+ count 1) records))
           (else
             (cons
               (cons count record)
-              (loop record 0 records))))))))
+              (loop 0 records))))))))
 
 (write
   (group-records
