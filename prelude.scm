@@ -3399,15 +3399,12 @@
                 (loop
                   codes
                   (if (and
-                       (pair? step)
-                       (eq? (car step) 'repeat)
-                       (>= (cadr step) 0))
+                       (number? (cdr step))
+                       (> (car step) 0))
                     (cons
                       (cons
-                        'repeat
-                        (cons
-                          (- (cadr step) 1)
-                          (cddr step)))
+                        (- (car step) 1)
+                        (cdr step))
                       (cdr steps))
                     (cdr steps))))
               ((null? (cddr codes))
