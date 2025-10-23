@@ -74,14 +74,10 @@
       (let ((current (car records)))
         (cons
           (let ((step
-                  (cons
+                  (list
                     (- (car current) (car previous))
-                    (cons
-                      (- (cadr current) (cadr previous))
-                      (cddr current)))))
-            (if (and
-                 (= (car step) (cadr step))
-                 (equal? (cddr previous) (cddr current)))
+                    (- (cadr current) (cadr previous)))))
+            (if (= (car step) (cadr step))
               (car step)
               step))
           (loop current (cdr records)))))))
