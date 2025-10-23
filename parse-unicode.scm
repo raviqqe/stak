@@ -64,7 +64,7 @@
       (cons (car record) (cddr record)))
     (filter
       (lambda (record)
-        (member (cadr record) '("C" "F")))
+        (member (cadr record) '("C" "S")))
       records)))
 
 (define (differentiate-records records)
