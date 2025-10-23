@@ -94,7 +94,7 @@
             (records (cdr records)))
         (if (and
              (number? record)
-             (equal? record (car records)))
+             (eq? record (car records)))
           (loop (+ count 1) records)
           (cons
             (if (pair? record)
