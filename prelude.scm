@@ -3326,10 +3326,10 @@
 
       (let ((code (char->integer char)))
         (let loop ((codes '(0 0)) (steps fold-steps))
-          (define (build-codes a d)
+          (define (build-codes x y)
             (list
-              (+ (car codes) a)
-              (+ (cadr codes) d)))
+              (+ (car codes) x)
+              (+ (cadr codes) y)))
 
           (if (null? steps)
             char
