@@ -5418,14 +5418,16 @@
     - constant procedure 1 #f
       - constant procedure 2 #f
         - constant procedure 1 #f
-          - constant procedure 2 #f
-            - get 6
+          - constant procedure 1 #f
+            - get 5
             - call 1 #f car
-            - get 2
+            - get 1
+            - call 1 #f car
             - call 2 #f ||
-            - get 7
+            - get 6
             - call 1 #f cdr
             - get 2
+            - call 1 #f cadr
             - call 2 #f ||
             - call 2 #f cons
           - call 1 #f $$close
@@ -5452,17 +5454,15 @@
             - if
               - get 11
             - constant procedure 1 #f
-              - get 0
-              - call 1 #f cdr
-              - call 1 #f number?
-              - if
-                - constant procedure 1 #f
+              - constant procedure 1 #f
+                - get 0
+                - call 1 #f number?
+                - if
                   - constant procedure 1 #f
                     - constant procedure 1 #f
                       - get 0
                       - get 1
-                      - call 2 #f 12
-                    - call 1 #f $$close
+                      - call 2 #f list
                     - get 7
                     - get 4
                     - call 2 #f remainder
@@ -5483,20 +5483,17 @@
                   - get 2
                   - call 2 #f ||
                   - call 1 #f 1
-                - call 1 #f $$close
-                - get 1
+                  - set 1
+                  - continue
+                - get 2
+                - call 1 #f 7
+                - get 9
                 - call 1 #f cdr
-                - call 1 #f 1
-                - set 1
-                - continue
-              - get 0
-              - call 1 #f car
+                - call 2 #f 13
+              - call 1 #f $$close
               - get 1
-              - call 1 #f cadr
-              - call 2 #f 6
-              - get 7
               - call 1 #f cdr
-              - call 2 #f 11
+              - call 1 #f 1
             - call 1 #f $$close
             - get 5
             - call 1 #f car

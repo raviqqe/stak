@@ -3323,10 +3323,10 @@
     (define (char-foldcase char)
       (let ((code (char->integer char)))
         (let loop ((codes '(0 . 0)) (steps fold-steps))
-          (define (build-codes a d)
+          (define (advance step)
             (cons
-              (+ (car codes) a)
-              (+ (cdr codes) d)))
+              (+ (car codes) (car step))
+              (+ (cdr codes) (cadr step))))
 
           (let ((x (- code (car codes))))
             (cond
@@ -3335,16 +3335,17 @@
               ((or (null? steps) (negative? x))
                 char)
               (else
-                (let ((step (car steps)))
+                (let* ((step (car steps))
+                       (d (cdr step)))
                   (loop
-                    (if (number? (cdr step))
-                      (let* ((y (cdr step))
-                             (next (* (+ (car step) 1) y))
-                             (x (if (zero? (remainder x y))
-                                 (min x next)
-                                 next)))
-                        (build-codes x x))
-                      (build-codes (car step) (cadr step)))
+                    (advance
+                      (if (number? d)
+                        (let* ((y (* (+ (car step) 1) d))
+                               (z (if (zero? (remainder x d))
+                                   (min x y)
+                                   y)))
+                          (list z z))
+                        step))
                     (cdr steps)))))))))
 
     (define (compare-ci convert)
