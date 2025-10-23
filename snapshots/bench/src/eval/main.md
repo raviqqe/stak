@@ -4374,6 +4374,897 @@
   - ("space" . #\space)
   - ("tab" . #\tab)
 - set special-chars
+- constant list
+  - list
+    - 65
+    - 97
+  - (24 . 1)
+  - list
+    - 91
+    - 834
+  - list
+    - 11
+    - -732
+  - (21 . 1)
+  - (0 . 2)
+  - (5 . 1)
+  - list
+    - 1
+    - -139
+    - 115
+  - list
+    - 33
+    - 142
+  - (22 . 2)
+  - list
+    - 2
+    - -198
+    - 775
+  - list
+    - 2
+    - 202
+  - (1 . 2)
+  - (0 . 3)
+  - (6 . 2)
+  - list
+    - 2
+    - 372
+    - 110
+  - list
+    - 1
+    - -369
+  - (21 . 2)
+  - list
+    - 2
+    - -120
+  - list
+    - 1
+    - 123
+  - (1 . 2)
+  - list
+    - 2
+    - -267
+  - list
+    - 2
+    - 480
+  - list
+    - 1
+    - -208
+  - (0 . 2)
+  - list
+    - 2
+    - 207
+  - list
+    - 1
+    - -204
+  - list
+    - 2
+    - 206
+  - (0 . 1)
+  - list
+    - 1
+    - -203
+  - list
+    - 3
+    - 81
+  - list
+    - 1
+    - 124
+  - list
+    - 1
+    - 2
+  - list
+    - 1
+    - -201
+  - list
+    - 2
+    - 206
+  - list
+    - 1
+    - 3
+  - list
+    - 2
+    - 6
+  - list
+    - 1
+    - -1
+  - list
+    - 1
+    - -207
+  - list
+    - 4
+    - 214
+  - list
+    - 1
+    - 3
+  - list
+    - 2
+    - 3
+  - list
+    - 1
+    - -212
+  - (1 . 2)
+  - list
+    - 2
+    - 219
+  - list
+    - 1
+    - -216
+  - list
+    - 2
+    - 219
+  - list
+    - 3
+    - -214
+  - list
+    - 2
+    - 219
+  - list
+    - 1
+    - -216
+  - list
+    - 2
+    - 218
+  - (0 . 1)
+  - list
+    - 1
+    - -215
+  - (0 . 2)
+  - list
+    - 2
+    - 220
+  - list
+    - 1
+    - -217
+  - (0 . 4)
+  - list
+    - 8
+    - 9
+  - list
+    - 1
+    - 0
+  - list
+    - 2
+    - 3
+  - list
+    - 1
+    - 0
+  - list
+    - 2
+    - 3
+  - list
+    - 1
+    - 0
+  - (7 . 2)
+  - (0 . 3)
+  - (7 . 2)
+  - list
+    - 2
+    - -389
+    - 780
+  - list
+    - 1
+    - 393
+  - list
+    - 1
+    - 0
+  - (0 . 2)
+  - list
+    - 2
+    - -96
+  - list
+    - 1
+    - 42
+  - list
+    - 1
+    - 58
+  - (18 . 2)
+  - list
+    - 2
+    - -129
+  - list
+    - 2
+    - 133
+  - (7 . 2)
+  - list
+    - 8
+    - 10802
+  - list
+    - 1
+    - -10793
+  - list
+    - 2
+    - -162
+  - list
+    - 1
+    - 10956
+  - list
+    - 3
+    - -10788
+  - list
+    - 2
+    - -194
+  - list
+    - 1
+    - 265
+  - list
+    - 1
+    - 3
+  - list
+    - 1
+    - -69
+  - (3 . 2)
+  - list
+    - 247
+    - 362
+  - list
+    - 43
+    - -72
+  - (0 . 2)
+  - (0 . 4)
+  - list
+    - 9
+    - 124
+  - list
+    - 7
+    - -71
+  - list
+    - 2
+    - 1
+  - (1 . 1)
+  - list
+    - 2
+    - 29
+  - list
+    - 2
+    - 1
+  - (0 . 1)
+  - list
+    - 1
+    - -21
+    - 776
+    - 769
+  - list
+    - 1
+    - -8
+  - (15 . 1)
+  - (0 . 2)
+  - (7 . 1)
+  - list
+    - 5
+    - -6
+    - 776
+    - 769
+  - list
+    - 18
+    - -2
+  - list
+    - 13
+    - 20
+  - list
+    - 1
+    - -37
+  - list
+    - 1
+    - 6
+  - list
+    - 4
+    - 14
+  - list
+    - 1
+    - -6
+  - list
+    - 2
+    - 25
+  - (10 . 2)
+  - list
+    - 2
+    - -53
+  - list
+    - 1
+    - 7
+  - list
+    - 3
+    - -9
+  - list
+    - 1
+    - -3
+  - list
+    - 2
+    - 67
+  - list
+    - 2
+    - -6
+  - list
+    - 1
+    - 9
+  - list
+    - 3
+    - -128
+  - (1 . 1)
+  - list
+    - 1
+    - 211
+  - (14 . 1)
+  - list
+    - 1
+    - -47
+  - (30 . 1)
+  - list
+    - 49
+    - 18
+  - (15 . 2)
+  - (0 . 10)
+  - (25 . 2)
+  - list
+    - 2
+    - 16
+  - list
+    - 1
+    - -13
+  - (5 . 2)
+  - (0 . 3)
+  - (46 . 2)
+  - list
+    - 3
+    - 50
+  - (36 . 1)
+  - list
+    - 49
+    - -33
+    - 1410
+  - list
+    - 2841
+    - 10139
+  - (36 . 1)
+  - (0 . 2)
+  - (0 . 6)
+  - list
+    - 811
+    - -6461
+  - (4 . 1)
+  - list
+    - 2179
+    - -4035
+  - list
+    - 1
+    - 2
+  - list
+    - 1
+    - 10
+  - list
+    - 1
+    - 3
+  - (0 . 1)
+  - list
+    - 1
+    - 0
+  - list
+    - 1
+    - 8
+  - list
+    - 1
+    - 25
+  - list
+    - 1
+    - 41448
+  - list
+    - 1
+    - -35265
+  - list
+    - 7
+    - -3002
+  - (41 . 1)
+  - (0 . 3)
+  - (1 . 1)
+  - list
+    - 321
+    - 3330
+  - (73 . 2)
+  - list
+    - 2
+    - -7725
+    - 817
+  - list
+    - 1
+    - 12
+    - 776
+  - list
+    - 1
+    - 3
+    - 778
+  - list
+    - 1
+    - 2
+    - 778
+  - list
+    - 1
+    - -24
+    - 702
+  - list
+    - 1
+    - 7680
+  - list
+    - 3
+    - -7662
+    - 115
+  - list
+    - 2
+    - 7726
+  - (46 . 2)
+  - list
+    - 10
+    - 1
+  - (6 . 1)
+  - (0 . 9)
+  - (4 . 1)
+  - (0 . 11)
+  - (6 . 1)
+  - (0 . 9)
+  - (6 . 1)
+  - (0 . 9)
+  - (4 . 1)
+  - list
+    - 3
+    - -7040
+    - 787
+  - list
+    - 2
+    - 0
+    - 787
+    - 768
+  - list
+    - 2
+    - 0
+    - 787
+    - 769
+  - list
+    - 2
+    - 0
+    - 787
+    - 834
+  - list
+    - 3
+    - 7052
+  - (2 . 2)
+  - (0 . 9)
+  - (6 . 1)
+  - list
+    - 17
+    - -103
+    - 953
+  - (6 . 1)
+  - list
+    - 1
+    - -7
+    - 953
+  - (6 . 1)
+  - list
+    - 1
+    - 25
+    - 953
+  - (6 . 1)
+  - list
+    - 1
+    - -7
+    - 953
+  - (6 . 1)
+  - list
+    - 1
+    - 57
+    - 953
+  - (6 . 1)
+  - list
+    - 1
+    - -7
+    - 953
+  - (6 . 1)
+  - list
+    - 3
+    - 9
+    - 953
+  - list
+    - 1
+    - -7103
+    - 953
+  - list
+    - 1
+    - -5
+    - 953
+  - list
+    - 2
+    - 5
+    - 834
+  - list
+    - 1
+    - 0
+    - 834
+    - 953
+  - list
+    - 1
+    - 7167
+  - (0 . 1)
+  - list
+    - 1
+    - -65
+  - (0 . 1)
+  - list
+    - 1
+    - -7104
+    - 953
+  - list
+    - 2
+    - 8
+  - list
+    - 4
+    - 7099
+    - 953
+  - list
+    - 1
+    - -7101
+    - 953
+  - list
+    - 1
+    - -9
+    - 953
+  - list
+    - 2
+    - 9
+    - 834
+  - list
+    - 1
+    - 0
+    - 834
+    - 953
+  - list
+    - 1
+    - 7099
+  - (2 . 1)
+  - list
+    - 1
+    - -7102
+    - 953
+  - list
+    - 6
+    - 2
+    - 776
+    - 768
+  - list
+    - 1
+    - 0
+    - 776
+    - 769
+  - list
+    - 3
+    - 0
+    - 834
+  - list
+    - 1
+    - 0
+    - 776
+    - 834
+  - list
+    - 1
+    - 7191
+  - (0 . 1)
+  - list
+    - 1
+    - -91
+  - (0 . 1)
+  - list
+    - 7
+    - -7090
+    - 776
+    - 768
+  - list
+    - 1
+    - 0
+    - 776
+    - 769
+  - list
+    - 1
+    - -4
+    - 787
+  - list
+    - 2
+    - 4
+    - 834
+  - list
+    - 1
+    - 0
+    - 776
+    - 834
+  - list
+    - 1
+    - 7195
+  - (0 . 1)
+  - list
+    - 1
+    - -103
+  - (0 . 1)
+  - list
+    - 1
+    - 106
+  - list
+    - 6
+    - -105
+    - 953
+  - list
+    - 1
+    - -7091
+    - 953
+  - list
+    - 1
+    - 5
+    - 953
+  - list
+    - 2
+    - -5
+    - 834
+  - list
+    - 1
+    - 0
+    - 834
+    - 953
+  - list
+    - 1
+    - 7087
+  - (0 . 1)
+  - list
+    - 1
+    - 3
+  - (0 . 1)
+  - list
+    - 1
+    - -7092
+    - 953
+  - list
+    - 298
+    - 0
+  - list
+    - 4
+    - -862
+  - list
+    - 1
+    - 122
+  - list
+    - 7
+    - 8297
+  - list
+    - 46
+    - 34
+  - (14 . 1)
+  - list
+    - 20
+    - 5
+  - list
+    - 819
+    - 844
+  - (24 . 1)
+  - list
+    - 1841
+    - 1863
+  - (46 . 1)
+  - list
+    - 49
+    - 2
+  - list
+    - 2
+    - -10742
+  - list
+    - 1
+    - 6930
+  - list
+    - 1
+    - -6912
+  - list
+    - 3
+    - 10731
+  - (1 . 2)
+  - list
+    - 2
+    - -10779
+  - list
+    - 1
+    - 32
+  - list
+    - 1
+    - -33
+  - list
+    - 1
+    - 2
+  - list
+    - 2
+    - 10785
+  - (0 . 3)
+  - list
+    - 9
+    - -10807
+  - (0 . 1)
+  - list
+    - 1
+    - 10817
+  - (48 . 2)
+  - (0 . 9)
+  - (0 . 2)
+  - (0 . 5)
+  - (0 . 31054)
+  - (21 . 2)
+  - (0 . 20)
+  - (12 . 2)
+  - (0 . 136)
+  - (5 . 2)
+  - (0 . 4)
+  - (29 . 2)
+  - (0 . 11)
+  - (0 . 2)
+  - list
+    - 2
+    - -35331
+  - list
+    - 1
+    - 35334
+  - (3 . 2)
+  - (0 . 5)
+  - list
+    - 2
+    - -42279
+  - list
+    - 3
+    - 42284
+  - (0 . 2)
+  - (0 . 4)
+  - (8 . 2)
+  - list
+    - 2
+    - -42307
+  - list
+    - 1
+    - -10
+  - list
+    - 1
+    - 5
+  - list
+    - 1
+    - 11
+  - list
+    - 1
+    - -2
+  - list
+    - 2
+    - 52
+  - list
+    - 1
+    - -23
+  - list
+    - 1
+    - 22
+  - list
+    - 1
+    - 43190
+  - list
+    - 1
+    - -926
+  - (6 . 2)
+  - list
+    - 2
+    - -47
+  - list
+    - 1
+    - -42258
+  - list
+    - 1
+    - 6924
+  - list
+    - 1
+    - 35386
+  - (0 . 2)
+  - list
+    - 2
+    - -42342
+  - list
+    - 1
+    - 42345
+  - (0 . 4)
+  - (0 . 6)
+  - (1 . 2)
+  - list
+    - 2
+    - -42560
+  - list
+    - 25
+    - 42587
+  - list
+    - 891
+    - -37974
+  - (78 . 1)
+  - list
+    - 20289
+    - -5001
+    - 102
+  - list
+    - 1
+    - 0
+    - 105
+  - list
+    - 1
+    - 0
+    - 108
+  - list
+    - 1
+    - 0
+    - 102
+    - 105
+  - list
+    - 1
+    - 0
+    - 102
+    - 108
+  - list
+    - 1
+    - 13
+    - 116
+  - list
+    - 1
+    - 0
+    - 116
+  - list
+    - 13
+    - 1281
+    - 1398
+  - list
+    - 1
+    - 0
+    - 1381
+  - list
+    - 1
+    - 0
+    - 1387
+  - list
+    - 1
+    - 10
+    - 1398
+  - list
+    - 1
+    - -10
+    - 1389
+  - list
+    - 1034
+    - 63949
+  - (24 . 1)
+  - list
+    - 1222
+    - 1230
+  - (38 . 1)
+  - (0 . 137)
+  - (34 . 1)
+  - list
+    - 157
+    - 156
+  - (9 . 1)
+  - (0 . 2)
+  - (13 . 1)
+  - (0 . 2)
+  - (5 . 1)
+  - (0 . 2)
+  - (0 . 1)
+  - list
+    - 1771
+    - 1796
+  - (49 . 1)
+  - list
+    - 158
+    - 126
+  - (20 . 1)
+  - (0 . 2875)
+  - (30 . 1)
+  - (0 . 21889)
+  - (30 . 1)
+  - list
+    - 31393
+    - 31395
+  - (32 . 1)
+- set ||
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 0
@@ -4435,7 +5326,145 @@
     - call 1 #f integer->char
   - get 0
 - set char-downcase
-- get char-downcase
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f cdr
+        - call 1 #f null?
+        - if
+          - get 0
+          - call 1 #f car
+          - call 1 #f integer->char
+        - get 0
+        - call 1 #f code-points->string
+      - get 1
+      - call 1 #f cdr
+      - call 1 #f 1
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 3 #f
+              - get 7
+              - call 1 #f car
+              - get 3
+              - call 2 #f ||
+              - get 8
+              - call 1 #f cadr
+              - get 3
+              - call 2 #f ||
+              - get 2
+              - call 1 #f cddr
+              - call 2 #f cons
+              - call 2 #f cons
+            - call 1 #f $$close
+            - set 1
+            - get 2
+            - call 1 #f null?
+            - if
+              - get 11
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f cdr
+              - call 1 #f number?
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - constant procedure 1 #f
+                      - get 4
+                      - call 1 #f positive?
+                      - if
+                        - get 4
+                        - get 1
+                        - call 2 #f <=
+                        - if
+                          - get 4
+                          - get 3
+                          - call 2 #f remainder
+                          - constant 0
+                          - call 2 #f eq?
+                          - continue
+                        - constant #f
+                        - continue
+                      - constant #f
+                      - if
+                        - get 4
+                        - get 5
+                        - get 13
+                        - call 3 #f 11
+                        - call 1 #f 18
+                      - get 0
+                      - get 1
+                      - get 13
+                      - call 3 #f 11
+                      - get 11
+                      - call 1 #f cdr
+                      - call 2 #f 15
+                    - call 1 #f $$close
+                    - get 5
+                    - call 1 #f car
+                    - constant 1
+                    - call 2 #f ||
+                    - get 2
+                    - call 2 #f ||
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                  - get 3
+                  - call 1 #f cdr
+                  - call 1 #f 1
+                - call 1 #f $$close
+                - get 10
+                - get 7
+                - call 1 #f car
+                - call 2 #f ||
+                - call 1 #f 1
+              - constant procedure 1 #f
+                - get 11
+                - get 1
+                - call 1 #f car
+                - call 2 #f eq?
+                - if
+                  - get 0
+                  - call 1 #f 14
+                - get 0
+                - get 7
+                - call 1 #f cdr
+                - call 2 #f 11
+              - call 1 #f $$close
+              - get 1
+              - call 1 #f car
+              - get 2
+              - call 1 #f cadr
+              - get 3
+              - call 3 #f 6
+              - call 1 #f 1
+            - call 1 #f $$close
+            - get 3
+            - call 1 #f car
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - constant list
+          - 0
+          - 0
+        - get ||
+        - call 2 #f 2
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - get 3
+    - call 1 #f char->integer
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
 - set char-foldcase
 - constant procedure 1 #f
   - constant procedure 1 #f
