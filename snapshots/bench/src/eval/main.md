@@ -5327,7 +5327,7 @@
   - get 0
 - set char-downcase
 - constant procedure 1 #f
-  - constant procedure 2 #f
+  - constant procedure 1 #f
     - constant procedure 1 #f
       - constant procedure 1 #f
         - get 0
@@ -5342,109 +5342,111 @@
       - get 1
       - call 1 #f cdr
       - call 1 #f 1
-    - set 2
-    - constant procedure 4 #f
-      - get 3
-      - call 1 #f car
-      - get 3
-      - call 2 #f ||
-      - get 4
-      - call 1 #f cadr
-      - get 3
-      - call 2 #f ||
-      - get 2
-      - call 1 #f cddr
-      - call 2 #f cons
-      - call 2 #f cons
     - set 1
     - constant procedure 1 #f
       - constant procedure 1 #f
         - constant procedure 2 #f
-          - get 0
-          - call 1 #f null?
-          - if
-            - get 10
           - constant procedure 1 #f
-            - get 0
-            - call 1 #f cdr
-            - call 1 #f number?
+            - constant procedure 3 #f
+              - get 7
+              - call 1 #f car
+              - get 3
+              - call 2 #f ||
+              - get 8
+              - call 1 #f cadr
+              - get 3
+              - call 2 #f ||
+              - get 2
+              - call 1 #f cddr
+              - call 2 #f cons
+              - call 2 #f cons
+            - call 1 #f $$close
+            - set 1
+            - get 2
+            - call 1 #f null?
             - if
-              - constant procedure 1 #f
+              - get 11
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f cdr
+              - call 1 #f number?
+              - if
                 - constant procedure 1 #f
                   - constant procedure 1 #f
-                    - get 4
-                    - call 1 #f positive?
-                    - if
+                    - constant procedure 1 #f
                       - get 4
-                      - get 1
-                      - call 2 #f <=
+                      - call 1 #f positive?
                       - if
                         - get 4
-                        - get 3
-                        - call 2 #f remainder
-                        - constant 0
-                        - call 2 #f eq?
+                        - get 1
+                        - call 2 #f <=
+                        - if
+                          - get 4
+                          - get 3
+                          - call 2 #f remainder
+                          - constant 0
+                          - call 2 #f eq?
+                          - continue
+                        - constant #f
                         - continue
                       - constant #f
-                      - continue
-                    - constant #f
-                    - if
-                      - get 9
-                      - get 5
-                      - get 6
-                      - get 12
-                      - call 4 #f 19
-                      - call 1 #f 17
-                    - get 9
-                    - get 1
+                      - if
+                        - get 4
+                        - get 5
+                        - get 13
+                        - call 3 #f 11
+                        - call 1 #f 18
+                      - get 0
+                      - get 1
+                      - get 13
+                      - call 3 #f 11
+                      - get 11
+                      - call 1 #f cdr
+                      - call 2 #f 15
+                    - call 1 #f $$close
+                    - get 5
+                    - call 1 #f car
+                    - constant 1
+                    - call 2 #f ||
                     - get 2
-                    - get 12
-                    - call 4 #f 19
-                    - get 9
-                    - call 1 #f cdr
-                    - call 2 #f 13
+                    - call 2 #f ||
+                    - call 1 #f 1
                   - call 1 #f $$close
-                  - get 5
-                  - call 1 #f car
-                  - constant 1
-                  - call 2 #f ||
-                  - get 2
-                  - call 2 #f ||
+                  - get 3
+                  - call 1 #f cdr
                   - call 1 #f 1
                 - call 1 #f $$close
-                - get 3
-                - call 1 #f cdr
+                - get 10
+                - get 7
+                - call 1 #f car
+                - call 2 #f ||
                 - call 1 #f 1
+              - constant procedure 1 #f
+                - get 11
+                - get 1
+                - call 1 #f car
+                - call 2 #f eq?
+                - if
+                  - get 0
+                  - call 1 #f 14
+                - get 0
+                - get 7
+                - call 1 #f cdr
+                - call 2 #f 11
               - call 1 #f $$close
-              - get 8
-              - get 5
-              - call 1 #f car
-              - call 2 #f ||
-              - call 1 #f 1
-            - constant procedure 1 #f
-              - get 9
               - get 1
               - call 1 #f car
-              - call 2 #f eq?
-              - if
-                - get 0
-                - call 1 #f 13
-              - get 0
-              - get 5
-              - call 1 #f cdr
-              - call 2 #f 9
+              - get 2
+              - call 1 #f cadr
+              - get 3
+              - call 3 #f 6
+              - call 1 #f 1
             - call 1 #f $$close
-            - get 4
-            - get 2
-            - call 1 #f car
             - get 3
-            - call 1 #f cadr
-            - get 4
-            - call 4 #f 14
+            - call 1 #f car
             - call 1 #f 1
           - call 1 #f $$close
-          - get 1
-          - call 1 #f car
+          - constant #f
           - call 1 #f 1
         - call 1 #f $$close
         - set 1
@@ -5457,13 +5459,12 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f $$close
-    - get 4
+    - get 3
     - call 1 #f char->integer
     - call 1 #f 1
   - call 1 #f $$close
   - constant #f
-  - constant #f
-  - call 2 #f 2
+  - call 1 #f 1
 - set char-foldcase
 - constant procedure 1 #f
   - constant procedure 1 #f
