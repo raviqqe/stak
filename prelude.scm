@@ -3376,43 +3376,40 @@
         x))
 
     (define (char-foldcase char)
+      (define (build-folded codes)
+        (let ((codes (cdr codes)))
+          (if (null? (cdr codes))
+            (integer->char (car codes))
+            (code-points->string codes))))
+
+      (define (build-codes codes a d tail)
+        (cons
+          (+ (car codes) a)
+          (cons
+            (+ (cadr codes) d)
+            (cddr tail))))
+
       (let ((code (char->integer char)))
         (let loop ((codes '(0 0)) (steps fold-steps))
           (if (null? steps)
             char
-            (let* ((step (car steps))
-                   (codes
-                     (if (and
-                          (number? (cdr step))
-                          (>= (car step) 0))
-                       (let ((count (cdr step)))
-                         (cons
-                           (+ (car codes) count)
-                           (cons
-                             (+ (cadr codes) count)
-                             (cddr codes))))
-                       (cons
-                         (+ (car codes) (car step))
-                         (cons
-                           (+ (cadr codes) (cadr step))
-                           (cddr step))))))
-              (cond
-                ((not (= code (car codes)))
-                  (loop
-                    codes
-                    (if (and
-                         (number? (cdr step))
-                         (> (car step) 0))
-                      (cons
-                        (cons
-                          (- (car step) 1)
-                          (cdr step))
-                        (cdr steps))
+            (let ((step (car steps)))
+              (if (number? (cdr step))
+                (let* ((x (- code (car codes)))
+                       (y (cdr step))
+                       (d (* (+ (car step) 1) y)))
+                  (if (and
+                       (positive? x)
+                       (<= x d)
+                       (zero? (remainder x y)))
+                    (build-folded (build-codes codes x x codes))
+                    (loop
+                      (build-codes codes d d codes)
                       (cdr steps))))
-                ((null? (cddr codes))
-                  (integer->char (cadr codes)))
-                (else
-                  (code-points->string (cdr codes)))))))))
+                (let ((codes (build-codes codes (car step) (cadr step) step)))
+                  (if (= code (car codes))
+                    (build-folded codes)
+                    (loop codes (cdr steps))))))))))
 
     (define (compare-ci convert)
       (lambda (compare)
