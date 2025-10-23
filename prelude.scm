@@ -3322,16 +3322,16 @@
 
     (define (char-foldcase char)
       (let ((code (char->integer char)))
-        (let loop ((codes '(0 0)) (steps fold-steps))
-          (define (build-codes x y)
-            (list
-              (+ (car codes) x)
-              (+ (cadr codes) y)))
+        (let loop ((codes '(0 . 0)) (steps fold-steps))
+          (define (build-codes a d)
+            (cons
+              (+ (car codes) a)
+              (+ (cdr codes) d)))
 
           (let ((x (- code (car codes))))
             (cond
               ((zero? x)
-                (integer->char (cadr codes)))
+                (integer->char (cdr codes)))
               ((or (null? steps) (negative? x))
                 char)
               (else
