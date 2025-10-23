@@ -3331,25 +3331,27 @@
               (+ (car codes) x)
               (+ (cadr codes) y)))
 
-          (if (null? steps)
-            char
-            (let ((step (car steps)))
-              (if (number? (cdr step))
-                (let* ((x (- code (car codes)))
-                       (y (cdr step))
-                       (d (* (+ (car step) 1) y)))
-                  (if (and
-                       (positive? x)
-                       (<= x d)
-                       (zero? (remainder x y)))
-                    (build-folded (build-codes x x))
+          (let ((x (- code (car codes))))
+            (cond
+              ((or (null? steps) (negative? x))
+                char)
+              ((zero? x)
+                (build-folded codes))
+              (else
+                (let ((step (car steps)))
+                  (if (number? (cdr step))
+                    (let* ((y (cdr step))
+                           (next (* (+ (car step) 1) y)))
+                      (if (and
+                           (<= x next)
+                           (zero? (remainder x y)))
+                        (build-folded (build-codes x x))
+                        (loop
+                          (build-codes next next)
+                          (cdr steps))))
                     (loop
-                      (build-codes d d)
-                      (cdr steps))))
-                (let ((codes (build-codes (car step) (cadr step))))
-                  (if (= code (car codes))
-                    (build-folded codes)
-                    (loop codes (cdr steps))))))))))
+                      (build-codes (car step) (cadr step))
+                      (cdr steps))))))))))
 
     (define (compare-ci convert)
       (lambda (compare)
