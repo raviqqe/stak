@@ -4135,30 +4135,14 @@
   - (0 . 2)
   - (5 . 1)
   - list
-    - 1
-    - -139
-    - 115
-  - list
-    - 33
-    - 142
+    - 34
+    - 3
   - (22 . 2)
-  - list
-    - 2
-    - -198
-    - 775
-  - list
-    - 2
-    - 202
+  - (0 . 4)
   - (1 . 2)
   - (0 . 3)
   - (6 . 2)
-  - list
-    - 2
-    - 372
-    - 110
-  - list
-    - 1
-    - -369
+  - (0 . 3)
   - (21 . 2)
   - list
     - 2
@@ -4285,12 +4269,8 @@
   - (0 . 3)
   - (7 . 2)
   - list
-    - 2
-    - -389
-    - 780
-  - list
-    - 1
-    - 393
+    - 3
+    - 4
   - list
     - 1
     - 0
@@ -4366,24 +4346,14 @@
     - 1
   - (0 . 1)
   - list
-    - 1
-    - -21
-    - 776
-    - 769
-  - list
-    - 1
-    - -8
+    - 2
+    - -29
   - (15 . 1)
   - (0 . 2)
   - (7 . 1)
   - list
-    - 5
-    - -6
-    - 776
-    - 769
-  - list
-    - 18
-    - -2
+    - 23
+    - -8
   - list
     - 13
     - 20
@@ -4456,12 +4426,8 @@
     - 50
   - (36 . 1)
   - list
-    - 49
-    - -33
-    - 1410
-  - list
-    - 2841
-    - 10139
+    - 2890
+    - 10106
   - (36 . 1)
   - (0 . 2)
   - (0 . 6)
@@ -4508,35 +4474,14 @@
     - 3330
   - (73 . 2)
   - list
-    - 2
-    - -7725
-    - 817
-  - list
-    - 1
-    - 12
-    - 776
-  - list
-    - 1
-    - 3
-    - 778
-  - list
-    - 1
-    - 2
-    - 778
-  - list
-    - 1
-    - -24
-    - 702
-  - list
-    - 1
-    - 7680
+    - 7
+    - -52
   - list
     - 3
-    - -7662
-    - 115
+    - -7554
   - list
     - 2
-    - 7726
+    - 7618
   - (46 . 2)
   - list
     - 10
@@ -4550,85 +4495,17 @@
   - (6 . 1)
   - (0 . 9)
   - (4 . 1)
-  - list
-    - 3
-    - -7040
-    - 787
-  - list
-    - 2
-    - 0
-    - 787
-    - 768
-  - list
-    - 2
-    - 0
-    - 787
-    - 769
-  - list
-    - 2
-    - 0
-    - 787
-    - 834
-  - list
-    - 3
-    - 7052
+  - (0 . 12)
   - (2 . 2)
   - (0 . 9)
   - (6 . 1)
-  - list
-    - 17
-    - -103
-    - 953
+  - (0 . 25)
   - (6 . 1)
-  - list
-    - 1
-    - -7
-    - 953
+  - (0 . 9)
   - (6 . 1)
-  - list
-    - 1
-    - 25
-    - 953
+  - (0 . 9)
   - (6 . 1)
-  - list
-    - 1
-    - -7
-    - 953
-  - (6 . 1)
-  - list
-    - 1
-    - 57
-    - 953
-  - (6 . 1)
-  - list
-    - 1
-    - -7
-    - 953
-  - (6 . 1)
-  - list
-    - 3
-    - 9
-    - 953
-  - list
-    - 1
-    - -7103
-    - 953
-  - list
-    - 1
-    - -5
-    - 953
-  - list
-    - 2
-    - 5
-    - 834
-  - list
-    - 1
-    - 0
-    - 834
-    - 953
-  - list
-    - 1
-    - 7167
+  - (0 . 9)
   - (0 . 1)
   - list
     - 1
@@ -4636,93 +4513,34 @@
   - (0 . 1)
   - list
     - 1
-    - -7104
-    - 953
+    - 66
   - list
     - 2
-    - 8
+    - -7162
   - list
-    - 4
-    - 7099
-    - 953
-  - list
-    - 1
-    - -7101
-    - 953
-  - list
-    - 1
-    - -9
-    - 953
-  - list
-    - 2
-    - 9
-    - 834
-  - list
-    - 1
-    - 0
-    - 834
-    - 953
-  - list
-    - 1
-    - 7099
+    - 10
+    - 7097
   - (2 . 1)
   - list
     - 1
-    - -7102
-    - 953
+    - 78
   - list
-    - 6
-    - 2
-    - 776
-    - 768
+    - 7
+    - -7219
   - list
-    - 1
-    - 0
-    - 776
-    - 769
-  - list
-    - 3
-    - 0
-    - 834
-  - list
-    - 1
-    - 0
-    - 776
-    - 834
-  - list
-    - 1
-    - 7191
+    - 5
+    - 7232
   - (0 . 1)
   - list
     - 1
     - -91
   - (0 . 1)
   - list
-    - 7
-    - -7090
-    - 776
-    - 768
+    - 8
+    - -7111
   - list
-    - 1
-    - 0
-    - 776
-    - 769
-  - list
-    - 1
-    - -4
-    - 787
-  - list
-    - 2
-    - 4
-    - 834
-  - list
-    - 1
-    - 0
-    - 776
-    - 834
-  - list
-    - 1
-    - 7195
+    - 5
+    - 7216
   - (0 . 1)
   - list
     - 1
@@ -4732,29 +4550,8 @@
     - 1
     - 106
   - list
-    - 6
-    - -105
-    - 953
-  - list
-    - 1
-    - -7091
-    - 953
-  - list
-    - 1
-    - 5
-    - 953
-  - list
-    - 2
-    - -5
-    - 834
-  - list
-    - 1
-    - 0
-    - 834
-    - 953
-  - list
-    - 1
-    - 7087
+    - 12
+    - -109
   - (0 . 1)
   - list
     - 1
@@ -4762,11 +4559,10 @@
   - (0 . 1)
   - list
     - 1
-    - -7092
-    - 953
+    - 118
   - list
     - 298
-    - 0
+    - -7210
   - list
     - 4
     - -862
@@ -4925,58 +4721,11 @@
     - -37974
   - (78 . 1)
   - list
-    - 20289
-    - -5001
-    - 102
+    - 20294
+    - 59159
   - list
-    - 1
-    - 0
-    - 105
-  - list
-    - 1
-    - 0
-    - 108
-  - list
-    - 1
-    - 0
-    - 102
-    - 105
-  - list
-    - 1
-    - 0
-    - 102
-    - 108
-  - list
-    - 1
-    - 13
-    - 116
-  - list
-    - 1
-    - 0
-    - 116
-  - list
-    - 13
-    - 1281
-    - 1398
-  - list
-    - 1
-    - 0
-    - 1381
-  - list
-    - 1
-    - 0
-    - 1387
-  - list
-    - 1
-    - 10
-    - 1398
-  - list
-    - 1
-    - -10
-    - 1389
-  - list
-    - 1034
-    - 63949
+    - 1052
+    - 1083
   - (24 . 1)
   - list
     - 1222
@@ -5075,141 +4824,100 @@
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 0
-        - call 1 #f cdr
-        - call 1 #f null?
-        - if
+      - constant procedure 2 #f
+        - constant procedure 1 #f
           - get 0
-          - call 1 #f car
-          - call 1 #f integer->char
-        - get 0
-        - call 1 #f code-points->string
-      - get 1
-      - call 1 #f cdr
-      - call 1 #f 1
-    - set 1
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 2 #f
+          - constant 0
+          - call 2 #f eq?
+          - if
+            - get 3
+            - call 1 #f cdr
+            - call 1 #f integer->char
           - constant procedure 1 #f
-            - constant procedure 3 #f
-              - get 7
-              - call 1 #f car
-              - get 3
-              - call 2 #f ||
-              - get 8
-              - call 1 #f cadr
-              - get 3
-              - call 2 #f ||
-              - get 2
-              - call 1 #f cddr
-              - call 2 #f cons
-              - call 2 #f cons
-            - call 1 #f $$close
-            - set 1
-            - get 2
-            - call 1 #f null?
+            - get 0
             - if
-              - get 11
-            - constant procedure 1 #f
               - get 0
-              - call 1 #f cdr
+            - get 2
+            - call 1 #f negative?
+          - call 1 #f $$close
+          - get 3
+          - call 1 #f null?
+          - call 1 #f 1
+          - set 1
+          - if
+            - get 9
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - get 9
+                - call 1 #f car
+                - get 1
+                - call 1 #f car
+                - call 2 #f ||
+                - get 10
+                - call 1 #f cdr
+                - get 2
+                - call 1 #f cadr
+                - call 2 #f ||
+                - call 2 #f cons
+                - get 9
+                - call 1 #f cdr
+                - call 2 #f 13
+              - call 1 #f $$close
+              - get 1
               - call 1 #f number?
               - if
                 - constant procedure 1 #f
-                  - constant procedure 1 #f
-                    - constant procedure 1 #f
-                      - get 4
-                      - call 1 #f positive?
-                      - if
-                        - get 4
-                        - get 1
-                        - call 2 #f <=
-                        - if
-                          - get 4
-                          - get 3
-                          - call 2 #f remainder
-                          - constant 0
-                          - call 2 #f eq?
-                          - continue
-                        - constant #f
-                        - continue
-                      - constant #f
-                      - if
-                        - get 4
-                        - get 5
-                        - get 13
-                        - call 3 #f 11
-                        - call 1 #f 18
-                      - get 0
-                      - get 1
-                      - get 13
-                      - call 3 #f 11
-                      - get 11
-                      - call 1 #f cdr
-                      - call 2 #f 15
-                    - call 1 #f $$close
-                    - get 5
-                    - call 1 #f car
-                    - constant 1
-                    - call 2 #f ||
+                  - constant 2
+                  - get 8
+                  - get 5
+                  - call 2 #f remainder
+                  - constant 0
+                  - call 2 #f eq?
+                  - if
+                    - get 8
                     - get 2
-                    - call 2 #f ||
-                    - call 1 #f 1
-                  - call 1 #f $$close
-                  - get 3
-                  - call 1 #f cdr
-                  - call 1 #f 1
+                    - call 2 #f min
+                    - continue
+                  - get 1
+                  - call 2 #f make-list
                 - call 1 #f $$close
-                - get 10
-                - get 7
+                - get 4
                 - call 1 #f car
+                - constant 1
+                - call 2 #f ||
+                - get 3
                 - call 2 #f ||
                 - call 1 #f 1
-              - constant procedure 1 #f
-                - get 11
-                - get 1
-                - call 1 #f car
-                - call 2 #f eq?
-                - if
-                  - get 0
-                  - call 1 #f 14
-                - get 0
-                - get 7
-                - call 1 #f cdr
-                - call 2 #f 11
-              - call 1 #f $$close
-              - get 1
-              - call 1 #f car
-              - get 2
-              - call 1 #f cadr
+                - set 1
+                - continue
               - get 3
-              - call 3 #f 6
               - call 1 #f 1
             - call 1 #f $$close
-            - get 3
-            - call 1 #f car
+            - get 1
+            - call 1 #f cdr
             - call 1 #f 1
           - call 1 #f $$close
-          - constant #f
+          - get 3
+          - call 1 #f car
           - call 1 #f 1
         - call 1 #f $$close
-        - set 1
-        - constant list
-          - 0
-          - 0
-        - get ||
-        - call 2 #f 2
+        - get 6
+        - get 3
+        - call 1 #f car
+        - call 2 #f ||
+        - call 1 #f 1
       - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
+      - set 1
+      - constant (0 . 0)
+      - get ||
+      - call 2 #f 2
     - call 1 #f $$close
-    - get 3
-    - call 1 #f char->integer
+    - constant #f
     - call 1 #f 1
   - call 1 #f $$close
-  - constant #f
+  - get 1
+  - call 1 #f char->integer
   - call 1 #f 1
 - set char-foldcase
 - constant procedure 1 #f

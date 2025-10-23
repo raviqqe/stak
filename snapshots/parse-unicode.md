@@ -2958,7 +2958,7 @@
     - call 1 #f ||
     - constant list
       - "C"
-      - "F"
+      - "S"
     - call 2 #f ||
   - get 2
   - call 2 #f ||
@@ -2979,18 +2979,9 @@
           - call 1 #f ||
           - call 2 #f ||
           - if
-            - get 5
-            - call 1 #f ||
-            - get 3
-            - call 1 #f ||
-            - call 2 #f ||
-            - continue
-          - constant #f
-          - if
             - get 0
             - call 1 #f ||
           - get 0
-        - call 1 #f ||
         - get 1
         - call 1 #f ||
         - get 5
@@ -2999,9 +2990,6 @@
         - get 2
         - call 1 #f ||
         - get 6
-        - call 1 #f ||
-        - call 2 #f ||
-        - get 3
         - call 1 #f ||
         - call 2 #f ||
         - call 2 #f ||

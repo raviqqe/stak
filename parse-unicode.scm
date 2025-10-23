@@ -64,7 +64,7 @@
       (cons (car record) (cddr record)))
     (filter
       (lambda (record)
-        (member (cadr record) '("C" "F")))
+        (member (cadr record) '("C" "S")))
       records)))
 
 (define (differentiate-records records)
@@ -74,14 +74,10 @@
       (let ((current (car records)))
         (cons
           (let ((step
-                  (cons
+                  (list
                     (- (car current) (car previous))
-                    (cons
-                      (- (cadr current) (cadr previous))
-                      (cddr current)))))
-            (if (and
-                 (= (car step) (cadr step))
-                 (equal? (cddr previous) (cddr current)))
+                    (- (cadr current) (cadr previous)))))
+            (if (= (car step) (cadr step))
               (car step)
               step))
           (loop current (cdr records)))))))

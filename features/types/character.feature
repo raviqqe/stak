@@ -151,6 +151,7 @@ Feature: Character
       | #\\À   | #\\à   |
       | #\\Ý   | #\\ý   |
       | #\\Α   | #\\α   |
+      | #\\ß   | #\\ß   |
       | #\\Ꟶ   | #\\ꟶ   |
 
     @guile @stak
@@ -158,11 +159,6 @@ Feature: Character
       | input   | output  |
       | #\\𞤀    | #\\𞤢    |
       | #\\𞤡    | #\\𞥃    |
-
-    @stak
-    Examples:
-      | input | output |
-      | #\\ß  | "ss"   |
 
   Scenario Outline: Extract a digit value
     Given a file named "main.scm" with:
