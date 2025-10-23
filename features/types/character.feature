@@ -125,10 +125,44 @@ Feature: Character
       | predicate     | input | output |
       | char-downcase | #\\A  | #\\a   |
       | char-downcase | #\\a  | #\\a   |
-      | char-foldcase | #\\A  | #\\a   |
-      | char-foldcase | #\\a  | #\\a   |
       | char-upcase   | #\\a  | #\\A   |
       | char-upcase   | #\\A  | #\\A   |
+
+  Scenario Outline: Fold a character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (equal? (char-foldcase <input>) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input  | output |
+      | #\\@   | #\\@   |
+      | #\\A   | #\\a   |
+      | #\\Z   | #\\z   |
+      | #\\[   | #\\[   |
+      | #\\`   | #\\`   |
+      | #\\a   | #\\a   |
+      | #\\z   | #\\z   |
+      | #\\{   | #\\{   |
+      | #\\À   | #\\à   |
+      | #\\Ý   | #\\ý   |
+      | #\\Α   | #\\α   |
+      | #\\Ꟶ   | #\\ꟶ   |
+
+    @guile @stak
+    Examples:
+      | input   | output  |
+      | #\\𞤀    | #\\𞤢    |
+      | #\\𞤡    | #\\𞥃    |
+
+    @stak
+    Examples:
+      | input | output |
+      | #\\ß  | "ss"   |
 
   Scenario Outline: Extract a digit value
     Given a file named "main.scm" with:

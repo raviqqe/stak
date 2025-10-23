@@ -58,65 +58,53 @@
 (define (list->pair record)
   (cons (car record) (cadr record)))
 
-(define (group-records records)
-  (let ((records
-          (map
-            (lambda (record)
-              (cons (car record) (cddr record)))
-            (filter
-              (lambda (record)
-                (member (cadr record) '("C" "F")))
-              records))))
-    (reverse
-      (map
-        (lambda (group)
-          (let ((step (car group)))
-            (if (not step)
-              (list->pair (cadr group))
-              (let* ((records (cdr group))
-                     (start (list->pair (last records)))
-                     (end (list->pair (car records))))
-                (append
-                  (list
-                    'step
-                    step
-                    (+ (/ (- (car end) (car start)) step) 1)
-                    start)
-                  (cddar records))))))
-        (let loop ((records records) (groups '()))
-          (if (null? records)
-            groups
-            (let ((record (car records)))
-              (loop
-                (cdr records)
-                (if (and
-                     (pair? groups)
-                     (number? (cadr record))
-                     (number? (car (cdadar groups))))
-                  (let* ((group (car groups))
-                         (step (car group))
-                         (step? (lambda (count)
-                                 (and
-                                   (or (not step) (= step count))
-                                   (= (car record) (+ (caadr group) count))
-                                   (= (cadr record) (+ (cadadr group) count))
-                                   (equal? (cddr record) (cddadr group))))))
-                    (cond
-                      ((step? 1)
-                        (cons
-                          (cons 1 (cons record (cdr group)))
-                          (cdr groups)))
-                      ((step? 2)
-                        (cons
-                          (cons 2 (cons record (cdr group)))
-                          (cdr groups)))
-                      (else
-                        (cons (list #f record) groups))))
+(define (filter-records records)
+  (map
+    (lambda (record)
+      (cons (car record) (cddr record)))
+    (filter
+      (lambda (record)
+        (member (cadr record) '("C" "F")))
+      records)))
+
+(define (differentiate-records records)
+  (let loop ((previous '(0 0)) (records records))
+    (if (null? records)
+      '()
+      (let ((current (car records)))
+        (cons
+          (let ((step
                   (cons
-                    (list #f record)
-                    groups))))))))))
+                    (- (car current) (car previous))
+                    (cons
+                      (- (cadr current) (cadr previous))
+                      (cddr current)))))
+            (if (and
+                 (= (car step) (cadr step))
+                 (equal? (cddr previous) (cddr current)))
+              (car step)
+              step))
+          (loop current (cdr records)))))))
+
+(define (group-records records)
+  (let loop ((count 0) (records records))
+    (if (null? records)
+      '()
+      (let ((record (car records))
+            (records (cdr records)))
+        (if (and
+             (number? record)
+             (eq? record (car records)))
+          (loop (+ count 1) records)
+          (cons
+            (if (pair? record)
+              record
+              (cons count record))
+            (loop 0 records)))))))
 
 (write
   (group-records
-    (parse-records
-      (read-records))))
+    (differentiate-records
+      (filter-records
+        (parse-records
+          (read-records))))))
