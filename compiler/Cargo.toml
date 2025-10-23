@@ -19,7 +19,7 @@ stak-time = { path = "../time", version = "0.11.6" }
 stak-vm = { path = "../vm", version = "0.11.6" }
 
 [dev-dependencies]
-indoc = "2.0.6"
+indoc = "2.0.7"
 
 [features]
 async = [
