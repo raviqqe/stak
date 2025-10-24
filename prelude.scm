@@ -2976,11 +2976,16 @@
     string-upcase
     digit-value
 
+    fold-table
     special-chars)
 
-  (import (stak base))
+  (import (scheme base) (stak base))
 
   (begin
+    (define fold-table
+      '((65 97)
+        (24 . 1)))
+
     (define special-chars
       '(("alarm" . #\alarm)
         ("backspace" . #\backspace)
@@ -2991,10 +2996,6 @@
         ("return" . #\return)
         ("space" . #\space)
         ("tab" . #\tab)))
-
-    (define fold-table
-      '((65 97)
-        (24 . 1)))
 
     (define (char-alphabetic? x)
       (or (char-lower-case? x) (char-upper-case? x)))
