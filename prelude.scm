@@ -2951,7 +2951,7 @@
                                       (clause . rest))))))
                 (clause (parameters outer-body ...) ...)))))))))
 
-(define-library (scheme char)
+(define-library (stak char)
   (export
     char-ci<=?
     char-ci<?
@@ -2976,12 +2976,16 @@
     string-upcase
     digit-value
 
+    fold-table
     special-chars)
 
-  (import (scheme base) (stak base))
+  (import (stak base))
 
-  ; TODO Support Unicode.
   (begin
+    (define fold-table
+      '((65 97)
+        (24 . 1)))
+
     (define special-chars
       '(("alarm" . #\alarm)
         ("backspace" . #\backspace)
@@ -2993,7 +2997,99 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define fold-steps
+    (define (char-alphabetic? x)
+      (or (char-lower-case? x) (char-upper-case? x)))
+
+    (define (char-numeric? x)
+      (char<=? #\0 x #\9))
+
+    ; TODO Support Unicode.
+    (define (char-whitespace? x)
+      (memv x '(#\newline #\return #\space #\tab)))
+
+    (define (char-lower-case? x)
+      (char<=? #\a x #\z))
+
+    (define (char-upper-case? x)
+      (char<=? #\A x #\Z))
+
+    ; TODO Support Unicode.
+    (define (char-upcase x)
+      (if (char-lower-case? x)
+        (integer->char (- (char->integer x) 32))
+        x))
+
+    ; TODO Support Unicode.
+    (define (char-downcase x)
+      (if (char-upper-case? x)
+        (integer->char (+ (char->integer x) 32))
+        x))
+
+    (define (char-foldcase char)
+      (let ((code (char->integer char)))
+        (let loop ((codes '(0 . 0)) (rows fold-table))
+          (let ((x (- code (car codes))))
+            (cond
+              ((zero? x)
+                (integer->char (cdr codes)))
+              ((or (null? rows) (negative? x))
+                char)
+              (else
+                (let* ((row (car rows))
+                       (d (cdr row))
+                       (row
+                         (if (number? d)
+                           (let ((y (* (+ (car row) 1) d)))
+                             (make-list
+                               2
+                               (if (zero? (remainder x d))
+                                 (min x y)
+                                 y)))
+                           row)))
+                  (loop
+                    (cons
+                      (+ (car codes) (car row))
+                      (+ (cdr codes) (cadr row)))
+                    (cdr rows)))))))))
+
+    (define (compare-ci convert)
+      (lambda (compare)
+        (comparison-operator
+          (lambda (x y)
+            (compare (convert x) (convert y))))))
+
+    (define char-ci-compare (compare-ci char-downcase))
+
+    (define char-ci<=? (char-ci-compare char<=?))
+    (define char-ci<? (char-ci-compare char<?))
+    (define char-ci=? (char-ci-compare char=?))
+    (define char-ci>=? (char-ci-compare char>=?))
+    (define char-ci>? (char-ci-compare char>?))
+
+    (define (string-case f)
+      (lambda (xs)
+        (list->string (map f (string->list xs)))))
+
+    (define string-downcase (string-case char-downcase))
+    (define string-foldcase (string-case char-foldcase))
+    (define string-upcase (string-case char-upcase))
+
+    (define string-ci-compare (compare-ci string-downcase))
+
+    (define string-ci<=? (string-ci-compare string<=?))
+    (define string-ci<? (string-ci-compare string<?))
+    (define string-ci=? (string-ci-compare string=?))
+    (define string-ci>=? (string-ci-compare string>=?))
+    (define string-ci>? (string-ci-compare string>?))
+
+    (define (digit-value x)
+      (- (char->integer x) (char->integer #\0)))))
+
+(define-library (stak char unicode)
+  (import (stak base) (stak char))
+
+  (begin
+    (set! fold-table
       '((65 97)
         (24 . 1)
         (91 834)
@@ -3293,99 +3389,41 @@
         (0 . 21889)
         (30 . 1)
         (31393 31395)
-        (32 . 1)))
+        (32 . 1)))))
 
-    (define (char-alphabetic? x)
-      (or (char-lower-case? x) (char-upper-case? x)))
+(define-library (scheme char)
+  (export
+    char-ci<=?
+    char-ci<?
+    char-ci=?
+    char-ci>=?
+    char-ci>?
+    char-alphabetic?
+    char-numeric?
+    char-whitespace?
+    char-lower-case?
+    char-upper-case?
+    char-downcase
+    char-foldcase
+    char-upcase
+    string-ci<=?
+    string-ci<?
+    string-ci=?
+    string-ci>=?
+    string-ci>?
+    string-downcase
+    string-foldcase
+    string-upcase
+    digit-value)
 
-    (define (char-numeric? x)
-      (char<=? #\0 x #\9))
-
-    (define (char-whitespace? x)
-      (memv x '(#\newline #\return #\space #\tab)))
-
-    (define (char-lower-case? x)
-      (char<=? #\a x #\z))
-
-    (define (char-upper-case? x)
-      (char<=? #\A x #\Z))
-
-    (define (char-upcase x)
-      (if (char-lower-case? x)
-        (integer->char (- (char->integer x) 32))
-        x))
-
-    (define (char-downcase x)
-      (if (char-upper-case? x)
-        (integer->char (+ (char->integer x) 32))
-        x))
-
-    (define (char-foldcase char)
-      (let ((code (char->integer char)))
-        (let loop ((codes '(0 . 0)) (steps fold-steps))
-          (let ((x (- code (car codes))))
-            (cond
-              ((zero? x)
-                (integer->char (cdr codes)))
-              ((or (null? steps) (negative? x))
-                char)
-              (else
-                (let* ((step (car steps))
-                       (d (cdr step))
-                       (step
-                         (if (number? d)
-                           (let ((y (* (+ (car step) 1) d)))
-                             (make-list
-                               2
-                               (if (zero? (remainder x d))
-                                 (min x y)
-                                 y)))
-                           step)))
-                  (loop
-                    (cons
-                      (+ (car codes) (car step))
-                      (+ (cdr codes) (cadr step)))
-                    (cdr steps)))))))))
-
-    (define (compare-ci convert)
-      (lambda (compare)
-        (comparison-operator
-          (lambda (x y)
-            (compare (convert x) (convert y))))))
-
-    (define char-ci-compare (compare-ci char-downcase))
-
-    (define char-ci<=? (char-ci-compare char<=?))
-    (define char-ci<? (char-ci-compare char<?))
-    (define char-ci=? (char-ci-compare char=?))
-    (define char-ci>=? (char-ci-compare char>=?))
-    (define char-ci>? (char-ci-compare char>?))
-
-    (define (string-case f)
-      (lambda (xs)
-        (list->string (map f (string->list xs)))))
-
-    (define string-downcase (string-case char-downcase))
-    (define string-foldcase (string-case char-foldcase))
-    (define string-upcase (string-case char-upcase))
-
-    (define string-ci-compare (compare-ci string-downcase))
-
-    (define string-ci<=? (string-ci-compare string<=?))
-    (define string-ci<? (string-ci-compare string<?))
-    (define string-ci=? (string-ci-compare string=?))
-    (define string-ci>=? (string-ci-compare string>=?))
-    (define string-ci>? (string-ci-compare string>?))
-
-    (define (digit-value x)
-      (- (char->integer x) (char->integer #\0)))))
+  (import (stak char) (stak char unicode)))
 
 (define-library (scheme read)
   (export read)
 
   (import
     (scheme base)
-    (scheme char)
+    (only (stak char) char-whitespace? special-chars)
     (only (stak base) boolean-or))
 
   (begin
@@ -3580,7 +3618,10 @@
     write-shared
     write-simple)
 
-  (import (scheme base) (scheme char) (srfi 1))
+  (import
+    (scheme base)
+    (only (stak char) special-chars)
+    (srfi 1))
 
   (begin
     (define (get-output-port rest)

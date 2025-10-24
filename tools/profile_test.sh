@@ -4,8 +4,8 @@ set -ex
 
 cd $(dirname $0)/..
 
-export PATH=$PWD/target/release:$PATH
 cargo build --release
+export PATH=$PWD/target/release:$PATH
 
 mkdir -p tmp
 cat <<EOF >tmp/main.scm
