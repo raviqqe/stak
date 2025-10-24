@@ -2951,7 +2951,7 @@
                                       (clause . rest))))))
                 (clause (parameters outer-body ...) ...)))))))))
 
-(define-library (scheme char)
+(define-library (stak char)
   (export
     char-ci<=?
     char-ci<?
@@ -2980,7 +2980,6 @@
 
   (import (scheme base) (stak base))
 
-  ; TODO Support Unicode.
   (begin
     (define special-chars
       '(("alarm" . #\alarm)
@@ -2993,7 +2992,7 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define fold-steps
+    (define fold-table
       '((65 97)
         (24 . 1)
         (91 834)
@@ -3310,11 +3309,13 @@
     (define (char-upper-case? x)
       (char<=? #\A x #\Z))
 
+    ; TODO Support Unicode.
     (define (char-upcase x)
       (if (char-lower-case? x)
         (integer->char (- (char->integer x) 32))
         x))
 
+    ; TODO Support Unicode.
     (define (char-downcase x)
       (if (char-upper-case? x)
         (integer->char (+ (char->integer x) 32))
@@ -3322,30 +3323,30 @@
 
     (define (char-foldcase char)
       (let ((code (char->integer char)))
-        (let loop ((codes '(0 . 0)) (steps fold-steps))
+        (let loop ((codes '(0 . 0)) (rows fold-table))
           (let ((x (- code (car codes))))
             (cond
               ((zero? x)
                 (integer->char (cdr codes)))
-              ((or (null? steps) (negative? x))
+              ((or (null? rows) (negative? x))
                 char)
               (else
-                (let* ((step (car steps))
-                       (d (cdr step))
-                       (step
+                (let* ((row (car rows))
+                       (d (cdr row))
+                       (row
                          (if (number? d)
-                           (let ((y (* (+ (car step) 1) d)))
+                           (let ((y (* (+ (car row) 1) d)))
                              (make-list
                                2
                                (if (zero? (remainder x d))
                                  (min x y)
                                  y)))
-                           step)))
+                           row)))
                   (loop
                     (cons
-                      (+ (car codes) (car step))
-                      (+ (cdr codes) (cadr step)))
-                    (cdr steps)))))))))
+                      (+ (car codes) (car row))
+                      (+ (cdr codes) (cadr row)))
+                    (cdr rows)))))))))
 
     (define (compare-ci convert)
       (lambda (compare)
@@ -3379,6 +3380,35 @@
 
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))
+
+(define-library (scheme char)
+  (export
+    char-ci<=?
+    char-ci<?
+    char-ci=?
+    char-ci>=?
+    char-ci>?
+    char-alphabetic?
+    char-numeric?
+    char-whitespace?
+    char-lower-case?
+    char-upper-case?
+    char-downcase
+    char-foldcase
+    char-upcase
+    string-ci<=?
+    string-ci<?
+    string-ci=?
+    string-ci>=?
+    string-ci>?
+    string-downcase
+    string-foldcase
+    string-upcase
+    digit-value
+
+    special-chars)
+
+  (import (stak char)))
 
 (define-library (scheme read)
   (export read)
