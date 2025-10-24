@@ -2978,7 +2978,7 @@
 
     special-chars)
 
-  (import (scheme base) (stak base))
+  (import (stak base))
 
   (begin
     (define special-chars
