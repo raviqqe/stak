@@ -2979,7 +2979,7 @@
     fold-table
     special-chars)
 
-  (import (scheme base) (stak base))
+  (import (stak base))
 
   (begin
     (define fold-table
@@ -3085,7 +3085,7 @@
       (- (char->integer x) (char->integer #\0)))))
 
 (define-library (stak char unicode)
-  (import (scheme base) (stak base) (stak char))
+  (import (stak base) (stak char))
 
   (begin
     (set! fold-table
