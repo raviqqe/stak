@@ -3382,7 +3382,7 @@
       (- (char->integer x) (char->integer #\0)))))
 
 (define-library (stak unicode)
-  (import (stak char))
+  (import (stak base) (stak char))
 
   (begin
     (set! fold-table
