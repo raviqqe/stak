@@ -3084,7 +3084,7 @@
     (define (digit-value x)
       (- (char->integer x) (char->integer #\0)))))
 
-(define-library (stak unicode)
+(define-library (stak char unicode)
   (import (stak base) (stak char))
 
   (begin
@@ -3415,7 +3415,7 @@
     string-upcase
     digit-value)
 
-  (import (stak char) (stak unicode)))
+  (import (stak char) (stak char unicode)))
 
 (define-library (scheme read)
   (export read)
