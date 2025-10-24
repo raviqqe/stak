@@ -3003,6 +3003,7 @@
     (define (char-numeric? x)
       (char<=? #\0 x #\9))
 
+    ; TODO Support Unicode.
     (define (char-whitespace? x)
       (memv x '(#\newline #\return #\space #\tab)))
 
