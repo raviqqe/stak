@@ -3085,7 +3085,7 @@
       (- (char->integer x) (char->integer #\0)))))
 
 (define-library (stak char unicode)
-  (import (stak base) (stak char))
+  (import (scheme base) (stak base) (stak char))
 
   (begin
     (set! fold-table
@@ -3422,7 +3422,7 @@
 
   (import
     (scheme base)
-    (scheme char)
+    (stak char)
     (only (stak base) boolean-or))
 
   (begin
@@ -3617,7 +3617,7 @@
     write-shared
     write-simple)
 
-  (import (scheme base) (scheme char) (srfi 1))
+  (import (scheme base) (stak char) (srfi 1))
 
   (begin
     (define (get-output-port rest)
