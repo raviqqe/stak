@@ -3422,7 +3422,7 @@
 
   (import
     (scheme base)
-    (stak char)
+    (only (stak char) special-chars)
     (only (stak base) boolean-or))
 
   (begin
@@ -3617,7 +3617,10 @@
     write-shared
     write-simple)
 
-  (import (scheme base) (stak char) (srfi 1))
+  (import
+    (scheme base)
+    (only (stak char) special-chars)
+    (srfi 1))
 
   (begin
     (define (get-output-port rest)
