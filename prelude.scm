@@ -3422,7 +3422,7 @@
 
   (import
     (scheme base)
-    (only (stak char) special-chars)
+    (only (stak char) char-whitespace? special-chars)
     (only (stak base) boolean-or))
 
   (begin
