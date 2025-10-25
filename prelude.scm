@@ -3014,7 +3014,7 @@
     fold-table
     special-chars)
 
-  (import (stak base) (scheme lazy))
+  (import (stak base))
 
   (begin
     (define case-table
@@ -3050,14 +3050,17 @@
     (define (char-upper-case? x)
       (not (eqv? x (char-downcase x))))
 
-    (define (char-case table)
+    (define (char-case table reversed)
+      (define from (if reversed cdr car))
+      (define to (if reversed car cdr))
+
       (lambda (char)
         (let ((code (char->integer char)))
-          (let loop ((codes '(0 . 0)) (rows (force table)))
-            (let ((x (- code (car codes))))
+          (let loop ((codes '(0 . 0)) (rows (table)))
+            (let ((x (- code (from codes))))
               (cond
                 ((zero? x)
-                  (integer->char (cdr codes)))
+                  (integer->char (to codes)))
                 ((or (null? rows) (negative? x))
                   char)
                 (else
@@ -3078,17 +3081,9 @@
                         (+ (cdr codes) (cadr row)))
                       (cdr rows))))))))))
 
-    (define char-downcase (char-case (delay case-table)))
-    (define char-upcase
-      (char-case
-        (delay
-          (map
-            (lambda (row)
-              (if (number? (cdr row))
-                row
-                (reverse row)))
-            case-table))))
-    (define char-foldcase (char-case (delay fold-table)))
+    (define char-downcase (char-case (lambda () case-table) #f))
+    (define char-upcase (char-case (lambda () case-table) #t))
+    (define char-foldcase (char-case (lambda () fold-table) #f))
 
     (define (compare-ci convert)
       (lambda (compare)
