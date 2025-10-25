@@ -3045,10 +3045,10 @@
       (memv x '(#\newline #\return #\space #\tab)))
 
     (define (char-lower-case? x)
-      (char<=? #\a x #\z))
+      (not (eqv? x (char-upcase x))))
 
     (define (char-upper-case? x)
-      (char<=? #\A x #\Z))
+      (not (eqv? x (char-downcase x))))
 
     (define (char-case table)
       (lambda (char)
