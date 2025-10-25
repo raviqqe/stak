@@ -44,7 +44,7 @@
         (cons
           (parameterize ((current-input-port (open-input-string line)))
             (filter (parse-tokens)))
-          (read-records))))))
+          (read-records filter))))))
 
 (define (parse-character-code code)
   (string->number code 16))
