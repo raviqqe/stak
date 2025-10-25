@@ -3072,11 +3072,11 @@
                 (if (number? d)
                   (loop
                     (advance d d)
-                    (if (zero? a)
-                      (cdr rows)
-                      (cons
-                        (cons (- a 1) d)
-                        (cdr rows))))
+                    (append
+                      (if (zero? a)
+                        '()
+                        (list (cons (- a 1) d)))
+                      (cdr rows)))
                   (loop
                     (advance a (car d))
                     (cdr rows)))))))))
