@@ -3078,7 +3078,15 @@
                         (+ (cdr codes) (cadr row)))
                       (cdr rows))))))))))
 
-    (define char-upcase (char-case (delay case-table)))
+    (define char-upcase
+      (char-case
+        (delay
+          (map
+            (lambda (row)
+              (if (number? (cdr row))
+                row
+                (reverse row)))
+            case-table))))
     (define char-downcase (char-case (delay case-table)))
     (define char-foldcase (char-case (delay fold-table)))
 
