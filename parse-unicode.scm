@@ -4,6 +4,7 @@
   (scheme cxr)
   (scheme read)
   (scheme write)
+  (scheme process-context)
   (srfi 1))
 
 (define (parse-token)
@@ -58,7 +59,7 @@
 (define (list->pair record)
   (cons (car record) (cadr record)))
 
-(define (filter-records records)
+(define (filter-fold-records records)
   (map
     (lambda (record)
       (cons (car record) (cddr record)))
@@ -101,6 +102,12 @@
 (write
   (group-records
     (differentiate-records
-      (filter-records
-        (parse-records
-          (read-records))))))
+      (cond (caddr (command-line))
+        (("fold")
+          (filter-fold-records
+            (parse-fold-records
+              (read-fold-records))))
+        (("fold")
+          (filter-fold-records
+            (parse-fold-records
+              (read-fold-records))))))))
