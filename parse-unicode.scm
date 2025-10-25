@@ -38,7 +38,7 @@
       ((eof-object? line)
         '())
       ((or (equal? line "") (eqv? (string-ref line 0) #\#))
-        (loop))
+        (read-records filter))
       (else
         (cons
           (parameterize ((current-input-port (open-input-string line)))
