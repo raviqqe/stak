@@ -28,7 +28,7 @@
       (let ((token (parse-token)))
         (cons token (loop))))))
 
-(define (read-records)
+(define (read-fold-records)
   (map
     (lambda (line)
       (parameterize ((current-input-port (open-input-string line)))
@@ -46,7 +46,7 @@
 (define (parse-character-code code)
   (string->number code 16))
 
-(define (parse-records records)
+(define (parse-fold-records records)
   (map
     (lambda (record)
       (cons
