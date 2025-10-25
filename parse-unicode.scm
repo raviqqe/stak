@@ -44,10 +44,14 @@
       ((or (equal? line "") (eqv? (string-ref line 0) #\#))
         (read-records filter))
       (else
-        (cons
-          (parameterize ((current-input-port (open-input-string line)))
-            (filter (parse-tokens)))
-          (read-records filter))))))
+        (let ((record
+                (parameterize ((current-input-port (open-input-string line)))
+                  (filter (parse-tokens)))))
+          (if record
+            (cons
+              record
+              (read-records filter))
+            (read-records filter)))))))
 
 (define (parse-character-code code)
   (string->number code 16))
@@ -121,7 +125,9 @@
           (parse-case-records
             (read-records
               (lambda (record)
-                (list (first record) (last record))))))
+                (and
+                  (not (equal? (last record) ""))
+                  (list (first record) (last record)))))))
         ((equal? type "fold")
           (filter-fold-records
             (parse-fold-records
