@@ -18,15 +18,14 @@
         '()))))
 
 (define (parse-tokens)
-  (let loop ()
-    (do ((character (peek-char) (peek-char)))
-      ((not (memv character '(#\; #\space))))
-      (read-char))
+  (do ((character (peek-char) (peek-char)))
+    ((not (memv character '(#\; #\space))))
+    (read-char))
 
-    (if (eqv? (peek-char) #\#)
-      '()
-      (let ((token (parse-token)))
-        (cons token (loop))))))
+  (if (eqv? (peek-char) #\#)
+    '()
+    (let ((token (parse-token)))
+      (cons token (parse-tokens)))))
 
 (define (read-records . rest)
   (define filter
