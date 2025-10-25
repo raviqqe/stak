@@ -23,10 +23,12 @@ done
 stak parse-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
 stak parse-unicode.scm case <tmp/UnicodeData.txt >tmp/case.scm
 
-cat >tmp/main.scm <<EOF
+for type in fold case; do
+  cat >tmp/main.scm <<EOF
 (import (stak char) (scheme write))
 
-(write fold-table)
+(write $type-table)
 EOF
 
-[ "$(stak tools/unicode/main.scm)" = "$(cat tmp/fold.scm)" ]
+  [ "$(stak tmp/main.scm)" = "$(cat tmp/$type.scm)" ]
+done
