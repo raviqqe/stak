@@ -114,6 +114,4 @@
             (parse-fold-records
               (read-fold-records))))
         (else
-          (filter-fold-records
-            (parse-fold-records
-              (read-fold-records))))))))
+          (error "unknown unicode data type"))))))
