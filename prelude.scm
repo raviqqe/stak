@@ -3016,44 +3016,37 @@
     (define (char-upper-case? x)
       (char<=? #\A x #\Z))
 
-    ; TODO Support Unicode.
-    (define (char-upcase x)
-      (if (char-lower-case? x)
-        (integer->char (- (char->integer x) 32))
-        x))
+    (define (char-case table)
+      (lambda (char)
+        (let ((code (char->integer char)))
+          (let loop ((codes '(0 . 0)) (rows table))
+            (let ((x (- code (car codes))))
+              (cond
+                ((zero? x)
+                  (integer->char (cdr codes)))
+                ((or (null? rows) (negative? x))
+                  char)
+                (else
+                  (let* ((row (car rows))
+                         (d (cdr row))
+                         (row
+                           (if (number? d)
+                             (let ((y (* (+ (car row) 1) d)))
+                               (make-list
+                                 2
+                                 (if (zero? (remainder x d))
+                                   (min x y)
+                                   y)))
+                             row)))
+                    (loop
+                      (cons
+                        (+ (car codes) (car row))
+                        (+ (cdr codes) (cadr row)))
+                      (cdr rows))))))))))
 
-    ; TODO Support Unicode.
-    (define (char-downcase x)
-      (if (char-upper-case? x)
-        (integer->char (+ (char->integer x) 32))
-        x))
-
-    (define (char-foldcase char)
-      (let ((code (char->integer char)))
-        (let loop ((codes '(0 . 0)) (rows fold-table))
-          (let ((x (- code (car codes))))
-            (cond
-              ((zero? x)
-                (integer->char (cdr codes)))
-              ((or (null? rows) (negative? x))
-                char)
-              (else
-                (let* ((row (car rows))
-                       (d (cdr row))
-                       (row
-                         (if (number? d)
-                           (let ((y (* (+ (car row) 1) d)))
-                             (make-list
-                               2
-                               (if (zero? (remainder x d))
-                                 (min x y)
-                                 y)))
-                           row)))
-                  (loop
-                    (cons
-                      (+ (car codes) (car row))
-                      (+ (cdr codes) (cadr row)))
-                    (cdr rows)))))))))
+    (define char-upcase (char-case case-table))
+    (define char-downcase (char-case case-table))
+    (define char-foldcase (char-case fold-table))
 
     (define (compare-ci convert)
       (lambda (compare)
