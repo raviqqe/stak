@@ -4,48 +4,65 @@
   (scheme cxr)
   (scheme read)
   (scheme write)
+  (scheme process-context)
   (srfi 1))
 
 (define (parse-token)
   (list->string
     (let loop ()
       (if (or
-           (char-alphabetic? (peek-char))
-           (char-numeric? (peek-char)))
+           (eof-object? (peek-char))
+           (eqv? (peek-char) #\;))
+        '()
         (let ((character (read-char)))
-          (cons character (loop)))
-        '()))))
+          (cons character (loop)))))))
 
 (define (parse-tokens)
-  (let loop ()
-    (do ((character (peek-char) (peek-char)))
-      ((not (memv character '(#\; #\space))))
-      (read-char))
+  (do ((character (peek-char) (peek-char)))
+    ((not (eqv? character #\space)))
+    (read-char))
 
-    (if (eqv? (peek-char) #\#)
-      '()
-      (let ((token (parse-token)))
-        (cons token (loop))))))
+  (let ((token (parse-token)))
+    (cons token
+      (if (let ((character (read-char)))
+           (or
+             (eof-object? character)
+             (eqv? character #\#)))
+        '()
+        (parse-tokens)))))
 
-(define (read-records)
-  (map
-    (lambda (line)
-      (parameterize ((current-input-port (open-input-string line)))
-        (parse-tokens)))
-    (let loop ()
-      (let ((line (read-line)))
-        (cond
-          ((eof-object? line)
-            '())
-          ((or (equal? line "") (eqv? (string-ref line 0) #\#))
-            (loop))
-          (else
-            (cons line (loop))))))))
+(define (read-records . rest)
+  (define filter
+    (if (null? rest)
+      (lambda (x) x)
+      (car rest)))
+
+  (let ((line (read-line)))
+    (cond
+      ((eof-object? line)
+        '())
+      ((or (equal? line "") (eqv? (string-ref line 0) #\#))
+        (read-records filter))
+      (else
+        (let ((record
+                (parameterize ((current-input-port (open-input-string line)))
+                  (filter (parse-tokens)))))
+          (if record
+            (cons
+              record
+              (read-records filter))
+            (read-records filter)))))))
 
 (define (parse-character-code code)
   (string->number code 16))
 
-(define (parse-records records)
+(define (parse-case-records records)
+  (map
+    (lambda (record)
+      (map parse-character-code record))
+    records))
+
+(define (parse-fold-records records)
   (map
     (lambda (record)
       (cons
@@ -58,7 +75,7 @@
 (define (list->pair record)
   (cons (car record) (cadr record)))
 
-(define (filter-records records)
+(define (filter-fold-records records)
   (map
     (lambda (record)
       (cons (car record) (cddr record)))
@@ -98,9 +115,23 @@
               (cons count record))
             (loop 0 records)))))))
 
+(define type (caddr (command-line)))
+
 (write
   (group-records
     (differentiate-records
-      (filter-records
-        (parse-records
-          (read-records))))))
+      (cond
+        ((equal? type "case")
+          (parse-case-records
+            (read-records
+              (lambda (record)
+                (let ((lower (list-ref record 13)))
+                  (and
+                    (not (equal? lower ""))
+                    (list (first record) lower)))))))
+        ((equal? type "fold")
+          (filter-fold-records
+            (parse-fold-records
+              (read-records))))
+        (else
+          (error "unknown unicode data type"))))))

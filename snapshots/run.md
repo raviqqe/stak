@@ -3712,12 +3712,6 @@
   - exit
   - get-environment-variable
   - get-environment-variables
-  - lazy
-  - delay
-  - delay-force
-  - force
-  - promise?
-  - make-promise
   - display
   - write
   - write-shared
@@ -3746,8 +3740,15 @@
   - string-foldcase
   - string-upcase
   - digit-value
+  - case-table
   - fold-table
   - special-chars
+  - lazy
+  - delay
+  - delay-force
+  - force
+  - promise?
+  - make-promise
   - case-lambda
   - complex
   - make-rectangular
@@ -4115,6 +4116,8 @@
     - 65
     - 97
   - (24 . 1)
+- set case-table
+- get case-table
 - set fold-table
 - constant list
   - ("alarm" . #\alarm)
@@ -4155,137 +4158,126 @@
   - call 2 #f memv
 - set char-whitespace?
 - constant procedure 1 #f
-  - constant #\a
+  - get 0
   - get 1
-  - constant #\z
-  - call 3 #f char<=?
+  - call 1 #f char-upcase
+  - call 2 #f eqv?
+  - constant #f
+  - call 2 #f eq?
 - set char-lower-case?
 - constant procedure 1 #f
-  - constant #\A
+  - get 0
   - get 1
-  - constant #\Z
-  - call 3 #f char<=?
+  - call 1 #f char-downcase
+  - call 2 #f eqv?
+  - constant #f
+  - call 2 #f eq?
 - set char-upper-case?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f char-lower-case?
-  - if
-    - get 0
-    - call 1 #f char->integer
-    - constant 32
-    - call 2 #f ||
-    - call 1 #f integer->char
-  - get 0
-- set char-upcase
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f char-upper-case?
-  - if
-    - get 0
-    - call 1 #f char->integer
-    - constant 32
-    - call 2 #f ||
-    - call 1 #f integer->char
-  - get 0
-- set char-downcase
-- constant procedure 1 #f
-  - constant procedure 1 #f
+- constant procedure 2 #f
+  - constant procedure 2 #f
+    - get 3
+    - if
+      - get cdr
+      - continue
+    - get car
+    - set 2
+    - get 3
+    - if
+      - get car
+      - continue
+    - get cdr
+    - set 1
     - constant procedure 1 #f
-      - constant procedure 2 #f
-        - constant procedure 1 #f
-          - get 0
-          - constant 0
+      - constant procedure 1 #f
+        - constant procedure 2 #f
+          - get 5
+          - call 1 #f char->integer
+          - get 2
+          - call 1 #f 10
           - call 2 #f eq?
           - if
-            - get 3
-            - call 1 #f cdr
+            - get 1
+            - call 1 #f 8
             - call 1 #f integer->char
-          - constant procedure 1 #f
+          - get 0
+          - call 1 #f null?
+          - if
+            - get 5
+          - constant procedure 3 #f
             - get 0
+            - call 1 #f number?
             - if
               - get 0
-            - get 2
-            - call 1 #f negative?
-          - call 1 #f $$close
-          - get 3
-          - call 1 #f null?
-          - call 1 #f 1
-          - set 1
-          - if
-            - get 9
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 9
-                - call 1 #f car
-                - get 1
-                - call 1 #f car
-                - call 2 #f ||
-                - get 10
-                - call 1 #f cdr
-                - get 2
-                - call 1 #f cadr
-                - call 2 #f ||
-                - call 2 #f cons
-                - get 9
-                - call 1 #f cdr
-                - call 2 #f 13
-              - call 1 #f $$close
               - get 1
-              - call 1 #f number?
+              - call 2 #f 4
+              - get 2
+              - constant 0
+              - call 2 #f eq?
               - if
-                - constant procedure 1 #f
-                  - constant 2
-                  - get 8
-                  - get 5
-                  - call 2 #f remainder
-                  - constant 0
-                  - call 2 #f eq?
-                  - if
-                    - get 8
-                    - get 2
-                    - call 2 #f min
-                    - continue
-                  - get 1
-                  - call 2 #f make-list
-                - call 1 #f $$close
-                - get 4
-                - call 1 #f car
-                - constant 1
-                - call 2 #f ||
-                - get 3
-                - call 2 #f ||
-                - call 1 #f 1
-                - set 1
+                - constant ()
                 - continue
-              - get 3
-              - call 1 #f 1
-            - call 1 #f $$close
+              - get 2
+              - constant 1
+              - call 2 #f ||
+              - get 2
+              - call 2 #f cons
+              - call 1 #f list
+              - get 6
+              - call 1 #f cdr
+              - call 2 #f append
+              - call 2 #f 9
             - get 1
+            - get 1
+            - call 1 #f car
+            - call 2 #f 4
+            - get 5
             - call 1 #f cdr
-            - call 1 #f 1
+            - call 2 #f 9
           - call 1 #f $$close
+          - constant procedure 2 #f
+            - get 5
+            - call 1 #f car
+            - get 2
+            - call 2 #f ||
+            - get 6
+            - call 1 #f cdr
+            - get 2
+            - call 2 #f ||
+            - call 2 #f cons
+          - call 1 #f $$close
+          - get 2
+          - call 1 #f caar
           - get 3
-          - call 1 #f car
-          - call 1 #f 1
+          - call 1 #f cdar
+          - call 3 #f 3
         - call 1 #f $$close
-        - get 6
-        - get 3
-        - call 1 #f car
-        - call 2 #f ||
-        - call 1 #f 1
+        - set 1
+        - constant (0 . 0)
+        - call 0 #f 9
+        - call 2 #f 2
       - call 1 #f $$close
-      - set 1
-      - constant (0 . 0)
-      - get fold-table
-      - call 2 #f 2
+      - constant #f
+      - call 1 #f 1
     - call 1 #f $$close
-    - constant #f
-    - call 1 #f 1
   - call 1 #f $$close
-  - get 1
-  - call 1 #f char->integer
-  - call 1 #f 1
+  - constant #f
+  - constant #f
+  - call 2 #f 2
+- set ||
+- constant procedure 0 #f
+  - get case-table
+- constant #f
+- call 2 #f ||
+- set char-downcase
+- constant procedure 0 #f
+  - get case-table
+- constant #t
+- call 2 #f ||
+- set char-upcase
+- constant procedure 0 #f
+  - get fold-table
+- constant #f
+- call 2 #f ||
 - set char-foldcase
 - constant procedure 1 #f
   - constant procedure 1 #f
@@ -4360,6 +4352,574 @@
   - call 1 #f char->integer
   - call 2 #f ||
 - set digit-value
+- constant list
+  - list
+    - 65
+    - 97
+  - (24 . 1)
+  - (0 . 102)
+  - (21 . 1)
+  - (0 . 2)
+  - (5 . 1)
+  - list
+    - 34
+    - 3
+  - (22 . 2)
+  - list
+    - 2
+    - -198
+  - list
+    - 2
+    - 202
+  - (1 . 2)
+  - (0 . 3)
+  - (6 . 2)
+  - (0 . 3)
+  - (21 . 2)
+  - list
+    - 2
+    - -120
+  - list
+    - 1
+    - 123
+  - (1 . 2)
+  - list
+    - 4
+    - 213
+  - list
+    - 1
+    - -208
+  - (0 . 2)
+  - list
+    - 2
+    - 207
+  - list
+    - 1
+    - -204
+  - list
+    - 2
+    - 206
+  - (0 . 1)
+  - list
+    - 1
+    - -203
+  - list
+    - 3
+    - 81
+  - list
+    - 1
+    - 124
+  - list
+    - 1
+    - 2
+  - list
+    - 1
+    - -201
+  - list
+    - 2
+    - 206
+  - list
+    - 1
+    - 3
+  - list
+    - 2
+    - 6
+  - list
+    - 1
+    - -1
+  - list
+    - 1
+    - -207
+  - list
+    - 4
+    - 214
+  - list
+    - 1
+    - 3
+  - list
+    - 2
+    - 3
+  - list
+    - 1
+    - -212
+  - (1 . 2)
+  - list
+    - 2
+    - 219
+  - list
+    - 1
+    - -216
+  - list
+    - 2
+    - 219
+  - list
+    - 3
+    - -214
+  - list
+    - 2
+    - 219
+  - list
+    - 1
+    - -216
+  - list
+    - 2
+    - 218
+  - (0 . 1)
+  - list
+    - 1
+    - -215
+  - (0 . 2)
+  - list
+    - 2
+    - 220
+  - list
+    - 1
+    - -217
+  - (0 . 4)
+  - list
+    - 8
+    - 9
+  - list
+    - 1
+    - 0
+  - list
+    - 2
+    - 3
+  - list
+    - 1
+    - 0
+  - list
+    - 2
+    - 3
+  - list
+    - 1
+    - 0
+  - (7 . 2)
+  - (0 . 3)
+  - (7 . 2)
+  - list
+    - 3
+    - 4
+  - list
+    - 1
+    - 0
+  - (0 . 2)
+  - list
+    - 2
+    - -96
+  - list
+    - 1
+    - 42
+  - list
+    - 1
+    - 58
+  - (18 . 2)
+  - list
+    - 2
+    - -129
+  - list
+    - 2
+    - 133
+  - (7 . 2)
+  - list
+    - 8
+    - 10802
+  - list
+    - 1
+    - -10793
+  - list
+    - 2
+    - -162
+  - list
+    - 1
+    - 10956
+  - list
+    - 3
+    - -10788
+  - list
+    - 2
+    - -194
+  - list
+    - 1
+    - 265
+  - list
+    - 1
+    - 3
+  - list
+    - 1
+    - -69
+  - (3 . 2)
+  - (0 . 290)
+  - (0 . 2)
+  - (0 . 4)
+  - list
+    - 9
+    - 124
+  - list
+    - 7
+    - -71
+  - list
+    - 2
+    - 1
+  - (1 . 1)
+  - list
+    - 2
+    - 29
+  - list
+    - 2
+    - 1
+  - (0 . 1)
+  - list
+    - 2
+    - -29
+  - (15 . 1)
+  - (0 . 2)
+  - (7 . 1)
+  - list
+    - 36
+    - 12
+  - list
+    - 9
+    - 2
+  - (10 . 2)
+  - list
+    - 6
+    - -55
+  - list
+    - 3
+    - 64
+  - list
+    - 2
+    - -6
+  - list
+    - 1
+    - 9
+  - list
+    - 3
+    - -128
+  - (1 . 1)
+  - list
+    - 1
+    - 211
+  - (14 . 1)
+  - list
+    - 1
+    - -47
+  - (30 . 1)
+  - list
+    - 49
+    - 18
+  - (15 . 2)
+  - (0 . 10)
+  - (25 . 2)
+  - list
+    - 2
+    - 16
+  - list
+    - 1
+    - -13
+  - (5 . 2)
+  - (0 . 3)
+  - (46 . 2)
+  - list
+    - 3
+    - 50
+  - (36 . 1)
+  - list
+    - 2890
+    - 10106
+  - (36 . 1)
+  - (0 . 2)
+  - (0 . 6)
+  - list
+    - 723
+    - 32323
+  - (78 . 1)
+  - list
+    - 1
+    - -38855
+  - (4 . 1)
+  - list
+    - 2196
+    - 2189
+  - list
+    - 7
+    - -3002
+  - (41 . 1)
+  - (0 . 3)
+  - (1 . 1)
+  - list
+    - 321
+    - 3330
+  - (73 . 2)
+  - list
+    - 10
+    - -7606
+  - list
+    - 2
+    - 7618
+  - (46 . 2)
+  - list
+    - 10
+    - 1
+  - (6 . 1)
+  - (0 . 9)
+  - (4 . 1)
+  - (0 . 11)
+  - (6 . 1)
+  - (0 . 9)
+  - (6 . 1)
+  - (0 . 9)
+  - (4 . 1)
+  - (0 . 12)
+  - (2 . 2)
+  - (0 . 9)
+  - (6 . 1)
+  - (0 . 25)
+  - (6 . 1)
+  - (0 . 9)
+  - (6 . 1)
+  - (0 . 9)
+  - (6 . 1)
+  - (0 . 9)
+  - (0 . 1)
+  - list
+    - 1
+    - -65
+  - (0 . 1)
+  - list
+    - 1
+    - 66
+  - list
+    - 12
+    - -65
+  - (2 . 1)
+  - list
+    - 1
+    - 78
+  - list
+    - 12
+    - 13
+  - (0 . 1)
+  - list
+    - 1
+    - -91
+  - (0 . 1)
+  - list
+    - 13
+    - 105
+  - (0 . 1)
+  - list
+    - 1
+    - -103
+  - (0 . 1)
+  - list
+    - 1
+    - 106
+  - list
+    - 12
+    - -109
+  - (0 . 1)
+  - list
+    - 1
+    - 3
+  - (0 . 1)
+  - list
+    - 1
+    - 118
+  - list
+    - 298
+    - -7210
+  - list
+    - 4
+    - -862
+  - list
+    - 1
+    - 122
+  - list
+    - 7
+    - 8297
+  - list
+    - 46
+    - 34
+  - (14 . 1)
+  - list
+    - 20
+    - 5
+  - list
+    - 819
+    - 844
+  - (24 . 1)
+  - list
+    - 1841
+    - 1863
+  - (46 . 1)
+  - list
+    - 49
+    - 2
+  - list
+    - 2
+    - -10742
+  - list
+    - 1
+    - 6930
+  - list
+    - 1
+    - -6912
+  - list
+    - 3
+    - 10731
+  - (1 . 2)
+  - list
+    - 2
+    - -10779
+  - list
+    - 1
+    - 32
+  - list
+    - 1
+    - -33
+  - list
+    - 1
+    - 2
+  - list
+    - 2
+    - 10785
+  - (0 . 3)
+  - list
+    - 9
+    - -10807
+  - (0 . 1)
+  - list
+    - 1
+    - 10817
+  - (48 . 2)
+  - (0 . 9)
+  - (0 . 2)
+  - (0 . 5)
+  - (0 . 31054)
+  - (21 . 2)
+  - (0 . 20)
+  - (12 . 2)
+  - (0 . 136)
+  - (5 . 2)
+  - (0 . 4)
+  - (29 . 2)
+  - (0 . 11)
+  - (0 . 2)
+  - list
+    - 2
+    - -35331
+  - list
+    - 1
+    - 35334
+  - (3 . 2)
+  - (0 . 5)
+  - list
+    - 2
+    - -42279
+  - list
+    - 3
+    - 42284
+  - (0 . 2)
+  - (0 . 4)
+  - (8 . 2)
+  - list
+    - 2
+    - -42307
+  - list
+    - 1
+    - -10
+  - list
+    - 1
+    - 5
+  - list
+    - 1
+    - 11
+  - list
+    - 1
+    - -2
+  - list
+    - 2
+    - 52
+  - list
+    - 1
+    - -23
+  - list
+    - 1
+    - 22
+  - list
+    - 1
+    - 43190
+  - list
+    - 1
+    - -926
+  - (6 . 2)
+  - list
+    - 2
+    - -47
+  - list
+    - 1
+    - -42258
+  - list
+    - 1
+    - 6924
+  - list
+    - 1
+    - 35386
+  - (0 . 2)
+  - list
+    - 2
+    - -42342
+  - list
+    - 1
+    - 42345
+  - (0 . 4)
+  - (0 . 6)
+  - (1 . 2)
+  - list
+    - 2
+    - -42560
+  - list
+    - 25
+    - 42587
+  - list
+    - 22316
+    - 22347
+  - (24 . 1)
+  - list
+    - 1222
+    - 1230
+  - (38 . 1)
+  - (0 . 137)
+  - (34 . 1)
+  - list
+    - 157
+    - 156
+  - (9 . 1)
+  - (0 . 2)
+  - (13 . 1)
+  - (0 . 2)
+  - (5 . 1)
+  - (0 . 2)
+  - (0 . 1)
+  - list
+    - 1771
+    - 1796
+  - (49 . 1)
+  - list
+    - 158
+    - 126
+  - (20 . 1)
+  - (0 . 2875)
+  - (30 . 1)
+  - (0 . 21889)
+  - (30 . 1)
+  - list
+    - 31393
+    - 31395
+  - (32 . 1)
+- set case-table
 - constant list
   - list
     - 65
@@ -9149,15 +9709,6 @@
                                           - list
                                             - list
                                               - scheme
-                                              - lazy
-                                            - (delay . delay)
-                                            - (delay-force . delay-force)
-                                            - (force . force)
-                                            - (promise? . promise?)
-                                            - (make-promise . make-promise)
-                                          - list
-                                            - list
-                                              - scheme
                                               - write
                                             - (display . display)
                                             - (write . write)
@@ -9225,8 +9776,18 @@
                                             - (string-foldcase . string-foldcase)
                                             - (string-upcase . string-upcase)
                                             - (digit-value . digit-value)
+                                            - (case-table . case-table)
                                             - (fold-table . fold-table)
                                             - (special-chars . special-chars)
+                                          - list
+                                            - list
+                                              - scheme
+                                              - lazy
+                                            - (delay . delay)
+                                            - (delay-force . delay-force)
+                                            - (force . force)
+                                            - (promise? . promise?)
+                                            - (make-promise . make-promise)
                                           - list
                                             - list
                                               - scheme
