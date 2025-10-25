@@ -143,7 +143,10 @@ Feature: Character
       | #\\a  | #\\A   |
       | #\\A  | #\\A   |
       | #\\α  | #\\Α   |
-      | #\\ß  | #\\ß   |
+
+    Examples:
+      | input | output |
+      | #\\ß  | #\\ẞ   |
 
   Scenario Outline: Fold a character
     Given a file named "main.scm" with:
