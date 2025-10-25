@@ -11,18 +11,22 @@
   (list->string
     (let loop ()
       (if (or
-           (char-alphabetic? (peek-char))
-           (char-numeric? (peek-char)))
+           (eof-object? (peek-char))
+           (eqv? (peek-char) #\;))
+        (begin
+          (read-char)
+          '())
         (let ((character (read-char)))
-          (cons character (loop)))
-        '()))))
+          (cons character (loop)))))))
 
 (define (parse-tokens)
   (do ((character (peek-char) (peek-char)))
-    ((not (memv character '(#\; #\space))))
+    ((not (eqv? character #\space)))
     (read-char))
 
-  (if (eqv? (peek-char) #\#)
+  (if (or
+       (eof-object? (peek-char))
+       (eqv? (peek-char) #\#))
     '()
     (let ((token (parse-token)))
       (cons token (parse-tokens)))))

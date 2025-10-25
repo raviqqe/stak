@@ -20,5 +20,5 @@ for base in CaseFolding UnicodeData; do
   fetch_data $base >tmp/$base.txt
 done
 
-stak parse-unicode.scm case <tmp/UnicodeData.txt >tmp/case.scm
 stak parse-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
+stak parse-unicode.scm case <tmp/UnicodeData.txt >tmp/case.scm
