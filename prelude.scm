@@ -2951,6 +2951,40 @@
                                       (clause . rest))))))
                 (clause (parameters outer-body ...) ...)))))))))
 
+(define-library (scheme lazy)
+  (export delay delay-force force promise? make-promise)
+
+  (import (stak base))
+
+  (begin
+    (define-syntax delay
+      (syntax-rules ()
+        ((_ body)
+          (let ((done #f)
+                (value #f))
+            (lambda ()
+              (if done
+                value
+                (begin
+                  (set! value body)
+                  (set! done #t)
+                  value)))))))
+
+    (define-syntax delay-force
+      (syntax-rules ()
+        ((_ promise)
+          (lambda () (force promise)))))
+
+    (define (force x)
+      (x))
+
+    (define promise? procedure?)
+
+    (define (make-promise x)
+      (if (promise? x)
+        x
+        (lambda () x)))))
+
 (define-library (stak char)
   (export
     char-ci<=?
@@ -2980,7 +3014,7 @@
     fold-table
     special-chars)
 
-  (import (stak base))
+  (import (stak base) (scheme lazy))
 
   (begin
     (define case-table
@@ -3019,7 +3053,7 @@
     (define (char-case table)
       (lambda (char)
         (let ((code (char->integer char)))
-          (let loop ((codes '(0 . 0)) (rows table))
+          (let loop ((codes '(0 . 0)) (rows (force table)))
             (let ((x (- code (car codes))))
               (cond
                 ((zero? x)
@@ -3044,9 +3078,9 @@
                         (+ (cdr codes) (cadr row)))
                       (cdr rows))))))))))
 
-    (define char-upcase (char-case case-table))
-    (define char-downcase (char-case case-table))
-    (define char-foldcase (char-case fold-table))
+    (define char-upcase (char-case (delay case-table)))
+    (define char-downcase (char-case (delay case-table)))
+    (define char-foldcase (char-case (delay fold-table)))
 
     (define (compare-ci convert)
       (lambda (compare)
@@ -4114,40 +4148,6 @@
     (define display (write-root #t collect-recursive))
 
     (set! write-irritant write)))
-
-(define-library (scheme lazy)
-  (export delay delay-force force promise? make-promise)
-
-  (import (scheme base))
-
-  (begin
-    (define-syntax delay
-      (syntax-rules ()
-        ((_ body)
-          (let ((done #f)
-                (value #f))
-            (lambda ()
-              (if done
-                value
-                (begin
-                  (set! value body)
-                  (set! done #t)
-                  value)))))))
-
-    (define-syntax delay-force
-      (syntax-rules ()
-        ((_ promise)
-          (lambda () (force promise)))))
-
-    (define (force x)
-      (x))
-
-    (define promise? procedure?)
-
-    (define (make-promise x)
-      (if (promise? x)
-        x
-        (lambda () x)))))
 
 (define-library (scheme process-context)
   (export
