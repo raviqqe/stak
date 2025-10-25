@@ -3055,35 +3055,31 @@
       (define to (if reversed car cdr))
 
       (lambda (char)
-        (let ((code (char->integer char)))
-          (let loop ((codes '(0 . 0)) (rows (table)))
-            (let ((x (- code (from codes))))
-              (cond
-                ((zero? x)
-                  (integer->char (to codes)))
-                ((or (null? rows) (negative? x))
-                  char)
-                (else
-                  (let* ((row (car rows))
-                         (a (car row))
-                         (d (cdr row)))
-                    (if (and
-                         (number? d)
-                         (not (negative? a)))
-                      (let ((y (* (+ a 1) d)))
-                        (let ((c (if (zero? (remainder x d))
-                                  (min x y)
-                                  y)))
-                          (loop
-                            (cons
-                              (+ (car codes) c)
-                              (+ (cdr codes) c))
-                            (cdr rows))))
-                      (loop
+        (let loop ((codes '(0 . 0)) (rows (table)))
+          (cond
+            ((= (char->integer char) (from codes))
+              (integer->char (to codes)))
+            ((null? rows)
+              char)
+            (else
+              (let ((advance
+                      (lambda (a d)
                         (cons
                           (+ (car codes) a)
-                          (+ (cdr codes) (car d)))
-                        (cdr rows)))))))))))
+                          (+ (cdr codes) d))))
+                    (a (caar rows))
+                    (d (cdar rows)))
+                (if (number? d)
+                  (loop
+                    (advance d d)
+                    (if (zero? a)
+                      (cdr rows)
+                      (cons
+                        (cons (- a 1) d)
+                        (cdr rows))))
+                  (loop
+                    (advance a (car d))
+                    (cdr rows)))))))))
 
     (define char-downcase (char-case (lambda () case-table) #f))
     (define char-upcase (char-case (lambda () case-table) #t))
