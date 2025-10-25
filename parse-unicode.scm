@@ -99,15 +99,21 @@
               (cons count record))
             (loop 0 records)))))))
 
+(define type (caddr (command-line)))
+
 (write
   (group-records
     (differentiate-records
-      (case (caddr (command-line))
-        (("fold")
+      (cond
+        ((equal? type "case")
           (filter-fold-records
             (parse-fold-records
               (read-fold-records))))
-        (("fold")
+        ((equal? type "fold")
+          (filter-fold-records
+            (parse-fold-records
+              (read-fold-records))))
+        (else
           (filter-fold-records
             (parse-fold-records
               (read-fold-records))))))))
