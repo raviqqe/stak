@@ -125,9 +125,10 @@
           (parse-case-records
             (read-records
               (lambda (record)
-                (and
-                  (not (equal? (last record) ""))
-                  (list (first record) (last record)))))))
+                (let ((lower (list-ref record 13)))
+                  (and
+                    (not (equal? lower ""))
+                    (list (first record) lower)))))))
         ((equal? type "fold")
           (filter-fold-records
             (parse-fold-records
