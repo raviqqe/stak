@@ -22,3 +22,5 @@ done
 
 stak parse-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
 stak parse-unicode.scm case <tmp/UnicodeData.txt >tmp/case.scm
+
+[ "$(stak tools/unicode/fold.scm)" = "$(cat tmp/fold.scm)" ]
