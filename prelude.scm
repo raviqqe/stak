@@ -3065,21 +3065,25 @@
                   char)
                 (else
                   (let* ((row (car rows))
-                         (d (cdr row))
-                         (row
-                           (if (number? d)
-                             (let ((y (* (+ (car row) 1) d)))
-                               (make-list
-                                 2
-                                 (if (zero? (remainder x d))
-                                   (min x y)
-                                   y)))
-                             row)))
-                    (loop
-                      (cons
-                        (+ (car codes) (car row))
-                        (+ (cdr codes) (cadr row)))
-                      (cdr rows))))))))))
+                         (a (car row))
+                         (d (cdr row)))
+                    (if (and
+                         (number? d)
+                         (not (negative? a)))
+                      (let ((y (* (+ a 1) d)))
+                        (let ((c (if (zero? (remainder x d))
+                                  (min x y)
+                                  y)))
+                          (loop
+                            (cons
+                              (+ (car codes) c)
+                              (+ (cdr codes) c))
+                            (cdr rows))))
+                      (loop
+                        (cons
+                          (+ (car codes) a)
+                          (+ (cdr codes) (car d)))
+                        (cdr rows)))))))))))
 
     (define char-downcase (char-case (lambda () case-table) #f))
     (define char-upcase (char-case (lambda () case-table) #t))
