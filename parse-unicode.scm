@@ -29,18 +29,17 @@
         (cons token (loop))))))
 
 (define (read-records)
-  (let loop ()
-    (let ((line (read-line)))
-      (cond
-        ((eof-object? line)
-          '())
-        ((or (equal? line "") (eqv? (string-ref line 0) #\#))
-          (loop))
-        (else
-          (cons
-            (parameterize ((current-input-port (open-input-string line)))
-              (parse-tokens))
-            (loop)))))))
+  (let ((line (read-line)))
+    (cond
+      ((eof-object? line)
+        '())
+      ((or (equal? line "") (eqv? (string-ref line 0) #\#))
+        (loop))
+      (else
+        (cons
+          (parameterize ((current-input-port (open-input-string line)))
+            (parse-tokens))
+          (read-records))))))
 
 (define (parse-character-code code)
   (string->number code 16))
