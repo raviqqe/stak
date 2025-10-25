@@ -13,9 +13,7 @@
       (if (or
            (eof-object? (peek-char))
            (eqv? (peek-char) #\;))
-        (begin
-          (read-char)
-          '())
+        '()
         (let ((character (read-char)))
           (cons character (loop)))))))
 
@@ -24,12 +22,14 @@
     ((not (eqv? character #\space)))
     (read-char))
 
-  (if (or
-       (eof-object? (peek-char))
-       (eqv? (peek-char) #\#))
-    '()
-    (let ((token (parse-token)))
-      (cons token (parse-tokens)))))
+  (let ((token (parse-token)))
+    (cons token
+      (if (let ((character (read-char)))
+           (or
+             (eof-object? character)
+             (eqv? character #\#)))
+        '()
+        (parse-tokens)))))
 
 (define (read-records . rest)
   (define filter
