@@ -28,7 +28,12 @@
       (let ((token (parse-token)))
         (cons token (loop))))))
 
-(define (read-records)
+(define (read-records . rest)
+  (define filter
+    (if (null? rest)
+      (lambda (x) x)
+      (car rest)))
+
   (let ((line (read-line)))
     (cond
       ((eof-object? line)
@@ -38,7 +43,7 @@
       (else
         (cons
           (parameterize ((current-input-port (open-input-string line)))
-            (parse-tokens))
+            (filter (parse-tokens)))
           (read-records))))))
 
 (define (parse-character-code code)
@@ -47,9 +52,7 @@
 (define (parse-case-records records)
   (map
     (lambda (record)
-      (map
-        parse-character-code
-        (list (first record) (last record))))
+      (map parse-character-code record))
     records))
 
 (define (parse-fold-records records)
@@ -113,7 +116,9 @@
       (cond
         ((equal? type "case")
           (parse-case-records
-            (read-records)))
+            (read-records
+              (lambda (record)
+                (list (first record) (last record))))))
         ((equal? type "fold")
           (filter-fold-records
             (parse-fold-records
