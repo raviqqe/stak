@@ -122,11 +122,11 @@ Feature: Character
     Then the stdout should contain exactly "A"
 
     Examples:
-      | input | output |
-      | #\\A  | #\\a   |
-      | #\\a  | #\\a   |
-      | #\\Α  | #\\α   |
-      | #\\ß  | #\\ß   |
+      | input  | output |
+      | #\\A   | #\\a   |
+      | #\\a   | #\\a   |
+      | #\\Α   | #\\α   |
+      | #\\ẞ   | #\\ß   |
 
   Scenario Outline: Convert a character to its upper case
     Given a file named "main.scm" with:
