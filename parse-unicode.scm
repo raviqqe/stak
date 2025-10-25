@@ -102,7 +102,7 @@
 (write
   (group-records
     (differentiate-records
-      (cond (caddr (command-line))
+      (case (caddr (command-line))
         (("fold")
           (filter-fold-records
             (parse-fold-records
