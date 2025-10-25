@@ -46,6 +46,14 @@
 (define (parse-character-code code)
   (string->number code 16))
 
+(define (parse-case-records records)
+  (map
+    (lambda (record)
+      (map
+        parse-character-code
+        (list (first record) (last record))))
+    records))
+
 (define (parse-fold-records records)
   (map
     (lambda (record)
@@ -106,9 +114,8 @@
     (differentiate-records
       (cond
         ((equal? type "case")
-          (filter-fold-records
-            (parse-fold-records
-              (read-records))))
+          (parse-case-records
+            (read-records)))
         ((equal? type "fold")
           (filter-fold-records
             (parse-fold-records
