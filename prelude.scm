@@ -2984,11 +2984,10 @@
 
   (begin
     (define case-table
-      '())
-
-    (define fold-table
       '((65 97)
         (24 . 1)))
+
+    (define fold-table case-table)
 
     (define special-chars
       '(("alarm" . #\alarm)
