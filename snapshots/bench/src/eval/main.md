@@ -3715,12 +3715,6 @@
   - exit
   - get-environment-variable
   - get-environment-variables
-  - lazy
-  - delay
-  - delay-force
-  - force
-  - promise?
-  - make-promise
   - display
   - write
   - write-shared
@@ -3749,8 +3743,15 @@
   - string-foldcase
   - string-upcase
   - digit-value
+  - case-table
   - fold-table
   - special-chars
+  - lazy
+  - delay
+  - delay-force
+  - force
+  - promise?
+  - make-promise
   - case-lambda
   - complex
   - make-rectangular
@@ -4364,11 +4365,27 @@
 - get current-output-port
 - call 2 #f ||
 - set with-output-to-file
+- constant procedure 1 #f
+  - call 0 #f 0
+- set force
+- get procedure?
+- set promise?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f promise?
+  - if
+    - get 0
+  - constant procedure 0 #f
+    - get 1
+  - call 1 #f $$close
+- set make-promise
 - constant list
   - list
     - 65
     - 97
   - (24 . 1)
+- set case-table
+- get case-table
 - set fold-table
 - constant list
   - ("alarm" . #\alarm)
@@ -4409,137 +4426,182 @@
   - call 2 #f memv
 - set char-whitespace?
 - constant procedure 1 #f
-  - constant #\a
+  - get 0
   - get 1
-  - constant #\z
-  - call 3 #f char<=?
+  - call 1 #f char-upcase
+  - call 2 #f eqv?
+  - constant #f
+  - call 2 #f eq?
 - set char-lower-case?
 - constant procedure 1 #f
-  - constant #\A
+  - get 0
   - get 1
-  - constant #\Z
-  - call 3 #f char<=?
+  - call 1 #f char-downcase
+  - call 2 #f eqv?
+  - constant #f
+  - call 2 #f eq?
 - set char-upper-case?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f char-lower-case?
-  - if
-    - get 0
-    - call 1 #f char->integer
-    - constant 32
-    - call 2 #f ||
-    - call 1 #f integer->char
-  - get 0
-- set char-upcase
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f char-upper-case?
-  - if
-    - get 0
-    - call 1 #f char->integer
-    - constant 32
-    - call 2 #f ||
-    - call 1 #f integer->char
-  - get 0
-- set char-downcase
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - constant procedure 2 #f
-        - constant procedure 1 #f
-          - get 0
-          - constant 0
-          - call 2 #f eq?
-          - if
-            - get 3
-            - call 1 #f cdr
-            - call 1 #f integer->char
+      - constant procedure 1 #f
+        - constant procedure 2 #f
           - constant procedure 1 #f
             - get 0
+            - constant 0
+            - call 2 #f eq?
             - if
+              - get 3
+              - call 1 #f cdr
+              - call 1 #f integer->char
+            - constant procedure 1 #f
               - get 0
-            - get 2
-            - call 1 #f negative?
-          - call 1 #f $$close
-          - get 3
-          - call 1 #f null?
-          - call 1 #f 1
-          - set 1
-          - if
-            - get 9
-          - constant procedure 1 #f
+              - if
+                - get 0
+              - get 2
+              - call 1 #f negative?
+            - call 1 #f $$close
+            - get 3
+            - call 1 #f null?
+            - call 1 #f 1
+            - set 1
+            - if
+              - get 9
             - constant procedure 1 #f
               - constant procedure 1 #f
-                - get 9
-                - call 1 #f car
+                - constant procedure 1 #f
+                  - get 9
+                  - call 1 #f car
+                  - get 1
+                  - call 1 #f car
+                  - call 2 #f ||
+                  - get 10
+                  - call 1 #f cdr
+                  - get 2
+                  - call 1 #f cadr
+                  - call 2 #f ||
+                  - call 2 #f cons
+                  - get 9
+                  - call 1 #f cdr
+                  - call 2 #f 13
+                - call 1 #f $$close
                 - get 1
-                - call 1 #f car
-                - call 2 #f ||
-                - get 10
-                - call 1 #f cdr
-                - get 2
-                - call 1 #f cadr
-                - call 2 #f ||
-                - call 2 #f cons
-                - get 9
-                - call 1 #f cdr
-                - call 2 #f 13
+                - call 1 #f number?
+                - if
+                  - constant procedure 1 #f
+                    - constant 2
+                    - get 8
+                    - get 5
+                    - call 2 #f remainder
+                    - constant 0
+                    - call 2 #f eq?
+                    - if
+                      - get 8
+                      - get 2
+                      - call 2 #f min
+                      - continue
+                    - get 1
+                    - call 2 #f make-list
+                  - call 1 #f $$close
+                  - get 4
+                  - call 1 #f car
+                  - constant 1
+                  - call 2 #f ||
+                  - get 3
+                  - call 2 #f ||
+                  - call 1 #f 1
+                  - set 1
+                  - continue
+                - get 3
+                - call 1 #f 1
               - call 1 #f $$close
               - get 1
-              - call 1 #f number?
-              - if
-                - constant procedure 1 #f
-                  - constant 2
-                  - get 8
-                  - get 5
-                  - call 2 #f remainder
-                  - constant 0
-                  - call 2 #f eq?
-                  - if
-                    - get 8
-                    - get 2
-                    - call 2 #f min
-                    - continue
-                  - get 1
-                  - call 2 #f make-list
-                - call 1 #f $$close
-                - get 4
-                - call 1 #f car
-                - constant 1
-                - call 2 #f ||
-                - get 3
-                - call 2 #f ||
-                - call 1 #f 1
-                - set 1
-                - continue
-              - get 3
+              - call 1 #f cdr
               - call 1 #f 1
             - call 1 #f $$close
-            - get 1
-            - call 1 #f cdr
+            - get 3
+            - call 1 #f car
             - call 1 #f 1
           - call 1 #f $$close
+          - get 6
           - get 3
           - call 1 #f car
+          - call 2 #f ||
           - call 1 #f 1
         - call 1 #f $$close
-        - get 6
-        - get 3
-        - call 1 #f car
-        - call 2 #f ||
-        - call 1 #f 1
+        - set 1
+        - constant (0 . 0)
+        - get 7
+        - call 1 #f force
+        - call 2 #f 2
       - call 1 #f $$close
-      - set 1
-      - constant (0 . 0)
-      - get fold-table
-      - call 2 #f 2
+      - constant #f
+      - call 1 #f 1
     - call 1 #f $$close
-    - constant #f
+    - get 1
+    - call 1 #f char->integer
     - call 1 #f 1
   - call 1 #f $$close
-  - get 1
-  - call 1 #f char->integer
-  - call 1 #f 1
+- set ||
+- constant procedure 2 #f
+  - constant procedure 0 #f
+    - get 2
+    - if
+      - get 1
+    - get case-table
+    - set 2
+    - constant #t
+    - set 3
+    - get 1
+  - call 1 #f $$close
+- constant #f
+- constant #f
+- call 2 #f 2
+- set 1
+- call 1 #f ||
+- set char-downcase
+- constant procedure 2 #f
+  - constant procedure 0 #f
+    - get 2
+    - if
+      - get 1
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f cdr
+      - call 1 #f number?
+      - if
+        - get 0
+      - get 0
+      - call 1 #f reverse
+    - get case-table
+    - call 2 #f map
+    - set 2
+    - constant #t
+    - set 3
+    - get 1
+  - call 1 #f $$close
+- constant #f
+- constant #f
+- call 2 #f 2
+- set 1
+- call 1 #f ||
+- set char-upcase
+- constant procedure 2 #f
+  - constant procedure 0 #f
+    - get 2
+    - if
+      - get 1
+    - get fold-table
+    - set 2
+    - constant #t
+    - set 3
+    - get 1
+  - call 1 #f $$close
+- constant #f
+- constant #f
+- call 2 #f 2
+- set 1
+- call 1 #f ||
 - set char-foldcase
 - constant procedure 1 #f
   - constant procedure 1 #f
@@ -8451,15 +8513,6 @@
                                           - list
                                             - list
                                               - scheme
-                                              - lazy
-                                            - (delay . delay)
-                                            - (delay-force . delay-force)
-                                            - (force . force)
-                                            - (promise? . promise?)
-                                            - (make-promise . make-promise)
-                                          - list
-                                            - list
-                                              - scheme
                                               - write
                                             - (display . display)
                                             - (write . write)
@@ -8527,8 +8580,18 @@
                                             - (string-foldcase . string-foldcase)
                                             - (string-upcase . string-upcase)
                                             - (digit-value . digit-value)
+                                            - (case-table . case-table)
                                             - (fold-table . fold-table)
                                             - (special-chars . special-chars)
+                                          - list
+                                            - list
+                                              - scheme
+                                              - lazy
+                                            - (delay . delay)
+                                            - (delay-force . delay-force)
+                                            - (force . force)
+                                            - (promise? . promise?)
+                                            - (make-promise . make-promise)
                                           - list
                                             - list
                                               - scheme
@@ -11554,6 +11617,55 @@
                                                     - ||
                                                     - ||
                                                     - ...
+                                            - list
+                                              - delay
+                                              - syntax-rules
+                                              - ()
+                                              - list
+                                                - list
+                                                  - \_
+                                                  - ||
+                                                - list
+                                                  - let
+                                                  - list
+                                                    - list
+                                                      - ||
+                                                      - #f
+                                                    - list
+                                                      - ||
+                                                      - #f
+                                                  - list
+                                                    - lambda
+                                                    - ()
+                                                    - list
+                                                      - if
+                                                      - ||
+                                                      - ||
+                                                      - list
+                                                        - begin
+                                                        - list
+                                                          - set!
+                                                          - ||
+                                                          - ||
+                                                        - list
+                                                          - set!
+                                                          - ||
+                                                          - #t
+                                                        - ||
+                                            - list
+                                              - delay-force
+                                              - syntax-rules
+                                              - ()
+                                              - list
+                                                - list
+                                                  - \_
+                                                  - ||
+                                                - list
+                                                  - lambda
+                                                  - ()
+                                                  - list
+                                                    - force
+                                                    - ||
                                           - call 2 #f for-each
                                           - set 0
                                           - constant procedure 1 #f

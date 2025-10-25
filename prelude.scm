@@ -3078,6 +3078,7 @@
                         (+ (cdr codes) (cadr row)))
                       (cdr rows))))))))))
 
+    (define char-downcase (char-case (delay case-table)))
     (define char-upcase
       (char-case
         (delay
@@ -3087,7 +3088,6 @@
                 row
                 (reverse row)))
             case-table))))
-    (define char-downcase (char-case (delay case-table)))
     (define char-foldcase (char-case (delay fold-table)))
 
     (define (compare-ci convert)

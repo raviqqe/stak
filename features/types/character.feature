@@ -125,6 +125,8 @@ Feature: Character
       | input | output |
       | #\\A  | #\\a   |
       | #\\a  | #\\a   |
+      | #\\Α  | #\\α   |
+      | #\\ß  | #\\ß   |
 
   Scenario Outline: Convert a character to its upper case
     Given a file named "main.scm" with:
@@ -140,6 +142,8 @@ Feature: Character
       | input | output |
       | #\\a  | #\\A   |
       | #\\A  | #\\A   |
+      | #\\α  | #\\Α   |
+      | #\\ß  | #\\ß   |
 
   Scenario Outline: Fold a character
     Given a file named "main.scm" with:
