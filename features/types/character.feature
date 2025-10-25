@@ -111,22 +111,35 @@ Feature: Character
       | char-ci=? | #\\a #\\A  | A      |
       | char-ci=? | #\\A #\\B  | B      |
 
-  Scenario Outline: Convert a character case
+  Scenario Outline: Convert a character to its lower case
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
 
-      (write-u8 (if (eqv? (<predicate> <input>) <output>) 65 66))
+      (write-u8 (if (eqv? (char-downcase <input>) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
-      | predicate     | input | output |
-      | char-downcase | #\\A  | #\\a   |
-      | char-downcase | #\\a  | #\\a   |
-      | char-upcase   | #\\a  | #\\A   |
-      | char-upcase   | #\\A  | #\\A   |
+      | input | output |
+      | #\\A  | #\\a   |
+      | #\\a  | #\\a   |
+
+  Scenario Outline: Convert a character to its upper case
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (eqv? (char-upcase <input>) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | #\\a  | #\\A   |
+      | #\\A  | #\\A   |
 
   Scenario Outline: Fold a character
     Given a file named "main.scm" with:
