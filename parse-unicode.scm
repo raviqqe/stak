@@ -28,7 +28,7 @@
       (let ((token (parse-token)))
         (cons token (loop))))))
 
-(define (read-fold-records)
+(define (read-records)
   (map
     (lambda (line)
       (parameterize ((current-input-port (open-input-string line)))
@@ -108,10 +108,10 @@
         ((equal? type "case")
           (filter-fold-records
             (parse-fold-records
-              (read-fold-records))))
+              (read-records))))
         ((equal? type "fold")
           (filter-fold-records
             (parse-fold-records
-              (read-fold-records))))
+              (read-records))))
         (else
           (error "unknown unicode data type"))))))
