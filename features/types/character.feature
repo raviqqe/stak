@@ -144,6 +144,7 @@ Feature: Character
       | #\\A  | #\\A   |
       | #\\α  | #\\Α   |
 
+    @stak
     Examples:
       | input | output |
       | #\\ß  | #\\ẞ   |
