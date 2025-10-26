@@ -143,11 +143,7 @@ Feature: Character
       | #\\a  | #\\A   |
       | #\\A  | #\\A   |
       | #\\α  | #\\Α   |
-
-    @stak
-    Examples:
-      | input | output |
-      | #\\ß  | #\\ẞ   |
+      | #\\ß  | #\\ß   |
 
   Scenario Outline: Fold a character
     Given a file named "main.scm" with:
