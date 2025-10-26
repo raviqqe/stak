@@ -121,7 +121,7 @@
   (group-records
     (differentiate-records
       (cond
-        ((equal? type "case")
+        ((equal? type "downcase")
           (parse-case-records
             (read-records
               (lambda (record)
@@ -133,5 +133,13 @@
           (filter-fold-records
             (parse-fold-records
               (read-records))))
+        ((equal? type "upcase")
+          (parse-case-records
+            (read-records
+              (lambda (record)
+                (let ((upper (list-ref record 14)))
+                  (and
+                    (not (equal? upper ""))
+                    (list (first record) upper)))))))
         (else
           (error "unknown unicode data type"))))))
