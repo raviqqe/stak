@@ -53,6 +53,15 @@
               (read-records filter))
             (read-records filter)))))))
 
+(define (read-case-records column)
+  (parse-case-records
+    (read-records
+      (lambda (record)
+        (let ((to (list-ref record column)))
+          (and
+            (not (equal? to ""))
+            (list (first record) to)))))))
+
 (define (parse-character-code code)
   (string->number code 16))
 
@@ -122,24 +131,12 @@
     (differentiate-records
       (cond
         ((equal? type "downcase")
-          (parse-case-records
-            (read-records
-              (lambda (record)
-                (let ((lower (list-ref record 13)))
-                  (and
-                    (not (equal? lower ""))
-                    (list (first record) lower)))))))
+          (read-case-records 13))
         ((equal? type "fold")
           (filter-fold-records
             (parse-fold-records
               (read-records))))
         ((equal? type "upcase")
-          (parse-case-records
-            (read-records
-              (lambda (record)
-                (let ((upper (list-ref record 14)))
-                  (and
-                    (not (equal? upper ""))
-                    (list (first record) upper)))))))
+          (read-case-records 14))
         (else
           (error "unknown unicode data type"))))))
