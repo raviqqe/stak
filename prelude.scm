@@ -3058,29 +3058,28 @@
     (define (char-case table)
       (lambda (char)
         (let loop ((codes '(0 . 0)) (rows (table)))
-          (cond
-            ((= (char->integer char) (car codes))
-              (integer->char (cdr codes)))
-            ((null? rows)
-              char)
-            (else
-              (let ((advance
-                      (lambda (a d)
-                        (cons
-                          (+ (car codes) a)
-                          (+ (cdr codes) d))))
-                    (a (caar rows))
-                    (d (cdar rows)))
-                (if (number? d)
+          (let ((x (- (char->integer char) (car codes))))
+            (cond
+              ((zero? x)
+                (integer->char (cdr codes)))
+              ((or (null? rows) (negative? x))
+                char)
+              (else
+                (let* ((row (car rows))
+                       (d (cdr row))
+                       (row
+                         (if (number? d)
+                           (let ((y (* (+ (car row) 1) d)))
+                             (make-list
+                               2
+                               (if (zero? (remainder x d))
+                                 (min x y)
+                                 y)))
+                           row)))
                   (loop
-                    (advance d d)
-                    (append
-                      (if (zero? a)
-                        '()
-                        (list (cons (- a 1) d)))
-                      (cdr rows)))
-                  (loop
-                    (advance a (car d))
+                    (cons
+                      (+ (car codes) (car row))
+                      (+ (cdr codes) (cadr row)))
                     (cdr rows)))))))))
 
     (define char-downcase (char-case (lambda () downcase-table)))
