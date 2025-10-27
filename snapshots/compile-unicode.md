@@ -2918,6 +2918,29 @@
   - call 1 #f 1
 - set ||
 - constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - constant ""
+      - call 2 #f ||
+      - constant #f
+      - call 2 #f ||
+      - if
+        - get 2
+        - call 1 #f ||
+        - get 1
+        - call 2 #f ||
+      - constant #f
+    - call 1 #f ||
+    - get 1
+    - get 4
+    - call 2 #f ||
+    - call 1 #f 1
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
+- constant procedure 1 #f
   - get 0
   - constant 16
   - call 2 #f ||
@@ -3076,28 +3099,10 @@
 - call 1 #f ||
 - set ||
 - get ||
-- constant "case"
+- constant "downcase"
 - call 2 #f ||
 - if
-  - constant procedure 1 #f
-    - constant procedure 1 #f
-      - get 0
-      - constant ""
-      - call 2 #f ||
-      - constant #f
-      - call 2 #f ||
-      - if
-        - get 2
-        - call 1 #f ||
-        - get 1
-        - call 2 #f ||
-      - constant #f
-    - call 1 #f ||
-    - get 1
-    - constant 13
-    - call 2 #f ||
-    - call 1 #f 1
-  - call 1 #f ||
+  - constant 13
   - call 1 #f ||
   - continue
 - get ||
@@ -3106,6 +3111,13 @@
 - if
   - call 0 #f ||
   - call 1 #f ||
+  - call 1 #f ||
+  - continue
+- get ||
+- constant "upcase"
+- call 2 #f ||
+- if
+  - constant 14
   - call 1 #f ||
   - continue
 - constant "unknown unicode data type"

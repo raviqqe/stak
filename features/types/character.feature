@@ -144,10 +144,10 @@ Feature: Character
       | #\\A  | #\\A   |
       | #\\α  | #\\Α   |
 
-    @stak
+    @gauche @guile @stak
     Examples:
       | input | output |
-      | #\\ß  | #\\ẞ   |
+      | #\\ß  | #\\ß   |
 
   Scenario Outline: Fold a character
     Given a file named "main.scm" with:
