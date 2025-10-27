@@ -146,7 +146,8 @@ Feature: Character
 
     @gauche @guile @stak
     Examples:
-      | #\\ß  | #\\ß  |
+      | input | output |
+      | #\\ß  | #\\ß   |
 
   Scenario Outline: Fold a character
     Given a file named "main.scm" with:
