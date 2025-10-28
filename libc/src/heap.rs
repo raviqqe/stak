@@ -1,4 +1,5 @@
-use core::{mem::align_of, ptr::write, slice};
+use alloc::alloc::{Layout, alloc};
+use core::{ptr::write, slice};
 
 /// A memory block on a heap.
 pub struct Heap<T> {
@@ -11,7 +12,7 @@ impl<T> Heap<T> {
     pub fn new(len: usize, default: impl Fn() -> T) -> Self {
         let mut this = Self {
             // SAFETY: We allow memory access only within `len`.
-            ptr: unsafe { libc::malloc(len * align_of::<T>()) } as _,
+            ptr: unsafe { alloc(Layout::array::<T>(len).unwrap()) } as _,
             len,
         };
 
