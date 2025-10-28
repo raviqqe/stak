@@ -12,7 +12,10 @@ categories.workspace = true
 [dependencies]
 clap = { version = "4.5.50", features = ["derive"], optional = true }
 main_error = { version = "0.1.2", optional = true }
-origin = { version = "0.26.2", optional = true }
+origin = { version = "0.26.2", default-features = false, features = [
+  "libc",
+  "std"
+], optional = true }
 stak-configuration = { path = "../configuration", version = "0.11.7" }
 stak-device = { path = "../device", version = "0.11.7" }
 stak-file = { path = "../file", version = "0.11.7" }

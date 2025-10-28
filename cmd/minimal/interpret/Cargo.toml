@@ -10,7 +10,10 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-origin = "0.26.2"
+origin = { version = "0.26.2", default-features = false, features = [
+  "libc",
+  "std"
+] }
 stak-device = { workspace = true }
 stak-file = { workspace = true }
 stak-libc = { workspace = true }

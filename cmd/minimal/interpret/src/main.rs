@@ -32,7 +32,7 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 unsafe extern "C" fn main(argc: isize, argv: *const *const i8) {
     // SAFETY: Operating systems guarantee `argv` to have the length of `argc`.
     let Some(&file) = unsafe { slice::from_raw_parts(argv, argc as _) }.get(1) else {
-        return 1;
+        exit(1);
     };
 
     // SAFETY: `Value`s have `'static` lifetimes and can have any inner values of

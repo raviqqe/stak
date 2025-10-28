@@ -68,21 +68,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df1d3c3b53da64cf5760482273a98e575c651a67eec7f77df96b5b642de8f039"
 
 [[package]]
-name = "lock_api"
-version = "0.4.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "224399e74b87b5f3557511d98dff8b14089b3dadafcab6bb93eab67d3aace965"
-dependencies = [
- "scopeguard",
-]
-
-[[package]]
-name = "log"
-version = "0.4.28"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
-
-[[package]]
 name = "mstak"
 version = "0.5.47"
 dependencies = [
@@ -116,11 +101,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "692d98a33ca8355280e87c3dea4f62e3361c0fb64a76557d8d3988f070cd3c30"
 dependencies = [
  "bitflags",
- "errno",
  "libc",
- "log",
  "rustix",
- "rustix-futex-sync",
  "smallvec",
 ]
 
@@ -154,22 +136,6 @@ dependencies = [
  "linux-raw-sys",
  "windows-sys",
 ]
-
-[[package]]
-name = "rustix-futex-sync"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ba2d42a7bc1a2068a74e31d87f98daf1800df4d7d1cd8736d847f8b70512964"
-dependencies = [
- "lock_api",
- "rustix",
-]
-
-[[package]]
-name = "scopeguard"
-version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "smallvec"
