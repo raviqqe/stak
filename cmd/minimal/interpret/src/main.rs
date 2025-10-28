@@ -10,6 +10,7 @@
 #![cfg_attr(not(test), no_main)]
 
 use core::{ffi::CStr, mem::size_of, slice};
+use origin::program::exit;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_file::LibcFileSystem;
 use stak_libc::Mmap;
@@ -27,11 +28,11 @@ static GLOBAL_ALLOCATOR: rustix_dlmalloc::GlobalDlmalloc = rustix_dlmalloc::Glob
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
     // SAFETY: The `exit` call always succeed.
-    unsafe { libc::exit(1) }
+    unsafe { exit(1) }
 }
 
 #[cfg_attr(not(test), unsafe(no_mangle))]
-unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
+unsafe extern "C" fn main(argc: isize, argv: *const *const i8) {
     // SAFETY: Operating systems guarantee `argv` to have the length of `argc`.
     let Some(&file) = unsafe { slice::from_raw_parts(argv, argc as _) }.get(1) else {
         return 1;
@@ -64,5 +65,5 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     vm.initialize(mmap.as_slice().iter().copied()).unwrap();
     vm.run().unwrap();
 
-    0
+    exit(0);
 }
