@@ -142,5 +142,9 @@
       (group-records
         (differentiate-records
           (read-case-records 14))))
+    ((equal? type "space")
+      (group-records
+        (differentiate-records
+          (read-case-records 14))))
     (else
       (error "unknown unicode data type"))))
