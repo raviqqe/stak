@@ -21,12 +21,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c9631f8ebf7c3b5f9e3199d2158babd5b9f500b8821c44fb2090101f14a9e92"
 
 [[package]]
-name = "cfg-if"
-version = "1.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
-
-[[package]]
 name = "errno"
 version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -100,7 +94,6 @@ name = "mstak-interpret"
 version = "0.5.47"
 dependencies = [
  "origin",
- "rustix-dlmalloc",
  "stak-device",
  "stak-file",
  "stak-libc",
@@ -159,18 +152,6 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys",
-]
-
-[[package]]
-name = "rustix-dlmalloc"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "011f83250d20ab55d0197e3f89b359a22a5a69e9ac584093593c6e1f3e0b1653"
-dependencies = [
- "cfg-if",
- "rustix",
- "rustix-futex-sync",
  "windows-sys",
 ]
 

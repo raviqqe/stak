@@ -11,7 +11,6 @@
 
 use core::{ffi::CStr, mem::size_of, slice};
 use origin::program::exit;
-use rustix_dlmalloc::GlobalDlmalloc;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_file::LibcFileSystem;
 use stak_libc::Mmap;
@@ -21,9 +20,6 @@ use stak_time::LibcClock;
 use stak_vm::{Value, Vm};
 
 const HEAP_SIZE: usize = 1 << 19;
-
-#[global_allocator]
-static GLOBAL_ALLOCATOR: GlobalDlmalloc = GlobalDlmalloc;
 
 #[cfg(not(test))]
 #[panic_handler]

@@ -1194,18 +1194,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustix-dlmalloc"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "011f83250d20ab55d0197e3f89b359a22a5a69e9ac584093593c6e1f3e0b1653"
-dependencies = [
- "cfg-if",
- "rustix",
- "rustix-futex-sync",
- "windows-sys 0.59.0",
-]
-
-[[package]]
 name = "rustix-futex-sync"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1611,7 +1599,6 @@ dependencies = [
  "clap",
  "main_error",
  "origin",
- "rustix-dlmalloc",
  "stak",
  "stak-configuration",
  "stak-device",

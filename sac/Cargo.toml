@@ -13,7 +13,6 @@ categories.workspace = true
 clap = { version = "4.5.50", features = ["derive"], optional = true }
 main_error = { version = "0.1.2", optional = true }
 origin = { version = "0.26.2", optional = true }
-rustix-dlmalloc = { version = "0.2.2", features = ["global"], optional = true }
 stak-configuration = { path = "../configuration", version = "0.11.7" }
 stak-device = { path = "../device", version = "0.11.7" }
 stak-file = { path = "../file", version = "0.11.7" }
@@ -36,7 +35,7 @@ libc = [
   "stak-device/libc",
   "stak-file/libc",
   "stak-process-context/libc",
-  "stak-time/libc",
+  "stak-time/libc"
 ]
 std = [
   "dep:clap",
@@ -46,7 +45,6 @@ std = [
   "stak-process-context/std",
   "stak-time/std",
 ]
-rustix-dlmalloc = ["dep:rustix-dlmalloc"]
 
 [lints]
 workspace = true
