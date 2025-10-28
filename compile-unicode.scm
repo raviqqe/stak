@@ -62,28 +62,6 @@
       (map parse-character-code record))
     records))
 
-(define (parse-fold-records records)
-  (map
-    (lambda (record)
-      (cons
-        (parse-character-code (car record))
-        (cons
-          (cadr record)
-          (map parse-character-code (cddr record)))))
-    records))
-
-(define (list->pair record)
-  (cons (car record) (cadr record)))
-
-(define (filter-fold-records records)
-  (map
-    (lambda (record)
-      (cons (car record) (cddr record)))
-    (filter
-      (lambda (record)
-        (member (cadr record) '("C" "S")))
-      records)))
-
 (define (differentiate-records records)
   (let loop ((previous '(0 0)) (records records))
     (if (null? records)
@@ -126,6 +104,25 @@
           (list (first record) to))))))
 
 ; Fold
+
+(define (parse-fold-records records)
+  (map
+    (lambda (record)
+      (cons
+        (parse-character-code (car record))
+        (cons
+          (cadr record)
+          (map parse-character-code (cddr record)))))
+    records))
+
+(define (filter-fold-records records)
+  (map
+    (lambda (record)
+      (cons (car record) (cddr record)))
+    (filter
+      (lambda (record)
+        (member (cadr record) '("C" "S")))
+      records)))
 
 (define (read-fold-records)
   (filter-fold-records
