@@ -36,6 +36,7 @@
     "coreutils",
     "cppflags",
     "ctypes",
+    "dlmalloc",
     "doctest",
     "dylib",
     "elif",

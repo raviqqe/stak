@@ -21,6 +21,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c9631f8ebf7c3b5f9e3199d2158babd5b9f500b8821c44fb2090101f14a9e92"
 
 [[package]]
+name = "cfg-if"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
+
+[[package]]
 name = "errno"
 version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -68,6 +74,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df1d3c3b53da64cf5760482273a98e575c651a67eec7f77df96b5b642de8f039"
 
 [[package]]
+name = "lock_api"
+version = "0.4.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "224399e74b87b5f3557511d98dff8b14089b3dadafcab6bb93eab67d3aace965"
+dependencies = [
+ "scopeguard",
+]
+
+[[package]]
+name = "log"
+version = "0.4.28"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
+
+[[package]]
 name = "mstak"
 version = "0.5.47"
 dependencies = [
@@ -79,6 +100,7 @@ name = "mstak-interpret"
 version = "0.5.47"
 dependencies = [
  "libc",
+ "rustix-dlmalloc",
  "stak-device",
  "stak-file",
  "stak-libc",
@@ -93,6 +115,21 @@ name = "noop-executor"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2210df1456ef75748760c6c7edf157afeb1cb6d3878fa0a36274db1e2e615600"
+
+[[package]]
+name = "origin"
+version = "0.26.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "692d98a33ca8355280e87c3dea4f62e3361c0fb64a76557d8d3988f070cd3c30"
+dependencies = [
+ "bitflags",
+ "errno",
+ "libc",
+ "log",
+ "rustix",
+ "rustix-futex-sync",
+ "smallvec",
+]
 
 [[package]]
 name = "proc-macro2"
@@ -124,6 +161,40 @@ dependencies = [
  "linux-raw-sys",
  "windows-sys",
 ]
+
+[[package]]
+name = "rustix-dlmalloc"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "011f83250d20ab55d0197e3f89b359a22a5a69e9ac584093593c6e1f3e0b1653"
+dependencies = [
+ "cfg-if",
+ "rustix",
+ "rustix-futex-sync",
+ "windows-sys",
+]
+
+[[package]]
+name = "rustix-futex-sync"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ba2d42a7bc1a2068a74e31d87f98daf1800df4d7d1cd8736d847f8b70512964"
+dependencies = [
+ "lock_api",
+ "rustix",
+]
+
+[[package]]
+name = "scopeguard"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
+
+[[package]]
+name = "smallvec"
+version = "1.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
 
 [[package]]
 name = "stable_deref_trait"
@@ -239,7 +310,7 @@ dependencies = [
 name = "stak-sac"
 version = "0.11.7"
 dependencies = [
- "libc",
+ "origin",
  "stak-configuration",
  "stak-device",
  "stak-file",

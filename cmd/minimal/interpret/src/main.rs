@@ -20,6 +20,9 @@ use stak_vm::{Value, Vm};
 
 const HEAP_SIZE: usize = 1 << 19;
 
+#[global_allocator]
+static GLOBAL_ALLOCATOR: rustix_dlmalloc::GlobalDlmalloc = rustix_dlmalloc::GlobalDlmalloc;
+
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
