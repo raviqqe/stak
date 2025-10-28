@@ -64,7 +64,7 @@
 (define (read-space-records)
   (read-records
     (lambda (record)
-      (and (equal? (list-ref record 2) "Zs") record))))
+      (and (eqv? (string-ref (list-ref record 2) 0) #\Z) record))))
 
 (define (parse-character-code code)
   (string->number code 16))
