@@ -13,6 +13,7 @@ extern crate alloc;
 
 use alloc::alloc::alloc;
 use core::{alloc::Layout, ffi::CStr, slice};
+use dlmalloc::GlobalDlmalloc;
 use origin::program::exit;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_file::LibcFileSystem;
@@ -24,11 +25,14 @@ use stak_vm::{Value, Vm};
 
 const HEAP_SIZE: usize = 1 << 19;
 
+#[global_allocator]
+static GLOBAL_ALLOCATOR: GlobalDlmalloc = GlobalDlmalloc;
+
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
     // SAFETY: The `exit` call always succeed.
-    unsafe { exit(1) }
+    exit(1)
 }
 
 #[cfg_attr(not(test), unsafe(no_mangle))]
