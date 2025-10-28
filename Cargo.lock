@@ -960,12 +960,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "692d98a33ca8355280e87c3dea4f62e3361c0fb64a76557d8d3988f070cd3c30"
 dependencies = [
  "bitflags 2.7.0",
- "errno",
- "libc",
- "log",
  "rustix",
- "rustix-futex-sync",
- "smallvec",
 ]
 
 [[package]]
@@ -1191,16 +1186,6 @@ dependencies = [
  "libc",
  "linux-raw-sys",
  "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "rustix-futex-sync"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ba2d42a7bc1a2068a74e31d87f98daf1800df4d7d1cd8736d847f8b70512964"
-dependencies = [
- "lock_api",
- "rustix",
 ]
 
 [[package]]
@@ -1597,7 +1582,6 @@ name = "stak-sac"
 version = "0.11.7"
 dependencies = [
  "clap",
- "libc",
  "main_error",
  "origin",
  "stak",
