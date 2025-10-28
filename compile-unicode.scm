@@ -159,7 +159,6 @@
           (parse-case-records
             (read-case-records 14)))))
     ((equal? type "space")
-      (parse-space-records
-        (read-space-records)))
+      (read-space-records))
     (else
       (error "unknown unicode data type"))))
