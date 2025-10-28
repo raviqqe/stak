@@ -33,7 +33,7 @@ for type in downcase fold space upcase; do
 (write
   (case '$type
     ((space)
-      (cdddr (cdddr $type-table)))
+      (cddddr (cddddr $type-table)))
     (else
       $type-table)))
 EOF
