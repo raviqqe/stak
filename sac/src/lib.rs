@@ -15,6 +15,8 @@ pub mod __private {
     pub use main_error;
     #[cfg(feature = "libc")]
     pub use origin;
+    #[cfg(feature = "libc")]
+    pub use dlmalloc;
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
@@ -112,6 +114,7 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
+            dlmalloc::GlobalDlmalloc,
             origin::program::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
@@ -123,10 +126,13 @@ macro_rules! libc_main {
             stak_vm::Vm,
         };
 
+        #[global_allocator]
+        static GLOBAL_ALLOCATOR: GlobalDlmalloc = GlobalDlmalloc;
+
         #[cfg(not(test))]
         #[panic_handler]
         fn panic(_info: &core::panic::PanicInfo) -> ! {
-            unsafe { exit(1) }
+            exit(1)
         }
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
