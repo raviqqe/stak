@@ -11,8 +11,6 @@ pub extern crate std;
 pub mod __private {
     #[cfg(feature = "std")]
     pub use clap;
-    #[cfg(feature = "libc")]
-    pub use libc;
     #[cfg(feature = "std")]
     pub use main_error;
     pub use stak_configuration;
