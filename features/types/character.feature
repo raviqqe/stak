@@ -16,7 +16,7 @@ Feature: Character
       | #\\newline         |
       | (integer->char 65) |
 
-  Scenario Outline: Check a character category
+  Scenario Outline: Check a character property
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
@@ -37,7 +37,7 @@ Feature: Character
       | char-numeric?    | 9     | A      |
       | char-numeric?    | A     | B      |
 
-  Scenario Outline: Check a character category
+  Scenario Outline: Check a whitespace character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
