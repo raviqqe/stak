@@ -11,12 +11,12 @@ pub extern crate std;
 pub mod __private {
     #[cfg(feature = "std")]
     pub use clap;
+    #[cfg(feature = "libc")]
+    pub use dlmalloc;
     #[cfg(feature = "std")]
     pub use main_error;
     #[cfg(feature = "libc")]
     pub use origin;
-    #[cfg(feature = "libc")]
-    pub use dlmalloc;
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
