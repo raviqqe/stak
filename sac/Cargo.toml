@@ -39,7 +39,7 @@ libc = [
   "stak-device/libc",
   "stak-file/libc",
   "stak-process-context/libc",
-  "stak-time/libc"
+  "stak-time/libc",
 ]
 std = [
   "dep:clap",
