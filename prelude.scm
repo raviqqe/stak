@@ -3049,7 +3049,7 @@
       (char<=? #\0 x #\9))
 
     (define (char-whitespace? x)
-      (and (memq x space-table) #t))
+      (and (memq (char->integer x) space-table) #t))
 
     (define (char-lower-case? x)
       (not (eqv? x (char-upcase x))))
