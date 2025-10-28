@@ -9,6 +9,10 @@ pub struct Heap<T> {
 
 impl<T> Heap<T> {
     /// Creates a heap.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `len` is zero or if an allocation fails.
     pub fn new(len: usize, default: impl Fn() -> T) -> Self {
         let mut this = Self {
             // SAFETY: We allow memory access only within `len`.
