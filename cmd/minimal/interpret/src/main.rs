@@ -31,12 +31,11 @@ static GLOBAL_ALLOCATOR: GlobalDlmalloc = GlobalDlmalloc;
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
-    // SAFETY: The `exit` call always succeed.
     exit(1)
 }
 
 #[cfg_attr(not(test), unsafe(no_mangle))]
-unsafe extern "C" fn main(argc: isize, argv: *const *const i8) {
+extern "C" fn main(argc: isize, argv: *const *const i8) {
     // SAFETY: Operating systems guarantee `argv` to have the length of `argc`.
     let Some(&file) = unsafe { slice::from_raw_parts(argv, argc as _) }.get(1) else {
         exit(1);

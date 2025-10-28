@@ -136,14 +136,14 @@ macro_rules! libc_main {
         }
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
-        unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
+        extern "C" fn main(argc: isize, argv: *const *const i8) {
             let mut heap = Heap::new($heap_size, Default::default);
             let mut vm = Vm::new(
                 heap.as_slice_mut(),
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
-                    LibcProcessContext::new(argc, argv),
+                    unsafe { LibcProcessContext::new(argc, argv) },
                     LibcClock::new(),
                 ),
             )
@@ -152,7 +152,7 @@ macro_rules! libc_main {
             vm.initialize(include_r7rs!($path).iter().copied()).unwrap();
             vm.run().unwrap();
 
-            0
+            exit(0);
         }
     };
 }
