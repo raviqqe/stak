@@ -3029,7 +3029,7 @@
 
     (define fold-table downcase-table)
 
-    (define space-table '(9 10 11 12 13 133))
+    (define space-table '(9 10 11 12 13 32 133 160))
 
     (define special-chars
       '(("alarm" . #\alarm)
