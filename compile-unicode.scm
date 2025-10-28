@@ -61,11 +61,6 @@
           (not (equal? to ""))
           (list (first record) to))))))
 
-(define (read-space-records)
-  (read-records
-    (lambda (record)
-      (and (eqv? (string-ref (list-ref record 2) 0) #\Z) record))))
-
 (define (parse-character-code code)
   (string->number code 16))
 
@@ -83,12 +78,6 @@
         (cons
           (cadr record)
           (map parse-character-code (cddr record)))))
-    records))
-
-(define (parse-space-records records)
-  (map
-    (lambda (record)
-      (string->number (car record) 16))
     records))
 
 (define (list->pair record)
@@ -133,6 +122,21 @@
               record
               (cons count record))
             (loop 0 records)))))))
+
+; Space
+
+(define (read-space-records)
+  (filter
+    (lambda (x)
+      (> x 255))
+    (map
+      (lambda (record)
+        (string->number (car record) 16))
+      (read-records
+        (lambda (record)
+          (and (eqv? (string-ref (list-ref record 2) 0) #\Z) record))))))
+
+; Main
 
 (define type (caddr (command-line)))
 
