@@ -13,6 +13,8 @@ pub mod __private {
     pub use clap;
     #[cfg(feature = "std")]
     pub use main_error;
+    #[cfg(feature = "libc")]
+    pub use origin;
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
