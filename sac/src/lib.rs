@@ -123,9 +123,6 @@ macro_rules! libc_main {
             stak_vm::Vm,
         };
 
-        #[global_allocator]
-        static GLOBAL_ALLOCATOR: GlobalDlmalloc = GlobalDlmalloc;
-
         #[cfg(not(test))]
         #[panic_handler]
         fn panic(_info: &core::panic::PanicInfo) -> ! {

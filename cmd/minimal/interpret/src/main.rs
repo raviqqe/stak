@@ -9,7 +9,10 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::{ffi::CStr, mem::size_of, slice};
+extern crate alloc;
+
+use alloc::alloc::alloc;
+use core::{alloc::Layout, ffi::CStr, slice};
 use origin::program::exit;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_file::LibcFileSystem;
@@ -39,7 +42,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) {
     // unsigned integers.
     let heap = unsafe {
         slice::from_raw_parts_mut(
-            libc::malloc(size_of::<Value>() * HEAP_SIZE) as *mut Value,
+            alloc(Layout::array::<Value>(HEAP_SIZE).unwrap()) as *mut Value,
             HEAP_SIZE,
         )
     };
