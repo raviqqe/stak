@@ -11,9 +11,8 @@ categories.workspace = true
 
 [dependencies]
 clap = { version = "4.5.50", features = ["derive"], optional = true }
-libc = { version = "0.2.177", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
-origin = "0.26.2"
+origin = { version = "0.26.2", default-features = false }
 stak-configuration = { path = "../configuration", version = "0.11.7" }
 stak-device = { path = "../device", version = "0.11.7" }
 stak-file = { path = "../file", version = "0.11.7" }
@@ -31,7 +30,6 @@ stak = { path = "../root" }
 float = ["stak-vm/float"]
 float62 = ["stak-vm/float62"]
 libc = [
-  "dep:libc",
   "dep:stak-libc",
   "stak-device/libc",
   "stak-file/libc",
