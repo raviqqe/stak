@@ -127,16 +127,20 @@
 (define type (caddr (command-line)))
 
 (write
-  (group-records
-    (differentiate-records
-      (cond
-        ((equal? type "downcase")
-          (read-case-records 13))
-        ((equal? type "fold")
+  (cond
+    ((equal? type "downcase")
+      (group-records
+        (differentiate-records
+          (read-case-records 13))))
+    ((equal? type "fold")
+      (group-records
+        (differentiate-records
           (filter-fold-records
             (parse-fold-records
-              (read-records))))
-        ((equal? type "upcase")
-          (read-case-records 14))
-        (else
-          (error "unknown unicode data type"))))))
+              (read-records))))))
+    ((equal? type "upcase")
+      (group-records
+        (differentiate-records
+          (read-case-records 14))))
+    (else
+      (error "unknown unicode data type"))))
