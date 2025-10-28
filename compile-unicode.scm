@@ -54,13 +54,17 @@
             (read-records filter)))))))
 
 (define (read-case-records column)
-  (parse-case-records
-    (read-records
-      (lambda (record)
-        (let ((to (list-ref record column)))
-          (and
-            (not (equal? to ""))
-            (list (first record) to)))))))
+  (read-records
+    (lambda (record)
+      (let ((to (list-ref record column)))
+        (and
+          (not (equal? to ""))
+          (list (first record) to))))))
+
+(define (read-space-records)
+  (read-records
+    (lambda (record)
+      (and (equal? (list-ref record 2) "Zs") record))))
 
 (define (parse-character-code code)
   (string->number code 16))
@@ -79,6 +83,12 @@
         (cons
           (cadr record)
           (map parse-character-code (cddr record)))))
+    records))
+
+(define (parse-space-records records)
+  (map
+    (lambda (record)
+      (string->number (car record) 16))
     records))
 
 (define (list->pair record)
@@ -131,7 +141,8 @@
     ((equal? type "downcase")
       (group-records
         (differentiate-records
-          (read-case-records 13))))
+          (parse-case-records
+            (read-case-records 13)))))
     ((equal? type "fold")
       (group-records
         (differentiate-records
@@ -141,10 +152,10 @@
     ((equal? type "upcase")
       (group-records
         (differentiate-records
-          (read-case-records 14))))
+          (parse-case-records
+            (read-case-records 14)))))
     ((equal? type "space")
-      (group-records
-        (differentiate-records
-          (read-case-records 14))))
+      (parse-space-records
+        (read-space-records)))
     (else
       (error "unknown unicode data type"))))

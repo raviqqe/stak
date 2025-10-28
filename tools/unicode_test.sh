@@ -20,7 +20,7 @@ for base in CaseFolding UnicodeData; do
   fetch_data $base >tmp/$base.txt
 done
 
-for type in downcase fold upcase; do
+for type in downcase space upcase; do
   stak compile-unicode.scm $type <tmp/UnicodeData.txt >tmp/$type.scm
 done
 
