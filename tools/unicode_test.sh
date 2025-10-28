@@ -28,7 +28,7 @@ stak compile-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
 
 for type in downcase fold space upcase; do
   cat >tmp/main.scm <<EOF
-(import (stak char) (stak cxr) (scheme write))
+(import (stak char) (scheme char) (scheme cxr) (scheme write))
 
 (write
   (case '$type

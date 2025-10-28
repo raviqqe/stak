@@ -165,4 +165,4 @@
     ((equal? type "space")
       (read-space-records))
     (else
-      (error "unknown unicode data type"))))
+      (error "unknown subcommand"))))
