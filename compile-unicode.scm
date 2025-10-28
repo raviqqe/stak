@@ -53,14 +53,6 @@
               (read-records filter))
             (read-records filter)))))))
 
-(define (read-case-records column)
-  (read-records
-    (lambda (record)
-      (let ((to (list-ref record column)))
-        (and
-          (not (equal? to ""))
-          (list (first record) to))))))
-
 (define (parse-character-code code)
   (string->number code 16))
 
@@ -123,6 +115,23 @@
               (cons count record))
             (loop 0 records)))))))
 
+; Case
+
+(define (read-case-records column)
+  (read-records
+    (lambda (record)
+      (let ((to (list-ref record column)))
+        (and
+          (not (equal? to ""))
+          (list (first record) to))))))
+
+; Fold
+
+(define (read-fold-records)
+  (filter-fold-records
+    (parse-fold-records
+      (read-records))))
+
 ; Space
 
 (define (read-space-records)
@@ -150,9 +159,7 @@
     ((equal? type "fold")
       (group-records
         (differentiate-records
-          (filter-fold-records
-            (parse-fold-records
-              (read-records))))))
+          (read-fold-records))))
     ((equal? type "upcase")
       (group-records
         (differentiate-records
