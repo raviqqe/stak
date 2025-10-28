@@ -16,7 +16,7 @@ Feature: Character
       | #\\newline         |
       | (integer->char 65) |
 
-  Scenario Outline: Check a character category
+  Scenario Outline: Check a character property
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
@@ -27,20 +27,35 @@ Feature: Character
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | predicate        | value   | output |
-      | char-alphabetic? | a       | A      |
-      | char-alphabetic? | A       | A      |
-      | char-alphabetic? | z       | A      |
-      | char-alphabetic? | Z       | A      |
-      | char-alphabetic? | 0       | B      |
-      | char-numeric?    | 0       | A      |
-      | char-numeric?    | 9       | A      |
-      | char-numeric?    | A       | B      |
-      | char-whitespace? | newline | A      |
-      | char-whitespace? | return  | A      |
-      | char-whitespace? | space   | A      |
-      | char-whitespace? | tab     | A      |
-      | char-whitespace? | A       | B      |
+      | predicate        | value | output |
+      | char-alphabetic? | a     | A      |
+      | char-alphabetic? | A     | A      |
+      | char-alphabetic? | z     | A      |
+      | char-alphabetic? | Z     | A      |
+      | char-alphabetic? | 0     | B      |
+      | char-numeric?    | 0     | A      |
+      | char-numeric?    | 9     | A      |
+      | char-numeric?    | A     | B      |
+
+  Scenario Outline: Check a whitespace character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-whitespace? <expression>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | expression            | output |
+      | #\\newline            | A      |
+      | #\\return             | A      |
+      | #\\space              | A      |
+      | #\\tab                | A      |
+      | #\\@                  | B      |
+      | #\\A                  | B      |
+      | (integer->char 12288) | A      |
 
   Scenario: Write a character
     Given a file named "main.scm" with:

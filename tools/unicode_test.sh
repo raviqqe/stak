@@ -20,15 +20,22 @@ for base in CaseFolding UnicodeData; do
   fetch_data $base >tmp/$base.txt
 done
 
-stak compile-unicode.scm downcase <tmp/UnicodeData.txt >tmp/downcase.scm
+for type in downcase space upcase; do
+  stak compile-unicode.scm $type <tmp/UnicodeData.txt >tmp/$type.scm
+done
+
 stak compile-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
-stak compile-unicode.scm upcase <tmp/UnicodeData.txt >tmp/upcase.scm
 
-for type in downcase fold upcase; do
+for type in downcase fold space upcase; do
   cat >tmp/main.scm <<EOF
-(import (stak char) (scheme write))
+(import (scheme base) (scheme char) (scheme cxr) (scheme write) (stak char))
 
-(write $type-table)
+(write
+  (case '$type
+    ((space)
+      (cddddr (cddddr $type-table)))
+    (else
+      $type-table)))
 EOF
 
   [ "$(stak tmp/main.scm)" = "$(cat tmp/$type.scm)" ]

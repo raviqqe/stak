@@ -3013,6 +3013,7 @@
     downcase-table
     upcase-table
     fold-table
+    space-table
     special-chars)
 
   (import (stak base))
@@ -3027,6 +3028,8 @@
         (24 . 1)))
 
     (define fold-table downcase-table)
+
+    (define space-table '(9 10 11 12 13 32 133 160))
 
     (define special-chars
       '(("alarm" . #\alarm)
@@ -3045,9 +3048,8 @@
     (define (char-numeric? x)
       (char<=? #\0 x #\9))
 
-    ; TODO Support Unicode.
     (define (char-whitespace? x)
-      (memv x '(#\newline #\return #\space #\tab)))
+      (and (memq (char->integer x) space-table) #t))
 
     (define (char-lower-case? x)
       (not (eqv? x (char-upcase x))))
@@ -3999,7 +4001,28 @@
         (0 . 21889)
         (30 . 1)
         (31393 31395)
-        (32 . 1)))))
+        (32 . 1)))
+
+    (set! space-table
+      (append
+        space-table
+        '(5760
+          8192
+          8193
+          8194
+          8195
+          8196
+          8197
+          8198
+          8199
+          8200
+          8201
+          8202
+          8232
+          8233
+          8239
+          8287
+          12288)))))
 
 (define-library (scheme char)
   (export

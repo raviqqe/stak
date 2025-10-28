@@ -2918,29 +2918,6 @@
   - call 1 #f 1
 - set ||
 - constant procedure 1 #f
-  - constant procedure 1 #f
-    - constant procedure 1 #f
-      - get 0
-      - constant ""
-      - call 2 #f ||
-      - constant #f
-      - call 2 #f ||
-      - if
-        - get 2
-        - call 1 #f ||
-        - get 1
-        - call 2 #f ||
-      - constant #f
-    - call 1 #f ||
-    - get 1
-    - get 4
-    - call 2 #f ||
-    - call 1 #f 1
-  - call 1 #f ||
-  - call 1 #f ||
-  - call 1 #f ||
-- set ||
-- constant procedure 1 #f
   - get 0
   - constant 16
   - call 2 #f ||
@@ -2951,47 +2928,6 @@
     - get 1
     - call 2 #f ||
   - get 1
-  - call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f ||
-    - call 1 #f ||
-    - get 1
-    - call 1 #f ||
-    - get ||
-    - get 3
-    - call 1 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-  - get 1
-  - call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f ||
-  - get 1
-  - call 1 #f ||
-  - call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f ||
-    - get 1
-    - call 1 #f ||
-    - call 2 #f ||
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f ||
-    - constant list
-      - "C"
-      - "S"
-    - call 2 #f ||
-  - get 2
-  - call 2 #f ||
   - call 2 #f ||
 - set ||
 - constant procedure 1 #f
@@ -3095,6 +3031,92 @@
   - constant #f
   - call 1 #f 1
 - set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - constant ""
+      - call 2 #f ||
+      - constant #f
+      - call 2 #f ||
+      - if
+        - get 2
+        - call 1 #f ||
+        - get 1
+        - call 2 #f ||
+      - constant #f
+    - call 1 #f ||
+    - get 1
+    - get 4
+    - call 2 #f ||
+    - call 1 #f 1
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - call 1 #f ||
+    - get 1
+    - call 1 #f ||
+    - get ||
+    - get 3
+    - call 1 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+  - get 1
+  - call 2 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - get 1
+    - call 1 #f ||
+    - call 2 #f ||
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - constant list
+      - "C"
+      - "S"
+    - call 2 #f ||
+  - get 2
+  - call 2 #f ||
+  - call 2 #f ||
+- set ||
+- constant procedure 0 #f
+  - call 0 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
+- constant procedure 0 #f
+  - constant procedure 1 #f
+    - constant 255
+    - get 1
+    - call 2 #f ||
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - constant 16
+    - call 2 #f ||
+  - constant procedure 1 #f
+    - get 0
+    - constant 2
+    - call 2 #f ||
+    - constant 0
+    - call 2 #f ||
+    - constant #\Z
+    - call 2 #f ||
+    - if
+      - get 0
+    - constant #f
+  - call 1 #f ||
+  - call 2 #f ||
+  - call 2 #f ||
+- set ||
 - call 0 #f ||
 - call 1 #f ||
 - set ||
@@ -3103,6 +3125,9 @@
 - call 2 #f ||
 - if
   - constant 13
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
   - call 1 #f ||
   - continue
 - get ||
@@ -3119,9 +3144,16 @@
 - if
   - constant 14
   - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
   - continue
-- constant "unknown unicode data type"
-- call 1 #f ||
-- call 1 #f ||
+- get ||
+- constant "space"
+- call 2 #f ||
+- if
+  - call 0 #f ||
+  - continue
+- constant "unknown subcommand"
 - call 1 #f ||
 - call 1 #f ||

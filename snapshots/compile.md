@@ -4084,6 +4084,7 @@
   - downcase-table
   - upcase-table
   - fold-table
+  - space-table
   - special-chars
   - lazy
   - delay
@@ -4719,6 +4720,16 @@
 - get downcase-table
 - set fold-table
 - constant list
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 32
+  - 133
+  - 160
+- set space-table
+- constant list
   - ("alarm" . #\alarm)
   - ("backspace" . #\backspace)
   - ("delete" . #\delete)
@@ -4749,12 +4760,12 @@
 - set char-numeric?
 - constant procedure 1 #f
   - get 0
-  - constant list
-    - #\newline
-    - #\return
-    - #\space
-    - #\tab
-  - call 2 #f memv
+  - call 1 #f char->integer
+  - get space-table
+  - call 2 #f memq
+  - if
+    - constant #t
+  - constant #f
 - set char-whitespace?
 - constant procedure 1 #f
   - get 0
@@ -8861,6 +8872,7 @@
                                             - (downcase-table . downcase-table)
                                             - (upcase-table . upcase-table)
                                             - (fold-table . fold-table)
+                                            - (space-table . space-table)
                                             - (special-chars . special-chars)
                                           - list
                                             - list

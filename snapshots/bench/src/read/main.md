@@ -1801,6 +1801,16 @@
 - set 1
 - set ||
 - constant list
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 32
+  - 133
+  - 160
+- set ||
+- constant list
   - ("alarm" . #\alarm)
   - ("backspace" . #\backspace)
   - ("delete" . #\delete)
@@ -1813,12 +1823,12 @@
 - set ||
 - constant procedure 1 #f
   - get 0
-  - constant list
-    - #\newline
-    - #\return
-    - #\space
-    - #\tab
+  - call 1 #f ||
+  - get ||
   - call 2 #f ||
+  - if
+    - constant #t
+  - constant #f
 - set ||
 - constant procedure 0 #t
   - constant procedure 7 #f
