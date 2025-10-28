@@ -13,15 +13,15 @@ categories.workspace = true
 clap = { version = "4.5.50", features = ["derive"], optional = true }
 libc = { version = "0.2.177", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
-stak-configuration = { path = "../configuration", version = "0.11.6" }
-stak-device = { path = "../device", version = "0.11.6" }
-stak-file = { path = "../file", version = "0.11.6" }
-stak-libc = { path = "../libc", version = "0.11.6", optional = true }
-stak-macro = { path = "../macro", version = "0.11.6" }
-stak-process-context = { path = "../process-context", version = "0.11.6" }
-stak-r7rs = { path = "../r7rs", version = "0.11.6" }
-stak-time = { path = "../time", version = "0.11.6" }
-stak-vm = { path = "../vm", version = "0.11.6" }
+stak-configuration = { path = "../configuration", version = "0.11.7" }
+stak-device = { path = "../device", version = "0.11.7" }
+stak-file = { path = "../file", version = "0.11.7" }
+stak-libc = { path = "../libc", version = "0.11.7", optional = true }
+stak-macro = { path = "../macro", version = "0.11.7" }
+stak-process-context = { path = "../process-context", version = "0.11.7" }
+stak-r7rs = { path = "../r7rs", version = "0.11.7" }
+stak-time = { path = "../time", version = "0.11.7" }
+stak-vm = { path = "../vm", version = "0.11.7" }
 
 [dev-dependencies]
 stak = { path = "../root" }
