@@ -15,6 +15,8 @@ pub mod __private {
     pub use main_error;
     #[cfg(feature = "libc")]
     pub use origin;
+    #[cfg(feature = "libc")]
+    pub use rustix_dlmalloc;
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
@@ -113,6 +115,7 @@ macro_rules! libc_main {
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
             origin::program::exit,
+            rustix_dlmalloc::GlobalDlmalloc,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
             stak_libc::Heap,
@@ -122,6 +125,9 @@ macro_rules! libc_main {
             stak_time::LibcClock,
             stak_vm::Vm,
         };
+
+        #[global_allocator]
+        static GLOBAL_ALLOCATOR: GlobalDlmalloc = GlobalDlmalloc;
 
         #[cfg(not(test))]
         #[panic_handler]
