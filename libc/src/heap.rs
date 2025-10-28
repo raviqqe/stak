@@ -1,5 +1,5 @@
-use alloc::alloc::{Layout, alloc, dealloc};
-use core::{ptr::write, slice};
+use alloc::alloc::{alloc, dealloc};
+use core::{alloc::Layout, ptr::write, slice};
 
 /// A memory block on a heap.
 pub struct Heap<T> {
