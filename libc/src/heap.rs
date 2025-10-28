@@ -1,4 +1,4 @@
-use alloc::alloc::{Layout, alloc};
+use alloc::alloc::{Layout, alloc, dealloc};
 use core::{ptr::write, slice};
 
 /// A memory block on a heap.
@@ -40,7 +40,7 @@ impl<T> Heap<T> {
 impl<T> Drop for Heap<T> {
     fn drop(&mut self) {
         // SAFETY: The previous `malloc` call is guaranteed to have succeeded.
-        unsafe { libc::free(self.ptr as _) }
+        unsafe { dealloc(self.ptr as _, Layout::new::<T>()) }
     }
 }
 
