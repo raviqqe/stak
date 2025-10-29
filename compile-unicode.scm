@@ -109,7 +109,7 @@
       (parse-case-records
         (read-case-records column)))))
 
-(define (compile-unmapped-case-table category column)
+(define (compile-lone-case-table category column)
   (group-records
     (differentiate-records
       (parse-case-records
@@ -164,6 +164,10 @@
       (compile-case-table 13))
     ((equal? type "fold")
       (compile-fold-table))
+    ((equal? type "lone-lower")
+      (compile-lone-case-table "Ll" 13))
+    ((equal? type "lone-upper")
+      (compile-lone-case-table "Lu" 13))
     ((equal? type "upcase")
       (compile-case-table 12))
     ((equal? type "space")
