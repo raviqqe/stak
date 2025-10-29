@@ -47,7 +47,8 @@ build_stak() (
   for directory in . cmd/minimal; do
     (
       cd $directory
-      cargo build --release
+      # spell-checker: disable-next-line
+      RUSTFLAGS=-Zlocation-detail=none cargo +nightly build --release
     )
   done
 )
