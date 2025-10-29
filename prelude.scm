@@ -3021,15 +3021,12 @@
   (import (stak base))
 
   (begin
-    (define downcase-table
-      '((65 97)
-        (24 . 1)))
-
-    (define upcase-table
-      '((97 65)
-        (24 . 1)))
-
+    (define downcase-table '((65 97) (24 . 1)))
+    (define upcase-table '((97 65) (24 . 1)))
     (define fold-table downcase-table)
+
+    (define lone-lower-table '())
+    (define lone-upper-table '())
 
     (define space-table '(9 10 11 12 13 32 133 160))
 
