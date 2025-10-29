@@ -131,7 +131,7 @@
 
 ; Space
 
-(define (read-space-records)
+(define (compile-space-records)
   (filter
     (lambda (x)
       (> x 255))
@@ -163,6 +163,6 @@
           (parse-case-records
             (read-case-records 14)))))
     ((equal? type "space")
-      (read-space-records))
+      (compile-space-records))
     (else
       (error "unknown subcommand"))))
