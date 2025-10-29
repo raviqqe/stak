@@ -109,6 +109,12 @@
       (parse-case-records
         (read-case-records column)))))
 
+(define (compile-case-table column)
+  (group-records
+    (differentiate-records
+      (parse-case-records
+        (read-case-records column)))))
+
 ; Fold
 
 (define (parse-fold-records records)
