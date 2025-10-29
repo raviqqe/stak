@@ -103,6 +103,12 @@
           (not (equal? to ""))
           (list (first record) to))))))
 
+(define (compile-case-table column)
+  (group-records
+    (differentiate-records
+      (parse-case-records
+        (read-case-records column)))))
+
 ; Fold
 
 (define (parse-fold-records records)
@@ -149,19 +155,13 @@
 (write
   (cond
     ((equal? type "downcase")
-      (group-records
-        (differentiate-records
-          (parse-case-records
-            (read-case-records 13)))))
+      (compile-case-table 13))
     ((equal? type "fold")
       (group-records
         (differentiate-records
           (read-fold-records))))
     ((equal? type "upcase")
-      (group-records
-        (differentiate-records
-          (parse-case-records
-            (read-case-records 14)))))
+      (compile-case-table 12))
     ((equal? type "space")
       (compile-space-records))
     (else
