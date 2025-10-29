@@ -56,12 +56,12 @@ Feature: Character
       | 0     | B      |
       | 9     | B      |
       | @     | B      |
-      | #\\À  | B      |
-      | #\\Ý  | B      |
-      | #\\ß  | A      |
-      | #\\à  | A      |
-      | #\\ý  | A      |
-      | #\\α  | A      |
+      | À     | B      |
+      | Ý     | B      |
+      | ß     | A      |
+      | à     | A      |
+      | ý     | A      |
+      | α     | A      |
 
   Scenario Outline: Check a upper case character
     Given a file named "main.scm" with:
@@ -82,12 +82,12 @@ Feature: Character
       | 0     | B      |
       | 9     | B      |
       | @     | B      |
-      | #\\À  | A      |
-      | #\\Ý  | A      |
-      | #\\ß  | B      |
-      | #\\à  | B      |
-      | #\\ý  | B      |
-      | #\\α  | B      |
+      | À     | A      |
+      | Ý     | A      |
+      | ß     | B      |
+      | à     | B      |
+      | ý     | B      |
+      | α     | B      |
 
   Scenario Outline: Check a whitespace character
     Given a file named "main.scm" with:
