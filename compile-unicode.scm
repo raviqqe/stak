@@ -130,14 +130,16 @@
         (member (cadr record) '("C" "S")))
       records)))
 
-(define (read-fold-records)
-  (filter-fold-records
-    (parse-fold-records
-      (read-records))))
+(define (compile-fold-table)
+  (group-records
+    (differentiate-records
+      (filter-fold-records
+        (parse-fold-records
+          (read-records))))))
 
 ; Space
 
-(define (compile-space-records)
+(define (compile-space-table)
   (filter
     (lambda (x)
       (> x 255))
@@ -157,12 +159,10 @@
     ((equal? type "downcase")
       (compile-case-table 13))
     ((equal? type "fold")
-      (group-records
-        (differentiate-records
-          (read-fold-records))))
+      (compile-fold-table))
     ((equal? type "upcase")
       (compile-case-table 12))
     ((equal? type "space")
-      (compile-space-records))
+      (compile-space-table))
     (else
       (error "unknown subcommand"))))
