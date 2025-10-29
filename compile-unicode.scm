@@ -110,15 +110,12 @@
         (read-case-records column)))))
 
 (define (compile-lone-case-table category column)
-  (group-records
-    (differentiate-records
-      (parse-case-records
-        (read-records
-          (lambda (record)
-            (let ((to (list-ref record column)))
-              (and
-                (not (equal? to ""))
-                (list (first record) to)))))))))
+  (read-records
+    (lambda (record)
+      (and
+        (equal? (caddr record) category)
+        (equal? (list-ref record column) "")
+        (parse-character-code (first record))))))
 
 ; Fold
 
