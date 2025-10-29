@@ -167,7 +167,7 @@
     ((equal? type "fold")
       (compile-fold-table))
     ((equal? type "lone-lower")
-      (compile-lone-case-table "Ll" 13))
+      (compile-lone-case-table "Ll" 12))
     ((equal? type "lone-upper")
       (compile-lone-case-table "Lu" 13))
     ((equal? type "upcase")
