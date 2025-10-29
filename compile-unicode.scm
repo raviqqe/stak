@@ -85,6 +85,20 @@
               step))
           (loop current (cdr records)))))))
 
+(define (group-codes codes)
+  (let loop ((count 0) (codes codes))
+    (if (null? codes)
+      '()
+      (let ((code (car codes))
+            (codes (cdr codes)))
+        (if (and
+             (pair? codes)
+             (= code (car codes)))
+          (loop (+ count 1) codes)
+          (cons
+            (cons count code)
+            (loop 0 codes)))))))
+
 (define (group-records records)
   (let loop ((count 0) (records records))
     (if (null? records)
@@ -118,13 +132,14 @@
         (read-case-records column)))))
 
 (define (compile-lone-case-table category column)
-  (differentiate-codes
-    (read-records
-      (lambda (record)
-        (and
-          (equal? (caddr record) category)
-          (equal? (list-ref record column) "")
-          (parse-character-code (first record)))))))
+  (group-codes
+    (differentiate-codes
+      (read-records
+        (lambda (record)
+          (and
+            (equal? (caddr record) category)
+            (equal? (list-ref record column) "")
+            (parse-character-code (first record))))))))
 
 ; Fold
 
