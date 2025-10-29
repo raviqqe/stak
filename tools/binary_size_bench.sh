@@ -48,7 +48,7 @@ build_stak() (
     (
       cd $directory
       # spell-checker: disable-next-line
-      RUSTFLAGS='-Zfmt-debug=none -Zlocation-detail=none' cargo +nightly build --release
+      RUSTFLAGS='-Zlocation-detail=none -Zfmt-debug=none' cargo +nightly build --release -Z build-std=std,panic_abort -Z build-std-features=optimize_for_size
     )
   done
 )
