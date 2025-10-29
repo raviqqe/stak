@@ -96,7 +96,9 @@
              (= code (car codes)))
           (loop (+ count 1) codes)
           (cons
-            (cons count code)
+            (if (zero? count)
+              code
+              (cons count code))
             (loop 0 codes)))))))
 
 (define (group-records records)

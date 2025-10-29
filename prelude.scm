@@ -3013,6 +3013,8 @@
     downcase-table
     upcase-table
     fold-table
+    lone-lower-table
+    lone-upper-table
     space-table
     special-chars)
 
