@@ -3041,21 +3041,6 @@
         ("space" . #\space)
         ("tab" . #\tab)))
 
-    (define (char-alphabetic? x)
-      (or (char-lower-case? x) (char-upper-case? x)))
-
-    (define (char-numeric? x)
-      (char<=? #\0 x #\9))
-
-    (define (char-whitespace? x)
-      (and (memq (char->integer x) space-table) #t))
-
-    (define (char-lower-case? x)
-      (not (eqv? x (char-upcase x))))
-
-    (define (char-upper-case? x)
-      (not (eqv? x (char-downcase x))))
-
     (define (char-case table)
       (lambda (char)
         (let loop ((codes '(0 . 0)) (rows (table)))
@@ -3086,6 +3071,44 @@
     (define char-downcase (char-case (lambda () downcase-table)))
     (define char-foldcase (char-case (lambda () fold-table)))
     (define char-upcase (char-case (lambda () upcase-table)))
+
+    (define (char-property? char table)
+      (let loop ((code 0) (codes table))
+        (let ((x (- (char->integer char) code)))
+          (or
+            (zero? x)
+            (and
+              (positive? x)
+              (pair? codes)
+              (loop
+                (+
+                  code
+                  (let ((next (car codes)))
+                    (if (number? next)
+                      next
+                      (let ((y (* (+ (car next) 1) (cdr next))))
+                        (if (zero? (remainder x (cdr next)))
+                          (min x y)
+                          y)))))
+                (cdr codes)))))))
+
+    (define (char-alphabetic? x)
+      (or (char-lower-case? x) (char-upper-case? x)))
+
+    (define (char-numeric? x)
+      (char<=? #\0 x #\9))
+
+    (define (char-whitespace? x)
+      (and (memq (char->integer x) space-table) #t))
+
+    (define (char-case? char-case lone-table)
+      (lambda (x)
+        (or
+          (not (eqv? x (char-case x)))
+          (char-property? x (lone-table)))))
+
+    (define char-lower-case? (char-case? char-upcase (lambda () lone-lower-table)))
+    (define char-upper-case? (char-case? char-downcase (lambda () lone-upper-table)))
 
     (define (compare-ci convert)
       (lambda (compare)
