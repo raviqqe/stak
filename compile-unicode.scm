@@ -62,20 +62,28 @@
       (map parse-character-code record))
     records))
 
+(define (differentiate-codes codes)
+  (let loop ((previous 0) (codes codes))
+    (if (null? codes)
+      '()
+      (cons
+        (- (car codes) previous)
+        (loop (car codes) (cdr codes))))))
+
 (define (differentiate-records records)
   (let loop ((previous '(0 0)) (records records))
     (if (null? records)
       '()
-      (let ((current (car records)))
+      (let ((record (car records)))
         (cons
           (let ((step
                   (list
-                    (- (car current) (car previous))
-                    (- (cadr current) (cadr previous)))))
+                    (- (car record) (car previous))
+                    (- (cadr record) (cadr previous)))))
             (if (= (car step) (cadr step))
               (car step)
               step))
-          (loop current (cdr records)))))))
+          (loop record (cdr records)))))))
 
 (define (group-records records)
   (let loop ((count 0) (records records))
@@ -110,12 +118,13 @@
         (read-case-records column)))))
 
 (define (compile-lone-case-table category column)
-  (read-records
-    (lambda (record)
-      (and
-        (equal? (caddr record) category)
-        (equal? (list-ref record column) "")
-        (parse-character-code (first record))))))
+  (differentiate-codes
+    (read-records
+      (lambda (record)
+        (and
+          (equal? (caddr record) category)
+          (equal? (list-ref record column) "")
+          (parse-character-code (first record)))))))
 
 ; Fold
 
