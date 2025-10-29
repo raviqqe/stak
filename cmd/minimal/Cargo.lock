@@ -21,6 +21,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c9631f8ebf7c3b5f9e3199d2158babd5b9f500b8821c44fb2090101f14a9e92"
 
 [[package]]
+name = "cfg-if"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
+
+[[package]]
+name = "dlmalloc"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "06cdfe340b16dd990c54cce79743613fa09fbb16774f33a77c9fd196f8f3fa30"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "windows-sys",
+]
+
+[[package]]
 name = "errno"
 version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -78,7 +95,8 @@ dependencies = [
 name = "mstak-interpret"
 version = "0.5.47"
 dependencies = [
- "libc",
+ "dlmalloc",
+ "origin",
  "stak-device",
  "stak-file",
  "stak-libc",
@@ -93,6 +111,17 @@ name = "noop-executor"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2210df1456ef75748760c6c7edf157afeb1cb6d3878fa0a36274db1e2e615600"
+
+[[package]]
+name = "origin"
+version = "0.26.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "692d98a33ca8355280e87c3dea4f62e3361c0fb64a76557d8d3988f070cd3c30"
+dependencies = [
+ "bitflags",
+ "libc",
+ "rustix",
+]
 
 [[package]]
 name = "proc-macro2"
@@ -180,7 +209,6 @@ dependencies = [
 name = "stak-libc"
 version = "0.11.7"
 dependencies = [
- "libc",
  "rustix",
 ]
 
@@ -239,7 +267,8 @@ dependencies = [
 name = "stak-sac"
 version = "0.11.7"
 dependencies = [
- "libc",
+ "dlmalloc",
+ "origin",
  "stak-configuration",
  "stak-device",
  "stak-file",

@@ -10,7 +10,10 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-libc = { version = "0.2.177", default-features = false }
+dlmalloc = { version = "0.2.11", features = ["global"] }
+origin = { version = "0.26.2", default-features = false, features = [
+  "libc",
+] }
 stak-device = { workspace = true }
 stak-file = { workspace = true }
 stak-libc = { workspace = true }

@@ -12,9 +12,11 @@ pub mod __private {
     #[cfg(feature = "std")]
     pub use clap;
     #[cfg(feature = "libc")]
-    pub use libc;
+    pub use dlmalloc;
     #[cfg(feature = "std")]
     pub use main_error;
+    #[cfg(feature = "libc")]
+    pub use origin;
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
@@ -112,7 +114,8 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
-            libc::exit,
+            dlmalloc::GlobalDlmalloc,
+            origin::program::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
             stak_libc::Heap,
@@ -123,21 +126,24 @@ macro_rules! libc_main {
             stak_vm::Vm,
         };
 
+        #[global_allocator]
+        static GLOBAL_ALLOCATOR: GlobalDlmalloc = GlobalDlmalloc;
+
         #[cfg(not(test))]
         #[panic_handler]
         fn panic(_info: &core::panic::PanicInfo) -> ! {
-            unsafe { exit(1) }
+            exit(1)
         }
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
-        unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
+        extern "C" fn main(argc: isize, argv: *const *const i8) {
             let mut heap = Heap::new($heap_size, Default::default);
             let mut vm = Vm::new(
                 heap.as_slice_mut(),
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
-                    LibcProcessContext::new(argc, argv),
+                    unsafe { LibcProcessContext::new(argc, argv) },
                     LibcClock::new(),
                 ),
             )
@@ -146,7 +152,7 @@ macro_rules! libc_main {
             vm.initialize(include_r7rs!($path).iter().copied()).unwrap();
             vm.run().unwrap();
 
-            0
+            exit(0);
         }
     };
 }
