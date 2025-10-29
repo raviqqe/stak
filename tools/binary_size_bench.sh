@@ -48,7 +48,7 @@ build_stak() (
     (
       cd $directory
       # spell-checker: disable-next-line
-      RUSTFLAGS=-Zlocation-detail=none cargo +nightly build --release
+      RUSTFLAGS='-Zfmt-debug=none -Zlocation-detail=none' cargo +nightly build --release
     )
   done
 )
