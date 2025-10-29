@@ -37,6 +37,60 @@ Feature: Character
       | char-numeric?    | 9     | A      |
       | char-numeric?    | A     | B      |
 
+  Scenario Outline: Check a lower case character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-lower-case? #\<value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0     | B      |
+      | 9     | B      |
+      | @     | B      |
+      | a     | A      |
+      | A     | B      |
+      | z     | A      |
+      | Z     | B      |
+      | ẞ     | B      |
+      | À     | B      |
+      | Ý     | B      |
+      | ß     | A      |
+      | à     | A      |
+      | ý     | A      |
+      | α     | A      |
+
+  Scenario Outline: Check a upper case character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-upper-case? #\<value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0     | B      |
+      | 9     | B      |
+      | @     | B      |
+      | A     | A      |
+      | a     | B      |
+      | Z     | A      |
+      | z     | B      |
+      | ẞ     | A      |
+      | À     | A      |
+      | Ý     | A      |
+      | ß     | B      |
+      | à     | B      |
+      | ý     | B      |
+      | α     | B      |
+
   Scenario Outline: Check a whitespace character
     Given a file named "main.scm" with:
       """scheme

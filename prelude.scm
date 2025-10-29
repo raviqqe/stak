@@ -3013,21 +3013,20 @@
     downcase-table
     upcase-table
     fold-table
+    lone-lower-table
+    lone-upper-table
     space-table
     special-chars)
 
   (import (stak base))
 
   (begin
-    (define downcase-table
-      '((65 97)
-        (24 . 1)))
-
-    (define upcase-table
-      '((97 65)
-        (24 . 1)))
-
+    (define downcase-table '((65 97) (24 . 1)))
+    (define upcase-table '((97 65) (24 . 1)))
     (define fold-table downcase-table)
+
+    (define lone-lower-table '())
+    (define lone-upper-table '())
 
     (define space-table '(9 10 11 12 13 32 133 160))
 
@@ -3041,21 +3040,6 @@
         ("return" . #\return)
         ("space" . #\space)
         ("tab" . #\tab)))
-
-    (define (char-alphabetic? x)
-      (or (char-lower-case? x) (char-upper-case? x)))
-
-    (define (char-numeric? x)
-      (char<=? #\0 x #\9))
-
-    (define (char-whitespace? x)
-      (and (memq (char->integer x) space-table) #t))
-
-    (define (char-lower-case? x)
-      (not (eqv? x (char-upcase x))))
-
-    (define (char-upper-case? x)
-      (not (eqv? x (char-downcase x))))
 
     (define (char-case table)
       (lambda (char)
@@ -3087,6 +3071,44 @@
     (define char-downcase (char-case (lambda () downcase-table)))
     (define char-foldcase (char-case (lambda () fold-table)))
     (define char-upcase (char-case (lambda () upcase-table)))
+
+    (define (char-property? char table)
+      (let loop ((code 0) (codes table))
+        (let ((x (- (char->integer char) code)))
+          (or
+            (zero? x)
+            (and
+              (positive? x)
+              (pair? codes)
+              (loop
+                (+
+                  code
+                  (let ((next (car codes)))
+                    (if (number? next)
+                      next
+                      (let ((y (* (+ (car next) 1) (cdr next))))
+                        (if (zero? (remainder x (cdr next)))
+                          (min x y)
+                          y)))))
+                (cdr codes)))))))
+
+    (define (char-alphabetic? x)
+      (or (char-lower-case? x) (char-upper-case? x)))
+
+    (define (char-numeric? x)
+      (char<=? #\0 x #\9))
+
+    (define (char-whitespace? x)
+      (and (memq (char->integer x) space-table) #t))
+
+    (define (char-case? char-case lone-table)
+      (lambda (x)
+        (or
+          (not (eqv? x (char-case x)))
+          (char-property? x (lone-table)))))
+
+    (define char-lower-case? (char-case? char-upcase (lambda () lone-lower-table)))
+    (define char-upper-case? (char-case? char-downcase (lambda () lone-upper-table)))
 
     (define (compare-ci convert)
       (lambda (compare)
@@ -3999,6 +4021,257 @@
         (30 . 1)
         (31393 31395)
         (32 . 1)))
+
+    (set! lone-lower-table
+      '(223
+        89
+        17
+        68
+        29
+        1
+        15
+        4
+        50
+        49
+        19
+        (4 . 1)
+        28
+        3
+        2
+        3
+        (1 . 1)
+        3
+        5
+        6
+        1
+        2
+        3
+        1
+        2
+        (5 . 1)
+        2
+        1
+        2
+        3
+        (1 . 1)
+        7
+        (3 . 1)
+        (1 . 2)
+        (6 . 1)
+        3
+        (15 . 1)
+        225
+        32
+        76
+        356
+        39
+        1
+        6008
+        (42 . 1)
+        64
+        (11 . 1)
+        3
+        (1 . 1)
+        2
+        (14 . 1)
+        2
+        (10 . 1)
+        252
+        (3 . 1)
+        2
+        1
+        2
+        177
+        (2 . 2)
+        92
+        (1 . 2)
+        1
+        11
+        (1 . 2)
+        1
+        11
+        1
+        3
+        1
+        11
+        (1 . 1)
+        2
+        1
+        11
+        (1 . 2)
+        1
+        275
+        4
+        1
+        4
+        28
+        (1 . 5)
+        3
+        1
+        9
+        (2 . 1)
+        2856
+        (1 . 3)
+        (3 . 1)
+        105
+        31308
+        1
+        64
+        (6 . 1)
+        22
+        7
+        26
+        36
+        2
+        37
+        822
+        (33 . 1)
+        2
+        (5 . 1)
+        6
+        (7 . 1)
+        20376
+        (5 . 1)
+        13
+        (3 . 1)
+        55555
+        (24 . 1)
+        27
+        (5 . 1)
+        2
+        (16 . 1)
+        27
+        (24 . 1)
+        27
+        (2 . 1)
+        (1 . 2)
+        (5 . 1)
+        2
+        (9 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (26 . 1)
+        29
+        (23 . 1)
+        2
+        (4 . 1)
+        27
+        (23 . 1)
+        2
+        (4 . 1)
+        27
+        (23 . 1)
+        2
+        (4 . 1)
+        27
+        (23 . 1)
+        2
+        (4 . 1)
+        27
+        (23 . 1)
+        2
+        (4 . 1)
+        2
+        1845
+        (8 . 1)
+        2
+        (18 . 1)
+        7
+        (4 . 1)))
+
+    (set! lone-upper-table
+      '(978
+        (1 . 1)
+        7470
+        5
+        4
+        (1 . 1)
+        3
+        (1 . 1)
+        3
+        4
+        (3 . 1)
+        7
+        (1 . 4)
+        1
+        3
+        1
+        2
+        11
+        1
+        6
+        111291
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        2
+        1
+        (1 . 3)
+        1
+        3
+        (2 . 1)
+        2
+        (6 . 1)
+        27
+        (24 . 1)
+        27
+        1
+        2
+        (2 . 1)
+        3
+        (6 . 1)
+        2
+        (5 . 1)
+        28
+        1
+        2
+        (2 . 1)
+        2
+        (3 . 1)
+        2
+        4
+        (5 . 1)
+        28
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        27
+        (24 . 1)
+        31
+        (23 . 1)
+        34
+        (23 . 1)
+        34
+        (23 . 1)
+        34
+        (23 . 1)
+        34
+        (23 . 1)
+        34))
 
     (set! space-table
       (append

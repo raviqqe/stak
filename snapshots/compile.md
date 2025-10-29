@@ -4084,6 +4084,8 @@
   - downcase-table
   - upcase-table
   - fold-table
+  - lone-lower-table
+  - lone-upper-table
   - space-table
   - special-chars
   - lazy
@@ -4719,6 +4721,10 @@
 - set upcase-table
 - get downcase-table
 - set fold-table
+- constant ()
+- set lone-lower-table
+- constant ()
+- set lone-upper-table
 - constant list
   - 9
   - 10
@@ -4740,49 +4746,6 @@
   - ("space" . #\space)
   - ("tab" . #\tab)
 - set special-chars
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 0
-    - if
-      - get 0
-    - get 2
-    - call 1 #f char-upper-case?
-  - call 1 #f $$close
-  - get 1
-  - call 1 #f char-lower-case?
-  - call 1 #f 1
-- set char-alphabetic?
-- constant procedure 1 #f
-  - constant #\0
-  - get 1
-  - constant #\9
-  - call 3 #f char<=?
-- set char-numeric?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f char->integer
-  - get space-table
-  - call 2 #f memq
-  - if
-    - constant #t
-  - constant #f
-- set char-whitespace?
-- constant procedure 1 #f
-  - get 0
-  - get 1
-  - call 1 #f char-upcase
-  - call 2 #f eqv?
-  - constant #f
-  - call 2 #f eq?
-- set char-lower-case?
-- constant procedure 1 #f
-  - get 0
-  - get 1
-  - call 1 #f char-downcase
-  - call 2 #f eqv?
-  - constant #f
-  - call 2 #f eq?
-- set char-upper-case?
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -4892,6 +4855,134 @@
   - get upcase-table
 - call 1 #f ||
 - set char-upcase
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - if
+            - get 0
+          - get 2
+          - call 1 #f positive?
+          - if
+            - get 4
+            - call 1 #f pair?
+            - if
+              - get 5
+              - constant procedure 1 #f
+                - get 0
+                - call 1 #f number?
+                - if
+                  - get 0
+                - constant procedure 1 #f
+                  - get 7
+                  - get 3
+                  - call 1 #f cdr
+                  - call 2 #f remainder
+                  - constant 0
+                  - call 2 #f eq?
+                  - if
+                    - get 7
+                    - get 1
+                    - call 2 #f min
+                  - get 0
+                - call 1 #f $$close
+                - get 1
+                - call 1 #f car
+                - constant 1
+                - call 2 #f ||
+                - get 2
+                - call 1 #f cdr
+                - call 2 #f ||
+                - call 1 #f 1
+              - call 1 #f $$close
+              - get 6
+              - call 1 #f car
+              - call 1 #f 1
+              - set 1
+              - call 2 #f ||
+              - get 5
+              - call 1 #f cdr
+              - call 2 #f 9
+            - constant #f
+          - constant #f
+        - call 1 #f $$close
+        - get 1
+        - constant 0
+        - call 2 #f eq?
+        - call 1 #f 1
+      - call 1 #f $$close
+      - get 7
+      - call 1 #f char->integer
+      - get 3
+      - call 2 #f ||
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set 1
+    - constant 0
+    - get 3
+    - call 2 #f 2
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - call 1 #f char-upper-case?
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f char-lower-case?
+  - call 1 #f 1
+- set char-alphabetic?
+- constant procedure 1 #f
+  - constant #\0
+  - get 1
+  - constant #\9
+  - call 3 #f char<=?
+- set char-numeric?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f char->integer
+  - get space-table
+  - call 2 #f memq
+  - if
+    - constant #t
+  - constant #f
+- set char-whitespace?
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 2
+      - call 0 #f 5
+      - call 2 #f ||
+    - call 1 #f $$close
+    - get 1
+    - get 2
+    - call 1 #f 6
+    - call 2 #f eqv?
+    - constant #f
+    - call 2 #f eq?
+    - call 1 #f 1
+  - call 1 #f $$close
+- set ||
+- get char-upcase
+- constant procedure 0 #f
+  - get lone-lower-table
+- call 2 #f ||
+- set char-lower-case?
+- get char-downcase
+- constant procedure 0 #f
+  - get lone-upper-table
+- call 2 #f ||
+- set char-upper-case?
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 2 #f
@@ -8872,6 +8963,8 @@
                                             - (downcase-table . downcase-table)
                                             - (upcase-table . upcase-table)
                                             - (fold-table . fold-table)
+                                            - (lone-lower-table . lone-lower-table)
+                                            - (lone-upper-table . lone-upper-table)
                                             - (space-table . space-table)
                                             - (special-chars . special-chars)
                                           - list
