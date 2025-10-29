@@ -14,7 +14,7 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@astrojs/preact": "^4.1.1",
+    "@astrojs/preact": "^4.1.2",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/starlight": "^0.36.1",
     "@monza-editor/preact": "^0.1.9",
