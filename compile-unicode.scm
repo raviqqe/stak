@@ -74,16 +74,16 @@
   (let loop ((previous '(0 0)) (records records))
     (if (null? records)
       '()
-      (let ((record (car records)))
+      (let ((current (car records)))
         (cons
           (let ((step
                   (list
-                    (- (car record) (car previous))
-                    (- (cadr record) (cadr previous)))))
+                    (- (car current) (car previous))
+                    (- (cadr current) (cadr previous)))))
             (if (= (car step) (cadr step))
               (car step)
               step))
-          (loop record (cdr records)))))))
+          (loop current (cdr records)))))))
 
 (define (group-records records)
   (let loop ((count 0) (records records))
