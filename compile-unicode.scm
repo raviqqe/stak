@@ -141,11 +141,9 @@
 
 (define (compile-space-table)
   (filter
-    (lambda (x)
-      (> x 255))
+    (lambda (x) (> x 255))
     (map
-      (lambda (record)
-        (string->number (car record) 16))
+      (lambda (record) (string->number (car record) 16))
       (read-records
         (lambda (record)
           (and (eqv? (string-ref (list-ref record 2) 0) #\Z) record))))))
