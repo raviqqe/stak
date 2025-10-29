@@ -113,7 +113,12 @@
   (group-records
     (differentiate-records
       (parse-case-records
-        (read-case-records column)))))
+        (read-records
+          (lambda (record)
+            (let ((to (list-ref record column)))
+              (and
+                (not (equal? to ""))
+                (list (first record) to)))))))))
 
 ; Fold
 
