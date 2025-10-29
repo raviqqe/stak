@@ -3054,6 +3054,13 @@
   - call 1 #f ||
 - set ||
 - constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
+- constant procedure 1 #f
   - constant procedure 1 #f
     - get 0
     - call 1 #f ||
@@ -3091,6 +3098,8 @@
   - call 0 #f ||
   - call 1 #f ||
   - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
 - set ||
 - constant procedure 0 #f
   - constant procedure 1 #f
@@ -3126,26 +3135,18 @@
 - if
   - constant 13
   - call 1 #f ||
-  - call 1 #f ||
-  - call 1 #f ||
-  - call 1 #f ||
   - continue
 - get ||
 - constant "fold"
 - call 2 #f ||
 - if
   - call 0 #f ||
-  - call 1 #f ||
-  - call 1 #f ||
   - continue
 - get ||
 - constant "upcase"
 - call 2 #f ||
 - if
-  - constant 14
-  - call 1 #f ||
-  - call 1 #f ||
-  - call 1 #f ||
+  - constant 12
   - call 1 #f ||
   - continue
 - get ||
