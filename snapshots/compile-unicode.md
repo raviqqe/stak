@@ -2937,6 +2937,32 @@
       - call 1 #f ||
       - if
         - constant ()
+      - get 0
+      - call 1 #f ||
+      - get 2
+      - call 2 #f ||
+      - get 1
+      - call 1 #f ||
+      - get 2
+      - call 1 #f ||
+      - call 2 #f 6
+      - call 2 #f ||
+    - call 1 #f ||
+    - set 1
+    - constant 0
+    - get 3
+    - call 2 #f 2
+  - call 1 #f ||
+  - constant #f
+  - call 1 #f 1
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - get 0
+      - call 1 #f ||
+      - if
+        - constant ()
       - constant procedure 1 #f
         - constant procedure 1 #f
           - get 0
@@ -2975,6 +3001,57 @@
     - constant list
       - 0
       - 0
+    - get 3
+    - call 2 #f 2
+  - call 1 #f ||
+  - constant #f
+  - call 1 #f 1
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - get 0
+      - call 1 #f ||
+      - if
+        - constant ()
+      - constant procedure 2 #f
+        - get 0
+        - call 1 #f ||
+        - if
+          - get 1
+          - get 1
+          - call 1 #f ||
+          - call 2 #f ||
+          - continue
+        - constant #f
+        - if
+          - get 4
+          - constant 1
+          - call 2 #f ||
+          - get 1
+          - call 2 #f 8
+        - get 4
+        - constant 0
+        - call 2 #f ||
+        - if
+          - get 1
+          - continue
+        - get 4
+        - get 2
+        - call 2 #f ||
+        - constant 0
+        - get 2
+        - call 2 #f 9
+        - call 2 #f ||
+      - call 1 #f ||
+      - get 1
+      - call 1 #f ||
+      - get 2
+      - call 1 #f ||
+      - call 2 #f 2
+    - call 1 #f ||
+    - set 1
+    - constant 0
     - get 3
     - call 2 #f 2
   - call 1 #f ||
@@ -3055,6 +3132,29 @@
 - set ||
 - constant procedure 1 #f
   - get 0
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - get 4
+    - call 2 #f ||
+    - if
+      - get 0
+      - get 3
+      - call 2 #f ||
+      - constant ""
+      - call 2 #f ||
+      - if
+        - get 0
+        - call 1 #f ||
+        - call 1 #f ||
+      - constant #f
+    - constant #f
   - call 1 #f ||
   - call 1 #f ||
   - call 1 #f ||
@@ -3141,6 +3241,22 @@
 - call 2 #f ||
 - if
   - call 0 #f ||
+  - continue
+- get ||
+- constant "lone-lower"
+- call 2 #f ||
+- if
+  - constant "Ll"
+  - constant 12
+  - call 2 #f ||
+  - continue
+- get ||
+- constant "lone-upper"
+- call 2 #f ||
+- if
+  - constant "Lu"
+  - constant 13
+  - call 2 #f ||
   - continue
 - get ||
 - constant "upcase"

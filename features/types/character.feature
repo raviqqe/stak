@@ -49,13 +49,14 @@ Feature: Character
 
     Examples:
       | value | output |
+      | 0     | B      |
+      | 9     | B      |
+      | @     | B      |
       | a     | A      |
       | A     | B      |
       | z     | A      |
       | Z     | B      |
-      | 0     | B      |
-      | 9     | B      |
-      | @     | B      |
+      | ẞ     | B      |
       | À     | B      |
       | Ý     | B      |
       | ß     | A      |
@@ -75,13 +76,14 @@ Feature: Character
 
     Examples:
       | value | output |
-      | a     | B      |
-      | A     | A      |
-      | z     | B      |
-      | Z     | A      |
       | 0     | B      |
       | 9     | B      |
       | @     | B      |
+      | A     | A      |
+      | a     | B      |
+      | Z     | A      |
+      | z     | B      |
+      | ẞ     | A      |
       | À     | A      |
       | Ý     | A      |
       | ß     | B      |
