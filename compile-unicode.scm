@@ -103,6 +103,12 @@
           (not (equal? to ""))
           (list (first record) to))))))
 
+(define (compile-case-table column)
+  (group-records
+    (differentiate-records
+      (parse-case-records
+        (read-case-records column)))))
+
 ; Fold
 
 (define (parse-fold-records records)
@@ -124,20 +130,20 @@
         (member (cadr record) '("C" "S")))
       records)))
 
-(define (read-fold-records)
-  (filter-fold-records
-    (parse-fold-records
-      (read-records))))
+(define (compile-fold-table)
+  (group-records
+    (differentiate-records
+      (filter-fold-records
+        (parse-fold-records
+          (read-records))))))
 
 ; Space
 
-(define (read-space-records)
+(define (compile-space-table)
   (filter
-    (lambda (x)
-      (> x 255))
+    (lambda (x) (> x 255))
     (map
-      (lambda (record)
-        (string->number (car record) 16))
+      (lambda (record) (string->number (car record) 16))
       (read-records
         (lambda (record)
           (and (eqv? (string-ref (list-ref record 2) 0) #\Z) record))))))
@@ -149,20 +155,12 @@
 (write
   (cond
     ((equal? type "downcase")
-      (group-records
-        (differentiate-records
-          (parse-case-records
-            (read-case-records 13)))))
+      (compile-case-table 13))
     ((equal? type "fold")
-      (group-records
-        (differentiate-records
-          (read-fold-records))))
+      (compile-fold-table))
     ((equal? type "upcase")
-      (group-records
-        (differentiate-records
-          (parse-case-records
-            (read-case-records 14)))))
+      (compile-case-table 12))
     ((equal? type "space")
-      (read-space-records))
+      (compile-space-table))
     (else
       (error "unknown subcommand"))))
