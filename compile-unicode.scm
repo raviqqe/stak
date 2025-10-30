@@ -23,7 +23,8 @@
     (read-char))
 
   (let ((token (parse-token)))
-    (cons token
+    (cons
+      token
       (if (let ((character (read-char)))
            (or
              (eof-object? character)
