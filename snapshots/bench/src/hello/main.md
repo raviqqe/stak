@@ -892,9 +892,7 @@
             - constant procedure 1 #f
               - get 0
               - if
-                - call 0 #f ||
-                - set 0
-                - constant " backtrace: "
+                - constant " ["
                 - call 1 #f ||
                 - set 0
                 - get 0
@@ -902,7 +900,7 @@
                 - call 1 #f ||
                 - set 0
                 - constant procedure 1 #f
-                  - constant " -> "
+                  - constant " "
                   - call 1 #f ||
                   - set 0
                   - get 0
@@ -910,6 +908,9 @@
                 - get 1
                 - call 1 #f ||
                 - call 2 #f ||
+                - set 0
+                - constant "]"
+                - call 1 #f ||
               - constant #f
             - get 8
             - call 1 #f ||
