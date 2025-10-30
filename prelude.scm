@@ -3093,7 +3093,9 @@
                 (cdr codes)))))))
 
     (define (char-alphabetic? x)
-      (or (char-lower-case? x) (char-upper-case? x)))
+      (or
+        (char-lower-case? x)
+        (char-upper-case? x)))
 
     (define (char-numeric? x)
       (char<=? #\0 x #\9))
