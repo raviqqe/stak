@@ -211,7 +211,7 @@ jobs:
           - chibi-scheme
     runs-on: ubuntu-latest
     env:
-      STAK_HOST: ${{ matrix.host  }}
+      STAK_HOST: ${{ matrix.host }}
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
