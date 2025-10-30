@@ -201,7 +201,17 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/profile_test.sh
   unicode:
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          -
+          - guile
+          - gosh
+          - chibi-scheme
     runs-on: ubuntu-latest
+    env:
+      STAK_HOST: ${{ matrix.host  }}
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
