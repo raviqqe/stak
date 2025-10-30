@@ -215,6 +215,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup-scheme
       - run: tools/unicode_test.sh
   test:
     needs:
