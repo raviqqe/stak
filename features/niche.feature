@@ -32,7 +32,7 @@ Feature: Niche functionalities
     When I run `stak main.scm`
     Then the exit status should be 1
     And the stderr should contain "foo"
-    And the stderr should contain "backtrace: error -> foo -> bar -> baz"
+    And the stderr should contain "[error foo bar baz]"
 
   Scenario: Show an unknown irritant of an error
     Given a file named "main.scm" with:
