@@ -2171,6 +2171,21 @@
 - set ||
 - get ||
 - set ||
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - call 1 #f ||
+  - if
+    - get 0
+    - call 1 #f ||
+    - call 1 #f ||
+  - get 0
+- set ||
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
 - constant procedure 2 #f
   - get ||
   - get 2
@@ -3070,10 +3085,15 @@
         - get 1
         - call 1 #f ||
         - if
-          - get 1
-          - get 1
+          - get 0
           - call 1 #f ||
-          - call 2 #f ||
+          - if
+            - get 1
+            - get 1
+            - call 1 #f ||
+            - call 2 #f ||
+            - continue
+          - constant #f
           - continue
         - constant #f
         - if
