@@ -2392,14 +2392,14 @@
                         (error-object-irritants exception))
                       (let ((backtrace (error-object-backtrace exception)))
                         (when backtrace
-                          (newline)
-                          (write-string "  backtrace: ")
+                          (write-string " [")
                           (write-irritant (car backtrace))
                           (for-each
                             (lambda (value)
-                              (write-string " -> ")
+                              (write-string " ")
                               (write-irritant value))
-                            (cdr backtrace)))))
+                            (cdr backtrace))
+                          (write-string "]"))))
                     (write-irritant exception))
                   (newline)
                   ($halt))))))
