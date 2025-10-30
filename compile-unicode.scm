@@ -109,6 +109,7 @@
             (records (cdr records)))
         (if (and
              (number? record)
+             (pair? records)
              (eq? record (car records)))
           (loop (+ count 1) records)
           (cons
@@ -184,7 +185,7 @@
 
 ; Main
 
-(define type (caddr (command-line)))
+(define type (last (command-line)))
 
 (write
   (cond
