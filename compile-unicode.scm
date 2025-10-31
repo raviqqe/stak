@@ -124,16 +124,11 @@
 (define (compile-alphabetic-table)
   (group-codes
     (differentiate-codes
-      (apply
-        append
-        (map
-          (lambda (category)
-            (read-records
-              (lambda (record)
-                (and
-                  (equal? (caddr record) category)
-                  (parse-character-code (car record))))))
-          '("Lm" "Lo" "Lt" "Nl"))))))
+      (read-records
+        (lambda (record)
+          (and
+            (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
+            (parse-character-code (car record))))))))
 
 ; Case
 
