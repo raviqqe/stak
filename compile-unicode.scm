@@ -121,7 +121,7 @@
 
 ; Alphabetic
 
-(define (read-alphabetic-records)
+(define (compile-alphabetic-table)
   #f)
 
 ; Case
@@ -195,6 +195,8 @@
 
 (write
   (cond
+    ((equal? type "alphabetic")
+      (compile-alphabetic-table))
     ((equal? type "downcase")
       (compile-case-table 13))
     ((equal? type "fold")
