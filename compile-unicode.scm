@@ -47,7 +47,7 @@
               (parameterize ((current-input-port (open-input-string line)))
                 (filter (parse-tokens)))))
         (when record
-          (set-cdr! pair (cons record '())))))))
+          (set-cdr! pair (list record)))))))
 
 (define (parse-character-code code)
   (string->number code 16))
