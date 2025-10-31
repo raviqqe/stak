@@ -42,7 +42,7 @@
   (define pair root)
 
   (do ((line (read-line) (read-line)))
-    ((eof-object? line) (cdr pair))
+    ((eof-object? line) (cdr root))
     (unless (or (equal? line "") (eqv? (string-ref line 0) #\#))
       (let ((record
               (parameterize ((current-input-port (open-input-string line)))
