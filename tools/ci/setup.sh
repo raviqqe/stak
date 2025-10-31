@@ -12,10 +12,3 @@ for command in agoa gherkin-format gherkin2markdown muffet; do
 done
 
 echo LD_LIBRARY_PATH=$(brew --prefix lua@5.4)/lib:$LD_LIBRARY_PATH >>$GITHUB_ENV
-
-git clone https://gitlab.com/jobol/tr7 /tmp/tr7
-(
-  cd /tmp/tr7
-  make
-  cp tr7i /usr/local/bin
-)

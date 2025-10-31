@@ -3744,6 +3744,7 @@
   - string-foldcase
   - string-upcase
   - digit-value
+  - alphabetic-table
   - downcase-table
   - upcase-table
   - fold-table
@@ -4370,6 +4371,8 @@
 - get current-output-port
 - call 2 #f ||
 - set with-output-to-file
+- constant ()
+- set alphabetic-table
 - constant list
   - list
     - 65
@@ -4595,8 +4598,17 @@
     - get 0
     - if
       - get 0
-    - get 2
+    - constant procedure 1 #f
+      - get 0
+      - if
+        - get 0
+      - get 4
+      - get alphabetic-table
+      - call 2 #f ||
+    - call 1 #f $$close
+    - get 3
     - call 1 #f char-upper-case?
+    - call 1 #f 1
   - call 1 #f $$close
   - get 1
   - call 1 #f char-lower-case?
@@ -8623,6 +8635,7 @@
                                             - (string-foldcase . string-foldcase)
                                             - (string-upcase . string-upcase)
                                             - (digit-value . digit-value)
+                                            - (alphabetic-table . alphabetic-table)
                                             - (downcase-table . downcase-table)
                                             - (upcase-table . upcase-table)
                                             - (fold-table . fold-table)

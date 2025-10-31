@@ -2169,8 +2169,6 @@
   - constant #f
   - call 2 #f 2
 - set ||
-- get ||
-- set ||
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
@@ -2859,79 +2857,103 @@
   - call 1 #f 1
 - set ||
 - constant procedure 0 #t
-  - constant procedure 1 #f
-    - get 2
+  - constant procedure 3 #f
+    - get 4
     - call 1 #f ||
     - if
       - constant procedure 1 #f
         - get 0
       - continue
-    - get 2
+    - get 4
     - call 1 #f ||
+    - set 3
+    - constant #f
+    - constant ()
+    - call 2 #f ||
+    - set 2
+    - get 1
     - set 1
     - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - constant ()
       - constant procedure 1 #f
         - get 0
-        - if
-          - get 0
-        - get 2
-        - constant 0
-        - call 2 #f ||
-        - constant #\#
-        - call 2 #f ||
-      - call 1 #f ||
-      - get 1
-      - constant ""
-      - call 2 #f ||
-      - call 1 #f 1
-      - set 1
-      - if
-        - get 2
         - call 1 #f ||
-      - constant procedure 1 #f
-        - get 0
         - if
-          - get 0
           - get 5
           - call 1 #f ||
-          - call 2 #f ||
-        - get 4
-        - call 1 #f ||
-      - call 1 #f ||
-      - constant procedure 1 #f
         - constant procedure 1 #f
-          - constant procedure 0 #f
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 4
-          - call 1 #f ||
-          - constant procedure 0 #f
-            - call 0 #f ||
-            - call 1 #f 10
-          - call 1 #f ||
-          - constant procedure 0 #f
-            - get 3
-            - call 1 #f 6
-          - call 1 #f ||
-          - call 3 #f ||
+          - get 0
+          - if
+            - get 0
+          - get 2
+          - constant 0
+          - call 2 #f ||
+          - constant #\#
+          - call 2 #f ||
         - call 1 #f ||
-        - call 0 #f 1
+        - get 1
+        - constant ""
+        - call 2 #f ||
         - call 1 #f 1
+        - set 1
+        - constant #f
+        - call 2 #f ||
+        - if
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 6
+              - get 1
+              - call 1 #f ||
+              - call 2 #f ||
+              - set 0
+              - get 6
+              - call 1 #f ||
+              - set 7
+              - constant #f
+            - constant #f
+          - call 1 #f ||
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 0 #f
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 4
+              - call 1 #f ||
+              - constant procedure 0 #f
+                - call 0 #f ||
+                - call 1 #f 14
+              - call 1 #f ||
+              - constant procedure 0 #f
+                - get 3
+                - call 1 #f 6
+              - call 1 #f ||
+              - call 3 #f ||
+            - call 1 #f ||
+            - call 0 #f 1
+            - call 1 #f 1
+          - call 1 #f ||
+          - get ||
+          - call 1 #f 1
+          - set 1
+          - call 1 #f 1
+          - set 1
+          - continue
+        - constant #f
+        - set 0
+        - call 0 #f ||
+        - call 1 #f 3
       - call 1 #f ||
-      - get ||
-      - call 1 #f 1
       - set 1
+      - call 0 #f ||
       - call 1 #f 1
     - call 1 #f ||
-    - call 0 #f ||
+    - constant #f
     - call 1 #f 1
   - call 1 #f ||
   - constant #f
-  - call 1 #f 1
+  - constant #f
+  - constant #f
+  - call 3 #f 3
 - set ||
 - constant procedure 1 #f
   - get 0
@@ -3129,6 +3151,25 @@
   - constant #f
   - call 1 #f 1
 - set ||
+- constant procedure 0 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - constant list
+      - "Lm"
+      - "Lo"
+      - "Lt"
+      - "Nl"
+    - call 2 #f ||
+    - if
+      - get 0
+      - call 1 #f ||
+      - call 1 #f ||
+    - constant #f
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
 - constant procedure 1 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -3250,6 +3291,12 @@
 - call 0 #f ||
 - call 1 #f ||
 - set ||
+- get ||
+- constant "alphabetic"
+- call 2 #f ||
+- if
+  - call 0 #f ||
+  - continue
 - get ||
 - constant "downcase"
 - call 2 #f ||
