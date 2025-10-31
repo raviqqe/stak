@@ -40,6 +40,8 @@ Feature: Character
       | ý     | A      |
       | Α     | A      |
       | α     | A      |
+      | あ     | A      |
+      | を     | A      |
       | @     | B      |
       | 0     | B      |
 
