@@ -119,6 +119,11 @@
               (cons count record))
             (loop 0 records)))))))
 
+; Alphabetic
+
+(define (read-alphabetic-records)
+  #f)
+
 ; Case
 
 (define (read-case-records column)
