@@ -3097,7 +3097,8 @@
     (define (char-alphabetic? x)
       (or
         (char-lower-case? x)
-        (char-upper-case? x)))
+        (char-upper-case? x)
+        (char-property? x alphabetic-table)))
 
     (define (char-numeric? x)
       (char<=? #\0 x #\9))
