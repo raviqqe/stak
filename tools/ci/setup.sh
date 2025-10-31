@@ -2,6 +2,8 @@
 
 set -e
 
+[ -n "$CI" ]
+
 brew install lua@5.4 pkgconf uutils-coreutils uutils-findutils
 cargo install stak
 
