@@ -128,7 +128,6 @@
         (lambda (record)
           (and
             (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
-            (equal? (list-ref record column) "")
             (parse-character-code (first record))))))))
 
 ; Case
