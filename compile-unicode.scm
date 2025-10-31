@@ -39,15 +39,17 @@
       (car rest)))
 
   (define root (cons #f '()))
+  (define pair root)
 
-  (do ((line (read-line) (read-line)) (pair root (cdr pair)))
+  (do ((line (read-line) (read-line)))
     ((eof-object? line) (cdr root))
     (unless (or (equal? line "") (eqv? (string-ref line 0) #\#))
       (let ((record
               (parameterize ((current-input-port (open-input-string line)))
                 (filter (parse-tokens)))))
         (when record
-          (set-cdr! pair (list record)))))))
+          (set-cdr! pair (list record))
+          (set! pair (cdr pair)))))))
 
 (define (parse-character-code code)
   (string->number code 16))
