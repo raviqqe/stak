@@ -16,7 +16,7 @@ cargo build --profile release_test
 
 export PATH=$PWD/target/release_test:$PATH
 
-for base in CaseFolding UnicodeData; do
+for base in CaseFolding PropList UnicodeData; do
   fetch_data $base >tmp/$base.txt
 done
 
