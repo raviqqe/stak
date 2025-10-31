@@ -32,6 +32,7 @@ Feature: Character
       | A     | A      |
       | z     | A      |
       | Z     | A      |
+      | @     | B      |
       | 0     | B      |
 
   Scenario Outline: Check a numeric character
@@ -48,6 +49,7 @@ Feature: Character
       | value | output |
       | 0     | A      |
       | 9     | A      |
+      | @     | B      |
       | A     | B      |
 
   Scenario Outline: Check a lower case character
