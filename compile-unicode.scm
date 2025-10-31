@@ -38,21 +38,17 @@
       (lambda (x) x)
       (car rest)))
 
-  (let ((line (read-line)))
-    (cond
-      ((eof-object? line)
-        '())
-      ((or (equal? line "") (eqv? (string-ref line 0) #\#))
-        (read-records filter))
-      (else
-        (let ((record
-                (parameterize ((current-input-port (open-input-string line)))
-                  (filter (parse-tokens)))))
-          (if record
-            (cons
-              record
-              (read-records filter))
-            (read-records filter)))))))
+  (define root (cons #f '()))
+  (define pair root)
+
+  (do ((line (read-line) (read-line)))
+    ((eof-object? line) (cdr pair))
+    (unless (or (equal? line "") (eqv? (string-ref line 0) #\#))
+      (let ((record
+              (parameterize ((current-input-port (open-input-string line)))
+                (filter (parse-tokens)))))
+        (when record
+          (set-cdr! pair (cons record '())))))))
 
 (define (parse-character-code code)
   (string->number code 16))
