@@ -39,9 +39,8 @@
       (car rest)))
 
   (define root (cons #f '()))
-  (define pair root)
 
-  (do ((line (read-line) (read-line)))
+  (do ((line (read-line) (read-line)) (pair root (cdr pair)))
     ((eof-object? line) (cdr root))
     (unless (or (equal? line "") (eqv? (string-ref line 0) #\#))
       (let ((record
