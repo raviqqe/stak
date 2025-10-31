@@ -2,10 +2,10 @@
 
 set -ex
 
-version=release-77-1
+version=final-17.0-20250910
 
 fetch_data() {
-  curl -fsSL https://raw.githubusercontent.com/unicode-org/icu/$version/icu4c/source/data/unidata/$1.txt
+  curl -fsSL https://raw.githubusercontent.com/unicode-org/unicodetools/$version/unicodetools/data/ucd/dev/$1.txt
 }
 
 cd $(dirname $0)/..
