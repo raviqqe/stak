@@ -32,6 +32,14 @@ Feature: Character
       | A     | A      |
       | z     | A      |
       | Z     | A      |
+      | À     | A      |
+      | Ý     | A      |
+      | ß     | A      |
+      | ß     | A      |
+      | à     | A      |
+      | ý     | A      |
+      | Α     | A      |
+      | α     | A      |
       | @     | B      |
       | 0     | B      |
 
