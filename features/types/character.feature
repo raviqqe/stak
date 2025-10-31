@@ -16,26 +16,51 @@ Feature: Character
       | #\\newline         |
       | (integer->char 65) |
 
-  Scenario Outline: Check a character property
+  Scenario Outline: Check an alphabetic character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
 
-      (write-u8 (if (<predicate> #\<value>) 65 66))
+      (write-u8 (if (char-alphabetic? #\<value>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | predicate        | value | output |
-      | char-alphabetic? | a     | A      |
-      | char-alphabetic? | A     | A      |
-      | char-alphabetic? | z     | A      |
-      | char-alphabetic? | Z     | A      |
-      | char-alphabetic? | 0     | B      |
-      | char-numeric?    | 0     | A      |
-      | char-numeric?    | 9     | A      |
-      | char-numeric?    | A     | B      |
+      | value | output |
+      | a     | A      |
+      | A     | A      |
+      | z     | A      |
+      | Z     | A      |
+      | À     | A      |
+      | Ý     | A      |
+      | ß     | A      |
+      | ß     | A      |
+      | à     | A      |
+      | ý     | A      |
+      | Α     | A      |
+      | α     | A      |
+      | あ     | A      |
+      | を     | A      |
+      | @     | B      |
+      | 0     | B      |
+
+  Scenario Outline: Check a numeric character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-numeric? #\<value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0     | A      |
+      | 9     | A      |
+      | @     | B      |
+      | A     | B      |
 
   Scenario Outline: Check a lower case character
     Given a file named "main.scm" with:

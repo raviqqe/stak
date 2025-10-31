@@ -38,21 +38,18 @@
       (lambda (x) x)
       (car rest)))
 
-  (let ((line (read-line)))
-    (cond
-      ((eof-object? line)
-        '())
-      ((or (equal? line "") (eqv? (string-ref line 0) #\#))
-        (read-records filter))
-      (else
-        (let ((record
-                (parameterize ((current-input-port (open-input-string line)))
-                  (filter (parse-tokens)))))
-          (if record
-            (cons
-              record
-              (read-records filter))
-            (read-records filter)))))))
+  (define root (cons #f '()))
+  (define pair root)
+
+  (do ((line (read-line) (read-line)))
+    ((eof-object? line) (cdr root))
+    (unless (or (equal? line "") (eqv? (string-ref line 0) #\#))
+      (let ((record
+              (parameterize ((current-input-port (open-input-string line)))
+                (filter (parse-tokens)))))
+        (when record
+          (set-cdr! pair (list record))
+          (set! pair (cdr pair)))))))
 
 (define (parse-character-code code)
   (string->number code 16))
@@ -119,6 +116,17 @@
               (cons count record))
             (loop 0 records)))))))
 
+; Alphabetic
+
+(define (compile-alphabetic-table)
+  (group-codes
+    (differentiate-codes
+      (read-records
+        (lambda (record)
+          (and
+            (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
+            (parse-character-code (car record))))))))
+
 ; Case
 
 (define (read-case-records column)
@@ -127,7 +135,7 @@
       (let ((to (list-ref record column)))
         (and
           (not (equal? to ""))
-          (list (first record) to))))))
+          (list (car record) to))))))
 
 (define (compile-case-table column)
   (group-records
@@ -143,7 +151,7 @@
           (and
             (equal? (caddr record) category)
             (equal? (list-ref record column) "")
-            (parse-character-code (first record))))))))
+            (parse-character-code (car record))))))))
 
 ; Fold
 
@@ -190,6 +198,8 @@
 
 (write
   (cond
+    ((equal? type "alphabetic")
+      (compile-alphabetic-table))
     ((equal? type "downcase")
       (compile-case-table 13))
     ((equal? type "fold")
