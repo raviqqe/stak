@@ -128,7 +128,7 @@
         (lambda (record)
           (and
             (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
-            (parse-character-code (first record))))))))
+            (parse-character-code (car record))))))))
 
 ; Case
 
@@ -138,7 +138,7 @@
       (let ((to (list-ref record column)))
         (and
           (not (equal? to ""))
-          (list (first record) to))))))
+          (list (car record) to))))))
 
 (define (compile-case-table column)
   (group-records
@@ -154,7 +154,7 @@
           (and
             (equal? (caddr record) category)
             (equal? (list-ref record column) "")
-            (parse-character-code (first record))))))))
+            (parse-character-code (car record))))))))
 
 ; Fold
 
