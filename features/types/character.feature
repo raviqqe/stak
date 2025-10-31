@@ -42,6 +42,8 @@ Feature: Character
       | α     | A      |
       | あ     | A      |
       | を     | A      |
+      | 한     | A      |
+      | 글     | A      |
       | @     | B      |
       | 0     | B      |
 
