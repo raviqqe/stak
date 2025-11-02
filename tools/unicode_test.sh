@@ -10,26 +10,28 @@ fetch_data() {
 
 cd $(dirname $0)/..
 
-mkdir -p tmp
+directory=tmp/unicode
+
+mkdir -p $directory
 
 cargo build --profile release_test
 
 export PATH=$PWD/target/release_test:$PATH
 
 for base in CaseFolding PropList UnicodeData; do
-  fetch_data $base >tmp/$base.txt
+  fetch_data $base >$directory/$base.txt
 done
 
 scheme=${STAK_HOST:-stak}
 
 for type in alphabetic downcase lone-lower lone-upper numeric space upcase; do
-  $scheme compile-unicode.scm $type <tmp/UnicodeData.txt >tmp/$type.scm
+  $scheme compile-unicode.scm $type <$directory/UnicodeData.txt >$directory/$type.scm
 done
 
-$scheme compile-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
+$scheme compile-unicode.scm fold <$directory/CaseFolding.txt >$directory/fold.scm
 
 for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do
-  cat >tmp/main.scm <<EOF
+  cat >$directory/main.scm <<EOF
 (import (scheme base) (scheme char) (scheme cxr) (scheme write) (stak char))
 
 (write
@@ -40,5 +42,7 @@ for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase;
       $type-table)))
 EOF
 
-  [ "$(stak tmp/main.scm)" = "$(cat tmp/$type.scm)" ]
+  stak $directory/main.scm >$directory/$type-out.scm
+
+  diff $directory/$type-out.scm $directory/$type.scm
 done
