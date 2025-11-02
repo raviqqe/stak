@@ -85,7 +85,7 @@ macro_rules! main {
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
                     OsFileSystem::new(),
-                    OsProcessContext::<0>::new(),
+                    OsProcessContext::new(),
                     OsClock::new(),
                 ),
             )?;

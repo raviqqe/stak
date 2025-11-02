@@ -6,24 +6,38 @@ use std::{
 };
 
 /// A process context provided by an operating system.
-pub struct OsProcessContext<const N: usize = 0> {
+pub struct OsProcessContext {
     arguments: LazyLock<Vec<String>>,
     environment_variables: LazyLock<Vec<(String, String)>>,
+    argument_skip: usize,
 }
 
-impl<const N: usize> OsProcessContext<N> {
+impl OsProcessContext {
     /// Creates a process context.
     pub fn new() -> Self {
         Self {
-            arguments: LazyLock::new(|| args().skip(N).collect()),
+            arguments: LazyLock::new(|| args().collect()),
             environment_variables: LazyLock::new(|| vars().collect()),
+            argument_skip: 0,
+        }
+    }
+
+    /// Sets a skip for arguments.
+    pub fn with_argument_skip(self, skip: usize) -> Self {
+        Self {
+            argument_skip: skip,
+            ..self
         }
     }
 }
 
-impl<const N: usize> ProcessContext for OsProcessContext<N> {
+impl ProcessContext for OsProcessContext {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
-        (*self.arguments).iter().map(AsRef::as_ref).rev()
+        (*self.arguments)
+            .iter()
+            .skip(self.argument_skip)
+            .map(AsRef::as_ref)
+            .rev()
     }
 
     fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
@@ -33,7 +47,7 @@ impl<const N: usize> ProcessContext for OsProcessContext<N> {
     }
 }
 
-impl<const N: usize> Default for OsProcessContext<N> {
+impl Default for OsProcessContext {
     fn default() -> Self {
         Self::new()
     }
