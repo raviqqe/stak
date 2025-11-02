@@ -10,7 +10,7 @@ fetch_data() {
 
 cd $(dirname $0)/..
 
-mkdir -p tmp
+mkdir -p tmp/unicode
 
 cargo build --profile release_test
 
@@ -29,7 +29,7 @@ done
 $scheme compile-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
 
 for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do
-  cat >tmp/main.scm <<EOF
+  cat >tmp/unicode/main.scm <<EOF
 (import (scheme base) (scheme char) (scheme cxr) (scheme write) (stak char))
 
 (write
@@ -40,5 +40,7 @@ for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase;
       $type-table)))
 EOF
 
-  [ "$(stak tmp/main.scm)" = "$(cat tmp/$type.scm)" ]
+  stak tmp/main.scm >tmp/unicode/$type_out.scm
+
+  diff tmp/unicode/$type-out.scm tmp/unicode/$out.scm
 done
