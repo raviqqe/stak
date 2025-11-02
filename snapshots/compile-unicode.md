@@ -3265,6 +3265,21 @@
 - set ||
 - constant procedure 0 #f
   - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - constant "Nd"
+    - call 2 #f ||
+    - if
+      - get 0
+      - call 1 #f ||
+      - call 1 #f ||
+    - constant #f
+  - call 1 #f ||
+  - call 1 #f ||
+  - call 1 #f ||
+- set ||
+- constant procedure 0 #f
+  - constant procedure 1 #f
     - constant 255
     - get 1
     - call 2 #f ||
@@ -3325,6 +3340,12 @@
   - constant "Lu"
   - constant 13
   - call 2 #f ||
+  - continue
+- get ||
+- constant "numeric"
+- call 2 #f ||
+- if
+  - call 0 #f ||
   - continue
 - get ||
 - constant "upcase"
