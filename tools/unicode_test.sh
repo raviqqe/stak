@@ -44,5 +44,5 @@ EOF
 
   stak $directory/main.scm >$directory/$type-out.scm
 
-  diff $directory/$type-out.scm $directory/$out.scm
+  diff $directory/$type-out.scm $directory/$type.scm
 done
