@@ -22,13 +22,13 @@ done
 
 scheme=${STAK_HOST:-stak}
 
-for type in alphabetic downcase lone-lower lone-upper space upcase; do
+for type in alphabetic downcase lone-lower lone-upper numeric space upcase; do
   $scheme compile-unicode.scm $type <tmp/UnicodeData.txt >tmp/$type.scm
 done
 
 $scheme compile-unicode.scm fold <tmp/CaseFolding.txt >tmp/fold.scm
 
-for type in alphabetic downcase fold lone-lower lone-upper space upcase; do
+for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do
   cat >tmp/main.scm <<EOF
 (import (scheme base) (scheme char) (scheme cxr) (scheme write) (stak char))
 

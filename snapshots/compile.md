@@ -4088,6 +4088,7 @@
   - fold-table
   - lone-lower-table
   - lone-upper-table
+  - numeric-table
   - space-table
   - special-chars
   - lazy
@@ -4725,6 +4726,10 @@
 - set upcase-table
 - get downcase-table
 - set fold-table
+- constant list
+  - 48
+  - (8 . 1)
+- set numeric-table
 - constant ()
 - set lone-lower-table
 - constant ()
@@ -4953,10 +4958,9 @@
   - call 1 #f 1
 - set char-alphabetic?
 - constant procedure 1 #f
-  - constant #\0
-  - get 1
-  - constant #\9
-  - call 3 #f char<=?
+  - get 0
+  - get numeric-table
+  - call 2 #f ||
 - set char-numeric?
 - constant procedure 1 #f
   - get 0
@@ -8979,6 +8983,7 @@
                                             - (fold-table . fold-table)
                                             - (lone-lower-table . lone-lower-table)
                                             - (lone-upper-table . lone-upper-table)
+                                            - (numeric-table . numeric-table)
                                             - (space-table . space-table)
                                             - (special-chars . special-chars)
                                           - list
