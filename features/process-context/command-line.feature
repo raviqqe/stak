@@ -1,4 +1,3 @@
-@command-line
 Feature: Command line
 
   Scenario: Get an argument
