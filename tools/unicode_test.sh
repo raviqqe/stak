@@ -42,7 +42,7 @@ for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase;
       $type-table)))
 EOF
 
-  stak $directory/main.scm >$directory/$type_out.scm
+  stak $directory/main.scm >$directory/$type-out.scm
 
   diff $directory/$type-out.scm $directory/$out.scm
 done
