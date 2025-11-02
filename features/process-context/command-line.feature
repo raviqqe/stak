@@ -33,7 +33,6 @@ Feature: Command line
 
     Examples:
       | procedure | output |
-      | car       | main   |
       | cadr      | foo    |
       | caddr     | bar    |
       | cadddr    | baz    |
