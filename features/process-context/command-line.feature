@@ -29,11 +29,12 @@ Feature: Command line
 
       (write-string (<procedure> (command-line)))
       """
-    When I successfully run `stak main.scm A B C`
+    When I successfully run `stak main.scm foo bar baz`
     Then the stdout should contain "<output>"
 
     Examples:
-      | procedure | output |
-      | cadr      | A      |
-      | caddr     | B      |
-      | cadddr    | C      |
+      | procedure | output   |
+      | car       | main.scm |
+      | cadr      | foo      |
+      | caddr     | bar      |
+      | cadddr    | baz      |
