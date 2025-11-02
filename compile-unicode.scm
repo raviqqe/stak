@@ -181,6 +181,17 @@
         (parse-fold-records
           (read-records))))))
 
+; Numeric
+
+(define (compile-numeric-table)
+  (group-codes
+    (differentiate-codes
+      (read-records
+        (lambda (record)
+          (and
+            (equal? (caddr record) "Nd")
+            (parse-character-code (car record))))))))
+
 ; Space
 
 (define (compile-space-table)
@@ -208,6 +219,8 @@
       (compile-lone-case-table "Ll" 12))
     ((equal? type "lone-upper")
       (compile-lone-case-table "Lu" 13))
+    ((equal? type "numeric")
+      (compile-numeric-table))
     ((equal? type "upcase")
       (compile-case-table 12))
     ((equal? type "space")
