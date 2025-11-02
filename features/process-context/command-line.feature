@@ -21,3 +21,19 @@ Feature: Command line
     When I successfully run `stak main.scm hello world`
     Then the stdout should contain "hello"
     And the stdout should contain "world"
+
+  Scenario Outline: Get an argument at an index
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme cxr) (scheme process-context))
+
+      (write-string (<procedure> (command-line)))
+      """
+    When I successfully run `stak main.scm A B C`
+    Then the stdout should contain "<output>"
+
+    Examples:
+      | procedure | output |
+      | cadr      | A      |
+      | caddr     | B      |
+      | cadddr    | C      |
