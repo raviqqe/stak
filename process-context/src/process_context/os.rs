@@ -6,22 +6,22 @@ use std::{
 };
 
 /// A process context provided by an operating system.
-pub struct OsProcessContext {
+pub struct OsProcessContext<const N: usize = 0> {
     arguments: LazyLock<Vec<String>>,
     environment_variables: LazyLock<Vec<(String, String)>>,
 }
 
-impl OsProcessContext {
+impl<const N: usize> OsProcessContext<N> {
     /// Creates a process context.
     pub fn new() -> Self {
         Self {
-            arguments: LazyLock::new(|| args().collect()),
+            arguments: LazyLock::new(|| args().skip(N).collect()),
             environment_variables: LazyLock::new(|| vars().collect()),
         }
     }
 }
 
-impl ProcessContext for OsProcessContext {
+impl<const N: usize> ProcessContext for OsProcessContext<N> {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
         (*self.arguments).iter().map(AsRef::as_ref).rev()
     }
@@ -33,7 +33,7 @@ impl ProcessContext for OsProcessContext {
     }
 }
 
-impl Default for OsProcessContext {
+impl<const N: usize> Default for OsProcessContext<N> {
     fn default() -> Self {
         Self::new()
     }
