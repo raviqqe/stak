@@ -32,8 +32,8 @@ Feature: Command line
     Then the stdout should contain "<output>"
 
     Examples:
-      | procedure | output   |
-      | car       | main.scm |
-      | cadr      | foo      |
-      | caddr     | bar      |
-      | cadddr    | baz      |
+      | procedure | output |
+      | car       | main   |
+      | cadr      | foo    |
+      | caddr     | bar    |
+      | cadddr    | baz    |

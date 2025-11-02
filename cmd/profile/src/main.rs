@@ -87,7 +87,7 @@ fn main() -> Result<(), MainError> {
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
                     OsFileSystem::new(),
-                    OsProcessContext::new(),
+                    OsProcessContext::<0>::new(),
                     OsClock::new(),
                 ),
             )?
