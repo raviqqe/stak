@@ -33,8 +33,10 @@
               (cons value (loop (read))))))))))
 
 (define arguments (command-line))
-(define prelude-path (list-ref arguments 2))
-(define library-directory (list-ref arguments 3))
+(define prelude-path (cadr arguments))
+(define library-directory (caddr arguments))
+
+(write prelude-path)
 
 (for-each
   (lambda (library)
