@@ -12,6 +12,7 @@ use core::{
 ///
 /// It represents a signed 63-bit integer by default. If the `float` feature is
 /// enabled, it represents a 64-bit floating-point number.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 #[cfg_attr(not(feature = "float"), derive(Eq, Ord))]
 pub struct Number(NumberInner);

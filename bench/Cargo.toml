@@ -13,15 +13,15 @@ harness = false
 name = "embed"
 
 [dependencies]
-mlua = { version = "0.11.3", features = ["lua54"] }
-stak = { version = "0.11.1", path = "../root" }
-stak-compiler = { version = "0.11.1", path = "../compiler" }
+mlua = { version = "0.11.4", features = ["lua54"] }
+stak = { path = "../root", version = "0.11.7" }
+stak-compiler = { path = "../compiler", version = "0.11.7" }
 
 [dev-dependencies]
-criterion = { version = "2.7.2", package = "codspeed-criterion-compat" }
+criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
 
 [build-dependencies]
-stak-build = { version = "0.11.1", path = "../build" }
+stak-build = { path = "../build", version = "0.11.7" }
 
 [lints]
 workspace = true

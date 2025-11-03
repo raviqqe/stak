@@ -1,5 +1,5 @@
 #![doc = include_str!("../README.md")]
-#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
+#![cfg_attr(all(doc, not(doctest)), feature(doc_cfg))]
 
 pub mod device {
     //! I/O devices.
@@ -54,7 +54,7 @@ pub mod device {
     //! }
     //!
     //! fn run(
-    //!     bytecodes: &[u8],
+    //!     bytecode: &[u8],
     //!     input: &[u8],
     //!     output: &mut Vec<u8>,
     //!     error: &mut Vec<u8>,
@@ -71,7 +71,7 @@ pub mod device {
     //!         ),
     //!     )?;
     //!
-    //!     vm.initialize(bytecodes.iter().copied())?;
+    //!     vm.initialize(bytecode.iter().copied())?;
     //!     vm.run()
     //! }
     //! ```
@@ -145,7 +145,7 @@ pub mod vm {
     //! ```
     //!
     //! Then, add a build script at `build.rs` to build the Scheme source file
-    //! into bytecodes.
+    //! into bytecode.
     //!
     //! ```rust no_run
     //! use stak_build::{build_r7rs, BuildError};
@@ -180,7 +180,7 @@ pub mod vm {
     //!     Ok(())
     //! }
     //!
-    //! fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
+    //! fn run(bytecode: &[u8]) -> Result<(), SmallError> {
     //!     // Prepare a heap memory of a virtual machine.
     //!     let mut heap = [Default::default(); HEAP_SIZE];
     //!     // Create a virtual machine with its heap memory primitive procedures.
@@ -196,9 +196,9 @@ pub mod vm {
     //!         ),
     //!     )?;
     //!
-    //!     // Initialize a virtual machine with bytecodes.
-    //!     vm.initialize(bytecodes.iter().copied())?;
-    //!     // Run bytecodes on a virtual machine.
+    //!     // Initialize a virtual machine with bytecode.
+    //!     vm.initialize(bytecode.iter().copied())?;
+    //!     // Run bytecode on a virtual machine.
     //!     vm.run()
     //! }
     //! ```

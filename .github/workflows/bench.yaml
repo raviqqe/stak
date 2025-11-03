@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: tools/bench.sh ${{ matrix.options }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: time ${{ matrix.os }} ${{ matrix.options }}
           path: tmp/bench/time
@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: tools/memory_bench.sh
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: memory
           path: tmp/bench/memory
@@ -115,7 +115,7 @@ jobs:
         working-directory: r7rs-benchmarks
       - run: cat results.${{ matrix.name }}
         working-directory: r7rs-benchmarks
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.name }}_benchmark
           path: r7rs-benchmarks/results.${{ matrix.name }}

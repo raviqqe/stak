@@ -17,6 +17,7 @@
   (only (scheme time))
   (only (scheme write))
   (only (srfi 1))
+  (only (stak backtrace))
   (only (stak mapping)))
 
 (define (run path)

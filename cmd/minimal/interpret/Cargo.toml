@@ -10,18 +10,17 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-libc = { version = "0.2.175", default-features = false }
-stak-device = { version = "0.11.0", features = [
+dlmalloc = { version = "0.2.11", features = ["global"] }
+origin = { version = "0.26.2", default-features = false, features = [
   "libc",
-], path = "../../../device" }
-stak-file = { version = "0.11.0", features = ["libc"], path = "../../../file" }
-stak-libc = { version = "0.11.0", path = "../../../libc" }
-stak-process-context = { version = "0.11.0", features = [
-  "libc",
-], path = "../../../process_context" }
-stak-r7rs = { version = "0.11.0", path = "../../../r7rs" }
-stak-time = { version = "0.11.0", features = ["libc"], path = "../../../time" }
-stak-vm = { version = "0.11.0", path = "../../../vm" }
+] }
+stak-device = { workspace = true }
+stak-file = { workspace = true }
+stak-libc = { workspace = true }
+stak-process-context = { workspace = true }
+stak-r7rs = { workspace = true }
+stak-time = { workspace = true }
+stak-vm = { workspace = true }
 
 [lints]
 workspace = true

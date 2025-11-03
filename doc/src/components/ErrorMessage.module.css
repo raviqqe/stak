@@ -1,4 +1,6 @@
 .root {
   color: var(--error-text-color);
   margin: 0;
+  white-space: break-spaces;
+  word-break: break-word;
 }

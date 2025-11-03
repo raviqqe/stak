@@ -5,12 +5,12 @@ edition.workspace = true
 publish = false
 
 [dependencies]
-axum = "0.8.4"
-stak = { version = "0.11.1", path = "../../root" }
-tokio = { version = "1.47.1", features = ["rt-multi-thread"] }
+axum = "0.8.6"
+stak = { path = "../../root", version = "0.11.7" }
+tokio = { version = "1.48.0", features = ["rt-multi-thread"] }
 
 [build-dependencies]
-stak-build = { version = "0.11.1", path = "../../build" }
+stak-build = { path = "../../build", version = "0.11.7" }
 
 [features]
 default = ["hot-reload"]

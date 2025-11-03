@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-hmr = "0.2.3"
+hmr = "0.2.5"
 
 [lints]
 workspace = true

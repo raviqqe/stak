@@ -1,4 +1,5 @@
-use core::{mem::align_of, ptr::write, slice};
+use alloc::alloc::{alloc, dealloc};
+use core::{alloc::Layout, ptr::write, slice};
 
 /// A memory block on a heap.
 pub struct Heap<T> {
@@ -8,10 +9,14 @@ pub struct Heap<T> {
 
 impl<T> Heap<T> {
     /// Creates a heap.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `len` is zero or if an allocation fails.
     pub fn new(len: usize, default: impl Fn() -> T) -> Self {
         let mut this = Self {
             // SAFETY: We allow memory access only within `len`.
-            ptr: unsafe { libc::malloc(len * align_of::<T>()) } as _,
+            ptr: unsafe { alloc(Layout::array::<T>(len).unwrap()) } as _,
             len,
         };
 
@@ -39,7 +44,7 @@ impl<T> Heap<T> {
 impl<T> Drop for Heap<T> {
     fn drop(&mut self) {
         // SAFETY: The previous `malloc` call is guaranteed to have succeeded.
-        unsafe { libc::free(self.ptr as _) }
+        unsafe { dealloc(self.ptr as _, Layout::new::<T>()) }
     }
 }
 

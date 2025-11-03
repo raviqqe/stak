@@ -16,31 +16,125 @@ Feature: Character
       | #\\newline         |
       | (integer->char 65) |
 
-  Scenario Outline: Check a character category
+  Scenario Outline: Check an alphabetic character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
 
-      (write-u8 (if (<predicate> #\<value>) 65 66))
+      (write-u8 (if (char-alphabetic? #\<value>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | predicate        | value   | output |
-      | char-alphabetic? | a       | A      |
-      | char-alphabetic? | A       | A      |
-      | char-alphabetic? | z       | A      |
-      | char-alphabetic? | Z       | A      |
-      | char-alphabetic? | 0       | B      |
-      | char-numeric?    | 0       | A      |
-      | char-numeric?    | 9       | A      |
-      | char-numeric?    | A       | B      |
-      | char-whitespace? | newline | A      |
-      | char-whitespace? | return  | A      |
-      | char-whitespace? | space   | A      |
-      | char-whitespace? | tab     | A      |
-      | char-whitespace? | A       | B      |
+      | value | output |
+      | a     | A      |
+      | A     | A      |
+      | z     | A      |
+      | Z     | A      |
+      | À     | A      |
+      | Ý     | A      |
+      | ß     | A      |
+      | ß     | A      |
+      | à     | A      |
+      | ý     | A      |
+      | Α     | A      |
+      | α     | A      |
+      | あ     | A      |
+      | を     | A      |
+      | @     | B      |
+      | 0     | B      |
+
+  Scenario Outline: Check a numeric character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-numeric? #\<value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0     | A      |
+      | 9     | A      |
+      | @     | B      |
+      | A     | B      |
+
+  Scenario Outline: Check a lower case character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-lower-case? #\<value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0     | B      |
+      | 9     | B      |
+      | @     | B      |
+      | a     | A      |
+      | A     | B      |
+      | z     | A      |
+      | Z     | B      |
+      | ẞ     | B      |
+      | À     | B      |
+      | Ý     | B      |
+      | ß     | A      |
+      | à     | A      |
+      | ý     | A      |
+      | α     | A      |
+
+  Scenario Outline: Check a upper case character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-upper-case? #\<value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0     | B      |
+      | 9     | B      |
+      | @     | B      |
+      | A     | A      |
+      | a     | B      |
+      | Z     | A      |
+      | z     | B      |
+      | ẞ     | A      |
+      | À     | A      |
+      | Ý     | A      |
+      | ß     | B      |
+      | à     | B      |
+      | ý     | B      |
+      | α     | B      |
+
+  Scenario Outline: Check a whitespace character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-whitespace? <expression>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | expression            | output |
+      | #\\newline            | A      |
+      | #\\return             | A      |
+      | #\\space              | A      |
+      | #\\tab                | A      |
+      | #\\@                  | B      |
+      | #\\A                  | B      |
+      | (integer->char 12288) | A      |
 
   Scenario: Write a character
     Given a file named "main.scm" with:
@@ -111,24 +205,75 @@ Feature: Character
       | char-ci=? | #\\a #\\A  | A      |
       | char-ci=? | #\\A #\\B  | B      |
 
-  Scenario Outline: Convert a character case
+  Scenario Outline: Convert a character to its lower case
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
 
-      (write-u8 (if (eqv? (<predicate> <input>) <output>) 65 66))
+      (write-u8 (if (eqv? (char-downcase <input>) <output>) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
-      | predicate     | input | output |
-      | char-downcase | #\\A  | #\\a   |
-      | char-downcase | #\\a  | #\\a   |
-      | char-foldcase | #\\A  | #\\a   |
-      | char-foldcase | #\\a  | #\\a   |
-      | char-upcase   | #\\a  | #\\A   |
-      | char-upcase   | #\\A  | #\\A   |
+      | input  | output |
+      | #\\A   | #\\a   |
+      | #\\a   | #\\a   |
+      | #\\Α   | #\\α   |
+      | #\\ẞ   | #\\ß   |
+
+  Scenario Outline: Convert a character to its upper case
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (eqv? (char-upcase <input>) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | #\\a  | #\\A   |
+      | #\\A  | #\\A   |
+      | #\\α  | #\\Α   |
+
+    @gauche @guile @stak
+    Examples:
+      | input | output |
+      | #\\ß  | #\\ß   |
+
+  Scenario Outline: Fold a character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (equal? (char-foldcase <input>) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input  | output |
+      | #\\@   | #\\@   |
+      | #\\A   | #\\a   |
+      | #\\Z   | #\\z   |
+      | #\\[   | #\\[   |
+      | #\\`   | #\\`   |
+      | #\\a   | #\\a   |
+      | #\\z   | #\\z   |
+      | #\\{   | #\\{   |
+      | #\\À   | #\\à   |
+      | #\\Ý   | #\\ý   |
+      | #\\Α   | #\\α   |
+      | #\\ß   | #\\ß   |
+      | #\\Ꟶ   | #\\ꟶ   |
+
+    @guile @stak
+    Examples:
+      | input   | output  |
+      | #\\𞤀    | #\\𞤢    |
+      | #\\𞤡    | #\\𞥃    |
 
   Scenario Outline: Extract a digit value
     Given a file named "main.scm" with:

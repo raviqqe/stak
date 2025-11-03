@@ -5,7 +5,7 @@ description: How to embed Scheme scripts in Rust
 
 This page explains how to embed scripts written in Stak Scheme into Rust programs. By reading this page, you will learn:
 
-- How to compile Scheme scripts into bytecodes in Rust crates to embed the scripts.
+- How to compile Scheme scripts into bytecode in Rust crates to embed the scripts.
 - How to embed and run scripts written in Stak Scheme in Rust programs.
 
 The full source codes used in this guide is available at the [`examples/embedded-script` directory on GitHub][source]
@@ -58,9 +58,9 @@ The main part for Rust integration is importing the `(stak rust)` library which 
 
 ## Adding a build script
 
-Then, add a build script at `build.rs` to build the Scheme source file into bytecodes.
+Then, add a build script at `build.rs` to build the Scheme source file into bytecode.
 
-The bytecodes are compact codes that describe programs written in Scheme. It is just like machine codes but for a Stak Scheme virtual machine. The bytecodes compiled from source files are stored in [the `target` directory](https://doc.rust-lang.org/cargo/reference/build-cache.html) in your crate.
+The bytecode are compact codes that describe programs written in Scheme. It is just like machine codes but for a Stak Scheme virtual machine. The bytecode compiled from source files are stored in [the `target` directory](https://doc.rust-lang.org/cargo/reference/build-cache.html) in your crate.
 
 ```rust no_run
 use stak_build::{build_r7rs, BuildError};

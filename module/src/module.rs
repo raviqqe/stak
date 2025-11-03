@@ -7,6 +7,6 @@ pub trait Module<'a> {
     /// A read guard against a module.
     type Guard: Guard;
 
-    /// Returns bytecodes.
+    /// Returns bytecode.
     fn bytecode(&'a self) -> Self::Guard;
 }

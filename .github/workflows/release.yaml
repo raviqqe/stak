@@ -9,14 +9,19 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   cargo:
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
-      - run: tools/ci/release.sh ${{ github.ref == 'refs/heads/main' && '--' || '--dry-run' }}
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+        if: github.ref == 'refs/heads/main'
+      - run: tools/ci/release.sh ${{ github.ref != 'refs/heads/main' && '--dry-run' || '' }}
         env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
   wasm:
     permissions:
       contents: read
@@ -29,7 +34,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           package_json_file: wasm/package.json
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version-file: wasm/package.json
       - run: tools/build_wasm.sh

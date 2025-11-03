@@ -77,7 +77,7 @@ First, prepare a Scheme script named `src/fight.scm`:
 ```
 
 Then, add a build script at `build.rs` to build the Scheme source file
-into bytecodes.
+into bytecode.
 
 ```rust no_run
 use stak_build::{build_r7rs, BuildError};

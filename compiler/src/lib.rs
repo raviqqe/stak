@@ -14,9 +14,9 @@ use stak_vm::Vm;
 use std::io::{Read, Write};
 
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
-const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_BYTECODE_FILE"));
+const COMPILER_BYTECODE: &[u8] = include_bytes!(env!("STAK_BYTECODE_FILE"));
 
-/// Compiles a program in R7RS Scheme into bytecodes.
+/// Compiles a program in R7RS Scheme into bytecode.
 ///
 /// # Examples
 ///
@@ -30,7 +30,7 @@ pub fn compile_r7rs(source: impl Read, target: impl Write) -> Result<(), Compile
     compile_bare(PRELUDE_SOURCE.as_bytes().chain(source), target)
 }
 
-/// Compiles a program in Scheme into bytecodes with only built-ins.
+/// Compiles a program in Scheme into bytecode with only built-ins.
 ///
 /// # Examples
 ///
@@ -55,7 +55,7 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
         ),
     )?;
 
-    vm.initialize(COMPILER_BYTECODES.iter().copied())?;
+    vm.initialize(COMPILER_BYTECODE.iter().copied())?;
 
     vm.run().map_err(|error| {
         if error_message.is_empty() {

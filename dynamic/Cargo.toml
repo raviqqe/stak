@@ -10,14 +10,14 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-any-fn = { version = "0.6.1" }
+any-fn = { version = "0.6.3" }
 bitvec = "1.0.1"
 heapless = { version = "0.9.1", default-features = false }
-stak-vm = { version = "0.11.1", path = "../vm" }
+stak-vm = { path = "../vm", version = "0.11.7" }
 winter-maybe-async = { version = "0.13.1" }
 
 [dev-dependencies]
-tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.48.0", features = ["macros", "rt-multi-thread"] }
 
 [features]
 async = ["stak-vm/async", "winter-maybe-async/async"]

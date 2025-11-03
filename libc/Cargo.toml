@@ -10,8 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-libc = { version = "0.2.175", default-features = false }
-rustix = { version = "1.0.8", default-features = false, features = [
+rustix = { version = "1.1.2", default-features = false, features = [
   "fs",
   "mm",
 ] }

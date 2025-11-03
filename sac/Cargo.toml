@@ -10,18 +10,21 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-clap = { version = "4.5.47", features = ["derive"], optional = true }
-libc = { version = "0.2.175", default-features = false, optional = true }
+clap = { version = "4.5.51", features = ["derive"], optional = true }
+dlmalloc = { version = "0.2.11", features = ["global"], optional = true }
 main_error = { version = "0.1.2", optional = true }
-stak-configuration = { version = "0.11.1", path = "../configuration" }
-stak-device = { version = "0.11.1", path = "../device" }
-stak-file = { version = "0.11.1", path = "../file" }
-stak-libc = { version = "0.11.1", optional = true, path = "../libc" }
-stak-macro = { version = "0.11.1", path = "../macro" }
-stak-process-context = { version = "0.11.1", path = "../process_context" }
-stak-r7rs = { version = "0.11.1", path = "../r7rs" }
-stak-time = { version = "0.11.1", path = "../time" }
-stak-vm = { version = "0.11.1", path = "../vm" }
+origin = { version = "0.26.2", default-features = false, features = [
+  "libc",
+], optional = true }
+stak-configuration = { path = "../configuration", version = "0.11.7" }
+stak-device = { path = "../device", version = "0.11.7" }
+stak-file = { path = "../file", version = "0.11.7" }
+stak-libc = { path = "../libc", version = "0.11.7", optional = true }
+stak-macro = { path = "../macro", version = "0.11.7" }
+stak-process-context = { path = "../process-context", version = "0.11.7" }
+stak-r7rs = { path = "../r7rs", version = "0.11.7" }
+stak-time = { path = "../time", version = "0.11.7" }
+stak-vm = { path = "../vm", version = "0.11.7" }
 
 [dev-dependencies]
 stak = { path = "../root" }
@@ -30,7 +33,8 @@ stak = { path = "../root" }
 float = ["stak-vm/float"]
 float62 = ["stak-vm/float62"]
 libc = [
-  "dep:libc",
+  "dep:dlmalloc",
+  "dep:origin",
   "dep:stak-libc",
   "stak-device/libc",
   "stak-file/libc",

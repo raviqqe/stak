@@ -31,7 +31,7 @@ impl Parse for IncludeModuleInput {
     }
 }
 
-/// Includes bytecodes of a R7RS Scheme module built by the
+/// Includes bytecode of a R7RS Scheme module built by the
 /// [`stak_build`](https://docs.rs/stak-build) crate.
 ///
 /// See the [`stak`](https://docs.rs/stak) crate's documentation for full examples.
@@ -62,7 +62,7 @@ fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream
     }))
 }
 
-/// Compiles a module in R7RS Scheme into bytecodes.
+/// Compiles a module in R7RS Scheme into bytecode.
 ///
 /// # Examples
 ///
@@ -76,7 +76,7 @@ pub fn compile_r7rs(input: TokenStream) -> TokenStream {
     convert_result(generate_r7rs(&input.value())).into()
 }
 
-/// Includes a module in R7RS Scheme as bytecodes.
+/// Includes a module in R7RS Scheme as bytecode.
 ///
 /// # Examples
 ///
@@ -105,7 +105,7 @@ fn generate_r7rs(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error
     })
 }
 
-/// Compiles a module in Scheme into bytecodes with only built-ins.
+/// Compiles a module in Scheme into bytecode with only built-ins.
 ///
 /// # Examples
 ///
@@ -119,7 +119,7 @@ pub fn compile_bare(input: TokenStream) -> TokenStream {
     convert_result(generate_bare(&input.value())).into()
 }
 
-/// Includes a module in Scheme as bytecodes with only built-ins.
+/// Includes a module in Scheme as bytecode with only built-ins.
 ///
 /// # Examples
 ///

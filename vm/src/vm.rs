@@ -90,7 +90,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         &mut self.primitive_set
     }
 
-    /// Runs bytecodes on a virtual machine synchronously.
+    /// Runs bytecode on a virtual machine synchronously.
     ///
     /// # Panics
     ///
@@ -99,7 +99,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         block_on!(self.run_async())
     }
 
-    /// Runs bytecodes on a virtual machine.
+    /// Runs bytecode on a virtual machine.
     #[cfg_attr(not(feature = "async"), doc(hidden))]
     #[maybe_async]
     pub fn run_async(&mut self) -> Result<(), T::Error> {
@@ -224,22 +224,24 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
     #[maybe_async]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
-        let r#return = instruction == self.memory.null()?;
         let procedure = self.procedure()?;
 
         trace!("procedure", procedure);
-        trace!("return", r#return);
 
         if self.environment(procedure)?.tag() != Type::Procedure as _ {
             return Err(Error::ProcedureExpected.into());
         }
+
+        let arguments = Self::parse_arity(arity);
+        let r#return = instruction == self.memory.null()?;
+
+        trace!("return", r#return);
 
         match self.code(procedure)?.to_typed() {
             TypedValue::Cons(code) => {
                 #[cfg(feature = "profile")]
                 self.profile_call(self.memory.code(), r#return)?;
 
-                let arguments = Self::parse_arity(arity);
                 let parameters =
                     Self::parse_arity(self.memory.car(code)?.assume_number().to_i64() as usize);
 
@@ -299,7 +301,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 }
             }
             TypedValue::Number(primitive) => {
-                if Self::parse_arity(arity).variadic {
+                if arguments.variadic {
                     let list = self.memory.pop()?.assume_cons();
                     self.memory.set_register(list);
 
@@ -423,7 +425,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    /// Initializes a virtual machine with bytecodes of a program.
+    /// Initializes a virtual machine with bytecode of a program.
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");
