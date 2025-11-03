@@ -86,14 +86,14 @@ checksum = "df1d3c3b53da64cf5760482273a98e575c651a67eec7f77df96b5b642de8f039"
 
 [[package]]
 name = "mstak"
-version = "0.5.47"
+version = "0.5.48"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.5.47"
+version = "0.5.48"
 dependencies = [
  "dlmalloc",
  "origin",
@@ -162,7 +162,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -175,11 +175,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.11.7"
+version = "0.11.8"
 
 [[package]]
 name = "stak-device"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -188,7 +188,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "heapless",
  "rustix",
@@ -198,7 +198,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "libm",
  "stak-vm",
@@ -207,14 +207,14 @@ dependencies = [
 
 [[package]]
 name = "stak-libc"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "rustix",
 ]
 
 [[package]]
 name = "stak-macro"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "cfg-elif",
  "proc-macro2",
@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -235,7 +235,7 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -243,7 +243,7 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -251,7 +251,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -265,7 +265,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "dlmalloc",
  "origin",
@@ -282,7 +282,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -291,7 +291,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "cfg-elif",
  "noop-executor",
@@ -299,7 +299,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.11.7"
+version = "0.11.8"
 dependencies = [
  "cfg-elif",
  "stak-util",
