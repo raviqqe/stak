@@ -34,7 +34,7 @@
 
 (define arguments (command-line))
 (define prelude-path (car arguments))
-(define library-directory (cade arguments))
+(define library-directory (cadr arguments))
 
 (for-each
   (lambda (library)
