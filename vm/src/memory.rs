@@ -129,6 +129,7 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Pushes a value to a stack.
+    #[inline]
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;
 
@@ -184,6 +185,7 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Allocates a cons.
+    #[inline(always)]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
@@ -199,6 +201,7 @@ impl<H: Heap> Memory<H> {
         Ok(cons)
     }
 
+    #[inline(always)]
     fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);

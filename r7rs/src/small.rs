@@ -60,6 +60,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
+    #[inline]
     fn rib<H: Heap>(memory: &mut Memory<H>, car: Value, cdr: Value, tag: Tag) -> Result<(), Error> {
         let rib = memory.allocate(car, cdr.set_tag(tag))?;
         memory.push(rib.into())?;
