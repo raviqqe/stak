@@ -16917,6 +16917,10 @@
       - constant #f
       - call 2 #f eq?
       - if
+        - constant procedure 0 #f
+          - get 1
+        - call 1 #f $$close
+        - set command-line
         - get 0
         - call 1 #f car
         - call 1 #f ||

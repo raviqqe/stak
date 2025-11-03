@@ -33,6 +33,7 @@
 (define (main)
   (do ((arguments (cdr (command-line)) (cddr arguments)))
     ((not (equal? (car arguments) "-l"))
+      (define command-line (lambda () arguments))
       (run (car arguments)))
     (run (cadr arguments))))
 
