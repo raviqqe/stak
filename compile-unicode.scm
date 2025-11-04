@@ -179,7 +179,8 @@
 (define (compile-fold-table data-file)
   (let ((downcase-chars
           (map
-            (lambda (xs) (cons (car xs) (cadr xs)))
+            (lambda (xs)
+              (cons (car xs) (cadr xs)))
             (parse-case-records
               (with-input-from-file data-file
                 (lambda ()
