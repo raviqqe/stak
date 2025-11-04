@@ -171,9 +171,7 @@
       (cons (car record) (cddr record)))
     (filter
       (lambda (record)
-        (and
-          (member (cadr record) '("C" "S"))
-          (memq (car record) downcase-chars)))
+        (member (cadr record) '("C" "S")))
       records)))
 
 (define (compile-fold-table data-file)
