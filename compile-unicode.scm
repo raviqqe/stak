@@ -205,7 +205,7 @@
 
 ; Main
 
-(define-values (subcommand sub-subcommand)
+(define-values (subcommand argument)
   (let ((arguments (command-line)))
     (values
       (cadr arguments)
