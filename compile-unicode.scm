@@ -205,7 +205,7 @@
 
 ; Main
 
-(define-values (type subcommand)
+(define-values (subcommand sub-subcommand)
   (let ((arguments (command-line)))
     (values
       (cadr arguments)
@@ -215,21 +215,21 @@
 
 (write
   (cond
-    ((equal? type "alphabetic")
+    ((equal? subcommand "alphabetic")
       (compile-alphabetic-table))
-    ((equal? type "downcase")
+    ((equal? subcommand "downcase")
       (compile-case-table 13))
-    ((equal? type "fold")
+    ((equal? subcommand "fold")
       (compile-fold-table))
-    ((equal? type "lone-lower")
+    ((equal? subcommand "lone-lower")
       (compile-lone-case-table "Ll" 12))
-    ((equal? type "lone-upper")
+    ((equal? subcommand "lone-upper")
       (compile-lone-case-table "Lu" 13))
-    ((equal? type "numeric")
+    ((equal? subcommand "numeric")
       (compile-numeric-table))
-    ((equal? type "upcase")
+    ((equal? subcommand "upcase")
       (compile-case-table 12))
-    ((equal? type "space")
+    ((equal? subcommand "space")
       (compile-space-table))
     (else
       (error "unknown subcommand"))))
