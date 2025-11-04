@@ -165,21 +165,29 @@
           (map parse-character-code (cddr record)))))
     records))
 
-(define (filter-fold-records records)
+(define (filter-fold-records downcase-chars records)
   (map
     (lambda (record)
       (cons (car record) (cddr record)))
     (filter
       (lambda (record)
-        (member (cadr record) '("C" "S")))
+        (and
+          (member (cadr record) '("C" "S"))
+          (memq (car record) downcase-chars)))
       records)))
 
 (define (compile-fold-table downcase-file)
-  (group-records
-    (differentiate-records
-      (filter-fold-records
-        (parse-fold-records
-          (read-records))))))
+  (let ((downcase-chars
+          (with-input-from-file downcase-file
+            (lambda ()
+              (parse-case-records
+                (read-case-records 13))))))
+    (group-records
+      (differentiate-records
+        (filter-fold-records
+          downcase-chars
+          (parse-fold-records
+            (read-records)))))))
 
 ; Numeric
 
