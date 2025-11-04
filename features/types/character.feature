@@ -279,7 +279,7 @@ Feature: Character
       | #\\Α   | #\\α   |
       | #\\ﬅ   | #\\ﬆ   |
 
-    @guile @stak
+    @gauche @guile @stak
     Examples:
       | input   | output  |
       | #\\𞤀    | #\\𞤢    |
