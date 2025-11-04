@@ -205,7 +205,13 @@
 
 ; Main
 
-(define type (cadr (command-line)))
+(define-values (type subcommand)
+  (let ((arguments (command-line)))
+    (values
+      (cadr arguments)
+      (and
+        (pair? (cddr arguments))
+        (caddr arguments)))))
 
 (write
   (cond
