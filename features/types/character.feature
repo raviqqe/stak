@@ -240,6 +240,8 @@ Feature: Character
       | input | output |
       | #\\a  | #\\A   |
       | #\\A  | #\\A   |
+      | #\\z  | #\\Z   |
+      | #\\Z  | #\\Z   |
       | #\\α  | #\\Α   |
 
     @gauche @guile @stak
