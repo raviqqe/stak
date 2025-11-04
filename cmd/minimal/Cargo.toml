@@ -3,7 +3,7 @@ resolver = "2"
 members = ["interpret", "run"]
 
 [workspace.package]
-version = "0.5.47"
+version = "0.5.48"
 edition = "2024"
 readme = "../../README.md"
 repository = "https://github.com/raviqqe/stak"
