@@ -176,12 +176,14 @@
           (memq (car record) downcase-chars)))
       records)))
 
-(define (compile-fold-table downcase-file)
+(define (compile-fold-table data-file)
   (let ((downcase-chars
-          (with-input-from-file downcase-file
-            (lambda ()
-              (parse-case-records
-                (read-case-records 13))))))
+          (map
+            (lambda (xs) (cons (car xs) (cadr xs)))
+            (parse-case-records
+              (with-input-from-file data-file
+                (lambda ()
+                  (read-case-records 13)))))))
     (group-records
       (differentiate-records
         (filter-fold-records
