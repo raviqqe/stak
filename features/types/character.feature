@@ -268,6 +268,7 @@ Feature: Character
       | #\\Α   | #\\α   |
       | #\\ß   | #\\ß   |
       | #\\Ꟶ   | #\\ꟶ   |
+      | #\\µ   | #\\μ   |
 
     @guile @stak
     Examples:
