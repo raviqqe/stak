@@ -166,13 +166,17 @@
     records))
 
 (define (filter-fold-records downcase-chars records)
-  (map
+  (filter
     (lambda (record)
-      (cons (car record) (cddr record)))
-    (filter
+      (let ((pair (assq (car record) downcase-chars)))
+        foo))
+    (map
       (lambda (record)
-        (member (cadr record) '("C" "S")))
-      records)))
+        (cons (car record) (cddr record)))
+      (filter
+        (lambda (record)
+          (member (cadr record) '("C" "S")))
+        records))))
 
 (define (compile-fold-table data-file)
   (let ((downcase-chars
