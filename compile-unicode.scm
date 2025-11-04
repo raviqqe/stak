@@ -169,7 +169,10 @@
   (filter
     (lambda (record)
       (let ((pair (assq (car record) downcase-chars)))
-        foo))
+        (not
+          (and
+            pair
+            (= (cadr record) (cdr pair))))))
     (map
       (lambda (record)
         (cons (car record) (cddr record)))
