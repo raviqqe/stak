@@ -217,6 +217,7 @@ Feature: Character
 
     Examples:
       | input  | output |
+      | #\\@   | #\\@   |
       | #\\A   | #\\a   |
       | #\\a   | #\\a   |
       | #\\Z   | #\\z   |
@@ -238,6 +239,7 @@ Feature: Character
 
     Examples:
       | input | output |
+      | #\\@  | #\\@   |
       | #\\a  | #\\A   |
       | #\\A  | #\\A   |
       | #\\z  | #\\Z   |
