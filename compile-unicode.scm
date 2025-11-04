@@ -205,7 +205,7 @@
 
 ; Main
 
-(define type (last (command-line)))
+(define type (cadr (command-line)))
 
 (write
   (cond
