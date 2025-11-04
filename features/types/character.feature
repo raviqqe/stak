@@ -219,8 +219,10 @@ Feature: Character
       | input  | output |
       | #\\A   | #\\a   |
       | #\\a   | #\\a   |
-      | #\\Α   | #\\α   |
       | #\\ẞ   | #\\ß   |
+      | #\\µ   | #\\µ   |
+      | #\\Α   | #\\α   |
+      | #\\ﬅ   | #\\ﬅ   |
 
   Scenario Outline: Convert a character to its upper case
     Given a file named "main.scm" with:
