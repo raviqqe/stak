@@ -174,7 +174,7 @@
         (member (cadr record) '("C" "S")))
       records)))
 
-(define (compile-fold-table)
+(define (compile-fold-table path)
   (group-records
     (differentiate-records
       (filter-fold-records
@@ -220,7 +220,7 @@
     ((equal? subcommand "downcase")
       (compile-case-table 13))
     ((equal? subcommand "fold")
-      (compile-fold-table))
+      (compile-fold-table argument))
     ((equal? subcommand "lone-lower")
       (compile-lone-case-table "Ll" 12))
     ((equal? subcommand "lone-upper")
