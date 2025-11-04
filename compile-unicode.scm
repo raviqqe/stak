@@ -174,7 +174,7 @@
         (member (cadr record) '("C" "S")))
       records)))
 
-(define (compile-fold-table path)
+(define (compile-fold-table downcase-file)
   (group-records
     (differentiate-records
       (filter-fold-records
