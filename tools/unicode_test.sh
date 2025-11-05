@@ -35,8 +35,6 @@ for base in CaseFolding PropList UnicodeData; do
   fetch_data $base >$directory/$base.txt
 done
 
-alias scheme=${STAK_HOST:-stak}
-
 for type in downcase lone-lower lone-upper numeric space upcase; do
   compile $type UnicodeData
 done
