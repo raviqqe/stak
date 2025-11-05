@@ -2,9 +2,10 @@
   (scheme base)
   (scheme char)
   (scheme cxr)
+  (scheme file)
+  (scheme process-context)
   (scheme read)
   (scheme write)
-  (scheme process-context)
   (srfi 1))
 
 (define (parse-token)
@@ -165,21 +166,37 @@
           (map parse-character-code (cddr record)))))
     records))
 
-(define (filter-fold-records records)
-  (map
+(define (filter-fold-records downcase-chars records)
+  (filter
     (lambda (record)
-      (cons (car record) (cddr record)))
-    (filter
+      (let ((pair (assq (car record) downcase-chars)))
+        (not
+          (and
+            pair
+            (= (cadr record) (cdr pair))))))
+    (map
       (lambda (record)
-        (member (cadr record) '("C" "S")))
-      records)))
+        (cons (car record) (cddr record)))
+      (filter
+        (lambda (record)
+          (member (cadr record) '("C" "S")))
+        records))))
 
-(define (compile-fold-table)
-  (group-records
-    (differentiate-records
-      (filter-fold-records
-        (parse-fold-records
-          (read-records))))))
+(define (compile-fold-table data-file)
+  (let ((downcase-chars
+          (map
+            (lambda (xs)
+              (cons (car xs) (cadr xs)))
+            (parse-case-records
+              (with-input-from-file data-file
+                (lambda ()
+                  (read-case-records 13)))))))
+    (group-records
+      (differentiate-records
+        (filter-fold-records
+          downcase-chars
+          (parse-fold-records
+            (read-records)))))))
 
 ; Numeric
 
@@ -205,25 +222,31 @@
 
 ; Main
 
-(define type (cadr (command-line)))
+(define-values (subcommand argument)
+  (let ((arguments (command-line)))
+    (values
+      (cadr arguments)
+      (and
+        (pair? (cddr arguments))
+        (caddr arguments)))))
 
 (write
   (cond
-    ((equal? type "alphabetic")
+    ((equal? subcommand "alphabetic")
       (compile-alphabetic-table))
-    ((equal? type "downcase")
+    ((equal? subcommand "downcase")
       (compile-case-table 13))
-    ((equal? type "fold")
-      (compile-fold-table))
-    ((equal? type "lone-lower")
+    ((equal? subcommand "fold")
+      (compile-fold-table argument))
+    ((equal? subcommand "lone-lower")
       (compile-lone-case-table "Ll" 12))
-    ((equal? type "lone-upper")
+    ((equal? subcommand "lone-upper")
       (compile-lone-case-table "Lu" 13))
-    ((equal? type "numeric")
+    ((equal? subcommand "numeric")
       (compile-numeric-table))
-    ((equal? type "upcase")
+    ((equal? subcommand "upcase")
       (compile-case-table 12))
-    ((equal? type "space")
+    ((equal? subcommand "space")
       (compile-space-table))
     (else
       (error "unknown subcommand"))))
