@@ -8,21 +8,28 @@
   (scheme write)
   (srfi 1))
 
-(define (parse-token)
+(define (parse-blank)
+  (do ((character (peek-char) (peek-char)))
+    ((not (eqv? character #\space)))
+    (read-char)))
+
+(define (parse-raw-token)
   (list->string
     (let loop ()
       (if (or
            (eof-object? (peek-char))
-           (eqv? (peek-char) #\;))
+           (memv (peek-char) '(#\space #\;)))
         '()
         (let ((character (read-char)))
           (cons character (loop)))))))
 
-(define (parse-tokens)
-  (do ((character (peek-char) (peek-char)))
-    ((not (eqv? character #\space)))
-    (read-char))
+(define (parse-token)
+  (parse-blank)
+  (let ((token (parse-raw-token)))
+    (parse-blank)
+    token))
 
+(define (parse-tokens)
   (let ((token (parse-token)))
     (cons
       token
