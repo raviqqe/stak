@@ -4,9 +4,18 @@ set -ex
 
 version=17.0.0
 
-fetch_data() {
+fetch_data() (
   curl -fsSL https://raw.githubusercontent.com/unicode-org/unicodetools/main/unicodetools/data/ucd/$version/$1.txt
-}
+)
+
+compile() (
+  type=$1
+  input=$2
+
+  shift 2
+
+  ${STAK_HOST:-stak} compile-unicode.scm $type "$@" <$directory/$input.txt >$directory/$1.scm
+)
 
 cd $(dirname $0)/..
 
@@ -25,11 +34,11 @@ done
 alias scheme=${STAK_HOST:-stak}
 
 for type in downcase lone-lower lone-upper numeric space upcase; do
-  scheme compile-unicode.scm $type <$directory/UnicodeData.txt >$directory/$type.scm
+  compile $type UnicodeData
 done
 
-scheme compile-unicode.scm alphabetic $directory/PropList.txt <$directory/UnicodeData.txt >$directory/$type.scm
-scheme compile-unicode.scm fold $directory/UnicodeData.txt <$directory/CaseFolding.txt >$directory/fold.scm
+compile alphabetic UnicodeData PropList
+compile fold CaseFolding UnicodeData
 
 for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do
   cat >$directory/main.scm <<EOF
