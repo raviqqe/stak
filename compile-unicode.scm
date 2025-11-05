@@ -126,6 +126,11 @@
 
 ; Alphabetic
 
+(define (read-prop-records name)
+  (read-records
+    (lambda (record)
+      (equal? (cadr record) name))))
+
 (define (compile-alphabetic-table prop-list-file)
   (let ((chars
           (map
@@ -169,11 +174,6 @@
             (parse-character-code (car record))))))))
 
 ; Fold
-
-(define (read-prop-records name)
-  (read-records
-    (lambda (record)
-      (equal? (cadr record) name))))
 
 (define (parse-fold-records records)
   (map
