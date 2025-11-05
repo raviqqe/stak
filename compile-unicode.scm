@@ -2,9 +2,10 @@
   (scheme base)
   (scheme char)
   (scheme cxr)
+  (scheme file)
+  (scheme process-context)
   (scheme read)
   (scheme write)
-  (scheme process-context)
   (srfi 1))
 
 (define (parse-token)
