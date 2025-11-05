@@ -25,7 +25,7 @@ done
 alias scheme=${STAK_HOST:-stak}
 
 for type in downcase lone-lower lone-upper numeric space upcase; do
-  $scheme compile-unicode.scm $type <$directory/UnicodeData.txt >$directory/$type.scm
+  scheme compile-unicode.scm $type <$directory/UnicodeData.txt >$directory/$type.scm
 done
 
 scheme compile-unicode.scm alphabetic $directory/PropList.txt <$directory/UnicodeData.txt >$directory/$type.scm
