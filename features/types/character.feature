@@ -282,7 +282,7 @@ Feature: Character
     Examples:
       | #\\ﬅ   | #\\ﬆ   |
 
-    @gauche @guile @stak
+    @guile @stak
     Examples:
       | input   | output  |
       | #\\𞤀    | #\\𞤢    |
