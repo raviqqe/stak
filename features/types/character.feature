@@ -280,6 +280,7 @@ Feature: Character
 
     @chibi @stak
     Examples:
+      | input  | output |
       | #\\ﬅ   | #\\ﬆ   |
 
     @guile @stak
