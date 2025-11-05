@@ -135,12 +135,9 @@
 
 (define (compile-alphabetic-table prop-list-file)
   (let ((chars
-          (map
-            (lambda (xs)
-              (cons (car xs) (cadr xs)))
-            (with-input-from-file prop-list-file
-              (lambda ()
-                (read-prop-records "Other_Alphabetic"))))))
+          (with-input-from-file prop-list-file
+            (lambda ()
+              (read-prop-records "Other_Alphabetic")))))
     (group-codes
       (differentiate-codes
         (read-records
