@@ -129,7 +129,9 @@
 (define (read-prop-records name)
   (read-records
     (lambda (record)
-      (equal? (cadr record) name))))
+      (and
+        (equal? (cadr record) name)
+        (cons (car record) (cadr record))))))
 
 (define (compile-alphabetic-table prop-list-file)
   (let ((chars
