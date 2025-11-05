@@ -217,10 +217,15 @@ Feature: Character
 
     Examples:
       | input  | output |
+      | #\\@   | #\\@   |
       | #\\A   | #\\a   |
       | #\\a   | #\\a   |
-      | #\\Α   | #\\α   |
+      | #\\Z   | #\\z   |
+      | #\\z   | #\\z   |
       | #\\ẞ   | #\\ß   |
+      | #\\µ   | #\\µ   |
+      | #\\Α   | #\\α   |
+      | #\\ﬅ   | #\\ﬅ   |
 
   Scenario Outline: Convert a character to its upper case
     Given a file named "main.scm" with:
@@ -234,8 +239,11 @@ Feature: Character
 
     Examples:
       | input | output |
+      | #\\@  | #\\@   |
       | #\\a  | #\\A   |
       | #\\A  | #\\A   |
+      | #\\z  | #\\Z   |
+      | #\\Z  | #\\Z   |
       | #\\α  | #\\Α   |
 
     @gauche @guile @stak
@@ -256,18 +264,24 @@ Feature: Character
     Examples:
       | input  | output |
       | #\\@   | #\\@   |
-      | #\\A   | #\\a   |
-      | #\\Z   | #\\z   |
       | #\\[   | #\\[   |
       | #\\`   | #\\`   |
+      | #\\A   | #\\a   |
       | #\\a   | #\\a   |
+      | #\\Z   | #\\z   |
       | #\\z   | #\\z   |
       | #\\{   | #\\{   |
+      | #\\µ   | #\\μ   |
       | #\\À   | #\\à   |
       | #\\Ý   | #\\ý   |
-      | #\\Α   | #\\α   |
       | #\\ß   | #\\ß   |
       | #\\Ꟶ   | #\\ꟶ   |
+      | #\\Α   | #\\α   |
+
+    @chibi @stak
+    Examples:
+      | input  | output |
+      | #\\ﬅ   | #\\ﬆ   |
 
     @guile @stak
     Examples:

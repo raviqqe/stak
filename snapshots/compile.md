@@ -4724,7 +4724,7 @@
     - 65
   - (24 . 1)
 - set upcase-table
-- get downcase-table
+- constant ()
 - set fold-table
 - constant list
   - 48
@@ -4857,13 +4857,27 @@
 - call 1 #f ||
 - set char-downcase
 - constant procedure 0 #f
-  - get fold-table
-- call 1 #f ||
-- set char-foldcase
-- constant procedure 0 #f
   - get upcase-table
 - call 1 #f ||
 - set char-upcase
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 2
+    - get 1
+    - call 2 #f eqv?
+    - if
+      - get 2
+      - call 1 #f char-downcase
+    - get 0
+  - call 1 #f $$close
+  - constant procedure 0 #f
+    - get fold-table
+  - call 1 #f ||
+  - get 2
+  - call 1 #f 1
+  - set 1
+  - call 1 #f 1
+- set char-foldcase
 - constant procedure 2 #f
   - constant procedure 1 #f
     - constant procedure 2 #f
