@@ -18,16 +18,14 @@
     (let loop ()
       (if (or
            (eof-object? (peek-char))
-           (memv (peek-char) '(#\space #\;)))
+           (eqv? (peek-char) #\;))
         '()
         (let ((character (read-char)))
           (cons character (loop)))))))
 
 (define (parse-token)
   (parse-blank)
-  (let ((token (parse-raw-token)))
-    (parse-blank)
-    token))
+  (parse-raw-token))
 
 (define (parse-tokens)
   (let ((token (parse-token)))
