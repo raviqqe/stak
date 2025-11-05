@@ -119,7 +119,7 @@
 
 ; Alphabetic
 
-(define (compile-alphabetic-table)
+(define (compile-alphabetic-table prop-list-file)
   (group-codes
     (differentiate-codes
       (read-records
@@ -233,7 +233,7 @@
 (write
   (cond
     ((equal? subcommand "alphabetic")
-      (compile-alphabetic-table))
+      (compile-alphabetic-table argument))
     ((equal? subcommand "downcase")
       (compile-case-table 13))
     ((equal? subcommand "fold")
