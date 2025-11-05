@@ -277,6 +277,9 @@ Feature: Character
       | #\\ß   | #\\ß   |
       | #\\Ꟶ   | #\\ꟶ   |
       | #\\Α   | #\\α   |
+
+    @chibi @stak
+    Examples:
       | #\\ﬅ   | #\\ﬆ   |
 
     @gauche @guile @stak
