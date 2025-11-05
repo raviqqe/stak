@@ -120,13 +120,20 @@
 ; Alphabetic
 
 (define (compile-alphabetic-table prop-list-file)
-  (group-codes
-    (differentiate-codes
-      (read-records
-        (lambda (record)
-          (and
-            (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
-            (parse-character-code (car record))))))))
+  (let ((chars
+          (map
+            (lambda (xs)
+              (cons (car xs) (cadr xs)))
+            (with-input-from-file prop-list-file
+              (lambda ()
+                (read-prop-records "Other_Alphabetic"))))))
+    (group-codes
+      (differentiate-codes
+        (read-records
+          (lambda (record)
+            (and
+              (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
+              (parse-character-code (car record)))))))))
 
 ; Case
 
@@ -155,6 +162,11 @@
             (parse-character-code (car record))))))))
 
 ; Fold
+
+(define (read-prop-records name)
+  (read-records
+    (lambda (record)
+      (equal? (cadr record) name))))
 
 (define (parse-fold-records records)
   (map
