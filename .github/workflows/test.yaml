@@ -8,7 +8,6 @@ concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
 env:
-  LC_ALL: en_US.UTF-8
   GUILE_AUTO_COMPILE: 0
 jobs:
   build:
