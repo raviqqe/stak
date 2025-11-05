@@ -18,7 +18,7 @@ compile() (
     arguments="$arguments $directory/$name.txt"
   done
 
-  ${STAK_HOST:-stak} compile-unicode.scm $type $arguments <$directory/$input.txt >$directory/$1.scm
+  ${STAK_HOST:-stak} compile-unicode.scm $type $arguments <$directory/$input.txt >$directory/$type.scm
 )
 
 cd $(dirname $0)/..
