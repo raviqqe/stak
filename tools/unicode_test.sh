@@ -14,7 +14,11 @@ compile() (
 
   shift 2
 
-  ${STAK_HOST:-stak} compile-unicode.scm $type "$@" <$directory/$input.txt >$directory/$1.scm
+  for name in $@; do
+    arguments="$arguments $directory/$name.txt"
+  done
+
+  ${STAK_HOST:-stak} compile-unicode.scm $type $arguments <$directory/$input.txt >$directory/$1.scm
 )
 
 cd $(dirname $0)/..
