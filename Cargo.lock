@@ -395,7 +395,7 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
 name = "custom-vm"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "stak",
  "stak-build",
@@ -426,7 +426,7 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "embedded-script"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "any-fn",
  "rand",
@@ -595,7 +595,7 @@ dependencies = [
 
 [[package]]
 name = "hot-reload"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "axum",
  "stak",
@@ -900,7 +900,7 @@ dependencies = [
 
 [[package]]
 name = "no-std-no-alloc"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "heapless",
  "stak",
@@ -1336,7 +1336,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "any-fn",
  "rand",
@@ -1356,7 +1356,7 @@ dependencies = [
 
 [[package]]
 name = "stak-bench"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "codspeed-criterion-compat",
  "mlua",
@@ -1367,7 +1367,7 @@ dependencies = [
 
 [[package]]
 name = "stak-build"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -1377,14 +1377,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -1398,18 +1398,18 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.11.8"
+version = "0.11.9"
 
 [[package]]
 name = "stak-decode"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-device"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "rustix",
  "stak-util",
@@ -1419,7 +1419,7 @@ dependencies = [
 
 [[package]]
 name = "stak-dynamic"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "any-fn",
  "bitvec",
@@ -1431,7 +1431,7 @@ dependencies = [
 
 [[package]]
 name = "stak-engine"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "any-fn",
  "cfg-elif",
@@ -1452,7 +1452,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "heapless",
  "rustix",
@@ -1463,7 +1463,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "libm",
  "stak-vm",
@@ -1472,7 +1472,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "clap",
  "main_error",
@@ -1487,14 +1487,14 @@ dependencies = [
 
 [[package]]
 name = "stak-libc"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "rustix",
 ]
 
 [[package]]
 name = "stak-macro"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "cfg-elif",
  "proc-macro2",
@@ -1512,7 +1512,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1521,14 +1521,14 @@ dependencies = [
 
 [[package]]
 name = "stak-module"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "hmr",
 ]
 
 [[package]]
 name = "stak-native"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -1536,7 +1536,7 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -1544,7 +1544,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profile"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "clap",
  "main_error",
@@ -1560,7 +1560,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -1569,7 +1569,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -1583,14 +1583,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "clap",
  "dlmalloc",
@@ -1610,7 +1610,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -1619,7 +1619,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "cfg-elif",
  "noop-executor",
@@ -1627,7 +1627,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "cfg-elif",
  "insta",
@@ -1644,7 +1644,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.11.8"
+version = "0.11.9"
 dependencies = [
  "cfg-elif",
  "stak-build",
@@ -1672,9 +1672,9 @@ checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
 
 [[package]]
 name = "syn"
-version = "2.0.108"
+version = "2.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da58917d35242480a05c2897064da0a80589a2a0476c9a3f2fdc83b53502e917"
+checksum = "2f17c7e013e88258aa9543dcbe81aca68a667a9ac37cd69c9fbc07858bfe0e2f"
 dependencies = [
  "proc-macro2",
  "quote",
