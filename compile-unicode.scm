@@ -156,16 +156,6 @@
 
 ; Alphabetic
 
-(define (compile-prop-table name)
-  (read-records
-    (lambda (record)
-      (and
-        (equal? (cadr record) name)
-        (parameterize ((current-input-port (open-input-string (car record))))
-          (map
-            parse-code-point
-            (read-code-points)))))))
-
 (define (compile-alphabetic-table)
   (group-codes
     (differentiate-codes
@@ -255,6 +245,18 @@
           (and
             (equal? (caddr record) "Nd")
             (parse-code-point (car record))))))))
+
+; Property
+
+(define (compile-prop-table name)
+  (read-records
+    (lambda (record)
+      (and
+        (equal? (cadr record) name)
+        (parameterize ((current-input-port (open-input-string (car record))))
+          (map
+            parse-code-point
+            (read-code-points)))))))
 
 ; Space
 
