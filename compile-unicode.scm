@@ -248,15 +248,19 @@
 
 ; Property
 
+(define (differentiate-prop-records records)
+  records)
+
 (define (compile-prop-table name)
-  (read-records
-    (lambda (record)
-      (and
-        (equal? (cadr record) name)
-        (parameterize ((current-input-port (open-input-string (car record))))
-          (map
-            parse-code-point
-            (read-code-points)))))))
+  (differentiate-prop-records
+    (read-records
+      (lambda (record)
+        (and
+          (equal? (cadr record) name)
+          (parameterize ((current-input-port (open-input-string (car record))))
+            (map
+              parse-code-point
+              (read-code-points))))))))
 
 ; Space
 
