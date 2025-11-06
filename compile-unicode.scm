@@ -320,7 +320,7 @@
       (compile-case-table 12))
     ((equal? subcommand "space")
       (compile-space-table))
-    ((equal? subcommand "other-alphabetic")
+    ((equal? subcommand "other")
       (compile-prop-table "Other_Alphabetic"))
     (else
       (error "unknown subcommand"))))

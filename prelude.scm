@@ -3016,7 +3016,7 @@
     lone-lower-table
     lone-upper-table
     numeric-table
-    other-alphabetic-table
+    other-table
     space-table
     special-chars
     upcase-table)
@@ -3025,7 +3025,7 @@
 
   (begin
     (define alphabetic-table '())
-    (define other-alphabetic-table '())
+    (define other-table '())
     (define downcase-table '((65 97) (24 . 1)))
     (define upcase-table '((97 65) (24 . 1)))
     (define fold-table '())
@@ -3108,7 +3108,7 @@
         (char-lower-case? x)
         (char-upper-case? x)
         (char-property? x alphabetic-table)
-        (char-property? x other-alphabetic-table)))
+        (char-property? x other-table)))
 
     (define (char-numeric? x)
       (char-property? x numeric-table))
@@ -5203,7 +5203,7 @@
         (23 . 1)
         34))
 
-    (set! other-alphabetic-table
+    (set! other-table
       '(837
         30
         (11 . 1)
