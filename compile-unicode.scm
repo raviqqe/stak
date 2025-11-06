@@ -264,15 +264,20 @@
             (cdr records)))))))
 
 (define (compile-prop-table name)
-  (differentiate-prop-records
-    (read-records
-      (lambda (record)
-        (and
-          (equal? (cadr record) name)
-          (parameterize ((current-input-port (open-input-string (car record))))
-            (map
-              parse-code-point
-              (read-code-points))))))))
+  (map
+    (lambda (record)
+      (if (null? (cdr record))
+        (car record)
+        record))
+    (differentiate-prop-records
+      (read-records
+        (lambda (record)
+          (and
+            (equal? (cadr record) name)
+            (parameterize ((current-input-port (open-input-string (car record))))
+              (map
+                parse-code-point
+                (read-code-points)))))))))
 
 ; Space
 
