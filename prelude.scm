@@ -3107,7 +3107,8 @@
       (or
         (char-lower-case? x)
         (char-upper-case? x)
-        (char-property? x alphabetic-table)))
+        (char-property? x alphabetic-table)
+        (char-property? x other-alphabetic-table)))
 
     (define (char-numeric? x)
       (char-property? x numeric-table))
