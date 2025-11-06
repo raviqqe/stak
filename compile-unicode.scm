@@ -52,11 +52,12 @@
 (define (read-code-point)
   (list->string
     (let loop ()
-      (let ((x (read-char)))
+      (let ((x (peek-char)))
         (if (and
              (char? x)
              (or (char-alphabetic? x) (char-numeric? x)))
-          (cons x (loop))
+          (let ((x (read-char)))
+            (cons x (loop)))
           '())))))
 
 (define (read-code-points)
