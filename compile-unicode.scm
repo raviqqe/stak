@@ -13,15 +13,26 @@
     ((not (eqv? character #\space)))
     (read-char)))
 
+(define (trim-end-blank xs)
+  (if (null? xs)
+    '()
+    (let ((ys (trim-end-blank (cdr xs))))
+      (cons
+        (car xs)
+        (if (equal? ys '(#\space))
+          '()
+          ys)))))
+
 (define (parse-raw-token)
   (list->string
-    (let loop ()
-      (if (or
-           (eof-object? (peek-char))
-           (eqv? (peek-char) #\;))
-        '()
-        (let ((character (read-char)))
-          (cons character (loop)))))))
+    (trim-end-blank
+      (let loop ()
+        (if (or
+             (eof-object? (peek-char))
+             (memv (peek-char) '(#\; #\#)))
+          '()
+          (let ((character (read-char)))
+            (cons character (loop))))))))
 
 (define (parse-token)
   (parse-blank)
@@ -129,7 +140,7 @@
     (lambda (record)
       (and
         (equal? (cadr record) name)
-        (cons (car record) (cadr record))))))
+        (car record)))))
 
 (define (compile-alphabetic-table prop-list-file)
   (let ((chars
