@@ -42,7 +42,7 @@ done
 compile fold CaseFolding UnicodeData
 compile other-alphabetic PropList
 
-for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do
+for type in alphabetic downcase fold lone-lower lone-upper numeric other-alphabetic space upcase; do
   cat >$directory/main.scm <<EOF
 (import (scheme base) (scheme char) (scheme cxr) (scheme write) (stak char))
 
