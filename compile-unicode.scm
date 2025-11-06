@@ -264,11 +264,11 @@
             (cdr records)))))))
 
 (define (compile-prop-table name)
-  (map
+  (append-map
     (lambda (record)
       (if (null? (cdr record))
-        (car record)
-        record))
+        (list (car record))
+        (list record)))
     (differentiate-prop-records
       (read-records
         (lambda (record)
