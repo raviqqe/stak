@@ -10,10 +10,10 @@ publish = false
 
 [dependencies]
 heapless = "0.9.1"
-stak = { path = "../../root", version = "0.11.8", default-features = false }
+stak = { path = "../../root", version = "0.11.9", default-features = false }
 
 [build-dependencies]
-stak-build = { path = "../../build", version = "0.11.8" }
+stak-build = { path = "../../build", version = "0.11.9" }
 
 [lints]
 workspace = true
