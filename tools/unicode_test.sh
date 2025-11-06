@@ -40,6 +40,7 @@ for type in alphabetic downcase lone-lower lone-upper numeric space upcase; do
 done
 
 compile fold CaseFolding UnicodeData
+compile other-alphabetic PropList
 
 for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do
   cat >$directory/main.scm <<EOF
