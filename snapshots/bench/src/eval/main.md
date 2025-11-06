@@ -3746,13 +3746,14 @@
   - digit-value
   - alphabetic-table
   - downcase-table
-  - upcase-table
   - fold-table
   - lone-lower-table
   - lone-upper-table
   - numeric-table
+  - other-table
   - space-table
   - special-chars
+  - upcase-table
   - lazy
   - delay
   - delay-force
@@ -4374,6 +4375,8 @@
 - set with-output-to-file
 - constant ()
 - set alphabetic-table
+- constant ()
+- set other-table
 - constant list
   - list
     - 65
@@ -4621,9 +4624,18 @@
       - get 0
       - if
         - get 0
-      - get 4
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+        - get 6
+        - get other-table
+        - call 2 #f ||
+      - call 1 #f $$close
+      - get 5
       - get alphabetic-table
       - call 2 #f ||
+      - call 1 #f 1
     - call 1 #f $$close
     - get 3
     - call 1 #f char-upper-case?
@@ -8655,13 +8667,14 @@
                                             - (digit-value . digit-value)
                                             - (alphabetic-table . alphabetic-table)
                                             - (downcase-table . downcase-table)
-                                            - (upcase-table . upcase-table)
                                             - (fold-table . fold-table)
                                             - (lone-lower-table . lone-lower-table)
                                             - (lone-upper-table . lone-upper-table)
                                             - (numeric-table . numeric-table)
+                                            - (other-table . other-table)
                                             - (space-table . space-table)
                                             - (special-chars . special-chars)
+                                            - (upcase-table . upcase-table)
                                           - list
                                             - list
                                               - scheme
