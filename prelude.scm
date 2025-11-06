@@ -3012,18 +3012,20 @@
 
     alphabetic-table
     downcase-table
-    upcase-table
     fold-table
     lone-lower-table
     lone-upper-table
     numeric-table
+    other-alphabetic-table
     space-table
-    special-chars)
+    special-chars
+    upcase-table)
 
   (import (stak base))
 
   (begin
     (define alphabetic-table '())
+    (define other-alphabetic-table '())
     (define downcase-table '((65 97) (24 . 1)))
     (define upcase-table '((97 65) (24 . 1)))
     (define fold-table '())
