@@ -8,22 +8,38 @@
   (scheme write)
   (srfi 1))
 
-(define (parse-token)
-  (list->string
-    (let loop ()
-      (if (or
-           (eof-object? (peek-char))
-           (eqv? (peek-char) #\;))
-        '()
-        (let ((character (read-char)))
-          (cons character (loop)))))))
-
-(define (parse-tokens)
+(define (read-blank)
   (do ((character (peek-char) (peek-char)))
     ((not (eqv? character #\space)))
-    (read-char))
+    (read-char)))
 
-  (let ((token (parse-token)))
+(define (trim-end-blank xs)
+  (if (null? xs)
+    '()
+    (let ((ys (trim-end-blank (cdr xs))))
+      (cons
+        (car xs)
+        (if (equal? ys '(#\space))
+          '()
+          ys)))))
+
+(define (read-raw-token)
+  (list->string
+    (trim-end-blank
+      (let loop ()
+        (if (or
+             (eof-object? (peek-char))
+             (memv (peek-char) '(#\; #\#)))
+          '()
+          (let ((character (read-char)))
+            (cons character (loop))))))))
+
+(define (read-token)
+  (read-blank)
+  (read-raw-token))
+
+(define (read-tokens)
+  (let ((token (read-token)))
     (cons
       token
       (if (let ((character (read-char)))
@@ -31,7 +47,28 @@
              (eof-object? character)
              (eqv? character #\#)))
         '()
-        (parse-tokens)))))
+        (read-tokens)))))
+
+(define (read-code-point)
+  (list->string
+    (let loop ()
+      (let ((x (peek-char)))
+        (if (and
+             (char? x)
+             (or
+               (char-alphabetic? x)
+               (char-numeric? x)))
+          (let ((x (read-char)))
+            (cons x (loop)))
+          '())))))
+
+(define (read-code-points)
+  (if (eof-object? (peek-char))
+    '()
+    (let ((x (read-code-point)))
+      (read-char)
+      (read-char)
+      (cons x (read-code-points)))))
 
 (define (read-records . rest)
   (define filter
@@ -47,18 +84,18 @@
     (unless (or (equal? line "") (eqv? (string-ref line 0) #\#))
       (let ((record
               (parameterize ((current-input-port (open-input-string line)))
-                (filter (parse-tokens)))))
+                (filter (read-tokens)))))
         (when record
           (set-cdr! pair (list record))
           (set! pair (cdr pair)))))))
 
-(define (parse-character-code code)
+(define (parse-code-point code)
   (string->number code 16))
 
 (define (parse-case-records records)
   (map
     (lambda (record)
-      (map parse-character-code record))
+      (map parse-code-point record))
     records))
 
 (define (differentiate-codes codes)
@@ -126,7 +163,7 @@
         (lambda (record)
           (and
             (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
-            (parse-character-code (car record))))))))
+            (parse-code-point (car record))))))))
 
 ; Case
 
@@ -152,7 +189,7 @@
           (and
             (equal? (caddr record) category)
             (equal? (list-ref record column) "")
-            (parse-character-code (car record))))))))
+            (parse-code-point (car record))))))))
 
 ; Fold
 
@@ -160,10 +197,10 @@
   (map
     (lambda (record)
       (cons
-        (parse-character-code (car record))
+        (parse-code-point (car record))
         (cons
           (cadr record)
-          (map parse-character-code (cddr record)))))
+          (map parse-code-point (cddr record)))))
     records))
 
 (define (filter-fold-records downcase-chars records)
@@ -207,7 +244,42 @@
         (lambda (record)
           (and
             (equal? (caddr record) "Nd")
-            (parse-character-code (car record))))))))
+            (parse-code-point (car record))))))))
+
+; Property
+
+(define (differentiate-prop-records records)
+  (let loop ((code 0) (records records))
+    (if (null? records)
+      '()
+      (let* ((record (car records)))
+        (cons
+          (cons
+            (- (car record) code)
+            (if (null? (cdr record))
+              '()
+              (- (cadr record) (car record))))
+          (loop
+            (last record)
+            (cdr records)))))))
+
+(define (compile-prop-table name)
+  (append-map
+    (lambda (record)
+      (cons
+        (car record)
+        (if (null? (cdr record))
+          '()
+          (list (cons (- (cdr record) 1) 1)))))
+    (differentiate-prop-records
+      (read-records
+        (lambda (record)
+          (and
+            (equal? (cadr record) name)
+            (parameterize ((current-input-port (open-input-string (car record))))
+              (map
+                parse-code-point
+                (read-code-points)))))))))
 
 ; Space
 
@@ -248,5 +320,7 @@
       (compile-case-table 12))
     ((equal? subcommand "space")
       (compile-space-table))
+    ((equal? subcommand "other")
+      (compile-prop-table "Other_Alphabetic"))
     (else
       (error "unknown subcommand"))))

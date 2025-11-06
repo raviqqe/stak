@@ -4,9 +4,22 @@ set -ex
 
 version=17.0.0
 
-fetch_data() {
+fetch_data() (
   curl -fsSL https://raw.githubusercontent.com/unicode-org/unicodetools/main/unicodetools/data/ucd/$version/$1.txt
-}
+)
+
+compile() (
+  type=$1
+  input=$2
+
+  shift 2
+
+  for name in $@; do
+    arguments="$arguments $directory/$name.txt"
+  done
+
+  ${STAK_HOST:-stak} compile-unicode.scm $type $arguments <$directory/$input.txt >$directory/$type.scm
+)
 
 cd $(dirname $0)/..
 
@@ -22,15 +35,14 @@ for base in CaseFolding PropList UnicodeData; do
   fetch_data $base >$directory/$base.txt
 done
 
-scheme=${STAK_HOST:-stak}
-
 for type in alphabetic downcase lone-lower lone-upper numeric space upcase; do
-  $scheme compile-unicode.scm $type <$directory/UnicodeData.txt >$directory/$type.scm
+  compile $type UnicodeData
 done
 
-$scheme compile-unicode.scm fold $directory/UnicodeData.txt <$directory/CaseFolding.txt >$directory/fold.scm
+compile fold CaseFolding UnicodeData
+compile other PropList
 
-for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do
+for type in alphabetic downcase fold lone-lower lone-upper numeric other space upcase; do
   cat >$directory/main.scm <<EOF
 (import (scheme base) (scheme char) (scheme cxr) (scheme write) (stak char))
 
