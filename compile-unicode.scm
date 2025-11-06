@@ -249,8 +249,19 @@
 ; Property
 
 (define (differentiate-prop-records records)
-  ; TODO
-  records)
+  (let loop ((code 0) (records records))
+    (if (null? records)
+      '()
+      (let* ((record (car records)))
+        (cons
+          (cons
+            (- (car record) code)
+            (if (null? (cdr record))
+              '()
+              todo))
+          (loop
+            (last record)
+            (cdr records)))))))
 
 (define (compile-prop-table name)
   (differentiate-prop-records
