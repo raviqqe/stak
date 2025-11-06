@@ -45,6 +45,7 @@ Feature: Character
       | @     | B      |
       | 0     | B      |
 
+  @chibi @gauche @stak
   Scenario Outline: Check a character of other alphabetic
     Given a file named "main.scm" with:
       """scheme
