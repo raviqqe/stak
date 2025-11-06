@@ -5203,6 +5203,9 @@
         (23 . 1)
         34))
 
+    (set! other-alphabetic-table
+      '())
+
     (set! space-table
       (append
         space-table
