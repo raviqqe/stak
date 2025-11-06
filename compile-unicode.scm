@@ -249,6 +249,7 @@
 ; Property
 
 (define (differentiate-prop-records records)
+  ; TODO
   records)
 
 (define (compile-prop-table name)
