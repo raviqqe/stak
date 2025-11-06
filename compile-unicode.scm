@@ -8,7 +8,7 @@
   (scheme write)
   (srfi 1))
 
-(define (parse-blank)
+(define (read-blank)
   (do ((character (peek-char) (peek-char)))
     ((not (eqv? character #\space)))
     (read-char)))
@@ -23,7 +23,7 @@
           '()
           ys)))))
 
-(define (parse-raw-token)
+(define (read-raw-token)
   (list->string
     (trim-end-blank
       (let loop ()
@@ -34,12 +34,12 @@
           (let ((character (read-char)))
             (cons character (loop))))))))
 
-(define (parse-token)
-  (parse-blank)
-  (parse-raw-token))
+(define (read-token)
+  (read-blank)
+  (read-raw-token))
 
-(define (parse-tokens)
-  (let ((token (parse-token)))
+(define (read-tokens)
+  (let ((token (read-token)))
     (cons
       token
       (if (let ((character (read-char)))
@@ -47,9 +47,9 @@
              (eof-object? character)
              (eqv? character #\#)))
         '()
-        (parse-tokens)))))
+        (read-tokens)))))
 
-(define (parse-code-point)
+(define (read-code-point)
   (list->string
     (let loop ()
       (let ((x (read-char)))
@@ -59,13 +59,13 @@
           (cons x (loop))
           '())))))
 
-(define (parse-code-points)
+(define (read-code-points)
   (if (eof-object? (peek-char))
     '()
-    (let ((x (parse-code-point)))
+    (let ((x (read-code-point)))
       (read-char)
       (read-char)
-      (cons x (parse-code-points)))))
+      (cons x (read-code-points)))))
 
 (define (read-records . rest)
   (define filter
@@ -81,7 +81,7 @@
     (unless (or (equal? line "") (eqv? (string-ref line 0) #\#))
       (let ((record
               (parameterize ((current-input-port (open-input-string line)))
-                (filter (parse-tokens)))))
+                (filter (read-tokens)))))
         (when record
           (set-cdr! pair (list record))
           (set! pair (cdr pair)))))))
@@ -159,7 +159,9 @@
       (and
         (equal? (cadr record) name)
         (parameterize ((current-input-port (open-input-string (car record))))
-          (parse-code-points))))))
+          (map
+            parse-character-code
+            (read-code-points)))))))
 
 (define (compile-alphabetic-table prop-list-file)
   (let ((chars
