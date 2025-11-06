@@ -55,7 +55,9 @@
       (let ((x (peek-char)))
         (if (and
              (char? x)
-             (or (char-alphabetic? x) (char-numeric? x)))
+             (or
+               (char-alphabetic? x)
+               (char-numeric? x)))
           (let ((x (read-char)))
             (cons x (loop)))
           '())))))
