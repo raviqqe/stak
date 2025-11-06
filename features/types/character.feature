@@ -45,6 +45,22 @@ Feature: Character
       | @     | B      |
       | 0     | B      |
 
+  Scenario Outline: Check a character of other alphabetic
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme char))
+
+      (write-u8 (if (char-alphabetic? (integer->char <value>)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value  | output |
+      | 837    | A      |
+      | 113822 | A      |
+      | 127369 | A      |
+
   Scenario Outline: Check a numeric character
     Given a file named "main.scm" with:
       """scheme
