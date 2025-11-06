@@ -266,9 +266,11 @@
 (define (compile-prop-table name)
   (append-map
     (lambda (record)
-      (if (null? (cdr record))
-        (list (car record))
-        (list record)))
+      (cons
+        (car record)
+        (if (null? (cdr record))
+          '()
+          (list (cons (cdr record) 1)))))
     (differentiate-prop-records
       (read-records
         (lambda (record)
