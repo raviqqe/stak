@@ -35,11 +35,10 @@ for base in CaseFolding PropList UnicodeData; do
   fetch_data $base >$directory/$base.txt
 done
 
-for type in downcase lone-lower lone-upper numeric space upcase; do
+for type in alphabetic downcase lone-lower lone-upper numeric space upcase; do
   compile $type UnicodeData
 done
 
-compile alphabetic UnicodeData PropList
 compile fold CaseFolding UnicodeData
 
 for type in alphabetic downcase fold lone-lower lone-upper numeric space upcase; do

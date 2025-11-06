@@ -86,13 +86,13 @@
           (set-cdr! pair (list record))
           (set! pair (cdr pair)))))))
 
-(define (parse-character-code code)
+(define (parse-code-point code)
   (string->number code 16))
 
 (define (parse-case-records records)
   (map
     (lambda (record)
-      (map parse-character-code record))
+      (map parse-code-point record))
     records))
 
 (define (differentiate-codes codes)
@@ -153,28 +153,24 @@
 
 ; Alphabetic
 
-(define (read-prop-records name)
+(define (compile-prop-table name)
   (read-records
     (lambda (record)
       (and
         (equal? (cadr record) name)
         (parameterize ((current-input-port (open-input-string (car record))))
           (map
-            parse-character-code
+            parse-code-point
             (read-code-points)))))))
 
-(define (compile-alphabetic-table prop-list-file)
-  (let ((chars
-          (with-input-from-file prop-list-file
-            (lambda ()
-              (read-prop-records "Other_Alphabetic")))))
-    (group-codes
-      (differentiate-codes
-        (read-records
-          (lambda (record)
-            (and
-              (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
-              (parse-character-code (car record)))))))))
+(define (compile-alphabetic-table)
+  (group-codes
+    (differentiate-codes
+      (read-records
+        (lambda (record)
+          (and
+            (member (caddr record) '("Lm" "Lo" "Lt" "Nl"))
+            (parse-code-point (car record))))))))
 
 ; Case
 
@@ -200,7 +196,7 @@
           (and
             (equal? (caddr record) category)
             (equal? (list-ref record column) "")
-            (parse-character-code (car record))))))))
+            (parse-code-point (car record))))))))
 
 ; Fold
 
@@ -208,10 +204,10 @@
   (map
     (lambda (record)
       (cons
-        (parse-character-code (car record))
+        (parse-code-point (car record))
         (cons
           (cadr record)
-          (map parse-character-code (cddr record)))))
+          (map parse-code-point (cddr record)))))
     records))
 
 (define (filter-fold-records downcase-chars records)
@@ -255,7 +251,7 @@
         (lambda (record)
           (and
             (equal? (caddr record) "Nd")
-            (parse-character-code (car record))))))))
+            (parse-code-point (car record))))))))
 
 ; Space
 
@@ -281,7 +277,7 @@
 (write
   (cond
     ((equal? subcommand "alphabetic")
-      (compile-alphabetic-table argument))
+      (compile-alphabetic-table))
     ((equal? subcommand "downcase")
       (compile-case-table 13))
     ((equal? subcommand "fold")
@@ -296,5 +292,7 @@
       (compile-case-table 12))
     ((equal? subcommand "space")
       (compile-space-table))
+    ((equal? subcommand "other-alphabetic")
+      (compile-prop-table "Other_Alphabetic"))
     (else
       (error "unknown subcommand"))))
