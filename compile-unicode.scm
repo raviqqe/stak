@@ -49,6 +49,24 @@
         '()
         (parse-tokens)))))
 
+(define (parse-code-point)
+  (list->string
+    (let loop ()
+      (let ((x (read-char)))
+        (if (and
+             (char? x)
+             (or (char-alphabetic? x) (char-numeric? x)))
+          (cons x (loop))
+          '())))))
+
+(define (parse-code-points)
+  (if (eof-object? (peek-char))
+    '()
+    (let ((x (parse-code-point)))
+      (read-char)
+      (read-char)
+      (cons x (parse-code-points)))))
+
 (define (read-records . rest)
   (define filter
     (if (null? rest)
@@ -140,7 +158,8 @@
     (lambda (record)
       (and
         (equal? (cadr record) name)
-        (car record)))))
+        (parameterize ((current-input-port (open-input-string (car record))))
+          (parse-code-points))))))
 
 (define (compile-alphabetic-table prop-list-file)
   (let ((chars
