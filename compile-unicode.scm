@@ -258,7 +258,7 @@
             (- (car record) code)
             (if (null? (cdr record))
               '()
-              todo))
+              (- (cadr record) (car record))))
           (loop
             (last record)
             (cdr records)))))))
