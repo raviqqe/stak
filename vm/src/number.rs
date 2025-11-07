@@ -18,53 +18,44 @@ use core::{
 pub struct Number(NumberInner);
 
 impl Number {
-    #[inline]
     const fn new(number: NumberInner) -> Self {
         Self(value_inner::from_number(number))
     }
 
-    #[inline]
     const fn to_representation(self) -> NumberInner {
         value_inner::to_number(self.0)
     }
 
     /// Converts `i64` into a number.
-    #[inline]
     pub const fn from_i64(number: i64) -> Self {
         Self(value_inner::from_i64(number))
     }
 
     /// Converts a number to `i64`.
-    #[inline]
     pub const fn to_i64(self) -> i64 {
         value_inner::to_i64(self.0)
     }
 
     /// Converts `f64` to a number.
-    #[inline]
     pub const fn from_f64(number: f64) -> Self {
         Self(value_inner::from_f64(number))
     }
 
     /// Converts a number to `f64`.
-    #[inline]
     pub const fn to_f64(self) -> f64 {
         value_inner::to_f64(self.0)
     }
 
-    #[inline]
     pub(crate) const fn from_raw(raw: u64) -> Self {
         Self(value_inner::from_raw(raw))
     }
 
-    #[inline]
     pub(crate) const fn to_raw(self) -> u64 {
         value_inner::to_raw(self.0)
     }
 }
 
 impl Default for Number {
-    #[inline]
     fn default() -> Self {
         Self::new(Default::default())
     }
@@ -73,7 +64,6 @@ impl Default for Number {
 impl Add for Number {
     type Output = Self;
 
-    #[inline]
     fn add(self, other: Self) -> Self::Output {
         Self::new(self.to_representation() + other.to_representation())
     }
@@ -82,7 +72,6 @@ impl Add for Number {
 impl Sub for Number {
     type Output = Self;
 
-    #[inline]
     fn sub(self, other: Self) -> Self::Output {
         Self::new(self.to_representation() - other.to_representation())
     }
@@ -91,7 +80,6 @@ impl Sub for Number {
 impl Mul for Number {
     type Output = Self;
 
-    #[inline]
     fn mul(self, other: Self) -> Self::Output {
         Self::new(self.to_representation() * other.to_representation())
     }
@@ -100,7 +88,6 @@ impl Mul for Number {
 impl Div for Number {
     type Output = Self;
 
-    #[inline]
     fn div(self, other: Self) -> Self::Output {
         Self::new(self.to_representation() / other.to_representation())
     }
@@ -109,7 +96,6 @@ impl Div for Number {
 impl Rem for Number {
     type Output = Self;
 
-    #[inline]
     fn rem(self, other: Self) -> Self::Output {
         Self::new(self.to_representation() % other.to_representation())
     }
@@ -118,7 +104,6 @@ impl Rem for Number {
 impl TryFrom<Value> for Number {
     type Error = Error;
 
-    #[inline]
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         value.to_number().ok_or(Error::NumberExpected)
     }

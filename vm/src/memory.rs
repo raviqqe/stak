@@ -41,19 +41,19 @@ macro_rules! assert_heap_value {
 }
 
 /// A memory on a virtual machine.
-pub struct Memory<'a> {
+pub struct Memory<H> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
     register: Cons,
     allocation_index: usize,
     space: bool,
-    heap: &'a mut [Value],
+    heap: H,
 }
 
-impl<'a> Memory<'a> {
+impl<H: Heap> Memory<H> {
     /// Creates a memory.
-    pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
+    pub fn new(heap: H) -> Result<Self, Error> {
         let mut memory = Self {
             code: NEVER,
             stack: NEVER,
@@ -71,44 +71,45 @@ impl<'a> Memory<'a> {
         Ok(memory)
     }
 
+    fn heap(&self) -> &[Value] {
+        self.heap.as_ref()
+    }
+
+    fn heap_mut(&mut self) -> &mut [Value] {
+        self.heap.as_mut()
+    }
+
     /// Returns a code.
-    #[inline]
     pub const fn code(&self) -> Cons {
         self.code
     }
 
     /// Sets a code.
-    #[inline]
     pub const fn set_code(&mut self, value: Cons) {
         self.code = value;
     }
 
     /// Returns a register.
-    #[inline]
     pub const fn register(&self) -> Cons {
         self.register
     }
 
     /// Sets a register.
-    #[inline]
     pub const fn set_register(&mut self, value: Cons) {
         self.register = value;
     }
 
     /// Returns a stack.
-    #[inline]
     pub const fn stack(&self) -> Cons {
         self.stack
     }
 
     /// Sets a stack.
-    #[inline]
     pub const fn set_stack(&mut self, value: Cons) {
         self.stack = value;
     }
 
     /// Returns a boolean value.
-    #[inline]
     pub fn boolean(&self, value: bool) -> Result<Cons, Error> {
         Ok(if value {
             self.cdr(self.r#false)?.assume_cons()
@@ -118,19 +119,17 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a null value.
-    #[inline]
     pub fn null(&self) -> Result<Cons, Error> {
         Ok(self.car(self.r#false)?.assume_cons())
     }
 
     /// Sets a false value.
-    #[inline]
     pub(crate) const fn set_false(&mut self, cons: Cons) {
         self.r#false = cons;
     }
 
     /// Pushes a value to a stack.
-    #[inline(always)]
+    #[inline]
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;
 
@@ -138,7 +137,6 @@ impl<'a> Memory<'a> {
     }
 
     /// Pops a value from a stack.
-    #[inline]
     pub fn pop(&mut self) -> Result<Value, Error> {
         debug_assert_ne!(self.stack, self.null()?);
 
@@ -170,7 +168,6 @@ impl<'a> Memory<'a> {
     }
 
     /// Peeks a value at the top of a stack.
-    #[inline]
     pub fn top(&self) -> Result<Value, Error> {
         debug_assert_ne!(self.stack, self.null()?);
 
@@ -178,19 +175,17 @@ impl<'a> Memory<'a> {
     }
 
     /// Sets a value at the top of a stack.
-    #[inline]
     pub fn set_top(&mut self, value: Value) -> Result<(), Error> {
         self.set_car(self.stack, value)
     }
 
     /// Allocates a cons with a default tag of [`Type::Pair`].
-    #[inline]
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
         self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
 
     /// Allocates a cons.
-    #[inline]
+    #[inline(always)]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
@@ -206,7 +201,7 @@ impl<'a> Memory<'a> {
         Ok(cons)
     }
 
-    #[inline]
+    #[inline(always)]
     fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);
@@ -225,94 +220,82 @@ impl<'a> Memory<'a> {
         Ok(cons)
     }
 
-    #[inline]
-    const fn is_out_of_memory(&self) -> bool {
+    fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
     /// Returns a heap size.
-    #[inline]
-    pub const fn size(&self) -> usize {
-        self.heap.len()
+    pub fn size(&self) -> usize {
+        self.heap().len()
     }
 
-    #[inline]
-    const fn space_size(&self) -> usize {
+    fn space_size(&self) -> usize {
         self.size() / 2
     }
 
     /// Returns the current allocation index relative an allocation start index.
-    #[inline]
     pub const fn allocation_index(&self) -> usize {
         self.allocation_index
     }
 
     /// Returns an allocation start index.
-    #[inline]
-    pub const fn allocation_start(&self) -> usize {
+    pub fn allocation_start(&self) -> usize {
         if self.space { self.space_size() } else { 0 }
     }
 
     /// Returns an allocation end index.
-    #[inline]
-    pub const fn allocation_end(&self) -> usize {
+    pub fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
-    #[inline]
     fn get<const G: bool>(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index, G);
 
-        self.heap
+        self.heap()
             .get(index)
             .copied()
             .ok_or(Error::InvalidMemoryAccess)
     }
 
-    #[inline]
     fn set<const G: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index, G);
 
-        *self.heap.get_mut(index).ok_or(Error::InvalidMemoryAccess)? = value;
+        *self
+            .heap_mut()
+            .get_mut(index)
+            .ok_or(Error::InvalidMemoryAccess)? = value;
 
         Ok(())
     }
 
     /// Returns a value of a `car` field in a cons.
-    #[inline]
     pub fn car(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<false>(cons.index())
     }
 
     /// Returns a value of a `cdr` field in a cons.
-    #[inline]
     pub fn cdr(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<false>(cons.index() + 1)
     }
 
-    #[inline]
     fn garbage_car(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<true>(cons.index())
     }
 
-    #[inline]
     fn garbage_cdr(&self, cons: Cons) -> Result<Value, Error> {
         self.get::<true>(cons.index() + 1)
     }
 
     /// Returns a value of a `car` field in a value assumed as a cons.
-    #[inline]
     pub fn car_value(&self, cons: Value) -> Result<Value, Error> {
         self.car(cons.assume_cons())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
-    #[inline]
     pub fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
         self.cdr(cons.assume_cons())
     }
 
-    #[inline]
     fn set_field<const G: bool>(
         &mut self,
         cons: Cons,
@@ -323,13 +306,11 @@ impl<'a> Memory<'a> {
     }
 
     /// Sets a value to a `car` field in a cons.
-    #[inline]
     pub fn set_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<false>(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
-    #[inline]
     pub fn set_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         // Keep an existing tag.
         self.set_field::<false>(
@@ -340,35 +321,29 @@ impl<'a> Memory<'a> {
     }
 
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
-    #[inline]
     pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<false>(cons, 1, value)
     }
 
-    #[inline]
     fn set_garbage_car(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<true>(cons, 0, value)
     }
 
-    #[inline]
     fn set_garbage_cdr(&mut self, cons: Cons, value: Value) -> Result<(), Error> {
         self.set_field::<true>(cons, 1, value)
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
-    #[inline(always)]
     pub fn set_car_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
         self.set_car(cons.assume_cons(), value)
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
-    #[inline(always)]
     pub fn set_cdr_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
         self.set_cdr(cons.assume_cons(), value)
     }
 
     /// Returns a tail of a list.
-    #[inline(always)]
     pub fn tail(&self, mut list: Cons, mut index: usize) -> Result<Cons, Error> {
         while index > 0 {
             list = self.cdr(list)?.assume_cons();
@@ -494,7 +469,7 @@ impl<'a> Memory<'a> {
     }
 }
 
-impl Write for Memory<'_> {
+impl<H: Heap> Write for Memory<H> {
     fn write_str(&mut self, string: &str) -> fmt::Result {
         (|| -> Result<(), Error> {
             let mut list = self.null()?;
@@ -518,7 +493,7 @@ impl Write for Memory<'_> {
     }
 }
 
-impl Display for Memory<'_> {
+impl<H: Heap> Display for Memory<H> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -552,6 +527,16 @@ impl Display for Memory<'_> {
     }
 }
 
+/// A heap memory.
+pub trait Heap: AsRef<[Value]> + AsMut<[Value]> {}
+
+impl Heap for &mut [Value] {}
+
+impl<const N: usize> Heap for [Value; N] {}
+
+#[cfg(feature = "alloc")]
+impl Heap for alloc::vec::Vec<Value> {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -573,16 +558,14 @@ mod tests {
 
     #[test]
     fn create() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_snapshot!(memory);
     }
 
     #[test]
     fn create_list() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         let list = memory
             .cons(Number::from_i64(1).into(), memory.null().unwrap())
@@ -604,8 +587,7 @@ mod tests {
 
     #[test]
     fn convert_false() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(false).unwrap())
@@ -617,8 +599,7 @@ mod tests {
 
     #[test]
     fn convert_true() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.boolean(true).unwrap())
@@ -630,8 +611,7 @@ mod tests {
 
     #[test]
     fn convert_null() {
-        let mut heap = create_heap();
-        let memory = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
             Value::from(memory.null().unwrap()).to_cons().unwrap(),
@@ -639,7 +619,7 @@ mod tests {
         );
     }
 
-    fn assert_raw_string(memory: &Memory, mut cons: Cons, string: &str) {
+    fn assert_raw_string<H: Heap>(memory: &Memory<H>, mut cons: Cons, string: &str) {
         for character in string.chars() {
             assert_eq!(
                 memory.car(cons).unwrap().assume_number().to_i64(),
@@ -653,8 +633,7 @@ mod tests {
 
     #[test]
     fn build_string() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         let string = memory.build_string("foo").unwrap();
 
@@ -665,8 +644,7 @@ mod tests {
 
     #[test]
     fn format_string() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -677,8 +655,7 @@ mod tests {
 
     #[test]
     fn format_two_strings() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -692,8 +669,7 @@ mod tests {
     fn format_templated_string() {
         const FOO: usize = 42;
 
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(create_heap()).unwrap();
 
         memory.set_register(memory.null().unwrap());
 
@@ -707,8 +683,7 @@ mod tests {
 
         #[test]
         fn push_and_pop() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -718,8 +693,7 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -735,8 +709,7 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory
                 .allocate(Number::default().into(), Number::default().into())
@@ -748,8 +721,7 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(42).into()).unwrap();
@@ -760,8 +732,7 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             memory.stack = memory.null().unwrap();
             memory.push(Number::from_i64(1).into()).unwrap();
@@ -773,8 +744,7 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut heap = create_heap();
-            let mut memory = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(create_heap()).unwrap();
 
             let cons = memory
                 .allocate(Number::default().into(), Number::default().into())

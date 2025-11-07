@@ -31,7 +31,7 @@ pub fn interpret(bytecode: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<
     let mut error = vec![];
 
     let mut vm = Vm::new(
-        &mut heap,
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
             VoidFileSystem::new(),
@@ -58,7 +58,7 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
     let mut file_entries = [Default::default(); 1];
 
     let mut vm = Vm::new(
-        &mut heap,
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
             MemoryFileSystem::new(&files, &mut file_entries),

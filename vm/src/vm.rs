@@ -5,7 +5,7 @@ use crate::{
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     instruction::Instruction,
-    memory::Memory,
+    memory::{Heap, Memory},
     number::Number,
     primitive_set::PrimitiveSet,
     r#type::Type,
@@ -13,7 +13,10 @@ use crate::{
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::fmt::{self, Display, Formatter, Write};
+use core::{
+    fmt::{self, Display, Formatter, Write},
+    marker::PhantomData,
+};
 use stak_util::block_on;
 use winter_maybe_async::{maybe_async, maybe_await};
 
@@ -46,29 +49,31 @@ struct Arity {
 }
 
 /// A virtual machine.
-pub struct Vm<'a, T: PrimitiveSet> {
+pub struct Vm<'a, T: PrimitiveSet<H>, H = &'a mut [Value]> {
     primitive_set: T,
-    memory: Memory<'a>,
+    memory: Memory<H>,
     #[cfg(feature = "profile")]
-    profiler: Option<RefCell<&'a mut dyn Profiler>>,
+    profiler: Option<RefCell<&'a mut dyn Profiler<H>>>,
+    _profiler: PhantomData<&'a ()>,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<'a, T: PrimitiveSet> Vm<'a, T> {
+impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
     /// Creates a virtual machine.
-    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, Error> {
+    pub fn new(heap: H, primitive_set: T) -> Result<Self, Error> {
         Ok(Self {
             primitive_set,
             memory: Memory::new(heap)?,
             #[cfg(feature = "profile")]
             profiler: None,
+            _profiler: Default::default(),
         })
     }
 
     /// Sets a profiler.
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut dyn Profiler) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn Profiler<H>) -> Self {
         Self {
             profiler: Some(profiler.into()),
             ..self
@@ -172,7 +177,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[inline]
     fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand()?;
 
@@ -183,7 +187,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[inline]
     fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons()?;
         let value = self.memory.car(operand)?;
@@ -196,7 +199,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[inline]
     fn set(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons()?;
         let value = self.memory.pop()?;
@@ -209,7 +211,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[inline]
     fn r#if(&mut self) -> Result<(), Error> {
         let cons = self.memory.stack();
 
@@ -221,7 +222,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[inline(always)]
     #[maybe_async]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let procedure = self.procedure()?;
@@ -322,7 +322,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[inline]
     const fn parse_arity(info: usize) -> Arity {
         Arity {
             count: info / 2,
@@ -330,12 +329,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
-    #[inline]
     const fn build_arity(arity: Arity) -> usize {
         2 * arity.count + arity.variadic as usize
     }
 
-    #[inline]
     fn advance_code(&mut self) -> Result<(), Error> {
         let mut code = self.memory.cdr(self.memory.code())?.assume_cons();
 
@@ -551,7 +548,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 }
 
-impl<T: PrimitiveSet> Display for Vm<'_, T> {
+impl<T: PrimitiveSet<H>, H: Heap> Display for Vm<'_, T, H> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(formatter, "{}", &self.memory)
     }
@@ -563,13 +560,13 @@ mod tests {
 
     struct FakePrimitiveSet {}
 
-    impl PrimitiveSet for FakePrimitiveSet {
+    impl<H: Heap> PrimitiveSet<H> for FakePrimitiveSet {
         type Error = Error;
 
         #[maybe_async]
         fn operate(
             &mut self,
-            _memory: &mut Memory<'_>,
+            _memory: &mut Memory<H>,
             _primitive: usize,
         ) -> Result<(), Self::Error> {
             Ok(())

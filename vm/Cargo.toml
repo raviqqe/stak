@@ -25,6 +25,7 @@ stak-r7rs = { path = "../r7rs" }
 stak-time = { path = "../time" }
 
 [features]
+alloc = []
 async = [
   "stak-device/async",
   "stak-file/async",

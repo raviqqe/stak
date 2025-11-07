@@ -46,7 +46,7 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
     let mut error_message = vec![];
     let device = ReadWriteDevice::new(source, target, &mut error_message);
     let mut vm = Vm::new(
-        &mut heap,
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             device,
             VoidFileSystem::new(),

@@ -19,7 +19,6 @@ pub enum TypedValue {
 
 impl Value {
     /// Converts a value to a cons.
-    #[inline]
     pub const fn to_cons(self) -> Option<Cons> {
         if let TypedValue::Cons(cons) = self.to_typed() {
             Some(cons)
@@ -29,7 +28,6 @@ impl Value {
     }
 
     /// Converts a value to a number.
-    #[inline]
     pub const fn to_number(self) -> Option<Number> {
         if let TypedValue::Number(number) = self.to_typed() {
             Some(number)
@@ -39,7 +37,6 @@ impl Value {
     }
 
     /// Converts a value to a typed value.
-    #[inline]
     pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
             TypedValue::Cons(self.assume_cons())
@@ -49,7 +46,6 @@ impl Value {
     }
 
     /// Converts a value to a cons assuming its type.
-    #[inline]
     pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
@@ -57,7 +53,6 @@ impl Value {
     }
 
     /// Converts a value to a number assuming its type.
-    #[inline]
     pub const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
@@ -65,19 +60,16 @@ impl Value {
     }
 
     /// Checks if it is a cons.
-    #[inline]
     pub const fn is_cons(&self) -> bool {
         value_inner::is_cons(self.0)
     }
 
     /// Checks if it is a number.
-    #[inline]
     pub const fn is_number(&self) -> bool {
         !self.is_cons()
     }
 
     /// Returns a tag.
-    #[inline]
     pub const fn tag(self) -> Tag {
         if let Some(cons) = self.to_cons() {
             cons.tag()
@@ -87,7 +79,6 @@ impl Value {
     }
 
     /// Sets a tag.
-    #[inline]
     pub const fn set_tag(self, tag: Tag) -> Self {
         if let Some(cons) = self.to_cons() {
             Self::from_cons(cons.set_tag(tag))
@@ -102,14 +93,12 @@ impl Value {
 }
 
 impl Default for Value {
-    #[inline]
     fn default() -> Self {
         Number::default().into()
     }
 }
 
 impl PartialEq for Value {
-    #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.is_cons() && self.to_cons() == other.to_cons()
             || self.is_number() && self.to_number() == other.to_number()
@@ -119,14 +108,12 @@ impl PartialEq for Value {
 impl Eq for Value {}
 
 impl From<Cons> for Value {
-    #[inline]
     fn from(cons: Cons) -> Self {
         Self(cons.to_raw())
     }
 }
 
 impl From<Number> for Value {
-    #[inline]
     fn from(number: Number) -> Self {
         Self(number.to_raw())
     }

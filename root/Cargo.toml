@@ -32,7 +32,7 @@ stak-build = { path = "../build", version = "0.11.9" }
 
 [features]
 default = ["float", "std"]
-alloc = ["dep:stak-dynamic", "dep:stak-engine"]
+alloc = ["dep:stak-dynamic", "dep:stak-engine", "stak-vm/alloc"]
 async = [
   "stak-device/async",
   "stak-dynamic/async",

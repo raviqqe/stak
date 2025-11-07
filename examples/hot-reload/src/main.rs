@@ -55,7 +55,7 @@ fn run(
 ) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        &mut heap,
+        heap.as_mut(),
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, output, error),
             VoidFileSystem::new(),
