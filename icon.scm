@@ -79,12 +79,13 @@
                ((x "50%")
                 (y ,(string-append (number->string (- 60 (* 40 (/ index max-lambda-index)))) "%"))
                 (fill
-                 ,(string-append
-                   "color-mix(in oklab, royalblue "
-                   (number->string 50)
-                   "%, crimson "
-                   (number->string 50)
-                   "%)"))
+                 ,(let ((foo foo))
+                   (string-append
+                     "color-mix(in oklab, royalblue "
+                     (number->string 50)
+                     "%, crimson "
+                     (number->string 50)
+                     "%)")))
                 (transform
                  ,(string-append
                    "scale(1 0.5)"
