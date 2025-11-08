@@ -72,5 +72,5 @@
          (if (null? chars)
            '()
            (cons
-             (list 'text '((x "50%") (y "50%")) (string (car chars)))
+             (list 'text '((x "50%") (y "50%") (transform "rotate(45deg)")) (string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
