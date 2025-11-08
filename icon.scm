@@ -73,10 +73,4 @@
            '()
            (cons
              (list 'text '((x "50%") (y "50%")) (string (car chars)))
-             (loop (cdr chars)))))
-      (text ((x "50%") (y "50%")))
-      (text ((x "50%") (y "50%")))
-      (text ((x "50%") (y "50%")))
-      (text ((x "50%") (y "50%")))
-      (text ((x "50%") (y "50%")))
-      (text ((x "50%") (y "50%"))))))
+             (loop (cdr chars))))))))
