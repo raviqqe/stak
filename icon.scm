@@ -6,6 +6,9 @@
     "{"
     "}"))
 
+(define (render-attribute pair)
+  (string-append (symbol->string (car pair)) "=\"" (cadr pair) "\""))
+
 (define (render element)
   (if (string? element)
     element
