@@ -7,23 +7,25 @@
     "}"))
 
 (define (render element)
-  (case (car element)
-    ((svg text)
-      (string-append
-        "<svg>"
-        (apply
-          string-append
-          (map render (cddr element)))
-        "</svg>"))
-    ((style)
-      (string-append
-        "<style>"
-        (apply
-          string-append
-          (map render-css-class (cdr element)))
-        "</style>"))
-    (else
-      element)))
+  (if (string? element)
+    element
+    (case (car element)
+      ((svg text)
+        (string-append
+          "<svg>"
+          (apply
+            string-append
+            (map render (cddr element)))
+          "</svg>"))
+      ((style)
+        (string-append
+          "<style>"
+          (apply
+            string-append
+            (map render-css-class (cdr element)))
+          "</style>"))
+      (else
+        "UNKNOWN"))))
 
 (display
   (render
