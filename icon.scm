@@ -72,8 +72,8 @@
          (if (null? chars)
            '()
            (cons
-             (text ((x "50%") (y "50%")) char)
-             (loop))))
+             (list 'text '((x "50%") (y "50%")) (string (car chars)))
+             (loop (cdr chars)))))
       (text ((x "50%") (y "50%")))
       (text ((x "50%") (y "50%")))
       (text ((x "50%") (y "50%")))
