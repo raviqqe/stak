@@ -10,13 +10,18 @@
   (if (string? element)
     element
     (case (car element)
-      ((svg text)
-        (string-append
-          "<svg>"
-          (apply
-            string-append
-            (map render (cddr element)))
-          "</svg>"))
+      ((svg text) =>
+        (lambda (name)
+          (string-append
+            "<"
+            (symbol->string name)
+            ">"
+            (apply
+              string-append
+              (map render (cddr element)))
+            "</"
+            (symbol->string name)
+            ">")))
       ((style)
         (string-append
           "<style>"
