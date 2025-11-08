@@ -20,7 +20,13 @@
             (symbol->string name)
             (if (null? (cadr element))
               ""
-              (string-append ""))
+              (apply
+                string-append
+                (map
+                  (lambda (attribute)
+                    (string-append " "
+                      (render-attribute attribute)))
+                  (cadr element))))
             ">"
             (apply
               string-append
