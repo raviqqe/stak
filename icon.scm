@@ -7,7 +7,15 @@
     "}"))
 
 (define (render-attribute pair)
-  (string-append (symbol->string (car pair)) "=\"" (cadr pair) "\""))
+  (string-append
+    (case (car pair)
+      ((view-box)
+        "viewBox")
+      (else =>
+        symbol->string))
+    "=\""
+    (cadr pair)
+    "\""))
 
 (define (render element)
   (if (string? element)
