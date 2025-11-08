@@ -67,7 +67,7 @@
        (text
         (dominant-baseline "central")
         (font-size "18px")
-        (color "18px")
+        (color "white")
         (text-anchor "middle")
         (padding-top "2px")))
       (text ((x "50%") (y "50%")) "λ")
