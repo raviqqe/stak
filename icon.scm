@@ -68,7 +68,6 @@
        (text
         (dominant-baseline "central")
         (font-size "18px")
-        (fill "red")
         (text-anchor "middle")
         (transform-box "fill-box")
         (transform-origin "center")))
@@ -79,6 +78,7 @@
              `(text
                ((x "50%")
                 (y ,(string-append (number->string (- 60 (* 40 (/ index max-lambda-index)))) "%"))
+                (fill "red")
                 (transform
                  ,(string-append
                    "scale(1 0.5)"
