@@ -85,7 +85,7 @@
                    (number->string (+ -45 (* 90 (/ index (- (length lambda-chars) 1)))))
                    ")"
                    "scale("
-                   (number->string (+ -45 (* 90 (/ index (- (length lambda-chars) 1)))))
+                   (number->string (+ 0.5 (* 0.5 (/ index (- (length lambda-chars) 1)))))
                    ")")))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
