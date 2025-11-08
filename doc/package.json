@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "tools/build.sh",
+    "build": "tsc && astro build",
     "preview": "astro preview",
     "lint": "biome ci",
     "format": "biome format --write ."
