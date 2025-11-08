@@ -1,11 +1,18 @@
 (import (scheme base) (scheme write))
 
-(define (render element)
-  (case (car element)
-    ((style svg text)
-      foo)
-    ((svg)
-      foo)
+(define (render-css-class element)
+
+  (define (render element)
+    (case (car element)
+      ((svg text)
+        foo)
+      ((style)
+        (string-append
+          "<style>"
+          (apply
+            string-append
+            (map render-css-class (cdr element)))
+          "</style>")))
     (else
       "foo")))
 
