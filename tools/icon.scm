@@ -1,3 +1,10 @@
+(import (scheme base) (scheme write))
+
+(define (render element)
+  (case (car element)
+    (else
+      "foo")))
+
 (display
   (render
     ((svg ((view-box "0 0 20 20") (xmlns "http://www.w3.org/2000/svg"))
