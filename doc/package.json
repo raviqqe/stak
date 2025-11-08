@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && tsc",
+    "build": "astro check && astro build",
     "preview": "astro preview",
     "lint": "biome ci",
     "format": "biome format --write ."
@@ -34,6 +34,7 @@
     "vite-plugin-wasm": "^3.5.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.5",
     "@biomejs/biome": "^2.3.4",
     "@raviqqe/biome-config": "^2.0.20",
     "@types/node": "^24.10.0",
