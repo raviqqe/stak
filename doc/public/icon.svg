@@ -1,4 +1,11 @@
 <svg viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text {
+      dominant-baseline: central;
+      font-size: 17px;
+      text-anchor: middle;
+    }
+  </style>
   <text x="0" y="20">λ</text>
   <text>𝛌</text>
   <text>𝜆</text>
