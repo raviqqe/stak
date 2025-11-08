@@ -68,9 +68,9 @@
         (fill "red")
         (text-anchor "middle")
         (padding-top "2px")))
-      ,@(let loop ((chars '(#\λ #\𝛌 #\𝜆 #\𝝀 #\𝝺 #\𝞴)))
+      ,@(let loop ((chars '(#\λ #\𝛌 #\𝜆 #\𝝀 #\𝝺 #\𝞴)) (index 0))
          (if (null? chars)
            '()
            (cons
              (list 'text '((x "50%") (y "50%")) (string (car chars)))
-             (loop (cdr chars))))))))
+             (loop (cdr chars) (+ index 1))))))))
