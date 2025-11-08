@@ -78,6 +78,10 @@
              `(text
                ((x "50%")
                 (y "50%")
-                (transform "scale(1 0.5) rotate(45)"))
+                (transform
+                 ,(string-append
+                   "scale(1 0.5) rotate("
+                   (number->string 45)
+                   ")")))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
