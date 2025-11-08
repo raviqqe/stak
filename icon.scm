@@ -66,7 +66,6 @@
         (dominant-baseline "central")
         (font-size "18px")
         (fill "red")
-        (padding-top "2px")
         (text-anchor "middle")
         (transform-box "fill-box")
         (transform-origin "center")))
