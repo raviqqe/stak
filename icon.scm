@@ -9,8 +9,12 @@
 (define (render element)
   (case (car element)
     ((svg text)
-      (string-append (map render (cddr element)))
-      foo)
+      (string-append
+        "<svg>"
+        (apply
+          string-append
+          (map render (cddr element)))
+        "</svg>"))
     ((style)
       (string-append
         "<style>"
@@ -19,7 +23,7 @@
           (map render-css-class (cdr element)))
         "</style>"))
     (else
-      "foo")))
+      element)))
 
 (display
   (render
