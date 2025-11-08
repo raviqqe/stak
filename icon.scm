@@ -77,7 +77,7 @@
            (cons
              `(text
                ((x "50%")
-                (y ,(string-append (number->string (- 60 (* 40 (/ index max-lambda-index)))) "%"))
+                (y ,(string-append (number->string (- 70 (* 40 (/ index max-lambda-index)))) "%"))
                 (fill
                  ,(let ((ratio (* 100 (/ index max-lambda-index))))
                    (string-append
