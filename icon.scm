@@ -4,6 +4,15 @@
   (string-append
     (symbol->string (car class))
     "{"
+    (apply
+      string-append
+      (map (lambda (pair)
+            (string-append
+              (symbol->string (car pair))
+              ":"
+              (cadr pair)
+              ";"))
+        (cdr class)))
     "}"))
 
 (define (render-attribute pair)
