@@ -6,12 +6,9 @@
     "{"
     (apply
       string-append
-      (map (lambda (pair)
-            (string-append
-              (symbol->string (car pair))
-              ":"
-              (cadr pair)
-              ";"))
+      (map
+        (lambda (pair)
+          (string-append (symbol->string (car pair)) ":" (cadr pair) ";"))
         (cdr class)))
     "}"))
 
