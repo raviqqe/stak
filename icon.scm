@@ -78,7 +78,7 @@
            (cons
              `(text
                ((x "50%")
-                (y "50%")
+                (y ,(string-append (number->string (- 60 (* 40 (/ index max-lambda-index)))) "%"))
                 (transform
                  ,(string-append
                    "scale(1 0.5)"
@@ -86,7 +86,7 @@
                    (number->string (+ -45 (* 90 (/ index max-lambda-index))))
                    ")"
                    "scale("
-                   (number->string (+ 0.5 (* 0.5 (/ (- max-lambda-index index) max-lambda-index))))
+                   (number->string (+ 0.6 (* 0.4 (/ (- max-lambda-index index) max-lambda-index))))
                    ")")))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
