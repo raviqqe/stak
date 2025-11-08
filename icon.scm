@@ -27,7 +27,14 @@
   (if (string? element)
     element
     (case (car element)
-      ((svg text) =>
+      ((style)
+        (string-append
+          "<style>"
+          (apply
+            string-append
+            (map render-css (cdr element)))
+          "</style>"))
+      (else =>
         (lambda (name)
           (string-append
             "<"
@@ -47,16 +54,7 @@
               (map render (cddr element)))
             "</"
             (symbol->string name)
-            ">")))
-      ((style)
-        (string-append
-          "<style>"
-          (apply
-            string-append
-            (map render-css (cdr element)))
-          "</style>"))
-      (else
-        "UNKNOWN"))))
+            ">"))))))
 
 (display
   (render
