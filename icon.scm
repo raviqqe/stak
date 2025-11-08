@@ -1,5 +1,7 @@
 (import (scheme base) (scheme write))
 
+(define lambda-chars '(#\λ #\𝛌 #\𝜆 #\𝝀 #\𝝺 #\𝞴))
+
 (define (render-css class)
   (string-append
     (symbol->string (car class))
@@ -69,7 +71,7 @@
         (text-anchor "middle")
         (transform-box "fill-box")
         (transform-origin "center")))
-      ,@(let loop ((chars '(#\λ #\𝛌 #\𝜆 #\𝝀 #\𝝺 #\𝞴)) (index 0))
+      ,@(let loop ((chars lambda-chars) (index 0))
          (if (null? chars)
            '()
            (cons
