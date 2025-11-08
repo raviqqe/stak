@@ -68,6 +68,7 @@
        (text
         (dominant-baseline "central")
         (font-size "18px")
+        (font-weight "bold")
         (text-anchor "middle")
         (transform-box "fill-box")
         (transform-origin "center")))
