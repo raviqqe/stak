@@ -4,12 +4,12 @@
   (string-append
     (symbol->string (car class))
     "{"
-    "}"
-    foo))
+    "}"))
 
 (define (render element)
   (case (car element)
     ((svg text)
+      (string-append (map render (cddr element)))
       foo)
     ((style)
       (string-append
@@ -23,7 +23,9 @@
 
 (display
   (render
-    '(svg ((view-box "0 0 20 20") (xmlns "http://www.w3.org/2000/svg"))
+    '(svg
+      ((view-box "0 0 20 20")
+       (xmlns "http://www.w3.org/2000/svg"))
       (style
        (text
         (dominant-baseline "central")
