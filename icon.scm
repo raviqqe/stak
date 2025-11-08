@@ -76,6 +76,6 @@
              `(text
                ((x "50%")
                 (y "50%")
-                (transform "rotate(45) scale(0.5 1)"))
+                (transform "rotate(45) scale(1 0.5)"))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
