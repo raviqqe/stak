@@ -1,12 +1,12 @@
 import classNames from "classnames";
-import type { FunctionComponent, JSX } from "preact";
+import type { FunctionComponent, CSSProperties } from "preact";
 import styles from "./TextArea.module.css";
 
 interface Props {
   class?: string;
   id?: string;
   onChange: (value: string) => void;
-  style?: JSX.CSSProperties;
+  style?: CSSProperties;
   value?: string;
 }
 

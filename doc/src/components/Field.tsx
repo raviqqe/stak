@@ -1,7 +1,7 @@
-import type { FunctionComponent, JSX } from "preact";
+import type { FunctionComponent, CSSProperties } from "preact";
 import styles from "./Field.module.css";
 
-export const Field: FunctionComponent<{ style?: JSX.CSSProperties }> = ({
+export const Field: FunctionComponent<{ style?: CSSProperties }> = ({
   children,
   style,
 }) => (
