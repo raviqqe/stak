@@ -15,6 +15,9 @@
           (string-append
             "<"
             (symbol->string name)
+            (if (null? (cadr element))
+              ""
+              "")
             ">"
             (apply
               string-append
