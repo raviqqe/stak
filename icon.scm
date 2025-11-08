@@ -1,6 +1,7 @@
 (import (scheme base) (scheme write))
 
 (define lambda-chars '(#\λ #\𝛌 #\𝜆 #\𝝀 #\𝝺 #\𝞴))
+(define max-lambda-index (- (length lambda-chars) 1))
 
 (define (render-css class)
   (string-append
@@ -82,10 +83,10 @@
                  ,(string-append
                    "scale(1 0.5)"
                    "rotate("
-                   (number->string (+ -45 (* 90 (/ index (- (length lambda-chars) 1)))))
+                   (number->string (+ -45 (* 90 (/ index max-lambda-index))))
                    ")"
                    "scale("
-                   (number->string (+ 0.5 (* 0.5 (/ index (- (length lambda-chars) 1)))))
+                   (number->string (+ 0.5 (* 0.5 (/ (- max-lambda-index index) max-lambda-index))))
                    ")")))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
