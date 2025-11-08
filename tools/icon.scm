@@ -2,6 +2,8 @@
 
 (define (render element)
   (case (car element)
+    ((svg)
+      foo)
     (else
       "foo")))
 
