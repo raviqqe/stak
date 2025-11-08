@@ -1,6 +1,6 @@
 (import (scheme base) (scheme write))
 
-(define (render-css-class class)
+(define (render-css class)
   (string-append
     (symbol->string (car class))
     "{"
@@ -27,7 +27,7 @@
           "<style>"
           (apply
             string-append
-            (map render-css-class (cdr element)))
+            (map render-css (cdr element)))
           "</style>"))
       (else
         "UNKNOWN"))))
