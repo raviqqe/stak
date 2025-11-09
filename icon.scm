@@ -79,7 +79,9 @@
            (cons
              `(text
                ((x "50%")
-                (y ,(string-append (number->string (- 65 (* 40 (/ index max-lambda-index)))) "%"))
+                (y ,(string-append
+                     (number->string (- 65 (* 40 (/ index max-lambda-index))))
+                     "%"))
                 (fill
                  ,(let ((ratio (* 100 (/ index max-lambda-index))))
                    (string-append
@@ -95,7 +97,12 @@
                    (number->string (+ -45 (* 90 (/ index max-lambda-index))))
                    ")"
                    "scale("
-                   (number->string (+ (/ 3 5) (* (/ 2 5) (/ (- max-lambda-index index) max-lambda-index))))
+                   (number->string
+                     (+
+                       (/ 3 5)
+                       (*
+                         (/ 2 5)
+                         (/ (- max-lambda-index index) max-lambda-index))))
                    ")")))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))

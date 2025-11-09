@@ -2163,7 +2163,7 @@
 - call 2 #f ||
 - call 2 #f ||
 - constant font-size
-- constant "20px"
+- constant "22px"
 - constant ()
 - call 2 #f ||
 - call 2 #f ||
@@ -2174,6 +2174,11 @@
 - call 2 #f ||
 - constant text-anchor
 - constant "middle"
+- constant ()
+- call 2 #f ||
+- call 2 #f ||
+- constant text-shadow
+- constant "4px 4px 16px rgb(0 0 0 / 0.2)"
 - constant ()
 - call 2 #f ||
 - call 2 #f ||
@@ -2188,6 +2193,7 @@
 - call 2 #f ||
 - call 2 #f ||
 - constant ()
+- call 2 #f ||
 - call 2 #f ||
 - call 2 #f ||
 - call 2 #f ||
@@ -2211,7 +2217,7 @@
     - call 2 #f ||
     - call 2 #f ||
     - constant y
-    - constant 70
+    - constant 65
     - constant 40
     - get 5
     - get ||
