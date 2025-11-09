@@ -71,8 +71,7 @@
         (font-weight "bold")
         (text-anchor "middle")
         (text-shadow "4px 4px 16px rgb(0 0 0 / 0.2)")
-        (transform-box "fill-box")
-        (transform-origin "center")))
+        (transform-box "fill-box")))
       ,@(let loop ((chars lambda-chars) (index 0))
          (if (null? chars)
            '()
@@ -96,6 +95,7 @@
                    ")"
                    "scale("
                    (number->string (+ (/ 3 5) (* (/ 2 5) (/ (- max-lambda-index index) max-lambda-index))))
-                   ")")))
+                   ")"))
+                (transform-origin "center"))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
