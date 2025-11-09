@@ -76,9 +76,10 @@
       (text
        ((x "50%")
         (y "50%")
-        (style "font-size: 25px")
-        (fill "white"))
-       "⚙")
+        (fill "white")
+        (transform "translate(0 2)rotate(180)")
+        (style "font-size: 0.8em"))
+       "⟁")
       ,@(let loop ((chars lambda-chars) (index 0))
          (if (null? chars)
            '()
