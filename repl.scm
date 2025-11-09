@@ -47,6 +47,7 @@
                     (read))))
             (if (error-object? expression)
               (begin
+                ; Skip an erroneous line.
                 (read-line)
                 (write-value expression))
               (write-value
