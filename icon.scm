@@ -73,6 +73,12 @@
         (text-shadow "4px 4px 16px rgb(0 0 0 / 0.2)")
         (transform-box "fill-box")
         (transform-origin "center")))
+      (text
+       ((x "50%")
+        (y "50%")
+        (style "font-size: 30px")
+        (fill "white"))
+       "⚙")
       ,@(let loop ((chars lambda-chars) (index 0))
          (if (null? chars)
            '()
