@@ -6036,7 +6036,7 @@
 
             (else
               (let ((x (list->string (read-symbol-chars))))
-                (when (equal? x "")
+                (when (zero? (string-length x))
                   (error "expression expected"))
                 (or (string->number x) (string->symbol x)))))))
 
