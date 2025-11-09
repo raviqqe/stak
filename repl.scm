@@ -43,7 +43,7 @@
 
         (else
           (write-value
-            (guard (error (#t error))
+            (guard (error (else error))
               (eval (read) (interaction-environment))))
           (newline)
           (main))))))

@@ -8357,6 +8357,16 @@
         - if
           - call 0 #f 6
         - constant procedure 1 #f
+          - get 0
+          - call 1 #f string-length
+          - constant 0
+          - call 2 #f eq?
+          - if
+            - constant "expression expected"
+            - call 1 #f error
+            - continue
+          - constant #f
+          - set 0
           - constant procedure 1 #f
             - get 0
             - if
@@ -16969,7 +16979,7 @@
                 - constant procedure 1 #f
                   - constant #t
                   - if
-                    - get 0
+                    - get write
                   - constant procedure 0 #f
                     - get 1
                     - call 1 #f raise-continuable
