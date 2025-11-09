@@ -16977,15 +16977,7 @@
             - constant procedure 1 #f
               - constant procedure 0 #f
                 - constant procedure 1 #f
-                  - constant #t
-                  - if
-                    - get write
-                  - constant procedure 0 #f
-                    - get 1
-                    - call 1 #f raise-continuable
-                  - call 1 #f $$close
-                  - call 1 #f 4
-                - call 1 #f $$close
+                  - get 0
                 - get 4
                 - call 1 #f 1
               - call 1 #f $$close
