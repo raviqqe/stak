@@ -76,7 +76,7 @@
       (text
        ((x "50%")
         (y "50%")
-        (style "font-size: 30px")
+        (style "font-size: 25px")
         (fill "white"))
        "⚙")
       ,@(let loop ((chars lambda-chars) (index 0))
