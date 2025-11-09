@@ -42,10 +42,10 @@
           #f)
 
         (else
-          (let ((expression
-                  (guard (error (else error))
-                    (read))))
-            (write-value
+          (write-value
+            (let ((expression
+                    (guard (error (else error))
+                      (read))))
               (if (error-object? expression)
                 (begin
                   ; Skip an erroneous line.
