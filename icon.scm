@@ -94,7 +94,7 @@
                    (number->string (+ -45 (* 90 (/ index max-lambda-index))))
                    ")"
                    "scale("
-                   (number->string (+ 0.6 (* 0.4 (/ (- max-lambda-index index) max-lambda-index))))
+                   (number->string (+ (/ 3 5) (* (/ 2 5) (/ (- max-lambda-index index) max-lambda-index))))
                    ")")))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
