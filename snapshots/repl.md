@@ -16979,7 +16979,6 @@
             - call 0 #f read-line
             - set 0
             - get 0
-            - call 1 #f ||
           - constant procedure 1 #f
             - constant procedure 1 #f
               - constant procedure 1 #f
@@ -17010,8 +17009,6 @@
           - call 1 #f $$close
           - call 1 #f call/cc
           - call 0 #f 0
-          - set 1
-          - call 1 #f ||
         - constant procedure 1 #f
           - constant procedure 1 #f
             - constant procedure 1 #f
@@ -17042,6 +17039,7 @@
         - set 1
         - call 1 #f 1
         - set 1
+        - call 1 #f ||
         - set 0
         - call 0 #f newline
         - set 0
