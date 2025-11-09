@@ -42,9 +42,16 @@
           #f)
 
         (else
-          (write-value
-            (guard (error (else error))
-              (eval (read) (interaction-environment))))
+          (let ((expression
+                  (guard (error (else error))
+                    (read))))
+            (if (error-object? expression)
+              (begin
+                (read-line)
+                (write-value expression))
+              (write-value
+                (guard (error (else error))
+                  (eval expression (interaction-environment))))))
           (newline)
           (main))))))
 
