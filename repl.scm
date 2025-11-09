@@ -45,12 +45,12 @@
           (let ((expression
                   (guard (error (else error))
                     (read))))
-            (if (error-object? expression)
-              (begin
-                ; Skip an erroneous line.
-                (read-line)
-                (write-value expression))
-              (write-value
+            (write-value
+              (if (error-object? expression)
+                (begin
+                  ; Skip an erroneous line.
+                  (read-line)
+                  expression)
                 (guard (error (else error))
                   (eval expression (interaction-environment))))))
           (newline)
