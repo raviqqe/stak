@@ -406,7 +406,7 @@ Feature: Read
       """
     And a file named "input.txt" with:
       """text
-      foo)
+      )
       """
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
