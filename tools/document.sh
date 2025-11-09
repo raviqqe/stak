@@ -35,6 +35,8 @@ for file in $(find $directory -name '*.md'); do
   mv $new_file $file
 done
 
+stak icon.scm >doc/public/icon.svg
+
 cd doc
 
 pnpm i --frozen-lockfile
