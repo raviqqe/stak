@@ -67,9 +67,10 @@
       (style
        (text
         (dominant-baseline "central")
-        (font-size "20px")
+        (font-size "22px")
         (font-weight "bold")
         (text-anchor "middle")
+        (text-shadow "4px 4px 16px rgb(0 0 0 / 0.2)")
         (transform-box "fill-box")
         (transform-origin "center")))
       ,@(let loop ((chars lambda-chars) (index 0))
@@ -78,7 +79,9 @@
            (cons
              `(text
                ((x "50%")
-                (y ,(string-append (number->string (- 70 (* 40 (/ index max-lambda-index)))) "%"))
+                (y ,(string-append
+                     (number->string (- 65 (* 40 (/ index max-lambda-index))))
+                     "%"))
                 (fill
                  ,(let ((ratio (* 100 (/ index max-lambda-index))))
                    (string-append
@@ -94,7 +97,12 @@
                    (number->string (+ -45 (* 90 (/ index max-lambda-index))))
                    ")"
                    "scale("
-                   (number->string (+ (/ 3 5) (* (/ 2 5) (/ (- max-lambda-index index) max-lambda-index))))
+                   (number->string
+                     (+
+                       (/ 3 5)
+                       (*
+                         (/ 2 5)
+                         (/ (- max-lambda-index index) max-lambda-index))))
                    ")")))
                ,(string (car chars)))
              (loop (cdr chars) (+ index 1))))))))
