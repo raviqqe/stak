@@ -31,11 +31,11 @@
 (define (main)
   (display "> " (current-error-port))
 
-  (do ((char (peek-char) (peek-char)))
-    ((not (char-whitespace? char)))
-    (read-char))
-
-  (let ((char (peek-char)))
+  (let ((char
+          (do ((char (peek-char) (peek-char)))
+            ((not (and (char? char) (char-whitespace? char)))
+              char)
+            (read-char))))
     (cond
       ((or (eof-object? char) (eqv? char (integer->char 4)))
         #f)
