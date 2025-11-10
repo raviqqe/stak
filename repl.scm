@@ -31,30 +31,29 @@
 (define (main)
   (display "> " (current-error-port))
 
-  (let loop ()
-    (let ((char (peek-char)))
-      (cond
-        ((char-whitespace? char)
-          (read-char)
-          (loop))
+  (do ((char (peek-char) (peek-char)))
+    ((not (char-whitespace? char)))
+    (read-char))
 
-        ((or (eof-object? char) (eqv? char (integer->char 4)))
-          #f)
+  (let ((char (peek-char)))
+    (cond
+      ((or (eof-object? char) (eqv? char (integer->char 4)))
+        #f)
 
-        (else
-          (write-value
-            (let ((expression
-                    (guard (error (else error))
-                      (read))))
-              (if (error-object? expression)
-                (begin
-                  ; Skip an erroneous line.
-                  (read-line)
-                  expression)
-                (guard (error (else error))
-                  (eval expression (interaction-environment))))))
-          (newline)
-          (main))))))
+      (else
+        (write-value
+          (let ((expression
+                  (guard (error (else error))
+                    (read))))
+            (if (error-object? expression)
+              (begin
+                ; Skip an erroneous line.
+                (read-line)
+                expression)
+              (guard (error (else error))
+                (eval expression (interaction-environment))))))
+        (newline)
+        (main)))))
 
 (let ((arguments (command-line)))
   (when (or
