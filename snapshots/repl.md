@@ -16950,83 +16950,46 @@
   - set 0
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - get 0
-      - call 1 #f char?
-      - if
-        - get 0
-        - call 1 #f char-whitespace?
-        - continue
-      - constant #f
-      - constant #f
-      - call 2 #f eq?
-      - if
-        - get 0
-      - call 0 #f read-char
-      - set 0
-      - call 0 #f peek-char
-      - call 1 #f 3
+      - constant procedure 1 #f
+        - constant procedure 0 #f
+          - constant procedure 1 #f
+            - call 0 #f read-line
+            - set 0
+            - get 0
+          - get 4
+          - call 1 #f 1
+        - call 1 #f $$close
+        - call 1 #f 5
+      - call 1 #f $$close
+      - call 1 #f call/cc
+      - call 0 #f 0
     - call 1 #f $$close
-    - set 1
-    - call 0 #f peek-char
-    - call 1 #f 1
-  - constant #f
-  - call 1 #f 1
+    - constant procedure 0 #f
+      - constant procedure 1 #f
+        - constant procedure 0 #f
+          - get 1
+        - call 1 #f $$close
+        - call 1 #f 5
+      - call 1 #f $$close
+      - call 0 #f read
+      - call 1 #f 1
+    - call 1 #f $$close
+    - call 2 #f with-exception-handler
+  - call 1 #f call/cc
+  - call 0 #f 0
 - set ||
 - constant procedure 0 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-        - get 2
-        - constant 4
-        - call 1 #f integer->char
-        - call 2 #f eqv?
-      - call 1 #f $$close
-      - get 1
+      - get 0
       - call 1 #f eof-object?
-      - call 1 #f 1
-      - set 1
       - if
         - constant #f
-      - constant procedure 1 #f
+      - get 0
+      - call 1 #f error-object?
+      - if
         - get 0
-        - call 1 #f error-object?
-        - if
-          - call 0 #f read-line
-          - set 0
-          - get 0
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - constant procedure 0 #f
-                - constant procedure 1 #f
-                  - get 0
-                - get 4
-                - call 1 #f 1
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - call 1 #f call/cc
-            - call 0 #f 0
-          - call 1 #f $$close
-          - constant procedure 0 #f
-            - constant procedure 1 #f
-              - constant procedure 0 #f
-                - get 1
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - get 5
-            - call 0 #f interaction-environment
-            - call 2 #f eval
-            - call 1 #f 1
-          - call 1 #f $$close
-          - call 2 #f with-exception-handler
-        - call 1 #f $$close
-        - call 1 #f call/cc
-        - call 0 #f 0
+        - continue
       - constant procedure 1 #f
         - constant procedure 1 #f
           - constant procedure 1 #f
@@ -17048,14 +17011,15 @@
             - call 1 #f $$close
             - call 1 #f 5
           - call 1 #f $$close
-          - call 0 #f read
+          - get 5
+          - call 0 #f interaction-environment
+          - call 2 #f eval
           - call 1 #f 1
         - call 1 #f $$close
         - call 2 #f with-exception-handler
+      - call 1 #f $$close
       - call 1 #f call/cc
       - call 0 #f 0
-      - set 1
-      - call 1 #f 1
       - set 1
       - call 1 #f ||
       - set 0
