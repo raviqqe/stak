@@ -50,8 +50,7 @@
             expression)
           (guard (error (else error))
             (eval expression (interaction-environment))))))
-    (newline)
-    (main)))
+    (newline)))
 
 (let ((arguments (command-line)))
   (when (or
