@@ -36,24 +36,20 @@
             ((not (and (char? char) (char-whitespace? char)))
               char)
             (read-char))))
-    (cond
-      ((or (eof-object? char) (eqv? char (integer->char 4)))
-        #f)
-
-      (else
-        (write-value
-          (let ((expression
-                  (guard (error (else error))
-                    (read))))
-            (if (error-object? expression)
-              (begin
-                ; Skip an erroneous line.
-                (read-line)
-                expression)
-              (guard (error (else error))
-                (eval expression (interaction-environment))))))
-        (newline)
-        (main)))))
+    (unless (or (eof-object? char) (eqv? char (integer->char 4)))
+      (write-value
+        (let ((expression
+                (guard (error (else error))
+                  (read))))
+          (if (error-object? expression)
+            (begin
+              ; Skip an erroneous line.
+              (read-line)
+              expression)
+            (guard (error (else error))
+              (eval expression (interaction-environment))))))
+      (newline)
+      (main))))
 
 (let ((arguments (command-line)))
   (when (or
