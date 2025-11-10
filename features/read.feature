@@ -395,3 +395,21 @@ Feature: Read
     Then the exit status should not be 0
     And the stdout should contain exactly ""
     And the stderr should contain ") expected"
+
+  @stak
+  Scenario: Read a list without an opening parenthesis
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme read))
+
+      (read)
+      """
+    And a file named "input.txt" with:
+      """text
+      )
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should not be 0
+    And the stdout should contain exactly ""
+    And the stderr should contain "expression expected"

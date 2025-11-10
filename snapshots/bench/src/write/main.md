@@ -2209,6 +2209,16 @@
         - if
           - call 0 #f 6
         - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - constant 0
+          - call 2 #f ||
+          - if
+            - constant "expression expected"
+            - call 1 #f ||
+            - continue
+          - constant #f
+          - set 0
           - constant procedure 1 #f
             - get 0
             - if
