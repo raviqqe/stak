@@ -28,28 +28,30 @@
         (error-object-irritants value)))
     (write value)))
 
-(define (main)
+(define (prompt)
   (display "> " (current-error-port))
 
-  (let ((char
-          (do ((char (peek-char) (peek-char)))
-            ((not (and (char? char) (char-whitespace? char)))
-              char)
-            (read-char))))
-    (unless (or (eof-object? char) (eqv? char (integer->char 4)))
-      (write-value
-        (let ((expression
-                (guard (error (else error))
-                  (read))))
-          (if (error-object? expression)
-            (begin
-              ; Skip an erroneous line.
-              (read-line)
-              expression)
-            (guard (error (else error))
-              (eval expression (interaction-environment))))))
-      (newline)
-      (main))))
+  (do ((char (peek-char) (peek-char)))
+    ((not (and (char? char) (char-whitespace? char)))
+      char)
+    (read-char)))
+
+(define (main)
+  (do ((char (prompt) (prompt)))
+    ((or (eof-object? char) (eqv? char (integer->char 4))))
+    (write-value
+      (let ((expression
+              (guard (error (else error))
+                (read))))
+        (if (error-object? expression)
+          (begin
+            ; Skip an erroneous line.
+            (read-line)
+            expression)
+          (guard (error (else error))
+            (eval expression (interaction-environment))))))
+    (newline)
+    (main)))
 
 (let ((arguments (command-line)))
   (when (or
