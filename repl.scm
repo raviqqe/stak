@@ -31,25 +31,22 @@
 (define (prompt)
   (display "> " (current-error-port))
 
-  (do ((char (peek-char) (peek-char)))
-    ((not (and (char? char) (char-whitespace? char)))
-      char)
-    (read-char)))
+  (guard
+    (error
+      (else
+        ; Skip an erroneous line.
+        (read-line)
+        error))
+    (read)))
 
 (define (main)
-  (do ((char (prompt) (prompt)))
-    ((or (eof-object? char) (eqv? char (integer->char 4))))
+  (do ((expression (prompt) (prompt)))
+    ((eof-object? expression))
     (write-value
-      (let ((expression
-              (guard (error (else error))
-                (read))))
-        (if (error-object? expression)
-          (begin
-            ; Skip an erroneous line.
-            (read-line)
-            expression)
-          (guard (error (else error))
-            (eval expression (interaction-environment))))))
+      (if (error-object? expression)
+        expression
+        (guard (error (else error))
+          (eval expression (interaction-environment)))))
     (newline)))
 
 (let ((arguments (command-line)))
