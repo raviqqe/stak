@@ -79,7 +79,13 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/binary_size_bench.sh
   bytecode_size:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - macos-15
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
