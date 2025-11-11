@@ -10,7 +10,6 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-rustix = { workspace = true }
 stak-sac = { workspace = true }
 
 [target.'cfg(target_os = "linux")'.dependencies]
