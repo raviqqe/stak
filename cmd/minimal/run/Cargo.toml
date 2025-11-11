@@ -13,5 +13,10 @@ categories.workspace = true
 rustix = { workspace = true }
 stak-sac = { workspace = true }
 
+[target.'cfg(target_os = "linux")'.dependencies]
+rustix = { version = "1.1.2", default-features = false, features = [
+  "linux_raw",
+] }
+
 [lints]
 workspace = true

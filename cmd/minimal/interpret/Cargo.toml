@@ -14,7 +14,6 @@ dlmalloc = { version = "0.2.11", features = ["global"] }
 origin = { version = "0.26.2", default-features = false, features = [
   "libc",
 ] }
-rustix = { workspace = true }
 stak-device = { workspace = true }
 stak-file = { workspace = true }
 stak-libc = { workspace = true }
@@ -22,6 +21,11 @@ stak-process-context = { workspace = true }
 stak-r7rs = { workspace = true }
 stak-time = { workspace = true }
 stak-vm = { workspace = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+rustix = { version = "1.1.2", default-features = false, features = [
+  "linux_raw",
+] }
 
 [lints]
 workspace = true
