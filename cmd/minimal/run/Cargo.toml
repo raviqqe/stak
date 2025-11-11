@@ -10,6 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
+rustix = { workspace = true }
 stak-sac = { workspace = true }
 
 [lints]
