@@ -1,14 +1,14 @@
 #[derive(Debug)]
 pub struct RingBuffer<const N: usize> {
     buffer: [u8; N],
-    index: usize,
+    end: usize,
 }
 
 impl<const N: usize> RingBuffer<N> {
     pub fn new() -> Self {
         Self {
             buffer: [0; N],
-            index: 0,
+            end: 0,
         }
     }
 
@@ -17,12 +17,12 @@ impl<const N: usize> RingBuffer<N> {
     }
 
     pub fn push(&mut self, byte: u8) {
-        self.index = (self.index + 1) % N;
-        self.buffer[self.index] = byte;
+        self.end = (self.end + 1) % N;
+        self.buffer[self.end] = byte;
     }
 
     fn index(&self, index: usize) -> usize {
-        (N + self.index - index) % N
+        (N + self.end - index) % N
     }
 }
 
