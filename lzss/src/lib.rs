@@ -142,10 +142,20 @@ mod tests {
     }
 
     #[test]
-    fn decompress() {
+    fn decompress_repetition() {
         assert_eq!(
             [2, 4, 6, 8, 7, 5].decompress::<8>().collect::<Vec<u8>>(),
             [1, 2, 3, 4, 1, 2, 3, 4, 1]
+        );
+    }
+
+    #[test]
+    fn decompress_repetitions() {
+        assert_eq!(
+            [2, 4, 6, 8, 7, 5, 10, 12, 5, 2]
+                .decompress::<8>()
+                .collect::<Vec<u8>>(),
+            [1, 2, 3, 4, 1, 2, 3, 4, 1, 5, 6, 5, 6, 5]
         );
     }
 }
