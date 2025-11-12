@@ -14,8 +14,7 @@ const MIN_MATCH: usize = 2;
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
-    buffer: [u8; W],
-    index: usize,
+    buffer: RingBuffer<W>,
 }
 
 impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterator<W, I> {
