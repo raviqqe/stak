@@ -13,7 +13,7 @@ impl<const N: usize> RingBuffer<N> {
     }
 
     pub const fn len(&self) -> usize{
-        W
+        N
     }
 
     pub fn get(&self, index: usize) -> Option<u8> {
@@ -26,7 +26,7 @@ impl<const N: usize> RingBuffer<N> {
     }
 
     fn index(&self, index: usize) -> usize {
-        (N + self.index - index) % N
+        (self.index + index) % N
     }
 }
 
@@ -49,15 +49,15 @@ mod tests {
         buffer.push(3);
 
         assert_eq!(buffer.get(0), Some(3));
-        assert_eq!(buffer.get(1), Some(2));
-        assert_eq!(buffer.get(2), Some(1));
+        assert_eq!(buffer.get(1), Some(1));
+        assert_eq!(buffer.get(2), Some(2));
         assert_eq!(buffer.get(3), Some(3));
 
         buffer.push(4);
 
         assert_eq!(buffer.get(0), Some(4));
-        assert_eq!(buffer.get(1), Some(3));
-        assert_eq!(buffer.get(2), Some(2));
+        assert_eq!(buffer.get(1), Some(2));
+        assert_eq!(buffer.get(2), Some(3));
         assert_eq!(buffer.get(3), Some(4));
     }
 }
