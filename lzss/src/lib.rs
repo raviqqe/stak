@@ -7,23 +7,47 @@ const MIN_MATCH: usize = 2;
 /// LZSS compression.
 pub trait Lzss: IntoIterator<Item = u8> {
     /// Compresses bytes.
-    fn compress<const N: usize, const M: usize>(self) -> LzssCompressionIterator<M>;
+    fn compress<const N: usize, const M: usize>(self)
+    -> LzssCompressionIterator<M, Self::IntoIter>;
+
     /// Decompresses bytes.
-    fn decompress<const N: usize, const M: usize>(self) -> LzssDecompressionIterator<M>;
+    fn decompress<const N: usize, const M: usize>(
+        self,
+    ) -> LzssDecompressionIterator<M, Self::IntoIter>;
 }
 
 /// LZSS compression iterator.
-pub struct LzssCompressionIterator<const M: usize> {
-    window: [u8; M],
+pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
+    iterator: I,
+    buffer: [u8; W],
+    index: usize,
+}
+
+impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterator<W, I> {
+    type Item = u8;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
 }
 
 /// LZSS decompression iterator.
-pub struct LzssDecompressionIterator<const M: usize> {
-    window: [u8; M],
+pub struct LzssDecompressionIterator<const W: usize, I: Iterator<Item = u8>> {
+    iterator: I,
+    buffer: [u8; W],
+    index: usize,
+}
+
+impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionIterator<W, I> {
+    type Item = u8;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
 }
 
 impl<I: IntoIterator<Item = u8>> Lzss for I {
-    fn compress<const N: usize, const L: usize>(self) -> LzssCompressionIterator<M> {
+    fn compress<const W: usize, const L: usize>(self) -> LzssCompressionIterator<W> {
         let xs = self.into_iter();
         // let mut ys = vec![];
         // let mut i = 0;
