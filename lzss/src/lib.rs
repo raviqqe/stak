@@ -86,6 +86,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
             } else {
                 self.offset = x >> 1;
                 self.length = self.iterator.next()?;
+
                 self.next()
             }
         }
