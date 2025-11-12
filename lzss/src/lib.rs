@@ -127,7 +127,9 @@ mod tests {
         let data = b"ABABABABABABABABABABA123123123123";
 
         assert_eq!(
-            data.iter().copied().compress::<WINDOW_SIZE>()
+            data.iter()
+                .copied()
+                .compress::<WINDOW_SIZE>()
                 .decompress::<WINDOW_SIZE>()
                 .collect::<Vec<u8>>(),
             data
