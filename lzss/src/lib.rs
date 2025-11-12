@@ -125,10 +125,9 @@ mod tests {
     #[test]
     fn test() {
         let data = b"ABABABABABABABABABABA123123123123";
-        let compressed = data.iter().copied().compress::<WINDOW_SIZE>();
 
         assert_eq!(
-            compressed
+            data.iter().copied().compress::<WINDOW_SIZE>()
                 .decompress::<WINDOW_SIZE>()
                 .collect::<Vec<u8>>()
                 .as_slice(),
