@@ -1,8 +1,6 @@
 //! LZSS compression.
 
 #![no_std]
-// TODO
-#![allow(dead_code)]
 
 #[cfg(test)]
 extern crate alloc;
@@ -13,51 +11,47 @@ mod ring_buffer;
 
 use self::ring_buffer::RingBuffer;
 
-const MIN_MATCH: usize = 2;
+const MINIMUM_LENGTH: usize = 2;
+const MAXIMUM_LENGTH: usize = 1 << 7;
 
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
     buffer: RingBuffer<W>,
+    length: usize,
 }
 
 impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterator<W, I> {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // let xs = self.into_iter();
-        // let mut ys = vec![];
-        // let mut i = 0;
-        //
-        // while i < xs.len() {
-        //     let mut n = 0;
-        //     let mut m = 0;
-        //
-        //     for j in i.saturating_sub(N)..i {
-        //         let mut k = 0;
-        //
-        //         while k < L && xs.get(i + k) == xs.get(j + k) {
-        //             k += 1;
-        //         }
-        //
-        //         if k >= MIN_MATCH && k >= m {
-        //             n = i - j;
-        //             m = k;
-        //         }
-        //     }
-        //
-        //     if m > MIN_MATCH {
-        //         ys.extend([(n as u8) << 1 | 1, m as u8]);
-        //
-        //         i += m;
-        //     } else {
-        //         ys.push(xs[i] << 1);
-        //
-        //         i += 1;
-        //     }
-        // }
+        let x = self.iterator.next()?;
 
-        todo!()
+        let mut n = 0;
+        let mut m = 0;
+
+        for i in 0..self.length.min(W) {
+            let mut k = 0;
+
+            while k < MAXIMUM_LENGTH && xs.get(i + k) == xs.get(i + k) {
+                k += 1;
+            }
+
+            if k > MINIMUM_LENGTH && k >= m {
+                n = i - i;
+                m = k;
+            }
+        }
+
+        if m > MINIMUM_LENGTH {
+            ys.extend([(n as u8) << 1 | 1, m as u8]);
+
+            i += m;
+        } else {
+            ys.push(xs[i] << 1);
+
+            i += 1;
+        }
     }
 }
 
