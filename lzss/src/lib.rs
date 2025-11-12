@@ -7,13 +7,10 @@ const MIN_MATCH: usize = 2;
 /// LZSS compression.
 pub trait Lzss: IntoIterator<Item = u8> {
     /// Compresses bytes.
-    fn compress<const N: usize, const M: usize>(self)
-    -> LzssCompressionIterator<M, Self::IntoIter>;
+    fn compress<const M: usize>(self) -> LzssCompressionIterator<M, Self::IntoIter>;
 
     /// Decompresses bytes.
-    fn decompress<const N: usize, const M: usize>(
-        self,
-    ) -> LzssDecompressionIterator<M, Self::IntoIter>;
+    fn decompress<const W: usize>(self) -> LzssDecompressionIterator<W, Self::IntoIter>;
 }
 
 /// LZSS compression iterator.
