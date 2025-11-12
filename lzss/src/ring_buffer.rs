@@ -17,8 +17,8 @@ impl<const N: usize> RingBuffer<N> {
         self.buffer.get(self.index(index)).copied()
     }
 
-    /// Appends an item.
-    pub fn append(&mut self, byte: u8) {
+    /// Pushes an item.
+    pub fn push(&mut self, byte: u8) {
         self.index = (self.index + 1) % N;
         self.buffer[self.index] = byte;
     }
@@ -42,16 +42,16 @@ mod tests {
     fn index() {
         let mut buffer = RingBuffer::<3>::new();
 
-        buffer.append(1);
-        buffer.append(2);
-        buffer.append(3);
+        buffer.push(1);
+        buffer.push(2);
+        buffer.push(3);
 
         assert_eq!(buffer.get(0), Some(3));
         assert_eq!(buffer.get(1), Some(2));
         assert_eq!(buffer.get(2), Some(1));
         assert_eq!(buffer.get(3), Some(3));
 
-        buffer.append(4);
+        buffer.push(4);
 
         assert_eq!(buffer.get(0), Some(4));
         assert_eq!(buffer.get(1), Some(3));
