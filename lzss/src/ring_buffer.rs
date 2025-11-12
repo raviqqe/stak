@@ -12,6 +12,10 @@ impl<const N: usize> RingBuffer<N> {
         }
     }
 
+    pub const fn len(&self) -> usize{
+        W
+    }
+
     pub fn get(&self, index: usize) -> Option<u8> {
         self.buffer.get(self.index(index)).copied()
     }
