@@ -59,28 +59,27 @@ pub struct LzssDecompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
     buffer: [u8; W],
     index: usize,
+    offset: u8,
+    length: u8,
 }
 
 impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionIterator<W, I> {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // let mut ys = vec![];
-        // let mut i = 0;
-        //
-        // while let Some(&x) = xs.get(i) {
-        //     if x.is_multiple_of(2) {
-        //         ys.push(x >> 1);
-        //     } else {
-        //         for _ in 0..xs[i + 1] {
-        //             ys.push(ys[ys.len() - (x >> 1) as usize]);
-        //         }
-        //     }
-        //
-        //     i += 1 + x as usize % 2;
-        // }
+        if self.repeat > 0 {
+            ys[ys.len() - self.offset as usize]
+        } else {
+            let x = self.iterator.next()?;
 
-        todo!()
+            if x.is_multiple_of(2) {
+                Some(x >> 1)
+            } else {
+                self.offset = x >> 1;
+                self.length = self.iterator.next()?;
+                self.next()
+            }
+        }
     }
 }
 
@@ -107,6 +106,8 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
             iterator: self.into_iter(),
             buffer: [0; W],
             index: 0,
+            offset: 0,
+            length: 0,
         }
     }
 }
