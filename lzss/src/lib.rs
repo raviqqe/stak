@@ -5,55 +5,63 @@
 const MIN_MATCH: usize = 2;
 
 /// LZSS compression.
-pub trait Lzss<const N: usize, const M: usize>: IntoIterator<Item = u8> {
+pub trait Lzss: IntoIterator<Item = u8> {
     /// Compresses bytes.
-    fn compress(self) -> impl Iterator<Item = u8>;
+    fn compress<const N: usize, const M: usize>(self) -> LzssCompressionIterator<M>;
     /// Decompresses bytes.
-    fn decompress(self) -> impl Iterator<Item = u8>;
+    fn decompress<const N: usize, const M: usize>(self) -> LzssDecompressionIterator<M>;
 }
 
-pub struct LzssIterator<const M: usize> {
+/// LZSS compression iterator.
+pub struct LzssCompressionIterator<const M: usize> {
     window: [u8; M],
 }
 
-impl<I> LzssIterator for Iterator {
-    pub fn compress<const N: usize, const L: usize>(xs: &[u8]) -> Vec<u8> {
-        let mut ys = vec![];
-        let mut i = 0;
+/// LZSS decompression iterator.
+pub struct LzssDecompressionIterator<const M: usize> {
+    window: [u8; M],
+}
 
-        while i < xs.len() {
-            let mut n = 0;
-            let mut m = 0;
+impl<I: IntoIterator<Item = u8>> Lzss for I {
+    fn compress<const N: usize, const L: usize>(self) -> LzssCompressionIterator<M> {
+        let xs = self.into_iter();
+        // let mut ys = vec![];
+        // let mut i = 0;
+        //
+        // while i < xs.len() {
+        //     let mut n = 0;
+        //     let mut m = 0;
+        //
+        //     for j in i.saturating_sub(N)..i {
+        //         let mut k = 0;
+        //
+        //         while k < L && xs.get(i + k) == xs.get(j + k) {
+        //             k += 1;
+        //         }
+        //
+        //         if k >= MIN_MATCH && k >= m {
+        //             n = i - j;
+        //             m = k;
+        //         }
+        //     }
+        //
+        //     if m > MIN_MATCH {
+        //         ys.extend([(n as u8) << 1 | 1, m as u8]);
+        //
+        //         i += m;
+        //     } else {
+        //         ys.push(xs[i] << 1);
+        //
+        //         i += 1;
+        //     }
+        // }
+        //
+        // ys
 
-            for j in i.saturating_sub(N)..i {
-                let mut k = 0;
-
-                while k < L && xs.get(i + k) == xs.get(j + k) {
-                    k += 1;
-                }
-
-                if k >= MIN_MATCH && k >= m {
-                    n = i - j;
-                    m = k;
-                }
-            }
-
-            if m > MIN_MATCH {
-                ys.extend([(n as u8) << 1 | 1, m as u8]);
-
-                i += m;
-            } else {
-                ys.push(xs[i] << 1);
-
-                i += 1;
-            }
-        }
-
-        ys
+        todo!()
     }
 
-    /// Decompresses a byte array.
-    pub fn decompress(xs: &[u8]) -> Vec<u8> {
+    fn decompress(self) -> impl Iterator<Item = u8> {
         let mut ys = vec![];
         let mut i = 0;
 
