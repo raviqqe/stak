@@ -13,3 +13,6 @@ categories.workspace = true
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"

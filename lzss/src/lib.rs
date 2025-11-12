@@ -72,8 +72,10 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.length > 0 {
-            // TODO
-            self.buffer.get(self.offset as usize)
+            let x = self.buffer.get(self.offset as usize)?;
+            self.buffer.push(x);
+            self.length -= 1;
+            Some(x)
         } else {
             let x = self.iterator.next()?;
 
@@ -121,11 +123,12 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
 mod tests {
     use super::*;
     use alloc::vec::Vec;
+    use pretty_assertions::assert_eq;
 
     const WINDOW_SIZE: usize = 64;
 
     #[test]
-    fn test() {
+    fn compress_and_decompress() {
         let data = b"ABABABABABABABABABABA123123123123";
 
         assert_eq!(
@@ -135,6 +138,14 @@ mod tests {
                 .decompress::<WINDOW_SIZE>()
                 .collect::<Vec<u8>>(),
             data
+        );
+    }
+
+    #[test]
+    fn decompress() {
+        assert_eq!(
+            [2, 4, 6, 8, 7, 5].decompress::<8>().collect::<Vec<u8>>(),
+            [1, 2, 3, 4, 1, 2, 3, 4, 1]
         );
     }
 }
