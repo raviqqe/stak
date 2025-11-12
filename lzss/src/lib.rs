@@ -148,6 +148,7 @@ mod tests {
 
     mod decompress {
         use super::*;
+        use pretty_assertions::assert_eq;
 
         #[test]
         fn decompress_repetition() {
