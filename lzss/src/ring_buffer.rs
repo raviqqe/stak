@@ -4,7 +4,6 @@ pub struct RingBuffer<const N: usize> {
 }
 
 impl<const N: usize> RingBuffer<N> {
-    /// Creates a buffer.
     pub fn new() -> Self {
         Self {
             buffer: [0; N],
@@ -12,12 +11,10 @@ impl<const N: usize> RingBuffer<N> {
         }
     }
 
-    /// Returns an item with a backward index.
     pub fn get(&self, index: usize) -> Option<u8> {
         self.buffer.get(self.index(index)).copied()
     }
 
-    /// Pushes an item.
     pub fn push(&mut self, byte: u8) {
         self.index = (self.index + 1) % N;
         self.buffer[self.index] = byte;
