@@ -24,7 +24,7 @@ impl<const N: usize> RingBuffer<N> {
     }
 
     fn index(&self, index: usize) -> usize {
-        (self.index - index) % N
+        (N + self.index - index) % N
     }
 }
 
@@ -40,25 +40,22 @@ mod tests {
 
     #[test]
     fn index() {
-        let mut buffer: RingBuffer<4> = RingBuffer::new();
+        let mut buffer = RingBuffer::<3>::new();
 
         buffer.append(1);
         buffer.append(2);
         buffer.append(3);
+
+        assert_eq!(buffer.get(0), Some(3));
+        assert_eq!(buffer.get(1), Some(2));
+        assert_eq!(buffer.get(2), Some(1));
+        assert_eq!(buffer.get(3), Some(3));
+
         buffer.append(4);
 
         assert_eq!(buffer.get(0), Some(4));
         assert_eq!(buffer.get(1), Some(3));
         assert_eq!(buffer.get(2), Some(2));
-        assert_eq!(buffer.get(3), Some(1));
-        assert_eq!(buffer.get(4), Some(4));
-
-        buffer.append(5);
-
-        assert_eq!(buffer.get(0), Some(5));
-        assert_eq!(buffer.get(1), Some(4));
-        assert_eq!(buffer.get(2), Some(3));
-        assert_eq!(buffer.get(3), Some(2));
-        assert_eq!(buffer.get(4), Some(5));
+        assert_eq!(buffer.get(3), Some(4));
     }
 }
