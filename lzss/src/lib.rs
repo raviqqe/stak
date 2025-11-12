@@ -87,14 +87,14 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
 /// LZSS compression.
 pub trait Lzss: IntoIterator {
     /// Compresses bytes.
-    fn compress<const W: usize>(self) -> LzssCompressionIterator<W, Self::IntoIter>;
+    fn compress<const W: usize>(self) -> impl Iterator<Item = u8>;
 
     /// Decompresses bytes.
-    fn decompress<const W: usize>(self) -> LzssDecompressionIterator<W, Self::IntoIter>;
+    fn decompress<const W: usize>(self) -> impl Iterator<Item = u8>;
 }
 
 impl<I: IntoIterator<Item = u8>> Lzss for I {
-    fn compress<const W: usize>(self) -> LzssCompressionIterator<W, I::IntoIter> {
+    fn compress<const W: usize>(self) -> impl Iterator<Item = u8> {
         LzssCompressionIterator {
             iterator: self.into_iter(),
             buffer: [0; W],
@@ -102,7 +102,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
         }
     }
 
-    fn decompress<const W: usize>(self) -> LzssDecompressionIterator<W, I::IntoIter> {
+    fn decompress<const W: usize>(self) -> impl Iterator<Item = u8> {
         LzssDecompressionIterator {
             iterator: self.into_iter(),
             buffer: [0; W],
@@ -116,13 +116,18 @@ mod tests {
     use super::*;
     use alloc::vec::Vec;
 
+    const WINDOW_SIZE: usize = 64;
+
     #[test]
     fn test() {
         let data = b"ABABABABABABABABABABA123123123123";
-        let compressed = data.iter().copied().compress::<64>();
+        let compressed = data.iter().copied().compress::<WINDOW_SIZE>();
 
         assert_eq!(
-            compressed.decompress().collect::<Vec<u8>>().as_slice(),
+            compressed
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<u8>>()
+                .as_slice(),
             data
         );
     }
