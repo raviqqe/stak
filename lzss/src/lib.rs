@@ -129,8 +129,7 @@ mod tests {
         assert_eq!(
             data.iter().copied().compress::<WINDOW_SIZE>()
                 .decompress::<WINDOW_SIZE>()
-                .collect::<Vec<u8>>()
-                .as_slice(),
+                .collect::<Vec<u8>>(),
             data
         );
     }
