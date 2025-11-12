@@ -5,6 +5,8 @@
 #[cfg(test)]
 extern crate alloc;
 
+mod ring_buffer;
+
 const MIN_MATCH: usize = 2;
 
 /// LZSS compression iterator.
