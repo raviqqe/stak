@@ -98,7 +98,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
 }
 
 /// LZSS compression.
-pub trait Lzss: IntoIterator {
+pub trait Lzss {
     /// Compresses bytes.
     fn compress<const W: usize>(self) -> impl Iterator<Item = u8>;
 
