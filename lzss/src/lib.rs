@@ -6,6 +6,8 @@
 
 #[cfg(test)]
 extern crate alloc;
+#[cfg(test)]
+extern crate std;
 
 mod ring_buffer;
 
