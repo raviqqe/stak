@@ -85,7 +85,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
 }
 
 /// LZSS compression.
-pub trait Lzss {
+pub trait Lzss: IntoIterator {
     /// Compresses bytes.
     fn compress<const W: usize>(self) -> LzssCompressionIterator<W, Self::IntoIter>;
 
@@ -98,23 +98,12 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
         todo!()
     }
 
-    fn decompress(self) -> LzssDecompressionIterator<W, I::IntoIter> {
-        let mut ys = vec![];
-        let mut i = 0;
-
-        while let Some(&x) = xs.get(i) {
-            if x.is_multiple_of(2) {
-                ys.push(x >> 1);
-            } else {
-                for _ in 0..xs[i + 1] {
-                    ys.push(ys[ys.len() - (x >> 1) as usize]);
-                }
-            }
-
-            i += 1 + x as usize % 2;
+    fn decompress<const W: usize>(self) -> LzssDecompressionIterator<W, I::IntoIter> {
+        LzssDecompressionIterator {
+            iterator: self.into_iter(),
+            buffer: [0; W],
+            index: 0,
         }
-
-        ys
     }
 }
 
@@ -126,10 +115,10 @@ mod tests {
     #[test]
     fn test() {
         let data = b"ABABABABABABABABABABA123123123123";
-        let compressed = data.into_iter().compress::<64>(data);
+        let compressed = data.iter().copied().compress::<64>();
 
         assert_eq!(
-            compressed.decompress().collect::<Vec<u8>>().as_bytes(),
+            compressed.decompress().collect::<Vec<u8>>().as_slice(),
             data
         );
     }
