@@ -72,7 +72,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.length > 0 {
-            let x = self.buffer.get(self.offset as usize)?;
+            let x = self.buffer.get(self.offset as _)?;
             self.buffer.push(x);
             self.length -= 1;
             Some(x)
