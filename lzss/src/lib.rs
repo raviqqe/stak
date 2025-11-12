@@ -7,6 +7,8 @@ extern crate alloc;
 
 mod ring_buffer;
 
+use ring_buffer::RingBuffer;
+
 const MIN_MATCH: usize = 2;
 
 /// LZSS compression iterator.
