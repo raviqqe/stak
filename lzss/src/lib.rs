@@ -151,7 +151,7 @@ mod tests {
         use pretty_assertions::assert_eq;
 
         #[test]
-        fn decompress_repetition() {
+        fn repetition() {
             assert_eq!(
                 [2, 4, 6, 8, 7, 5].decompress::<8>().collect::<Vec<u8>>(),
                 [1, 2, 3, 4, 1, 2, 3, 4, 1]
@@ -159,7 +159,7 @@ mod tests {
         }
 
         #[test]
-        fn decompress_repetitions() {
+        fn repetitions() {
             assert_eq!(
                 [2, 4, 6, 8, 7, 5, 10, 12, 3, 3]
                     .decompress::<8>()
