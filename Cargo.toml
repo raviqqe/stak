@@ -20,6 +20,7 @@ members = [
   "file",
   "inexact",
   "libc",
+  "lzss",
   "macro",
   "macro-util",
   "module",

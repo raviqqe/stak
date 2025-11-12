@@ -1,0 +1,15 @@
+[package]
+name = "stak-lzss"
+version.workspace = true
+edition.workspace = true
+description = "LZSS compression for Stak Scheme"
+readme.workspace = true
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+
+[lints]
+workspace = true
