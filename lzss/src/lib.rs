@@ -95,7 +95,11 @@ pub trait Lzss: IntoIterator {
 
 impl<I: IntoIterator<Item = u8>> Lzss for I {
     fn compress<const W: usize>(self) -> LzssCompressionIterator<W, I::IntoIter> {
-        todo!()
+        LzssCompressionIterator {
+            iterator: self.into_iter(),
+            buffer: [0; W],
+            index: 0,
+        }
     }
 
     fn decompress<const W: usize>(self) -> LzssDecompressionIterator<W, I::IntoIter> {
