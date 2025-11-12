@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct RingBuffer<const N: usize> {
     buffer: [u8; N],
     index: usize,
