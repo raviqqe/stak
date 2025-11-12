@@ -1,6 +1,17 @@
 //! LZSS compression.
 
+#![no_std]
+
 const MIN_MATCH: usize = 2;
+
+pub trait Lzss<const N: usize, const M: usize>: IntoIterator<Item = u8> {
+    fn compress(self) -> impl Iterator<Item = u8>;
+    fn decompress(self) -> impl Iterator<Item = u8>;
+}
+
+pub struct LzssIterator {
+    window: foo,
+}
 
 /// Compresses a byte array.
 pub fn compress<const N: usize, const L: usize>(xs: &[u8]) -> Vec<u8> {
