@@ -4,8 +4,11 @@
 
 const MIN_MATCH: usize = 2;
 
+/// LZSS compression.
 pub trait Lzss<const N: usize, const M: usize>: IntoIterator<Item = u8> {
+    /// Compresses bytes.
     fn compress(self) -> impl Iterator<Item = u8>;
+    /// Decompresses bytes.
     fn decompress(self) -> impl Iterator<Item = u8>;
 }
 
@@ -13,7 +16,7 @@ pub struct LzssIterator<const M: usize> {
     window: [u8; M],
 }
 
-/// Compresses a byte array.
+impl
 pub fn compress<const N: usize, const L: usize>(xs: &[u8]) -> Vec<u8> {
     let mut ys = vec![];
     let mut i = 0;
