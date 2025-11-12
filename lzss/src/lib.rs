@@ -33,12 +33,12 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
         for i in 0..self.length.min(W) {
             let mut k = 0;
 
-            while k < MAXIMUM_LENGTH && xs.get(i + k) == xs.get(i + k) {
+            while k < MAXIMUM_LENGTH && self.buffer.get(i + k) == xs.get(i + k) {
                 k += 1;
             }
 
-            if k > MINIMUM_LENGTH && k >= m {
-                n = i - i;
+            if k > MINIMUM_LENGTH && k > m {
+                n = i;
                 m = k;
             }
         }
