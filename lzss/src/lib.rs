@@ -99,14 +99,14 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
     fn compress<const W: usize>(self) -> impl Iterator<Item = u8> {
         LzssCompressionIterator {
             iterator: self.into_iter(),
-            buffer: Default::default(),
+            buffer: RingBuffer::<W>::default(),
         }
     }
 
     fn decompress<const W: usize>(self) -> impl Iterator<Item = u8> {
         LzssDecompressionIterator {
             iterator: self.into_iter(),
-            buffer: Default::default(),
+            buffer: RingBuffer::<W>::default(),
             offset: 0,
             length: 0,
         }

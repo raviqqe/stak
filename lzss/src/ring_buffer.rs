@@ -1,14 +1,13 @@
-#[derive(Default)]
-pub struct RingBuffer<const W: usize> {
-    buffer: [u8; W],
+pub struct RingBuffer<const N: usize> {
+    buffer: [u8; N],
     index: usize,
 }
 
-impl<const W: usize> RingBuffer<W> {
+impl<const N: usize> RingBuffer<N> {
     /// Creates a buffer.
     pub fn new() -> Self {
         Self {
-            buffer: [0; W],
+            buffer: [0; N],
             index: 0,
         }
     }
@@ -20,12 +19,18 @@ impl<const W: usize> RingBuffer<W> {
 
     /// Appends an item.
     pub fn append(&mut self, byte: u8) {
-        self.index = (self.index + 1) % W;
+        self.index = (self.index + 1) % N;
         self.buffer[self.index] = byte;
     }
 
     fn index(&self, index: usize) -> usize {
-        (self.index - index) % W
+        (self.index - index) % N
+    }
+}
+
+impl<const N: usize> Default for RingBuffer<N> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
