@@ -34,21 +34,25 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
 
             let mut n = 0;
             let mut m = 0;
-            let mut rest = 0;
+            let mut d = 0;
 
             // TODO Prevent reading uninitialized bytes in a buffer?
             for i in 0..W {
                 let mut k = 0;
 
-                let x = if k >= rest {
-                    let x = self.iterator.next();
-                    rest += x.is_some() as usize;
-                    x
-                } else {
-                    Some(x)
-                };
+                while {
+                    if k >= d
+                        && let Some(x) = self.iterator.next()
+                    {
+                        self.buffer.push(x);
+                        d += 1;
+                    }
 
-                while k < MAXIMUM_LENGTH && self.buffer.get(i + k) == x {
+                    let d = self.buffer.len() - d;
+
+                    k < MAXIMUM_LENGTH
+                        && self.buffer.get(d + k) == self.buffer.get(d + self.buffer.len() - i + k)
+                } {
                     k += 1;
                 }
 
