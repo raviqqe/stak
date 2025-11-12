@@ -12,46 +12,63 @@ mod ring_buffer;
 use self::ring_buffer::RingBuffer;
 
 const MINIMUM_LENGTH: usize = 2;
-const MAXIMUM_LENGTH: usize = 1 << 7;
+const MAXIMUM_LENGTH: usize = u8::MAX as _;
 
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
     buffer: RingBuffer<W>,
-    length: usize,
+    length: u8,
 }
 
 impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterator<W, I> {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let x = self.iterator.next()?;
-
-        let mut n = 0;
-        let mut m = 0;
-
-        for i in 0..self.length.min(W) {
-            let mut k = 0;
-
-            while k < MAXIMUM_LENGTH && self.buffer.get(i + k) == xs.get(i + k) {
-                k += 1;
-            }
-
-            if k > MINIMUM_LENGTH && k > m {
-                n = i;
-                m = k;
-            }
-        }
-
-        if m > MINIMUM_LENGTH {
-            ys.extend([(n as u8) << 1 | 1, m as u8]);
-
-            i += m;
+        Some(if self.length > 0 {
+            let x = self.length;
+            self.length = 0;
+            x
         } else {
-            ys.push(xs[i] << 1);
+            let x = self.iterator.next()?;
 
-            i += 1;
-        }
+            let mut n = 0;
+            let mut m = 0;
+            let mut rest = 0;
+
+            // TODO Prevent reading uninitialized bytes in a buffer?
+            for i in 0..W {
+                let mut k = 0;
+
+                let x = if k >= rest {
+                    let x = self.iterator.next();
+                    rest += x.is_some() as usize;
+                    x
+                } else {
+                    Some(x)
+                };
+
+                while k < MAXIMUM_LENGTH && self.buffer.get(i + k) == x {
+                    k += 1;
+                }
+
+                // Prefer a smaller offset.
+                if k > MINIMUM_LENGTH && k > m {
+                    n = i;
+                    m = k;
+                }
+            }
+
+            if m > MINIMUM_LENGTH {
+                self.length = m as _;
+
+                (n as u8) << 1 | 1
+            } else {
+                self.buffer.push(x);
+
+                x << 1
+            }
+        })
     }
 }
 
@@ -105,6 +122,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
         LzssCompressionIterator {
             iterator: self.into_iter(),
             buffer: RingBuffer::<W>::default(),
+            length: 0,
         }
     }
 
