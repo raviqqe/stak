@@ -9,8 +9,8 @@ pub trait Lzss<const N: usize, const M: usize>: IntoIterator<Item = u8> {
     fn decompress(self) -> impl Iterator<Item = u8>;
 }
 
-pub struct LzssIterator {
-    window: foo,
+pub struct LzssIterator<const M: usize> {
+    window: [u8; M],
 }
 
 /// Compresses a byte array.
