@@ -1,6 +1,8 @@
 //! LZSS compression.
 
 #![no_std]
+// TODO
+#![allow(dead_code)]
 
 #[cfg(test)]
 extern crate alloc;
