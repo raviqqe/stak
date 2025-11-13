@@ -68,8 +68,6 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
 
                 (n as u8) << 1 | 1
             } else {
-                self.buffer.push(x);
-
                 x << 1
             }
         })
