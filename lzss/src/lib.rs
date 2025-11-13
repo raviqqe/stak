@@ -164,11 +164,24 @@ mod tests {
         #[test]
         fn bytes() {
             assert_eq!(
-                [1, 2, 3].iter()
+                [1, 2, 3]
+                    .iter()
                     .copied()
                     .compress::<WINDOW_SIZE>()
                     .collect::<Vec<_>>(),
                 [2, 4, 6]
+            );
+        }
+
+        #[test]
+        fn repetition() {
+            assert_eq!(
+                [42, 42, 42]
+                    .iter()
+                    .copied()
+                    .compress::<WINDOW_SIZE>()
+                    .collect::<Vec<_>>(),
+                [42, 0, 2]
             );
         }
     }
