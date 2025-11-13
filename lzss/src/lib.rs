@@ -31,37 +31,64 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
             x
         } else {
             let x = self.iterator.next()?;
-
-            let mut n = 0;
-            let mut m = 0;
             let mut d = 0;
 
-            // TODO Prevent reading uninitialized bytes in a buffer?
-            for i in 0..W {
-                let mut k = 0;
+            // let mut n = 0;
+            // let mut m = 0;
+            // let mut d = 0;
+            //
+            // // TODO Prevent reading uninitialized bytes in a buffer?
+            // for i in 0..W {
+            //     let mut k = 0;
+            //
+            //     while {
+            //         if k >= d
+            //             && let Some(x) = self.iterator.next()
+            //         {
+            //             self.buffer.push(x);
+            //             d += 1;
+            //         }
+            //
+            //         let d = self.buffer.len() - d;
+            //
+            //         k < MAXIMUM_LENGTH
+            //             && self.buffer.get(d + k) == self.buffer.get(d + self.buffer.len() - i + k)
+            //     } {
+            //         k += 1;
+            //     }
+            //
+            //     // Prefer a smaller offset.
+            //     if k > MINIMUM_LENGTH && k > m {
+            //         n = i;
+            //         m = k;
+            //     }
+            // }
 
-                while {
-                    if k >= d
-                        && let Some(x) = self.iterator.next()
-                    {
-                        self.buffer.push(x);
-                        d += 1;
+            let (n, m) = (0..W)
+                .map(|i| {
+                    let mut j = 0;
+
+                    while {
+                        if j >= d
+                            && let Some(x) = self.iterator.next()
+                        {
+                            self.buffer.push(x);
+                            d += 1;
+                        }
+
+                        let d = self.buffer.len() - d;
+
+                        j < MAXIMUM_LENGTH
+                            && self.buffer.get(d + j)
+                                == self.buffer.get(d + self.buffer.len() - i + j)
+                    } {
+                        j += 1;
                     }
 
-                    let d = self.buffer.len() - d;
-
-                    k < MAXIMUM_LENGTH
-                        && self.buffer.get(d + k) == self.buffer.get(d + self.buffer.len() - i + k)
-                } {
-                    k += 1;
-                }
-
-                // Prefer a smaller offset.
-                if k > MINIMUM_LENGTH && k > m {
-                    n = i;
-                    m = k;
-                }
-            }
+                    (i, j)
+                })
+                .max_by_key(|(_, j)| *j)
+                .unwrap_or_default();
 
             if m > MINIMUM_LENGTH {
                 self.length = m as _;
