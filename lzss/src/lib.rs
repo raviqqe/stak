@@ -18,19 +18,17 @@ const MAXIMUM_LENGTH: usize = u8::MAX as _;
 pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
     buffer: RingBuffer<W>,
-    length: u8,
+    next: Option<u8>,
 }
 
 impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterator<W, I> {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        Some(if self.length > 0 {
-            let x = self.length;
-            self.length = 0;
+        Some(if let Some(x) = self.next {
+            self.next = None;
             x
         } else {
-            let x = self.iterator.next()?;
             let mut d = 0;
 
             // TODO Prevent reading uninitialized bytes in a buffer?
@@ -61,11 +59,14 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .unwrap_or_default();
 
             if m > MINIMUM_LENGTH {
-                self.length = m as _;
+                self.next = Some(m as _);
 
                 (n as u8) << 1 | 1
+            } else if m == MINIMUM_LENGTH {
+                self.next = Some(self.buffer.pop());
+                self.buffer.get(self.buffer.len() - d + 1)? << 1
             } else {
-                x << 1
+                self.buffer.get(self.buffer.len() - d + 1)? << 1
             }
         })
     }
@@ -121,7 +122,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
         LzssCompressionIterator {
             iterator: self.into_iter(),
             buffer: RingBuffer::<W>::default(),
-            length: 0,
+            next: None,
         }
     }
 
