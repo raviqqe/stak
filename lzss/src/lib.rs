@@ -18,6 +18,7 @@ const MAXIMUM_LENGTH: usize = u8::MAX as _;
 pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
     buffer: RingBuffer<W>,
+    look_ahead: usize,
     next: Option<u8>,
 }
 
@@ -29,43 +30,35 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
             self.next = None;
             x
         } else {
-            let mut d = 0;
+            self.buffer.push(self.iterator.next()?);
+            self.look_ahead += 1;
 
             // TODO Prevent reading uninitialized bytes in a buffer?
-            let (n, m) = (0..W)
-                .map(|i| {
-                    let mut j = 0;
+            // let (n, m) = (0..W)
+            //     .map(|i| {
+            //         let mut j = 0;
+            //
+            //         while j < MAXIMUM_LENGTH
+            //             && self.buffer.get(self.look_ahead + j)
+            //                 == self.buffer.get(self.look_ahead + self.buffer.len() - i + j)
+            //         {
+            //             j += 1;
+            //         }
+            //
+            //         (i, j)
+            //     })
+            //     .max_by_key(|(_, j)| *j)
+            //     .unwrap_or_default();
 
-                    while {
-                        let x = if j >= d
-                            && let Some(x) = self.iterator.next()
-                        {
-                            d += 1;
-                        }
-
-                        let d = self.buffer.len() - d;
-
-                        j < MAXIMUM_LENGTH
-                            && self.buffer.get(d + j)
-                                == self.buffer.get(d + self.buffer.len() - i + j)
-                    } {
-                        j += 1;
-                    }
-
-                    (i, j)
-                })
-                .max_by_key(|(_, j)| *j)
-                .unwrap_or_default();
+            let (n, m) = (MAXIMUM_LENGTH, 0);
 
             if m > MINIMUM_LENGTH {
                 self.next = Some(m as _);
 
                 (n as u8) << 1 | 1
-            } else if m == MINIMUM_LENGTH {
-                self.next = Some(self.buffer.pop());
-                self.buffer.get(self.buffer.len() - d + 1)? << 1
             } else {
-                self.buffer.get(self.buffer.len() - d + 1)? << 1
+                self.look_ahead -= 1;
+                self.buffer.get(W - self.look_ahead)? << 1
             }
         })
     }
@@ -121,6 +114,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
         LzssCompressionIterator {
             iterator: self.into_iter(),
             buffer: RingBuffer::<W>::default(),
+            look_ahead: 0,
             next: None,
         }
     }
@@ -164,8 +158,7 @@ mod tests {
         #[test]
         fn byte() {
             assert_eq!(
-                [1]
-                    .iter()
+                [1].iter()
                     .copied()
                     .compress::<WINDOW_SIZE>()
                     .collect::<Vec<_>>(),
