@@ -157,6 +157,25 @@ mod tests {
         );
     }
 
+    mod compress {
+        use super::*;
+        use pretty_assertions::assert_eq;
+
+        #[test]
+        fn bytes() {
+            let data = b"ABC";
+
+            assert_eq!(
+                data.iter()
+                    .copied()
+                    .compress::<WINDOW_SIZE>()
+                    .decompress::<WINDOW_SIZE>()
+                    .collect::<Vec<u8>>(),
+                data
+            );
+        }
+    }
+
     mod decompress {
         use super::*;
         use pretty_assertions::assert_eq;
