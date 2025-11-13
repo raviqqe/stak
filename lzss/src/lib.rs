@@ -163,14 +163,12 @@ mod tests {
 
         #[test]
         fn bytes() {
-            let data = b"ABC";
-
             assert_eq!(
-                data.iter()
+                [1, 2, 3].iter()
                     .copied()
                     .compress::<WINDOW_SIZE>()
                     .collect::<Vec<_>>(),
-                data
+                [2, 4, 6]
             );
         }
     }
