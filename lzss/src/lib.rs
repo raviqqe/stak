@@ -37,10 +37,9 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                     let mut j = 0;
 
                     while {
-                        if j >= d
+                        let x = if j >= d
                             && let Some(x) = self.iterator.next()
                         {
-                            self.buffer.push(x);
                             d += 1;
                         }
 
@@ -163,7 +162,31 @@ mod tests {
         use pretty_assertions::assert_eq;
 
         #[test]
-        fn bytes() {
+        fn byte() {
+            assert_eq!(
+                [1]
+                    .iter()
+                    .copied()
+                    .compress::<WINDOW_SIZE>()
+                    .collect::<Vec<_>>(),
+                [2]
+            );
+        }
+
+        #[test]
+        fn two_bytes() {
+            assert_eq!(
+                [1, 2]
+                    .iter()
+                    .copied()
+                    .compress::<WINDOW_SIZE>()
+                    .collect::<Vec<_>>(),
+                [2, 4]
+            );
+        }
+
+        #[test]
+        fn three_bytes() {
             assert_eq!(
                 [1, 2, 3]
                     .iter()
