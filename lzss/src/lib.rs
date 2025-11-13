@@ -169,8 +169,7 @@ mod tests {
                 data.iter()
                     .copied()
                     .compress::<WINDOW_SIZE>()
-                    .decompress::<WINDOW_SIZE>()
-                    .collect::<Vec<u8>>(),
+                    .collect::<Vec<_>>(),
                 data
             );
         }
@@ -193,7 +192,7 @@ mod tests {
             assert_eq!(
                 [2, 4, 6, 8, 7, 5, 10, 12, 3, 3]
                     .decompress::<8>()
-                    .collect::<Vec<u8>>(),
+                    .collect::<Vec<_>>(),
                 [1, 2, 3, 4, 1, 2, 3, 4, 1, 5, 6, 5, 6, 5]
             );
         }
