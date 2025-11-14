@@ -1,6 +1,8 @@
 //! LZSS compression.
 
-#![no_std]
+// TODO
+// #![no_std]
+#![allow(dead_code)]
 
 #[cfg(test)]
 extern crate alloc;
@@ -22,6 +24,32 @@ pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     next: Option<u8>,
 }
 
+impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
+    fn next(&mut self) -> Option<u8> {
+        if self.look_ahead > 0 {
+            let x = self.buffer.get(W - self.look_ahead - 1);
+            self.look_ahead -= 1;
+            x
+        } else if let Some(x) = self.iterator.next() {
+            self.buffer.push(x);
+            Some(x)
+        } else {
+            None
+        }
+    }
+
+    fn peek(&mut self, index: usize) -> Option<u8> {
+        if self.look_ahead > 0 {
+            self.buffer.get(W - self.look_ahead - 1 + index)
+        } else if let Some(x) = self.iterator.next() {
+            self.buffer.push(x);
+            Some(x)
+        } else {
+            None
+        }
+    }
+}
+
 impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterator<W, I> {
     type Item = u8;
 
@@ -36,7 +64,9 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                     let mut j = 0;
 
                     while {
-                        if j >= self.look_ahead && let Some(x) = self.iterator.next() {
+                        if j >= self.look_ahead
+                            && let Some(x) = self.iterator.next()
+                        {
                             self.buffer.push(x);
                             self.look_ahead += 1;
 
@@ -157,6 +187,16 @@ mod tests {
     mod compress {
         use super::*;
         use pretty_assertions::assert_eq;
+
+        #[test]
+        fn next() {
+            let mut iterator = [1, 2, 3].iter().copied().compress::<WINDOW_SIZE>();
+
+            assert_eq!(iterator.next(), Some(1));
+            assert_eq!(iterator.next(), Some(2));
+            assert_eq!(iterator.next(), Some(3));
+            assert_eq!(iterator.next(), None);
+        }
 
         #[test]
         fn byte() {

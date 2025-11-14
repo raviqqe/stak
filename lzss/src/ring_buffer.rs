@@ -12,7 +12,7 @@ impl<const N: usize> RingBuffer<N> {
         }
     }
 
-    pub const fn len(&self) -> usize{
+    pub const fn len(&self) -> usize {
         N
     }
 
@@ -21,8 +21,8 @@ impl<const N: usize> RingBuffer<N> {
     }
 
     pub fn push(&mut self, byte: u8) {
-        self.index = (self.index + 1) % N;
         self.buffer[self.index] = byte;
+        self.index = (self.index + 1) % N;
     }
 
     fn index(&self, index: usize) -> usize {
@@ -39,25 +39,36 @@ impl<const N: usize> Default for RingBuffer<N> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
-    fn index() {
+    fn push() {
+        let mut buffer = RingBuffer::<3>::new();
+
+        buffer.push(42);
+
+        assert_eq!(buffer.get(0), Some(0));
+        assert_eq!(buffer.get(2), Some(42));
+    }
+
+    #[test]
+    fn push_over_end() {
         let mut buffer = RingBuffer::<3>::new();
 
         buffer.push(1);
         buffer.push(2);
         buffer.push(3);
 
-        assert_eq!(buffer.get(0), Some(3));
-        assert_eq!(buffer.get(1), Some(1));
-        assert_eq!(buffer.get(2), Some(2));
-        assert_eq!(buffer.get(3), Some(3));
+        assert_eq!(buffer.get(0), Some(1));
+        assert_eq!(buffer.get(1), Some(2));
+        assert_eq!(buffer.get(2), Some(3));
+        assert_eq!(buffer.get(3), Some(1));
 
         buffer.push(4);
 
-        assert_eq!(buffer.get(0), Some(4));
-        assert_eq!(buffer.get(1), Some(2));
-        assert_eq!(buffer.get(2), Some(3));
-        assert_eq!(buffer.get(3), Some(4));
+        assert_eq!(buffer.get(0), Some(2));
+        assert_eq!(buffer.get(1), Some(3));
+        assert_eq!(buffer.get(2), Some(4));
+        assert_eq!(buffer.get(3), Some(2));
     }
 }
