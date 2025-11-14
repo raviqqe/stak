@@ -27,7 +27,7 @@ pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
 impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
     fn next(&mut self) -> Option<u8> {
         if self.look_ahead > 0 {
-            let x = self.buffer.get(W - self.look_ahead - 1);
+            let x = self.buffer.get(W - 1 - self.look_ahead);
             self.look_ahead -= 1;
             x
         } else if let Some(x) = self.iterator.next() {
