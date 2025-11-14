@@ -19,6 +19,7 @@ const MAXIMUM_LENGTH: usize = u8::MAX as _;
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
+    // TODO Specify a separate buffer size for look-ahead?
     buffer: RingBuffer<W>,
     look_ahead: usize,
     next: Option<u8>,
