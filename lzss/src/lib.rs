@@ -22,6 +22,7 @@ pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
     // TODO Specify a separate buffer size for look-ahead?
     buffer: RingBuffer<W>,
+    ahead: usize,
     look_ahead: Deque<u8, 2>,
     next: Option<u8>,
 }
@@ -31,6 +32,7 @@ impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
         Self {
             iterator,
             buffer: RingBuffer::<W>::default(),
+            ahead: Default::default(),
             look_ahead: Default::default(),
             next: Default::default(),
         }
@@ -75,9 +77,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .map(|i| {
                     let mut j = 0;
 
-                    while j < MAXIMUM_LENGTH
-                        && self.buffer.get(W - i + j) == self.peek(j)
-                    {
+                    while j < MAXIMUM_LENGTH && self.buffer.get(W - i + j) == self.peek(j) {
                         j += 1;
                     }
 
@@ -146,12 +146,7 @@ pub trait Lzss {
 
 impl<I: IntoIterator<Item = u8>> Lzss for I {
     fn compress<const W: usize>(self) -> impl Iterator<Item = u8> {
-        LzssCompressionIterator {
-            iterator: self.into_iter(),
-            buffer: RingBuffer::<W>::default(),
-            look_ahead: Default::default(),
-            next: Default::default(),
-        }
+        LzssCompressionIterator::<W, _>::new(self.into_iter())
     }
 
     fn decompress<const W: usize>(self) -> impl Iterator<Item = u8> {
