@@ -406,11 +406,13 @@ mod tests {
         fn max_offset() {
             assert_eq!(
                 (0..128)
+                    .chain(0..128)
+                    .compress::<{ 128 + MAX_LENGTH }>()
+                    .collect::<Vec<_>>(),
+                (0..128)
                     .map(|x| x << 1)
                     .chain([255, 128])
-                    .decompress::<128>()
-                    .collect::<Vec<_>>(),
-                (0..128).chain(0..128).collect::<Vec<_>>()
+                    .collect::<Vec<_>>()
             );
         }
     }
