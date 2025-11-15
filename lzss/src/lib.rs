@@ -70,9 +70,9 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(x) = self.next {
+        Some(if let Some(x) = self.next {
             self.next = None;
-            Some(x)
+            x
         } else {
             // TODO Prevent reading uninitialized bytes in a buffer?
             let (n, m) = (0..Self::WINDOW_SIZE)
@@ -94,11 +94,11 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 self.next = Some(m as _);
                 self.ahead -= m;
 
-                Some((n as u8) << 1 | 1)
+                (n as u8) << 1 | 1
             } else {
-                Some(self.next()? << 1)
+                self.next()? << 1
             }
-        }
+        })
     }
 }
 
