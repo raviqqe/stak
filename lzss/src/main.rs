@@ -1,5 +1,7 @@
 //! An LZSS compressor for ASCII characters.
 
+extern crate alloc;
+
 use clap::Parser;
 use stak_lzss::{Lzss, MAX_LENGTH};
 use std::error::Error;
@@ -24,37 +26,20 @@ enum Command {
 
 fn main() -> Result<(), Box<dyn Error>> {
     match Arguments::parse().command {
-        Command::Compress => compress()?,
-        Command::Decompress => decompress()?,
+        Command::Compress => run(Lzss::compress::<{ WINDOW_SIZE + MAX_LENGTH }>)?,
+        Command::Decompress => run(Lzss::decompress::<WINDOW_SIZE>)?,
     }
 
     Ok(())
 }
 
-fn compress() -> Result<(), io::Error> {
+fn run<I: Iterator<Item = u8>, F: Fn(alloc::vec::IntoIter<u8>) -> I>(
+    convert: F,
+) -> Result<(), io::Error> {
     let mut data = vec![];
 
     stdin().read_to_end(&mut data)?;
-    stdout().write(
-        &data
-            .into_iter()
-            .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
-            .collect::<Vec<_>>(),
-    )?;
-
-    Ok(())
-}
-
-fn decompress() -> Result<(), io::Error> {
-    let mut data = vec![];
-
-    stdin().read_to_end(&mut data)?;
-    stdout().write(
-        &data
-            .into_iter()
-            .decompress::<WINDOW_SIZE>()
-            .collect::<Vec<_>>(),
-    )?;
+    stdout().write(&convert(data.into_iter()).collect::<Vec<_>>())?;
 
     Ok(())
 }
