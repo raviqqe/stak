@@ -67,6 +67,7 @@
     "lcov",
     "letrec",
     "libc",
+    "libfuzzer",
     "libm",
     "lzss",
     "memq",
