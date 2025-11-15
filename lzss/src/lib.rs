@@ -13,7 +13,7 @@ mod ring_buffer;
 
 use self::ring_buffer::RingBuffer;
 
-const MINIMUM_LENGTH: usize = 3;
+const MINIMUM_LENGTH: usize = 2;
 const MAXIMUM_LENGTH: usize = u8::MAX as _;
 
 /// LZSS compression iterator.
@@ -98,8 +98,11 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .max_by_key(|(_, j)| *j)
                 .unwrap_or_default();
 
+            dbg!((n, m));
+
             if m > MINIMUM_LENGTH {
                 self.next = Some(m as _);
+                self.ahead -= m;
 
                 Some((n as u8) << 1 | 1)
             } else {
@@ -302,21 +305,21 @@ mod tests {
                     .copied()
                     .compress::<BUFFER_SIZE>()
                     .collect::<Vec<_>>(),
-                [42, 0, 3]
+                [84, 1, 3]
             );
         }
 
-        // #[test]
-        // fn repetitions() {
-        //     assert_eq!(
-        //         [42, 42, 42, 42, 7, 7, 7]
-        //             .iter()
-        //             .copied()
-        //             .compress::<BUFFER_SIZE>()
-        //             .collect::<Vec<_>>(),
-        //         [42, 0, 3, 7, 0, 2]
-        //     );
-        // }
+        #[test]
+        fn repetitions() {
+            assert_eq!(
+                [42, 42, 42, 42, 7, 7, 7, 127, 127, 127, 127, 127]
+                    .iter()
+                    .copied()
+                    .compress::<BUFFER_SIZE>()
+                    .collect::<Vec<_>>(),
+                [84, 1, 3, 14, 14, 14, 254, 1, 4]
+            );
+        }
     }
 
     mod decompress {
