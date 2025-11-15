@@ -271,6 +271,18 @@ mod tests {
                 [42, 0, 2]
             );
         }
+
+        #[test]
+        fn repetitions() {
+            assert_eq!(
+                [42, 42, 42, 42, 7, 7, 7]
+                    .iter()
+                    .copied()
+                    .compress::<WINDOW_SIZE>()
+                    .collect::<Vec<_>>(),
+                [42, 0, 3, 7, 0, 2]
+            );
+        }
     }
 
     mod decompress {
