@@ -3,8 +3,8 @@
 extern crate alloc;
 
 use clap::Parser;
-use stak_lzss::{Lzss, MAX_LENGTH};
 use core::error::Error;
+use stak_lzss::{Lzss, MAX_LENGTH};
 use std::io::{self, Read, Write, stdin, stdout};
 
 const WINDOW_SIZE: usize = 127;
