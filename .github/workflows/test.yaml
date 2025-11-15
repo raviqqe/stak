@@ -74,7 +74,7 @@ jobs:
           mkdir -p tmp/in
           mkdir -p tmp/out
 
-          for count in $(seq 0 99); do
+          for count in $(seq 1 100); do
             for index in $(seq 0 9); do
               dd bs=1 count=$count < /dev/urandom > tmp/in/${count}_$index.bin
             done
