@@ -58,6 +58,18 @@ jobs:
         with:
           fail_ci_if_error: true
           files: lcov.info
+  fuzz:
+    strategy:
+      matrix:
+        target:
+          - main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: cargo install --locked cargo-fuzz
+      - run: cargo fuzz build ${{ matrix.fuzz_target }}
+      - run: cargo fuzz run ${{ matrix.fuzz_target }} -- -max_total_time=300
   integration_test:
     strategy:
       fail-fast: false
