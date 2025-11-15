@@ -3,7 +3,7 @@
 use clap::Parser;
 use stak_lzss::{Lzss, MAX_LENGTH};
 use std::error::Error;
-use std::io::{Read, Write, stdin, stdout};
+use std::io::{self, Read, Write, stdin, stdout};
 
 const WINDOW_SIZE: usize = 127;
 
@@ -23,10 +23,12 @@ enum Command {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    match Arguments::parse() {
-        Command::Compress => compress(),
-        Command::Decompress => decompress(),
+    match Arguments::parse().command {
+        Command::Compress => compress()?,
+        Command::Decompress => decompress()?,
     }
+
+    Ok(())
 }
 
 fn compress() -> Result<(), io::Error> {
@@ -50,7 +52,7 @@ fn decompress() -> Result<(), io::Error> {
     stdout().write(
         &data
             .into_iter()
-            .decompress::<WINDOW_SIZE >()
+            .decompress::<WINDOW_SIZE>()
             .collect::<Vec<_>>(),
     )?;
 
