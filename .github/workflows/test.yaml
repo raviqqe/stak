@@ -82,7 +82,7 @@ jobs:
 
           find tmp/in | sort
         working-directory: ${{ matrix.directory }}
-      - run: cargo afl fuzz -i tmp/in -o tmp/out ../../target/debug/stak-lzss-fuzz
+      - run: cargo afl fuzz -V 300 -i tmp/in -o tmp/out ../../target/debug/stak-lzss-fuzz
         working-directory: ${{ matrix.directory }}
   integration_test:
     strategy:
