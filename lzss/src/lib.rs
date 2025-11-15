@@ -171,6 +171,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
 mod tests {
     use super::*;
     use alloc::vec::Vec;
+    use core::iter::repeat;
     use pretty_assertions::assert_eq;
 
     const WINDOW_SIZE: usize = 8;
@@ -389,11 +390,29 @@ mod tests {
                 [15, 3]
             );
         }
+
+        #[test]
+        fn max_length() {
+            assert_eq!(
+                repeat(42).take(256).compress::<128>().collect::<Vec<_>>(),
+                [84, 1, 255]
+            );
+        }
+
+        #[test]
+        fn max_offset() {
+            assert_eq!(
+                (0..128)
+                    .map(|x| x << 1)
+                    .chain([255, 128])
+                    .decompress::<128>()
+                    .collect::<Vec<_>>(),
+                (0..128).chain(0..128).collect::<Vec<_>>()
+            );
+        }
     }
 
     mod decompress {
-        use core::iter::repeat;
-
         use super::*;
         use pretty_assertions::assert_eq;
 
