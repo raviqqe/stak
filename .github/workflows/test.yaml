@@ -81,6 +81,7 @@ jobs:
           done
 
           find tmp/in
+        working-directory: ${{ matrix.directory }}
       - run: cargo afl fuzz -i tmp/in -o tmp/out ../../target/debug/stak-lzss-fuzz
         working-directory: ${{ matrix.directory }}
   integration_test:
