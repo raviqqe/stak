@@ -2,6 +2,7 @@
 
 extern crate alloc;
 
+use alloc::vec;
 use clap::Parser;
 use core::error::Error;
 use stak_lzss::{Lzss, MAX_LENGTH};
@@ -33,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run<I: Iterator<Item = u8>, F: Fn(alloc::vec::IntoIter<u8>) -> I>(
+fn run<I: Iterator<Item = u8>, F: Fn(vec::IntoIter<u8>) -> I>(
     convert: F,
 ) -> Result<(), io::Error> {
     let mut data = vec![];
