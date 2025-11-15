@@ -80,6 +80,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .map(|i| {
                     let mut j = 0;
 
+                    // TODO `self.buffer.get(W - self.ahead - 1 - i + j)`?
                     while j < MAXIMUM_LENGTH && self.buffer.get(W - i + j) == self.peek(j) {
                         j += 1;
                     }
