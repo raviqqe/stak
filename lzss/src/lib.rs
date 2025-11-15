@@ -27,6 +27,15 @@ pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
 }
 
 impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
+    fn new(iterator: I) -> Self {
+        Self {
+            iterator,
+            buffer: RingBuffer::<W>::default(),
+            look_ahead: Default::default(),
+            next: Default::default(),
+        }
+    }
+
     fn next(&mut self) -> Option<u8> {
         if let Some(x) = self.look_ahead.pop_front() {
             self.buffer.push(x);
@@ -194,7 +203,7 @@ mod tests {
 
         #[test]
         fn next() {
-            let mut iterator = [1, 2, 3].iter().copied().compress::<WINDOW_SIZE>();
+            let mut iterator = LzssCompressionIterator::<64, _>::new([1, 2, 3].into_iter());
 
             assert_eq!(iterator.next(), Some(1));
             assert_eq!(iterator.next(), Some(2));
