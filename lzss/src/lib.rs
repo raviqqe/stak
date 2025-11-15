@@ -180,7 +180,7 @@ mod tests {
         assert_eq!(
             data.iter()
                 .copied()
-                .compress::<WINDOW_SIZE>()
+                .compress::<{ WINDOW_SIZE + MAXIMUM_LENGTH }>()
                 .decompress::<WINDOW_SIZE>()
                 .collect::<Vec<u8>>(),
             data
