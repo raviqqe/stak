@@ -55,7 +55,7 @@ impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
 
         let mut x = 0;
 
-        for _ in 0..index + 1 {
+        for _ in 0..index + 1 - self.ahead {
             x = self.iterator.next()?;
             self.buffer.push(x);
             self.ahead += 1;
@@ -203,6 +203,26 @@ mod tests {
             assert_eq!(iterator.next(), Some(2));
             assert_eq!(iterator.next(), Some(3));
             assert_eq!(iterator.next(), None);
+        }
+
+        #[test]
+        fn peek() {
+            let mut iterator =
+                LzssCompressionIterator::<64, _>::new([1, 2, 3, 4, 5, 6].into_iter());
+
+            assert_eq!(iterator.peek(0), Some(1));
+
+            assert_eq!(iterator.peek(0), Some(1));
+            assert_eq!(iterator.peek(1), Some(2));
+
+            assert_eq!(iterator.peek(0), Some(1));
+            assert_eq!(iterator.peek(1), Some(2));
+            assert_eq!(iterator.peek(2), Some(3));
+
+            assert_eq!(iterator.peek(0), Some(1));
+            assert_eq!(iterator.peek(1), Some(2));
+            assert_eq!(iterator.peek(2), Some(3));
+            assert_eq!(iterator.peek(3), Some(4));
         }
 
         #[test]
