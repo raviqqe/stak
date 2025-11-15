@@ -1493,6 +1493,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-lzss"
+version = "0.11.9"
+dependencies = [
+ "pretty_assertions",
+]
+
+[[package]]
 name = "stak-macro"
 version = "0.11.9"
 dependencies = [
