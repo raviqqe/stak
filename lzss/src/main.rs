@@ -34,9 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run<I: Iterator<Item = u8>, F: Fn(vec::IntoIter<u8>) -> I>(
-    convert: F,
-) -> Result<(), io::Error> {
+fn run<I: Iterator<Item = u8>, F: Fn(vec::IntoIter<u8>) -> I>(convert: F) -> Result<(), io::Error> {
     let mut data = vec![];
 
     stdin().read_to_end(&mut data)?;
