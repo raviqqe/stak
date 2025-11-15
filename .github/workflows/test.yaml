@@ -62,7 +62,7 @@ jobs:
     strategy:
       matrix:
         directory:
-          - lzss
+          - lzss/fuzz
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
