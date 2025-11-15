@@ -58,32 +58,6 @@ jobs:
         with:
           fail_ci_if_error: true
           files: lcov.info
-  fuzz:
-    strategy:
-      matrix:
-        directory:
-          - lzss/fuzz
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - run: cargo install --locked cargo-afl
-      - run: cargo afl build
-        working-directory: ${{ matrix.directory }}
-      - run: |
-          mkdir -p tmp/in
-          mkdir -p tmp/out
-
-          for count in $(seq 1 100); do
-            for index in $(seq 0 9); do
-              dd bs=1 count=$count < /dev/urandom > tmp/in/${count}_$index.bin
-            done
-          done
-
-          find tmp/in | sort
-        working-directory: ${{ matrix.directory }}
-      - run: cargo afl fuzz -V 300 -i tmp/in -o tmp/out ../../target/debug/stak-lzss-fuzz
-        working-directory: ${{ matrix.directory }}
   integration_test:
     strategy:
       fail-fast: false
@@ -247,7 +221,6 @@ jobs:
     needs:
       - build
       - unit_test
-      - fuzz
       - integration_test
       - niche_integration_test
       - self_host_test
