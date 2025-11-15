@@ -62,15 +62,15 @@ jobs:
     strategy:
       matrix:
         directory:
-          - lzss/fuzz
+          - lzss
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: cargo install --locked cargo-fuzz
-      - run: cargo +nightly fuzz build main
+      - run: cargo install --locked cargo-afl
+      - run: cargo afl build
         working-directory: ${{ matrix.directory }}
-      - run: cargo +nightly fuzz run main -- -max_total_time=300
+      - run: cargo afl run
         working-directory: ${{ matrix.directory }}
   integration_test:
     strategy:
