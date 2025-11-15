@@ -68,9 +68,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: cargo install --locked cargo-fuzz
-      - run: cargo fuzz build main
+      - run: cargo +nightly fuzz build main
         working-directory: ${{ matrix.directory }}
-      - run: cargo fuzz run main -- -max_total_time=300
+      - run: cargo +nightly fuzz run main -- -max_total_time=300
         working-directory: ${{ matrix.directory }}
   integration_test:
     strategy:
