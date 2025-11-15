@@ -11,8 +11,9 @@ mod ring_buffer;
 
 use self::ring_buffer::RingBuffer;
 
-const MINIMUM_LENGTH: usize = 2;
-const MAXIMUM_LENGTH: usize = u8::MAX as _;
+const MIN_LENGTH: usize = 2;
+/// The maximum match length.
+pub const MAX_LENGTH: usize = u8::MAX as _;
 
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const B: usize, I: Iterator<Item = u8>> {
@@ -24,7 +25,7 @@ pub struct LzssCompressionIterator<const B: usize, I: Iterator<Item = u8>> {
 }
 
 impl<const B: usize, I: Iterator<Item = u8>> LzssCompressionIterator<B, I> {
-    const WINDOW_SIZE: usize = B - MAXIMUM_LENGTH;
+    const WINDOW_SIZE: usize = B - MAX_LENGTH;
 
     fn new(iterator: I) -> Self {
         Self {
@@ -78,7 +79,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .map(|i| {
                     let mut j = 0;
 
-                    while j < MAXIMUM_LENGTH
+                    while j < MAX_LENGTH
                         && self.buffer.get(2 * B - self.ahead - 1 - i + j) == self.peek(j)
                     {
                         j += 1;
@@ -89,7 +90,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .max_by_key(|(_, j)| *j)
                 .unwrap_or_default();
 
-            if m > MINIMUM_LENGTH {
+            if m > MIN_LENGTH {
                 self.next = Some(m as _);
                 self.ahead -= m;
 
@@ -176,7 +177,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     const WINDOW_SIZE: usize = 8;
-    const BUFFER_SIZE: usize = WINDOW_SIZE + MAXIMUM_LENGTH;
+    const BUFFER_SIZE: usize = WINDOW_SIZE + MAX_LENGTH;
 
     #[test]
     fn compress_and_decompress() {
