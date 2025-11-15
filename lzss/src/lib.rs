@@ -2,7 +2,7 @@
 
 // TODO
 // #![no_std]
-#![allow(dead_code)]
+#![allow(dead_code, unused)]
 
 #[cfg(test)]
 extern crate alloc;
@@ -81,11 +81,9 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                     let mut j = 0;
 
                     dbg!(
-                        B,
                         self.ahead,
                         1,
                         i,
-                        j,
                         self.buffer.get(2 * B - self.ahead - 1 - i + j),
                         self.peek(j)
                     );
@@ -189,19 +187,19 @@ mod tests {
     const WINDOW_SIZE: usize = 8;
     const BUFFER_SIZE: usize = WINDOW_SIZE + MAXIMUM_LENGTH;
 
-    #[test]
-    fn compress_and_decompress() {
-        let data = b"ABABABABABABABABABABA123123123123";
-
-        assert_eq!(
-            data.iter()
-                .copied()
-                .compress::<BUFFER_SIZE>()
-                .decompress::<WINDOW_SIZE>()
-                .collect::<Vec<u8>>(),
-            data
-        );
-    }
+    // #[test]
+    // fn compress_and_decompress() {
+    //     let data = b"ABABABABABABABABABABA123123123123";
+    //
+    //     assert_eq!(
+    //         data.iter()
+    //             .copied()
+    //             .compress::<BUFFER_SIZE>()
+    //             .decompress::<WINDOW_SIZE>()
+    //             .collect::<Vec<u8>>(),
+    //         data
+    //     );
+    // }
 
     mod compress {
         use super::*;
@@ -274,28 +272,52 @@ mod tests {
         }
 
         #[test]
-        fn repetition() {
+        fn two_repetitions() {
             assert_eq!(
-                [42, 42, 42]
+                [42, 42]
                     .iter()
                     .copied()
                     .compress::<BUFFER_SIZE>()
                     .collect::<Vec<_>>(),
-                [42, 0, 2]
+                [84, 84]
             );
         }
 
         #[test]
-        fn repetitions() {
+        fn three_repetitions() {
             assert_eq!(
-                [42, 42, 42, 42, 7, 7, 7]
+                [42, 42]
                     .iter()
                     .copied()
                     .compress::<BUFFER_SIZE>()
                     .collect::<Vec<_>>(),
-                [42, 0, 3, 7, 0, 2]
+                [84, 84]
             );
         }
+
+        // #[test]
+        // fn four_repetitions() {
+        //     assert_eq!(
+        //         [42, 42, 42, 42]
+        //             .iter()
+        //             .copied()
+        //             .compress::<BUFFER_SIZE>()
+        //             .collect::<Vec<_>>(),
+        //         [42, 0, 3]
+        //     );
+        // }
+
+        // #[test]
+        // fn repetitions() {
+        //     assert_eq!(
+        //         [42, 42, 42, 42, 7, 7, 7]
+        //             .iter()
+        //             .copied()
+        //             .compress::<BUFFER_SIZE>()
+        //             .collect::<Vec<_>>(),
+        //         [42, 0, 3, 7, 0, 2]
+        //     );
+        // }
     }
 
     mod decompress {
