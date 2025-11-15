@@ -261,6 +261,34 @@ mod tests {
         );
     }
 
+    #[test]
+    fn max_length() {
+        let data = repeat(42).take(256).collect::<Vec<_>>();
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<{ 1 + MAX_LENGTH }>()
+                .decompress::<1>()
+                .collect::<Vec<_>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn max_offset() {
+        let data = (0..128).chain(0..128).collect::<Vec<_>>();
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<{ 128 + MAX_LENGTH }>()
+                .decompress::<128>()
+                .collect::<Vec<_>>(),
+            data
+        );
+    }
+
     mod compress {
         use super::*;
         use pretty_assertions::assert_eq;
