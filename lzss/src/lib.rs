@@ -394,7 +394,10 @@ mod tests {
         #[test]
         fn max_length() {
             assert_eq!(
-                repeat(42).take(256).compress::<128>().collect::<Vec<_>>(),
+                repeat(42)
+                    .take(256)
+                    .compress::<{ 1 + MAX_LENGTH }>()
+                    .collect::<Vec<_>>(),
                 [84, 1, 255]
             );
         }
