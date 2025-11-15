@@ -43,7 +43,7 @@ impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
         if let Some(&x) = self.look_ahead.get(index) {
             Some(x)
         } else if let Some(x) = self.iterator.next() {
-            self.look_ahead.push_back(x);
+            self.look_ahead.push_back(x).unwrap();
             Some(x)
         } else {
             None
@@ -55,46 +55,47 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        Some(if let Some(x) = self.next {
+        if let Some(x) = self.next {
             self.next = None;
-            x
+            Some(x)
         } else {
+            self.peek(0)?;
             // TODO Prevent reading uninitialized bytes in a buffer?
-            let (n, m) = (0..W)
-                .map(|i| {
-                    let mut j = 0;
-
-                    while {
-                        if j >= self.look_ahead
-                            && let Some(x) = self.iterator.next()
-                        {
-                            self.buffer.push(x);
-                            self.look_ahead += 1;
-
-                            j < MAXIMUM_LENGTH
-                                && self.buffer.get(W - self.look_ahead - i + j)
-                                    == self.buffer.get(W - self.look_ahead + j)
-                        } else {
-                            false
-                        }
-                    } {
-                        j += 1;
-                    }
-
-                    (i, j)
-                })
-                .max_by_key(|(_, j)| *j)
-                .unwrap_or_default();
+            // let (n, m) = (0..W)
+            //     .map(|i| {
+            //         let mut j = 0;
+            //
+            //         while {
+            //             if j >= self.look_ahead
+            //                 && let Some(x) = self.iterator.next()
+            //             {
+            //                 self.buffer.push(x);
+            //                 self.look_ahead += 1;
+            //
+            //                 j < MAXIMUM_LENGTH
+            //                     && self.buffer.get(W - self.look_ahead - i + j)
+            //                         == self.buffer.get(W - self.look_ahead + j)
+            //             } else {
+            //                 false
+            //             }
+            //         } {
+            //             j += 1;
+            //         }
+            //
+            //         (i, j)
+            //     })
+            //     .max_by_key(|(_, j)| *j)
+            //     .unwrap_or_default();
+            let (n, m) = (0, 0);
 
             if m > MINIMUM_LENGTH {
                 self.next = Some(m as _);
 
-                (n as u8) << 1 | 1
+                Some((n as u8) << 1 | 1)
             } else {
-                self.look_ahead -= 1;
-                self.buffer.get(W - self.look_ahead)? << 1
+                Some(self.next()? << 1)
             }
-        })
+        }
     }
 }
 
