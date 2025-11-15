@@ -1,5 +1,6 @@
 //! An LZSS compressor for ASCII characters.
 
+use clap::Parser;
 use stak_lzss::{Lzss, MAX_LENGTH};
 use std::error::Error;
 use std::io::{Read, Write, stdin, stdout};
@@ -28,7 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 }
 
-fn compress() -> Result<(), Box<dyn Error>> {
+fn compress() -> Result<(), io::Error> {
     let mut data = vec![];
 
     stdin().read_to_end(&mut data)?;
@@ -42,14 +43,14 @@ fn compress() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn decompress() -> Result<(), Box<dyn Error>> {
+fn decompress() -> Result<(), io::Error> {
     let mut data = vec![];
 
     stdin().read_to_end(&mut data)?;
     stdout().write(
         &data
             .into_iter()
-            .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
+            .decompress::<WINDOW_SIZE >()
             .collect::<Vec<_>>(),
     )?;
 
