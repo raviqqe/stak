@@ -80,7 +80,7 @@ jobs:
             done
           done
 
-          find tmp/in
+          find tmp/in | sort
         working-directory: ${{ matrix.directory }}
       - run: cargo afl fuzz -i tmp/in -o tmp/out ../../target/debug/stak-lzss-fuzz
         working-directory: ${{ matrix.directory }}
