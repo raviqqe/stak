@@ -13,7 +13,7 @@ mod ring_buffer;
 
 use self::ring_buffer::RingBuffer;
 
-const MINIMUM_LENGTH: usize = 2;
+const MINIMUM_LENGTH: usize = 3;
 const MAXIMUM_LENGTH: usize = u8::MAX as _;
 
 /// LZSS compression iterator.
@@ -286,12 +286,12 @@ mod tests {
         #[test]
         fn three_repetitions() {
             assert_eq!(
-                [42, 42]
+                [42, 42, 42]
                     .iter()
                     .copied()
                     .compress::<BUFFER_SIZE>()
                     .collect::<Vec<_>>(),
-                [84, 84]
+                [84, 84, 84]
             );
         }
 
