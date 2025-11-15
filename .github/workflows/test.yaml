@@ -76,7 +76,7 @@ jobs:
 
           for count in $(seq 0 100); do
             for index in $(seq 0 9); do
-              dd bs=1 count=10 < /dev/urandom > tmp/in/${count}_$index.bin
+              dd bs=1 count=$count < /dev/urandom > tmp/in/${count}_$index.bin
             done
           done
 
