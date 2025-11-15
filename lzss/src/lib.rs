@@ -422,5 +422,17 @@ mod tests {
                 repeat(42).take(256).collect::<Vec<_>>()
             );
         }
+
+        #[test]
+        fn max_offset() {
+            assert_eq!(
+                (0..128)
+                    .map(|x| x << 1)
+                    .chain([255, 128])
+                    .decompress::<128>()
+                    .collect::<Vec<_>>(),
+                (0..128).chain(0..128).collect::<Vec<_>>()
+            );
+        }
     }
 }
