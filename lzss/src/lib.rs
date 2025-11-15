@@ -12,6 +12,7 @@ extern crate std;
 mod ring_buffer;
 
 use self::ring_buffer::RingBuffer;
+use heapless::Deque;
 
 const MINIMUM_LENGTH: usize = 2;
 const MAXIMUM_LENGTH: usize = u8::MAX as _;
@@ -21,16 +22,15 @@ pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     iterator: I,
     // TODO Specify a separate buffer size for look-ahead?
     buffer: RingBuffer<W>,
-    look_ahead: usize,
+    look_ahead: Deque<u8, 2>,
     next: Option<u8>,
 }
 
 impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
     fn next(&mut self) -> Option<u8> {
-        if self.look_ahead > 0 {
-            let x = self.buffer.get(W - 1 - self.look_ahead);
-            self.look_ahead -= 1;
-            x
+        if let Some(x) = self.look_ahead.pop_front() {
+            self.buffer.push(x);
+            Some(x)
         } else if let Some(x) = self.iterator.next() {
             self.buffer.push(x);
             Some(x)
@@ -40,10 +40,10 @@ impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
     }
 
     fn peek(&mut self, index: usize) -> Option<u8> {
-        if self.look_ahead > 0 {
-            self.buffer.get(W - self.look_ahead - 1 + index)
+        if let Some(&x) = self.look_ahead.get(index) {
+            Some(x)
         } else if let Some(x) = self.iterator.next() {
-            self.buffer.push(x);
+            self.look_ahead.push_back(x);
             Some(x)
         } else {
             None
@@ -150,8 +150,8 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
         LzssCompressionIterator {
             iterator: self.into_iter(),
             buffer: RingBuffer::<W>::default(),
-            look_ahead: 0,
-            next: None,
+            look_ahead: Default::default(),
+            next: Default::default(),
         }
     }
 

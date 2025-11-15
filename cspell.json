@@ -36,6 +36,7 @@
     "coreutils",
     "cppflags",
     "ctypes",
+    "deque",
     "dlmalloc",
     "doctest",
     "dylib",
