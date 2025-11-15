@@ -263,13 +263,14 @@ mod tests {
 
     #[test]
     fn max_length() {
+        const WINDOW_SIZE: usize = 1;
         let data = repeat(42).take(256).collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
                 .copied()
-                .compress::<{ 1 + MAX_LENGTH }>()
-                .decompress::<1>()
+                .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
+                .decompress::<WINDOW_SIZE>()
                 .collect::<Vec<_>>(),
             data
         );
@@ -277,13 +278,14 @@ mod tests {
 
     #[test]
     fn max_offset() {
+        const WINDOW_SIZE: usize = 128;
         let data = (0..128).chain(0..128).collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
                 .copied()
-                .compress::<{ 128 + MAX_LENGTH }>()
-                .decompress::<128>()
+                .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
+                .decompress::<WINDOW_SIZE>()
                 .collect::<Vec<_>>(),
             data
         );
