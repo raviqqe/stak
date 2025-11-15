@@ -105,6 +105,17 @@ pub struct LzssDecompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     length: u8,
 }
 
+impl<const W: usize, I: Iterator<Item = u8>> LzssDecompressionIterator<W, I> {
+    fn new(iterator: I) -> Self {
+        Self {
+            iterator,
+            buffer: RingBuffer::<W>::default(),
+            offset: 0,
+            length: 0,
+        }
+    }
+}
+
 impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionIterator<W, I> {
     type Item = u8;
 
@@ -150,12 +161,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
     }
 
     fn decompress<const W: usize>(self) -> impl Iterator<Item = u8> {
-        LzssDecompressionIterator {
-            iterator: self.into_iter(),
-            buffer: RingBuffer::<W>::default(),
-            offset: 0,
-            length: 0,
-        }
+        LzssDecompressionIterator::<W, _>::new(self.into_iter())
     }
 }
 
