@@ -4,7 +4,7 @@ extern crate alloc;
 
 use clap::Parser;
 use stak_lzss::{Lzss, MAX_LENGTH};
-use std::error::Error;
+use core::error::Error;
 use std::io::{self, Read, Write, stdin, stdout};
 
 const WINDOW_SIZE: usize = 127;
@@ -39,7 +39,7 @@ fn run<I: Iterator<Item = u8>, F: Fn(alloc::vec::IntoIter<u8>) -> I>(
     let mut data = vec![];
 
     stdin().read_to_end(&mut data)?;
-    stdout().write(&convert(data.into_iter()).collect::<Vec<_>>())?;
+    stdout().write_all(&convert(data.into_iter()).collect::<Vec<_>>())?;
 
     Ok(())
 }
