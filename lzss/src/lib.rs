@@ -1,8 +1,6 @@
 //! LZSS compression.
 
-// TODO
-// #![no_std]
-#![allow(dead_code, unused)]
+#![no_std]
 
 #[cfg(test)]
 extern crate alloc;
@@ -80,13 +78,6 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .map(|i| {
                     let mut j = 0;
 
-                    dbg!(
-                        self.ahead,
-                        i,
-                        self.buffer.get(2 * B - self.ahead - 1 - i + j),
-                        self.peek(j)
-                    );
-
                     while j < MAXIMUM_LENGTH
                         && self.buffer.get(2 * B - self.ahead - 1 - i + j) == self.peek(j)
                     {
@@ -97,8 +88,6 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 })
                 .max_by_key(|(_, j)| *j)
                 .unwrap_or_default();
-
-            dbg!((n, m));
 
             if m > MINIMUM_LENGTH {
                 self.next = Some(m as _);
@@ -189,19 +178,19 @@ mod tests {
     const WINDOW_SIZE: usize = 8;
     const BUFFER_SIZE: usize = WINDOW_SIZE + MAXIMUM_LENGTH;
 
-    // #[test]
-    // fn compress_and_decompress() {
-    //     let data = b"ABABABABABABABABABABA123123123123";
-    //
-    //     assert_eq!(
-    //         data.iter()
-    //             .copied()
-    //             .compress::<BUFFER_SIZE>()
-    //             .decompress::<WINDOW_SIZE>()
-    //             .collect::<Vec<u8>>(),
-    //         data
-    //     );
-    // }
+    #[test]
+    fn compress_and_decompress() {
+        let data = b"ABABABABABABABABABABA123123123123";
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<BUFFER_SIZE>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<u8>>(),
+            data
+        );
+    }
 
     mod compress {
         use super::*;
