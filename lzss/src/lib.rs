@@ -18,7 +18,6 @@ pub const MAX_LENGTH: usize = u8::MAX as _;
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const B: usize, I: Iterator<Item = u8>> {
     iterator: I,
-    // TODO Specify a separate buffer size for look-ahead?
     buffer: RingBuffer<B>,
     ahead: usize,
     next: Option<u8>,
@@ -74,7 +73,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
             self.next = None;
             x
         } else {
-            // TODO Prevent reading uninitialized bytes in a buffer?
+            // This implementation reads uninitialized zeros from the buffer.
             let (n, m) = (0..Self::WINDOW_SIZE)
                 .map(|i| {
                     let mut j = 0;
@@ -182,6 +181,20 @@ mod tests {
     #[test]
     fn compress_and_decompress() {
         let data = b"ABABABABABABABABABABA123123123123";
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<BUFFER_SIZE>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<u8>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn compress_and_decompress_uninitialized_zeros() {
+        let data = [0, 0, 0, 0, 0, 0];
 
         assert_eq!(
             data.iter()
