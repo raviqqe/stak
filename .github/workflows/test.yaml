@@ -233,6 +233,7 @@ jobs:
     needs:
       - build
       - unit_test
+      - fuzz
       - integration_test
       - niche_integration_test
       - self_host_test
