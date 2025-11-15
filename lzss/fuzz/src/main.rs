@@ -14,7 +14,7 @@ fn main() {
                 .copied()
                 .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
                 .decompress::<WINDOW_SIZE>()
-                .collect::<Vec<u8>>(),
+                .collect::<Vec<_>>(),
             data
         );
     });
