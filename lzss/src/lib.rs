@@ -177,7 +177,63 @@ mod tests {
     const BUFFER_SIZE: usize = WINDOW_SIZE + MAX_LENGTH;
 
     #[test]
-    fn compress_and_decompress() {
+    fn empty() {
+        let data = [];
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<BUFFER_SIZE>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<u8>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn byte() {
+        let data = [42];
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<BUFFER_SIZE>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<u8>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn two_bytes() {
+        let data = [1, 2];
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<BUFFER_SIZE>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<u8>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn three_bytes() {
+        let data = [1, 2, 3];
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<BUFFER_SIZE>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<u8>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn ascii_string() {
         let data = b"ABABABABABABABABABABA123123123123";
 
         assert_eq!(
@@ -191,7 +247,7 @@ mod tests {
     }
 
     #[test]
-    fn compress_and_decompress_uninitialized_zeros() {
+    fn uninitialized_zeros() {
         let data = [0, 0, 0, 0, 0, 0];
 
         assert_eq!(
