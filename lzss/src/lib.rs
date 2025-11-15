@@ -12,7 +12,6 @@ extern crate std;
 mod ring_buffer;
 
 use self::ring_buffer::RingBuffer;
-use heapless::Deque;
 
 const MINIMUM_LENGTH: usize = 2;
 const MAXIMUM_LENGTH: usize = u8::MAX as _;
@@ -23,7 +22,6 @@ pub struct LzssCompressionIterator<const W: usize, I: Iterator<Item = u8>> {
     // TODO Specify a separate buffer size for look-ahead?
     buffer: RingBuffer<W>,
     ahead: usize,
-    look_ahead: Deque<u8, 2>,
     next: Option<u8>,
 }
 
@@ -33,15 +31,15 @@ impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
             iterator,
             buffer: RingBuffer::<W>::default(),
             ahead: Default::default(),
-            look_ahead: Default::default(),
             next: Default::default(),
         }
     }
 
     fn next(&mut self) -> Option<u8> {
-        if let Some(x) = self.look_ahead.pop_front() {
-            self.buffer.push(x);
-            Some(x)
+        if self.ahead > 0 {
+            let x = self.buffer.get(W - self.ahead);
+            self.ahead -= 1;
+            x
         } else if let Some(x) = self.iterator.next() {
             self.buffer.push(x);
             Some(x)
@@ -51,14 +49,19 @@ impl<const W: usize, I: Iterator<Item = u8>> LzssCompressionIterator<W, I> {
     }
 
     fn peek(&mut self, index: usize) -> Option<u8> {
-        if let Some(&x) = self.look_ahead.get(index) {
-            Some(x)
-        } else if let Some(x) = self.iterator.next() {
-            self.look_ahead.push_back(x).unwrap();
-            Some(x)
-        } else {
-            None
+        if index < self.ahead {
+            return self.buffer.get(W - self.ahead + index);
         }
+
+        let mut x = 0;
+
+        for _ in 0..index + 1 {
+            x = self.iterator.next()?;
+            self.buffer.push(x);
+            self.ahead += 1;
+        }
+
+        Some(x)
     }
 }
 
@@ -70,28 +73,29 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
             self.next = None;
             Some(x)
         } else {
-            self.peek(0)?;
+            let x = self.next()?;
 
             // TODO Prevent reading uninitialized bytes in a buffer?
-            let (n, m) = (0..W)
-                .map(|i| {
-                    let mut j = 0;
-
-                    while j < MAXIMUM_LENGTH && self.buffer.get(W - i + j) == self.peek(j) {
-                        j += 1;
-                    }
-
-                    (i, j)
-                })
-                .max_by_key(|(_, j)| *j)
-                .unwrap_or_default();
+            // let (n, m) = (0..W)
+            //     .map(|i| {
+            //         let mut j = 0;
+            //
+            //         while j < MAXIMUM_LENGTH && self.buffer.get(W - i + j) == self.peek(j) {
+            //             j += 1;
+            //         }
+            //
+            //         (i, j)
+            //     })
+            //     .max_by_key(|(_, j)| *j)
+            //     .unwrap_or_default();
+            let (n, m) = (0, 0);
 
             if m > MINIMUM_LENGTH {
                 self.next = Some(m as _);
 
                 Some((n as u8) << 1 | 1)
             } else {
-                Some(self.next()? << 1)
+                Some(x << 1)
             }
         }
     }

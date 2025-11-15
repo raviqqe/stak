@@ -1496,7 +1496,6 @@ dependencies = [
 name = "stak-lzss"
 version = "0.11.9"
 dependencies = [
- "heapless",
  "pretty_assertions",
 ]
 
