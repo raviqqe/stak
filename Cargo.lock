@@ -1532,8 +1532,15 @@ dependencies = [
 name = "stak-lzss"
 version = "0.11.9"
 dependencies = [
- "afl",
  "pretty_assertions",
+]
+
+[[package]]
+name = "stak-lzss-fuzz"
+version = "0.11.9"
+dependencies = [
+ "afl",
+ "stak-lzss",
 ]
 
 [[package]]

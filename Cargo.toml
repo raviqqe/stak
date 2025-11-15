@@ -21,6 +21,7 @@ members = [
   "inexact",
   "libc",
   "lzss",
+  "lzss/fuzz",
   "macro",
   "macro-util",
   "module",
