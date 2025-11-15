@@ -82,7 +82,6 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
 
                     dbg!(
                         self.ahead,
-                        1,
                         i,
                         self.buffer.get(2 * B - self.ahead - 1 - i + j),
                         self.peek(j)
