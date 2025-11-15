@@ -295,17 +295,17 @@ mod tests {
             );
         }
 
-        // #[test]
-        // fn four_repetitions() {
-        //     assert_eq!(
-        //         [42, 42, 42, 42]
-        //             .iter()
-        //             .copied()
-        //             .compress::<BUFFER_SIZE>()
-        //             .collect::<Vec<_>>(),
-        //         [42, 0, 3]
-        //     );
-        // }
+        #[test]
+        fn four_repetitions() {
+            assert_eq!(
+                [42, 42, 42, 42]
+                    .iter()
+                    .copied()
+                    .compress::<BUFFER_SIZE>()
+                    .collect::<Vec<_>>(),
+                [42, 0, 3]
+            );
+        }
 
         // #[test]
         // fn repetitions() {
