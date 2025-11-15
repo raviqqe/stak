@@ -323,6 +323,18 @@ mod tests {
                 [84, 1, 3, 14, 14, 14, 254, 1, 4]
             );
         }
+
+        #[test]
+        fn uninitialized_zeros() {
+            assert_eq!(
+                [0, 0, 0]
+                    .iter()
+                    .copied()
+                    .compress::<BUFFER_SIZE>()
+                    .collect::<Vec<_>>(),
+                [15, 3]
+            );
+        }
     }
 
     mod decompress {
