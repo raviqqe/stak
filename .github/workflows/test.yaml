@@ -70,7 +70,18 @@ jobs:
       - run: cargo install --locked cargo-afl
       - run: cargo afl build
         working-directory: ${{ matrix.directory }}
-      - run: cargo afl run
+      - run: |
+          mkdir -p tmp/in
+          mkdir -p tmp/out
+
+          for count in $(seq 0 100); do
+            for index in $(seq 0 9); do
+              dd bs=1 count=10 </ dev/urandom > tmp/in/${count}_$index.bin
+            done
+          done
+
+          find tmp/in
+      - run: cargo afl fuzz -i tmp/in -o tmp/out ../../target/debug/stak-lzss-fuzz
         working-directory: ${{ matrix.directory }}
   integration_test:
     strategy:
