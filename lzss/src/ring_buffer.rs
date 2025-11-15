@@ -5,27 +5,23 @@ pub struct RingBuffer<const N: usize> {
 }
 
 impl<const N: usize> RingBuffer<N> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             buffer: [0; N],
             index: 0,
         }
     }
 
-    pub const fn len(&self) -> usize {
-        N
-    }
-
     pub fn get(&self, index: usize) -> Option<u8> {
         self.buffer.get(self.index(index)).copied()
     }
 
-    pub fn push(&mut self, byte: u8) {
+    pub const fn push(&mut self, byte: u8) {
         self.buffer[self.index] = byte;
         self.index = (self.index + 1) % N;
     }
 
-    fn index(&self, index: usize) -> usize {
+    const fn index(&self, index: usize) -> usize {
         (self.index + index) % N
     }
 }
