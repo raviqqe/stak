@@ -392,6 +392,8 @@ mod tests {
     }
 
     mod decompress {
+        use core::iter::repeat;
+
         use super::*;
         use pretty_assertions::assert_eq;
 
@@ -410,6 +412,14 @@ mod tests {
                     .decompress::<8>()
                     .collect::<Vec<_>>(),
                 [1, 2, 3, 4, 1, 2, 3, 4, 1, 5, 6, 5, 6, 5]
+            );
+        }
+
+        #[test]
+        fn max_length() {
+            assert_eq!(
+                [84, 1, 255].decompress::<1>().collect::<Vec<_>>(),
+                repeat(42).take(256).collect::<Vec<_>>()
             );
         }
     }
