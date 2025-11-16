@@ -171,6 +171,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
 mod tests {
     use super::*;
     use alloc::vec::Vec;
+    use core::iter::repeat;
     use pretty_assertions::assert_eq;
 
     const WINDOW_SIZE: usize = 8;
@@ -256,6 +257,36 @@ mod tests {
                 .compress::<BUFFER_SIZE>()
                 .decompress::<WINDOW_SIZE>()
                 .collect::<Vec<u8>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn max_length() {
+        const WINDOW_SIZE: usize = 1;
+        let data = repeat(42).take(256).collect::<Vec<_>>();
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<_>>(),
+            data
+        );
+    }
+
+    #[test]
+    fn max_offset() {
+        const WINDOW_SIZE: usize = 128;
+        let data = (0..128).chain(0..128).collect::<Vec<_>>();
+
+        assert_eq!(
+            data.iter()
+                .copied()
+                .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<_>>(),
             data
         );
     }
@@ -389,6 +420,31 @@ mod tests {
                 [15, 3]
             );
         }
+
+        #[test]
+        fn max_length() {
+            assert_eq!(
+                repeat(42)
+                    .take(256)
+                    .compress::<{ 1 + MAX_LENGTH }>()
+                    .collect::<Vec<_>>(),
+                [84, 1, 255]
+            );
+        }
+
+        #[test]
+        fn max_offset() {
+            assert_eq!(
+                (0..128)
+                    .chain(0..128)
+                    .compress::<{ 128 + MAX_LENGTH }>()
+                    .collect::<Vec<_>>(),
+                (0..128)
+                    .map(|x| x << 1)
+                    .chain([255, 128])
+                    .collect::<Vec<_>>()
+            );
+        }
     }
 
     mod decompress {
@@ -410,6 +466,26 @@ mod tests {
                     .decompress::<8>()
                     .collect::<Vec<_>>(),
                 [1, 2, 3, 4, 1, 2, 3, 4, 1, 5, 6, 5, 6, 5]
+            );
+        }
+
+        #[test]
+        fn max_length() {
+            assert_eq!(
+                [84, 1, 255].decompress::<1>().collect::<Vec<_>>(),
+                repeat(42).take(256).collect::<Vec<_>>()
+            );
+        }
+
+        #[test]
+        fn max_offset() {
+            assert_eq!(
+                (0..128)
+                    .map(|x| x << 1)
+                    .chain([255, 128])
+                    .decompress::<128>()
+                    .collect::<Vec<_>>(),
+                (0..128).chain(0..128).collect::<Vec<_>>()
             );
         }
     }

@@ -9,6 +9,9 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[dependencies]
+clap = { version = "4.5.51", features = ["derive"] }
+
 [dev-dependencies]
 pretty_assertions = "1.4.1"
 
