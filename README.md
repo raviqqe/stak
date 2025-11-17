@@ -16,11 +16,11 @@ Stak Scheme aims to be:
   - A subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
 - A portable scripting environment that supports even no-`std` and no-`alloc` platforms
 
-For more information and usage, visit [the full documentation](https://raviqqe.com/stak/install).
+For the usage and examples, visit [the full documentation](https://raviqqe.com/stak/install).
 
 ## Install
 
-### Interpreter
+### Commands
 
 To install the interpreter and REPL commands, run:
 
@@ -44,8 +44,6 @@ cargo add stak
 cargo add --build stak-build
 cargo install stak-compile
 ```
-
-For examples, see [the `examples` directory](https://github.com/raviqqe/stak/tree/main/examples).
 
 ## Performance
 
