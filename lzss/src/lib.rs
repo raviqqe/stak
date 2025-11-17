@@ -292,10 +292,16 @@ mod tests {
         );
     }
 
+    #[quickcheck]
+    fn random(data: Vec<u8>) -> bool {
+        let data = data.into_iter().map(|x| x >> 1).collect::<Vec<_>>();
 
-    #[quickcheck_macros::quickcheck]
-    fn double_reversal_is_identity(xs: Vec<isize>) -> bool {
-        xs == reverse(&reverse(&xs))
+            data.iter()
+                .copied()
+                .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
+                .decompress::<WINDOW_SIZE>()
+                .collect::<Vec<_>>()==
+            data
     }
 
     mod compress {
