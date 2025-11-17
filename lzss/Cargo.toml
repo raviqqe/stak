@@ -15,6 +15,7 @@ quickcheck = "1.0.3"
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
+quickcheck = "1.0.3"
 quickcheck_macros = "1.1.0"
 
 [lints]
