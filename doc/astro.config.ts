@@ -106,6 +106,10 @@ export default defineConfig({
           label: "Guides",
         },
         {
+          label: "Performance",
+          link: "/performance",
+        },
+        {
           label: "Limitations",
           link: "/limitations",
         },

@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 env:
   MUFFET_OPTIONS: >
-    --accepted-status-codes 200,403
+    --accepted-status-codes 200,403,429
     --buffer-size 8192
     --exclude https://codspeed.io/raviqqe/stak
     --exclude https://r7rs.org
