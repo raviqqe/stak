@@ -45,6 +45,14 @@ cargo add --build stak-build
 cargo install stak-compile
 ```
 
+## Performance
+
+See [Performance](https://raviqqe.com/stak/performance).
+
+## Limitations
+
+See [Limitations](https://raviqqe.com/stak/limitations).
+
 ## References
 
 - This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
