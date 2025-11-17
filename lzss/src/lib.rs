@@ -173,6 +173,7 @@ mod tests {
     use alloc::vec::Vec;
     use core::iter::repeat;
     use pretty_assertions::assert_eq;
+    use quickcheck_macros::quickcheck;
 
     const WINDOW_SIZE: usize = 8;
     const BUFFER_SIZE: usize = WINDOW_SIZE + MAX_LENGTH;
@@ -289,6 +290,12 @@ mod tests {
                 .collect::<Vec<_>>(),
             data
         );
+    }
+
+
+    #[quickcheck_macros::quickcheck]
+    fn double_reversal_is_identity(xs: Vec<isize>) -> bool {
+        xs == reverse(&reverse(&xs))
     }
 
     mod compress {
