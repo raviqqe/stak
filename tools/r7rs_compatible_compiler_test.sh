@@ -13,7 +13,7 @@ cargo build --release
 export PATH=$PWD/target/release:$PATH
 
 for file in $(list_scheme_files); do
-  echo '>>>' $file
+  echo FILE $file
 
   for interpreter in $interpreters stak; do
     cat prelude.scm $file | log $interpreter compile.scm >$interpreter.bc
