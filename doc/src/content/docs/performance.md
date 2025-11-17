@@ -1,4 +1,9 @@
-# Performance
+---
+title: Performance
+description: Limitations in the current implementation of Stak Scheme
+---
+
+This page describes the performance characteristics of the Stak Scheme interpreters.
 
 ## Computational benchmarks
 
