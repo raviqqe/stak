@@ -96,6 +96,7 @@
     "preact",
     "println",
     "quasiquote",
+    "quickcheck",
     "raviqqe",
     "repr",
     "ribbit",

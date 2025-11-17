@@ -173,6 +173,7 @@ mod tests {
     use alloc::vec::Vec;
     use core::iter::repeat;
     use pretty_assertions::assert_eq;
+    use quickcheck_macros::quickcheck;
 
     const WINDOW_SIZE: usize = 8;
     const BUFFER_SIZE: usize = WINDOW_SIZE + MAX_LENGTH;
@@ -289,6 +290,18 @@ mod tests {
                 .collect::<Vec<_>>(),
             data
         );
+    }
+
+    #[quickcheck]
+    fn random(data: Vec<u8>) -> bool {
+        let data = data.into_iter().map(|x| x >> 1).collect::<Vec<_>>();
+
+        data.iter()
+            .copied()
+            .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
+            .decompress::<WINDOW_SIZE>()
+            .collect::<Vec<_>>()
+            == data
     }
 
     mod compress {
