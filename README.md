@@ -22,7 +22,7 @@ For the usage and examples, visit [the full documentation](https://raviqqe.com/s
 
 ### Commands
 
-To install the interpreter and REPL commands, run:
+To install the interpreter and REPL, run:
 
 ```sh
 cargo install stak
