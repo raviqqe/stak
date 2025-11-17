@@ -31,7 +31,7 @@ for stage in $(seq 0 $(expr $stage_count - 1)); do
 done
 
 for file in $(list_scheme_files); do
-  echo '>>>' $file
+  echo FILE $file
 
   for stage in $(seq 0 $stage_count); do
     bytecode_file=$(artifact_path $stage bc)
