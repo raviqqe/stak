@@ -26,6 +26,7 @@ To install the Scheme interpreter as a command, run:
 
 ```sh
 cargo install stak
+cargo install stak-repl
 ```
 
 ### Libraries
