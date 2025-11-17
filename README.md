@@ -22,14 +22,14 @@ For the usage and examples, visit [the full documentation](https://raviqqe.com/s
 
 ### Commands
 
-To install the interpreter and REPL, run:
+To install [the interpreter](https://crates.io/stak) and [REPL](https://crates.io/stak-repl), run:
 
 ```sh
 cargo install stak
 cargo install stak-repl
 ```
 
-To install the minimal interpreter, run:
+To install [the minimal interpreter](https://crates.io/mstak), run:
 
 ```sh
 cargo install mstak
