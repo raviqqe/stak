@@ -32,5 +32,4 @@ This means that Stak Scheme is suitable for embedding many small pieces of Schem
 | Integer addition |          22.9 us | 50.0 us |
 
 [^1]: Minimal: Integer-only support + standard libraries based on libc
-
 [^2]: Full: 64-bit floating-point number support + standard libraries based on the `std` library in Rust
