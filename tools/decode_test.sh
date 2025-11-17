@@ -11,7 +11,7 @@ cargo build --release
 export PATH=$PWD/target/release:$PATH
 
 for file in $(list_scheme_files); do
-  echo '>>>' $file
+  echo FILE $file
   snapshot_file=snapshots/${file%.scm}.md
   mkdir -p $(dirname $snapshot_file)
   cat prelude.scm $file | stak-compile --shake-tree >main.bc

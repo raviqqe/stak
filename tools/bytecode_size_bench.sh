@@ -11,6 +11,9 @@ cargo build --release
 export PATH=$PWD/target/release:$PATH
 
 for file in $(list_scheme_files); do
-  cat prelude.scm $file | stak-compile --shake-tree >main.bc
-  echo '>>>' "$file:\t$(wc -c <main.bc)"
+  bytecode_file=tmp/bytecode_size/${file%.scm}.bc
+
+  mkdir -p $(dirname $bytecode_file)
+  cat prelude.scm $file | stak-compile --shake-tree >$bytecode_file
+  echo $file $(wc -c <$bytecode_file)
 done
