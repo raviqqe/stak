@@ -14,6 +14,7 @@ runs:
         path: |
           /home/linuxbrew
           /opt/homebrew
+        key: homebrew-cache-${{ runner.os }}-${{ github.workflow }}-${{ github.job }}
     - uses: homebrew/actions/setup-homebrew@main
       with:
         stable: true
