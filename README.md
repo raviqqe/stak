@@ -22,14 +22,14 @@ For more information and usage, visit [the full documentation](https://raviqqe.c
 
 ### Interpreter
 
-To install the Scheme interpreters, run:
+To install the interpreter and REPL commands, run:
 
 ```sh
 cargo install stak
 cargo install stak-repl
 ```
 
-To install the `libc`-based Scheme interpreter, run:
+To install the minimal interpreter, run:
 
 ```sh
 cargo install mstak
