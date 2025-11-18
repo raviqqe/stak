@@ -539,7 +539,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut y = (x >> 1) as u128;
 
         while x & 1 != 0 {
-            x = input.next().ok_or(Error::BytecodeEnd)?;
+            x = input.next().ok_or(Error::BytecodeEnd)? >> 1;
             y += (x as u128 >> 1) * base;
             base *= INTEGER_BASE;
         }

@@ -1633,7 +1633,7 @@
 
     ;; Codes
 
-    (define integer-base 128)
+    (define integer-base 64)
     (define number-base 16)
     (define tag-base 16)
     (define share-base 31)
@@ -1723,6 +1723,9 @@
     (define (encode-integer-part integer base bit)
      (+ bit (* 2 (modulo integer base))))
 
+    (define (encode-rest-integer-part integer base bit)
+     (* 2 (+ bit (* 2 (modulo integer base)))))
+
     (define (encode-integer-parts integer base)
      (let ((rest (quotient integer base)))
       (values
@@ -1735,7 +1738,7 @@
      (do ((x x (quotient x integer-base)))
       ((zero? x))
       (write-u8
-       (encode-integer-part
+       (encode-rest-integer-part
         x
         integer-base
         (if (zero? (quotient x integer-base)) 0 1)))))
