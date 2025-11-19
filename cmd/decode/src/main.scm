@@ -7,10 +7,10 @@
 (define if-instruction 3)
 (define call-instruction 4)
 
-(define integer-base 128)
-(define number-base 16)
-(define tag-base 16)
-(define share-base 31)
+(define integer-base 64)
+(define number-base 8)
+(define tag-base 8)
+(define share-base 15)
 
 ; Decoding
 
@@ -39,13 +39,19 @@
     (set-cdr! pair tail)
     (stack-set-values! stack head)))
 
+(define (read-code)
+  (let ((byte (read-u8)))
+    (if (eof-object? byte)
+      byte
+      (quotient byte 2))))
+
 (define (decode-integer-tail x base)
   (let loop ((x x)
              (y (quotient x 2))
              (base base))
     (if (even? x)
       y
-      (let ((x (read-u8)))
+      (let ((x (read-code)))
         (loop x (+ y (* base (quotient x 2))) (* base integer-base))))))
 
 (define (decode-number integer)
@@ -66,7 +72,7 @@
   (define dictionary (make-stack '()))
   (define stack (make-stack '()))
 
-  (do ((byte (read-u8) (read-u8)))
+  (do ((byte (read-code) (read-code)))
     ((eof-object? byte))
     (cond
       ((even? byte)

@@ -3889,10 +3889,13 @@
   - maximum-float-integer
   - mantissa
   - y
+  - encode-integer-part
   - bit
+  - encode-integer-parts-v2
   - integer
   - rest
-  - encode-integer-part
+  - byte
+  - encode-integer-part-v2
   - integer-base
   - decompose-float
   - x
@@ -3912,6 +3915,7 @@
   - encode-integer-parts
   - encode-number
   - number-base
+  - write-code
   - head
   - encode-integer-tail
   - tail
@@ -19224,19 +19228,19 @@
   - list
     - define
     - integer-base
-    - 128
+    - 64
   - list
     - define
     - number-base
-    - 16
+    - 8
   - list
     - define
     - tag-base
-    - 16
+    - 8
   - list
     - define
     - share-base
-    - 31
+    - 15
   - list
     - define
     - list
@@ -19598,6 +19602,63 @@
   - list
     - define
     - list
+      - encode-integer-part-v2
+      - integer
+      - base
+      - bit
+    - list
+      - -
+      - bit
+      - list
+        - -
+        - 2
+        - list
+          - modulo
+          - integer
+          - base
+  - list
+    - define
+    - list
+      - encode-integer-parts-v2
+      - integer
+      - base
+    - list
+      - let
+      - list
+        - list
+          - rest
+          - list
+            - quotient
+            - integer
+            - base
+      - list
+        - values
+        - list
+          - encode-integer-part-v2
+          - integer
+          - base
+          - list
+            - if
+            - list
+              - zero?
+              - rest
+            - 0
+            - 1
+        - rest
+  - list
+    - define
+    - list
+      - write-code
+      - byte
+    - list
+      - write-u8
+      - list
+        - -
+        - 2
+        - byte
+  - list
+    - define
+    - list
       - encode-integer-tail
       - x
     - list
@@ -19615,9 +19676,9 @@
           - zero?
           - x
       - list
-        - write-u8
+        - write-code
         - list
-          - encode-integer-part
+          - encode-integer-part-v2
           - x
           - integer-base
           - list
@@ -19758,7 +19819,7 @@
                   - list
                     - rib-car
                     - value
-                  - 127
+                  - 63
               - list
                 - encode-rib
                 - context
@@ -19766,7 +19827,7 @@
                   - rib-cdr
                   - value
               - list
-                - write-u8
+                - write-code
                 - list
                   - -
                   - 2
@@ -19832,7 +19893,7 @@
                               - 1
                           - share-base
                     - list
-                      - write-u8
+                      - write-code
                       - list
                         - -
                         - 1
@@ -19874,7 +19935,7 @@
                         - value
                       - tag-base
                 - list
-                  - write-u8
+                  - write-code
                   - list
                     - -
                     - 3
@@ -19896,7 +19957,7 @@
                   - decrement-count!
                   - entry
                 - list
-                  - write-u8
+                  - write-code
                   - 1
       - list
         - else
@@ -19914,7 +19975,7 @@
                   - value
                 - number-base
           - list
-            - write-u8
+            - write-code
             - list
               - -
               - 7

@@ -2382,13 +2382,13 @@
 - set ||
 - constant 4
 - set ||
-- constant 128
+- constant 64
 - set ||
-- constant 16
+- constant 8
 - set ||
-- constant 16
+- constant 8
 - set ||
-- constant 31
+- constant 15
 - set ||
 - constant 0
 - constant 0
@@ -2468,6 +2468,18 @@
   - call 1 #f ||
   - get 2
   - call 1 #f ||
+  - call 1 #f 1
+- set ||
+- constant procedure 0 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - if
+      - get 0
+    - get 0
+    - constant 2
+    - call 2 #f ||
+  - call 0 #f ||
   - call 1 #f 1
 - set ||
 - constant procedure 2 #f
