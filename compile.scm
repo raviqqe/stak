@@ -1723,14 +1723,14 @@
     (define (encode-integer-part integer base bit)
      (+ bit (* 2 (modulo integer base))))
 
-    (define (encode-integer-part-v2 integer base bit)
-     (* 2 (+ bit (* 2 (modulo integer base)))))
-
     (define (encode-integer-parts integer base)
      (let ((rest (quotient integer base)))
       (values
        (encode-integer-part integer base (if (zero? rest) 0 1))
        rest)))
+
+    (define (encode-integer-part-v2 integer base bit)
+     (* 2 (+ bit (* 2 (modulo integer base)))))
 
     (define (encode-integer-parts-v2 integer base)
      (let ((rest (quotient integer base)))
