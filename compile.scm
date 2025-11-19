@@ -1738,7 +1738,7 @@
        (encode-integer-part-v2 integer base (if (zero? rest) 0 1))
        rest)))
 
-    (define (write-byte byte)
+    (define (write-code byte)
      (write-u8 (* 2 byte)))
 
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
@@ -1746,7 +1746,7 @@
     (define (encode-integer-tail x)
      (do ((x x (quotient x integer-base)))
       ((zero? x))
-      (write-byte
+      (write-code
        (encode-integer-part-v2
         x
         integer-base
@@ -1784,7 +1784,7 @@
            (integer? (rib-car value))
            (<= 0 (rib-car value) 63))
           (encode-rib context (rib-cdr value))
-          (write-byte (* 2 (rib-car value))))
+          (write-code (* 2 (rib-car value))))
 
          ((and entry (encode-context-index context value)) =>
           (lambda (index)
@@ -1797,7 +1797,7 @@
                           (encode-integer-parts
                            (+ (* 2 index) (if removed 0 1))
                            share-base)))
-             (write-byte (+ 1 (* 4 (+ 1 head))))
+             (write-code (+ 1 (* 4 (+ 1 head))))
              (encode-integer-tail tail)))))
 
          (else
@@ -1805,17 +1805,17 @@
           (encode-rib context (rib-cdr value))
 
           (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-           (write-byte (+ 3 (* 8 head)))
+           (write-code (+ 3 (* 8 head)))
            (encode-integer-tail tail))
 
           (when entry
            (encode-context-push! context value)
            (decrement-count! entry)
-           (write-byte 1))))))
+           (write-code 1))))))
 
       (else
        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-byte (+ 7 (* 8 head)))
+        (write-code (+ 7 (* 8 head)))
         (encode-integer-tail tail)))))
 
     ;; Primitives
