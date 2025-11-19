@@ -1723,10 +1723,16 @@
     (define (encode-integer-part integer base bit)
      (+ bit (* 2 (modulo integer base))))
 
-    (define (encode-rest-integer-part integer base bit)
+    (define (encode-integer-part-v2 integer base bit)
      (* 2 (+ bit (* 2 (modulo integer base)))))
 
     (define (encode-integer-parts integer base)
+     (let ((rest (quotient integer base)))
+      (values
+       (encode-integer-part integer base (if (zero? rest) 0 1))
+       rest)))
+
+    (define (encode-integer-parts-v2 integer base)
      (let ((rest (quotient integer base)))
       (values
        (encode-integer-part integer base (if (zero? rest) 0 1))
@@ -1738,7 +1744,7 @@
      (do ((x x (quotient x integer-base)))
       ((zero? x))
       (write-u8
-       (encode-rest-integer-part
+       (encode-integer-part-v2
         x
         integer-base
         (if (zero? (quotient x integer-base)) 0 1)))))
