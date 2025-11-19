@@ -1782,7 +1782,7 @@
            (zero? (rib-tag value))
            (number? (rib-car value))
            (integer? (rib-car value))
-           (<= 0 (rib-car value) 127))
+           (<= 0 (rib-car value) 63))
           (encode-rib context (rib-cdr value))
           (write-byte (* 2 (rib-car value))))
 
