@@ -430,7 +430,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");
 
-        let program = self.decode_ribs(&mut input.into_iter())?;
+        let program = self.decode_ribs(input.into_iter())?;
         self.memory
             .set_false(self.memory.car(program)?.assume_cons());
         self.memory
@@ -456,7 +456,9 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
+    fn decode_ribs(&mut self, input: impl Iterator<Item = u8>) -> Result<Cons, Error> {
+        let mut input = input.map(|byte| byte >> 1);
+
         while let Some(head) = input.next() {
             if head & 1 == 0 {
                 let cdr = self.memory.top()?;
@@ -472,7 +474,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     let cons = self.memory.cons(value, self.memory.code())?;
                     self.memory.set_code(cons);
                 } else {
-                    let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
+                    let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
                     let index = integer >> 1;
 
                     if index > 0 {
@@ -497,14 +499,18 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let cons = self.memory.stack();
                 let cdr = self.memory.pop()?;
                 let car = self.memory.top()?;
-                let tag = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
+                let tag = Self::decode_integer_tail(&mut input, head >> 3, TAG_BASE)?;
                 self.memory.set_car(cons, car)?;
                 self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _))?;
                 self.memory.set_top(cons.into())?;
             } else {
                 self.memory.push(
-                    Self::decode_number(Self::decode_integer_tail(input, head >> 3, NUMBER_BASE)?)
-                        .into(),
+                    Self::decode_number(Self::decode_integer_tail(
+                        &mut input,
+                        head >> 3,
+                        NUMBER_BASE,
+                    )?)
+                    .into(),
                 )?;
             }
         }

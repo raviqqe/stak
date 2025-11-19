@@ -3892,6 +3892,7 @@
   - bit
   - integer
   - rest
+  - byte
   - encode-integer-part
   - integer-base
   - decompose-float
@@ -3912,6 +3913,7 @@
   - encode-integer-parts
   - encode-number
   - number-base
+  - write-code
   - head
   - encode-integer-tail
   - tail
@@ -19224,19 +19226,19 @@
   - list
     - define
     - integer-base
-    - 128
+    - 64
   - list
     - define
     - number-base
-    - 16
+    - 8
   - list
     - define
     - tag-base
-    - 16
+    - 8
   - list
     - define
     - share-base
-    - 31
+    - 15
   - list
     - define
     - list
@@ -19598,6 +19600,17 @@
   - list
     - define
     - list
+      - write-code
+      - byte
+    - list
+      - write-u8
+      - list
+        - -
+        - 2
+        - byte
+  - list
+    - define
+    - list
       - encode-integer-tail
       - x
     - list
@@ -19615,7 +19628,7 @@
           - zero?
           - x
       - list
-        - write-u8
+        - write-code
         - list
           - encode-integer-part
           - x
@@ -19758,7 +19771,7 @@
                   - list
                     - rib-car
                     - value
-                  - 127
+                  - 63
               - list
                 - encode-rib
                 - context
@@ -19766,7 +19779,7 @@
                   - rib-cdr
                   - value
               - list
-                - write-u8
+                - write-code
                 - list
                   - -
                   - 2
@@ -19832,7 +19845,7 @@
                               - 1
                           - share-base
                     - list
-                      - write-u8
+                      - write-code
                       - list
                         - -
                         - 1
@@ -19874,7 +19887,7 @@
                         - value
                       - tag-base
                 - list
-                  - write-u8
+                  - write-code
                   - list
                     - -
                     - 3
@@ -19896,7 +19909,7 @@
                   - decrement-count!
                   - entry
                 - list
-                  - write-u8
+                  - write-code
                   - 1
       - list
         - else
@@ -19914,7 +19927,7 @@
                   - value
                 - number-base
           - list
-            - write-u8
+            - write-code
             - list
               - -
               - 7
