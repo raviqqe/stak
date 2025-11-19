@@ -458,6 +458,8 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
     fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
         while let Some(head) = input.next() {
+            let head = head >> 1;
+
             if head & 1 == 0 {
                 let cdr = self.memory.top()?;
                 let cons = self

@@ -1634,9 +1634,9 @@
     ;; Codes
 
     (define integer-base 64)
-    (define number-base 16)
-    (define tag-base 16)
-    (define share-base 31)
+    (define number-base 8)
+    (define tag-base 8)
+    (define share-base 15)
 
     (define (shared-value? value)
      (and
@@ -1784,7 +1784,7 @@
            (integer? (rib-car value))
            (<= 0 (rib-car value) 127))
           (encode-rib context (rib-cdr value))
-          (write-u8 (* 2 (rib-car value))))
+          (write-byte (* 2 (rib-car value))))
 
          ((and entry (encode-context-index context value)) =>
           (lambda (index)
@@ -1797,7 +1797,7 @@
                           (encode-integer-parts
                            (+ (* 2 index) (if removed 0 1))
                            share-base)))
-             (write-u8 (+ 1 (* 4 (+ 1 head))))
+             (write-byte (+ 1 (* 4 (+ 1 head))))
              (encode-integer-tail tail)))))
 
          (else
@@ -1805,17 +1805,17 @@
           (encode-rib context (rib-cdr value))
 
           (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-           (write-u8 (+ 3 (* 8 head)))
+           (write-byte (+ 3 (* 8 head)))
            (encode-integer-tail tail))
 
           (when entry
            (encode-context-push! context value)
            (decrement-count! entry)
-           (write-u8 1))))))
+           (write-byte 1))))))
 
       (else
        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-u8 (+ 7 (* 8 head)))
+        (write-byte (+ 7 (* 8 head)))
         (encode-integer-tail tail)))))
 
     ;; Primitives
