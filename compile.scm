@@ -1735,7 +1735,7 @@
     (define (encode-integer-parts-v2 integer base)
      (let ((rest (quotient integer base)))
       (values
-       (encode-integer-part integer base (if (zero? rest) 0 1))
+       (encode-integer-part-v2 integer base (if (zero? rest) 0 1))
        rest)))
 
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
