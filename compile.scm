@@ -1730,7 +1730,7 @@
        rest)))
 
     (define (encode-integer-part-v2 integer base bit)
-     (* 2 (+ bit (* 2 (modulo integer base)))))
+     (+ bit (* 2 (modulo integer base))))
 
     (define (encode-integer-parts-v2 integer base)
      (let ((rest (quotient integer base)))
@@ -1738,12 +1738,15 @@
        (encode-integer-part-v2 integer base (if (zero? rest) 0 1))
        rest)))
 
+    (define (write-byte byte)
+     (write-u8 (* 2 byte)))
+
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
     ; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
     (define (encode-integer-tail x)
      (do ((x x (quotient x integer-base)))
       ((zero? x))
-      (write-u8
+      (write-byte
        (encode-integer-part-v2
         x
         integer-base
