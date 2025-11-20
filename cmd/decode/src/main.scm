@@ -42,7 +42,7 @@
 (define (read-code)
   (let ((byte (read-u8)))
     (if (eof-object? byte)
-      byte
+      (eof-object)
       (quotient byte 2))))
 
 (define (decode-integer-tail x base)
