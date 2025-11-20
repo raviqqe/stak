@@ -1,6 +1,4 @@
 ignoredBuiltDependencies:
   - esbuild
-  - sharp
-
-onlyBuiltDependencies:
   - puppeteer
+  - sharp
