@@ -113,7 +113,7 @@ impl<const W: usize, I: Iterator<Item = u8>> LzssDecompressionIterator<W, I> {
     fn new(iterator: I) -> Self {
         Self {
             iterator,
-            buffer: RingBuffer::<W>::default(),
+            buffer: Default::default(),
             offset: 0,
             length: 0,
         }
