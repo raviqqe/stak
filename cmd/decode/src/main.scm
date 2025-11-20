@@ -17,9 +17,9 @@
 (define-record-type decompressor
   (make-decompressor buffer length)
   decompressor?
-  (buffer decompressor-buffer)
-  (offset decompressor-offset)
-  (length decompressor-length))
+  (buffer decompressor-buffer decompressor-set-buffer!)
+  (offset decompressor-offset decompressor-set-offset!)
+  (length decompressor-length decompressor-set-length!))
 
 (define (read-code decompressor)
   (let ((byte (read-u8)))
