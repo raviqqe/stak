@@ -8,8 +8,9 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "node --run build:icon && astro check && astro build",
-    "build:icon": "puppeteer install && convert-svg-to-webp --width 1024 public/icon.svg",
+    "build": "node --run build:puppeteer && node --run build:icon && astro check && astro build",
+    "build:icon": "convert-svg-to-webp --width 1024 public/icon.svg",
+    "build:puppeteer": "pnpx puppeteer install",
     "preview": "astro preview",
     "lint": "biome ci",
     "format": "biome format --write ."
