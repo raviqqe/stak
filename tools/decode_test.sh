@@ -18,7 +18,7 @@ for file in $(list_scheme_files); do
   mkdir -p $(dirname $base)
   cat prelude.scm $file |
     stak-compile --shake-tree |
-    cargo run --bin stak-lzss compress >$base.bc
+    stak-lzss compress >$base.bc
   stak-decode <main.bc >$base.md
 done
 
