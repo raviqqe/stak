@@ -12,7 +12,22 @@
 (define tag-base 8)
 (define share-base 15)
 
-; Decoding
+; Compression
+
+(define-record-type decompressor
+  (make-decompressor buffer length)
+  decompressor?
+  (buffer decompressor-buffer)
+  (offset decompressor-offset)
+  (length decompressor-length))
+
+(define (read-code decompressor)
+  (let ((byte (read-u8)))
+    (if (eof-object? byte)
+      (eof-object)
+      (quotient byte 2))))
+
+; Stack
 
 (define-record-type stack
   (make-stack values)
@@ -39,19 +54,15 @@
     (set-cdr! pair tail)
     (stack-set-values! stack head)))
 
-(define (read-code)
-  (let ((byte (read-u8)))
-    (if (eof-object? byte)
-      (eof-object)
-      (quotient byte 2))))
+; Decoding
 
-(define (decode-integer-tail x base)
+(define (decode-integer-tail decompressor x base)
   (let loop ((x x)
              (y (quotient x 2))
              (base base))
     (if (even? x)
       y
-      (let ((x (read-code)))
+      (let ((x (read-code decompressor)))
         (loop x (+ y (* base (quotient x 2))) (* base integer-base))))))
 
 (define (decode-number integer)
@@ -71,8 +82,9 @@
 (define (decode)
   (define dictionary (make-stack '()))
   (define stack (make-stack '()))
+  (define decompressor (make-decompressor '() 0 0))
 
-  (do ((byte (read-code) (read-code)))
+  (do ((byte (read-code decompressor) (read-code decompressor)))
     ((eof-object? byte))
     (cond
       ((even? byte)
@@ -83,7 +95,7 @@
           (if (zero? head)
             (stack-push! dictionary (stack-top stack))
             (let* ((head (quotient byte 4))
-                   (integer (decode-integer-tail (- head 1) share-base))
+                   (integer (decode-integer-tail decompressor (- head 1) share-base))
                    (index (quotient integer 2)))
               (when (> index 0)
                 (stack-swap! dictionary index))
@@ -95,13 +107,13 @@
       ((even? (quotient byte 4))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
-               (tag (decode-integer-tail (quotient byte 8) tag-base)))
+               (tag (decode-integer-tail decompressor (quotient byte 8) tag-base)))
           (stack-push! stack (rib a d tag))))
 
       (else
         (stack-push!
           stack
-          (decode-number (decode-integer-tail (quotient byte 8) number-base))))))
+          (decode-number (decode-integer-tail decompressor (quotient byte 8) number-base))))))
 
   (stack-pop! stack))
 
