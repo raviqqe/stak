@@ -78,6 +78,9 @@ importers:
       '@types/node':
         specifier: ^24.10.1
         version: 24.10.1
+      puppeteer:
+        specifier: ^24.30.0
+        version: 24.30.0(typescript@5.9.3)
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
