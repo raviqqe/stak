@@ -5,12 +5,14 @@
     {
       "sizes": "any",
       "src": "icon.svg",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
       "sizes": "1024x1024",
       "src": "icon.webp",
-      "type": "image/webp"
+      "type": "image/webp",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
