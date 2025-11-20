@@ -54,7 +54,7 @@
                 decompressor
                 (- window-size 1 (decompressor-offset decompressor)))))
         (decompressor-push! decompressor x)
-        (decompressor-set-length! (- n 1))
+        (decompressor-set-length! decompressor (- n 1))
         x))))
 
 ; Stack
