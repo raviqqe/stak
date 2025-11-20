@@ -3,14 +3,14 @@
   "name": "Stak Scheme",
   "icons": [
     {
-      "sizes": "1024x1024",
-      "src": "icon.webp",
-      "type": "image/webp"
-    },
-    {
       "sizes": "any",
       "src": "icon.svg"
       "type": "image/svg+xml"
+    },
+    {
+      "sizes": "1024x1024",
+      "src": "icon.png",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
