@@ -9,8 +9,8 @@
     },
     {
       "sizes": "1024x1024",
-      "src": "icon.png",
-      "type": "image/png"
+      "src": "icon.webp",
+      "type": "image/webp"
     }
   ],
   "start_url": ".",
