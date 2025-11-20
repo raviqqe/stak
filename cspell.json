@@ -61,6 +61,7 @@
     "heapless",
     "imag",
     "indoc",
+    "inkscape",
     "insta",
     "isize",
     "kloc",
@@ -123,6 +124,7 @@
     "uutils",
     "valgrind",
     "varint",
+    "webp",
     "zigbuild"
   ]
 }
