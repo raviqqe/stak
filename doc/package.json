@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "node --run build:icon && astro check && astro build",
+    "build:icon": "convert-svg-to-webp --width 1024 public/icon.svg",
     "preview": "astro preview",
     "lint": "biome ci",
     "format": "biome format --write ."
@@ -25,6 +26,7 @@
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.15.9",
     "classnames": "^2.5.1",
+    "convert-svg-to-webp-cli": "^0.7.1",
     "es-toolkit": "^1.42.0",
     "lucide-preact": "^0.554.0",
     "monza-editor": "^0.5.5",
