@@ -9,7 +9,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "node --run build:puppeteer && node --run build:icon && astro check && astro build",
-    "build:icon": "convert-svg-to-webp --width 1024 --launch '{\"args\":[\"--no-sandbox\"]}' public/icon.svg",
+    "build:icon": "convert-svg-to-webp ${CI:---launch '{\"args\":[\"--no-sandbox\"]}'} --width 1024 public/icon.svg",
     "build:puppeteer": "puppeteer install",
     "preview": "astro preview",
     "lint": "biome ci",
