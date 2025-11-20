@@ -18,8 +18,8 @@ for file in $(list_scheme_files); do
   mkdir -p $(dirname $base)
   cat prelude.scm $file |
     stak-compile --shake-tree |
-    stak-lzss compress >$base.bc
-  stak-decode <main.bc >$base.md
+    stak-lzss compress |
+    stak-decode >$base.md
 done
 
 npx prettier --write snapshots
