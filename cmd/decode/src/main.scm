@@ -12,7 +12,7 @@
 (define tag-base 8)
 (define share-base 15)
 
-; Compression
+; Decompressor
 
 (define-record-type decompressor
   (make-decompressor buffer length)
