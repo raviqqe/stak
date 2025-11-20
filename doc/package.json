@@ -9,7 +9,6 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
-    "build:icon": "inkscape --export-type png -w 1024 public/icon.svg",
     "preview": "astro preview",
     "lint": "biome ci",
     "format": "biome format --write ."
