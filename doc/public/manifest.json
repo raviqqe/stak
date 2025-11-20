@@ -4,7 +4,7 @@
   "icons": [
     {
       "sizes": "any",
-      "src": "icon.svg"
+      "src": "icon.svg",
       "type": "image/svg+xml"
     },
     {
