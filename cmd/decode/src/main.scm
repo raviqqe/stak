@@ -12,6 +12,8 @@
 (define tag-base 8)
 (define share-base 15)
 
+(define window-size 127)
+
 ; Decompressor
 
 (define-record-type decompressor
@@ -21,11 +23,39 @@
   (offset decompressor-offset decompressor-set-offset!)
   (length decompressor-length decompressor-set-length!))
 
+(define (decompressor-push! decompressor x)
+  (decompressor-set-buffer!
+    decompressor
+    (cons x (decompressor-buffer decompressor))))
+
+(define (decompressor-ref decompressor index)
+  (list-ref
+    (decompressor-buffer decompressor)
+    (- window-size 1 (decompressor-offset decompressor))))
+
 (define (read-code decompressor)
-  (let ((byte (read-u8)))
-    (if (eof-object? byte)
-      (eof-object)
-      (quotient byte 2))))
+  (cond
+    ((eof-object? (peek-u8))
+      (eof-object))
+    ((zero? (decompressor-length decompressor))
+      (let* ((x (read-u8))
+             (y (quotient x 2)))
+        (if (zero? (remainder x 2))
+          (begin
+            (decompressor-push! decompressor y)
+            y)
+          (begin
+            (decompressor-set-offset! decompressor y)
+            (decompressor-set-length! decompressor (read-u8))
+            (read-code decompressor)))))
+    (else
+      (let ((x
+              (decompressor-ref
+                decompressor
+                (- window-size 1 (decompressor-offset decompressor)))))
+        (decompressor-push! decompressor x)
+        (decompressor-set-length! (- n 1))
+        x))))
 
 ; Stack
 

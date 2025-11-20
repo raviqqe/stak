@@ -133,13 +133,13 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
             Some(x)
         } else {
             let x = self.iterator.next()?;
+            let y = x >> 1;
 
             if x.is_multiple_of(2) {
-                let x = x >> 1;
-                self.buffer.push(x);
-                Some(x)
+                self.buffer.push(y);
+                Some(y)
             } else {
-                self.offset = x >> 1;
+                self.offset = y;
                 self.length = self.iterator.next()?;
 
                 self.next()
