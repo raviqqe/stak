@@ -12,10 +12,17 @@ export PATH=$PWD/target/release:$PATH
 
 for file in $(list_scheme_files); do
   echo FILE $file
-  snapshot_file=snapshots/${file%.scm}.md
-  mkdir -p $(dirname $snapshot_file)
-  cat prelude.scm $file | stak-compile --shake-tree >main.bc
-  stak-decode <main.bc >$snapshot_file
+
+  base=snapshots/${file%.scm}
+
+  mkdir -p $(dirname $base)
+  cat prelude.scm $file |
+    stak-compile --shake-tree |
+    stak-lzss right-shift 1 |
+    stak-lzss compress |
+    stak-lzss decompress |
+    stak-lzss left-shift 1 >$base.bc
+  stak-decode <$base.bc >$base.md
 done
 
 npx prettier --write snapshots
