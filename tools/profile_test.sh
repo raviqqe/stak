@@ -17,7 +17,7 @@ cat <<EOF >tmp/main.scm
 (foo 42)
 EOF
 
-cat prelude.scm tmp/main.scm | stak-compile >tmp/main.bc
+cat prelude.scm tmp/main.scm | stak-compile --debug >tmp/main.bc
 stak-profile run --profile tmp/profile.txt tmp/main.bc
 file --mime-type tmp/profile.txt | grep text/plain
 stak-profile analyze duration <tmp/profile.txt |
