@@ -6,9 +6,9 @@ set -e
 
 cd $(dirname $0)/..
 
-cargo build --release
+cargo build --profile release_test
 
-export PATH=$PWD/target/release:$PATH
+export PATH=$PWD/target/release_test:$PATH
 
 for file in $(list_scheme_files); do
   echo FILE $file
@@ -18,8 +18,8 @@ for file in $(list_scheme_files); do
   mkdir -p $(dirname $base)
   cat prelude.scm $file |
     stak-compile --shake-tree |
-    stak-lzss compress |
-    stak-decode >$base.md
+    stak-lzss compress >$base.bc
+  stak-decode <$base.bc >$base.md
 done
 
 npx prettier --write snapshots
