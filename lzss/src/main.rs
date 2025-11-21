@@ -23,18 +23,30 @@ enum Command {
     Compress,
     /// Decompresses data.
     Decompress,
+    /// Bit-shift each byte in data to the left.
+    LeftShift {
+        #[arg()]
+        count: usize,
+    },
+    /// Bit-shift each byte in data to the right.
+    RightShift {
+        #[arg()]
+        count: usize,
+    },
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     match Arguments::parse().command {
         Command::Compress => run(Lzss::compress::<{ WINDOW_SIZE + MAX_LENGTH }>)?,
         Command::Decompress => run(Lzss::decompress::<WINDOW_SIZE>)?,
+        Command::LeftShift { count } => run(|iterator| iterator.map(|x| x << count))?,
+        Command::RightShift { count } => run(|iterator| iterator.map(|x| x >> count))?,
     }
 
     Ok(())
 }
 
-fn run<I: Iterator<Item = u8>>(convert: fn(vec::IntoIter<u8>) -> I) -> Result<(), io::Error> {
+fn run<I: Iterator<Item = u8>>(convert: impl Fn(vec::IntoIter<u8>) -> I) -> Result<(), io::Error> {
     let mut data = vec![];
 
     stdin().read_to_end(&mut data)?;
