@@ -18,7 +18,7 @@ impl<const N: usize> RingBuffer<N> {
 
     pub const fn push(&mut self, byte: u8) {
         self.buffer[self.index] = byte;
-        self.index = (self.index + 1) % N;
+        self.index = self.index(1);
     }
 
     const fn index(&self, index: usize) -> usize {

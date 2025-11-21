@@ -14,6 +14,28 @@
 
 (define window-size 127)
 
+; Ring buffer
+
+(define-record-type ring-buffer
+  (make-ring-buffer values index)
+  ring-buffer?
+  (values ring-buffer-values)
+  (offset ring-buffer-offset ring-buffer-set-offset!))
+
+(define (ring-buffer-index buffer index)
+  (remainder (+ index (ring-buffer-offset buffer)) window-size))
+
+(define (ring-buffer-ref buffer index)
+  (list-ref
+    (ring-buffer-values buffer)
+    (ring-buffer-index buffer index)))
+
+(define (ring-buffer-push! buffer x)
+  (set-car!
+    (list-tail (ring-buffer-values buffer) (ring-buffer-offset buffer))
+    x)
+  (ring-buffer-set-offset! buffer (ring-buffer-index buffer 1)))
+
 ; Decompressor
 
 (define-record-type decompressor
@@ -112,7 +134,11 @@
 (define (decode)
   (define dictionary (make-stack '()))
   (define stack (make-stack '()))
-  (define decompressor (make-decompressor '() 0 0))
+  (define decompressor
+    (make-decompressor
+      (make-ring-buffer (make-list window-size 0) 0)
+      0
+      0))
 
   (do ((byte (read-code decompressor) (read-code decompressor)))
     ((eof-object? byte))
