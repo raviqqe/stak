@@ -6,9 +6,9 @@ set -e
 
 cd $(dirname $0)/..
 
-cargo build --release
+cargo build --profile release_test
 
-export PATH=$PWD/target/release:$PATH
+export PATH=$PWD/target/release_test:$PATH
 
 for file in $(list_scheme_files); do
   echo FILE $file
@@ -19,9 +19,7 @@ for file in $(list_scheme_files); do
   cat prelude.scm $file |
     stak-compile --shake-tree |
     stak-lzss right-shift 1 |
-    stak-lzss compress |
-    stak-lzss decompress |
-    stak-lzss left-shift 1 >$base.bc
+    stak-lzss compress >$base.bc
   stak-decode <$base.bc >$base.md
 done
 
