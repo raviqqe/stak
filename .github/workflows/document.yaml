@@ -32,8 +32,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        with:
-          lfs: true
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-document
       - uses: actions/configure-pages@v5
@@ -55,8 +53,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        with:
-          lfs: true
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-document
       - run: tools/document.sh -l

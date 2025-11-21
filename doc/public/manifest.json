@@ -4,13 +4,15 @@
   "icons": [
     {
       "sizes": "any",
-      "src": "icon.svg"
-      "type": "image/svg+xml"
+      "src": "icon.svg",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
       "sizes": "1024x1024",
-      "src": "icon.png",
-      "type": "image/png"
+      "src": "icon.webp",
+      "type": "image/webp",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
