@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "node --run build:puppeteer && node --run build:icon && astro check && astro build",
+    "build:icon": "convert-svg-to-webp ${CI:+--launch '{\"args\":[\"--no-sandbox\"]}'} --width 1024 public/icon.svg",
+    "build:puppeteer": "puppeteer install",
     "preview": "astro preview",
     "lint": "biome ci",
     "format": "biome format --write ."
@@ -19,16 +21,17 @@
     "@astrojs/starlight": "^0.36.2",
     "@monza-editor/preact": "^0.1.9",
     "@nanostores/preact": "^1.0.0",
-    "@preact/signals": "^2.5.0",
+    "@preact/signals": "^2.5.1",
     "@raviqqe/stak": "^0.11.9",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.15.9",
     "classnames": "^2.5.1",
+    "convert-svg-to-webp-cli": "^0.7.1",
     "es-toolkit": "^1.42.0",
     "lucide-preact": "^0.554.0",
     "monza-editor": "^0.5.5",
-    "nanostores": "^1.0.1",
+    "nanostores": "^1.1.0",
     "picolight": "^0.2.6",
     "preact": "^10.27.2",
     "vite-plugin-wasm": "^3.5.0"
@@ -38,8 +41,9 @@
     "@biomejs/biome": "^2.3.6",
     "@raviqqe/biome-config": "^2.0.20",
     "@types/node": "^24.10.1",
+    "puppeteer": "^24.30.0",
     "sharp": "^0.34.5",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
+  "packageManager": "pnpm@10.23.0+sha512.21c4e5698002ade97e4efe8b8b4a89a8de3c85a37919f957e7a0f30f38fbc5bbdd05980ffe29179b2fb6e6e691242e098d945d1601772cad0fef5fb6411e2a4b"
 }
