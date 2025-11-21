@@ -25,13 +25,13 @@ jobs:
   rust_build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - run: cargo +nightly doc --all-features
   web_build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-document
       - uses: actions/configure-pages@v5
@@ -44,7 +44,7 @@ jobs:
   web_lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-document
       - run: node --run lint
@@ -52,7 +52,7 @@ jobs:
   web_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-document
       - run: tools/document.sh -l
@@ -62,7 +62,7 @@ jobs:
   web_release_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: go tool muffet $MUFFET_OPTIONS https://raviqqe.github.io/stak
   document:
     needs:
