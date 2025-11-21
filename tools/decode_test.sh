@@ -19,9 +19,7 @@ for file in $(list_scheme_files); do
   cat prelude.scm $file |
     stak-compile --shake-tree |
     stak-lzss right-shift 1 |
-    stak-lzss compress |
-    stak-lzss decompress |
-    stak-lzss left-shift 1 >$base.bc
+    stak-lzss compress >$base.bc
   stak-decode <$base.bc >$base.md
 done
 
