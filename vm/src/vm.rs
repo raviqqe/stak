@@ -17,6 +17,7 @@ use core::{
     fmt::{self, Display, Formatter, Write},
     marker::PhantomData,
 };
+use stak_lzss::Lzss;
 use stak_util::block_on;
 use winter_maybe_async::{maybe_async, maybe_await};
 
@@ -430,7 +431,11 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");
 
-        let program = self.decode_ribs(input.into_iter())?;
+        let program = self.decode_ribs(
+            input
+                .into_iter()
+                .decompress::<{ stak_lzss::DEFAULT_WINDOW_SIZE }>(),
+        )?;
         self.memory
             .set_false(self.memory.car(program)?.assume_cons());
         self.memory
