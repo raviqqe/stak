@@ -41,7 +41,7 @@
 (define-record-type decompressor
   (make-decompressor buffer offset length)
   decompressor?
-  (buffer decompressor-buffer decompressor-set-buffer!)
+  (buffer decompressor-buffer)
   (offset decompressor-offset decompressor-set-offset!)
   (length decompressor-length decompressor-set-length!))
 
