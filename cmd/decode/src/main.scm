@@ -17,7 +17,7 @@
 ; Ring buffer
 
 (define-record-type ring-buffer
-  (make-ring-buffer values index)
+  (make-ring-buffer values offset)
   ring-buffer?
   (values ring-buffer-values)
   (offset ring-buffer-offset ring-buffer-set-offset!))
