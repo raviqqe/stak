@@ -1,28 +1,34 @@
+use core::ops::Index;
+
 #[derive(Debug)]
 pub struct RingBuffer<const N: usize> {
     buffer: [u8; N],
-    index: usize,
+    offset: usize,
 }
 
 impl<const N: usize> RingBuffer<N> {
     pub const fn new() -> Self {
         Self {
             buffer: [0; N],
-            index: 0,
+            offset: 0,
         }
     }
 
-    pub fn get(&self, index: usize) -> Option<u8> {
-        self.buffer.get(self.index(index)).copied()
-    }
-
     pub const fn push(&mut self, byte: u8) {
-        self.buffer[self.index] = byte;
-        self.index = (self.index + 1) % N;
+        self.buffer[self.offset] = byte;
+        self.offset = self.index(1);
     }
 
     const fn index(&self, index: usize) -> usize {
-        (self.index + index) % N
+        (self.offset + index) % N
+    }
+}
+
+impl<const N: usize> Index<usize> for RingBuffer<N> {
+    type Output = u8;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.buffer[self.index(index)]
     }
 }
 
@@ -43,8 +49,8 @@ mod tests {
 
         buffer.push(42);
 
-        assert_eq!(buffer.get(0), Some(0));
-        assert_eq!(buffer.get(2), Some(42));
+        assert_eq!(buffer[0], 0);
+        assert_eq!(buffer[2], 42);
     }
 
     #[test]
@@ -55,16 +61,16 @@ mod tests {
         buffer.push(2);
         buffer.push(3);
 
-        assert_eq!(buffer.get(0), Some(1));
-        assert_eq!(buffer.get(1), Some(2));
-        assert_eq!(buffer.get(2), Some(3));
-        assert_eq!(buffer.get(3), Some(1));
+        assert_eq!(buffer[0], 1);
+        assert_eq!(buffer[1], 2);
+        assert_eq!(buffer[2], 3);
+        assert_eq!(buffer[3], 1);
 
         buffer.push(4);
 
-        assert_eq!(buffer.get(0), Some(2));
-        assert_eq!(buffer.get(1), Some(3));
-        assert_eq!(buffer.get(2), Some(4));
-        assert_eq!(buffer.get(3), Some(2));
+        assert_eq!(buffer[0], 2);
+        assert_eq!(buffer[1], 3);
+        assert_eq!(buffer[2], 4);
+        assert_eq!(buffer[3], 2);
     }
 }
