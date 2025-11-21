@@ -49,19 +49,19 @@ impl<const B: usize, I: Iterator<Item = u8>> LzssCompressionIterator<B, I> {
     }
 
     fn peek(&mut self, index: usize) -> Option<u8> {
-        if index < self.ahead {
-            return Some(self.buffer[B - self.ahead + index]);
-        }
+        Some(if index < self.ahead {
+            self.buffer[B - self.ahead + index]
+        } else {
+            let mut x = 0;
 
-        let mut x = 0;
+            for _ in 0..index + 1 - self.ahead {
+                x = self.iterator.next()?;
+                self.buffer.push(x);
+                self.ahead += 1;
+            }
 
-        for _ in 0..index + 1 - self.ahead {
-            x = self.iterator.next()?;
-            self.buffer.push(x);
-            self.ahead += 1;
-        }
-
-        Some(x)
+            x
+        })
     }
 }
 
@@ -79,7 +79,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                     let mut j = 0;
 
                     while j < MAX_LENGTH
-                        && Some(self.buffer[2 * B - self.ahead - 1 - i + j]) == self.peek(j)
+                        && self.peek(j) == Some(self.buffer[2 * B - self.ahead - 1 - i + j])
                     {
                         j += 1;
                     }
