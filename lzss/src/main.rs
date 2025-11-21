@@ -26,12 +26,12 @@ enum Command {
     /// Bit-shift each byte in data to the left.
     LeftShift {
         #[arg()]
-        count: isize,
+        count: usize,
     },
     /// Bit-shift each byte in data to the right.
     RightShift {
         #[arg()]
-        count: isize,
+        count: usize,
     },
 }
 
@@ -39,7 +39,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     match Arguments::parse().command {
         Command::Compress => run(|iterator| {
             Lzss::compress::<{ WINDOW_SIZE + MAX_LENGTH }>(iterator.map(|x| {
-                assert!(x < 2 << 7);
+                assert!(x < 1 << 7);
                 x
             }))
         })?,
