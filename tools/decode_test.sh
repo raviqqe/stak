@@ -18,8 +18,10 @@ for file in $(list_scheme_files); do
   mkdir -p $(dirname $base)
   cat prelude.scm $file |
     stak-compile --shake-tree |
+    stak-lzss right-shift 1 |
     stak-lzss compress |
-    stak-lzss decompress >$base.bc
+    stak-lzss decompress |
+    stak-lzss left-shift 1 >$base.bc
   stak-decode <$base.bc >$base.md
 done
 
