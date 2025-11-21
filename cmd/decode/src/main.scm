@@ -49,9 +49,7 @@
   (ring-buffer-push! (decompressor-buffer decompressor) x))
 
 (define (decompressor-ref decompressor index)
-  (list-ref
-    (decompressor-buffer decompressor)
-    (- window-size 1 (decompressor-offset decompressor))))
+  (ring-buffer-ref (decompressor-buffer decompressor) index))
 
 (define (read-code decompressor)
   (cond
