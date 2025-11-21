@@ -37,9 +37,9 @@ impl<const B: usize, I: Iterator<Item = u8>> LzssCompressionIterator<B, I> {
 
     fn next(&mut self) -> Option<u8> {
         if self.ahead > 0 {
-            let x = self.buffer.get(B - self.ahead);
+            let x = self.buffer[B - self.ahead];
             self.ahead -= 1;
-            x
+            Some(x)
         } else if let Some(x) = self.iterator.next() {
             self.buffer.push(x);
             Some(x)
@@ -50,7 +50,7 @@ impl<const B: usize, I: Iterator<Item = u8>> LzssCompressionIterator<B, I> {
 
     fn peek(&mut self, index: usize) -> Option<u8> {
         if index < self.ahead {
-            return self.buffer.get(B - self.ahead + index);
+            return Some(self.buffer[B - self.ahead + index]);
         }
 
         let mut x = 0;
@@ -79,7 +79,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                     let mut j = 0;
 
                     while j < MAX_LENGTH
-                        && self.buffer.get(2 * B - self.ahead - 1 - i + j) == self.peek(j)
+                        && Some(self.buffer[2 * B - self.ahead - 1 - i + j]) == self.peek(j)
                     {
                         j += 1;
                     }
@@ -125,7 +125,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.length > 0 {
-            let x = self.buffer.get(W - 1 - self.offset as usize)?;
+            let x = self.buffer[W - 1 - self.offset as usize];
 
             self.buffer.push(x);
             self.length -= 1;
