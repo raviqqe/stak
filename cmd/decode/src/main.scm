@@ -46,9 +46,7 @@
   (length decompressor-length decompressor-set-length!))
 
 (define (decompressor-push! decompressor x)
-  (decompressor-set-buffer!
-    decompressor
-    (cons x (decompressor-buffer decompressor))))
+  (ring-buffer-push! (decompressor-buffer decompressor) x))
 
 (define (decompressor-ref decompressor index)
   (list-ref
