@@ -45,11 +45,11 @@
   (offset decompressor-offset decompressor-set-offset!)
   (length decompressor-length decompressor-set-length!))
 
-(define (decompressor-push! decompressor x)
-  (ring-buffer-push! (decompressor-buffer decompressor) x))
-
 (define (decompressor-ref decompressor index)
   (ring-buffer-ref (decompressor-buffer decompressor) index))
+
+(define (decompressor-push! decompressor x)
+  (ring-buffer-push! (decompressor-buffer decompressor) x))
 
 (define (read-code decompressor)
   (cond
