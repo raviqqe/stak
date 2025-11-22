@@ -14,41 +14,41 @@
 
 (define window-size 127)
 
-; Ring buffer
+; Window
 
-(define-record-type ring-buffer
-  (make-ring-buffer values offset)
-  ring-buffer?
-  (values ring-buffer-values ring-buffer-set-values!)
-  (length ring-buffer-length ring-buffer-set-length!))
+(define-record-type window
+  (make-window values offset)
+  window?
+  (values window-values window-set-values!)
+  (length window-length window-set-length!))
 
-(define (ring-buffer-ref buffer index)
-  (list-ref (ring-buffer-values buffer) index))
+(define (window-ref window index)
+  (list-ref (window-values window) index))
 
-(define (ring-buffer-push! buffer x)
-  (let ((xs (ring-buffer-values buffer))
-        (n (ring-buffer-length buffer)))
-    (ring-buffer-set-values! buffer (cons x xs))
+(define (window-push! window x)
+  (let ((xs (window-values window))
+        (n (window-length window)))
+    (window-set-values! window (cons x xs))
     (if (< n (* 2 window-size))
-      (ring-buffer-set-length! buffer (+ 1 n))
+      (window-set-length! window (+ 1 n))
       (begin
         (set-cdr! (list-tail xs window-size) '())
-        (ring-buffer-set-length! buffer (+ 1 window-size))))))
+        (window-set-length! window (+ 1 window-size))))))
 
 ; Decompressor
 
 (define-record-type decompressor
-  (make-decompressor buffer offset length)
+  (make-decompressor window offset length)
   decompressor?
-  (buffer decompressor-buffer)
+  (window decompressor-window)
   (offset decompressor-offset decompressor-set-offset!)
   (length decompressor-length decompressor-set-length!))
 
 (define (decompressor-ref decompressor index)
-  (ring-buffer-ref (decompressor-buffer decompressor) index))
+  (window-ref (decompressor-window decompressor) index))
 
 (define (decompressor-push! decompressor x)
-  (ring-buffer-push! (decompressor-buffer decompressor) x))
+  (window-push! (decompressor-window decompressor) x))
 
 (define (read-code decompressor)
   (cond
@@ -129,7 +129,7 @@
   (define stack (make-stack '()))
   (define decompressor
     (make-decompressor
-      (make-ring-buffer (make-list window-size 0) 0)
+      (make-window (make-list window-size 0) 0)
       0
       0))
 
