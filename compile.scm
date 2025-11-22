@@ -1606,7 +1606,7 @@
     ; Compression
 
     (define-record-type window
-     (make-window values offset)
+     (make-window values length)
      window?
      (values window-values window-set-values!)
      (length window-length window-set-length!))
@@ -1627,7 +1627,7 @@
     (define-record-type compressor
      (make-compressor window)
      compressor?
-     (values compressor-window compressor-set-window!))
+     (window compressor-window))
 
     (define (write-code compressor byte)
      (write-u8 (* 2 byte)))
