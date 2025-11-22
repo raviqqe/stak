@@ -14,6 +14,8 @@ use self::ring_buffer::RingBuffer;
 const MIN_LENGTH: usize = 2;
 /// The maximum match length.
 pub const MAX_LENGTH: usize = u8::MAX as _;
+/// The default window size.
+pub const DEFAULT_WINDOW_SIZE: usize = (1 << 7) - 1;
 
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const B: usize, I: Iterator<Item = u8>> {

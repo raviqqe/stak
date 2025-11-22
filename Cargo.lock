@@ -1705,6 +1705,7 @@ dependencies = [
  "nonbox",
  "stak-device",
  "stak-file",
+ "stak-lzss",
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
