@@ -1605,7 +1605,28 @@
 
     ; Compression
 
+    (define-record-type window
+     (make-window values offset)
+     window?
+     (values window-values window-set-values!)
+     (length window-length window-set-length!))
+
+    (define (window-ref window index)
+     (list-ref (window-values window) index))
+
+    (define (window-push! window x)
+     (let ((xs (window-values window))
+           (n (window-length window)))
+      (window-set-values! window (cons x xs))
+      (if (< n (* 2 window-size))
+       (window-set-length! window (+ 1 n))
+       (begin
+        (set-cdr! (list-tail xs window-size) '())
+        (window-set-length! window (+ 1 window-size))))))
+
     (define (write-code byte)
+     (define window (make-window '() 0))
+
      (write-u8 (* 2 byte)))
 
     ; Encoding
