@@ -27,10 +27,11 @@
 
 (define (ring-buffer-push! buffer x)
   (ring-buffer-set-values! buffer (cons x (ring-buffer-values buffer)))
-  (ring-buffer-set-length! buffer (+ 1 (ring-buffer-length buffer)))
-  (when (> (ring-buffer-length buffer) (* 2 window-size))
-    (set-cdr! (list-tail (ring-buffer-values buffer) window-size) '())
-    (ring-buffer-set-length! buffer (+ 1 window-size))))
+  (when (< (ring-buffer-length buffer) (* 2 window-size))
+    (ring-buffer-set-length! buffer (+ 1 (ring-buffer-length buffer)))
+    (begin
+      (set-cdr! (list-tail (ring-buffer-values buffer) window-size) '())
+      (ring-buffer-set-length! buffer (+ 1 window-size)))))
 
 ; Decompressor
 
