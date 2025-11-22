@@ -89,6 +89,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
         })
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -213,7 +214,7 @@ mod tests {
     #[test]
     fn max_offset() {
         assert_eq!(
-            LzssCompressionIterator::<{ 128 + MAX_LENGTH }, _>::new(repeat(42).chain(0..128))
+            LzssCompressionIterator::<{ 128 + MAX_LENGTH }, _>::new((0..128).chain(0..128))
                 .collect::<Vec<_>>(),
             (0..128)
                 .map(|x| x << 1)
