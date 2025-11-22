@@ -7,6 +7,7 @@ extern crate alloc;
 #[cfg(test)]
 extern crate std;
 
+mod decompress;
 mod ring_buffer;
 
 use self::ring_buffer::RingBuffer;
