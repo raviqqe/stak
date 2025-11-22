@@ -116,10 +116,8 @@
   (cond
     ((even? integer)
       (quotient integer 2))
-
     ((even? (quotient integer 2))
       (- (quotient integer 4)))
-
     (else
       (let* ((x (quotient integer 4))
              (m (* (if (even? x) 1 -1) (quotient x 4096)))
@@ -140,7 +138,6 @@
     (cond
       ((even? byte)
         (stack-push! stack (cons (quotient byte 2) (stack-pop! stack))))
-
       ((even? (quotient byte 2))
         (let ((head (quotient byte 4)))
           (if (zero? head)
@@ -154,13 +151,11 @@
                 (when (even? integer)
                   (stack-pop! dictionary))
                 (stack-push! stack value))))))
-
       ((even? (quotient byte 4))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
                (tag (decode-integer-tail decompressor (quotient byte 8) tag-base)))
           (stack-push! stack (rib a d tag))))
-
       (else
         (stack-push!
           stack
