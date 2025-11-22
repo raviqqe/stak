@@ -1606,6 +1606,7 @@
     ; Compression
 
     (define window-size 127)
+    (define minimum-match 2)
 
     (define-record-type window
      (make-window values length)
@@ -1633,7 +1634,13 @@
 
     (define (write-code compressor x)
      (window-push! (compressor-window compressor) x)
-     (write-u8 (* 2 x)))
+
+     (let-values (((i n) (values 0 0)))
+      (if (> n minimum-match)
+       (begin
+        (write-u8 (+ 1 (* 2 i)))
+        (write-u8 n))
+       (write-u8 (* 2 x)))))
 
     ; Encoding
 
