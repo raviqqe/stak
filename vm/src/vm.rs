@@ -17,6 +17,7 @@ use core::{
     fmt::{self, Display, Formatter, Write},
     marker::PhantomData,
 };
+use stak_lzss::DEFAULT_WINDOW_SIZE;
 use stak_lzss::Lzss;
 use stak_util::block_on;
 use winter_maybe_async::{maybe_async, maybe_await};
@@ -431,11 +432,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");
 
-        let program = self.decode_ribs(
-            input
-                .into_iter()
-                .decompress::<{ stak_lzss::DEFAULT_WINDOW_SIZE }>(),
-        )?;
+        let program = self.decode_ribs(input.into_iter())?;
         self.memory
             .set_false(self.memory.car(program)?.assume_cons());
         self.memory
@@ -462,7 +459,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
     }
 
     fn decode_ribs(&mut self, input: impl Iterator<Item = u8>) -> Result<Cons, Error> {
-        let mut input = input.map(|byte| byte >> 1);
+        let mut input = input.decompress::<{ DEFAULT_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
             if head & 1 == 0 {
