@@ -1,6 +1,6 @@
 use crate::ring_buffer::RingBuffer;
 
-pub const MIN_LENGTH: usize = 2;
+const MIN_LENGTH: usize = 2;
 /// The maximum match length.
 pub const MAX_LENGTH: usize = u8::MAX as _;
 
