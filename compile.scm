@@ -1603,6 +1603,8 @@
       codes
       #f))
 
+    ; Compression
+
     ; Encoding
 
     ;; Context
