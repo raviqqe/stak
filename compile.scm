@@ -1624,9 +1624,12 @@
         (set-cdr! (list-tail xs window-size) '())
         (window-set-length! window (+ 1 window-size))))))
 
-    (define (write-code byte)
-     (define window (make-window '() 0))
+    (define-record-type compression-context
+     (make-compression-context window)
+     compression-context?
+     (values compression-context-window compression-context-set-window!))
 
+    (define (write-code context byte)
      (write-u8 (* 2 byte)))
 
     ; Encoding
