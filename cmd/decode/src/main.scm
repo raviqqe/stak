@@ -19,22 +19,17 @@
 (define-record-type ring-buffer
   (make-ring-buffer values offset)
   ring-buffer?
-  (values ring-buffer-values)
-  (offset ring-buffer-offset ring-buffer-set-offset!))
-
-(define (ring-buffer-index buffer index)
-  (remainder (+ index (ring-buffer-offset buffer)) window-size))
+  (values ring-buffer-values ring-buffer-set-values!)
+  (length ring-buffer-length ring-buffer-set-length!))
 
 (define (ring-buffer-ref buffer index)
-  (list-ref
-    (ring-buffer-values buffer)
-    (ring-buffer-index buffer index)))
+  (list-ref (ring-buffer-values buffer) index))
 
 (define (ring-buffer-push! buffer x)
-  (set-car!
-    (list-tail (ring-buffer-values buffer) (ring-buffer-offset buffer))
-    x)
-  (ring-buffer-set-offset! buffer (ring-buffer-index buffer 1)))
+  (ring-buffer-set-values! buffer (cons x (ring-buffer-values buffer)))
+  (ring-buffer-set-length! buffer (+ 1 (ring-buffer-length buffer)))
+  (when (> (ring-buffer-length buffer) (* 2 window-size))
+    (set-cdr! (list-tail (ring-buffer-values buffer) window-size) '())))
 
 ; Decompressor
 
@@ -70,7 +65,7 @@
       (let ((x
               (decompressor-ref
                 decompressor
-                (- window-size 1 (decompressor-offset decompressor)))))
+                (decompressor-offset decompressor))))
         (decompressor-push! decompressor x)
         (decompressor-set-length! decompressor (- (decompressor-length decompressor) 1))
         x))))
