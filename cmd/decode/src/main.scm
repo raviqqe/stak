@@ -17,7 +17,7 @@
 ; Window
 
 (define-record-type window
-  (make-window values offset)
+  (make-window values length)
   window?
   (values window-values window-set-values!)
   (length window-length window-set-length!))

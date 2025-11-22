@@ -1603,13 +1603,46 @@
       codes
       #f))
 
+    ; Compression
+
+    (define window-size 127)
+
+    (define-record-type window
+     (make-window values length)
+     window?
+     (values window-values window-set-values!)
+     (length window-length window-set-length!))
+
+    (define (window-ref window index)
+     (list-ref (window-values window) index))
+
+    (define (window-push! window x)
+     (let ((xs (window-values window))
+           (n (window-length window)))
+      (window-set-values! window (cons x xs))
+      (if (< n (* 2 window-size))
+       (window-set-length! window (+ 1 n))
+       (begin
+        (set-cdr! (list-tail xs window-size) '())
+        (window-set-length! window (+ 1 window-size))))))
+
+    (define-record-type compressor
+     (make-compressor window)
+     compressor?
+     (window compressor-window))
+
+    (define (write-code compressor x)
+     (window-push! (compressor-window compressor) x)
+     (write-u8 (* 2 x)))
+
     ; Encoding
 
     ;; Context
 
     (define-record-type encode-context
-     (make-encode-context dictionary counts null)
+     (make-encode-context compressor dictionary counts null)
      encode-context?
+     (compressor encode-context-compressor)
      (dictionary encode-context-dictionary encode-context-set-dictionary!)
      (counts encode-context-counts encode-context-set-counts!)
      (null encode-context-null))
@@ -1729,15 +1762,13 @@
        (encode-integer-part integer base (if (zero? rest) 0 1))
        rest)))
 
-    (define (write-code byte)
-     (write-u8 (* 2 byte)))
-
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
     ; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
-    (define (encode-integer-tail x)
+    (define (encode-integer-tail context x)
      (do ((x x (quotient x integer-base)))
       ((zero? x))
       (write-code
+       (encode-context-compressor context)
        (encode-integer-part
         x
         integer-base
@@ -1775,7 +1806,9 @@
            (integer? (rib-car value))
            (<= 0 (rib-car value) 63))
           (encode-rib context (rib-cdr value))
-          (write-code (* 2 (rib-car value))))
+          (write-code
+           (encode-context-compressor context)
+           (* 2 (rib-car value))))
 
          ((and entry (encode-context-index context value)) =>
           (lambda (index)
@@ -1788,26 +1821,30 @@
                           (encode-integer-parts
                            (+ (* 2 index) (if removed 0 1))
                            share-base)))
-             (write-code (+ 1 (* 4 (+ 1 head))))
-             (encode-integer-tail tail)))))
+             (write-code
+              (encode-context-compressor context)
+              (+ 1 (* 4 (+ 1 head))))
+             (encode-integer-tail context tail)))))
 
          (else
           (encode-rib context (rib-car value))
           (encode-rib context (rib-cdr value))
 
           (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-           (write-code (+ 3 (* 8 head)))
-           (encode-integer-tail tail))
+           (write-code
+            (encode-context-compressor context)
+            (+ 3 (* 8 head)))
+           (encode-integer-tail context tail))
 
           (when entry
            (encode-context-push! context value)
            (decrement-count! entry)
-           (write-code 1))))))
+           (write-code (encode-context-compressor context) 1))))))
 
       (else
        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-code (+ 7 (* 8 head)))
-        (encode-integer-tail tail)))))
+        (write-code (encode-context-compressor context) (+ 7 (* 8 head)))
+        (encode-integer-tail context tail)))))
 
     ;; Primitives
 
@@ -1831,7 +1868,12 @@
     ;; Main
 
     (define (encode codes)
-     (let ((context (make-encode-context '() '() (rib-car (rib-car codes)))))
+     (let ((context
+            (make-encode-context
+             (make-compressor (make-window '() 0))
+             '()
+             '()
+             (rib-car (rib-car codes)))))
       (count-ribs! context codes)
       (encode-context-set-counts!
        context
