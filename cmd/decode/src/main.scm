@@ -14,42 +14,41 @@
 
 (define window-size 127)
 
-; Ring buffer
+; Window
 
-(define-record-type ring-buffer
-  (make-ring-buffer values offset)
-  ring-buffer?
-  (values ring-buffer-values)
-  (offset ring-buffer-offset ring-buffer-set-offset!))
+(define-record-type window
+  (make-window values offset)
+  window?
+  (values window-values window-set-values!)
+  (length window-length window-set-length!))
 
-(define (ring-buffer-index buffer index)
-  (remainder (+ index (ring-buffer-offset buffer)) window-size))
+(define (window-ref window index)
+  (list-ref (window-values window) index))
 
-(define (ring-buffer-ref buffer index)
-  (list-ref
-    (ring-buffer-values buffer)
-    (ring-buffer-index buffer index)))
-
-(define (ring-buffer-push! buffer x)
-  (set-car!
-    (list-tail (ring-buffer-values buffer) (ring-buffer-offset buffer))
-    x)
-  (ring-buffer-set-offset! buffer (ring-buffer-index buffer 1)))
+(define (window-push! window x)
+  (let ((xs (window-values window))
+        (n (window-length window)))
+    (window-set-values! window (cons x xs))
+    (if (< n (* 2 window-size))
+      (window-set-length! window (+ 1 n))
+      (begin
+        (set-cdr! (list-tail xs window-size) '())
+        (window-set-length! window (+ 1 window-size))))))
 
 ; Decompressor
 
 (define-record-type decompressor
-  (make-decompressor buffer offset length)
+  (make-decompressor window offset length)
   decompressor?
-  (buffer decompressor-buffer)
+  (window decompressor-window)
   (offset decompressor-offset decompressor-set-offset!)
   (length decompressor-length decompressor-set-length!))
 
 (define (decompressor-ref decompressor index)
-  (ring-buffer-ref (decompressor-buffer decompressor) index))
+  (window-ref (decompressor-window decompressor) index))
 
 (define (decompressor-push! decompressor x)
-  (ring-buffer-push! (decompressor-buffer decompressor) x))
+  (window-push! (decompressor-window decompressor) x))
 
 (define (read-code decompressor)
   (cond
@@ -70,7 +69,7 @@
       (let ((x
               (decompressor-ref
                 decompressor
-                (- window-size 1 (decompressor-offset decompressor)))))
+                (decompressor-offset decompressor))))
         (decompressor-push! decompressor x)
         (decompressor-set-length! decompressor (- (decompressor-length decompressor) 1))
         x))))
@@ -117,10 +116,8 @@
   (cond
     ((even? integer)
       (quotient integer 2))
-
     ((even? (quotient integer 2))
       (- (quotient integer 4)))
-
     (else
       (let* ((x (quotient integer 4))
              (m (* (if (even? x) 1 -1) (quotient x 4096)))
@@ -132,7 +129,7 @@
   (define stack (make-stack '()))
   (define decompressor
     (make-decompressor
-      (make-ring-buffer (make-list window-size 0) 0)
+      (make-window (make-list window-size 0) 0)
       0
       0))
 
@@ -141,7 +138,6 @@
     (cond
       ((even? byte)
         (stack-push! stack (cons (quotient byte 2) (stack-pop! stack))))
-
       ((even? (quotient byte 2))
         (let ((head (quotient byte 4)))
           (if (zero? head)
@@ -155,13 +151,11 @@
                 (when (even? integer)
                   (stack-pop! dictionary))
                 (stack-push! stack value))))))
-
       ((even? (quotient byte 4))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
                (tag (decode-integer-tail decompressor (quotient byte 8) tag-base)))
           (stack-push! stack (rib a d tag))))
-
       (else
         (stack-push!
           stack
