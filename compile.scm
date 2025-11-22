@@ -1765,7 +1765,7 @@
      (do ((x x (quotient x integer-base)))
       ((zero? x))
       (write-code
-       (encoding-context-compressor context)
+       (encode-context-compressor context)
        (encode-integer-part
         x
         integer-base
@@ -1804,7 +1804,7 @@
            (<= 0 (rib-car value) 63))
           (encode-rib context (rib-cdr value))
           (write-code
-           (encoding-context-compressor context)
+           (encode-context-compressor context)
            (* 2 (rib-car value))))
 
          ((and entry (encode-context-index context value)) =>
@@ -1819,7 +1819,7 @@
                            (+ (* 2 index) (if removed 0 1))
                            share-base)))
              (write-code
-              (encoding-context-compressor context)
+              (encode-context-compressor context)
               (+ 1 (* 4 (+ 1 head))))
              (encode-integer-tail context tail)))))
 
@@ -1829,18 +1829,18 @@
 
           (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
            (write-code
-            (encoding-context-compressor context)
+            (encode-context-compressor context)
             (+ 3 (* 8 head)))
            (encode-integer-tail context tail))
 
           (when entry
            (encode-context-push! context value)
            (decrement-count! entry)
-           (write-code (encoding-context-compressor context) 1))))))
+           (write-code (encode-context-compressor context) 1))))))
 
       (else
        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-code (encoding-context-compressor context) (+ 7 (* 8 head)))
+        (write-code (encode-context-compressor context) (+ 7 (* 8 head)))
         (encode-integer-tail context tail)))))
 
     ;; Primitives
