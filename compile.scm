@@ -1605,6 +1605,9 @@
 
     ; Compression
 
+    (define (write-code byte)
+     (write-u8 (* 2 byte)))
+
     ; Encoding
 
     ;; Context
@@ -1730,9 +1733,6 @@
       (values
        (encode-integer-part integer base (if (zero? rest) 0 1))
        rest)))
-
-    (define (write-code byte)
-     (write-u8 (* 2 byte)))
 
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
     ; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
