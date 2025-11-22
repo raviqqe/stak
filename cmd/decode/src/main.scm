@@ -12,7 +12,70 @@
 (define tag-base 8)
 (define share-base 15)
 
-; Decoding
+(define window-size 127)
+
+; Ring buffer
+
+(define-record-type ring-buffer
+  (make-ring-buffer values offset)
+  ring-buffer?
+  (values ring-buffer-values)
+  (offset ring-buffer-offset ring-buffer-set-offset!))
+
+(define (ring-buffer-index buffer index)
+  (remainder (+ index (ring-buffer-offset buffer)) window-size))
+
+(define (ring-buffer-ref buffer index)
+  (list-ref
+    (ring-buffer-values buffer)
+    (ring-buffer-index buffer index)))
+
+(define (ring-buffer-push! buffer x)
+  (set-car!
+    (list-tail (ring-buffer-values buffer) (ring-buffer-offset buffer))
+    x)
+  (ring-buffer-set-offset! buffer (ring-buffer-index buffer 1)))
+
+; Decompressor
+
+(define-record-type decompressor
+  (make-decompressor buffer offset length)
+  decompressor?
+  (buffer decompressor-buffer)
+  (offset decompressor-offset decompressor-set-offset!)
+  (length decompressor-length decompressor-set-length!))
+
+(define (decompressor-ref decompressor index)
+  (ring-buffer-ref (decompressor-buffer decompressor) index))
+
+(define (decompressor-push! decompressor x)
+  (ring-buffer-push! (decompressor-buffer decompressor) x))
+
+(define (read-code decompressor)
+  (cond
+    ((eof-object? (peek-u8))
+      (eof-object))
+    ((zero? (decompressor-length decompressor))
+      (let* ((x (read-u8))
+             (y (quotient x 2)))
+        (if (zero? (remainder x 2))
+          (begin
+            (decompressor-push! decompressor y)
+            y)
+          (begin
+            (decompressor-set-offset! decompressor y)
+            (decompressor-set-length! decompressor (read-u8))
+            (read-code decompressor)))))
+    (else
+      (let ((x
+              (decompressor-ref
+                decompressor
+                (- window-size 1 (decompressor-offset decompressor)))))
+        (decompressor-push! decompressor x)
+        (decompressor-set-length! decompressor (- (decompressor-length decompressor) 1))
+        x))))
+
+; Stack
 
 (define-record-type stack
   (make-stack values)
@@ -39,19 +102,15 @@
     (set-cdr! pair tail)
     (stack-set-values! stack head)))
 
-(define (read-code)
-  (let ((byte (read-u8)))
-    (if (eof-object? byte)
-      byte
-      (quotient byte 2))))
+; Decoding
 
-(define (decode-integer-tail x base)
+(define (decode-integer-tail decompressor x base)
   (let loop ((x x)
              (y (quotient x 2))
              (base base))
     (if (even? x)
       y
-      (let ((x (read-code)))
+      (let ((x (read-code decompressor)))
         (loop x (+ y (* base (quotient x 2))) (* base integer-base))))))
 
 (define (decode-number integer)
@@ -71,8 +130,13 @@
 (define (decode)
   (define dictionary (make-stack '()))
   (define stack (make-stack '()))
+  (define decompressor
+    (make-decompressor
+      (make-ring-buffer (make-list window-size 0) 0)
+      0
+      0))
 
-  (do ((byte (read-code) (read-code)))
+  (do ((byte (read-code decompressor) (read-code decompressor)))
     ((eof-object? byte))
     (cond
       ((even? byte)
@@ -83,7 +147,7 @@
           (if (zero? head)
             (stack-push! dictionary (stack-top stack))
             (let* ((head (quotient byte 4))
-                   (integer (decode-integer-tail (- head 1) share-base))
+                   (integer (decode-integer-tail decompressor (- head 1) share-base))
                    (index (quotient integer 2)))
               (when (> index 0)
                 (stack-swap! dictionary index))
@@ -95,13 +159,13 @@
       ((even? (quotient byte 4))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
-               (tag (decode-integer-tail (quotient byte 8) tag-base)))
+               (tag (decode-integer-tail decompressor (quotient byte 8) tag-base)))
           (stack-push! stack (rib a d tag))))
 
       (else
         (stack-push!
           stack
-          (decode-number (decode-integer-tail (quotient byte 8) number-base))))))
+          (decode-number (decode-integer-tail decompressor (quotient byte 8) number-base))))))
 
   (stack-pop! stack))
 
