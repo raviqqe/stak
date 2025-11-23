@@ -1676,11 +1676,12 @@
      (define buffer (compressor-buffer compressor))
 
      (buffer-push! buffer x)
-     (window-push! (compressor-window compressor) x)
 
      ; TODO Cache a length.
      (when (> (length (buffer-values buffer)) maximum-match)
-      (compressor-write-next compressor)))
+      (compressor-write-next compressor))
+
+     (window-push! (compressor-window compressor) x))
 
     (define (compressor-flush compressor)
      (do ()
