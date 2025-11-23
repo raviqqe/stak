@@ -1652,7 +1652,7 @@
       (if (< n (* 2 maximum-window-size))
        (window-set-length! window (+ 1 n))
        (begin
-        (set-cdr! (list-tail xs maximum-window-size) '())
+        (set-cdr! (list-tail xs (- maximum-window-size 2)) '())
         (window-set-length! window maximum-window-size)))))
 
     ;; Compressor
