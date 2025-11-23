@@ -50,6 +50,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{MAX_LENGTH, MAX_WINDOW_SIZE};
     use alloc::vec::Vec;
     use core::iter::repeat;
     use pretty_assertions::assert_eq;
@@ -75,17 +76,21 @@ mod tests {
     #[test]
     fn max_length() {
         assert_eq!(
-            LzssDecompressionIterator::<1, _>::new([84, 1, 255].into_iter()).collect::<Vec<_>>(),
-            repeat(42).take(256).collect::<Vec<_>>()
+            LzssDecompressionIterator::<1, _>::new([84, 1, MAX_LENGTH as u8].into_iter()).collect::<Vec<_>>(),
+            repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>()
         );
     }
 
     #[test]
     fn max_offset() {
+        let offset = MAX_WINDOW_SIZE as u8;
+
         assert_eq!(
-            LzssDecompressionIterator::<128, _>::new((0..128).map(|x| x << 1).chain([255, 128]))
-                .collect::<Vec<_>>(),
-            (0..128).chain(0..128).collect::<Vec<_>>()
+            LzssDecompressionIterator::<MAX_WINDOW_SIZE, _>::new(
+                (0..offset).map(|x| x << 1).chain([255, offset])
+            )
+            .collect::<Vec<_>>(),
+            (0..offset).chain(0..offset).collect::<Vec<_>>()
         );
     }
 }
