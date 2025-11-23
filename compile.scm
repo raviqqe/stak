@@ -1653,7 +1653,7 @@
        (window-set-length! window (+ 1 n))
        (begin
         (set-cdr! (list-tail xs window-size) '())
-        (window-set-length! window (+ 1 window-size))))))
+        (window-set-length! window window-size)))))
 
     ;; Compressor
 
@@ -1690,14 +1690,14 @@
 
     (define (compressor-write compressor x)
      (define buffer (compressor-buffer compressor))
+     (define window (compressor-window compressor))
 
      (buffer-push! buffer x)
 
-     ; TODO Cache a length.
-     (when (> (length (buffer-values buffer)) maximum-match)
+     (when (> (window-length window) window-size)
       (compressor-write-next compressor))
 
-     (window-push! (compressor-window compressor) x))
+     (window-push! window x))
 
     (define (compressor-flush compressor)
      (do ()
