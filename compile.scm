@@ -1672,8 +1672,14 @@
                     (let loop ((i 0) (j 0) (n 0))
                      (if (< i (min maximum-window-size (window-length window)))
                       (let ((m
-                             (let loop ()
-                              0)))
+                             (let loop ((n 0))
+                              (if (and
+                                   (< n maximum-match)
+                                   (equal?
+                                    (window-ref window i)
+                                    (list-ref xs m)))
+                               (loop (+ n 1))
+                               n))))
                        (apply
                         loop
                         (+ i 1)
