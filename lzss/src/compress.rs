@@ -216,12 +216,12 @@ mod tests {
     fn max_offset() {
         assert_eq!(
             LzssCompressionIterator::<{ MAX_WINDOW_SIZE + MAX_LENGTH }, _>::new(
-                (0..MAX_WINDOW_SIZE).chain(0..MAX_WINDOW_SIZE)
+                (0..MAX_WINDOW_SIZE as u8).chain(0..MAX_WINDOW_SIZE as u8)
             )
             .collect::<Vec<_>>(),
-            (0..MAX_WINDOW_SIZE)
+            (0..MAX_WINDOW_SIZE as u8)
                 .map(|x| x << 1)
-                .chain([255, MAX_WINDOW_SIZE])
+                .chain([255, MAX_WINDOW_SIZE as u8])
                 .collect::<Vec<_>>()
         );
     }
