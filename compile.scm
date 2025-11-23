@@ -1617,6 +1617,11 @@
      (values buffer-values buffer-set-values!)
      (last buffer-last buffer-set-last!))
 
+    (define (buffer-pop! buffer)
+     (let ((xs (buffer-values buffer)))
+      (buffer-set-values! buffer (cdr xs))
+      (car xs)))
+
     (define (buffer-push! buffer x)
      (let ((xs (list x)))
       (if (buffer-last buffer)
@@ -1668,9 +1673,7 @@
          (write-u8 (+ 1 (* 2 i)))
          (write-u8 n)
          (buffer-set-values! buffer (list-tail xs n)))
-        (begin
-         (write-u8 (* 2 (car xs)))
-         (buffer-set-values! buffer (cdr xs)))))))
+        (write-u8 (* 2 (buffer-pop! buffer)))))))
 
     (define (compressor-write compressor x)
      (define buffer (compressor-buffer compressor))
