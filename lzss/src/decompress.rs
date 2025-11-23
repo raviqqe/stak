@@ -76,7 +76,8 @@ mod tests {
     #[test]
     fn max_length() {
         assert_eq!(
-            LzssDecompressionIterator::<1, _>::new([84, 1, MAX_LENGTH as u8].into_iter()).collect::<Vec<_>>(),
+            LzssDecompressionIterator::<1, _>::new([84, 1, MAX_LENGTH as u8].into_iter())
+                .collect::<Vec<_>>(),
             repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>()
         );
     }
