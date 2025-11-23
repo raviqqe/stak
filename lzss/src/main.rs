@@ -5,7 +5,7 @@ extern crate alloc;
 use alloc::vec;
 use clap::Parser;
 use core::error::Error;
-use stak_lzss::{DEFAULT_WINDOW_SIZE, Lzss, MAX_LENGTH};
+use stak_lzss::{Lzss, MAX_LENGTH, MAX_WINDOW_SIZE};
 use std::io::{self, Read, Write, stdin, stdout};
 
 #[derive(clap::Parser)]
@@ -35,8 +35,8 @@ enum Command {
 
 fn main() -> Result<(), Box<dyn Error>> {
     match Arguments::parse().command {
-        Command::Compress => run(Lzss::compress::<{ DEFAULT_WINDOW_SIZE + MAX_LENGTH }>)?,
-        Command::Decompress => run(Lzss::decompress::<{ DEFAULT_WINDOW_SIZE }>)?,
+        Command::Compress => run(Lzss::compress::<{ MAX_WINDOW_SIZE + MAX_LENGTH }>)?,
+        Command::Decompress => run(Lzss::decompress::<{ MAX_WINDOW_SIZE }>)?,
         Command::LeftShift { count } => run(|iterator| iterator.map(|x| x << count))?,
         Command::RightShift { count } => run(|iterator| iterator.map(|x| x >> count))?,
     }
