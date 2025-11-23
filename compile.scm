@@ -1607,6 +1607,24 @@
 
     (define window-size 127)
     (define minimum-match 2)
+    (define maximum-match 255)
+
+    ;; Buffer
+
+    (define-record-type buffer
+     (make-buffer values last)
+     buffer?
+     (values buffer-values buffer-set-values!)
+     (last buffer-last buffer-set-last!))
+
+    (define (buffer-push! buffer x)
+     (let ((xs (list x)))
+      (if (buffer-last buffer)
+       (set-cdr! (buffer-last buffer) xs)
+       (buffer-set-values! buffer xs))
+      (buffer-set-last! buffer xs)))
+
+    ;; Window
 
     (define-record-type window
      (make-window values length)
@@ -1627,20 +1645,47 @@
         (set-cdr! (list-tail xs window-size) '())
         (window-set-length! window (+ 1 window-size))))))
 
+    ;; Compressor
+
     (define-record-type compressor
-     (make-compressor window)
+     (make-compressor buffer window)
      compressor?
+     (buffer compressor-buffer)
      (window compressor-window))
 
-    (define (write-code compressor x)
+    (define (compressor-write-next compressor)
+     (define buffer (compressor-buffer compressor))
+     (define window (compressor-window compressor))
+
+     (let ((xs (buffer-values buffer)))
+      (let-values (((i n)
+                    (let loop ((i 0))
+                     (if #f
+                      (loop (+ i 1))
+                      (values 0 0)))))
+       (if (> n minimum-match)
+        (begin
+         (write-u8 (+ 1 (* 2 i)))
+         (write-u8 n)
+         (buffer-set-values! buffer (list-tail xs n)))
+        (begin
+         (write-u8 (* 2 (car xs)))
+         (buffer-set-values! buffer (cdr xs)))))))
+
+    (define (compressor-write compressor x)
+     (define buffer (compressor-buffer compressor))
+
+     (buffer-push! buffer x)
      (window-push! (compressor-window compressor) x)
 
-     (let-values (((i n) (values 0 0)))
-      (if (> n minimum-match)
-       (begin
-        (write-u8 (+ 1 (* 2 i)))
-        (write-u8 n))
-       (write-u8 (* 2 x)))))
+     ; TODO Cache a length.
+     (when (> (length (buffer-values buffer)) maximum-match)
+      (compressor-write-next compressor)))
+
+    (define (compressor-flush compressor)
+     (do ()
+      ((null? (buffer-values (compressor-buffer compressor))))
+      (compressor-write-next compressor)))
 
     ; Encoding
 
@@ -1774,7 +1819,7 @@
     (define (encode-integer-tail context x)
      (do ((x x (quotient x integer-base)))
       ((zero? x))
-      (write-code
+      (compressor-write
        (encode-context-compressor context)
        (encode-integer-part
         x
@@ -1813,7 +1858,7 @@
            (integer? (rib-car value))
            (<= 0 (rib-car value) 63))
           (encode-rib context (rib-cdr value))
-          (write-code
+          (compressor-write
            (encode-context-compressor context)
            (* 2 (rib-car value))))
 
@@ -1828,7 +1873,7 @@
                           (encode-integer-parts
                            (+ (* 2 index) (if removed 0 1))
                            share-base)))
-             (write-code
+             (compressor-write
               (encode-context-compressor context)
               (+ 1 (* 4 (+ 1 head))))
              (encode-integer-tail context tail)))))
@@ -1838,7 +1883,7 @@
           (encode-rib context (rib-cdr value))
 
           (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-           (write-code
+           (compressor-write
             (encode-context-compressor context)
             (+ 3 (* 8 head)))
            (encode-integer-tail context tail))
@@ -1846,11 +1891,11 @@
           (when entry
            (encode-context-push! context value)
            (decrement-count! entry)
-           (write-code (encode-context-compressor context) 1))))))
+           (compressor-write (encode-context-compressor context) 1))))))
 
       (else
        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-code (encode-context-compressor context) (+ 7 (* 8 head)))
+        (compressor-write (encode-context-compressor context) (+ 7 (* 8 head)))
         (encode-integer-tail context tail)))))
 
     ;; Primitives
@@ -1877,7 +1922,7 @@
     (define (encode codes)
      (let ((context
             (make-encode-context
-             (make-compressor (make-window '() 0))
+             (make-compressor (make-buffer '() #f) (make-window '() 0))
              '()
              '()
              (rib-car (rib-car codes)))))
@@ -1888,6 +1933,7 @@
         (lambda (pair) (> (cdr pair) 1))
         (encode-context-counts context)))
       (encode-rib context codes)
+      (compressor-flush (encode-context-compressor context))
 
       (let ((size (length (encode-context-dictionary context))))
        (unless (zero? size)
