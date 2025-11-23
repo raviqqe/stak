@@ -1607,7 +1607,16 @@
 
     (define maximum-window-size 128) ; inclusive
     (define minimum-match 2) ; exclusive
-    (define maximum-match 256) ; exclusive
+    (define maximum-match 255) ; inclusive
+
+    (define (list-maybe-ref xs index)
+     (cond
+      ((not (pair? xs))
+       #f)
+      ((zero? index)
+       (car xs))
+      (else
+       (list-maybe-ref (cdr xs) (- index 1)))))
 
     ;; Buffer
 
@@ -1616,6 +1625,9 @@
      buffer?
      (values buffer-values buffer-set-values!)
      (last buffer-last buffer-set-last!))
+
+    (define (buffer-ref buffer index)
+     (list-maybe-ref (buffer-values buffer) index))
 
     (define (buffer-pop! buffer)
      (let ((xs (buffer-values buffer)))
@@ -1643,7 +1655,7 @@
      (length window-length window-set-length!))
 
     (define (window-ref window index)
-     (list-ref (window-values window) index))
+     (list-maybe-ref (window-values window) index))
 
     (define (window-push! window x)
      (let ((xs (window-values window))
@@ -1663,6 +1675,11 @@
      (buffer compressor-buffer)
      (window compressor-window))
 
+    (define (compressor-ref compressor i)
+     (if (negative? i)
+      (window-ref (compressor-window compressor) (- (+ i 1)))
+      (buffer-ref (compressor-buffer compressor) i)))
+
     (define (compressor-write-next compressor)
      (define buffer (compressor-buffer compressor))
      (define window (compressor-window compressor))
@@ -1672,8 +1689,16 @@
                     (let loop ((i 0) (j 0) (n 0))
                      (if (< i (min maximum-window-size (window-length window)))
                       (let ((m
-                             (let loop ()
-                              0)))
+                             (let loop ((n 0))
+                              (if (and
+                                   ; TODO
+                                   #f
+                                   (< n maximum-match)
+                                   (eq?
+                                    (compressor-ref compressor n)
+                                    (compressor-ref compressor (- n i 1))))
+                               (loop (+ n 1))
+                               n))))
                        (apply
                         loop
                         (+ i 1)
