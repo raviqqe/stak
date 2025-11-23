@@ -1605,7 +1605,7 @@
 
     ; Compression
 
-    (define window-size 128)
+    (define maximum-window-size 128)
     (define minimum-match 2)
     (define maximum-match 255)
 
@@ -1649,11 +1649,11 @@
      (let ((xs (window-values window))
            (n (window-length window)))
       (window-set-values! window (cons x xs))
-      (if (< n (* 2 window-size))
+      (if (< n (* 2 maximum-window-size))
        (window-set-length! window (+ 1 n))
        (begin
-        (set-cdr! (list-tail xs window-size) '())
-        (window-set-length! window window-size)))))
+        (set-cdr! (list-tail xs maximum-window-size) '())
+        (window-set-length! window maximum-window-size)))))
 
     ;; Compressor
 
@@ -1670,7 +1670,7 @@
      (let ((xs (buffer-values buffer)))
       (let-values (((i n)
                     (let loop ((i 0) (j 0) (n 0))
-                     (if (< i (min window-size (window-length window)))
+                     (if (< i (min maximum-window-size (window-length window)))
                       (let ((m
                              (let loop ()
                               0)))
@@ -1694,7 +1694,7 @@
 
      (buffer-push! buffer x)
 
-     (when (> (window-length window) window-size)
+     (unless (< (window-length window) maximum-window-size)
       (compressor-write-next compressor))
 
      (window-push! window x))
