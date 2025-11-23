@@ -1605,9 +1605,9 @@
 
     ; Compression
 
-    (define maximum-window-size 128)
-    (define minimum-match 2)
-    (define maximum-match 255)
+    (define maximum-window-size 128) ; inclusive
+    (define minimum-match 2) ; exclusive
+    (define maximum-match 256) ; exclusive
 
     ;; Buffer
 
