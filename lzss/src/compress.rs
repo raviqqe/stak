@@ -93,6 +93,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::MAX_WINDOW_SIZE;
     use alloc::vec::Vec;
     use core::iter::repeat;
     use pretty_assertions::assert_eq;
@@ -207,18 +208,22 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<{ 1 + MAX_LENGTH }, _>::new(repeat(42).take(256))
                 .collect::<Vec<_>>(),
-            [84, 1, 255]
+            [84, 1, MAX_LENGTH as u8]
         );
     }
 
     #[test]
     fn max_offset() {
+        let offset = MAX_WINDOW_SIZE as u8;
+
         assert_eq!(
-            LzssCompressionIterator::<{ 128 + MAX_LENGTH }, _>::new((0..128).chain(0..128))
-                .collect::<Vec<_>>(),
-            (0..128)
+            LzssCompressionIterator::<{ MAX_WINDOW_SIZE + MAX_LENGTH }, _>::new(
+                (0..offset).chain(0..offset)
+            )
+            .collect::<Vec<_>>(),
+            (0..offset)
                 .map(|x| x << 1)
-                .chain([255, 128])
+                .chain([255, offset])
                 .collect::<Vec<_>>()
         );
     }

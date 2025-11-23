@@ -15,8 +15,8 @@ use self::compress::LzssCompressionIterator;
 pub use self::compress::MAX_LENGTH;
 use self::decompress::LzssDecompressionIterator;
 
-/// The default window size.
-pub const DEFAULT_WINDOW_SIZE: usize = (1 << 7) - 1;
+/// The maximum window size.
+pub const MAX_WINDOW_SIZE: usize = 1 << 7;
 
 /// LZSS compression for 7-bit bytes.
 pub trait Lzss {
