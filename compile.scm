@@ -1605,7 +1605,7 @@
 
     ; Compression
 
-    (define window-size 127)
+    (define window-size 128)
     (define minimum-match 2)
     (define maximum-match 255)
 
@@ -1670,8 +1670,16 @@
      (let ((xs (buffer-values buffer)))
       (let-values (((i n)
                     (let loop ((i 0) (j 0) (n 0))
-                     (if #f
-                      (loop (+ i 1) j n)
+                     (if (< i (min window-size (window-length window)))
+                      (let ((m
+                             (let loop ()
+                              0)))
+                       (apply
+                        loop
+                        (+ i 1)
+                        (if (> m n)
+                         (list i m)
+                         (list j n))))
                       (values j n)))))
        (if (> n minimum-match)
         (begin
