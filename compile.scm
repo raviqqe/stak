@@ -1659,10 +1659,10 @@
 
      (let ((xs (buffer-values buffer)))
       (let-values (((i n)
-                    (let loop ((i 0))
+                    (let loop ((i 0) (j 0) (n 0))
                      (if #f
-                      (loop (+ i 1))
-                      (values 0 0)))))
+                      (loop (+ i 1) j n)
+                      (values j n)))))
        (if (> n minimum-match)
         (begin
          (write-u8 (+ 1 (* 2 i)))
