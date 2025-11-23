@@ -1629,6 +1629,11 @@
        (buffer-set-values! buffer xs))
       (buffer-set-last! buffer xs)))
 
+    (define (buffer-skip! buffer n)
+     (buffer-set-values!
+      buffer
+      (list-tail (buffer-values buffer) n)))
+
     ;; Window
 
     (define-record-type window
@@ -1672,7 +1677,7 @@
         (begin
          (write-u8 (+ 1 (* 2 i)))
          (write-u8 n)
-         (buffer-set-values! buffer (list-tail xs n)))
+         (buffer-skip! buffer n))
         (write-u8 (* 2 (buffer-pop! buffer)))))))
 
     (define (compressor-write compressor x)
