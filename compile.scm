@@ -1691,8 +1691,6 @@
                       (let ((m
                              (let loop ((n 0))
                               (if (and
-                                   ; TODO
-                                   #f
                                    (< n maximum-match)
                                    (eq?
                                     (compressor-ref compressor n)
@@ -1718,11 +1716,10 @@
      (define window (compressor-window compressor))
 
      (buffer-push! buffer x)
+     (window-push! window x)
 
      (unless (< (window-length window) maximum-window-size)
-      (compressor-write-next compressor))
-
-     (window-push! window x))
+      (compressor-write-next compressor)))
 
     (define (compressor-flush compressor)
      (do ()
