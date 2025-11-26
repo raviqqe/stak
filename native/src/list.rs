@@ -9,12 +9,15 @@ pub enum ListPrimitive {
     Cons,
     /// A `memq` procedure.
     Memq,
+    /// A `list-tail` procedure.
+    Tail,
 }
 
 impl ListPrimitive {
     const ASSQ: usize = Self::Assq as _;
     const CONS: usize = Self::Cons as _;
     const MEMQ: usize = Self::Memq as _;
+    const TAIL: usize = Self::Tail as _;
 }
 
 /// A list primitive set.
@@ -73,6 +76,24 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
                 }
 
                 memory.push(y.into())?;
+            }
+            ListPrimitive::TAIL => {
+                let [xs, index] = memory.pop_many()?;
+                let index = index.assume_number().to_i64() as usize;
+
+                while index > 0 {
+                    let Some(next) = xs.to_cons() else {
+                        break;
+                    };
+                    let Some(next) = memory.cdr(xs.to_cons())?.to_cons() else {
+                        return xs;
+                    };
+
+                    xs = next.assume_cons();
+                    index -= 1;
+                }
+
+                memory.push(xs.into())?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
