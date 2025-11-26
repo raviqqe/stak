@@ -1618,112 +1618,87 @@
       (else
        (list-maybe-ref (cdr xs) (- index 1)))))
 
-    ;; Buffer
-
-    (define-record-type buffer
-     (make-buffer values last)
-     buffer?
-     (values buffer-values buffer-set-values!)
-     (last buffer-last buffer-set-last!))
-
-    (define (buffer-ref buffer index)
-     (list-maybe-ref (buffer-values buffer) index))
-
-    (define (buffer-pop! buffer)
-     (let ((xs (buffer-values buffer)))
-      (buffer-set-values! buffer (cdr xs))
-      (car xs)))
-
-    (define (buffer-push! buffer x)
-     (let ((xs (list x)))
-      (if (buffer-last buffer)
-       (set-cdr! (buffer-last buffer) xs)
-       (buffer-set-values! buffer xs))
-      (buffer-set-last! buffer xs)))
-
-    (define (buffer-skip! buffer n)
-     (buffer-set-values!
-      buffer
-      (list-tail (buffer-values buffer) n)))
-
-    ;; Window
-
-    (define-record-type window
-     (make-window values length)
-     window?
-     (values window-values window-set-values!)
-     (length window-length window-set-length!))
-
-    (define (window-ref window index)
-     (list-maybe-ref (window-values window) index))
-
-    (define (window-push! window x)
-     (let ((xs (window-values window))
-           (n (window-length window)))
-      (window-set-values! window (cons x xs))
-      (if (< n (* 2 maximum-window-size))
-       (window-set-length! window (+ 1 n))
-       (begin
-        (set-cdr! (list-tail xs (- maximum-window-size 2)) '())
-        (window-set-length! window maximum-window-size)))))
-
     ;; Compressor
 
     (define-record-type compressor
-     (make-compressor buffer window)
+     (make-compressor buffer current last back ahead)
      compressor?
-     (buffer compressor-buffer)
-     (window compressor-window))
+     (buffer compressor-buffer compressor-set-buffer!)
+     (current compressor-current compressor-set-current!)
+     (last compressor-last compressor-set-last!)
+     (back compressor-back compressor-set-back!)
+     (ahead compressor-ahead compressor-set-ahead!))
 
     (define (compressor-ref compressor i)
-     (if (negative? i)
-      (window-ref (compressor-window compressor) (- (+ i 1)))
-      (buffer-ref (compressor-buffer compressor) i)))
+     (list-maybe-ref (compressor-buffer compressor) i))
+
+    (define (compressor-push! compressor x)
+     (let ((xs (list x)))
+      (if (pair? (compressor-buffer compressor))
+       (set-cdr! (compressor-last compressor) xs)
+       (begin
+        (compressor-set-buffer! compressor xs)
+        (compressor-set-current! compressor xs)))
+      (compressor-set-last! compressor xs)
+      (compressor-set-ahead!
+       compressor
+       (+ (compressor-ahead compressor) 1))))
+
+    (define (compressor-pop! compressor n)
+     (let ((xs (compressor-current compressor)))
+      (compressor-set-current! compressor (list-tail xs n))
+      (compressor-set-ahead! compressor (- (compressor-ahead compressor) n))
+      (compressor-set-back! compressor (+ (compressor-back compressor) n))
+
+      (let ((d (- (compressor-back compressor) maximum-window-size)))
+       (when (positive? d)
+        (compressor-set-buffer!
+         compressor
+         (list-tail (compressor-buffer compressor) d))
+        (compressor-set-back! compressor (- (compressor-back compressor) d))))
+
+      (car xs)))
 
     (define (compressor-write-next compressor)
-     (define buffer (compressor-buffer compressor))
-     (define window (compressor-window compressor))
-
-     (let ((xs (buffer-values buffer)))
-      (let-values (((i n)
-                    (let loop ((i 0) (j 0) (n 0))
-                     (if (< i (min maximum-window-size (window-length window)))
-                      (let ((m
-                             (let loop ((n 0))
-                              (if (and
-                                   (< n maximum-match)
-                                   (eq?
-                                    (compressor-ref compressor n)
-                                    (compressor-ref compressor (- n i 1))))
-                               (loop (+ n 1))
-                               n))))
-                       (apply
-                        loop
-                        (+ i 1)
-                        (if (> m n)
-                         (list i m)
-                         (list j n))))
-                      (values j n)))))
-       (if (> n minimum-match)
-        (begin
-         (write-u8 (+ 1 (* 2 i)))
-         (write-u8 n)
-         (buffer-skip! buffer n))
-        (write-u8 (* 2 (buffer-pop! buffer)))))))
+     (let-values (((i n)
+                   (let loop ((i (compressor-back compressor)) (j 0) (n 0))
+                    (if (negative? i)
+                     (values j n)
+                     (let ((m
+                            (let loop ((n 0))
+                             (if (and
+                                  (< n maximum-match)
+                                  (eq?
+                                   (compressor-ref
+                                    compressor
+                                    (+ (compressor-back compressor) n))
+                                   (compressor-ref
+                                    compressor
+                                    (- (+ (compressor-back compressor) n) i 1))))
+                              (loop (+ n 1))
+                              n))))
+                      (apply
+                       loop
+                       (- i 1)
+                       (if (>= m n)
+                        (list i m)
+                        (list j n))))))))
+      (if (> n minimum-match)
+       (begin
+        (write-u8 (+ 1 (* 2 i)))
+        (write-u8 n)
+        (compressor-pop! compressor n))
+       (write-u8 (* 2 (compressor-pop! compressor 1))))))
 
     (define (compressor-write compressor x)
-     (define buffer (compressor-buffer compressor))
-     (define window (compressor-window compressor))
+     (compressor-push! compressor x)
 
-     (buffer-push! buffer x)
-     (window-push! window x)
-
-     (unless (< (window-length window) maximum-window-size)
+     (when (> (compressor-back compressor) maximum-match)
       (compressor-write-next compressor)))
 
     (define (compressor-flush compressor)
      (do ()
-      ((null? (buffer-values (compressor-buffer compressor))))
+      ((null? (compressor-current compressor)))
       (compressor-write-next compressor)))
 
     ; Encoding
