@@ -1936,7 +1936,7 @@
     (define (encode codes)
      (let ((context
             (make-encode-context
-             (make-compressor (make-buffer '() #f) (make-window '() 0))
+             (make-compressor '() '() #f 0 0)
              '()
              '()
              (rib-car (rib-car codes)))))
