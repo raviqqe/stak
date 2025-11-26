@@ -78,18 +78,20 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
                 memory.push(y.into())?;
             }
             ListPrimitive::TAIL => {
-                let [xs, index] = memory.pop_many()?;
-                let index = index.assume_number().to_i64() as usize;
+                let [mut xs, index] = memory.pop_many()?;
+                let mut index = index.assume_number().to_i64() as usize;
 
                 while index > 0 {
-                    let Some(next) = xs.to_cons() else {
+                    let Some(cons) = xs.to_cons() else {
                         break;
                     };
-                    let Some(next) = memory.cdr(xs.to_cons())?.to_cons() else {
-                        return xs;
-                    };
+                    let cdr = memory.cdr(cons)?;
 
-                    xs = next.assume_cons();
+                    if cdr.tag() != Type::Pair as _ {
+                        break;
+                    }
+
+                    xs = cdr;
                     index -= 1;
                 }
 
