@@ -95,7 +95,7 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
                     index -= 1;
                 }
 
-                memory.push(xs.into())?;
+                memory.push(xs)?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
