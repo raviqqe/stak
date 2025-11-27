@@ -3644,7 +3644,6 @@
   - code
   - procedure-code
   - set-last-cdr!
-  - n
   - equal-index
   - deep-unique
   - f
@@ -3817,7 +3816,6 @@
   - tree-shake-context-symbols
   - $$dynamic-symbols
   - $$symbols
-  - loop
   - metadata?
   - metadata-macros
   - metadata-optimizers
@@ -3852,8 +3850,36 @@
   - make-marshal-context
   - metadata-symbols
   - metadata-libraries
+  - compressor?
+  - buffer
+  - current
+  - back
+  - ahead
+  - compressor-last
+  - compressor-set-last!
+  - compressor-set-current!
+  - compressor-set-ahead!
+  - compressor-ahead
+  - maximum-window-size
+  - compressor-set-buffer!
+  - compressor-buffer
+  - compressor-set-back!
+  - d
+  - compressor-ref
+  - loop
+  - j
+  - minimum-match
+  - i
+  - n
+  - compressor-pop!
+  - compressor-push!
+  - compressor-back
+  - maximum-match
+  - compressor-current
+  - compressor-write-next
   - encode-context
   - encode-context?
+  - compressor
   - null
   - encode-context-set-dictionary!
   - dictionary
@@ -3875,7 +3901,6 @@
   - bit
   - integer
   - rest
-  - byte
   - encode-integer-part
   - integer-base
   - decompose-float
@@ -3896,7 +3921,7 @@
   - encode-integer-parts
   - encode-number
   - number-base
-  - write-code
+  - compressor-write
   - head
   - encode-integer-tail
   - tail
@@ -3905,10 +3930,13 @@
   - set-instruction
   - build-primitive
   - make-encode-context
+  - make-compressor
   - count-ribs!
   - encode-context-set-counts!
   - encode-rib
   - codes
+  - compressor-flush
+  - encode-context-compressor
   - encode-context-dictionary
   - size
   - encode-context-counts
@@ -19113,14 +19141,396 @@
       - codes
       - #f
   - list
+    - define
+    - maximum-window-size
+    - 128
+  - list
+    - define
+    - minimum-match
+    - 2
+  - list
+    - define
+    - maximum-match
+    - 255
+  - list
+    - define-record-type
+    - compressor
+    - list
+      - make-compressor
+      - buffer
+      - current
+      - last
+      - back
+      - ahead
+    - compressor?
+    - list
+      - buffer
+      - compressor-buffer
+      - compressor-set-buffer!
+    - list
+      - current
+      - compressor-current
+      - compressor-set-current!
+    - list
+      - last
+      - compressor-last
+      - compressor-set-last!
+    - list
+      - back
+      - compressor-back
+      - compressor-set-back!
+    - list
+      - ahead
+      - compressor-ahead
+      - compressor-set-ahead!
+  - list
+    - define
+    - list
+      - compressor-ref
+      - compressor
+      - i
+    - list
+      - and
+      - list
+        - not
+        - list
+          - negative?
+          - i
+      - list
+        - <
+        - i
+        - list
+          - -
+          - list
+            - compressor-back
+            - compressor
+          - list
+            - compressor-ahead
+            - compressor
+      - list
+        - list-ref
+        - list
+          - compressor-buffer
+          - compressor
+        - i
+  - list
+    - define
+    - list
+      - compressor-push!
+      - compressor
+      - x
+    - list
+      - let
+      - list
+        - list
+          - xs
+          - list
+            - list
+            - x
+      - list
+        - if
+        - list
+          - pair?
+          - list
+            - compressor-buffer
+            - compressor
+        - list
+          - set-cdr!
+          - list
+            - compressor-last
+            - compressor
+          - xs
+        - list
+          - begin
+          - list
+            - compressor-set-buffer!
+            - compressor
+            - xs
+          - list
+            - compressor-set-current!
+            - compressor
+            - xs
+      - list
+        - compressor-set-last!
+        - compressor
+        - xs
+      - list
+        - compressor-set-ahead!
+        - compressor
+        - list
+          - -
+          - list
+            - compressor-ahead
+            - compressor
+          - 1
+  - list
+    - define
+    - list
+      - compressor-pop!
+      - compressor
+      - n
+    - list
+      - let
+      - list
+        - list
+          - xs
+          - list
+            - compressor-current
+            - compressor
+      - list
+        - compressor-set-current!
+        - compressor
+        - list
+          - list-tail
+          - xs
+          - n
+      - list
+        - compressor-set-ahead!
+        - compressor
+        - list
+          - -
+          - list
+            - compressor-ahead
+            - compressor
+          - n
+      - list
+        - compressor-set-back!
+        - compressor
+        - list
+          - -
+          - list
+            - compressor-back
+            - compressor
+          - n
+      - list
+        - let
+        - list
+          - list
+            - d
+            - list
+              - -
+              - list
+                - compressor-back
+                - compressor
+              - maximum-window-size
+        - list
+          - when
+          - list
+            - positive?
+            - d
+          - list
+            - compressor-set-buffer!
+            - compressor
+            - list
+              - list-tail
+              - list
+                - compressor-buffer
+                - compressor
+              - d
+          - list
+            - compressor-set-back!
+            - compressor
+            - list
+              - -
+              - list
+                - compressor-back
+                - compressor
+              - d
+      - list
+        - car
+        - xs
+  - list
+    - define
+    - list
+      - compressor-write-next
+      - compressor
+    - list
+      - let-values
+      - list
+        - list
+          - list
+            - i
+            - n
+          - list
+            - let
+            - loop
+            - list
+              - list
+                - i
+                - list
+                  - compressor-back
+                  - compressor
+              - list
+                - j
+                - 0
+              - list
+                - n
+                - 0
+            - list
+              - if
+              - list
+                - negative?
+                - i
+              - list
+                - values
+                - j
+                - n
+              - list
+                - let
+                - list
+                  - list
+                    - m
+                    - list
+                      - let
+                      - loop
+                      - list
+                        - list
+                          - n
+                          - 0
+                      - list
+                        - if
+                        - list
+                          - and
+                          - list
+                            - <
+                            - n
+                            - maximum-match
+                          - list
+                            - eq?
+                            - list
+                              - compressor-ref
+                              - compressor
+                              - list
+                                - -
+                                - list
+                                  - compressor-back
+                                  - compressor
+                                - n
+                            - list
+                              - compressor-ref
+                              - compressor
+                              - list
+                                - -
+                                - list
+                                  - -
+                                  - list
+                                    - compressor-back
+                                    - compressor
+                                  - n
+                                - i
+                                - 1
+                        - list
+                          - loop
+                          - list
+                            - -
+                            - n
+                            - 1
+                        - n
+                - list
+                  - apply
+                  - loop
+                  - list
+                    - -
+                    - i
+                    - 1
+                  - list
+                    - if
+                    - list
+                      - > =
+                      - m
+                      - n
+                    - list
+                      - list
+                      - i
+                      - m
+                    - list
+                      - list
+                      - j
+                      - n
+      - list
+        - if
+        - list
+          - >
+          - n
+          - minimum-match
+        - list
+          - begin
+          - list
+            - write-u8
+            - list
+              - -
+              - 1
+              - list
+                - -
+                - 2
+                - i
+          - list
+            - write-u8
+            - n
+          - list
+            - compressor-pop!
+            - compressor
+            - n
+        - list
+          - write-u8
+          - list
+            - -
+            - 2
+            - list
+              - compressor-pop!
+              - compressor
+              - 1
+  - list
+    - define
+    - list
+      - compressor-write
+      - compressor
+      - x
+    - list
+      - compressor-push!
+      - compressor
+      - x
+    - list
+      - when
+      - list
+        - >
+        - list
+          - compressor-back
+          - compressor
+        - maximum-match
+      - list
+        - compressor-write-next
+        - compressor
+  - list
+    - define
+    - list
+      - compressor-flush
+      - compressor
+    - list
+      - do
+      - ()
+      - list
+        - list
+          - null?
+          - list
+            - compressor-current
+            - compressor
+      - list
+        - compressor-write-next
+        - compressor
+  - list
     - define-record-type
     - encode-context
     - list
       - make-encode-context
+      - compressor
       - dictionary
       - counts
       - null
     - encode-context?
+    - list
+      - compressor
+      - encode-context-compressor
     - list
       - dictionary
       - encode-context-dictionary
@@ -19583,18 +19993,8 @@
   - list
     - define
     - list
-      - write-code
-      - byte
-    - list
-      - write-u8
-      - list
-        - -
-        - 2
-        - byte
-  - list
-    - define
-    - list
       - encode-integer-tail
+      - context
       - x
     - list
       - do
@@ -19611,7 +20011,10 @@
           - zero?
           - x
       - list
-        - write-code
+        - compressor-write
+        - list
+          - encode-context-compressor
+          - context
         - list
           - encode-integer-part
           - x
@@ -19762,7 +20165,10 @@
                   - rib-cdr
                   - value
               - list
-                - write-code
+                - compressor-write
+                - list
+                  - encode-context-compressor
+                  - context
                 - list
                   - -
                   - 2
@@ -19828,7 +20234,10 @@
                               - 1
                           - share-base
                     - list
-                      - write-code
+                      - compressor-write
+                      - list
+                        - encode-context-compressor
+                        - context
                       - list
                         - -
                         - 1
@@ -19841,6 +20250,7 @@
                             - head
                     - list
                       - encode-integer-tail
+                      - context
                       - tail
             - list
               - else
@@ -19870,7 +20280,10 @@
                         - value
                       - tag-base
                 - list
-                  - write-code
+                  - compressor-write
+                  - list
+                    - encode-context-compressor
+                    - context
                   - list
                     - -
                     - 3
@@ -19880,6 +20293,7 @@
                       - head
                 - list
                   - encode-integer-tail
+                  - context
                   - tail
               - list
                 - when
@@ -19892,7 +20306,10 @@
                   - decrement-count!
                   - entry
                 - list
-                  - write-code
+                  - compressor-write
+                  - list
+                    - encode-context-compressor
+                    - context
                   - 1
       - list
         - else
@@ -19910,7 +20327,10 @@
                   - value
                 - number-base
           - list
-            - write-code
+            - compressor-write
+            - list
+              - encode-context-compressor
+              - context
             - list
               - -
               - 7
@@ -19920,6 +20340,7 @@
                 - head
           - list
             - encode-integer-tail
+            - context
             - tail
   - list
     - define
@@ -19982,6 +20403,17 @@
           - list
             - make-encode-context
             - list
+              - make-compressor
+              - list
+                - quote
+                - ()
+              - list
+                - quote
+                - ()
+              - #f
+              - 0
+              - 0
+            - list
               - quote
               - ()
             - list
@@ -20018,6 +20450,11 @@
         - encode-rib
         - context
         - codes
+      - list
+        - compressor-flush
+        - list
+          - encode-context-compressor
+          - context
       - list
         - let
         - list

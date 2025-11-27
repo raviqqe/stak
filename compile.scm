@@ -1603,13 +1603,106 @@
       codes
       #f))
 
+    ; Compression
+
+    (define maximum-window-size 128) ; inclusive
+    (define minimum-match 2) ; exclusive
+    (define maximum-match 255) ; inclusive
+
+    ;; Compressor
+
+    (define-record-type compressor
+     (make-compressor buffer current last back ahead)
+     compressor?
+     (buffer compressor-buffer compressor-set-buffer!)
+     (current compressor-current compressor-set-current!)
+     (last compressor-last compressor-set-last!)
+     (back compressor-back compressor-set-back!)
+     (ahead compressor-ahead compressor-set-ahead!))
+
+    (define (compressor-ref compressor i)
+     (and
+      (not (negative? i))
+      (< i (+ (compressor-back compressor) (compressor-ahead compressor)))
+      (list-ref (compressor-buffer compressor) i)))
+
+    (define (compressor-push! compressor x)
+     (let ((xs (list x)))
+      (if (pair? (compressor-buffer compressor))
+       (set-cdr! (compressor-last compressor) xs)
+       (begin
+        (compressor-set-buffer! compressor xs)
+        (compressor-set-current! compressor xs)))
+      (compressor-set-last! compressor xs)
+      (compressor-set-ahead!
+       compressor
+       (+ (compressor-ahead compressor) 1))))
+
+    (define (compressor-pop! compressor n)
+     (let ((xs (compressor-current compressor)))
+      (compressor-set-current! compressor (list-tail xs n))
+      (compressor-set-ahead! compressor (- (compressor-ahead compressor) n))
+      (compressor-set-back! compressor (+ (compressor-back compressor) n))
+
+      (let ((d (- (compressor-back compressor) maximum-window-size)))
+       (when (positive? d)
+        (compressor-set-buffer!
+         compressor
+         (list-tail (compressor-buffer compressor) d))
+        (compressor-set-back! compressor (- (compressor-back compressor) d))))
+
+      (car xs)))
+
+    (define (compressor-write-next compressor)
+     (let-values (((i n)
+                   (let loop ((i (compressor-back compressor)) (j 0) (n 0))
+                    (if (negative? i)
+                     (values j n)
+                     (let ((m
+                            (let loop ((n 0))
+                             (if (and
+                                  (< n maximum-match)
+                                  (eq?
+                                   (compressor-ref
+                                    compressor
+                                    (+ (compressor-back compressor) n))
+                                   (compressor-ref
+                                    compressor
+                                    (- (+ (compressor-back compressor) n) i 1))))
+                              (loop (+ n 1))
+                              n))))
+                      (apply
+                       loop
+                       (- i 1)
+                       (if (>= m n)
+                        (list i m)
+                        (list j n))))))))
+      (if (> n minimum-match)
+       (begin
+        (write-u8 (+ 1 (* 2 i)))
+        (write-u8 n)
+        (compressor-pop! compressor n))
+       (write-u8 (* 2 (compressor-pop! compressor 1))))))
+
+    (define (compressor-write compressor x)
+     (compressor-push! compressor x)
+
+     (when (> (compressor-back compressor) maximum-match)
+      (compressor-write-next compressor)))
+
+    (define (compressor-flush compressor)
+     (do ()
+      ((null? (compressor-current compressor)))
+      (compressor-write-next compressor)))
+
     ; Encoding
 
     ;; Context
 
     (define-record-type encode-context
-     (make-encode-context dictionary counts null)
+     (make-encode-context compressor dictionary counts null)
      encode-context?
+     (compressor encode-context-compressor)
      (dictionary encode-context-dictionary encode-context-set-dictionary!)
      (counts encode-context-counts encode-context-set-counts!)
      (null encode-context-null))
@@ -1729,15 +1822,13 @@
        (encode-integer-part integer base (if (zero? rest) 0 1))
        rest)))
 
-    (define (write-code byte)
-     (write-u8 (* 2 byte)))
-
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
     ; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
-    (define (encode-integer-tail x)
+    (define (encode-integer-tail context x)
      (do ((x x (quotient x integer-base)))
       ((zero? x))
-      (write-code
+      (compressor-write
+       (encode-context-compressor context)
        (encode-integer-part
         x
         integer-base
@@ -1775,7 +1866,9 @@
            (integer? (rib-car value))
            (<= 0 (rib-car value) 63))
           (encode-rib context (rib-cdr value))
-          (write-code (* 2 (rib-car value))))
+          (compressor-write
+           (encode-context-compressor context)
+           (* 2 (rib-car value))))
 
          ((and entry (encode-context-index context value)) =>
           (lambda (index)
@@ -1788,26 +1881,30 @@
                           (encode-integer-parts
                            (+ (* 2 index) (if removed 0 1))
                            share-base)))
-             (write-code (+ 1 (* 4 (+ 1 head))))
-             (encode-integer-tail tail)))))
+             (compressor-write
+              (encode-context-compressor context)
+              (+ 1 (* 4 (+ 1 head))))
+             (encode-integer-tail context tail)))))
 
          (else
           (encode-rib context (rib-car value))
           (encode-rib context (rib-cdr value))
 
           (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-           (write-code (+ 3 (* 8 head)))
-           (encode-integer-tail tail))
+           (compressor-write
+            (encode-context-compressor context)
+            (+ 3 (* 8 head)))
+           (encode-integer-tail context tail))
 
           (when entry
            (encode-context-push! context value)
            (decrement-count! entry)
-           (write-code 1))))))
+           (compressor-write (encode-context-compressor context) 1))))))
 
       (else
        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-code (+ 7 (* 8 head)))
-        (encode-integer-tail tail)))))
+        (compressor-write (encode-context-compressor context) (+ 7 (* 8 head)))
+        (encode-integer-tail context tail)))))
 
     ;; Primitives
 
@@ -1831,7 +1928,12 @@
     ;; Main
 
     (define (encode codes)
-     (let ((context (make-encode-context '() '() (rib-car (rib-car codes)))))
+     (let ((context
+            (make-encode-context
+             (make-compressor '() '() #f 0 0)
+             '()
+             '()
+             (rib-car (rib-car codes)))))
       (count-ribs! context codes)
       (encode-context-set-counts!
        context
@@ -1839,6 +1941,7 @@
         (lambda (pair) (> (cdr pair) 1))
         (encode-context-counts context)))
       (encode-rib context codes)
+      (compressor-flush (encode-context-compressor context))
 
       (let ((size (length (encode-context-dictionary context))))
        (unless (zero? size)

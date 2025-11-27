@@ -16,10 +16,7 @@ for file in $(list_scheme_files); do
   base=snapshots/${file%.scm}
 
   mkdir -p $(dirname $base)
-  cat prelude.scm $file |
-    stak-compile --shake-tree |
-    stak-lzss right-shift 1 |
-    stak-lzss compress >$base.bc
+  cat prelude.scm $file | stak-compile --shake-tree >$base.bc
   stak-decode <$base.bc >$base.md
 done
 
