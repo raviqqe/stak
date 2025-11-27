@@ -689,6 +689,7 @@
     (define assq (primitive 60))
     (define cons (primitive 61))
     (define memq (primitive 62))
+    (define list-tail (primitive 63))
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
     (define exp (primitive 500))
@@ -1025,11 +1026,6 @@
         (cons
           (car xs)
           (list-head (cdr xs) (- index 1)))))
-
-    (define (list-tail xs index)
-      (if (boolean-or (zero? index) (not (pair? xs)))
-        xs
-        (list-tail (cdr xs) (- index 1))))
 
     (define (member x xs . rest)
       (define eq?
