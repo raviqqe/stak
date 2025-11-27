@@ -37,7 +37,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.11.9"
+version = "0.11.10"
 edition = "2024"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
