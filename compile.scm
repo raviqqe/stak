@@ -1859,17 +1859,6 @@
        (let* ((value (strip-nop-instructions value))
               (entry (encode-context-find-count context value)))
         (cond
-         ((and
-           (not entry)
-           (zero? (rib-tag value))
-           (number? (rib-car value))
-           (integer? (rib-car value))
-           (<= 0 (rib-car value) 63))
-          (encode-rib context (rib-cdr value))
-          (compressor-write
-           (encode-context-compressor context)
-           (* 2 (rib-car value))))
-
          ((and entry (encode-context-index context value)) =>
           (lambda (index)
            (decrement-count! entry)
