@@ -136,6 +136,9 @@
 - constant 62
 - call 1 #f primitive
 - set memq
+- constant 63
+- call 1 #f primitive
+- set list-tail
 - constant 70
 - call 1 #f primitive
 - set eqv?
@@ -873,26 +876,6 @@
   - call 2 #f list-head
   - call 2 #f cons
 - set list-head
-- constant procedure 2 #f
-  - get 0
-  - constant 0
-  - call 2 #f eq?
-  - if
-    - constant #t
-    - continue
-  - get 1
-  - call 1 #f pair?
-  - constant #f
-  - call 2 #f eq?
-  - if
-    - get 1
-  - get 1
-  - call 1 #f cdr
-  - get 1
-  - constant 1
-  - call 2 #f ||
-  - call 2 #f list-tail
-- set list-tail
 - constant procedure 2 #t
   - constant procedure 1 #f
     - get 2
