@@ -12,7 +12,7 @@ update_bytecode() (
 
 update_cargo_toml() (
   for directory in $(git ls-files '*/src/main.rs' | sed s%/src/main.rs%%) wasm; do
-    cargo_file=$directory/Cargo.toml
+    file=$directory/Cargo.toml
 
     for profile in dev release; do
       cat <<EOF
@@ -28,9 +28,9 @@ opt-level = 3
 debug-assertions = false
 overflow-checks = false
 EOF
-    done >>$cargo_file
+    done >>$file
 
-    git add $cargo_file
+    git add $file
   done
 )
 
