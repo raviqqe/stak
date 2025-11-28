@@ -10,13 +10,13 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-device = { path = "../device", version = "0.11.9" }
-stak-file = { path = "../file", version = "0.11.9" }
-stak-inexact = { path = "../inexact", version = "0.11.9" }
-stak-native = { path = "../native", version = "0.11.9" }
-stak-process-context = { path = "../process-context", version = "0.11.9" }
-stak-time = { path = "../time", version = "0.11.9" }
-stak-vm = { path = "../vm", version = "0.11.9" }
+stak-device = { path = "../device", version = "0.11.10" }
+stak-file = { path = "../file", version = "0.11.10" }
+stak-inexact = { path = "../inexact", version = "0.11.10" }
+stak-native = { path = "../native", version = "0.11.10" }
+stak-process-context = { path = "../process-context", version = "0.11.10" }
+stak-time = { path = "../time", version = "0.11.10" }
+stak-vm = { path = "../vm", version = "0.11.10" }
 winter-maybe-async = "0.13.1"
 
 [features]
