@@ -1854,46 +1854,42 @@
            (* 4096 m))))))))
 
     (define (encode-rib context value)
-     (cond
-      ((rib? value)
-       (let* ((value (strip-nop-instructions value))
-              (entry (encode-context-find-count context value)))
-        (cond
-         ((and entry (encode-context-index context value)) =>
-          (lambda (index)
-           (decrement-count! entry)
-           (let ((removed (zero? (cdr entry))))
-            (encode-context-remove! context index)
-            (unless removed
-             (encode-context-push! context value))
-            (let-values (((head tail)
-                          (encode-integer-parts
-                           (+ (* 2 index) (if removed 0 1))
-                           share-base)))
-             (compressor-write
-              (encode-context-compressor context)
-              (+ 1 (* 4 (+ 1 head))))
-             (encode-integer-tail context tail)))))
+     (if (rib? value)
+      (let* ((value (strip-nop-instructions value))
+             (entry (encode-context-find-count context value)))
+       (cond
+        ((and entry (encode-context-index context value)) =>
+         (lambda (index)
+          (decrement-count! entry)
+          (let ((removed (zero? (cdr entry))))
+           (encode-context-remove! context index)
+           (unless removed
+            (encode-context-push! context value))
+           (let-values (((head tail)
+                         (encode-integer-parts
+                          (+ (* 2 index) (if removed 0 1))
+                          share-base)))
+            (compressor-write
+             (encode-context-compressor context)
+             (+ 1 (* 4 (+ 1 head))))
+            (encode-integer-tail context tail)))))
+        (else
+         (encode-rib context (rib-car value))
+         (encode-rib context (rib-cdr value))
 
-         (else
-          (encode-rib context (rib-car value))
-          (encode-rib context (rib-cdr value))
+         (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
+          (compressor-write
+           (encode-context-compressor context)
+           (+ 3 (* 8 head)))
+          (encode-integer-tail context tail))
 
-          (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-           (compressor-write
-            (encode-context-compressor context)
-            (+ 3 (* 8 head)))
-           (encode-integer-tail context tail))
-
-          (when entry
-           (encode-context-push! context value)
-           (decrement-count! entry)
-           (compressor-write (encode-context-compressor context) 1))))))
-
-      (else
-       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (compressor-write (encode-context-compressor context) (+ 7 (* 8 head)))
-        (encode-integer-tail context tail)))))
+         (when entry
+          (encode-context-push! context value)
+          (decrement-count! entry)
+          (compressor-write (encode-context-compressor context) 1)))))
+      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
+       (compressor-write (encode-context-compressor context) (+ 7 (* 8 head)))
+       (encode-integer-tail context tail))))
 
     ;; Primitives
 
