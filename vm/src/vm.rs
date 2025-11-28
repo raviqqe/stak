@@ -462,13 +462,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
-            if head & 1 == 0 {
-                let cdr = self.memory.top()?;
-                let cons = self
-                    .memory
-                    .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
-                self.memory.set_top(cons.into())?;
-            } else if head & 0b10 == 0 {
+            if head & 0b10 == 0 {
                 let head = head >> 2;
 
                 if head == 0 {
