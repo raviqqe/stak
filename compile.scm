@@ -1814,12 +1814,12 @@
         (values (exact (round (mantissa y))) (exact y))))))
 
     (define (encode-integer-part integer base bit)
-     (+ bit (* 2 (modulo integer base))))
+     (+ (if bit 0 1) (* 2 (modulo integer base))))
 
     (define (encode-integer-parts integer base)
      (let ((rest (quotient integer base)))
       (values
-       (encode-integer-part integer base (if (zero? rest) 0 1))
+       (encode-integer-part integer base (zero? rest))
        rest)))
 
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
@@ -1832,7 +1832,7 @@
        (encode-integer-part
         x
         integer-base
-        (if (zero? (quotient x integer-base)) 0 1)))))
+        (zero? (quotient x integer-base))))))
 
     (define (encode-number x)
      (cond
