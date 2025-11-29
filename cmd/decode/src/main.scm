@@ -8,9 +8,9 @@
 (define call-instruction 4)
 
 (define integer-base 64)
-(define number-base 8)
-(define tag-base 8)
-(define share-base 15)
+(define number-base 16)
+(define tag-base 16)
+(define share-base 31)
 
 (define window-size 127)
 
@@ -137,13 +137,10 @@
     ((eof-object? byte))
     (cond
       ((even? byte)
-        (stack-push! stack (cons (quotient byte 2) (stack-pop! stack))))
-      ((even? (quotient byte 2))
-        (let ((head (quotient byte 4)))
+        (let ((head (quotient byte 2)))
           (if (zero? head)
             (stack-push! dictionary (stack-top stack))
-            (let* ((head (quotient byte 4))
-                   (integer (decode-integer-tail decompressor (- head 1) share-base))
+            (let* ((integer (decode-integer-tail decompressor (- head 1) share-base))
                    (index (quotient integer 2)))
               (when (> index 0)
                 (stack-swap! dictionary index))
@@ -151,15 +148,15 @@
                 (when (even? integer)
                   (stack-pop! dictionary))
                 (stack-push! stack value))))))
-      ((even? (quotient byte 4))
+      ((even? (quotient byte 2))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
-               (tag (decode-integer-tail decompressor (quotient byte 8) tag-base)))
+               (tag (decode-integer-tail decompressor (quotient byte 4) tag-base)))
           (stack-push! stack (rib a d tag))))
       (else
         (stack-push!
           stack
-          (decode-number (decode-integer-tail decompressor (quotient byte 8) number-base))))))
+          (decode-number (decode-integer-tail decompressor (quotient byte 4) number-base))))))
 
   (stack-pop! stack))
 
