@@ -3879,7 +3879,6 @@
   - compressor-write-next
   - encode-context
   - encode-context?
-  - compressor
   - null
   - encode-context-set-dictionary!
   - dictionary
@@ -3922,6 +3921,7 @@
   - encode-number
   - number-base
   - compressor-write
+  - compressor
   - head
   - encode-integer-tail
   - tail
@@ -19623,15 +19623,15 @@
   - list
     - define
     - number-base
-    - 8
+    - 16
   - list
     - define
     - tag-base
-    - 8
+    - 16
   - list
     - define
     - share-base
-    - 15
+    - 31
   - list
     - define
     - list
@@ -19953,7 +19953,11 @@
       - bit
     - list
       - -
-      - bit
+      - list
+        - if
+        - bit
+        - 0
+        - 1
       - list
         - -
         - 2
@@ -19983,12 +19987,8 @@
           - integer
           - base
           - list
-            - if
-            - list
-              - zero?
-              - rest
-            - 0
-            - 1
+            - zero?
+            - rest
         - rest
   - list
     - define
@@ -20020,15 +20020,11 @@
           - x
           - integer-base
           - list
-            - if
+            - zero?
             - list
-              - zero?
-              - list
-                - quotient
-                - x
-                - integer-base
-            - 0
-            - 1
+              - quotient
+              - x
+              - integer-base
   - list
     - define
     - list
@@ -20109,194 +20105,186 @@
       - context
       - value
     - list
-      - cond
+      - define
+      - compressor
       - list
+        - encode-context-compressor
+        - context
+    - list
+      - if
+      - list
+        - rib?
+        - value
+      - list
+        - let\*
         - list
-          - rib?
-          - value
+          - list
+            - value
+            - list
+              - strip-nop-instructions
+              - value
+          - list
+            - entry
+            - list
+              - encode-context-find-count
+              - context
+              - value
         - list
-          - let\*
+          - cond
           - list
             - list
-              - value
-              - list
-                - strip-nop-instructions
-                - value
-            - list
+              - and
               - entry
               - list
-                - encode-context-find-count
+                - encode-context-index
                 - context
                 - value
-          - list
-            - cond
+            - =>
             - list
+              - lambda
               - list
-                - and
+                - index
+              - list
+                - decrement-count!
                 - entry
-                - list
-                  - encode-context-index
-                  - context
-                  - value
-              - =>
               - list
-                - lambda
+                - let
                 - list
-                  - index
-                - list
-                  - decrement-count!
-                  - entry
-                - list
-                  - let
                   - list
-                    - list
-                      - removed
-                      - list
-                        - zero?
-                        - list
-                          - cdr
-                          - entry
-                  - list
-                    - encode-context-remove!
-                    - context
-                    - index
-                  - list
-                    - unless
                     - removed
                     - list
-                      - encode-context-push!
-                      - context
-                      - value
+                      - zero?
+                      - list
+                        - cdr
+                        - entry
+                - list
+                  - encode-context-remove!
+                  - context
+                  - index
+                - list
+                  - unless
+                  - removed
                   - list
-                    - let-values
+                    - encode-context-push!
+                    - context
+                    - value
+                - list
+                  - let-values
+                  - list
                     - list
                       - list
+                        - head
+                        - tail
+                      - list
+                        - encode-integer-parts
                         - list
-                          - head
-                          - tail
-                        - list
-                          - encode-integer-parts
+                          - -
                           - list
                             - -
-                            - list
-                              - -
-                              - 2
-                              - index
-                            - list
-                              - if
-                              - removed
-                              - 0
-                              - 1
-                          - share-base
+                            - 2
+                            - index
+                          - list
+                            - if
+                            - removed
+                            - 0
+                            - 1
+                        - share-base
+                  - list
+                    - compressor-write
+                    - compressor
                     - list
-                      - compressor-write
-                      - list
-                        - encode-context-compressor
-                        - context
+                      - -
+                      - 2
                       - list
                         - -
                         - 1
-                        - list
-                          - -
-                          - 4
-                          - list
-                            - -
-                            - 1
-                            - head
-                    - list
-                      - encode-integer-tail
-                      - context
-                      - tail
-            - list
-              - else
-              - list
-                - encode-rib
-                - context
-                - list
-                  - rib-car
-                  - value
-              - list
-                - encode-rib
-                - context
-                - list
-                  - rib-cdr
-                  - value
-              - list
-                - let-values
-                - list
+                        - head
                   - list
-                    - list
-                      - head
-                      - tail
-                    - list
-                      - encode-integer-parts
-                      - list
-                        - rib-tag
-                        - value
-                      - tag-base
-                - list
-                  - compressor-write
-                  - list
-                    - encode-context-compressor
+                    - encode-integer-tail
                     - context
+                    - tail
+          - list
+            - else
+            - list
+              - encode-rib
+              - context
+              - list
+                - rib-car
+                - value
+            - list
+              - encode-rib
+              - context
+              - list
+                - rib-cdr
+                - value
+            - list
+              - let-values
+              - list
+                - list
+                  - list
+                    - head
+                    - tail
+                  - list
+                    - encode-integer-parts
+                    - list
+                      - rib-tag
+                      - value
+                    - tag-base
+              - list
+                - compressor-write
+                - compressor
+                - list
+                  - -
+                  - 1
                   - list
                     - -
-                    - 3
-                    - list
-                      - -
-                      - 8
-                      - head
-                - list
-                  - encode-integer-tail
-                  - context
-                  - tail
+                    - 4
+                    - head
               - list
-                - when
-                - entry
-                - list
-                  - encode-context-push!
-                  - context
-                  - value
-                - list
-                  - decrement-count!
-                  - entry
-                - list
-                  - compressor-write
-                  - list
-                    - encode-context-compressor
-                    - context
-                  - 1
-      - list
-        - else
-        - list
-          - let-values
-          - list
-            - list
-              - list
-                - head
+                - encode-integer-tail
+                - context
                 - tail
-              - list
-                - encode-integer-parts
-                - list
-                  - encode-number
-                  - value
-                - number-base
-          - list
-            - compressor-write
             - list
-              - encode-context-compressor
-              - context
+              - when
+              - entry
+              - list
+                - encode-context-push!
+                - context
+                - value
+              - list
+                - decrement-count!
+                - entry
+              - list
+                - compressor-write
+                - compressor
+                - 0
+      - list
+        - let-values
+        - list
+          - list
+            - list
+              - head
+              - tail
+            - list
+              - encode-integer-parts
+              - list
+                - encode-number
+                - value
+              - number-base
+        - list
+          - compressor-write
+          - compressor
+          - list
+            - -
+            - 3
             - list
               - -
-              - 7
-              - list
-                - -
-                - 8
-                - head
-          - list
-            - encode-integer-tail
-            - context
-            - tail
+              - 4
+              - head
+        - list
+          - encode-integer-tail
+          - context
+          - tail
   - list
     - define
     - list
