@@ -1,11 +1,9 @@
 version: 2
-configuration:
-  rust: &rust
-    builder: rust
 builds:
-  - <<: *rust
+  - &rust
     id: stak
     binary: stak
+    builder: rust
     flags: --release -p=stak
   - <<: *rust
     id: stak-compile
