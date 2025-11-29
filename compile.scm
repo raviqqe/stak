@@ -1727,9 +1727,9 @@
     ;; Codes
 
     (define integer-base 64)
-    (define number-base 8)
-    (define tag-base 8)
-    (define share-base 15)
+    (define number-base 16)
+    (define tag-base 16)
+    (define share-base 31)
 
     (define (shared-value? value)
      (and
@@ -1814,12 +1814,12 @@
         (values (exact (round (mantissa y))) (exact y))))))
 
     (define (encode-integer-part integer base bit)
-     (+ bit (* 2 (modulo integer base))))
+     (+ (if bit 0 1) (* 2 (modulo integer base))))
 
     (define (encode-integer-parts integer base)
      (let ((rest (quotient integer base)))
       (values
-       (encode-integer-part integer base (if (zero? rest) 0 1))
+       (encode-integer-part integer base (zero? rest))
        rest)))
 
     ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
@@ -1832,7 +1832,7 @@
        (encode-integer-part
         x
         integer-base
-        (if (zero? (quotient x integer-base)) 0 1)))))
+        (zero? (quotient x integer-base))))))
 
     (define (encode-number x)
      (cond
@@ -1854,46 +1854,40 @@
            (* 4096 m))))))))
 
     (define (encode-rib context value)
-     (cond
-      ((rib? value)
-       (let* ((value (strip-nop-instructions value))
-              (entry (encode-context-find-count context value)))
-        (cond
-         ((and entry (encode-context-index context value)) =>
-          (lambda (index)
-           (decrement-count! entry)
-           (let ((removed (zero? (cdr entry))))
-            (encode-context-remove! context index)
-            (unless removed
-             (encode-context-push! context value))
-            (let-values (((head tail)
-                          (encode-integer-parts
-                           (+ (* 2 index) (if removed 0 1))
-                           share-base)))
-             (compressor-write
-              (encode-context-compressor context)
-              (+ 1 (* 4 (+ 1 head))))
-             (encode-integer-tail context tail)))))
+     (define compressor (encode-context-compressor context))
 
-         (else
-          (encode-rib context (rib-car value))
-          (encode-rib context (rib-cdr value))
+     (if (rib? value)
+      (let* ((value (strip-nop-instructions value))
+             (entry (encode-context-find-count context value)))
+       (cond
+        ((and entry (encode-context-index context value)) =>
+         (lambda (index)
+          (decrement-count! entry)
+          (let ((removed (zero? (cdr entry))))
+           (encode-context-remove! context index)
+           (unless removed
+            (encode-context-push! context value))
+           (let-values (((head tail)
+                         (encode-integer-parts
+                          (+ (* 2 index) (if removed 0 1))
+                          share-base)))
+            (compressor-write compressor (* 2 (+ 1 head)))
+            (encode-integer-tail context tail)))))
+        (else
+         (encode-rib context (rib-car value))
+         (encode-rib context (rib-cdr value))
 
-          (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-           (compressor-write
-            (encode-context-compressor context)
-            (+ 3 (* 8 head)))
-           (encode-integer-tail context tail))
+         (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
+          (compressor-write compressor (+ 1 (* 4 head)))
+          (encode-integer-tail context tail))
 
-          (when entry
-           (encode-context-push! context value)
-           (decrement-count! entry)
-           (compressor-write (encode-context-compressor context) 1))))))
-
-      (else
-       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (compressor-write (encode-context-compressor context) (+ 7 (* 8 head)))
-        (encode-integer-tail context tail)))))
+         (when entry
+          (encode-context-push! context value)
+          (decrement-count! entry)
+          (compressor-write compressor 0)))))
+      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
+       (compressor-write compressor (+ 3 (* 4 head)))
+       (encode-integer-tail context tail))))
 
     ;; Primitives
 

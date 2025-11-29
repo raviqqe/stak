@@ -462,8 +462,8 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
-            if head & 0b10 == 0 {
-                let head = head >> 2;
+            if head & 0b1 == 0 {
+                let head = head >> 1;
 
                 if head == 0 {
                     let value = self.memory.top()?;
@@ -491,11 +491,11 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
                     self.memory.push(value)?;
                 }
-            } else if head & 0b100 == 0 {
+            } else if head & 0b10 == 0 {
                 let cons = self.memory.stack();
                 let cdr = self.memory.pop()?;
                 let car = self.memory.top()?;
-                let tag = Self::decode_integer_tail(&mut input, head >> 3, TAG_BASE)?;
+                let tag = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
                 self.memory.set_car(cons, car)?;
                 self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _))?;
                 self.memory.set_top(cons.into())?;
@@ -503,7 +503,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(
                         &mut input,
-                        head >> 3,
+                        head >> 2,
                         NUMBER_BASE,
                     )?)
                     .into(),
