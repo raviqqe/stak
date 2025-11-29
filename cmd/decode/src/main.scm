@@ -50,7 +50,7 @@
 (define (decompressor-push! decompressor x)
   (window-push! (decompressor-window decompressor) x))
 
-(define (read-code decompressor)
+(define (decompressor-read decompressor)
   (cond
     ((eof-object? (peek-u8))
       (eof-object))
@@ -64,7 +64,7 @@
           (begin
             (decompressor-set-offset! decompressor y)
             (decompressor-set-length! decompressor (read-u8))
-            (read-code decompressor)))))
+            (decompressor-read decompressor)))))
     (else
       (let ((x
               (decompressor-ref
@@ -109,7 +109,7 @@
              (base base))
     (if (even? x)
       y
-      (let ((x (read-code decompressor)))
+      (let ((x (decompressor-read decompressor)))
         (loop x (+ y (* base (quotient x 2))) (* base integer-base))))))
 
 (define (decode-number integer)
@@ -133,7 +133,7 @@
       0
       0))
 
-  (do ((byte (read-code decompressor) (read-code decompressor)))
+  (do ((byte (decompressor-read decompressor) (decompressor-read decompressor)))
     ((eof-object? byte))
     (cond
       ((even? byte)
