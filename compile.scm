@@ -1854,6 +1854,8 @@
            (* 4096 m))))))))
 
     (define (encode-rib context value)
+     (define compressor (encode-context-compressor context))
+
      (if (rib? value)
       (let* ((value (strip-nop-instructions value))
              (entry (encode-context-find-count context value)))
@@ -1869,26 +1871,22 @@
                          (encode-integer-parts
                           (+ (* 2 index) (if removed 0 1))
                           share-base)))
-            (compressor-write
-             (encode-context-compressor context)
-             (* 2 (+ 1 head)))
+            (compressor-write compressor (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
         (else
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
 
          (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-          (compressor-write
-           (encode-context-compressor context)
-           (+ 1 (* 4 head)))
+          (compressor-write compressor (+ 1 (* 4 head)))
           (encode-integer-tail context tail))
 
          (when entry
           (encode-context-push! context value)
           (decrement-count! entry)
-          (compressor-write (encode-context-compressor context) 0)))))
+          (compressor-write compressor 0)))))
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-       (compressor-write (encode-context-compressor context) (+ 3 (* 4 head)))
+       (compressor-write compressor (+ 3 (* 4 head)))
        (encode-integer-tail context tail))))
 
     ;; Primitives
