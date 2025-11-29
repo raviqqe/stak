@@ -16,15 +16,15 @@ main_error = { version = "0.1.2", optional = true }
 origin = { version = "0.26.2", default-features = false, features = [
   "libc",
 ], optional = true }
-stak-configuration = { path = "../configuration", version = "0.11.10" }
-stak-device = { path = "../device", version = "0.11.10" }
-stak-file = { path = "../file", version = "0.11.10" }
-stak-libc = { path = "../libc", version = "0.11.10", optional = true }
-stak-macro = { path = "../macro", version = "0.11.10" }
-stak-process-context = { path = "../process-context", version = "0.11.10" }
-stak-r7rs = { path = "../r7rs", version = "0.11.10" }
-stak-time = { path = "../time", version = "0.11.10" }
-stak-vm = { path = "../vm", version = "0.11.10" }
+stak-configuration = { path = "../configuration", version = "0.11.11" }
+stak-device = { path = "../device", version = "0.11.11" }
+stak-file = { path = "../file", version = "0.11.11" }
+stak-libc = { path = "../libc", version = "0.11.11", optional = true }
+stak-macro = { path = "../macro", version = "0.11.11" }
+stak-process-context = { path = "../process-context", version = "0.11.11" }
+stak-r7rs = { path = "../r7rs", version = "0.11.11" }
+stak-time = { path = "../time", version = "0.11.11" }
+stak-vm = { path = "../vm", version = "0.11.11" }
 
 [dev-dependencies]
 stak = { path = "../root" }
