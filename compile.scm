@@ -1727,9 +1727,9 @@
     ;; Codes
 
     (define integer-base 64)
-    (define number-base 8)
-    (define tag-base 8)
-    (define share-base 15)
+    (define number-base 16)
+    (define tag-base 16)
+    (define share-base 31)
 
     (define (shared-value? value)
      (and
@@ -1871,7 +1871,7 @@
                           share-base)))
             (compressor-write
              (encode-context-compressor context)
-             (+ 1 (* 4 (+ 1 head))))
+             (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
         (else
          (encode-rib context (rib-car value))
@@ -1880,15 +1880,15 @@
          (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
           (compressor-write
            (encode-context-compressor context)
-           (+ 3 (* 8 head)))
+           (+ 1 (* 4 head)))
           (encode-integer-tail context tail))
 
          (when entry
           (encode-context-push! context value)
           (decrement-count! entry)
-          (compressor-write (encode-context-compressor context) 1)))))
+          (compressor-write (encode-context-compressor context) 0)))))
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-       (compressor-write (encode-context-compressor context) (+ 7 (* 8 head)))
+       (compressor-write (encode-context-compressor context) (+ 3 (* 4 head)))
        (encode-integer-tail context tail))))
 
     ;; Primitives
