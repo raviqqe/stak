@@ -463,7 +463,7 @@
     ;; Binding
 
     (define-syntax let
-      (syntax-rules (define define-record-type define-syntax define-values)
+      (syntax-rules (begin define define-record-type define-syntax define-values)
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
