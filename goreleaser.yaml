@@ -3,7 +3,6 @@ builds:
   - &rust
     binary: stak
     builder: rust
-    command: build
     flags: --release -p=stak
     id: stak
   - <<: *rust
