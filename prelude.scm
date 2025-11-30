@@ -1446,10 +1446,10 @@
             (define set (record-setter index))
             ...))
 
-        ((_ "field" () () index statement ...)
+        ((_ "field" () () _ statement ...)
           (begin statement ...))
 
-        ((_ "field" (body ...) () index statement ...)
+        ((_ "field" (body ...) () _ statement ...)
           (let () statement ... body ...))
 
         ((_ id
@@ -1479,7 +1479,8 @@
             constructor
             predicate
             ((accessor ...) ...)
-            (body ...)))))
+            body
+            ...))))
 
     (define record? (instance? record-type))
 
