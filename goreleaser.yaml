@@ -6,7 +6,6 @@ builds:
     command: build
     flags: --release -p=stak
     id: stak
-    tool: cross
   - <<: *rust
     binary: stak-compile
     flags: --release -p=stak-compile

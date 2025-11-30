@@ -51,7 +51,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: cargo install cross --git https://github.com/cross-rs/cross
+      - run: brew install zig
+      - run: cargo install --locked cargo-zigbuild
       - id: version
         run: echo version=v$(cargo run --bin stak -- --version | grep -o '[0-9.]*') > ${{ github.output }}
       - uses: raviqqe/goreleaser-action@v1
