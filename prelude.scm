@@ -464,9 +464,6 @@
 
     (define-syntax let
       (syntax-rules (begin define define-record-type define-syntax define-values)
-        ((_ () (begin statement ...) body1 body2 ...)
-          ((lambda () (begin statement ...) body1 body2 ...)))
-
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
