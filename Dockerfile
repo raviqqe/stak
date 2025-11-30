@@ -9,7 +9,7 @@ ARG DIRECTORY=.
 ADD . /src
 WORKDIR /src/$DIRECTORY
 RUN cargo build --locked --release --bin $BINARY --target $(uname -m)-unknown-linux-musl
-COPY target/*-unknown-linux-musl/release/$BINARY /app
+RUN cp target/*-unknown-linux-musl/release/$BINARY /app
 
 FROM scratch
 
