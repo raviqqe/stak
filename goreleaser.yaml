@@ -1,18 +1,19 @@
 version: 2
 builds:
-  - id: stak
+  - &rust
     binary: stak
     builder: rust
     flags: --release -p=stak
-  - id: stak-compile
+    id: stak
+  - <<: *rust
     binary: stak-compile
-    builder: rust
     flags: --release -p=stak-compile
-  - id: stak-interpret
+    id: stak-compile
+  - <<: *rust
     binary: stak-interpret
-    builder: rust
     flags: --release -p=stak-interpret
-  - id: stak-repl
+    id: stak-interpret
+  - <<: *rust
     binary: stak-repl
-    builder: rust
     flags: --release -p=stak-repl
+    id: stak-repl
