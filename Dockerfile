@@ -15,5 +15,4 @@ ARG BINARY=stak
 ARG DIRECTORY=.
 
 COPY --from=build /src/$DIRECTORY/target/*-unknown-linux-musl/release/$BINARY /
-RUN ["/$BINARY", "--version"]
 ENTRYPOINT ["/$BINARY"]
