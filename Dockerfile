@@ -6,7 +6,7 @@ ADD . /src
 WORKDIR /src
 RUN apk add build-base
 WORKDIR $DIRECTORY
-RUN cargo install stak
+RUN cargo install --locked stak
 RUN cargo build --release --locked --target $(uname -m)-unknown-linux-musl
 
 FROM scratch
