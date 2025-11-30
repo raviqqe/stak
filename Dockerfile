@@ -15,5 +15,5 @@ FROM scratch
 ARG BINARY=stak
 ARG DIRECTORY=.
 
-COPY --from=build /src/$DIRECTORY/target/*-unknown-linux-musl/release/$BINARY /
-ENTRYPOINT ["/$BINARY"]
+COPY --from=build /src/$DIRECTORY/target/*-unknown-linux-musl/release/$BINARY /app
+ENTRYPOINT ["/app"]
