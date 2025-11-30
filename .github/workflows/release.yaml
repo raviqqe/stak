@@ -88,8 +88,12 @@ jobs:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
         if: ${{ github.ref == 'refs/heads/main' }}
-      - id: version
-        run: echo version=$(git tag --points-at | sed s/^v//) >> ${{ github.output }}
+      - id: metadata
+        run: |
+          (
+            echo image=${{ vars.DOCKER_USER }}/${{ matrix.image.binary }}
+            echo version=$(git tag --points-at | sed s/^v//)
+          ) >> ${{ github.output }}
       - uses: docker/build-push-action@v6
         with:
           build-args: |
@@ -98,7 +102,7 @@ jobs:
           platforms: linux/amd64,${{ github.ref == 'refs/heads/main' && 'linux/arm64/v8' || '' }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
-            raviqqe/${{ matrix.image.binary }}:latest
+            ${{ vars.DOCKER_USER }}/${{ matrix.image.binary }}:latest
             ${{ steps.version.outputs.version && format('raviqqe/{0}:{1}', image.matrix.binary, steps.version.outputs.version) || '' }}
   release:
     needs:
