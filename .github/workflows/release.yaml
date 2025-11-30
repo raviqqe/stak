@@ -100,7 +100,9 @@ jobs:
           build-args: |
             BINARY=${{ matrix.image.binary }}
             DIRECTORY=${{ matrix.image.directory || '.' }}
-          platforms: linux/amd64,${{ github.ref == 'refs/heads/main' && 'linux/arm64/v8' || '' }}
+          platforms: |
+            linux/amd64
+            ${{ github.ref == 'refs/heads/main' && 'linux/arm64/v8' || '' }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ steps.metadata.outputs.image }}:latest
