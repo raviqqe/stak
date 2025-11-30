@@ -1446,8 +1446,11 @@
             (define set (record-setter index))
             ...))
 
-        ((_ "field" bodies () index statement ...)
+        ((_ "field" () () index statement ...)
           (begin statement ...))
+
+        ((_ "field" (body ...) () index statement ...)
+          (let () statement ... body ...))
 
         ((_ id
             (constructor _ ...)
