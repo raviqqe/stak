@@ -1419,9 +1419,9 @@
     (define-syntax define-record-type
       (syntax-rules ()
         ((_ id
-            (constructor field1 ...)
+            (constructor _ ...)
             predicate
-            (field2 accessor ...)
+            (_ accessor ...)
             ...)
           (begin
             (define id (cons 0 0))
