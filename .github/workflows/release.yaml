@@ -102,8 +102,8 @@ jobs:
           platforms: linux/amd64,${{ github.ref == 'refs/heads/main' && 'linux/arm64/v8' || '' }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
-            ${{ vars.DOCKER_USER }}/${{ matrix.image.binary }}:latest
-            ${{ steps.version.outputs.version && format('raviqqe/{0}:{1}', image.matrix.binary, steps.version.outputs.version) || '' }}
+            ${{ steps.metadata.outputs.image }}:latest
+            ${{ steps.metadata.outputs.version && format('{0}:{1}', steps.metadata.outputs.image, steps.metadata.outputs.version) || '' }}
   release:
     needs:
       - cargo
