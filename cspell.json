@@ -20,6 +20,7 @@
     "basenames",
     "bindgen",
     "bitvec",
+    "buildx",
     "bytevector",
     "bytevectors",
     "cdylib",
