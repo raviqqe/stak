@@ -13,5 +13,6 @@ RUN cp target/*-unknown-linux-musl/release/$BINARY /app
 
 FROM scratch
 
+ENV PATH=
 COPY --from=build /app /app
 ENTRYPOINT ["/app"]
