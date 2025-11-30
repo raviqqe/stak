@@ -1418,36 +1418,65 @@
     ; efficiency of their values.
     (define-syntax define-record-type
       (syntax-rules ()
+        ((_ "initial"
+            id
+            constructor
+            predicate
+            accessors
+            body
+            ...)
+          (define-record-type
+            "field"
+            (body ...)
+            accessors
+            0
+            (define id (cons 0 0))
+            (define constructor (record-constructor id))
+            (define predicate (record-predicate id))))
+
+        ((_ "field" bodies ((get set ...) accessor ...) index statement ...)
+          (define-record-type
+            "field"
+            bodies
+            (accessor ...)
+            (+ index 1)
+            statement
+            ...
+            (define get (record-getter index))
+            (define set (record-setter index))
+            ...))
+
+        ((_ "field" bodies () index statement ...)
+          (begin statement ...))
+
         ((_ id
             (constructor _ ...)
             predicate
             (_ accessor ...)
             ...)
-          (begin
-            (define id (cons 0 0))
-            (define constructor (record-constructor id))
-            (define predicate (record-predicate id))
-            (define-record-fields 0 (accessor ...) ...)))))
+          (define-record-type
+            "initial"
+            id
+            constructor
+            predicate
+            ((accessor ...) ...)))))
 
-    (define-syntax define-record-fields
+    (define-syntax let-record-type
       (syntax-rules ()
-        ((_ index)
-          #f)
-
-        ((_ index (accessor1 ...) (accessor2 ...) ...)
-          (begin
-            (define-record-field index accessor1 ...)
-            (define-record-fields (+ index 1) (accessor2 ...) ...)))))
-
-    (define-syntax define-record-field
-      (syntax-rules ()
-        ((_ index getter)
-          (define getter (record-getter index)))
-
-        ((_ index getter setter)
-          (begin
-            (define-record-field index getter)
-            (define setter (record-setter index))))))
+        ((_ (id
+              (constructor _ ...)
+              predicate
+              (_ accessor ...)
+              ...)
+            body
+            ...)
+          (define-record-type
+            "initial"
+            id
+            constructor
+            predicate
+            ((accessor ...) ...)
+            (body ...)))))
 
     (define record? (instance? record-type))
 
