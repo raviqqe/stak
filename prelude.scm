@@ -2888,7 +2888,6 @@
                 (lambda (name symbol) (equal? name (symbol->string symbol))))
               =>
               car)
-
             (else
               (let ((name (string->uninterned-symbol name)))
                 (symbol-table-set-symbols! table (cons name (symbol-table-symbols table)))
@@ -5989,7 +5988,7 @@
   (import
     (scheme base)
     (only (stak char) char-whitespace? special-chars)
-    (only (stak base) boolean-or))
+    (only (stak base) boolean-or code-points->string))
 
   (begin
     (define (read . rest)
@@ -6023,16 +6022,14 @@
                   (let ((char (peek-char)))
                     (if (char-whitespace? char)
                       (read-char)
-                      (let ((x (read-symbol-chars)))
-                        (cond
-                          ((null? x)
+                      (let ((x (read-symbol-string)))
+                        (case (string-length x)
+                          ((0)
                             (read-char))
-
-                          ((eq? (length x) 1)
-                            (car x))
-
+                          ((1)
+                            (string-ref x 0))
                           (else
-                            (cdr (assoc (list->string x) special-chars))))))))
+                            (cdr (assoc x special-chars))))))))
 
                 ((#\!)
                   (skip-line-comment))
@@ -6063,8 +6060,8 @@
               (read-string))
 
             (else
-              (let ((x (list->string (read-symbol-chars))))
-                (when (zero? (string-length x))
+              (let ((x (read-symbol-string)))
+                (when (equal? x "")
                   (error "expression expected"))
                 (or (string->number x) (string->symbol x)))))))
 
@@ -6091,14 +6088,16 @@
           (error "( expected"))
         (read-tail))
 
-      (define (read-symbol-chars)
-        (let ((char (peek-char)))
-          (if (boolean-or
-               (memv char '(#\( #\)))
-               (eof-object? char)
-               (char-whitespace? char))
-            '()
-            (cons (read-char) (read-symbol-chars)))))
+      (define (read-symbol-string)
+        (code-points->string
+          (let loop ()
+            (let ((char (peek-char)))
+              (if (boolean-or
+                   (memv char '(#\( #\)))
+                   (eof-object? char)
+                   (char-whitespace? char))
+                '()
+                (cons (char->integer (read-char)) (loop)))))))
 
       (define (read-string)
         (unless (eqv? (read-char) #\")
