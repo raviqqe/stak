@@ -1388,15 +1388,15 @@
 
               ((and
                   (not initial)
-                  (eqv? (car xs) #\.))
+                  (eq? (car xs) (char->integer #\.)))
                 (+ y (convert-point (cdr xs))))
 
               (else
                 (let ((x (convert-digit (car xs))))
                   (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
 
-      (let ((xs (string->list x)))
-        (if (and (pair? xs) (eqv? (car xs) #\-))
+      (let ((xs (string->code-points x)))
+        (if (and (pair? xs) (eq? (car xs) (char->integer #\-)))
           (let ((x (convert (cdr xs))))
             (and x (- x)))
           (convert xs))))
