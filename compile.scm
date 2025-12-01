@@ -1620,11 +1620,11 @@
      (back compressor-back compressor-set-back!)
      (ahead compressor-ahead compressor-set-ahead!))
 
-    (define (compressor-ref compressor i)
+    (define (compressor-tail compressor i)
      (and
       (not (negative? i))
       (< i (+ (compressor-back compressor) (compressor-ahead compressor)))
-      (list-ref (compressor-buffer compressor) i)))
+      (list-tail (compressor-buffer compressor) i)))
 
     (define (compressor-push! compressor x)
      (let ((xs (list x)))
@@ -1659,16 +1659,20 @@
                     (if (negative? i)
                      (values j n)
                      (let ((m
-                            (let loop ((n 0))
+                            (let loop ((xs
+                                        (compressor-tail
+                                         compressor
+                                         (compressor-back compressor)))
+                                       (ys
+                                        (compressor-tail
+                                         compressor
+                                         (- compressor-back compressor)
+                                         i
+                                         1))
+                                       (n 0))
                              (if (and
                                   (< n maximum-match)
-                                  (eq?
-                                   (compressor-ref
-                                    compressor
-                                    (+ (compressor-back compressor) n))
-                                   (compressor-ref
-                                    compressor
-                                    (- (+ (compressor-back compressor) n) i 1))))
+                                  (eq? (car xs) (car ys)))
                               (loop (+ n 1))
                               n))))
                       (apply
