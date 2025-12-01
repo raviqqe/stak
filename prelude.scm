@@ -1354,12 +1354,11 @@
             ((#\a . #\z) . 10))))
 
       (define (convert-digit x)
-        (let* ((x (char->integer x))
-               (y
-                 (member
-                   x
-                   digit-characters
-                   (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+        (let ((y
+                (member
+                  x
+                  digit-characters
+                  (lambda (x pair) (<= (caar pair) x (cdar pair))))))
           (and
             y
             (let* ((y (car y))
