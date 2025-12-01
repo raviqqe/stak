@@ -1666,9 +1666,7 @@
                                        (ys
                                         (compressor-tail
                                          compressor
-                                         (- compressor-back compressor)
-                                         i
-                                         1))
+                                         (- (compressor-back compressor) i 1)))
                                        (n 0))
                              (if (and
                                   (< n maximum-match)
