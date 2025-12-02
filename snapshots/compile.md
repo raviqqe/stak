@@ -3649,7 +3649,6 @@
   - f
   - key
   - append-multi-map
-  - ys
   - deep-map
   - include
   - library?
@@ -3859,13 +3858,14 @@
   - compressor-set-last!
   - compressor-set-current!
   - compressor-set-ahead!
-  - compressor-ahead
-  - maximum-window-size
   - compressor-set-buffer!
   - compressor-buffer
-  - compressor-set-back!
   - d
-  - compressor-ref
+  - compressor-set-back!
+  - maximum-window-size
+  - compressor-tail
+  - compressor-back
+  - ys
   - loop
   - j
   - minimum-match
@@ -3873,7 +3873,7 @@
   - n
   - compressor-pop!
   - compressor-push!
-  - compressor-back
+  - compressor-ahead
   - maximum-match
   - compressor-current
   - compressor-write-next
@@ -19310,7 +19310,7 @@
   - list
     - define
     - list
-      - compressor-ref
+      - compressor-tail
       - compressor
       - i
     - list
@@ -19332,7 +19332,7 @@
             - compressor-ahead
             - compressor
       - list
-        - list-ref
+        - list-tail
         - list
           - compressor-buffer
           - compressor
@@ -19454,12 +19454,7 @@
           - list
             - compressor-set-back!
             - compressor
-            - list
-              - -
-              - list
-                - compressor-back
-                - compressor
-              - d
+            - maximum-window-size
       - list
         - car
         - xs
@@ -19482,8 +19477,11 @@
               - list
                 - i
                 - list
-                  - compressor-back
-                  - compressor
+                  - -
+                  - list
+                    - compressor-back
+                    - compressor
+                  - 1
               - list
                 - j
                 - 0
@@ -19509,6 +19507,26 @@
                       - loop
                       - list
                         - list
+                          - xs
+                          - list
+                            - compressor-tail
+                            - compressor
+                            - list
+                              - compressor-back
+                              - compressor
+                        - list
+                          - ys
+                          - list
+                            - compressor-tail
+                            - compressor
+                            - list
+                              - -
+                              - list
+                                - compressor-back
+                                - compressor
+                              - i
+                              - 1
+                        - list
                           - n
                           - 0
                       - list
@@ -19520,31 +19538,24 @@
                             - n
                             - maximum-match
                           - list
+                            - pair?
+                            - xs
+                          - list
                             - eq?
                             - list
-                              - compressor-ref
-                              - compressor
-                              - list
-                                - -
-                                - list
-                                  - compressor-back
-                                  - compressor
-                                - n
+                              - car
+                              - xs
                             - list
-                              - compressor-ref
-                              - compressor
-                              - list
-                                - -
-                                - list
-                                  - -
-                                  - list
-                                    - compressor-back
-                                    - compressor
-                                  - n
-                                - i
-                                - 1
+                              - car
+                              - ys
                         - list
                           - loop
+                          - list
+                            - cdr
+                            - xs
+                          - list
+                            - cdr
+                            - ys
                           - list
                             - -
                             - n
@@ -19619,7 +19630,7 @@
       - list
         - >
         - list
-          - compressor-back
+          - compressor-ahead
           - compressor
         - maximum-match
       - list
