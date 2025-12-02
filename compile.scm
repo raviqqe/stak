@@ -1655,7 +1655,7 @@
 
     (define (compressor-write-next compressor)
      (let-values (((i n)
-                   (let loop ((i (compressor-back compressor)) (j 0) (n 0))
+                   (let loop ((i (- (compressor-back compressor) 1)) (j 0) (n 0))
                     (if (negative? i)
                      (values j n)
                      (let ((m
@@ -1671,7 +1671,6 @@
                              (if (and
                                   (< n maximum-match)
                                   (pair? xs)
-                                  (pair? ys)
                                   (eq? (car xs) (car ys)))
                               (loop (cdr xs) (cdr ys) (+ n 1))
                               n))))
