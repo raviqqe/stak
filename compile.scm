@@ -1620,11 +1620,11 @@
      (back compressor-back compressor-set-back!)
      (ahead compressor-ahead compressor-set-ahead!))
 
-    (define (compressor-ref compressor i)
+    (define (compressor-tail compressor i)
      (and
       (not (negative? i))
       (< i (+ (compressor-back compressor) (compressor-ahead compressor)))
-      (list-ref (compressor-buffer compressor) i)))
+      (list-tail (compressor-buffer compressor) i)))
 
     (define (compressor-push! compressor x)
      (let ((xs (list x)))
@@ -1649,45 +1649,43 @@
         (compressor-set-buffer!
          compressor
          (list-tail (compressor-buffer compressor) d))
-        (compressor-set-back! compressor (- (compressor-back compressor) d))))
+        (compressor-set-back! compressor maximum-window-size)))
 
       (car xs)))
 
     (define (compressor-write-next compressor)
-     (let-values (((i n)
-                   (let loop ((i (compressor-back compressor)) (j 0) (n 0))
-                    (if (negative? i)
-                     (values j n)
-                     (let ((m
-                            (let loop ((n 0))
-                             (if (and
-                                  (< n maximum-match)
-                                  (eq?
-                                   (compressor-ref
-                                    compressor
-                                    (+ (compressor-back compressor) n))
-                                   (compressor-ref
-                                    compressor
-                                    (- (+ (compressor-back compressor) n) i 1))))
-                              (loop (+ n 1))
-                              n))))
-                      (apply
-                       loop
-                       (- i 1)
-                       (if (>= m n)
-                        (list i m)
-                        (list j n))))))))
-      (if (> n minimum-match)
-       (begin
-        (write-u8 (+ 1 (* 2 i)))
-        (write-u8 n)
-        (compressor-pop! compressor n))
-       (write-u8 (* 2 (compressor-pop! compressor 1))))))
+     (let ((back (compressor-back compressor)))
+      (let-values (((i n)
+                    (let loop ((i (- back 1)) (j 0) (n 0))
+                     (if (negative? i)
+                      (values j n)
+                      (let* ((ys (compressor-tail compressor (- back i 1)))
+                             (m
+                              (do ((xs
+                                    (list-tail ys (+ i 1))
+                                    (cdr xs))
+                                   (ys ys (cdr ys))
+                                   (n 0 (+ n 1)))
+                               ((not
+                                 (and
+                                  (pair? xs)
+                                  (eq? (car xs) (car ys))
+                                  (< n maximum-match)))
+                                n))))
+                       (if (< m n)
+                        (loop (- i 1) j n)
+                        (loop (- i 1) i m)))))))
+       (if (> n minimum-match)
+        (begin
+         (write-u8 (+ 1 (* 2 i)))
+         (write-u8 n)
+         (compressor-pop! compressor n))
+        (write-u8 (* 2 (compressor-pop! compressor 1)))))))
 
     (define (compressor-write compressor x)
      (compressor-push! compressor x)
 
-     (when (> (compressor-back compressor) maximum-match)
+     (when (> (compressor-ahead compressor) maximum-match)
       (compressor-write-next compressor)))
 
     (define (compressor-flush compressor)
