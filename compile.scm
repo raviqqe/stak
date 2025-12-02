@@ -1671,7 +1671,6 @@
                              (if (and
                                   (< n maximum-match)
                                   (pair? xs)
-                                  (pair? ys)
                                   (eq? (car xs) (car ys)))
                               (loop (cdr xs) (cdr ys) (+ n 1))
                               n))))
