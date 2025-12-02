@@ -1676,12 +1676,9 @@
                                 (eq? (car xs) (car ys))
                                 (< n maximum-match)))
                               n))))
-                      (apply
-                       loop
-                       (- i 1)
-                       (if (>= m n)
-                        (list i m)
-                        (list j n))))))))
+                      (if (< m n)
+                       (loop (- i 1) j n)
+                       (loop (- i 1) i m)))))))
       (if (> n minimum-match)
        (begin
         (write-u8 (+ 1 (* 2 i)))
