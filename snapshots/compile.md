@@ -3852,7 +3852,6 @@
   - compressor?
   - buffer
   - current
-  - back
   - ahead
   - compressor-last
   - compressor-set-last!
@@ -3863,11 +3862,12 @@
   - d
   - compressor-set-back!
   - maximum-window-size
-  - compressor-tail
   - compressor-back
+  - compressor-tail
+  - back
   - ys
-  - loop
   - j
+  - loop
   - minimum-match
   - i
   - n
@@ -19464,157 +19464,164 @@
       - compressor-write-next
       - compressor
     - list
-      - let-values
+      - let
       - list
         - list
+          - back
           - list
-            - i
-            - n
+            - compressor-back
+            - compressor
+      - list
+        - let-values
+        - list
           - list
-            - let
-            - loop
             - list
-              - list
-                - i
-                - list
-                  - -
-                  - list
-                    - compressor-back
-                    - compressor
-                  - 1
-              - list
-                - j
-                - 0
-              - list
-                - n
-                - 0
+              - i
+              - n
             - list
-              - if
+              - let
+              - loop
               - list
-                - negative?
-                - i
-              - list
-                - values
-                - j
-                - n
-              - list
-                - let
                 - list
-                  - list
-                    - m
-                    - list
-                      - let
-                      - loop
-                      - list
-                        - list
-                          - xs
-                          - list
-                            - compressor-tail
-                            - compressor
-                            - list
-                              - compressor-back
-                              - compressor
-                        - list
-                          - ys
-                          - list
-                            - compressor-tail
-                            - compressor
-                            - list
-                              - -
-                              - list
-                                - compressor-back
-                                - compressor
-                              - i
-                              - 1
-                        - list
-                          - n
-                          - 0
-                      - list
-                        - if
-                        - list
-                          - and
-                          - list
-                            - <
-                            - n
-                            - maximum-match
-                          - list
-                            - pair?
-                            - xs
-                          - list
-                            - eq?
-                            - list
-                              - car
-                              - xs
-                            - list
-                              - car
-                              - ys
-                        - list
-                          - loop
-                          - list
-                            - cdr
-                            - xs
-                          - list
-                            - cdr
-                            - ys
-                          - list
-                            - -
-                            - n
-                            - 1
-                        - n
-                - list
-                  - apply
-                  - loop
+                  - i
                   - list
                     - -
-                    - i
+                    - back
                     - 1
+                - list
+                  - j
+                  - 0
+                - list
+                  - n
+                  - 0
+              - list
+                - if
+                - list
+                  - negative?
+                  - i
+                - list
+                  - values
+                  - j
+                  - n
+                - list
+                  - let\*
+                  - list
+                    - list
+                      - ys
+                      - list
+                        - compressor-tail
+                        - compressor
+                        - list
+                          - -
+                          - back
+                          - i
+                          - 1
+                    - list
+                      - m
+                      - list
+                        - do
+                        - list
+                          - list
+                            - xs
+                            - list
+                              - list-tail
+                              - ys
+                              - list
+                                - -
+                                - i
+                                - 1
+                            - list
+                              - cdr
+                              - xs
+                          - list
+                            - ys
+                            - ys
+                            - list
+                              - cdr
+                              - ys
+                          - list
+                            - n
+                            - 0
+                            - list
+                              - -
+                              - n
+                              - 1
+                        - list
+                          - list
+                            - not
+                            - list
+                              - and
+                              - list
+                                - pair?
+                                - xs
+                              - list
+                                - eq?
+                                - list
+                                  - car
+                                  - xs
+                                - list
+                                  - car
+                                  - ys
+                              - list
+                                - <
+                                - n
+                                - maximum-match
+                          - n
                   - list
                     - if
                     - list
-                      - > =
+                      - <
                       - m
                       - n
                     - list
+                      - loop
                       - list
-                      - i
-                      - m
-                    - list
-                      - list
+                        - -
+                        - i
+                        - 1
                       - j
                       - n
-      - list
-        - if
+                    - list
+                      - loop
+                      - list
+                        - -
+                        - i
+                        - 1
+                      - i
+                      - m
         - list
-          - >
-          - n
-          - minimum-match
-        - list
-          - begin
+          - if
+          - list
+            - >
+            - n
+            - minimum-match
+          - list
+            - begin
+            - list
+              - write-u8
+              - list
+                - -
+                - 1
+                - list
+                  - -
+                  - 2
+                  - i
+            - list
+              - write-u8
+              - n
+            - list
+              - compressor-pop!
+              - compressor
+              - n
           - list
             - write-u8
             - list
               - -
-              - 1
+              - 2
               - list
-                - -
-                - 2
-                - i
-          - list
-            - write-u8
-            - n
-          - list
-            - compressor-pop!
-            - compressor
-            - n
-        - list
-          - write-u8
-          - list
-            - -
-            - 2
-            - list
-              - compressor-pop!
-              - compressor
-              - 1
+                - compressor-pop!
+                - compressor
+                - 1
   - list
     - define
     - list
