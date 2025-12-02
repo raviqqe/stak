@@ -1672,9 +1672,9 @@
                                  (n 0 (+ n 1)))
                              ((not
                                (and
-                                (< n maximum-match)
                                 (pair? xs)
-                                (eq? (car xs) (car ys))))
+                                (eq? (car xs) (car ys))
+                                (< n maximum-match)))
                               n))))
                       (apply
                        loop
