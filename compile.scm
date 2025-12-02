@@ -1654,37 +1654,33 @@
       (car xs)))
 
     (define (compressor-write-next compressor)
-     (let-values (((i n)
-                   (let loop ((i (- (compressor-back compressor) 1)) (j 0) (n 0))
-                    (if (negative? i)
-                     (values j n)
-                     (let ((m
-                            (do ((xs
-                                  (compressor-tail
-                                   compressor
-                                   (compressor-back compressor))
-                                  (cdr xs))
-                                 (ys
-                                  (compressor-tail
-                                   compressor
-                                   (- (compressor-back compressor) i 1))
-                                  (cdr ys))
-                                 (n 0 (+ n 1)))
-                             ((not
-                               (and
-                                (pair? xs)
-                                (eq? (car xs) (car ys))
-                                (< n maximum-match)))
-                              n))))
-                      (if (< m n)
-                       (loop (- i 1) j n)
-                       (loop (- i 1) i m)))))))
-      (if (> n minimum-match)
-       (begin
-        (write-u8 (+ 1 (* 2 i)))
-        (write-u8 n)
-        (compressor-pop! compressor n))
-       (write-u8 (* 2 (compressor-pop! compressor 1))))))
+     (let ((back (compressor-back compressor)))
+      (let-values (((i n)
+                    (let loop ((i (- back 1)) (j 0) (n 0))
+                     (if (negative? i)
+                      (values j n)
+                      (let* ((ys (compressor-tail compressor (- back i 1)))
+                             (m
+                              (do ((xs
+                                    (list-tail ys (+ i 1))
+                                    (cdr xs))
+                                   (ys ys (cdr ys))
+                                   (n 0 (+ n 1)))
+                               ((not
+                                 (and
+                                  (pair? xs)
+                                  (eq? (car xs) (car ys))
+                                  (< n maximum-match)))
+                                n))))
+                       (if (< m n)
+                        (loop (- i 1) j n)
+                        (loop (- i 1) i m)))))))
+       (if (> n minimum-match)
+        (begin
+         (write-u8 (+ 1 (* 2 i)))
+         (write-u8 n)
+         (compressor-pop! compressor n))
+        (write-u8 (* 2 (compressor-pop! compressor 1)))))))
 
     (define (compressor-write compressor x)
      (compressor-push! compressor x)
