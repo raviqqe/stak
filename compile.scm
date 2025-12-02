@@ -1649,7 +1649,7 @@
         (compressor-set-buffer!
          compressor
          (list-tail (compressor-buffer compressor) d))
-        (compressor-set-back! compressor (- (compressor-back compressor) d))))
+        (compressor-set-back! compressor maximum-window-size)))
 
       (car xs)))
 
@@ -1690,7 +1690,7 @@
     (define (compressor-write compressor x)
      (compressor-push! compressor x)
 
-     (when (> (compressor-back compressor) maximum-match)
+     (when (> (compressor-ahead compressor) maximum-match)
       (compressor-write-next compressor)))
 
     (define (compressor-flush compressor)
