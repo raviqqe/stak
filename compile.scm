@@ -1659,20 +1659,22 @@
                     (if (negative? i)
                      (values j n)
                      (let ((m
-                            (let loop ((xs
-                                        (compressor-tail
-                                         compressor
-                                         (compressor-back compressor)))
-                                       (ys
-                                        (compressor-tail
-                                         compressor
-                                         (- (compressor-back compressor) i 1)))
-                                       (n 0))
-                             (if (and
-                                  (< n maximum-match)
-                                  (pair? xs)
-                                  (eq? (car xs) (car ys)))
-                              (loop (cdr xs) (cdr ys) (+ n 1))
+                            (do ((xs
+                                  (compressor-tail
+                                   compressor
+                                   (compressor-back compressor))
+                                  (cdr xs))
+                                 (ys
+                                  (compressor-tail
+                                   compressor
+                                   (- (compressor-back compressor) i 1))
+                                  (cdr ys))
+                                 (n 0 (+ n 1)))
+                             ((not
+                               (and
+                                (< n maximum-match)
+                                (pair? xs)
+                                (eq? (car xs) (car ys))))
                               n))))
                       (apply
                        loop
