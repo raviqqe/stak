@@ -1494,11 +1494,6 @@
      (constants marshal-context-constants)
      (continuations marshal-context-continuations marshal-context-set-continuations!))
 
-    (define (marshal-context-append-unique-constant! context pair)
-     (marshal-context-set-unique-constants!
-      context
-      (cons pair (marshal-context-unique-constants context))))
-
     (define (nop-code? codes)
      (and
       (rib? codes)
