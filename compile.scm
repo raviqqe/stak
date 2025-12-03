@@ -1661,17 +1661,16 @@
                          (i 0)
                          (match '(0 . 0)))
                (if (< i back)
-                (let* ((ys xs)
-                       (m
-                        (do ((xs current (cdr xs))
-                             (ys ys (cdr ys))
-                             (n 0 (+ n 1)))
-                         ((not
-                           (and
-                            (pair? xs)
-                            (eq? (car xs) (car ys))
-                            (< n maximum-match)))
-                          n))))
+                (let ((m
+                       (do ((xs current (cdr xs))
+                            (ys xs (cdr ys))
+                            (n 0 (+ n 1)))
+                        ((not
+                          (and
+                           (pair? xs)
+                           (eq? (car xs) (car ys))
+                           (< n maximum-match)))
+                         n))))
                  (loop (cdr xs) (+ i 1) (if (< m (cdr match)) match (cons i m))))
                 match)))
              (n (cdr match)))
