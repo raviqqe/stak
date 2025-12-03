@@ -585,21 +585,21 @@
         - get 0
         - call 1 #f ||
         - if
-          - constant #f
-        - constant procedure 1 #f
-          - get 10
+          - constant procedure 1 #f
+            - get 10
+            - get 1
+            - call 1 #f ||
+            - call 2 #f 8
+            - if
+              - get 0
+            - get 2
+            - call 1 #f ||
+            - call 1 #f 5
+          - call 1 #f ||
           - get 1
           - call 1 #f ||
-          - call 2 #f 8
-          - if
-            - get 0
-          - get 2
-          - call 1 #f ||
-          - call 1 #f 5
-        - call 1 #f ||
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 1
+          - call 1 #f 1
+        - constant #f
       - call 1 #f ||
       - set 1
       - get 5
