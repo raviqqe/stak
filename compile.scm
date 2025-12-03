@@ -1549,6 +1549,8 @@
        (error "invalid type"))))
 
     (define (marshal-unique-constant context value)
+     (define constant-set (marshal-context-constants context))
+
      (cond
       ((assq value (marshal-context-constants context)) =>
        cdr)
