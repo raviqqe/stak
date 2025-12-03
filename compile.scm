@@ -1471,12 +1471,33 @@
 
     ; Marshalling
 
+    (define-record-type constant-set
+     (make-constant-set simple complex)
+     constant-set?
+     (simple constant-set-simple constant-set-set-simple!)
+     (complex constant-set-complex constant-set-set-complex!))
+
+    (define (marshal-context-append-simple! context pair)
+     (marshal-context-set-simple!
+      context
+      (cons pair (marshal-context-simple context))))
+
+    (define (marshal-context-append-complex! context pair)
+     (marshal-context-set-complex!
+      context
+      (cons pair (marshal-context-complex context))))
+
     (define-record-type marshal-context
      (make-marshal-context symbols constants continuations)
      marshal-context?
      (symbols marshal-context-symbols)
-     (constants marshal-context-constants marshal-context-set-constants!)
+     (constants marshal-context-constants)
      (continuations marshal-context-continuations marshal-context-set-continuations!))
+
+    (define (marshal-context-append-unique-constant! context pair)
+     (marshal-context-set-unique-constants!
+      context
+      (cons pair (marshal-context-unique-constants context))))
 
     (define (nop-code? codes)
      (and
@@ -1534,11 +1555,7 @@
 
       (else
        (let ((marshalled (marshal-constant context value)))
-        (marshal-context-set-constants!
-         context
-         (cons
-          (cons value marshalled)
-          (marshal-context-constants context)))
+        (marshal-context-append-constant! context (cons value marshalled))
         marshalled))))
 
     (define (marshal-rib context value data)
@@ -1598,7 +1615,7 @@
          (append-map
           (lambda (pair) (map cdr (cdr pair)))
           (metadata-libraries metadata))))
-       '()
+       (make-constant-set '() '())
        '())
       codes
       #f))
