@@ -1558,7 +1558,14 @@
        cdr)
       (else
        (let ((marshalled (marshal-constant context value)))
-        (marshal-context-append-constant! context (cons value marshalled))
+        ((if (or
+              (null? value)
+              (boolean? value)
+              (symbol? value))
+          constant-set-append-simple!
+          marshal-context-append-complex!)
+         constant-set
+         (cons value marshalled))
         marshalled))))
 
     (define (marshal-rib context value data)
