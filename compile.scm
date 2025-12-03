@@ -1550,9 +1550,10 @@
 
     (define (marshal-unique-constant context value)
      (cond
+      ((assq value (marshal-context-constants context)) =>
+       cdr)
       ((assoc value (marshal-context-constants context)) =>
        cdr)
-
       (else
        (let ((marshalled (marshal-constant context value)))
         (marshal-context-append-constant! context (cons value marshalled))
