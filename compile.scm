@@ -1654,7 +1654,8 @@
       (car xs)))
 
     (define (compressor-write-next compressor)
-     (let ((back (compressor-back compressor)))
+     (let ((current (compressor-current compressor))
+           (back (compressor-back compressor)))
       (let-values (((i n)
                     (let loop ((xs (compressor-buffer compressor))
                                (i 0)
@@ -1663,9 +1664,7 @@
                      (if (< i back)
                       (let* ((ys xs)
                              (m
-                              (do ((xs
-                                    (list-tail ys (- back i))
-                                    (cdr xs))
+                              (do ((xs current (cdr xs))
                                    (ys ys (cdr ys))
                                    (n 0 (+ n 1)))
                                ((not
