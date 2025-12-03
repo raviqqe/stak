@@ -1681,30 +1681,29 @@
       (car xs)))
 
     (define (compressor-write-next compressor)
-     (let ((back (compressor-back compressor)))
-      (let-values (((i n)
-                    (let loop ((i (- back 1)) (j 0) (n 0))
-                     (if (negative? i)
-                      (values j n)
-                      (let* ((ys (compressor-tail compressor (- back i 1)))
-                             (m
-                              (do ((xs
-                                    (list-tail ys (+ i 1))
-                                    (cdr xs))
-                                   (ys ys (cdr ys))
-                                   (n 0 (+ n 1)))
-                               ((not
-                                 (and
-                                  (pair? xs)
-                                  (eq? (car xs) (car ys))
-                                  (< n maximum-match)))
-                                n))))
-                       (if (< m n)
-                        (loop (- i 1) j n)
-                        (loop (- i 1) i m)))))))
+     (let ((current (compressor-current compressor))
+           (back (compressor-back compressor)))
+      (let* ((match
+              (let loop ((xs (compressor-buffer compressor))
+                         (i 0)
+                         (match '(0 . 0)))
+               (if (< i back)
+                (let ((m
+                       (do ((xs xs (cdr xs))
+                            (ys current (cdr ys))
+                            (n 0 (+ n 1)))
+                        ((not
+                          (and
+                           (pair? ys)
+                           (eq? (car xs) (car ys))
+                           (< n maximum-match)))
+                         n))))
+                 (loop (cdr xs) (+ i 1) (if (< m (cdr match)) match (cons i m))))
+                match)))
+             (n (cdr match)))
        (if (> n minimum-match)
         (begin
-         (write-u8 (+ 1 (* 2 i)))
+         (write-u8 (+ 1 (* 2 (- back (car match) 1))))
          (write-u8 n)
          (compressor-pop! compressor n))
         (write-u8 (* 2 (compressor-pop! compressor 1)))))))

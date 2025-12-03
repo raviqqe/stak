@@ -3699,7 +3699,6 @@
   - match-ellipsis-pattern
   - ellipsis-pattern-variables
   - ellipsis-pattern-element
-  - match
   - filter-values
   - ellipsis-match?
   - singleton-matches
@@ -3863,25 +3862,25 @@
   - make-constant-set
   - compressor?
   - buffer
-  - current
   - ahead
+  - compressor-tail
   - compressor-last
   - compressor-set-last!
   - compressor-set-current!
   - compressor-set-ahead!
   - compressor-set-buffer!
-  - compressor-buffer
   - d
   - compressor-set-back!
   - maximum-window-size
   - compressor-back
-  - compressor-tail
-  - back
+  - compressor-buffer
+  - current
   - ys
-  - j
   - loop
-  - minimum-match
   - i
+  - minimum-match
+  - back
+  - match
   - n
   - compressor-pop!
   - compressor-push!
@@ -19568,55 +19567,46 @@
       - let
       - list
         - list
+          - current
+          - list
+            - compressor-current
+            - compressor
+        - list
           - back
           - list
             - compressor-back
             - compressor
       - list
-        - let-values
+        - let\*
         - list
           - list
-            - list
-              - i
-              - n
+            - match
             - list
               - let
               - loop
               - list
                 - list
-                  - i
+                  - xs
                   - list
-                    - -
-                    - back
-                    - 1
+                    - compressor-buffer
+                    - compressor
                 - list
-                  - j
+                  - i
                   - 0
                 - list
-                  - n
-                  - 0
+                  - match
+                  - list
+                    - quote
+                    - (0 . 0)
               - list
                 - if
                 - list
-                  - negative?
+                  - <
                   - i
+                  - back
                 - list
-                  - values
-                  - j
-                  - n
-                - list
-                  - let\*
+                  - let
                   - list
-                    - list
-                      - ys
-                      - list
-                        - compressor-tail
-                        - compressor
-                        - list
-                          - -
-                          - back
-                          - i
-                          - 1
                     - list
                       - m
                       - list
@@ -19624,19 +19614,13 @@
                         - list
                           - list
                             - xs
-                            - list
-                              - list-tail
-                              - ys
-                              - list
-                                - -
-                                - i
-                                - 1
+                            - xs
                             - list
                               - cdr
                               - xs
                           - list
                             - ys
-                            - ys
+                            - current
                             - list
                               - cdr
                               - ys
@@ -19654,7 +19638,7 @@
                               - and
                               - list
                                 - pair?
-                                - xs
+                                - ys
                               - list
                                 - eq?
                                 - list
@@ -19669,27 +19653,33 @@
                                 - maximum-match
                           - n
                   - list
-                    - if
+                    - loop
                     - list
-                      - <
-                      - m
-                      - n
+                      - cdr
+                      - xs
                     - list
-                      - loop
-                      - list
-                        - -
-                        - i
-                        - 1
-                      - j
-                      - n
-                    - list
-                      - loop
-                      - list
-                        - -
-                        - i
-                        - 1
+                      - -
                       - i
-                      - m
+                      - 1
+                    - list
+                      - if
+                      - list
+                        - <
+                        - m
+                        - list
+                          - cdr
+                          - match
+                      - match
+                      - list
+                        - cons
+                        - i
+                        - m
+                - match
+          - list
+            - n
+            - list
+              - cdr
+              - match
         - list
           - if
           - list
@@ -19706,7 +19696,13 @@
                 - list
                   - -
                   - 2
-                  - i
+                  - list
+                    - -
+                    - back
+                    - list
+                      - car
+                      - match
+                    - 1
             - list
               - write-u8
               - n
