@@ -1662,12 +1662,12 @@
                          (match '(0 . 0)))
                (if (< i back)
                 (let ((m
-                       (do ((xs current (cdr xs))
-                            (ys xs (cdr ys))
+                       (do ((xs xs (cdr xs))
+                            (ys current (cdr ys))
                             (n 0 (+ n 1)))
                         ((not
                           (and
-                           (pair? xs)
+                           (pair? ys)
                            (eq? (car xs) (car ys))
                            (< n maximum-match)))
                          n))))
