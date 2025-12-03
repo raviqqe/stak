@@ -1547,9 +1547,10 @@
      (define constant-set (marshal-context-constants context))
 
      (cond
-      ((assq value (constant-set-simple constant-set)) =>
-       cdr)
-      ((assoc value (constant-set-complex constant-set)) =>
+      ((or
+        (assq value (constant-set-simple constant-set))
+        (assoc value (constant-set-complex constant-set)))
+       =>
        cdr)
       (else
        (let ((marshalled (marshal-constant context value)))
