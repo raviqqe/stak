@@ -3829,16 +3829,27 @@
   - unique
   - find-quoted-symbols
   - find-symbols
+  - constant-set?
+  - simple
+  - constant-set-set-simple!
+  - constant-set-set-complex!
   - marshal-context
   - marshal-context?
   - constants
   - continuations
+  - marshal-context-append-unique-constant!
+  - marshal-context-set-unique-constants!
+  - marshal-context-unique-constants
   - marshal-context-symbols
   - symbols
   - resolve-symbol-string
   - bytes->list
-  - marshal-context-set-constants!
   - marshal-context-constants
+  - constant-set-simple
+  - constant-set-complex
+  - constant-set-append-simple!
+  - constant-set-append-complex!
+  - constant-set
   - marshalled
   - marshal-unique-constant
   - marshal-constant
@@ -3849,6 +3860,7 @@
   - make-marshal-context
   - metadata-symbols
   - metadata-libraries
+  - make-constant-set
   - compressor?
   - buffer
   - current
@@ -18789,6 +18801,52 @@
         - ()
   - list
     - define-record-type
+    - constant-set
+    - list
+      - make-constant-set
+      - simple
+      - complex
+    - constant-set?
+    - list
+      - simple
+      - constant-set-simple
+      - constant-set-set-simple!
+    - list
+      - complex
+      - constant-set-complex
+      - constant-set-set-complex!
+  - list
+    - define
+    - list
+      - constant-set-append-simple!
+      - context
+      - pair
+    - list
+      - constant-set-set-simple!
+      - context
+      - list
+        - cons
+        - pair
+        - list
+          - constant-set-simple
+          - context
+  - list
+    - define
+    - list
+      - constant-set-append-complex!
+      - context
+      - pair
+    - list
+      - constant-set-set-complex!
+      - context
+      - list
+        - cons
+        - pair
+        - list
+          - constant-set-complex
+          - context
+  - list
+    - define-record-type
     - marshal-context
     - list
       - make-marshal-context
@@ -18802,11 +18860,25 @@
     - list
       - constants
       - marshal-context-constants
-      - marshal-context-set-constants!
     - list
       - continuations
       - marshal-context-continuations
       - marshal-context-set-continuations!
+  - list
+    - define
+    - list
+      - marshal-context-append-unique-constant!
+      - context
+      - pair
+    - list
+      - marshal-context-set-unique-constants!
+      - context
+      - list
+        - cons
+        - pair
+        - list
+          - marshal-context-unique-constants
+          - context
   - list
     - define
     - list
@@ -19006,14 +19078,29 @@
       - context
       - value
     - list
+      - define
+      - constant-set
+      - list
+        - marshal-context-constants
+        - context
+    - list
       - cond
+      - list
+        - list
+          - assq
+          - value
+          - list
+            - constant-set-simple
+            - constant-set
+        - =>
+        - cdr
       - list
         - list
           - assoc
           - value
           - list
-            - marshal-context-constants
-            - context
+            - constant-set-complex
+            - constant-set
         - =>
         - cdr
       - list
@@ -19028,17 +19115,26 @@
                 - context
                 - value
           - list
-            - marshal-context-set-constants!
-            - context
+            - list
+              - if
+              - list
+                - or
+                - list
+                  - null?
+                  - value
+                - list
+                  - boolean?
+                  - value
+                - list
+                  - symbol?
+                  - value
+              - constant-set-append-simple!
+              - constant-set-append-complex!
+            - constant-set
             - list
               - cons
-              - list
-                - cons
-                - value
-                - marshalled
-              - list
-                - marshal-context-constants
-                - context
+              - value
+              - marshalled
           - marshalled
   - list
     - define
@@ -19257,8 +19353,13 @@
                 - metadata-libraries
                 - metadata
         - list
-          - quote
-          - ()
+          - make-constant-set
+          - list
+            - quote
+            - ()
+          - list
+            - quote
+            - ()
         - list
           - quote
           - ()
