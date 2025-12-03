@@ -1053,8 +1053,8 @@
           (car rest)))
 
       (let loop ((xs xs))
-        (if (null? xs)
-          #f
+        (and
+          (pair? xs)
           (let ((pair (car xs)))
             (if (eq? x (car pair))
               pair
