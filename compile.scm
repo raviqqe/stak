@@ -70,9 +70,6 @@
     (define (make-procedure arity code environment)
      (data-rib procedure-type (cons-rib arity code) environment))
 
-    (define (procedure-code procedure)
-     (rib-cdr (rib-car procedure)))
-
     ; Because we have the `bytevector->list` procedure in Stak Scheme's standard library and
     ; the `bytevector-u8-ref` procedure in the standard library uses `bytevector->list` internally and
     ; Stak Scheme allows overwriting imported symbols,
@@ -1642,12 +1639,6 @@
      (last compressor-last compressor-set-last!)
      (back compressor-back compressor-set-back!)
      (ahead compressor-ahead compressor-set-ahead!))
-
-    (define (compressor-tail compressor i)
-     (and
-      (not (negative? i))
-      (< i (+ (compressor-back compressor) (compressor-ahead compressor)))
-      (list-tail (compressor-buffer compressor) i)))
 
     (define (compressor-push! compressor x)
      (let ((xs (list x)))
