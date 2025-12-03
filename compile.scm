@@ -70,9 +70,6 @@
     (define (make-procedure arity code environment)
      (data-rib procedure-type (cons-rib arity code) environment))
 
-    (define (procedure-code procedure)
-     (rib-cdr (rib-car procedure)))
-
     ; Because we have the `bytevector->list` procedure in Stak Scheme's standard library and
     ; the `bytevector-u8-ref` procedure in the standard library uses `bytevector->list` internally and
     ; Stak Scheme allows overwriting imported symbols,
@@ -1471,11 +1468,27 @@
 
     ; Marshalling
 
+    (define-record-type constant-set
+     (make-constant-set simple complex)
+     constant-set?
+     (simple constant-set-simple constant-set-set-simple!)
+     (complex constant-set-complex constant-set-set-complex!))
+
+    (define (constant-set-append-simple! constant-set pair)
+     (constant-set-set-simple!
+      constant-set
+      (cons pair (constant-set-simple constant-set))))
+
+    (define (constant-set-append-complex! constant-set pair)
+     (constant-set-set-complex!
+      constant-set
+      (cons pair (constant-set-complex constant-set))))
+
     (define-record-type marshal-context
      (make-marshal-context symbols constants continuations)
      marshal-context?
      (symbols marshal-context-symbols)
-     (constants marshal-context-constants marshal-context-set-constants!)
+     (constants marshal-context-constants)
      (continuations marshal-context-continuations marshal-context-set-continuations!))
 
     (define (nop-code? codes)
@@ -1528,17 +1541,24 @@
        (error "invalid type"))))
 
     (define (marshal-unique-constant context value)
-     (cond
-      ((assoc value (marshal-context-constants context)) =>
-       cdr)
+     (define constant-set (marshal-context-constants context))
 
+     (cond
+      ((or
+        (assq value (constant-set-simple constant-set))
+        (assoc value (constant-set-complex constant-set)))
+       =>
+       cdr)
       (else
        (let ((marshalled (marshal-constant context value)))
-        (marshal-context-set-constants!
-         context
-         (cons
-          (cons value marshalled)
-          (marshal-context-constants context)))
+        ((if (or
+              (null? value)
+              (boolean? value)
+              (symbol? value))
+          constant-set-append-simple!
+          constant-set-append-complex!)
+         constant-set
+         (cons value marshalled))
         marshalled))))
 
     (define (marshal-rib context value data)
@@ -1598,7 +1618,7 @@
          (append-map
           (lambda (pair) (map cdr (cdr pair)))
           (metadata-libraries metadata))))
-       '()
+       (make-constant-set '() '())
        '())
       codes
       #f))
@@ -1619,12 +1639,6 @@
      (last compressor-last compressor-set-last!)
      (back compressor-back compressor-set-back!)
      (ahead compressor-ahead compressor-set-ahead!))
-
-    (define (compressor-tail compressor i)
-     (and
-      (not (negative? i))
-      (< i (+ (compressor-back compressor) (compressor-ahead compressor)))
-      (list-tail (compressor-buffer compressor) i)))
 
     (define (compressor-push! compressor x)
      (let ((xs (list x)))
