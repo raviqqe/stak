@@ -1477,15 +1477,15 @@
      (simple constant-set-simple constant-set-set-simple!)
      (complex constant-set-complex constant-set-set-complex!))
 
-    (define (constant-set-append-simple! context pair)
+    (define (constant-set-append-simple! constant-set pair)
      (constant-set-set-simple!
-      context
-      (cons pair (constant-set-simple context))))
+      constant-set
+      (cons pair (constant-set-simple constant-set))))
 
-    (define (constant-set-append-complex! context pair)
+    (define (constant-set-append-complex! constant-set pair)
      (constant-set-set-complex!
-      context
-      (cons pair (constant-set-complex context))))
+      constant-set
+      (cons pair (constant-set-complex constant-set))))
 
     (define-record-type marshal-context
      (make-marshal-context symbols constants continuations)
