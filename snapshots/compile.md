@@ -3836,9 +3836,6 @@
   - marshal-context?
   - constants
   - continuations
-  - marshal-context-append-unique-constant!
-  - marshal-context-set-unique-constants!
-  - marshal-context-unique-constants
   - marshal-context-symbols
   - symbols
   - resolve-symbol-string
@@ -18818,32 +18815,32 @@
     - define
     - list
       - constant-set-append-simple!
-      - context
+      - constant-set
       - pair
     - list
       - constant-set-set-simple!
-      - context
+      - constant-set
       - list
         - cons
         - pair
         - list
           - constant-set-simple
-          - context
+          - constant-set
   - list
     - define
     - list
       - constant-set-append-complex!
-      - context
+      - constant-set
       - pair
     - list
       - constant-set-set-complex!
-      - context
+      - constant-set
       - list
         - cons
         - pair
         - list
           - constant-set-complex
-          - context
+          - constant-set
   - list
     - define-record-type
     - marshal-context
@@ -18863,21 +18860,6 @@
       - continuations
       - marshal-context-continuations
       - marshal-context-set-continuations!
-  - list
-    - define
-    - list
-      - marshal-context-append-unique-constant!
-      - context
-      - pair
-    - list
-      - marshal-context-set-unique-constants!
-      - context
-      - list
-        - cons
-        - pair
-        - list
-          - marshal-context-unique-constants
-          - context
   - list
     - define
     - list
@@ -19086,20 +19068,19 @@
       - cond
       - list
         - list
-          - assq
-          - value
+          - or
           - list
-            - constant-set-simple
-            - constant-set
-        - =>
-        - cdr
-      - list
-        - list
-          - assoc
-          - value
+            - assq
+            - value
+            - list
+              - constant-set-simple
+              - constant-set
           - list
-            - constant-set-complex
-            - constant-set
+            - assoc
+            - value
+            - list
+              - constant-set-complex
+              - constant-set
         - =>
         - cdr
       - list
