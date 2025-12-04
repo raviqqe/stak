@@ -27,7 +27,7 @@
     "classnames": "^2.5.1",
     "es-toolkit": "^1.42.0",
     "lucide-preact": "^0.555.0",
-    "monza-editor": "^0.5.6",
+    "monza-editor": "^0.5.7",
     "nanostores": "^1.1.0",
     "picolight": "^0.2.8",
     "preact": "^10.28.0",
