@@ -3,11 +3,7 @@ resolver = "3"
 members = [
   "bench",
   "build",
-  "cmd/compile",
-  "cmd/decode",
-  "cmd/interpret",
-  "cmd/profile",
-  "cmd/repl",
+  "cmd/*",
   "compiler",
   "configuration",
   "device",
@@ -31,6 +27,9 @@ members = [
   "util",
   "vm",
   "wasm",
+]
+exclude = [
+  "cmd/minimal",
 ]
 
 [workspace.package]

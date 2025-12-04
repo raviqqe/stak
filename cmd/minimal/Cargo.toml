@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["interpret", "run"]
+members = ["*"]
 
 [workspace.package]
 version = "0.5.53"
