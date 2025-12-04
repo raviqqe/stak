@@ -28,9 +28,7 @@ members = [
   "vm",
   "wasm",
 ]
-exclude = [
-  "cmd/minimal",
-]
+exclude = ["cmd/minimal"]
 
 [workspace.package]
 version = "0.11.13"
