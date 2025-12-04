@@ -1161,6 +1161,13 @@
             continuation
             (call-rib (compile-arity 1 #f) '$$close continuation)))))
 
+        (($$let)
+         (compile-let
+          context
+          (cadr expression)
+          (cddr expression)
+          continuation))
+
         (($$libraries)
          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
 
