@@ -1064,9 +1064,9 @@
          context
          (cadr binding)
          (loop
-          (compilation-context-environment-push-temporary context)
+          (compilation-context-push-local context #f)
           (cdr bindings)
-          (compilation-context-environment-push body-context (car binding))
+          (compilation-context-push-local body-context (car binding))
           body
           (compile-unbind continuation))))
        (compile-sequence body-context body continuation))))
