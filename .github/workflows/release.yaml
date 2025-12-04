@@ -70,7 +70,10 @@ jobs:
       matrix:
         image:
           - binary: stak
+          - binary: stak-compile
+          - binary: stak-decode
           - binary: stak-interpret
+          - binary: stak-profile
           - binary: stak-repl
           - binary: mstak
             directory: cmd/minimal
