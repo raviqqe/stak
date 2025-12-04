@@ -1057,7 +1057,8 @@
      (let loop ((context context)
                 (bindings bindings)
                 (body-context context)
-                (body body))
+                (body body)
+                (continuation continuation))
       (if (pair? bindings)
        (let ((binding (car bindings)))
         (compile-expression
