@@ -1048,6 +1048,29 @@
        continuation
        (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
+    (define (compile-unbind continuation)
+     (if (null? continuation)
+      continuation
+      (code-rib set-instruction 1 continuation)))
+
+    (define (compile-let context bindings body continuation)
+     (let loop ((context context)
+                (bindings bindings)
+                (body-context context)
+                (body body))
+      (if (pair? bindings)
+       (let ((binding (car bindings)))
+        (compile-expression
+         context
+         (cadr binding)
+         (loop
+          (compilation-context-environment-push-temporary context)
+          (cdr bindings)
+          (compilation-context-environment-push body-context (car binding))
+          body
+          (compile-unbind continuation))))
+       (compile-sequence body-context body continuation))))
+
     (define (compile-raw-call context procedure arguments arity continuation)
      (if (null? arguments)
       (call-rib
@@ -1086,11 +1109,6 @@
          (compilation-context-push-local context '$procedure)
          '$procedure
          (compile-unbind continuation))))))
-
-    (define (compile-unbind continuation)
-     (if (null? continuation)
-      continuation
-      (code-rib set-instruction 1 continuation)))
 
     (define (compile-expression context expression continuation)
      (cond
