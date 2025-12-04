@@ -70,6 +70,7 @@ jobs:
       matrix:
         image:
           - binary: stak
+          - binary: stak-compile
           - binary: stak-interpret
           - binary: stak-repl
           - binary: mstak
