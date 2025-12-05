@@ -78,7 +78,10 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - run: tools/binary_size_bench.sh
-      - run: deno tools/format-metrics.ts <tmp/binary_sizes.txt >tmp/binary_sizes.json
+      - run: >
+          deno tools/format-metrics.ts
+          binary_sizes 'Binary sizes'
+          <tmp/binary_sizes.txt >tmp/binary_sizes.json
       - uses: actions/upload-artifact@v5
         with:
           name: binary_size
@@ -89,7 +92,10 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - run: tools/bytecode_size_bench.sh
-      - run: deno tools/format-metrics.ts <tmp/bytecode_sizes.txt >tmp/bytecode_sizes.json
+      - run: >
+          deno tools/format-metrics.ts
+          bytecode_sizes 'Bytecode sizes'
+          <tmp/bytecode_sizes.txt >tmp/bytecode_sizes.json
       - uses: actions/upload-artifact@v5
         with:
           name: bytecode_size
