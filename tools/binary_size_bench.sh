@@ -46,7 +46,7 @@ build_chibi() (
 build_stak() (
   if [ $(uname) = Linux ]; then
     target=$(uname -m)-unknown-linux-musl
-    rustup component add $target
+    rustup target add $target
     options="--target $target"
   fi
 
