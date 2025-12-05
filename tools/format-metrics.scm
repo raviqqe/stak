@@ -33,6 +33,6 @@
                                 (car pair)))
                        (name . ,(car pair))
                        (value . ,(string->number (cdr pair)))
-                       (unit . "bytes")))
+                       (unit . " bytes")))
                    (read-metrics))))
     (acceptables . #())))
