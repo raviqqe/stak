@@ -87,4 +87,6 @@ done
 
 for binary in $binaries; do
   wc -c $binary
-done | awk '{ x=$1; $1=$2; $2=x; print }' | tee tmp/binary_sizes.txt
+done |
+  awk '{ x=$1; $1=$2; $2=x; print }' |
+  tee tmp/binary_sizes.txt
