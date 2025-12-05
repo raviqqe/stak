@@ -77,12 +77,11 @@ uname -a
 for binary in $binaries; do
   libraries=$(filter_existent_paths $(list_dynamic_libraries $binary))
 
-  if [ -z "$libraries" ]; then
-    continue
-  fi
-
   echo $binary '=>' $libraries
-  wc -c $libraries
+
+  if [ -n "$libraries" ]; then
+    wc -c $libraries
+  fi
 done
 
 for binary in $binaries; do
