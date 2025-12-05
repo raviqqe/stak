@@ -75,10 +75,16 @@ strip $binaries
 uname -a
 
 for binary in $binaries; do
-  libraries=$(list_dynamic_libraries $binary)
+  libraries=$(filter_existent_paths $(list_dynamic_libraries $binary))
+
+  if [ -z "$libraries" ]; then
+    continue
+  fi
 
   echo $binary '=>' $libraries
-  wc -c $(filter_existent_paths $libraries)
+  wc -c $libraries
 done
 
-wc -c $binaries | tee tmp/binary_sizes.txt
+for binary in $binaries; do
+  wc -c $binary
+done | tee tmp/binary_sizes.txt
