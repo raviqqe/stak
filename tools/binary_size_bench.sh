@@ -52,7 +52,7 @@ build_stak() (
 
   build() (
     cd $1
-    cargo build --release --binary $2 $options
+    cargo build --release --bin $2 $options
   )
 
   build . stak
