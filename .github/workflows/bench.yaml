@@ -88,7 +88,7 @@ jobs:
       - run: tools/${{ env.type }}_bench.sh
       - run: >
           gosh tools/format-metrics.scm
-          ${{ env.type }} $(echo ${{ env.type }} | sed 's/_/ /g')
+          ${{ env.type }} "$(echo ${{ env.type }} | tr _ ' ')"
           <tmp/${{ env.type }}.txt >tmp/${{ env.type }}.json
       - uses: actions/upload-artifact@v5
         with:
