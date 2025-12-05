@@ -9,7 +9,7 @@ const metrics = (await Array.fromAsync(createInterface({ input: stdin })))
 		const [name, value] = line.split(" ");
 
 		return {
-			key: name.replaceAll("/", "_"),
+			key: name.replaceAll("/", "_").replaceAll(".", "_"),
 			name,
 			value: Number(value),
 			unit: "bytes",
