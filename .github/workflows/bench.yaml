@@ -152,8 +152,8 @@ jobs:
           name: bytecode_size
       - run: |
           (
-            echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=tmp/binary_sizes.json
-            echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=tmp/bytecode_sizes.json
+            echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=binary_sizes.json
+            echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=bytecode_sizes.json
           ) > ${{ github.env }}
       - uses: k1low/octocov-action@v1
   bench:
