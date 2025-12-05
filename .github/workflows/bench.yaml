@@ -72,18 +72,28 @@ jobs:
           mode: instrumentation
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
-  binary_size:
+  size:
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - binary
+          - bytecode
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
-      - run: tools/binary_size_bench.sh
-  bytecode_size:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
-      - run: tools/bytecode_size_bench.sh
+      - uses: ./.github/actions/setup-scheme
+      - run: echo type=${{ matrix.type }}_size >> ${{ github.env }}
+      - run: tools/${{ env.type }}_bench.sh
+      - run: >
+          gosh tools/format-metrics.scm
+          ${{ env.type }} "$(echo ${{ env.type }} | tr _ ' ')"
+          <tmp/${{ env.type }}.txt >tmp/${{ env.type }}.json
+      - uses: actions/upload-artifact@v5
+        with:
+          name: ${{ env.type }}
+          path: tmp/${{ env.type }}.json
   loc:
     runs-on: ubuntu-latest
     steps:
@@ -91,7 +101,6 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/rust_loc_bench.sh
   r7rs:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -100,6 +109,7 @@ jobs:
           - MIT
           - Stak
           - TR7
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -119,13 +129,34 @@ jobs:
         with:
           name: ${{ matrix.name }}_benchmark
           path: r7rs-benchmarks/results.${{ matrix.name }}
+  report:
+    needs:
+      - size
+    permissions:
+      actions: write
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v5
+        with:
+          name: binary_size
+      - uses: actions/download-artifact@v5
+        with:
+          name: bytecode_size
+      - run: |
+          (
+            echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=binary_size.json
+            echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=bytecode_size.json
+          ) > ${{ github.env }}
+      - uses: k1low/octocov-action@v1
   bench:
     needs:
       - command_time
       - command_memory
       - rust
-      - binary_size
-      - bytecode_size
+      - size
       - loc
     if: always()
     runs-on: ubuntu-latest

@@ -9,6 +9,7 @@
   ],
   "useGitignore": true,
   "words": [
+    "acceptables",
     "agoa",
     "alist",
     "alloc",
@@ -89,6 +90,7 @@
     "nonbox",
     "nord",
     "nproc",
+    "octocov",
     "oklab",
     "optarg",
     "optind",

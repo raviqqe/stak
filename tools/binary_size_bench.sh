@@ -16,7 +16,7 @@ list_dynamic_libraries() (
     otool -L "$@" | tail -n +2 | grep -o '.*\.dylib'
     ;;
   *)
-    ldd /bin/ls | grep -o '/lib/[^ ]*'
+    ldd "$@" | grep -o '/lib/[^ ]*'
     ;;
   esac
 )
@@ -44,12 +44,20 @@ build_chibi() (
 )
 
 build_stak() (
-  for directory in . cmd/minimal; do
-    (
-      cd $directory
-      cargo build --release
-    )
-  done
+  target=$1
+
+  if [ -n "$target" ]; then
+    rustup target add $target
+    options="--target $target"
+  fi
+
+  build() (
+    cd $1
+    cargo build --release --bin $2 $options
+  )
+
+  build . stak
+  build cmd/minimal mstak
 )
 
 build_tr7() (
@@ -64,19 +72,30 @@ build_tr7() (
 cd $(dirname $0)/..
 mkdir -p tmp
 
+if [ $(uname) = Linux ]; then
+  target=$(uname -m)-unknown-linux-musl
+fi
+
 build_chibi
-build_stak
+build_stak $target
 build_tr7
 
-binaries='cmd/minimal/target/release/mstak target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i'
+binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i"
 
 strip $binaries
 
 uname -a
 
 for binary in $binaries; do
-  libraries=$(list_dynamic_libraries $binary)
+  libraries=$(filter_existent_paths $(list_dynamic_libraries $binary))
 
   echo $binary '=>' $libraries
-  ls -lX $binary $(filter_existent_paths $libraries)
+
+  if [ -n "$libraries" ]; then
+    wc -c $libraries
+  fi
 done
+
+for binary in $binaries; do
+  echo $(basename $binary) $(wc -c <$binary)
+done | tee tmp/binary_size.txt
