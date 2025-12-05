@@ -69,3 +69,37 @@ setup_bench() (
   set +x
   log_versions
 )
+
+format_metrics() (
+  input_file=$1
+  output_file=$2
+
+  cat >$output_file <<EOF
+{
+  "key": "bytecode_sizes",
+  "name":"Bytecode sizes",'
+  "metrics": [
+$(
+    first=true
+
+    while read -r line; do
+      if $first; then
+        first=false
+      fi
+
+      key=$(echo $line | cut -d ' ' -f 1)
+      value=$(echo $line | cut -d ' ' -f 2)
+
+      cat <<EOF
+{
+  "key": "$line"
+}
+EOF
+    done <$input_file
+  )
+  ],
+  "acceptables": [
+  ]
+}
+EOF
+)
