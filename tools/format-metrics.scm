@@ -23,15 +23,15 @@
     (metrics . ,(list->vector
                  (map
                    (lambda (pair)
-                     `((key . ,(car pair))
-                       (name . ,(string-map
-                                 (lambda (char)
-                                   (case char
-                                     ((#\. #\-)
-                                       #\_)
-                                     (else
-                                       char)))
-                                 (car pair)))
+                     `((key . ,(string-map
+                                (lambda (char)
+                                  (case char
+                                    ((#\. #\-)
+                                      #\_)
+                                    (else
+                                      char)))
+                                (car pair)))
+                       (name . ,(car pair))
                        (value . ,(string->number (cdr pair)))
                        (unit . "bytes")))
                    (read-metrics))))
