@@ -97,5 +97,5 @@ for binary in $binaries; do
 done
 
 for binary in $binaries; do
-  echo $binary $(wc -c <$binary)
+  echo $(basename $binary) $(wc -c <$binary)
 done | tee tmp/binary_size.txt
