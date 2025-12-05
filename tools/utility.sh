@@ -69,7 +69,3 @@ setup_bench() (
   set +x
   log_versions
 )
-
-format_metrics() (
-  node tools/format-metrics.ts "$@"
-)

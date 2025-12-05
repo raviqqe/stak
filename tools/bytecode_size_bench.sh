@@ -16,6 +16,4 @@ for file in $(list_scheme_files); do
   mkdir -p $(dirname $bytecode_file)
   cat prelude.scm $file | stak-compile --shake-tree >$bytecode_file
   echo $file $(wc -c <$bytecode_file)
-done | tee tmp/output.txt
-
-format_metrics bytecode_sizes "Bytecode sizes" <tmp/output.txt >tmp/bytecode_sizes.json
+done
