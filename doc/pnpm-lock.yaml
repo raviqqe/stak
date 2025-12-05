@@ -6,9 +6,7 @@ settings:
 
 importers:
 
-  .: {}
-
-  doc:
+  .:
     dependencies:
       '@astrojs/preact':
         specifier: ^4.1.3

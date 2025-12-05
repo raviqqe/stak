@@ -1,6 +1,0 @@
-{
-  "extends": "@raviqqe/react-tsconfig/tsconfig.json",
-  "compilerOptions": {
-    "noEmit": true
-  }
-}
