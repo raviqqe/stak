@@ -77,24 +77,23 @@ jobs:
       fail-fast: false
       matrix:
         type:
-          - key: binary
-            name: Binary
-          - key: bytecode
-            name: Bytecode
+          - binary
+          - bytecode
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
-      - run: tools/${{ matrix.type.key }}_size_bench.sh
+      - run: echo type=${{ matrix.type }}_size >> ${{ github.env }}
+      - run: tools/${{ env.type }}_bench.sh
       - run: >
           gosh tools/format-metrics.scm
-          ${{ matrix.type.key }}_size '${{ matrix.type.name }} sizes'
-          <tmp/${{ matrix.type.key }}_size.txt >tmp/${{ matrix.type.key }}_size.json
+          ${{ env.type }} $(echo ${{ env.type }} | sed 's/_/ /g')
+          <tmp/${{ env.type }}.txt >tmp/${{ env.type }}.json
       - uses: actions/upload-artifact@v5
         with:
-          name: ${{ matrix.type.key }}_size
-          path: tmp/${{ matrix.type.key }}_size.json
+          name: ${{ env.type }}
+          path: tmp/${{ env.type }}.json
   loc:
     runs-on: ubuntu-latest
     steps:
