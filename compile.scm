@@ -921,7 +921,6 @@
               (loop (append (cdr expression) expressions)))
              (else
               (cons expression (loop expressions))))))))
-
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
           ((cdr pair) expression)))
