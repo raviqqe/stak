@@ -80,7 +80,8 @@ jobs:
       - run: tools/binary_size_bench.sh
       - uses: actions/upload-artifact@v5
         with:
-          name: tmp/binary_sizes.json
+          name: binary_size
+          path: tmp/binary_sizes.json
   bytecode_size:
     runs-on: ubuntu-latest
     steps:
@@ -89,7 +90,8 @@ jobs:
       - run: tools/bytecode_size_bench.sh
       - uses: actions/upload-artifact@v5
         with:
-          name: tmp/bytecode_sizes.json
+          name: bytecode_size
+          path: tmp/bytecode_sizes.json
   loc:
     runs-on: ubuntu-latest
     steps:
