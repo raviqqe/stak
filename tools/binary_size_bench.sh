@@ -78,5 +78,7 @@ for binary in $binaries; do
   libraries=$(list_dynamic_libraries $binary)
 
   echo $binary '=>' $libraries
-  ls -lX $binary $(filter_existent_paths $libraries)
-done | tee tmp/binary_sizes.txt
+  wc -c $(filter_existent_paths $libraries)
+done
+
+wc -c $binaries | tee tmp/binary_sizes.txt
