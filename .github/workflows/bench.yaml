@@ -142,7 +142,7 @@ jobs:
             echo tmp/binary_sizes.json
             echo tmp/bytecode_sizes.json
           ) > ${{ github.env }}
-      - uses: k1LoW/octocov-action@v1
+      - uses: k1low/octocov-action@v1
   bench:
     needs:
       - command_time
