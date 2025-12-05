@@ -44,8 +44,9 @@ build_chibi() (
 )
 
 build_stak() (
-  if [ $(uname) = Linux ]; then
-    target=$(uname -m)-unknown-linux-musl
+  target=$1
+
+  if [ -n "$target" ]; then
     rustup target add $target
     options="--target $target"
   fi
@@ -71,11 +72,15 @@ build_tr7() (
 cd $(dirname $0)/..
 mkdir -p tmp
 
+if [ $(uname) = Linux ]; then
+  target=$(uname -m)-unknown-linux-musl
+fi
+
 build_chibi
-build_stak
+build_stak $target
 build_tr7
 
-binaries='cmd/minimal/target/release/mstak target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i'
+binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i"
 
 strip $binaries
 
