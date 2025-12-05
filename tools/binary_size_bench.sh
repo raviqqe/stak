@@ -44,6 +44,12 @@ build_chibi() (
 )
 
 build_stak() (
+  if [ $(uname) = Linux ]; then
+    target=$(uname -m)-unknown-linux-musl
+    rustup component add $target
+    options="--target $target"
+  fi
+
   for directory in . cmd/minimal; do
     (
       cd $directory
@@ -85,7 +91,5 @@ for binary in $binaries; do
 done
 
 for binary in $binaries; do
-  wc -c $binary
-done |
-  awk '{ x=$1; $1=$2; $2=x; print }' |
-  tee tmp/binary_size.txt
+  echo $binary $(wc -c <$binary)
+done | tee tmp/binary_size.txt
