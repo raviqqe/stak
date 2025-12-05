@@ -10,6 +10,8 @@ cargo build --release
 
 export PATH=$PWD/target/release:$PATH
 
+mkdir -p tmp
+
 for file in $(list_scheme_files); do
   bytecode_file=tmp/bytecode_size/${file%.scm}.bc
 
