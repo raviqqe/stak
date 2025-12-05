@@ -79,4 +79,4 @@ for binary in $binaries; do
 
   echo $binary '=>' $libraries
   ls -lX $binary $(filter_existent_paths $libraries)
-done
+done | tee tmp/binary_sizes.txt
