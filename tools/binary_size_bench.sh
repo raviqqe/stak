@@ -53,7 +53,7 @@ build_stak() (
   for directory in . cmd/minimal; do
     (
       cd $directory
-      cargo build --release
+      cargo build --release $options
     )
   done
 )
