@@ -81,12 +81,12 @@ jobs:
       - run: tools/binary_size_bench.sh
       - run: >
           gosh tools/format-metrics.scm
-          binary_sizes 'Binary sizes'
-          <tmp/binary_sizes.txt >tmp/binary_sizes.json
+          binary_size 'Binary sizes'
+          <tmp/binary_size.txt >tmp/binary_size.json
       - uses: actions/upload-artifact@v5
         with:
           name: binary_size
-          path: tmp/binary_sizes.json
+          path: tmp/binary_size.json
   bytecode_size:
     runs-on: ubuntu-latest
     steps:
@@ -96,12 +96,12 @@ jobs:
       - run: tools/bytecode_size_bench.sh
       - run: >
           gosh tools/format-metrics.scm
-          bytecode_sizes 'Bytecode sizes'
-          <tmp/bytecode_sizes.txt >tmp/bytecode_sizes.json
+          bytecode_size 'Bytecode sizes'
+          <tmp/bytecode_size.txt >tmp/bytecode_size.json
       - uses: actions/upload-artifact@v5
         with:
           name: bytecode_size
-          path: tmp/bytecode_sizes.json
+          path: tmp/bytecode_size.json
   loc:
     runs-on: ubuntu-latest
     steps:
@@ -152,8 +152,8 @@ jobs:
           name: bytecode_size
       - run: |
           (
-            echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=binary_sizes.json
-            echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=bytecode_sizes.json
+            echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=binary_size.json
+            echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=bytecode_size.json
           ) > ${{ github.env }}
       - uses: k1low/octocov-action@v1
   bench:
