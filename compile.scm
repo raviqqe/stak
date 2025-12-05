@@ -921,15 +921,6 @@
               (loop (append (cdr expression) expressions)))
              (else
               (cons expression (loop expressions))))))))
-        ((and
-          (pair? predicate)
-          (eq? (maybe-car predicate) '$$lambda)
-          (list? (cadr predicate)))
-         (cons
-          '$$let
-          (cons
-           (map list (cadr predicate) (cdr expression))
-           (cddr predicate))))
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
           ((cdr pair) expression)))
@@ -1127,6 +1118,17 @@
         (compilation-context-resolve context expression)
         continuation))
 
+      ((let ((predicate (maybe-car expression)))
+        (and
+         (eq? (maybe-car predicate) '$$lambda)
+         (list? (caddr predicate))))
+       (let ((predicate (car expression)))
+        (compile-let
+         context
+         (map list (caddr predicate) (cdr expression))
+         (cdddr predicate)
+         continuation)))
+
       ((pair? expression)
        (case (car expression)
         (($$apply)
@@ -1169,13 +1171,6 @@
            (if (null? (cadr expression))
             continuation
             (call-rib (compile-arity 1 #f) '$$close continuation)))))
-
-        (($$let)
-         (compile-let
-          context
-          (cadr expression)
-          (cddr expression)
-          continuation))
 
         (($$libraries)
          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
