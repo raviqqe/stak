@@ -78,6 +78,9 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - run: tools/binary_size_bench.sh
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 25
       - run: >
           node tools/format-metrics.ts
           binary_sizes 'Binary sizes'
@@ -92,6 +95,9 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - run: tools/bytecode_size_bench.sh
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 25
       - run: >
           node tools/format-metrics.ts
           bytecode_sizes 'Bytecode sizes'
