@@ -922,6 +922,15 @@
               (loop (append (cdr expression) expressions)))
              (else
               (cons expression (loop expressions))))))))
+        ((and
+          (pair? predicate)
+          (eq? (maybe-car predicate) '$$lambda)
+          (list? (cadr predicate)))
+         (cons
+          '$$let
+          (cons
+           (map list (cadr predicate) (cdr expression))
+           (cddr predicate))))
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
           ((cdr pair) expression)))
