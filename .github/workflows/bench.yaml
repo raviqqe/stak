@@ -72,36 +72,29 @@ jobs:
           mode: instrumentation
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
-  binary_size:
+  size:
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - key: binary
+            name: Binary
+          - key: bytecode
+            name: Bytecode
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
-      - run: tools/binary_size_bench.sh
+      - run: tools/${{ matrix.type.key }}_size_bench.sh
       - run: >
           gosh tools/format-metrics.scm
-          binary_size 'Binary sizes'
-          <tmp/binary_size.txt >tmp/binary_size.json
+          ${{ matrix.type.key }}_size '${{ matrix.type.name }} sizes'
+          <tmp/${{ matrix.type.key }}_size.txt >tmp/${{ matrix.type.key }}_size.json
       - uses: actions/upload-artifact@v5
         with:
-          name: binary_size
-          path: tmp/binary_size.json
-  bytecode_size:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-scheme
-      - run: tools/bytecode_size_bench.sh
-      - run: >
-          gosh tools/format-metrics.scm
-          bytecode_size 'Bytecode sizes'
-          <tmp/bytecode_size.txt >tmp/bytecode_size.json
-      - uses: actions/upload-artifact@v5
-        with:
-          name: bytecode_size
-          path: tmp/bytecode_size.json
+          name: ${{ matrix.type.key }}_size
+          path: tmp/${{ matrix.type.key }}_size.json
   loc:
     runs-on: ubuntu-latest
     steps:
@@ -109,7 +102,6 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/rust_loc_bench.sh
   r7rs:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -118,6 +110,7 @@ jobs:
           - MIT
           - Stak
           - TR7
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -139,8 +132,7 @@ jobs:
           path: r7rs-benchmarks/results.${{ matrix.name }}
   report:
     needs:
-      - binary_size
-      - bytecode_size
+      - size
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -161,8 +153,7 @@ jobs:
       - command_time
       - command_memory
       - rust
-      - binary_size
-      - bytecode_size
+      - size
       - loc
     if: always()
     runs-on: ubuntu-latest
