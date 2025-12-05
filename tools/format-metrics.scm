@@ -26,7 +26,7 @@
                      `((key . ,(string-map
                                 (lambda (char)
                                   (case char
-                                    ((#\. #\-)
+                                    ((#\. #\/)
                                       #\_)
                                     (else
                                       char)))
