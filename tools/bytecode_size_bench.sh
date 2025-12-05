@@ -18,4 +18,4 @@ for file in $(list_scheme_files); do
   echo $file $(wc -c <$bytecode_file)
 done | tee tmp/output.txt
 
-format_metrics tmp/outupt.txt tmp/bytecode_sizes.json
+format_metrics bytecode_sizes "Bytecode sizes" <tmp/output.txt >tmp/bytecode_sizes.json
