@@ -16,7 +16,7 @@ list_dynamic_libraries() (
     otool -L "$@" | tail -n +2 | grep -o '.*\.dylib'
     ;;
   *)
-    ldd /bin/ls | grep -o '/lib/[^ ]*'
+    ldd "$@" | grep -o '/lib/[^ ]*'
     ;;
   esac
 )
