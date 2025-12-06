@@ -28,7 +28,7 @@ static TAK_MODULE: UniversalModule = include_module!("tak/main.scm");
 fn initialize(module: &'static UniversalModule) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        heap.as_mut(),
+        &mut heap,
         SmallPrimitiveSet::new(
             FixedBufferDevice::<DEVICE_BUFFER_SIZE, 0>::new(&[]),
             VoidFileSystem::new(),
@@ -45,7 +45,7 @@ fn initialize(module: &'static UniversalModule) -> Result<(), SmallError> {
 fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        heap.as_mut(),
+        &mut heap,
         SmallPrimitiveSet::new(
             FixedBufferDevice::<DEVICE_BUFFER_SIZE, 0>::new(&[]),
             VoidFileSystem::new(),
@@ -54,8 +54,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
         ),
     )?;
 
-    vm.initialize(module.bytecode().iter().copied())?;
-    vm.run()
+    vm.run(module.bytecode().iter().copied())
 }
 
 static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[

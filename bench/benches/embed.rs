@@ -22,7 +22,7 @@ static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
 fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallError> {
     let mut heap = [Default::default(); N];
     let mut vm = Vm::new(
-        heap.as_mut(),
+        &mut heap,
         SmallPrimitiveSet::new(
             VoidDevice::new(),
             VoidFileSystem::new(),
@@ -31,8 +31,7 @@ fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallErro
         ),
     )?;
 
-    vm.initialize(module.bytecode().iter().copied())?;
-    vm.run()
+    vm.run(module.bytecode().iter().copied())
 }
 
 fn stak_add(bencher: &mut Bencher) {

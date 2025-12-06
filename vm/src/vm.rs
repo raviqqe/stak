@@ -428,7 +428,9 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
+    // This function is public only for benchmarking.
+    #[doc(hidden)]
+    pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");
 
