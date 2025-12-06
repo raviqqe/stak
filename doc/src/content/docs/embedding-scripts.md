@@ -137,8 +137,6 @@ use stak::{
 const HEAP_SIZE: usize = 1 << 16;
 
 fn run_scheme(module: &'static UniversalModule) -> Result<(), EngineError> {
-    // Initialize a heap memory for a Scheme scripting engine.
-    let mut heap = [Default::default(); HEAP_SIZE];
     // Define Rust functions to pass to the engine.
     let mut functions = [
         ("make-person", r#fn(Person::new)),
@@ -146,6 +144,8 @@ fn run_scheme(module: &'static UniversalModule) -> Result<(), EngineError> {
         ("person-wasted", r#fn::<(Ref<_>,), _>(Person::wasted)),
         ("person-throw-pie", r#fn(Person::throw_pie)),
     ];
+    // Initialize a heap memory for a Scheme scripting engine.
+    let mut heap = [Default::default(); HEAP_SIZE];
     // Initialize the engine.
     let mut engine = Engine::new(&mut heap, &mut functions)?;
 
