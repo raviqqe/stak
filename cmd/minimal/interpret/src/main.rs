@@ -65,8 +65,7 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
     // SAFETY: `file` is from `argv` and guaranteed to have a C string.
     let mmap = Mmap::new(unsafe { CStr::from_ptr(file as _) }).unwrap();
 
-    vm.initialize(mmap.as_slice().iter().copied()).unwrap();
-    vm.run().unwrap();
+    vm.run(mmap.as_slice().iter().copied()).unwrap();
 
     exit(0);
 }
