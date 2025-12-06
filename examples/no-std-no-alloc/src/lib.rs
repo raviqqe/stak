@@ -47,9 +47,8 @@ fn run_vm(
     bytecode: &[u8],
     device: &mut FixedBufferDevice<BUFFER_SIZE, BUFFER_SIZE>,
 ) -> Result<(), SmallError> {
-    let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        heap.as_mut(),
+        [Default::default(); HEAP_SIZE],
         SmallPrimitiveSet::new(
             // Attach an I/O device.
             device,
@@ -61,8 +60,7 @@ fn run_vm(
         ),
     )?;
 
-    vm.initialize(bytecode.iter().copied())?;
-    vm.run()
+    vm.run(bytecode.iter().copied())
 }
 
 /// A fibonacci calculation error.

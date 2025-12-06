@@ -31,10 +31,8 @@ struct Arguments {
 fn main() -> Result<(), MainError> {
     let arguments = Arguments::parse();
 
-    let mut heap = vec![Default::default(); arguments.heap_size];
-
     Vm::new(
-        heap.as_mut(),
+        vec![Default::default(); arguments.heap_size],
         SmallPrimitiveSet::new(
             StdioDevice::new(),
             OsFileSystem::new(),
