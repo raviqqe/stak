@@ -3377,7 +3377,7 @@
   - $$unbind
   - bindings
   - binding
-  - compile-rewinding-unbind
+  - compile-unbind
   - body-context
   - body
   - arity
@@ -3386,7 +3386,7 @@
   - variadic
   - procedure
   - $procedure
-  - compile-unbind
+  - compile-unsafe-unbind
   - get-instruction
   - compile-let
   - predicate
@@ -3399,7 +3399,7 @@
   - $$close
   - compilation-context-resolve
   - compilation-context-push-local
-  - compile-unspecified
+  - compile-unsafe-unspecified
   - compilation-context-metadata
   - compile-call
   - constant-rib
@@ -16547,7 +16547,7 @@
   - list
     - define
     - list
-      - compile-unspecified
+      - compile-unsafe-unspecified
       - continuation
     - list
       - if
@@ -16610,7 +16610,7 @@
   - list
     - define
     - list
-      - compile-rewinding-unbind
+      - compile-unbind
       - continuation
     - list
       - if
@@ -16691,7 +16691,7 @@
                   - binding
               - body
               - list
-                - compile-rewinding-unbind
+                - compile-unbind
                 - continuation
         - list
           - compile-sequence
@@ -16701,7 +16701,7 @@
   - list
     - define
     - list
-      - compile-unbind
+      - compile-unsafe-unbind
       - continuation
     - list
       - if
@@ -16828,7 +16828,7 @@
               - quote
               - $procedure
             - list
-              - compile-unbind
+              - compile-unsafe-unbind
               - continuation
   - list
     - define
@@ -17100,7 +17100,7 @@
                     - cadr
                     - expression
                 - list
-                  - compile-unspecified
+                  - compile-unsafe-unspecified
                   - continuation
           - list
             - list
