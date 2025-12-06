@@ -1,5 +1,6 @@
 use alloc::alloc::{alloc, dealloc};
 use core::{alloc::Layout, ptr::write, slice};
+use stak_vm::Value;
 
 /// A memory block on a heap.
 pub struct Heap<T> {
@@ -20,24 +21,12 @@ impl<T> Heap<T> {
             len,
         };
 
-        for x in this.as_slice_mut() {
+        for x in this.as_mut() {
             // SAFETY: `x` is not initialized yet.
             unsafe { write(x, default()) };
         }
 
         this
-    }
-
-    /// Returns a slice.
-    pub const fn as_slice(&mut self) -> &[T] {
-        // SAFETY: `self.ptr` has the length of `self.len`.
-        unsafe { slice::from_raw_parts(self.ptr as _, self.len) }
-    }
-
-    /// Returns a mutable slice.
-    pub const fn as_slice_mut(&mut self) -> &mut [T] {
-        // SAFETY: `self.ptr` has the length of `self.len`.
-        unsafe { slice::from_raw_parts_mut(self.ptr as _, self.len) }
     }
 }
 
@@ -47,6 +36,22 @@ impl<T> Drop for Heap<T> {
         unsafe { dealloc(self.ptr as _, Layout::new::<T>()) }
     }
 }
+
+impl<T> AsRef<[T]> for Heap<T> {
+    fn as_ref(&self) -> &[T] {
+        // SAFETY: `self.ptr` has the length of `self.len`.
+        unsafe { slice::from_raw_parts(self.ptr as _, self.len) }
+    }
+}
+
+impl<T> AsMut<[T]> for Heap<T> {
+    fn as_mut(&mut self) -> &mut [T] {
+        // SAFETY: `self.ptr` has the length of `self.len`.
+        unsafe { slice::from_raw_parts_mut(self.ptr as _, self.len) }
+    }
+}
+
+impl stak_vm::Heap for Heap<Value> {}
 
 #[cfg(test)]
 mod tests {
