@@ -3399,7 +3399,7 @@
   - $$close
   - compilation-context-resolve
   - compilation-context-push-local
-  - compile-unspecified
+  - compile-unsafe-unspecified
   - compilation-context-metadata
   - compile-call
   - constant-rib
@@ -16547,7 +16547,7 @@
   - list
     - define
     - list
-      - compile-unspecified
+      - compile-unsafe-unspecified
       - continuation
     - list
       - if
@@ -17100,7 +17100,7 @@
                     - cadr
                     - expression
                 - list
-                  - compile-unspecified
+                  - compile-unsafe-unspecified
                   - continuation
           - list
             - list

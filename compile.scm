@@ -1029,7 +1029,7 @@
       (eq? (rib-tag codes) set-instruction)
       (eq? (rib-car codes) 0)))
 
-    (define (compile-unspecified continuation)
+    (define (compile-unsafe-unspecified continuation)
      (if (drop? continuation)
       ; Skip a "drop" instruction.
       (rib-cdr continuation)
@@ -1048,7 +1048,7 @@
        continuation
        (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-    (define (compile-rewinding-unbind continuation)
+    (define (compile-unbind continuation)
      (if (null? continuation)
       continuation
       (call-rib (compile-arity 2 #f) '$$unbind continuation)))
@@ -1069,7 +1069,7 @@
           (cdr bindings)
           (compilation-context-push-local body-context (car binding))
           body
-          (compile-rewinding-unbind continuation))))
+          (compile-unbind continuation))))
        (compile-sequence body-context body continuation))))
 
     (define (compile-unsafe-unbind continuation)
@@ -1199,7 +1199,7 @@
            (compilation-context-resolve
             (compilation-context-push-local context #f)
             (cadr expression))
-           (compile-unspecified continuation))))
+           (compile-unsafe-unspecified continuation))))
 
         (($$symbols)
          (constant-rib (metadata-symbols (compilation-context-metadata context)) continuation))
