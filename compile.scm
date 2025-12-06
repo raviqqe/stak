@@ -1029,7 +1029,7 @@
       (eq? (rib-tag codes) set-instruction)
       (eq? (rib-car codes) 0)))
 
-    (define (compile-unsafe-unspecified continuation)
+    (define (compile-unspecified continuation)
      (if (drop? continuation)
       ; Skip a "drop" instruction.
       (rib-cdr continuation)
@@ -1199,7 +1199,7 @@
            (compilation-context-resolve
             (compilation-context-push-local context #f)
             (cadr expression))
-           (compile-unsafe-unspecified continuation))))
+           (compile-unspecified continuation))))
 
         (($$symbols)
          (constant-rib (metadata-symbols (compilation-context-metadata context)) continuation))
