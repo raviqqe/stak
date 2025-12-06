@@ -97,14 +97,16 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
     /// # Panics
     ///
     /// Panics if asynchronous operations occur during the run.
-    pub fn run(&mut self) -> Result<(), T::Error> {
-        block_on!(self.run_async())
+    pub fn run(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), T::Error> {
+        block_on!(self.run_async(input))
     }
 
     /// Runs bytecode on a virtual machine.
     #[cfg_attr(not(feature = "async"), doc(hidden))]
     #[maybe_async]
-    pub fn run_async(&mut self) -> Result<(), T::Error> {
+    pub fn run_async(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), T::Error> {
+        self.initialize(input)?;
+
         while let Err(error) = maybe_await!(self.run_with_continuation()) {
             if error.is_critical() {
                 return Err(error);
@@ -427,8 +429,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         Ok(())
     }
 
-    /// Initializes a virtual machine with bytecode of a program.
-    pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
+    fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");
 
