@@ -43,7 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - run: npx tombi@0.7.0 format --check .
+      - uses: ./.github/actions/setup-document
+      - run: node --run lint:toml
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:

@@ -7,12 +7,11 @@ runs:
   steps:
     - uses: pnpm/action-setup@v4
       with:
-        package_json_file: doc/package.json
+        package_json_file: package.json
     - uses: actions/setup-node@v4
       with:
         cache: pnpm
-        cache-dependency-path: doc/pnpm-lock.yaml
-        node-version-file: doc/package.json
+        cache-dependency-path: pnpm-lock.yaml
+        node-version-file: package.json
     - run: pnpm i --frozen-lockfile
       shell: bash
-      working-directory: doc
