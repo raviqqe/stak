@@ -138,20 +138,10 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
-            Primitive::EXPONENTIATION
-            | Primitive::LOGARITHM
-            | Primitive::INFINITE
-            | Primitive::NAN
-            | Primitive::SQRT
-            | Primitive::COS
-            | Primitive::SIN
-            | Primitive::TAN
-            | Primitive::ACOS
-            | Primitive::ASIN
-            | Primitive::ATAN => maybe_await!(
-                self.inexact
-                    .operate(memory, primitive - Primitive::EXPONENTIATION)
-            )?,
+            Primitive::UNBIND => {
+                let [_, x] = memory.pop_many()?;
+                memory.push(x)?;
+            }
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => {
                 maybe_await!(self.type_check.operate(memory, primitive - Primitive::NULL))?
@@ -181,6 +171,20 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::CURRENT_JIFFY | Primitive::JIFFIES_PER_SECOND => maybe_await!(
                 self.time
                     .operate(memory, primitive - Primitive::CURRENT_JIFFY)
+            )?,
+            Primitive::EXPONENTIATION
+            | Primitive::LOGARITHM
+            | Primitive::INFINITE
+            | Primitive::NAN
+            | Primitive::SQRT
+            | Primitive::COS
+            | Primitive::SIN
+            | Primitive::TAN
+            | Primitive::ACOS
+            | Primitive::ASIN
+            | Primitive::ATAN => maybe_await!(
+                self.inexact
+                    .operate(memory, primitive - Primitive::EXPONENTIATION)
             )?,
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }

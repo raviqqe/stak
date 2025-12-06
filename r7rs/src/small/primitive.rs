@@ -15,6 +15,7 @@ pub(super) enum Primitive {
     Multiply,
     Divide,
     Remainder,
+    Unbind = 39,
     Halt = 40,
     Null = 50,
     Pair,
@@ -67,17 +68,7 @@ impl Primitive {
     pub const MULTIPLY: usize = Self::Multiply as _;
     pub const DIVIDE: usize = Self::Divide as _;
     pub const REMAINDER: usize = Self::Remainder as _;
-    pub const EXPONENTIATION: usize = Self::Exponentiation as _;
-    pub const LOGARITHM: usize = Self::Logarithm as _;
-    pub const INFINITE: usize = Self::Infinite as _;
-    pub const NAN: usize = Self::Nan as _;
-    pub const SQRT: usize = Self::Sqrt as _;
-    pub const COS: usize = Self::Cos as _;
-    pub const SIN: usize = Self::Sin as _;
-    pub const TAN: usize = Self::Tan as _;
-    pub const ACOS: usize = Self::Acos as _;
-    pub const ASIN: usize = Self::Asin as _;
-    pub const ATAN: usize = Self::Atan as _;
+    pub const UNBIND: usize = Self::Unbind as _;
     pub const HALT: usize = Self::Halt as _;
     pub const NULL: usize = Self::Null as _;
     pub const PAIR: usize = Self::Pair as _;
@@ -101,4 +92,15 @@ impl Primitive {
     pub const ENVIRONMENT_VARIABLES: usize = Self::EnvironmentVariables as _;
     pub const CURRENT_JIFFY: usize = Self::CurrentJiffy as _;
     pub const JIFFIES_PER_SECOND: usize = Self::JiffiesPerSecond as _;
+    pub const EXPONENTIATION: usize = Self::Exponentiation as _;
+    pub const LOGARITHM: usize = Self::Logarithm as _;
+    pub const INFINITE: usize = Self::Infinite as _;
+    pub const NAN: usize = Self::Nan as _;
+    pub const SQRT: usize = Self::Sqrt as _;
+    pub const COS: usize = Self::Cos as _;
+    pub const SIN: usize = Self::Sin as _;
+    pub const TAN: usize = Self::Tan as _;
+    pub const ACOS: usize = Self::Acos as _;
+    pub const ASIN: usize = Self::Asin as _;
+    pub const ATAN: usize = Self::Atan as _;
 }

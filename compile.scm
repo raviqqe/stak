@@ -32,7 +32,8 @@
        ($$+ 10)
        ($$- 11)
        ($$* 12)
-       ($$/ 13)))
+       ($$/ 13)
+       ($$unbind 39)))
 
     ; Types
 
@@ -1047,10 +1048,10 @@
        continuation
        (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-    (define (compile-unbind continuation)
+    (define (compile-safe-unbind continuation)
      (if (null? continuation)
       continuation
-      (code-rib set-instruction 1 continuation)))
+      (call-rib (compile-arity 2 #f) '$$unbind continuation)))
 
     (define (compile-let context bindings body continuation)
      (let loop ((context context)
@@ -1068,8 +1069,13 @@
           (cdr bindings)
           (compilation-context-push-local body-context (car binding))
           body
-          (compile-unbind continuation))))
+          (compile-safe-unbind continuation))))
        (compile-sequence body-context body continuation))))
+
+    (define (compile-unbind continuation)
+     (if (null? continuation)
+      continuation
+      (code-rib set-instruction 1 continuation)))
 
     (define (compile-raw-call context procedure arguments arity continuation)
      (if (null? arguments)
