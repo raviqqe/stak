@@ -39,7 +39,6 @@ jobs:
         with:
           files: "**/*.{feature,md,rs,scm,sh,toml}"
   toml:
-    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -74,5 +73,5 @@ jobs:
     steps:
       - run: |
           for result in ${{ join(needs.*.result, ' ') }}; do
-            [ $result = success -o $result = skipped ]
+            [ $result = success ]
           done
