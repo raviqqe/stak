@@ -29,7 +29,7 @@ pub fn interpret(bytecode: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<
     let mut output = vec![];
     let mut error = vec![];
 
-    let mut vm = Vm::new(
+    Vm::new(
         vec![Default::default(); heap_size],
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
@@ -37,9 +37,8 @@ pub fn interpret(bytecode: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
-
-    vm.run(bytecode.iter().copied())?;
+    )?
+    .run(bytecode.iter().copied())?;
 
     Ok(output)
 }
@@ -54,7 +53,7 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
     let files = [(MAIN_FILE.as_bytes(), source.as_bytes())];
     let mut file_entries = [Default::default(); 1];
 
-    let mut vm = Vm::new(
+    Vm::new(
         vec![Default::default(); heap_size],
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
@@ -62,9 +61,8 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
             MemoryProcessContext::new(&["scheme", MAIN_FILE], &[]),
             VoidClock::new(),
         ),
-    )?;
-
-    vm.run(
+    )?
+    .run(
         include_module!("run.scm", stak_module)
             .bytecode()
             .iter()
