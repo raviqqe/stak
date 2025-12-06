@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-document
-      - run: node --run lint
+      - run: node --run lint:document
         working-directory: doc
   web_test:
     runs-on: ubuntu-latest
