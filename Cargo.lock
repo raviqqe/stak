@@ -1552,7 +1552,6 @@ name = "stak-libc"
 version = "0.11.13"
 dependencies = [
  "rustix",
- "stak-vm",
 ]
 
 [[package]]

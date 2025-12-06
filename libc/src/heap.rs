@@ -1,6 +1,5 @@
 use alloc::alloc::{alloc, dealloc};
 use core::{alloc::Layout, ptr::write, slice};
-use stak_vm::Value;
 
 /// A memory block on a heap.
 pub struct Heap<T> {
@@ -50,8 +49,6 @@ impl<T> AsMut<[T]> for Heap<T> {
         unsafe { slice::from_raw_parts_mut(self.ptr as _, self.len) }
     }
 }
-
-impl stak_vm::Heap for Heap<Value> {}
 
 #[cfg(test)]
 mod tests {

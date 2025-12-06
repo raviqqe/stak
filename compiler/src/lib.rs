@@ -42,12 +42,12 @@ pub fn compile_r7rs(source: impl Read, target: impl Write) -> Result<(), Compile
 /// ```
 pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), CompileError> {
     // TODO Add a heap size option.
-    let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
+    let heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut error_message = vec![];
     let device = ReadWriteDevice::new(source, target, &mut error_message);
 
     Vm::new(
-        heap.as_mut(),
+        heap,
         SmallPrimitiveSet::new(
             device,
             VoidFileSystem::new(),
