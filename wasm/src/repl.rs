@@ -33,10 +33,8 @@ item::feature!(if ("async") {
 #[maybe_async]
 #[wasm_bindgen]
 pub fn repl(heap_size: usize) -> Result<(), JsError> {
-    let mut heap = vec![Default::default(); heap_size];
-
     let mut vm = Vm::new(
-        heap.as_mut(),
+        vec![Default::default(); heap_size],
         SmallPrimitiveSet::new(
             JsDevice {},
             VoidFileSystem::new(),
@@ -45,13 +43,14 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
         ),
     )?;
 
-    vm.initialize(
-        include_module!("repl.scm", stak_module)
-            .bytecode()
-            .iter()
-            .copied(),
+    maybe_await!(
+        vm.run_async(
+            include_module!("repl.scm", stak_module)
+                .bytecode()
+                .iter()
+                .copied()
+        )
     )?;
-    maybe_await!(vm.run_async())?;
 
     Ok(())
 }
