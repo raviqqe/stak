@@ -1,5 +1,5 @@
 {
-  "extends": ["./node_modules/@raviqqe/biome-config/biome.json"],
+  "extends": ["node_modules/@raviqqe/biome-config/biome.json"],
   "files": {
     "includes": ["**", "!r7rs-benchmarks", "!tools/scheme"]
   }
