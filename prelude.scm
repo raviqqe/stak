@@ -2296,7 +2296,7 @@
     (define dummy-procedure (lambda () #f))
 
     (define (call/cc receiver)
-      (let ((continuation (cadr (cddr (close dummy-procedure))))
+      (let ((continuation (cadr (cdr (close dummy-procedure))))
             (point current-point))
         (receiver
           (lambda (argument)
