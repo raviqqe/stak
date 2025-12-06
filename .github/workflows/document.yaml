@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-document
+      - uses: ./.github/actions/setup-node
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
       - uses: actions/upload-pages-artifact@v4
@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-document
+      - uses: ./.github/actions/setup-node
       - run: node --run lint:document
         working-directory: doc
   web_test:
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-document
+      - uses: ./.github/actions/setup-node
       - run: tools/document.sh -l
       - run: node --run preview &
         working-directory: doc
