@@ -1048,7 +1048,7 @@
        continuation
        (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-    (define (compile-safe-unbind continuation)
+    (define (compile-rewinding-unbind continuation)
      (if (null? continuation)
       continuation
       (call-rib (compile-arity 2 #f) '$$unbind continuation)))
@@ -1069,7 +1069,7 @@
           (cdr bindings)
           (compilation-context-push-local body-context (car binding))
           body
-          (compile-safe-unbind continuation))))
+          (compile-rewinding-unbind continuation))))
        (compile-sequence body-context body continuation))))
 
     (define (compile-unbind continuation)
