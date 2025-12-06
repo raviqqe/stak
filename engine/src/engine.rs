@@ -32,8 +32,7 @@ impl<'a, 'b, H: Heap> Engine<'a, 'b, H> {
     #[cfg_attr(not(feature = "async"), doc(hidden))]
     #[maybe_async]
     pub fn run_async<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
-        self.vm.initialize(module.bytecode().iter().copied())?;
-        maybe_await!(self.vm.run_async())
+        maybe_await!(self.vm.run_async(module.bytecode().iter().copied()))
     }
 
     /// Registers a type compatible between Scheme and Rust.

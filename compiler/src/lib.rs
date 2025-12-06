@@ -45,7 +45,8 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut error_message = vec![];
     let device = ReadWriteDevice::new(source, target, &mut error_message);
-    let mut vm = Vm::new(
+
+    Vm::new(
         heap.as_mut(),
         SmallPrimitiveSet::new(
             device,
@@ -53,11 +54,9 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
-    )?;
-
-    vm.initialize(COMPILER_BYTECODE.iter().copied())?;
-
-    vm.run().map_err(|error| {
+    )?
+    .run(COMPILER_BYTECODE.iter().copied())
+    .map_err(|error| {
         if error_message.is_empty() {
             CompileError::Run(error)
         } else {

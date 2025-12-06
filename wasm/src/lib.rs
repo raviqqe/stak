@@ -51,29 +51,27 @@ pub fn interpret(bytecode: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<
 pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
     const MAIN_FILE: &str = "main.scm";
 
-    let mut heap = vec![Default::default(); heap_size];
     let mut output = vec![];
     let mut error = vec![];
     let files = [(MAIN_FILE.as_bytes(), source.as_bytes())];
     let mut file_entries = [Default::default(); 1];
 
-    let mut vm = Vm::new(
-        heap.as_mut(),
+    Vm::new(
+        vec![Default::default(); heap_size],
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
             MemoryFileSystem::new(&files, &mut file_entries),
             MemoryProcessContext::new(&["scheme", MAIN_FILE], &[]),
             VoidClock::new(),
         ),
-    )?;
-
-    vm.initialize(
+    )?
+    .run(
         include_module!("run.scm", stak_module)
             .bytecode()
             .iter()
             .copied(),
-    )?;
-    vm.run().map_err(|vm_error| match str::from_utf8(&error) {
+    )
+    .map_err(|vm_error| match str::from_utf8(&error) {
         Ok(error) if !error.is_empty() => JsError::new(error),
         Ok(_) => JsError::from(vm_error),
         Err(error) => JsError::from(error),
