@@ -68,9 +68,9 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
         ("person-throw-pie", r#fn(Person::throw_pie)),
     ];
     // Initialize a heap memory.
-    let heap = [Default::default(); HEAP_SIZE];
+    let mut heap = [Default::default(); HEAP_SIZE];
     // Initialize the engine.
-    let mut engine = Engine::new(heap, &mut functions)?;
+    let mut engine = Engine::new(&mut heap, &mut functions)?;
 
     // Finally, run the module!
     engine.run(module)
