@@ -48,7 +48,6 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
       - run: node --run lint:document
-        working-directory: doc
   web_test:
     runs-on: ubuntu-latest
     steps:
