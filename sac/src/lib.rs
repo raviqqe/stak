@@ -135,10 +135,8 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
-            let mut heap = Heap::new($heap_size, Default::default);
-
             Vm::new(
-                heap.as_mut(),
+                Heap::new($heap_size, Default::default),
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
