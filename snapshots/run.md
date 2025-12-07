@@ -2,18 +2,18 @@
 - set $$rib
 - constant primitive 1
 - set $$close
-- constant primitive 9
-- set $$<
-- constant primitive 10
-- set $$+
-- constant primitive 11
-- set $$-
-- constant primitive 12
-- set $$\*
-- constant primitive 13
-- set $$/
-- constant primitive 39
+- constant primitive 2
 - set $$unbind
+- constant primitive 10
+- set $$<
+- constant primitive 11
+- set $$+
+- constant primitive 12
+- set $$-
+- constant primitive 13
+- set $$\*
+- constant primitive 14
+- set $$/
 - constant procedure 0 #f
   - constant list
     - r7rs
@@ -81,30 +81,27 @@
 - constant 1
 - call 1 #f primitive
 - set close
-- constant 2
-- call 1 #f primitive
-- set rib?
 - constant 3
 - call 1 #f primitive
-- set car
+- set rib?
 - constant 4
 - call 1 #f primitive
-- set cdr
+- set car
 - constant 5
 - call 1 #f primitive
-- set rib-tag
+- set cdr
 - constant 6
 - call 1 #f primitive
-- set set-car!
+- set rib-tag
 - constant 7
 - call 1 #f primitive
-- set set-cdr!
+- set set-car!
 - constant 8
 - call 1 #f primitive
-- set eq?
+- set set-cdr!
 - constant 9
 - call 1 #f primitive
-- set ||
+- set eq?
 - constant 10
 - call 1 #f primitive
 - set ||
@@ -118,6 +115,9 @@
 - call 1 #f primitive
 - set ||
 - constant 14
+- call 1 #f primitive
+- set ||
+- constant 15
 - call 1 #f primitive
 - set remainder
 - constant 40
@@ -8240,23 +8240,23 @@
     - $$close
     - 1
   - list
-    - $$<
-    - 9
+    - $$unbind
+    - 2
   - list
-    - $$+
+    - $$<
     - 10
   - list
-    - $$-
+    - $$+
     - 11
   - list
-    - $$\*
+    - $$-
     - 12
   - list
-    - $$/
+    - $$\*
     - 13
   - list
-    - $$unbind
-    - 39
+    - $$/
+    - 14
 - set 46
 - constant 0
 - set 45
@@ -10780,41 +10780,39 @@
 - set 12
 - constant procedure 4 #f
   - constant #f
-  - constant procedure 5 #f
-    - get 3
+  - constant procedure 4 #f
+    - get 1
     - call 1 #f pair?
     - if
-      - get 3
+      - get 1
       - call 1 #f car
-      - get 5
+      - get 4
       - get 1
       - call 1 #f cadr
-      - get 7
+      - get 6
       - constant #f
-      - call 2 #f 35
-      - get 7
-      - call 1 #f cdr
-      - get 7
-      - get 5
+      - call 2 #f 34
+      - get 6
+      - get 4
       - call 1 #f car
-      - call 2 #f 37
-      - get 7
-      - get 7
-      - call 1 #f 31
-      - call 5 #f 14
-      - call 3 #f 22
+      - call 2 #f 35
+      - get 6
+      - call 1 #f cdr
+      - get 6
+      - call 1 #f 29
+      - call 4 #f 12
+      - call 3 #f 21
     - get 2
+    - get 8
     - get 2
-    - get 2
-    - call 3 #f 27
+    - call 3 #f 26
   - call 1 #f $$close
   - set 1
   - get 4
+  - get 5
+  - get 5
   - get 4
-  - get 6
-  - get 5
-  - get 5
-  - call 5 #f 5
+  - call 4 #f 4
 - call 1 #f $$close
 - set 11
 - constant procedure 1 #f

@@ -2,7 +2,7 @@
 - set ||
 - constant primitive 1
 - set ||
-- constant primitive 9
+- constant primitive 2
 - set ||
 - constant primitive 10
 - set ||
@@ -12,6 +12,6 @@
 - set ||
 - constant primitive 13
 - set ||
-- constant primitive 39
+- constant primitive 14
 - set ||
 - constant #f
