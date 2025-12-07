@@ -2556,7 +2556,7 @@
 
     (set! backtrace
       (lambda ()
-        (cdr
+        (cddr
           (let loop ((stack (cdr (close (lambda () #f)))))
             (cond
               ((null? stack)
