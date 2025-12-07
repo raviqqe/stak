@@ -28,12 +28,12 @@
     (define primitives
      '(($$rib 0)
        ($$close 1)
+       ($$unbind 2)
        ($$< 9)
        ($$+ 10)
        ($$- 11)
        ($$* 12)
-       ($$/ 13)
-       ($$unbind 39)))
+       ($$/ 13)))
 
     ; Types
 
