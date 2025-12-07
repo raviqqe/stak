@@ -59,6 +59,7 @@ pub mod device {
     //!     output: &mut Vec<u8>,
     //!     error: &mut Vec<u8>,
     //! ) -> Result<(), SmallError> {
+    //!     let mut heap = [Default::default(); HEAP_SIZE];
     //!     let mut vm = Vm::new(
     //!         &mut heap,
     //!         SmallPrimitiveSet::new(
@@ -179,6 +180,8 @@ pub mod vm {
     //! }
     //!
     //! fn run(bytecode: &[u8]) -> Result<(), SmallError> {
+    //!     // Prepare a heap memory of a virtual machine.
+    //!     let mut heap = [Default::default(); HEAP_SIZE];
     //!     // Create a virtual machine with its heap memory primitive procedures.
     //!     let mut vm = Vm::new(
     //!         &mut heap,
