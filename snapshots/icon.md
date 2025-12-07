@@ -12,8 +12,6 @@
 - set ||
 - constant primitive 13
 - set ||
-- constant primitive 39
-- set ||
 - constant 3
 - set ||
 - constant 4
@@ -118,25 +116,28 @@
   - call 3 #f ||
 - set ||
 - constant procedure 2 #t
-  - constant #f
-  - constant procedure 2 #f
-    - get 0
-    - call 1 #f ||
-    - if
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - get 0
+      - call 1 #f ||
+      - if
+        - get 1
       - get 1
-    - get 1
-    - get 1
+      - get 1
+      - call 1 #f ||
+      - get 2
+      - call 1 #f ||
+      - call 2 #f 6
+      - call 2 #f ||
     - call 1 #f ||
-    - get 2
-    - call 1 #f ||
-    - call 2 #f 6
-    - call 2 #f ||
+    - set 1
+    - get 3
+    - get 3
+    - call 2 #f 2
   - call 1 #f ||
+  - constant #f
+  - call 1 #f 1
   - set 1
-  - get 2
-  - get 2
-  - call 2 #f 2
-  - call 2 #f ||
   - call 0 #t 3
 - set ||
 - constant procedure 1 #f
@@ -303,16 +304,17 @@
   - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant procedure 1 #f
+  - get 0
+  - constant 0
+  - call 2 #f ||
+  - if
+    - constant 1
+  - get 0
 - constant 1000000000
 - call 1 #f ||
-- get 0
-- constant 0
-- call 2 #f ||
-- if
-  - constant 1
-  - continue
-- get 0
-- call 2 #f ||
+- call 1 #f 1
+- set 1
 - set ||
 - get ||
 - call 1 #f ||
@@ -629,51 +631,54 @@
     - if
       - constant ()
     - constant #\.
-    - constant #f
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - if
-        - constant ()
-      - get 2
-      - get 11
-      - call 2 #f ||
-      - get 0
-      - constant 1
-      - call 2 #f ||
-      - get 1
-      - constant 1
-      - call 2 #f ||
-      - get 4
-      - get 14
-      - call 2 #f ||
-      - constant 1
-      - get 3
-      - call 2 #f ||
-      - get 1
-      - call 2 #f ||
-      - if
+    - constant procedure 1 #f
+      - constant procedure 3 #f
+        - get 2
+        - get 2
+        - call 2 #f ||
+        - if
+          - constant ()
+        - get 2
+        - get 12
+        - call 2 #f ||
+        - get 0
+        - constant 1
+        - call 2 #f ||
         - get 1
         - constant 1
         - call 2 #f ||
-        - call 1 #f 14
-        - constant ()
+        - get 4
+        - get 15
         - call 2 #f ||
-      - get 1
-      - call 1 #f 14
+        - constant 1
+        - get 3
+        - call 2 #f ||
+        - get 1
+        - call 2 #f ||
+        - if
+          - get 1
+          - constant 1
+          - call 2 #f ||
+          - call 1 #f 15
+          - constant ()
+          - call 2 #f ||
+        - get 1
+        - call 1 #f 15
+        - get 3
+        - get 2
+        - get 7
+        - call 3 #f 12
+        - call 2 #f ||
+      - call 1 #f ||
+      - set 1
       - get 3
-      - get 2
-      - get 7
-      - call 3 #f 12
-      - call 2 #f ||
+      - get ||
+      - constant ()
+      - call 3 #f 3
     - call 1 #f ||
+    - constant #f
+    - call 1 #f 1
     - set 1
-    - get 2
-    - get ||
-    - constant ()
-    - call 3 #f 3
-    - call 2 #f ||
     - call 2 #f ||
   - call 1 #f ||
   - set 1
@@ -699,33 +704,36 @@
     - call 1 #f ||
     - continue
   - constant ()
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - get 8
-    - call 2 #f ||
-    - get 2
-    - get 9
-    - call 2 #f ||
-    - constant 1
-    - call 2 #f ||
-    - call 1 #f 8
-    - get 2
-    - call 2 #f ||
-    - get 1
+  - constant procedure 1 #f
+    - constant procedure 2 #f
+      - get 1
+      - get 9
+      - call 2 #f ||
+      - get 2
+      - get 10
+      - call 2 #f ||
+      - constant 1
+      - call 2 #f ||
+      - call 1 #f 9
+      - get 2
+      - call 2 #f ||
+      - get 1
+      - call 1 #f ||
+      - if
+        - get 1
+        - get 1
+        - call 2 #f 7
+      - get 0
     - call 1 #f ||
-    - if
-      - get 1
-      - get 1
-      - call 2 #f 7
-    - get 0
+    - set 1
+    - get 7
+    - call 1 #f ||
+    - constant ()
+    - call 2 #f 2
   - call 1 #f ||
+  - constant #f
+  - call 1 #f 1
   - set 1
-  - get 6
-  - call 1 #f ||
-  - constant ()
-  - call 2 #f 2
-  - call 2 #f ||
   - get 6
   - call 1 #f ||
   - constant 1
@@ -1191,32 +1199,33 @@
         - call 1 #f ||
         - call 2 #f ||
         - set 0
-        - get 5
-        - call 1 #f ||
-        - get 0
-        - if
-          - constant " ["
-          - call 1 #f ||
-          - set 0
+        - constant procedure 1 #f
           - get 0
-          - call 1 #f ||
-          - call 1 #f ||
-          - set 0
-          - constant procedure 1 #f
-            - constant " "
+          - if
+            - constant " ["
             - call 1 #f ||
             - set 0
             - get 0
             - call 1 #f ||
-          - get 1
-          - call 1 #f ||
-          - call 2 #f ||
-          - set 0
-          - constant "]"
-          - call 1 #f ||
-          - continue
-        - constant #f
-        - call 2 #f ||
+            - call 1 #f ||
+            - set 0
+            - constant procedure 1 #f
+              - constant " "
+              - call 1 #f ||
+              - set 0
+              - get 0
+              - call 1 #f ||
+            - get 1
+            - call 1 #f ||
+            - call 2 #f ||
+            - set 0
+            - constant "]"
+            - call 1 #f ||
+          - constant #f
+        - get 6
+        - call 1 #f ||
+        - call 1 #f 1
+        - set 1
         - continue
       - get 5
       - call 1 #f ||
@@ -1315,16 +1324,18 @@
   - get 2
   - call 1 #f ||
   - set 2
-  - get 2
-  - call 1 #f ||
-  - get 0
-  - if
+  - constant procedure 1 #f
     - get 0
-    - continue
+    - if
+      - get 0
+    - get 4
+    - call 1 #f ||
+    - call 1 #f ||
+  - call 1 #f ||
   - get 3
   - call 1 #f ||
-  - call 1 #f ||
-  - call 2 #f ||
+  - call 1 #f 1
+  - set 1
   - if
     - constant 1
     - continue
@@ -1639,16 +1650,18 @@
     - call 2 #f ||
   - call 1 #f ||
   - set 1
-  - get 2
-  - call 1 #f ||
-  - get 0
-  - if
+  - constant procedure 1 #f
     - get 0
-    - continue
+    - if
+      - get 0
+    - get 4
+    - call 1 #f ||
+    - call 1 #f ||
+  - call 1 #f ||
   - get 3
   - call 1 #f ||
-  - call 1 #f ||
-  - call 2 #f ||
+  - call 1 #f 1
+  - set 1
   - if
     - get 3
     - get 3
@@ -1693,52 +1706,55 @@
     - call 1 #f ||
     - call 2 #f ||
     - set 0
-    - constant #f
     - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f ||
+        - if
+          - constant #f
+        - get 0
+        - call 1 #f ||
+        - if
+          - get 5
+          - get 1
+          - call 2 #f ||
+          - constant #f
+          - call 2 #f ||
+          - continue
         - constant #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 4
-        - get 1
-        - call 2 #f ||
-        - constant #f
-        - call 2 #f ||
-        - continue
-      - constant #f
-      - if
+        - if
+          - constant #\space
+          - call 1 #f ||
+          - set 0
+          - get 5
+          - get 1
+          - call 1 #f ||
+          - call 2 #f ||
+          - set 0
+          - get 0
+          - call 1 #f ||
+          - call 1 #f 3
         - constant #\space
         - call 1 #f ||
         - set 0
-        - get 4
-        - get 1
+        - constant #\.
         - call 1 #f ||
-        - call 2 #f ||
         - set 0
-        - get 0
+        - constant #\space
         - call 1 #f ||
-        - call 1 #f 3
-      - constant #\space
+        - set 0
+        - get 5
+        - get 1
+        - call 2 #f ||
       - call 1 #f ||
-      - set 0
-      - constant #\.
+      - set 1
+      - get 2
       - call 1 #f ||
-      - set 0
-      - constant #\space
-      - call 1 #f ||
-      - set 0
-      - get 4
-      - get 1
-      - call 2 #f ||
+      - call 1 #f 1
     - call 1 #f ||
-    - set 1
-    - get 1
-    - call 1 #f ||
+    - constant #f
     - call 1 #f 1
-    - call 2 #f ||
+    - set 1
     - continue
   - constant #f
   - set 0
@@ -1824,15 +1840,17 @@
     - call 1 #f ||
     - constant procedure 0 #f
       - get 8
-      - get 6
-      - call 1 #f 9
-      - get ||
-      - get 1
-      - get 2
-      - call 1 #f ||
-      - call 1 #f ||
-      - call 3 #f ||
-      - call 2 #f ||
+      - constant procedure 1 #f
+        - get ||
+        - get 1
+        - get 2
+        - call 1 #f ||
+        - call 1 #f ||
+        - call 3 #f ||
+      - get 7
+      - call 1 #f 10
+      - call 1 #f 1
+      - set 1
       - constant ()
       - call 3 #f ||
       - get 6
@@ -1891,17 +1909,18 @@
   - call 4 #f ||
 - set ||
 - constant procedure 1 #f
-  - get 0
+  - constant procedure 1 #f
+    - get 0
+    - constant view-box
+    - call 2 #f ||
+    - if
+      - constant "viewBox"
+    - get 0
+    - call 1 #f ||
+  - get 1
   - call 1 #f ||
-  - get 0
-  - constant view-box
-  - call 2 #f ||
-  - if
-    - constant "viewBox"
-    - continue
-  - get 0
-  - call 1 #f ||
-  - call 2 #f ||
+  - call 1 #f 1
+  - set 1
   - constant "=\""
   - get 2
   - call 1 #f ||
@@ -2024,109 +2043,113 @@
 - constant ()
 - call 2 #f ||
 - call 2 #f ||
-- constant #f
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f ||
-  - if
+- constant procedure 1 #f
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f ||
+    - if
+      - constant ()
+    - constant text
+    - constant x
+    - constant "50%"
     - constant ()
-  - constant text
-  - constant x
-  - constant "50%"
-  - constant ()
-  - call 2 #f ||
-  - call 2 #f ||
-  - constant y
-  - constant 65
-  - constant 40
-  - get 5
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant y
+    - constant 65
+    - constant 40
+    - get 5
+    - get ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 1 #f ||
+    - constant "%"
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant fill
+    - constant procedure 1 #f
+      - constant "color-mix(in oklab, royalblue "
+      - constant 100
+      - get 2
+      - call 2 #f ||
+      - call 1 #f ||
+      - constant "%, crimson "
+      - get 3
+      - call 1 #f ||
+      - constant "%)"
+      - call 5 #f ||
+    - constant 100
+    - get 6
+    - get ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 1 #f 1
+    - set 1
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant transform
+    - constant "scale(1 0.5)"
+    - constant "rotate("
+    - constant -45
+    - constant 90
+    - get 9
+    - get ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 1 #f ||
+    - constant ")"
+    - constant "scale("
+    - constant 3
+    - constant 5
+    - call 2 #f ||
+    - constant 2
+    - constant 5
+    - call 2 #f ||
+    - get ||
+    - get 13
+    - call 2 #f ||
+    - get ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 1 #f ||
+    - constant ")"
+    - call 7 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - get 3
+    - call 1 #f ||
+    - call 1 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - get 2
+    - call 1 #f ||
+    - get 2
+    - constant 1
+    - call 2 #f ||
+    - call 2 #f 6
+    - call 2 #f ||
+  - call 1 #f ||
+  - set 1
   - get ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 1 #f ||
-  - constant "%"
-  - call 2 #f ||
-  - constant ()
-  - call 2 #f ||
-  - call 2 #f ||
-  - constant fill
-  - constant 100
-  - get 5
-  - get ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - constant "color-mix(in oklab, royalblue "
-  - constant 100
-  - get 2
-  - call 2 #f ||
-  - call 1 #f ||
-  - constant "%, crimson "
-  - get 3
-  - call 1 #f ||
-  - constant "%)"
-  - call 5 #f ||
-  - call 2 #f ||
-  - constant ()
-  - call 2 #f ||
-  - call 2 #f ||
-  - constant transform
-  - constant "scale(1 0.5)"
-  - constant "rotate("
-  - constant -45
-  - constant 90
-  - get 9
-  - get ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 1 #f ||
-  - constant ")"
-  - constant "scale("
-  - constant 3
-  - constant 5
-  - call 2 #f ||
-  - constant 2
-  - constant 5
-  - call 2 #f ||
-  - get ||
-  - get 13
-  - call 2 #f ||
-  - get ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 1 #f ||
-  - constant ")"
-  - call 7 #f ||
-  - constant ()
-  - call 2 #f ||
-  - call 2 #f ||
-  - constant ()
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - get 3
-  - call 1 #f ||
-  - call 1 #f ||
-  - constant ()
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 2 #f ||
-  - get 2
-  - call 1 #f ||
-  - get 2
-  - constant 1
-  - call 2 #f ||
-  - call 2 #f 6
-  - call 2 #f ||
-- call 1 #f ||
+  - constant 0
+  - call 2 #f 2
+- constant #f
+- call 1 #f 1
 - set 1
-- get ||
-- constant 0
-- call 2 #f 2
-- call 2 #f ||
 - constant ()
 - call 2 #f ||
 - call 2 #f ||

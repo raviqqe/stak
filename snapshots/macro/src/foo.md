@@ -12,6 +12,4 @@
 - set ||
 - constant primitive 13
 - set ||
-- constant primitive 39
-- set ||
 - constant #f

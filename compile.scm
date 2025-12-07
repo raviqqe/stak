@@ -32,8 +32,7 @@
        ($$+ 10)
        ($$- 11)
        ($$* 12)
-       ($$/ 13)
-       ($$unbind 39)))
+       ($$/ 13)))
 
     ; Types
 
@@ -1053,12 +1052,10 @@
       continuation
       (call-rib (compile-arity 2 #f) '$$unbind continuation)))
 
-    (define (compile-let context bindings body continuation)
+    (define (compile-let context bindings body)
      (let loop ((context context)
-                (bindings bindings)
                 (body-context context)
-                (body body)
-                (continuation continuation))
+                (bindings bindings))
       (if (pair? bindings)
        (let ((binding (car bindings)))
         (compile-expression
@@ -1066,11 +1063,9 @@
          (cadr binding)
          (loop
           (compilation-context-push-local context #f)
-          (cdr bindings)
           (compilation-context-push-local body-context (car binding))
-          body
-          (compile-unbind continuation))))
-       (compile-sequence body-context body continuation))))
+          (cdr bindings))))
+       (compile-sequence body-context body '()))))
 
     (define (compile-unsafe-unbind continuation)
      (if (null? continuation)
@@ -1126,14 +1121,14 @@
 
       ((let ((predicate (maybe-car expression)))
         (and
+         (eq? continuation '())
          (eq? (maybe-car predicate) '$$lambda)
          (list? (caddr predicate))))
        (let ((predicate (car expression)))
         (compile-let
          context
          (map list (caddr predicate) (cdr expression))
-         (cdddr predicate)
-         continuation)))
+         (cdddr predicate))))
 
       ((pair? expression)
        (case (car expression)

@@ -12,8 +12,6 @@
 - set ||
 - constant primitive 13
 - set ||
-- constant primitive 39
-- set ||
 - constant 3
 - set ||
 - constant 9
