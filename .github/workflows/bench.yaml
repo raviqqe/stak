@@ -111,7 +111,7 @@ jobs:
       - run: cargo install --path root
       - run: rm results.*
         working-directory: r7rs-benchmarks
-      - run: make $(echo Stak | tr '[:upper:]' '[:lower:]')
+      - run: make stak
         env:
           CPU_LIMIT: 600
         working-directory: r7rs-benchmarks
