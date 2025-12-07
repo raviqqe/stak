@@ -1047,11 +1047,6 @@
        continuation
        (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-    (define (compile-unbind continuation)
-     (if (null? continuation)
-      continuation
-      (call-rib (compile-arity 2 #f) '$$unbind continuation)))
-
     (define (compile-let context bindings body)
      (let loop ((context context)
                 (body-context context)
@@ -1067,7 +1062,7 @@
           (cdr bindings))))
        (compile-sequence body-context body '()))))
 
-    (define (compile-unsafe-unbind continuation)
+    (define (compile-unbind continuation)
      (if (null? continuation)
       continuation
       (code-rib set-instruction 1 continuation)))
@@ -1109,7 +1104,7 @@
         (continue
          (compilation-context-push-local context '$procedure)
          '$procedure
-         (compile-unsafe-unbind continuation))))))
+         (compile-unbind continuation))))))
 
     (define (compile-expression context expression continuation)
      (cond
