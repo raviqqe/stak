@@ -21,7 +21,7 @@ use stak_libc::Mmap;
 use stak_process_context::LibcProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::LibcClock;
-use stak_vm::{Value, Vm};
+use stak_vm::Vm;
 
 const HEAP_SIZE: usize = 1 << 19;
 
