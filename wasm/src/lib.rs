@@ -26,12 +26,11 @@ pub fn compile(source: &str) -> Result<Vec<u8>, JsError> {
 /// Interprets bytecode with standard input and returns its standard output.
 #[wasm_bindgen]
 pub fn interpret(bytecode: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
-    let mut heap = vec![Default::default(); heap_size];
     let mut output = vec![];
     let mut error = vec![];
 
     let mut vm = Vm::new(
-        heap.as_mut(),
+        vec![Default::default(); heap_size],
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
             VoidFileSystem::new(),
@@ -51,14 +50,13 @@ pub fn interpret(bytecode: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<
 pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
     const MAIN_FILE: &str = "main.scm";
 
-    let mut heap = vec![Default::default(); heap_size];
     let mut output = vec![];
     let mut error = vec![];
     let files = [(MAIN_FILE.as_bytes(), source.as_bytes())];
     let mut file_entries = [Default::default(); 1];
 
     let mut vm = Vm::new(
-        heap.as_mut(),
+        vec![Default::default(); heap_size],
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
             MemoryFileSystem::new(&files, &mut file_entries),

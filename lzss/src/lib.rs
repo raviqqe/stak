@@ -11,9 +11,8 @@ mod compress;
 mod decompress;
 mod ring_buffer;
 
-use self::compress::LzssCompressionIterator;
 pub use self::compress::MAX_LENGTH;
-use self::decompress::LzssDecompressionIterator;
+use self::{compress::LzssCompressionIterator, decompress::LzssDecompressionIterator};
 
 /// The maximum window size.
 pub const MAX_WINDOW_SIZE: usize = 1 << 7;

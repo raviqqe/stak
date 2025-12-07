@@ -17,8 +17,7 @@ use core::{
     fmt::{self, Display, Formatter, Write},
     marker::PhantomData,
 };
-use stak_lzss::Lzss;
-use stak_lzss::MAX_WINDOW_SIZE;
+use stak_lzss::{Lzss, MAX_WINDOW_SIZE};
 use stak_util::block_on;
 use winter_maybe_async::{maybe_async, maybe_await};
 

@@ -41,12 +41,11 @@ pub fn compile_r7rs(source: impl Read, target: impl Write) -> Result<(), Compile
 /// stak_compiler::compile_bare(source.as_bytes(), &mut target).unwrap();
 /// ```
 pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), CompileError> {
-    // TODO Add a heap size option.
-    let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut error_message = vec![];
     let device = ReadWriteDevice::new(source, target, &mut error_message);
     let mut vm = Vm::new(
-        heap.as_mut(),
+        // TODO Add a heap size option.
+        vec![Default::default(); DEFAULT_HEAP_SIZE],
         SmallPrimitiveSet::new(
             device,
             VoidFileSystem::new(),
