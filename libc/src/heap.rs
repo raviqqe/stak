@@ -53,6 +53,17 @@ impl<T> AsMut<[T]> for Heap<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use core::sync::atomic::{AtomicUsize, Ordering};
+
+    static DROP_COUNT: AtomicUsize = AtomicUsize::new(0);
+
+    struct Foo {}
+
+    impl Drop for Foo {
+        fn drop(&mut self) {
+            DROP_COUNT.fetch_add(1, Ordering::SeqCst);
+        }
+    }
 
     #[test]
     fn new() {
