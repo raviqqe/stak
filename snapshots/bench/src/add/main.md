@@ -2,7 +2,7 @@
 - set ||
 - constant primitive 1
 - set ||
-- constant primitive 9
+- constant primitive 2
 - set ||
 - constant primitive 10
 - set ||
@@ -12,7 +12,7 @@
 - set ||
 - constant primitive 13
 - set ||
-- constant primitive 39
+- constant primitive 14
 - set ||
 - constant 3
 - set ||
@@ -29,16 +29,13 @@
 - constant 1
 - call 1 #f ||
 - set ||
-- constant 3
-- call 1 #f ||
-- set ||
 - constant 4
 - call 1 #f ||
 - set ||
-- constant 6
+- constant 5
 - call 1 #f ||
 - set ||
-- constant 8
+- constant 7
 - call 1 #f ||
 - set ||
 - constant 9
@@ -54,6 +51,9 @@
 - call 1 #f ||
 - set ||
 - constant 13
+- call 1 #f ||
+- set ||
+- constant 14
 - call 1 #f ||
 - set ||
 - constant 50
