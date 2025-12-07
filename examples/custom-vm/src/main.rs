@@ -25,9 +25,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn run(bytecode: &[u8]) -> Result<(), SmallError> {
-    let mut heap = vec![Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
-        heap.as_mut(),
+        vec![Default::default(); HEAP_SIZE],
         SmallPrimitiveSet::new(
             StdioDevice::new(),
             VoidFileSystem::new(),

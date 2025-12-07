@@ -81,9 +81,8 @@ fn main() -> Result<(), MainError> {
                     .truncate(true)
                     .open(&arguments.profile_file)?,
             ));
-            let mut heap = vec![Default::default(); arguments.heap_size];
             let mut vm = Vm::new(
-                heap.as_mut(),
+                vec![Default::default(); arguments.heap_size],
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
                     OsFileSystem::new(),
