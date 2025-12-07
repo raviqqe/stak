@@ -343,6 +343,6 @@ Feature: Exception
 
     Examples:
       | expression         | message                |
-      | ((lambda (x) x))   | invalid argument count |
+      | (member)           | invalid argument count |
       | ((primitive 4242)) | illegal primitive      |
       | (#f)               | procedure expected     |

@@ -2296,7 +2296,7 @@
     (define dummy-procedure (lambda () #f))
 
     (define (call/cc receiver)
-      (let ((continuation (cadr (cddr (close dummy-procedure))))
+      (let ((continuation (car (cddr (close dummy-procedure))))
             (point current-point))
         (receiver
           (lambda (argument)
@@ -2556,7 +2556,7 @@
 
     (set! backtrace
       (lambda ()
-        (cddr
+        (cdr
           (let loop ((stack (cdr (close (lambda () #f)))))
             (cond
               ((null? stack)

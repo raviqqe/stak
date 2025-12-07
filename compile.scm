@@ -32,7 +32,8 @@
        ($$+ 10)
        ($$- 11)
        ($$* 12)
-       ($$/ 13)))
+       ($$/ 13)
+       ($$unbind 39)))
 
     ; Types
 
@@ -921,7 +922,6 @@
               (loop (append (cdr expression) expressions)))
              (else
               (cons expression (loop expressions))))))))
-
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
           ((cdr pair) expression)))
@@ -1048,6 +1048,35 @@
        continuation
        (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
+    (define (compile-unbind continuation)
+     (if (null? continuation)
+      continuation
+      (call-rib (compile-arity 2 #f) '$$unbind continuation)))
+
+    (define (compile-let context bindings body continuation)
+     (let loop ((context context)
+                (bindings bindings)
+                (body-context context)
+                (body body)
+                (continuation continuation))
+      (if (pair? bindings)
+       (let ((binding (car bindings)))
+        (compile-expression
+         context
+         (cadr binding)
+         (loop
+          (compilation-context-push-local context #f)
+          (cdr bindings)
+          (compilation-context-push-local body-context (car binding))
+          body
+          (compile-unbind continuation))))
+       (compile-sequence body-context body continuation))))
+
+    (define (compile-unsafe-unbind continuation)
+     (if (null? continuation)
+      continuation
+      (code-rib set-instruction 1 continuation)))
+
     (define (compile-raw-call context procedure arguments arity continuation)
      (if (null? arguments)
       (call-rib
@@ -1085,12 +1114,7 @@
         (continue
          (compilation-context-push-local context '$procedure)
          '$procedure
-         (compile-unbind continuation))))))
-
-    (define (compile-unbind continuation)
-     (if (null? continuation)
-      continuation
-      (code-rib set-instruction 1 continuation)))
+         (compile-unsafe-unbind continuation))))))
 
     (define (compile-expression context expression continuation)
      (cond
@@ -1099,6 +1123,17 @@
         get-instruction
         (compilation-context-resolve context expression)
         continuation))
+
+      ((let ((predicate (maybe-car expression)))
+        (and
+         (eq? (maybe-car predicate) '$$lambda)
+         (list? (caddr predicate))))
+       (let ((predicate (car expression)))
+        (compile-let
+         context
+         (map list (caddr predicate) (cdr expression))
+         (cdddr predicate)
+         continuation)))
 
       ((pair? expression)
        (case (car expression)
