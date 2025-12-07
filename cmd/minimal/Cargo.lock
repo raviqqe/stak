@@ -393,7 +393,6 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-libc",
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",

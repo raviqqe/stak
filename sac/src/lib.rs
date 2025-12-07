@@ -3,12 +3,17 @@
 #![cfg_attr(all(doc, not(doctest)), feature(doc_cfg))]
 #![no_std]
 
+#[cfg(feature = "libc")]
+#[doc(hidden)]
+pub extern crate alloc;
 #[cfg(feature = "std")]
 #[doc(hidden)]
 pub extern crate std;
 
 #[doc(hidden)]
 pub mod __private {
+    #[cfg(feature = "libc")]
+    pub use alloc;
     #[cfg(feature = "std")]
     pub use clap;
     #[cfg(feature = "libc")]
@@ -111,6 +116,7 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
+            alloc::vec,
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
