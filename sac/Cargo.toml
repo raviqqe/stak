@@ -19,7 +19,6 @@ origin = { version = "0.26.2", default-features = false, features = [
 stak-configuration = { path = "../configuration", version = "0.11.13" }
 stak-device = { path = "../device", version = "0.11.13" }
 stak-file = { path = "../file", version = "0.11.13" }
-stak-libc = { path = "../libc", version = "0.11.13", optional = true }
 stak-macro = { path = "../macro", version = "0.11.13" }
 stak-process-context = { path = "../process-context", version = "0.11.13" }
 stak-r7rs = { path = "../r7rs", version = "0.11.13" }
@@ -35,7 +34,6 @@ float62 = ["stak-vm/float62"]
 libc = [
   "dep:dlmalloc",
   "dep:origin",
-  "dep:stak-libc",
   "stak-device/libc",
   "stak-file/libc",
   "stak-process-context/libc",
