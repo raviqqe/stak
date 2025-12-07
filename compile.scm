@@ -28,12 +28,12 @@
     (define primitives
      '(($$rib 0)
        ($$close 1)
-       ($$< 9)
-       ($$+ 10)
-       ($$- 11)
-       ($$* 12)
-       ($$/ 13)
-       ($$unbind 39)))
+       ($$unbind 2)
+       ($$< 10)
+       ($$+ 11)
+       ($$- 12)
+       ($$* 13)
+       ($$/ 14)))
 
     ; Types
 
@@ -1055,9 +1055,8 @@
 
     (define (compile-let context bindings body continuation)
      (let loop ((context context)
-                (bindings bindings)
                 (body-context context)
-                (body body)
+                (bindings bindings)
                 (continuation continuation))
       (if (pair? bindings)
        (let ((binding (car bindings)))
@@ -1066,9 +1065,8 @@
          (cadr binding)
          (loop
           (compilation-context-push-local context #f)
-          (cdr bindings)
           (compilation-context-push-local body-context (car binding))
-          body
+          (cdr bindings)
           (compile-unbind continuation))))
        (compile-sequence body-context body continuation))))
 

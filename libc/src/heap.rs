@@ -1,5 +1,9 @@
 use alloc::alloc::{alloc, dealloc};
-use core::{alloc::Layout, ptr::write, slice};
+use core::{
+    alloc::Layout,
+    ptr::{drop_in_place, write},
+    slice,
+};
 
 /// A memory block on a heap.
 pub struct Heap<T> {
@@ -31,6 +35,11 @@ impl<T> Heap<T> {
 
 impl<T> Drop for Heap<T> {
     fn drop(&mut self) {
+        for element in self.as_mut() {
+            // SAFETY: Each `element` is valid.
+            unsafe { drop_in_place(element) };
+        }
+
         // SAFETY: The previous `malloc` call is guaranteed to have succeeded.
         unsafe { dealloc(self.ptr as _, Layout::array::<T>(self.len).unwrap()) }
     }
@@ -53,6 +62,17 @@ impl<T> AsMut<[T]> for Heap<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use core::sync::atomic::{AtomicUsize, Ordering};
+
+    static DROP_COUNT: AtomicUsize = AtomicUsize::new(0);
+
+    struct Foo {}
+
+    impl Drop for Foo {
+        fn drop(&mut self) {
+            DROP_COUNT.fetch_add(1, Ordering::SeqCst);
+        }
+    }
 
     #[test]
     fn new() {
@@ -62,5 +82,14 @@ mod tests {
     #[test]
     fn new_zero_sized() {
         Heap::<usize>::new(0, || 42);
+    }
+
+    #[test]
+    fn drop_elements() {
+        let heap = Heap::new(42, || Foo {});
+
+        drop(heap);
+
+        assert_eq!(DROP_COUNT.load(Ordering::SeqCst), 42);
     }
 }

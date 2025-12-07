@@ -120,6 +120,10 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
                     Type::Procedure as _,
                 )?;
             }
+            Primitive::UNBIND => {
+                let [_, x] = memory.pop_many()?;
+                memory.push(x)?;
+            }
             Primitive::IS_RIB => {
                 memory.operate_top(|memory, value| Ok(memory.boolean(value.is_cons())?.into()))?
             }
@@ -138,10 +142,6 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
-            Primitive::UNBIND => {
-                let [_, x] = memory.pop_many()?;
-                memory.push(x)?;
-            }
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => {
                 maybe_await!(self.type_check.operate(memory, primitive - Primitive::NULL))?
