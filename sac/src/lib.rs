@@ -139,7 +139,7 @@ macro_rules! libc_main {
         extern "C" fn main(argc: isize, argv: *const *const i8) {
             let mut heap = Heap::new($heap_size, Default::default);
             let mut vm = Vm::new(
-                heap.as_slice_mut(),
+                heap.as_mut(),
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
