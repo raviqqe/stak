@@ -16131,7 +16131,7 @@
   - call 1 #f cdr
   - call 1 #f 1
   - call 2 #f $$unbind
-  - call 1 #f cddr
+  - call 1 #f cdr
 - set backtrace
 - constant 0
 - constant 0
