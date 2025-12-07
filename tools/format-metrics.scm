@@ -19,7 +19,7 @@
 
 (json-write
   `((key . ,(cadr arguments))
-    (name . ,(caddr arguments))
+    (name . ,(string-append (caddr arguments) " (bytes)"))
     (metrics . ,(list->vector
                  (map
                    (lambda (pair)
@@ -32,7 +32,6 @@
                                       char)))
                                 (car pair)))
                        (name . ,(car pair))
-                       (value . ,(string->number (cdr pair)))
-                       (unit . " bytes")))
+                       (value . ,(string->number (cdr pair)))))
                    (read-metrics))))
     (acceptables . #())))
