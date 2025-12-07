@@ -43,7 +43,7 @@
 #![cfg_attr(all(doc, not(doctest)), feature(doc_cfg))]
 #![no_std]
 
-#[cfg(any(test))]
+#[cfg(test)]
 extern crate alloc;
 #[cfg(any(feature = "trace_instruction", test))]
 extern crate std;
