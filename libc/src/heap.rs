@@ -20,31 +20,33 @@ impl<T> Heap<T> {
             len,
         };
 
-        for x in this.as_slice_mut() {
+        for x in this.as_mut() {
             // SAFETY: `x` is not initialized yet.
             unsafe { write(x, default()) };
         }
 
         this
     }
-
-    /// Returns a slice.
-    pub const fn as_slice(&mut self) -> &[T] {
-        // SAFETY: `self.ptr` has the length of `self.len`.
-        unsafe { slice::from_raw_parts(self.ptr as _, self.len) }
-    }
-
-    /// Returns a mutable slice.
-    pub const fn as_slice_mut(&mut self) -> &mut [T] {
-        // SAFETY: `self.ptr` has the length of `self.len`.
-        unsafe { slice::from_raw_parts_mut(self.ptr as _, self.len) }
-    }
 }
 
 impl<T> Drop for Heap<T> {
     fn drop(&mut self) {
         // SAFETY: The previous `malloc` call is guaranteed to have succeeded.
-        unsafe { dealloc(self.ptr as _, Layout::new::<T>()) }
+        unsafe { dealloc(self.ptr as _, Layout::array::<T>(self.len).unwrap()) }
+    }
+}
+
+impl<T> AsRef<[T]> for Heap<T> {
+    fn as_ref(&self) -> &[T] {
+        // SAFETY: `self.ptr` has the length of `self.len`.
+        unsafe { slice::from_raw_parts(self.ptr as _, self.len) }
+    }
+}
+
+impl<T> AsMut<[T]> for Heap<T> {
+    fn as_mut(&mut self) -> &mut [T] {
+        // SAFETY: `self.ptr` has the length of `self.len`.
+        unsafe { slice::from_raw_parts_mut(self.ptr as _, self.len) }
     }
 }
 
