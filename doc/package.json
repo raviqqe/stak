@@ -16,7 +16,7 @@
     "@monza-editor/preact": "^0.1.9",
     "@nanostores/preact": "^1.0.0",
     "@preact/signals": "^2.5.1",
-    "@raviqqe/stak": "^0.11.13",
+    "@raviqqe/stak": "^0.11.14",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "astro": "^5.16.4",
