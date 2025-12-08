@@ -101,14 +101,6 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/rust_loc_bench.sh
   r7rs:
-    strategy:
-      fail-fast: false
-      matrix:
-        name:
-          - Chibi
-          - MIT
-          - Stak
-          - TR7
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -119,16 +111,16 @@ jobs:
       - run: cargo install --path root
       - run: rm results.*
         working-directory: r7rs-benchmarks
-      - run: make $(echo ${{ matrix.name }} | tr '[:upper:]' '[:lower:]')
+      - run: make stak
         env:
           CPU_LIMIT: 600
         working-directory: r7rs-benchmarks
-      - run: cat results.${{ matrix.name }}
+      - run: cat results.Stak
         working-directory: r7rs-benchmarks
       - uses: actions/upload-artifact@v5
         with:
-          name: ${{ matrix.name }}_benchmark
-          path: r7rs-benchmarks/results.${{ matrix.name }}
+          name: stak_r7rs_benchmark
+          path: r7rs-benchmarks/results.Stak
   report:
     needs:
       - size
