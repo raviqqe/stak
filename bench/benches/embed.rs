@@ -31,8 +31,7 @@ fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallErro
         ),
     )?;
 
-    vm.initialize(module.bytecode().iter().copied())?;
-    vm.run()
+    vm.run(module.bytecode().iter().copied())
 }
 
 fn stak_add(bencher: &mut Bencher) {

@@ -31,7 +31,7 @@ struct Arguments {
 fn main() -> Result<(), MainError> {
     let arguments = Arguments::parse();
 
-    let mut vm = Vm::new(
+    Vm::new(
         vec![Default::default(); arguments.heap_size],
         SmallPrimitiveSet::new(
             StdioDevice::new(),
@@ -39,9 +39,8 @@ fn main() -> Result<(), MainError> {
             OsProcessContext::new().with_argument_skip(1),
             OsClock::new(),
         ),
-    )?;
+    )?
+    .run(read(&arguments.file)?)?;
 
-    vm.initialize(read(&arguments.file)?)?;
-
-    Ok(vm.run()?)
+    Ok(())
 }

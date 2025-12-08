@@ -82,7 +82,7 @@ macro_rules! main {
         fn main() -> Result<(), MainError> {
             let arguments = Arguments::parse();
 
-            let mut vm = Vm::new(
+            Vm::new(
                 vec![Default::default(); arguments.heap_size],
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
@@ -90,11 +90,10 @@ macro_rules! main {
                     OsProcessContext::new(),
                     OsClock::new(),
                 ),
-            )?;
+            )?
+            .run(include_r7rs!($path).iter().copied())?;
 
-            vm.initialize(include_r7rs!($path).iter().copied())?;
-
-            Ok(vm.run()?)
+            Ok(())
         }
     };
 }
@@ -139,7 +138,7 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
-            let mut vm = Vm::new(
+            Vm::new(
                 vec![Default::default(); $heap_size],
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
@@ -148,10 +147,9 @@ macro_rules! libc_main {
                     LibcClock::new(),
                 ),
             )
+            .unwrap()
+            .run(include_r7rs!($path).iter().copied())
             .unwrap();
-
-            vm.initialize(include_r7rs!($path).iter().copied()).unwrap();
-            vm.run().unwrap();
 
             exit(0);
         }

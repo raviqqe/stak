@@ -64,8 +64,7 @@ fn run(
         ),
     )?;
 
-    vm.initialize(bytecode.iter().copied())?;
-    vm.run()
+    vm.run(bytecode.iter().copied())
 }
 
 #[expect(clippy::result_large_err)]

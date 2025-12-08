@@ -81,7 +81,8 @@ fn main() -> Result<(), MainError> {
                     .truncate(true)
                     .open(&arguments.profile_file)?,
             ));
-            let mut vm = Vm::new(
+
+            Vm::new(
                 vec![Default::default(); arguments.heap_size],
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
@@ -90,10 +91,8 @@ fn main() -> Result<(), MainError> {
                     OsClock::new(),
                 ),
             )?
-            .with_profiler(&mut profiler);
-
-            vm.initialize(read(&arguments.bytecode_file)?)?;
-            vm.run()?;
+            .with_profiler(&mut profiler)
+            .run(read(&arguments.bytecode_file)?)?;
         }
         Command::Analyze(arguments) => {
             let reader = stdin().lock();

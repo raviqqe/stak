@@ -43,13 +43,14 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
         ),
     )?;
 
-    vm.initialize(
-        include_module!("repl.scm", stak_module)
-            .bytecode()
-            .iter()
-            .copied(),
+    maybe_await!(
+        vm.run_async(
+            include_module!("repl.scm", stak_module)
+                .bytecode()
+                .iter()
+                .copied()
+        )
     )?;
-    maybe_await!(vm.run_async())?;
 
     Ok(())
 }

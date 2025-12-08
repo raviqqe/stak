@@ -71,8 +71,7 @@ pub mod device {
     //!         ),
     //!     )?;
     //!
-    //!     vm.initialize(bytecode.iter().copied())?;
-    //!     vm.run()
+    //!     vm.run(bytecode.iter().copied())
     //! }
     //! ```
 
@@ -196,10 +195,8 @@ pub mod vm {
     //!         ),
     //!     )?;
     //!
-    //!     // Initialize a virtual machine with bytecode.
-    //!     vm.initialize(bytecode.iter().copied())?;
     //!     // Run bytecode on a virtual machine.
-    //!     vm.run()
+    //!     vm.run(bytecode.iter().copied())
     //! }
     //! ```
 

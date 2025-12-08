@@ -34,8 +34,7 @@
 //!     "#
 //! );
 //!
-//! vm.initialize(BYTECODE.iter().copied()).unwrap();
-//! vm.run().unwrap();
+//! vm.run(BYTECODE.iter().copied()).unwrap();
 //!
 //! assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
 //! ```

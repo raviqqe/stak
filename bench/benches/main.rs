@@ -54,8 +54,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
         ),
     )?;
 
-    vm.initialize(module.bytecode().iter().copied())?;
-    vm.run()
+    vm.run(module.bytecode().iter().copied())
 }
 
 static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
