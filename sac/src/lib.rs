@@ -3,12 +3,17 @@
 #![cfg_attr(all(doc, not(doctest)), feature(doc_cfg))]
 #![no_std]
 
+#[cfg(feature = "libc")]
+#[doc(hidden)]
+pub extern crate alloc;
 #[cfg(feature = "std")]
 #[doc(hidden)]
 pub extern crate std;
 
 #[doc(hidden)]
 pub mod __private {
+    #[cfg(feature = "libc")]
+    pub use alloc;
     #[cfg(feature = "std")]
     pub use clap;
     #[cfg(feature = "libc")]
@@ -20,8 +25,6 @@ pub mod __private {
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
-    #[cfg(feature = "libc")]
-    pub use stak_libc;
     pub use stak_macro;
     pub use stak_process_context;
     pub use stak_r7rs;
@@ -113,11 +116,11 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
+            alloc::vec,
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
-            stak_libc::Heap,
             stak_macro::include_r7rs,
             stak_process_context::LibcProcessContext,
             stak_r7rs::SmallPrimitiveSet,
@@ -137,7 +140,7 @@ macro_rules! libc_main {
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
             let mut vm = Vm::new(
-                Heap::new($heap_size, Default::default),
+                vec![Default::default(); $heap_size],
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
