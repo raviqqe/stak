@@ -10,6 +10,6 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.8",
     "@raviqqe/biome-config": "^2.0.21",
-    "tombi": "^0.7.0"
+    "tombi": "^0.7.4"
   }
 }
