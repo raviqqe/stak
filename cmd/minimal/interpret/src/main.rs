@@ -11,8 +11,8 @@
 
 extern crate alloc;
 
-use alloc::alloc::alloc;
-use core::{alloc::Layout, ffi::CStr, slice};
+use alloc::vec;
+use core::{ffi::CStr, slice};
 use dlmalloc::GlobalDlmalloc;
 use origin::program::exit;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
@@ -21,7 +21,7 @@ use stak_libc::Mmap;
 use stak_process_context::LibcProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::LibcClock;
-use stak_vm::{Value, Vm};
+use stak_vm::Vm;
 
 const HEAP_SIZE: usize = 1 << 19;
 
@@ -41,17 +41,8 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
         exit(1);
     };
 
-    // SAFETY: `Value`s have `'static` lifetimes and can have any inner values of
-    // unsigned integers.
-    let heap = unsafe {
-        slice::from_raw_parts_mut(
-            alloc(Layout::array::<Value>(HEAP_SIZE).unwrap()) as *mut Value,
-            HEAP_SIZE,
-        )
-    };
-
     let mut vm = Vm::new(
-        heap,
+        vec![Default::default(); HEAP_SIZE],
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
