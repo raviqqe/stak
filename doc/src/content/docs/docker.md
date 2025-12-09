@@ -27,6 +27,8 @@ The images are hosted on Docker Hub as listed below.
 
 ## Running Docker containers
 
+### Interpreter
+
 To run the Docker image of the `stak` interpreter, use the following command:
 
 ```sh
@@ -35,3 +37,12 @@ docker run -it --rm -v ./hello.scm:/hello.scm raviqqe/stak hello.scm
 
 Note that you need mount the Scheme file onto the Docker container so that the
 `stak` command can access it inside the container.
+
+### REPL
+
+To run the Docker image of the `stak-repl` REPL command, use the following
+command:
+
+```sh
+docker run -it --rm raviqqe/stak-repl
+```
