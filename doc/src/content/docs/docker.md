@@ -14,14 +14,13 @@ utility commands.
 We provide several Docker images for Stak Scheme and its utilities.
 The images are hosted on Docker Hub as listed below.
 
-| Image name          | Link                                                                                                                           | Description                  |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
-| `stak`              | ![](https://img.shields.io/docker/image-size/raviqqe/stak?style=flat-square)                                                   | Interpreter                  |
-| `stak-compile`      | ![](https://img.shields.io/docker/image-size/raviqqe/stak-compile?style=flat-square)                                           | Bytecode compiler            |
-| `stak-decode`       | ![](https://img.shields.io/docker/image-size/raviqqe/stak-decode?style=flat-square)                                            | Bytecode decoder             |
-| `stak-interpreter`  | ![](https://img.shields.io/docker/image-size/raviqqe/stak-interpret?style=flat-square)                                         | Bytecode interpreter         |
-| `stak-profile`      | ![](https://img.shields.io/docker/image-size/raviqqe/stak-profile?style=flat-square)                                           | Bytecode profiler            |
-| `stak-repl`         | ![](https://img.shields.io/docker/image-size/raviqqe/stak-repl?style=flat-square)                                              | REPL                         |
-| `mstak`             | ![](https://img.shields.io/docker/image-size/raviqqe/mstak?style=flat-square)                                                  | Minimal interpreter          |
-| `mstak-interpreter` | ![](https://img.shields.io/docker/image-size/raviqqe/mstak-interpret?style=flat-square)                                        | Minimal bytecode interpreter | er/image-size/raviqqe/mstak?style=flat-square) | Minimal interpreter |
-| `mstak-interpreter` | ![Mstak Interpret?style=flat Square image](https://img.shields.io/docker/image-size/raviqqe/mstak-interpret?style=flat-square) | Minimal bytecode interpreter || `mstak-interpreter` | ![Mstak Interpret?style=flat Square image](https://img.shields.io/docker/image-size/raviqqe/mstak-interpret?style=flat-square) | Minimal bytecode interpreter |
+| Image name          | Link                                                                                                     | Description                  |
+| ------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `stak`              | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/stak?style=flat-square)            | Interpreter                  |
+| `stak-compile`      | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/stak-compile?style=flat-square)    | Bytecode compiler            |
+| `stak-decode`       | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/stak-decode?style=flat-square)     | Bytecode decoder             |
+| `stak-interpreter`  | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/stak-interpret?style=flat-square)  | Bytecode interpreter         |
+| `stak-profile`      | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/stak-profile?style=flat-square)    | Bytecode profiler            |
+| `stak-repl`         | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/stak-repl?style=flat-square)       | REPL                         |
+| `mstak`             | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/mstak?style=flat-square)           | Minimal interpreter          |
+| `mstak-interpreter` | ![Docker Image Size](https://img.shields.io/docker/image-size/raviqqe/mstak-interpret?style=flat-square) | Minimal bytecode interpreter |
