@@ -102,6 +102,10 @@ export default defineConfig({
               label: "Writing a Scheme subset",
               link: "/writing-scheme-subset",
             },
+            {
+              label: "Running as Docker containers",
+              link: "/docker",
+            },
           ],
           label: "Guides",
         },
