@@ -3,7 +3,7 @@ resolver = "3"
 members = ["interpret", "run"]
 
 [workspace.package]
-version = "0.5.54"
+version = "0.12.0"
 edition = "2024"
 readme = "../../README.md"
 repository = "https://github.com/raviqqe/stak"
@@ -12,18 +12,18 @@ keywords = ["interpreter", "language", "scheme"]
 categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 
 [workspace.dependencies]
-stak-device = { path = "../../device", version = "0.11.4", features = [
+stak-device = { path = "../../device", version = "0.12.0", features = [
   "libc",
 ] }
-stak-file = { path = "../../file", version = "0.11.4", features = ["libc"] }
-stak-libc = { path = "../../libc", version = "0.11.4" }
-stak-process-context = { path = "../../process-context", version = "0.11.4", features = [
+stak-file = { path = "../../file", version = "0.12.0", features = ["libc"] }
+stak-libc = { path = "../../libc", version = "0.12.0" }
+stak-process-context = { path = "../../process-context", version = "0.12.0", features = [
   "libc",
 ] }
-stak-r7rs = { path = "../../r7rs", version = "0.11.4" }
-stak-sac = { path = "../../sac", version = "0.11.4", features = ["libc"] }
-stak-time = { path = "../../time", version = "0.11.4", features = ["libc"] }
-stak-vm = { path = "../../vm", version = "0.11.4" }
+stak-r7rs = { path = "../../r7rs", version = "0.12.0" }
+stak-sac = { path = "../../sac", version = "0.12.0", features = ["libc"] }
+stak-time = { path = "../../time", version = "0.12.0", features = ["libc"] }
+stak-vm = { path = "../../vm", version = "0.12.0" }
 
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
