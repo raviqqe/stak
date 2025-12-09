@@ -24,3 +24,14 @@ The images are hosted on Docker Hub as listed below.
 | `stak-repl`       | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/stak-repl?style=flat-square)](https://hub.docker.com/r/raviqqe/stak-repl)             | REPL                         |
 | `mstak`           | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/mstak?style=flat-square)](https://hub.docker.com/r/raviqqe/mstak)                     | Minimal interpreter          |
 | `mstak-interpret` | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/mstak-interpret?style=flat-square)](https://hub.docker.com/r/raviqqe/mstak-interpret) | Minimal bytecode interpreter |
+
+## Running Docker containers
+
+To run the Docker image of the `stak` interpreter, use the following command:
+
+```sh
+docker run -it --rm -v ./hello.scm:/hello.scm raviqqe/stak hello.scm
+```
+
+Note that you need mount the Scheme file onto the Docker container so that the
+`stak` command can access it inside the container.
