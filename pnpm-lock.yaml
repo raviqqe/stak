@@ -39,8 +39,8 @@ importers:
         specifier: ^2.5.1
         version: 2.5.1(preact@10.28.0)
       '@raviqqe/stak':
-        specifier: ^0.11.14
-        version: 0.11.14
+        specifier: ^0.12.0
+        version: 0.12.0
       '@xterm/addon-fit':
         specifier: ^0.10.0
         version: 0.10.0(@xterm/xterm@5.5.0)
@@ -749,8 +749,8 @@ packages:
     peerDependencies:
       '@biomejs/biome': ^2.1.4
 
-  '@raviqqe/stak@0.11.14':
-    resolution: {integrity: sha512-nh1aZ+YhmnQuCT2GdCqkCwpe/iE7NGlMkfMMnVRWbLeDH12q3JBhT5vGtVLmiJGHktWGH4+wblAwOw+MdG5tOA==}
+  '@raviqqe/stak@0.12.0':
+    resolution: {integrity: sha512-rsRtpg4MjPN+7bESJ3Z4D9R5E3+l4EYbf/kvNcKapj7Pwi7BxG1JXJ1I/L91i8crf330r5TWBHDXdbUEkZewTA==}
 
   '@rollup/pluginutils@4.2.1':
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -3326,7 +3326,7 @@ snapshots:
     dependencies:
       '@biomejs/biome': 2.3.8
 
-  '@raviqqe/stak@0.11.14': {}
+  '@raviqqe/stak@0.12.0': {}
 
   '@rollup/pluginutils@4.2.1':
     dependencies:
