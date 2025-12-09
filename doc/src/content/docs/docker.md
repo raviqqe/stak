@@ -10,6 +10,9 @@ utility commands. By reading this page, you will learn:
   utilities.
 - How to run such Docker images on your local machine.
 
+By using the Docker images, you can try out Stak Scheme without building or
+installing it on your local machine.
+
 ## Docker images
 
 We provide several Docker images for Stak Scheme and its utilities.
