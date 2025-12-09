@@ -4,15 +4,16 @@ description: How to run Docker images of Stak Scheme and its utility commands
 ---
 
 This page describes how to run pre-built Docker images of Stak Scheme and its
-utility commands.
+utility commands. By reading this page, you will learn:
 
-- What Docker images are available for Stak Scheme and its utilities.
+- What Docker images are available for the Stak Scheme interpreter and its
+  utilities.
 - How to run such Docker images on your local machine.
 
 ## Docker images
 
 We provide several Docker images for Stak Scheme and its utilities.
-The images are hosted on Docker Hub as listed below.
+The images are hosted on [Docker Hub](https://hub.docker.com/) as listed below.
 
 | Image name        | Link                                                                                                                                                         | Description                  |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
