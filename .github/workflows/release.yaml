@@ -106,7 +106,6 @@ jobs:
           outputs: |
             oci-mediatypes=true
             compression=zstd
-            compression-level=3
             force-compression=true
           platforms: |
             linux/amd64
