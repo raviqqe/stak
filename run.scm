@@ -21,14 +21,18 @@
   (only (stak mapping)))
 
 (define (run environment path)
-  (define file (open-input-file path))
+  (define input (current-input-port))
 
-  (do ()
-    ((eof-object? (peek-char file))
-      #f)
-    (if (char-whitespace? (peek-char file))
-      (read-char file)
-      (eval (read file) environment))))
+  (with-input-from-file path
+    (lambda ()
+      (do ()
+        ((eof-object? (peek-char))
+          #f)
+        (if (char-whitespace? (peek-char))
+          (read-char)
+          (let ((expression (read)))
+            (parameterize ((current-input-port input))
+              (eval expression environment))))))))
 
 (define (main)
   (define environment (interaction-environment))
