@@ -116,6 +116,7 @@ jobs:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
           repository: ${{ vars.DOCKER_USER }}/${{ matrix.image.binary }}
+          short-description: The miniature, embeddable R7RS Scheme implementation
   release:
     needs:
       - cargo
