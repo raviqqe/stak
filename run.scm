@@ -26,8 +26,6 @@
   (with-input-from-file path
     (lambda ()
       (do ()
-        ((null? arguments)
-          (error "script file missing"))
         ((eof-object? (peek-char))
           #f)
         (if (char-whitespace? (peek-char))
@@ -41,6 +39,8 @@
 
   (let loop ((arguments (cdr (command-line))))
     (cond
+      ((null? arguments)
+        (error "script file missing"))
       ((equal? (car arguments) "-l")
         (run environment (cadr arguments))
         (loop (cddr arguments)))
