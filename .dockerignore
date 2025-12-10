@@ -1,3 +1,4 @@
+*.bc
 .git
 doc
 target
