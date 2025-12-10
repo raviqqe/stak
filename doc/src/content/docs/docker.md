@@ -29,6 +29,16 @@ The images are hosted on [Docker Hub](https://hub.docker.com/) as listed below.
 | `mstak`           | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/mstak?style=flat-square)](https://hub.docker.com/r/raviqqe/mstak)                     | Minimal interpreter          |
 | `mstak-interpret` | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/mstak-interpret?style=flat-square)](https://hub.docker.com/r/raviqqe/mstak-interpret) | Minimal bytecode interpreter |
 
+## Advanced utilities
+
+| Image name        | Link                                                                                                                                                         | Description                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| `stak-compile`    | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/stak-compile?style=flat-square)](https://hub.docker.com/r/raviqqe/stak-compile)       | Bytecode compiler            |
+| `stak-decode`     | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/stak-decode?style=flat-square)](https://hub.docker.com/r/raviqqe/stak-decode)         | Bytecode decoder             |
+| `stak-interpret`  | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/stak-interpret?style=flat-square)](https://hub.docker.com/r/raviqqe/stak-interpret)   | Bytecode interpreter         |
+| `stak-profile`    | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/stak-profile?style=flat-square)](https://hub.docker.com/r/raviqqe/stak-profile)       | Bytecode profiler            |
+| `mstak-interpret` | [![Docker image size](https://img.shields.io/docker/image-size/raviqqe/mstak-interpret?style=flat-square)](https://hub.docker.com/r/raviqqe/mstak-interpret) | Minimal bytecode interpreter |
+
 ## Running Docker containers
 
 ### Interpreter
