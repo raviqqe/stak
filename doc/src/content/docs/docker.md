@@ -26,7 +26,8 @@ The images are hosted on [Docker Hub](https://hub.docker.com/) as listed below.
 
 ## Advanced utilities
 
-The following table lists up advanced utility commands provided as Docker containers.
+The following table lists advanced utility commands built as Docker
+images.
 
 | Image name        | Link                                                                                                                                                         | Description                  |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
@@ -40,7 +41,8 @@ The following table lists up advanced utility commands provided as Docker contai
 
 ### Interpreter
 
-To run the Docker image of the `stak` interpreter, use the following command:
+To run the Docker image of the `stak` interpreter with a Scheme script file
+named `hello.scm`, use the following command:
 
 ```sh
 docker run -it --rm -v ./hello.scm:/hello.scm raviqqe/stak hello.scm
