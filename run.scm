@@ -26,6 +26,8 @@
   (with-input-from-file path
     (lambda ()
       (do ()
+        ((null? arguments)
+          (error "script file missing"))
         ((eof-object? (peek-char))
           #f)
         (if (char-whitespace? (peek-char))
