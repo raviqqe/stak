@@ -110,6 +110,12 @@ jobs:
           tags: |
             ${{ steps.metadata.outputs.image }}:latest
             ${{ steps.metadata.outputs.version && format('{0}:{1}', steps.metadata.outputs.image, steps.metadata.outputs.version) || '' }}
+      # spell-checker: disable-next-line
+      - uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        with:
+          username: ${{ vars.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          repository: ${{ vars.DOCKER_USER }}/${{ matrix.image.binary }}
   release:
     needs:
       - cargo
