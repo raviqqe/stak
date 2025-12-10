@@ -20,7 +20,7 @@
   (only (stak backtrace))
   (only (stak mapping)))
 
-(define (run path)
+(define (run environment path)
   (define file (open-input-file path))
 
   (do ()
@@ -28,14 +28,18 @@
       #f)
     (if (char-whitespace? (peek-char file))
       (read-char file)
-      (eval (read file) (interaction-environment)))))
+      (eval (read file) environment))))
 
 (define (main)
-  (do ((arguments (cdr (command-line)) (cddr arguments)))
-    ((not (eqv? (string-ref (car arguments) 0) #\-))
-      (define command-line (lambda () arguments))
-      (run (car arguments)))
-    (run (cadr arguments))))
+  (define environment (interaction-environment))
+
+  (let loop ((arguments (cdr (command-line))))
+    (cond
+      ((eqv? (string-ref (car arguments) 0) #\-)
+        (run environment (cadr arguments)))
+      (else
+        (set! command-line (lambda () arguments))
+        (run environment (car arguments))))))
 
 (let ((arguments (command-line)))
   (when (or
