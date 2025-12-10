@@ -104,7 +104,6 @@ jobs:
             BINARY=${{ matrix.image.binary }}
             DIRECTORY=${{ matrix.image.directory || '.' }}
           outputs: |
-            oci-mediatypes=true
             compression=zstd
             force-compression=true
           platforms: |
