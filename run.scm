@@ -35,8 +35,9 @@
 
   (let loop ((arguments (cdr (command-line))))
     (cond
-      ((eqv? (string-ref (car arguments) 0) #\-)
-        (run environment (cadr arguments)))
+      ((equal? (car arguments) "-l")
+        (run environment (cadr arguments))
+        (loop (cddr arguments)))
       (else
         (set! command-line (lambda () arguments))
         (run environment (car arguments))))))
