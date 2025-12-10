@@ -1,3 +1,5 @@
+*.bc
 .git
 doc
+node_modules
 target

@@ -103,14 +103,10 @@ jobs:
           build-args: |
             BINARY=${{ matrix.image.binary }}
             DIRECTORY=${{ matrix.image.directory || '.' }}
-          outputs: |
-            oci-mediatypes=true
-            compression=zstd
-            force-compression=true
+          outputs: type=${{ github.ref == 'refs/heads/main' && 'registry' || 'image' }},oci-mediatypes=true,compression=zstd,force-compression=true
           platforms: |
             linux/amd64
             ${{ github.ref == 'refs/heads/main' && 'linux/arm64/v8' || '' }}
-          push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ steps.metadata.outputs.image }}:latest
             ${{ steps.metadata.outputs.version && format('{0}:{1}', steps.metadata.outputs.image, steps.metadata.outputs.version) || '' }}
