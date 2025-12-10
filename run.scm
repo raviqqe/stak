@@ -35,18 +35,18 @@
               (eval expression environment))))))))
 
 (define (main)
-  (define environment (interaction-environment))
+  (define current-environment (environment))
 
   (let loop ((arguments (cdr (command-line))))
     (cond
       ((null? arguments)
         (error "script file missing"))
       ((equal? (car arguments) "-l")
-        (run environment (cadr arguments))
+        (run current-environment (cadr arguments))
         (loop (cddr arguments)))
       (else
         (set! command-line (lambda () arguments))
-        (run environment (car arguments))))))
+        (run current-environment (car arguments))))))
 
 (let ((arguments (command-line)))
   (when (or
