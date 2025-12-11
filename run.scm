@@ -20,22 +20,29 @@
   (only (stak backtrace))
   (only (stak mapping)))
 
-(define (run path)
+(define (run environment path)
   (define file (open-input-file path))
 
   (do ()
     ((eof-object? (peek-char file))
-      #f)
+      (close-port file))
     (if (char-whitespace? (peek-char file))
       (read-char file)
-      (eval (read file) (interaction-environment)))))
+      (eval (read file) environment))))
 
 (define (main)
-  (do ((arguments (cdr (command-line)) (cddr arguments)))
-    ((not (equal? (car arguments) "-l"))
-      (define command-line (lambda () arguments))
-      (run (car arguments)))
-    (run (cadr arguments))))
+  (define environment (interaction-environment))
+
+  (let loop ((arguments (cdr (command-line))))
+    (cond
+      ((null? arguments)
+        (error "script file missing"))
+      ((equal? (car arguments) "-l")
+        (run environment (cadr arguments))
+        (loop (cddr arguments)))
+      (else
+        (set! command-line (lambda () arguments))
+        (run environment (car arguments))))))
 
 (let ((arguments (command-line)))
   (when (or
