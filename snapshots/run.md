@@ -16416,7 +16416,7 @@
     - get 1
   - get 2
 - set ||
-- constant procedure 1 #f
+- constant procedure 2 #f
   - constant #f
   - get 1
   - call 1 #f open-input-file
@@ -16427,7 +16427,8 @@
     - call 1 #f peek-char
     - call 1 #f eof-object?
     - if
-      - constant #f
+      - get 2
+      - call 1 #f close-port
     - get 2
     - call 1 #f peek-char
     - call 1 #f char-whitespace?
@@ -16437,7 +16438,7 @@
       - continue
     - get 2
     - call 1 #f read
-    - call 0 #f interaction-environment
+    - get 5
     - call 2 #f eval
     - set 0
     - call 0 #f 1
@@ -16447,28 +16448,36 @@
 - set ||
 - constant procedure 0 #f
   - constant #f
+  - call 0 #f interaction-environment
+  - set 1
+  - constant #f
   - constant procedure 1 #f
+    - get 0
+    - call 1 #f null?
+    - if
+      - constant "script file missing"
+      - call 1 #f error
     - get 0
     - call 1 #f car
     - constant "-l"
     - call 2 #f equal?
-    - constant #f
-    - call 2 #f eq?
     - if
-      - constant procedure 0 #f
-        - get 1
-      - call 1 #f $$close
-      - set command-line
+      - get 3
+      - get 1
+      - call 1 #f cadr
+      - call 2 #f ||
+      - set 0
       - get 0
-      - call 1 #f car
-      - call 1 #f ||
-    - get 0
-    - call 1 #f cadr
-    - call 1 #f ||
-    - set 0
-    - get 0
-    - call 1 #f cddr
-    - call 1 #f 3
+      - call 1 #f cddr
+      - call 1 #f 3
+    - constant procedure 0 #f
+      - get 1
+    - call 1 #f $$close
+    - set command-line
+    - get 3
+    - get 1
+    - call 1 #f car
+    - call 2 #f ||
   - call 1 #f $$close
   - set 1
   - call 0 #f command-line
