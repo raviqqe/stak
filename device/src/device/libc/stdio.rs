@@ -9,7 +9,6 @@ macro_rules! fd {
     ($fd:ident) => {
         // SAFETY: We do not modify the file descriptor.
         #[allow(unused_unsafe)]
-        #[expect(clippy::undocumented_unsafe_blocks)]
         unsafe {
             $fd()
         }
