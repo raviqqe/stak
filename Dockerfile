@@ -2,7 +2,7 @@ ARG RUST_VERSION=1.92
 
 FROM rust:$RUST_VERSION-alpine AS build
 
-RUN apk add build-base
+RUN apk update && apk add build-base
 RUN cargo install --locked stak
 
 ARG BINARY=stak
