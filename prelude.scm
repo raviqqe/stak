@@ -6868,6 +6868,7 @@
   (import (stak base))
 
   (begin
+    ; A mapping based on the AA tree.
     (define-record-type mapping
       (make-mapping root less)
       mapping?
