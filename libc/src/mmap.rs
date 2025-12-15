@@ -1,4 +1,4 @@
-use core::{ffi::CStr, ptr::null_mut, slice};
+use core::{ffi::CStr, ops::Deref, ptr::null_mut, slice};
 use rustix::{
     fs::{self, Mode, OFlags},
     io,
@@ -33,9 +33,12 @@ impl Mmap {
             len,
         })
     }
+}
 
-    /// Returns a slice of bytes.
-    pub const fn as_slice(&self) -> &[u8] {
+impl Deref for Mmap {
+    type Target = [u8];
+
+    fn deref(&self) -> &Self::Target {
         // SAFETY: `self.ptr` is guaranteed to have the length of `self.len`.
         unsafe { slice::from_raw_parts(self.ptr, self.len) }
     }
