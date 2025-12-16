@@ -6875,10 +6875,20 @@
       (node-ref xs index))
 
     (define (radix-vector-append xs ys)
-      xs)
+      (make-radix-vector
+        (node-append (radix-tree-root xs) (radix-tree-root ys))
+        (+ (radix-vector-length xs) (radix-vector-length ys))))
 
-    (define (node-append xs ys)
-      xs)
+    (define (node-append x y)
+      (let ((x-leaf (node-leaf? x))
+            (y-leaf (node-leaf? y)))
+        (cond
+          ((and x-leaf (not y-leaf))
+            foo)
+          ((and (not x-leaf) y-leaf)
+            foo)
+          (else
+            (error "todo")))))
 
     (define (make-empty)
       (make-radix-vector #f 0 0))
