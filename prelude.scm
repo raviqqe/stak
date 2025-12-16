@@ -6884,11 +6884,11 @@
             (y-leaf (node-leaf? y)))
         (cond
           ((and x-leaf (not y-leaf))
-            foo)
+            (error "todo"))
           ((and (not x-leaf) y-leaf)
-            foo)
+            (error "todo"))
           ((and x-leaf y-leaf)
-            foo)
+            (error "todo"))
           (else
             (error "todo")))))
 
