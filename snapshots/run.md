@@ -16171,9 +16171,6 @@
 - call 1 #f ||
 - set ||
 - constant 0
-- call 1 #f ||
-- set ||
-- constant 0
 - constant 1
 - call 2 #f ||
 - call 1 #f ||
