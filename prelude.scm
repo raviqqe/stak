@@ -6887,6 +6887,8 @@
             foo)
           ((and (not x-leaf) y-leaf)
             foo)
+          ((and x-leaf y-leaf)
+            foo)
           (else
             (error "todo")))))
 
