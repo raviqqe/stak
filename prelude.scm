@@ -6866,10 +6866,9 @@
 
   (begin
     (define-record-type radix-vector
-      (make-radix-vector root height length)
+      (make-radix-vector root length)
       radix-vector?
       (root radix-vector-root)
-      (height radix-vector-height)
       (length radix-vector-length))
 
     (define (radix-vector-ref xs index)
@@ -6878,7 +6877,7 @@
     (define (radix-vector-append xs ys)
       xs)
 
-    (define (radix-vector-append xs ys)
+    (define (node-append xs ys)
       xs)
 
     (define (make-empty)
