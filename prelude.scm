@@ -6878,7 +6878,7 @@
     (define-record-type node
       (make-node value level left right)
       node?
-      (value node-value node-set-value!)
+      (value node-value)
       (level node-level node-set-level!)
       (left node-left node-set-left!)
       (right node-right node-set-right!))
