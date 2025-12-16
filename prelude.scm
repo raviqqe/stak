@@ -6855,6 +6855,51 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
+(define-library (stak radix-vector)
+  (export
+    make-radix-vector
+    radix-vector?
+    radix-vector-ref
+    radix-vector-append)
+
+  (import (stak base))
+
+  (begin
+    (define-record-type radix-vector
+      (make-radix-vector root height length)
+      radix-vector?
+      (root radix-vector-root)
+      (height radix-vector-height)
+      (length radix-vector-length))
+
+    (define (radix-vector-ref xs index)
+      (node-ref xs index))
+
+    (define (radix-vector-append xs ys)
+      xs)
+
+    (define (radix-vector-append xs ys)
+      xs)
+
+    (define (make-empty)
+      (make-radix-vector #f 0 0))
+
+    (define (make-node left right pivot leaf)
+      (rib left right (+ (* 2 meta) (if leaf 0 1))))
+
+    (define (node-pivot node)
+      (quotient (rib-tag node) 2))
+
+    (define (node-leaf? node)
+      (zero? (remainder (rib-tag node) 2)))
+
+    (define (node-ref node index)
+      (let* ((pivot (node-pivot node))
+             (less (< index pivot)))
+        (if (node-leaf? node)
+          ((if less car cdr) node)
+          (node-ref node (if less index (- index pivot))))))))
+
 ; TODO Implement this as SRFI-146.
 (define-library (stak mapping)
   (export
