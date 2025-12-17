@@ -6860,7 +6860,8 @@
     make-radix-vector
     radix-vector?
     radix-vector-ref
-    radix-vector-append)
+    radix-vector-append
+    radix-vector->list)
 
   (import (stak base))
 
