@@ -6896,7 +6896,7 @@
           (loop (- index 1) (cons (radix-vector-ref xs index) xs)))))
 
     (define (make-node left right pivot leaf)
-      (rib left right (+ (* 2 meta) (if leaf 0 1))))
+      (rib left right (+ (* 2 pivot) (if leaf 0 1))))
 
     (define (node-pivot node)
       (quotient (rib-tag node) 2))
