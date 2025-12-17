@@ -6892,8 +6892,8 @@
     (define (radix-vector->list xs)
       (let loop ((index (- (radix-vector-length xs) 1)) (xs '()))
         (if (negative? index)
-          (loop (- index 1) (cons (radix-vector-ref xs index) xs))
-          xs)))
+          xs
+          (loop (- index 1) (cons (radix-vector-ref xs index) xs)))))
 
     (define (make-empty)
       (make-radix-vector #f 0 0))
@@ -6921,7 +6921,7 @@
           (if (node-leaf? node)
             ((if less car cdr) node)
             (node-ref node (if less index (- index pivot)))))
-        (make-node value #f 1)))
+        (make-node value #f 1 #t)))
 
     (define (node-append x y)
       (let ((x-leaf (node-leaf? x))
