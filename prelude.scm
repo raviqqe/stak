@@ -6881,6 +6881,9 @@
     (define (radix-vector-ref xs index)
       (node-ref xs index))
 
+    (define (radix-vector-insert xs index)
+      (node-insert xs index))
+
     (define (radix-vector-append xs ys)
       (make-radix-vector*
         (+ (radix-vector-length xs) (radix-vector-length ys))
@@ -6888,19 +6891,6 @@
 
     (define (radix-vector->list xs)
       '())
-
-    (define (node-append x y)
-      (let ((x-leaf (node-leaf? x))
-            (y-leaf (node-leaf? y)))
-        (cond
-          ((and x-leaf (not y-leaf))
-            (error "todo"))
-          ((and (not x-leaf) y-leaf)
-            (error "todo"))
-          ((and x-leaf y-leaf)
-            (error "todo"))
-          (else
-            (error "todo")))))
 
     (define (make-empty)
       (make-radix-vector #f 0 0))
@@ -6919,7 +6909,20 @@
              (less (< index pivot)))
         (if (node-leaf? node)
           ((if less car cdr) node)
-          (node-ref node (if less index (- index pivot))))))))
+          (node-ref node (if less index (- index pivot))))))
+
+    (define (node-append x y)
+      (let ((x-leaf (node-leaf? x))
+            (y-leaf (node-leaf? y)))
+        (cond
+          ((and x-leaf (not y-leaf))
+            (error "todo"))
+          ((and (not x-leaf) y-leaf)
+            (error "todo"))
+          ((and x-leaf y-leaf)
+            (error "todo"))
+          (else
+            (error "todo")))))))
 
 ; TODO Implement this as SRFI-146.
 (define-library (stak mapping)
