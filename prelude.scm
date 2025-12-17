@@ -6866,10 +6866,13 @@
 
   (begin
     (define-record-type radix-vector
-      (make-radix-vector root length)
+      (make-radix-vector* root length)
       radix-vector?
       (root radix-vector-root)
       (length radix-vector-length))
+
+    (define (make-radix-vector length . rest)
+      (make-radix-vector* #f length))
 
     (define (radix-vector-ref xs index)
       (node-ref xs index))
@@ -6878,6 +6881,9 @@
       (make-radix-vector
         (node-append (radix-tree-root xs) (radix-tree-root ys))
         (+ (radix-vector-length xs) (radix-vector-length ys))))
+
+    (define (radix-vector->list xs)
+      '())
 
     (define (node-append x y)
       (let ((x-leaf (node-leaf? x))
