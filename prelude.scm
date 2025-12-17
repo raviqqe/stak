@@ -6912,11 +6912,13 @@
           (node-ref node (if less index (- index pivot))))))
 
     (define (node-insert node index value)
-      (let* ((pivot (node-pivot node))
-             (less (< index pivot)))
-        (if (node-leaf? node)
-          ((if less car cdr) node)
-          (node-ref node (if less index (- index pivot))))))
+      (if node
+        (let* ((pivot (node-pivot node))
+               (less (< index pivot)))
+          (if (node-leaf? node)
+            ((if less car cdr) node)
+            (node-ref node (if less index (- index pivot)))))
+        (make-node value #f 1)))
 
     (define (node-append x y)
       (let ((x-leaf (node-leaf? x))
