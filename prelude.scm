@@ -6867,13 +6867,13 @@
 
   (begin
     (define-record-type radix-vector
-      (make-radix-vector* root length)
+      (make-radix-vector* length root)
       radix-vector?
-      (root radix-vector-root)
-      (length radix-vector-length))
+      (length radix-vector-length)
+      (root radix-vector-root))
 
     (define (make-radix-vector length . rest)
-      (make-radix-vector* #f length))
+      (make-radix-vector* length #f))
 
     (define (radix-vector-ref xs index)
       (node-ref xs index))
