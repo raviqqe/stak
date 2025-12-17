@@ -6880,7 +6880,7 @@
       (node-ref xs index))
 
     (define (radix-vector-append xs ys)
-      (make-radix-vector
+      (make-radix-vector*
         (+ (radix-vector-length xs) (radix-vector-length ys))
         (node-append (radix-tree-root xs) (radix-tree-root ys))))
 
