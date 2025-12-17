@@ -16,10 +16,10 @@
     "@monza-editor/preact": "^0.1.9",
     "@nanostores/preact": "^1.0.0",
     "@preact/signals": "^2.5.1",
-    "@raviqqe/stak": "^0.12.0",
+    "@raviqqe/stak": "^0.12.1",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
-    "astro": "^5.16.5",
+    "astro": "^5.16.6",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.43.0",
     "lucide-preact": "^0.561.0",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
-    "@types/node": "^25.0.2",
+    "@types/node": "^25.0.3",
     "sharp": "^0.34.5",
     "typescript": "^5.9.3"
   }
