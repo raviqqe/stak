@@ -6882,7 +6882,7 @@
           (make-radix-vector* length node))))
 
     (define (radix-vector-ref xs index)
-      (node-ref xs index))
+      (node-ref (radix-vector-root xs) index))
 
     (define (radix-vector-append xs ys)
       (make-radix-vector*
