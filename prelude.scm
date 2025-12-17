@@ -6895,9 +6895,6 @@
           xs
           (loop (- index 1) (cons (radix-vector-ref xs index) xs)))))
 
-    (define (make-empty)
-      (make-radix-vector #f 0 0))
-
     (define (make-node left right pivot leaf)
       (rib left right (+ (* 2 meta) (if leaf 0 1))))
 
