@@ -6877,15 +6877,12 @@
       (define fill (and (pair? rest) (car rest)))
 
       (do ((length length (- length 1))
-           (node #f (radix-vector-insert node length fill)))
+           (node #f (node-insert node length fill)))
         ((zero? length)
           (make-radix-vector* length node))))
 
     (define (radix-vector-ref xs index)
       (node-ref xs index))
-
-    (define (radix-vector-insert xs index value)
-      (node-insert xs index value))
 
     (define (radix-vector-append xs ys)
       (make-radix-vector*
