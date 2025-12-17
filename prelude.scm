@@ -6915,7 +6915,9 @@
       (if node
         (let* ((pivot (node-pivot node))
                (less (< index pivot)))
-          (error "todo"))
+          (if less
+            (error "todo")
+            (error "todo")))
         (make-node value #f 1 #t)))
 
     (define (node-append x y)
