@@ -6890,10 +6890,10 @@
         (node-append (radix-tree-root xs) (radix-tree-root ys))))
 
     (define (radix-vector->list xs)
-      (let loop ((index (- (radix-vector-length xs) 1)) (xs '()))
+      (let loop ((index (- (radix-vector-length xs) 1)) (ys '()))
         (if (negative? index)
-          xs
-          (loop (- index 1) (cons (radix-vector-ref xs index) xs)))))
+          ys
+          (loop (- index 1) (cons (radix-vector-ref xs index) ys)))))
 
     (define (make-node left right pivot leaf)
       (rib left right (+ (* 2 pivot) (if leaf 0 1))))
