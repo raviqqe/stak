@@ -6890,7 +6890,10 @@
         (node-append (radix-tree-root xs) (radix-tree-root ys))))
 
     (define (radix-vector->list xs)
-      '())
+      (let loop ((index (- (radix-vector-length xs) 1)) (xs '()))
+        (if (negative? index)
+          (loop (- index 1) (cons (radix-vector-ref xs index) xs))
+          xs)))
 
     (define (make-empty)
       (make-radix-vector #f 0 0))
