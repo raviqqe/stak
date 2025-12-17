@@ -6881,8 +6881,8 @@
     (define (radix-vector-ref xs index)
       (node-ref xs index))
 
-    (define (radix-vector-insert xs index)
-      (node-insert xs index))
+    (define (radix-vector-insert xs index value)
+      (node-insert xs index value))
 
     (define (radix-vector-append xs ys)
       (make-radix-vector*
@@ -6905,6 +6905,13 @@
       (zero? (remainder (rib-tag node) 2)))
 
     (define (node-ref node index)
+      (let* ((pivot (node-pivot node))
+             (less (< index pivot)))
+        (if (node-leaf? node)
+          ((if less car cdr) node)
+          (node-ref node (if less index (- index pivot))))))
+
+    (define (node-insert node index value)
       (let* ((pivot (node-pivot node))
              (less (< index pivot)))
         (if (node-leaf? node)
