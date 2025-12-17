@@ -6,7 +6,7 @@ Feature: Radix vector
       """scheme
       (import (scheme base) (scheme write) (stak radix-vector))
 
-      (write (radix-vector->list (make-radix-vector <arguments> <fill>)))
+      (write (radix-vector->list (make-radix-vector <length> <fill>)))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
