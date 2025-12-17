@@ -31,7 +31,7 @@ members = [
 exclude = ["cmd/minimal"]
 
 [workspace.package]
-version = "0.12.0"
+version = "0.12.1"
 edition = "2024"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
