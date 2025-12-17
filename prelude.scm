@@ -6859,6 +6859,7 @@
   (export
     make-radix-vector
     radix-vector?
+    radix-vector-length
     radix-vector-ref
     radix-vector-append
     radix-vector->list)
