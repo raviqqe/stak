@@ -15,6 +15,7 @@ Feature: Radix vector
       | length | fill | output |
       | 0      |      | ()     |
       | 1      |      | (#f)   |
+      | 1      | 42   | (42)   |
 
   Scenario Outline: Reference an element
     Given a file named "main.scm" with:
