@@ -6874,6 +6874,8 @@
       (root radix-vector-root))
 
     (define (make-radix-vector length . rest)
+      (define fill (and (pair? rest) (car rest)))
+
       (make-radix-vector* length #f))
 
     (define (radix-vector-ref xs index)
