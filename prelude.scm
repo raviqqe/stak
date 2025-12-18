@@ -6877,7 +6877,7 @@
       (define fill (and (pair? rest) (car rest)))
 
       (do ((index 0 (+ index 1))
-           (node #f (node-insert (+ index 1) node index fill)))
+           (node #f (node-insert node (+ index 1) index fill)))
         ((= index length)
           (make-radix-vector* length node))))
 
