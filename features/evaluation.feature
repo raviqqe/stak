@@ -52,7 +52,7 @@ Feature: Evaluation
   Scenario: Use two environments
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme eval))
+      (import (scheme base) (scheme eval) (scheme write))
 
       (write-u8 (eval 65 (environment '(scheme base) '(scheme write))))
       """
