@@ -1251,7 +1251,8 @@
              (else
               name))))
           (filter
-           (lambda (expression) (not (memq (maybe-car expression) library-predicates)))
+           (lambda (expression)
+            (not (memq (maybe-car expression) library-predicates)))
            expressions))))
        (map-values library-exports (library-context-libraries context)))))
 
