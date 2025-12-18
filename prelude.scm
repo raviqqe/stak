@@ -6923,7 +6923,9 @@
             (if (< index 1)
               (make-leaf value (cdr node))
               (make-leaf (car node) value))
-            (cons (car node) value)))
+            (if (< index 1)
+              (error "todo")
+              (cons (car node) value))))
         ((< index (node-pivot node))
           (error "todo"))
         (else
