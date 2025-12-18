@@ -16895,83 +16895,89 @@
               - expression
         - expressions
       - list
-        - values
+        - let
         - list
-          - cons
           - list
-            - car
             - expression
-          - list
-            - append
             - list
-              - expand-library-bodies
-              - context
+              - cons
               - list
-                - map
                 - car
-                - sets
-            - list
-              - resolve-environment-symbols
+                - expression
               - list
-                - let
+                - append
                 - list
+                  - expand-library-bodies
+                  - context
                   - list
-                    - names
-                    - list
-                      - collect-imported-names
-                      - context
-                      - sets
+                    - map
+                    - car
+                    - sets
                 - list
-                  - lambda
+                  - resolve-environment-symbols
                   - list
-                    - name
-                  - list
-                    - cond
+                    - let
                     - list
                       - list
-                        - assq
-                        - name
                         - names
-                      - =>
-                      - cdr
+                        - list
+                          - collect-imported-names
+                          - context
+                          - sets
                     - list
-                      - else
-                      - name
-              - list
-                - filter
-                - list
-                  - lambda
-                  - list
-                    - expression
-                  - list
-                    - not
-                    - list
-                      - memq
+                      - lambda
                       - list
-                        - maybe-car
+                        - name
+                      - list
+                        - cond
+                        - list
+                          - list
+                            - assq
+                            - name
+                            - names
+                          - =>
+                          - cdr
+                        - list
+                          - else
+                          - name
+                  - list
+                    - filter
+                    - list
+                      - lambda
+                      - list
                         - expression
-                      - library-predicates
-                - expressions
+                      - list
+                        - not
+                        - list
+                          - memq
+                          - list
+                            - maybe-car
+                            - expression
+                          - library-predicates
+                    - expressions
         - list
-          - map-values
-          - library-exports
+          - values
+          - expression
           - list
-            - filter
+            - map-values
+            - library-exports
             - list
-              - lambda
+              - filter
               - list
-                - pair
-              - list
-                - member
+                - lambda
                 - list
-                  - car
                   - pair
                 - list
-                  - library-context-imported
-                  - context
-            - list
-              - library-context-libraries
-              - context
+                  - member
+                  - list
+                    - car
+                    - pair
+                  - list
+                    - library-context-imported
+                    - context
+              - list
+                - library-context-libraries
+                - context
   - list
     - define
     - list
