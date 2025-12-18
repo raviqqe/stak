@@ -3270,7 +3270,6 @@
   - library-context
   - library-context?
   - library-context-set-libraries!
-  - library-context-imported
   - library-context-set-imported!
   - imported
   - memv-index
@@ -3407,6 +3406,7 @@
   - sets
   - library-predicates
   - library-exports
+  - library-context-imported
   - library-context-libraries
   - macro-context-state
   - macro-state-literals
@@ -3450,6 +3450,7 @@
   - find-symbols
   - constant-set?
   - simple
+  - complex
   - constant-set-set-simple!
   - constant-set-set-complex!
   - marshal-context
@@ -3653,30 +3654,10 @@
   - imports
   - debug
   - shake-tree
-  - mapping
-  - mapping-empty
-  - mapping?
-  - mapping-find
-  - mapping-insert!
-  - mapping->list
-  - list->mapping
-  - rust
-  - r5rs
-  - exact->inexact
-  - inexact->exact
-  - null-environment
-  - scheme-report-environment
-  - load
-  - repl
-  - interaction-environment
   - environment
   - eval
   - make-environment
   - compile
-  - time
-  - current-jiffy
-  - current-second
-  - jiffies-per-second
   - file
   - call-with-input-file
   - call-with-output-file
@@ -3738,14 +3719,6 @@
   - force
   - promise?
   - make-promise
-  - case-lambda
-  - complex
-  - make-rectangular
-  - make-polar
-  - real-part
-  - imag-part
-  - magnitude
-  - angle
   - finite?
   - infinite?
   - nan?
@@ -8058,255 +8031,6 @@
 - constant list
   - list
     - list
-      - stak
-      - mapping
-    - (mapping-empty . mapping-empty)
-    - (mapping? . mapping?)
-    - (mapping-find . mapping-find)
-    - (mapping-insert! . mapping-insert!)
-    - (mapping->list . mapping->list)
-    - (list->mapping . list->mapping)
-  - list
-    - list
-      - stak
-      - rust
-  - list
-    - list
-      - scheme
-      - r5rs
-    - (_ . _)
-    - (+ . +)
-    - (- . -)
-    - (... . ...)
-    - (/ . /)
-    - (< . <)
-    - (<= . <=)
-    - (= . =)
-    - (=> . =>)
-    - (> . >)
-    - (>= . >=)
-    - (abs . abs)
-    - (acos . acos)
-    - (and . and)
-    - (angle . angle)
-    - (append . append)
-    - (apply . apply)
-    - (asin . asin)
-    - (assoc . assoc)
-    - (assq . assq)
-    - (assv . assv)
-    - (atan . atan)
-    - (begin . begin)
-    - (boolean? . boolean?)
-    - (caaaar . caaaar)
-    - (caaadr . caaadr)
-    - (caaar . caaar)
-    - (caadar . caadar)
-    - (caaddr . caaddr)
-    - (caadr . caadr)
-    - (caar . caar)
-    - (cadaar . cadaar)
-    - (cadadr . cadadr)
-    - (cadar . cadar)
-    - (caddar . caddar)
-    - (cadddr . cadddr)
-    - (caddr . caddr)
-    - (cadr . cadr)
-    - (call-with-current-continuation . call-with-current-continuation)
-    - (call-with-input-file . call-with-input-file)
-    - (call-with-output-file . call-with-output-file)
-    - (call-with-values . call-with-values)
-    - (car . car)
-    - (case . case)
-    - (cdaaar . cdaaar)
-    - (cdaadr . cdaadr)
-    - (cdaar . cdaar)
-    - (cdadar . cdadar)
-    - (cdaddr . cdaddr)
-    - (cdadr . cdadr)
-    - (cdar . cdar)
-    - (cddaar . cddaar)
-    - (cddadr . cddadr)
-    - (cddar . cddar)
-    - (cdddar . cdddar)
-    - (cddddr . cddddr)
-    - (cdddr . cdddr)
-    - (cddr . cddr)
-    - (cdr . cdr)
-    - (ceiling . ceiling)
-    - (char->integer . char->integer)
-    - (char-alphabetic? . char-alphabetic?)
-    - (char-ci<=? . char-ci<=?)
-    - (char-ci<? . char-ci<?)
-    - (char-ci=? . char-ci=?)
-    - (char-ci>=? . char-ci>=?)
-    - (char-ci>? . char-ci>?)
-    - (char-downcase . char-downcase)
-    - (char-lower-case? . char-lower-case?)
-    - (char-numeric? . char-numeric?)
-    - (char-ready? . char-ready?)
-    - (char-upcase . char-upcase)
-    - (char-upper-case? . char-upper-case?)
-    - (char-whitespace? . char-whitespace?)
-    - (char<=? . char<=?)
-    - (char<? . char<?)
-    - (char=? . char=?)
-    - (char>=? . char>=?)
-    - (char>? . char>?)
-    - (char? . char?)
-    - (close-input-port . close-input-port)
-    - (close-output-port . close-output-port)
-    - (complex? . complex?)
-    - (cond . cond)
-    - (cons . cons)
-    - (cos . cos)
-    - (current-input-port . current-input-port)
-    - (current-output-port . current-output-port)
-    - (define . define)
-    - (define-syntax . define-syntax)
-    - (delay . delay)
-    - (denominator . denominator)
-    - (display . display)
-    - (do . do)
-    - (dynamic-wind . dynamic-wind)
-    - (else . else)
-    - (eof-object? . eof-object?)
-    - (eq? . eq?)
-    - (equal? . equal?)
-    - (eqv? . eqv?)
-    - (eval . eval)
-    - (even? . even?)
-    - (exact->inexact . exact->inexact)
-    - (exact? . exact?)
-    - (exp . exp)
-    - (expt . expt)
-    - (floor . floor)
-    - (for-each . for-each)
-    - (force . force)
-    - (gcd . gcd)
-    - (if . if)
-    - (imag-part . imag-part)
-    - (inexact->exact . inexact->exact)
-    - (inexact? . inexact?)
-    - (input-port? . input-port?)
-    - (integer->char . integer->char)
-    - (integer? . integer?)
-    - (interaction-environment . interaction-environment)
-    - (lambda . lambda)
-    - (lcm . lcm)
-    - (length . length)
-    - (let . let)
-    - (let* . let*)
-    - (let-syntax . let-syntax)
-    - (letrec . letrec)
-    - (letrec-syntax . letrec-syntax)
-    - (list . list)
-    - (list->string . list->string)
-    - (list->vector . list->vector)
-    - (list-ref . list-ref)
-    - (list-tail . list-tail)
-    - (list? . list?)
-    - (load . load)
-    - (log . log)
-    - (magnitude . magnitude)
-    - (make-polar . make-polar)
-    - (make-rectangular . make-rectangular)
-    - (make-string . make-string)
-    - (make-vector . make-vector)
-    - (map . map)
-    - (max . max)
-    - (member . member)
-    - (memq . memq)
-    - (memv . memv)
-    - (min . min)
-    - (modulo . modulo)
-    - (negative? . negative?)
-    - (newline . newline)
-    - (not . not)
-    - (null-environment . null-environment)
-    - (null? . null?)
-    - (number->string . number->string)
-    - (number? . number?)
-    - (numerator . numerator)
-    - (odd? . odd?)
-    - (open-input-file . open-input-file)
-    - (open-output-file . open-output-file)
-    - (or . or)
-    - (output-port? . output-port?)
-    - (pair? . pair?)
-    - (peek-char . peek-char)
-    - (positive? . positive?)
-    - (procedure? . procedure?)
-    - (quasiquote . quasiquote)
-    - (quote . quote)
-    - (quotient . quotient)
-    - (rational? . rational?)
-    - (rationalize . rationalize)
-    - (read . read)
-    - (read-char . read-char)
-    - (real-part . real-part)
-    - (real? . real?)
-    - (remainder . remainder)
-    - (reverse . reverse)
-    - (round . round)
-    - (scheme-report-environment . scheme-report-environment)
-    - (set! . set!)
-    - (set-car! . set-car!)
-    - (set-cdr! . set-cdr!)
-    - (sin . sin)
-    - (sqrt . sqrt)
-    - (string . string)
-    - (string->list . string->list)
-    - (string->number . string->number)
-    - (string->symbol . string->symbol)
-    - (string-append . string-append)
-    - (string-ci<=? . string-ci<=?)
-    - (string-ci<? . string-ci<?)
-    - (string-ci=? . string-ci=?)
-    - (string-ci>=? . string-ci>=?)
-    - (string-ci>? . string-ci>?)
-    - (string-copy . string-copy)
-    - (string-fill! . string-fill!)
-    - (string-length . string-length)
-    - (string-ref . string-ref)
-    - (string-set! . string-set!)
-    - (string<=? . string<=?)
-    - (string<? . string<?)
-    - (string=? . string=?)
-    - (string>=? . string>=?)
-    - (string>? . string>?)
-    - (string? . string?)
-    - (substring . substring)
-    - (symbol->string . symbol->string)
-    - (symbol? . symbol?)
-    - (syntax-rules . syntax-rules)
-    - (tan . tan)
-    - (truncate . truncate)
-    - (values . values)
-    - (vector . vector)
-    - (vector->list . vector->list)
-    - (vector-fill! . vector-fill!)
-    - (vector-length . vector-length)
-    - (vector-ref . vector-ref)
-    - (vector-set! . vector-set!)
-    - (vector? . vector?)
-    - (with-input-from-file . with-input-from-file)
-    - (with-output-to-file . with-output-to-file)
-    - (write . write)
-    - (write-char . write-char)
-    - (zero? . zero?)
-  - list
-    - list
-      - scheme
-      - load
-    - (load . load)
-  - list
-    - list
-      - scheme
-      - repl
-    - (interaction-environment . interaction-environment)
-  - list
-    - list
       - scheme
       - eval
     - (environment . environment)
@@ -8317,13 +8041,6 @@
       - stak
       - compile
     - (compile . compile)
-  - list
-    - list
-      - scheme
-      - time
-    - (current-jiffy . current-jiffy)
-    - (current-second . current-second)
-    - (jiffies-per-second . jiffies-per-second)
   - list
     - list
       - scheme
@@ -8360,37 +8077,6 @@
       - scheme
       - read
     - (read . read)
-  - list
-    - list
-      - scheme
-      - char
-    - (char-ci<=? . char-ci<=?)
-    - (char-ci<? . char-ci<?)
-    - (char-ci=? . char-ci=?)
-    - (char-ci>=? . char-ci>=?)
-    - (char-ci>? . char-ci>?)
-    - (char-alphabetic? . char-alphabetic?)
-    - (char-numeric? . char-numeric?)
-    - (char-whitespace? . char-whitespace?)
-    - (char-lower-case? . char-lower-case?)
-    - (char-upper-case? . char-upper-case?)
-    - (char-downcase . char-downcase)
-    - (char-foldcase . char-foldcase)
-    - (char-upcase . char-upcase)
-    - (string-ci<=? . string-ci<=?)
-    - (string-ci<? . string-ci<?)
-    - (string-ci=? . string-ci=?)
-    - (string-ci>=? . string-ci>=?)
-    - (string-ci>? . string-ci>?)
-    - (string-downcase . string-downcase)
-    - (string-foldcase . string-foldcase)
-    - (string-upcase . string-upcase)
-    - (digit-value . digit-value)
-  - list
-    - list
-      - stak
-      - char
-      - unicode
   - list
     - list
       - stak
@@ -8436,21 +8122,6 @@
     - (force . force)
     - (promise? . promise?)
     - (make-promise . make-promise)
-  - list
-    - list
-      - scheme
-      - case-lambda
-    - (case-lambda . case-lambda)
-  - list
-    - list
-      - scheme
-      - complex
-    - (make-rectangular . make-rectangular)
-    - (make-polar . make-polar)
-    - (real-part . real-part)
-    - (imag-part . imag-part)
-    - (magnitude . magnitude)
-    - (angle . angle)
   - list
     - list
       - scheme
@@ -8729,10 +8400,6 @@
     - (open-output-bytevector . open-output-bytevector)
     - (get-output-bytevector . get-output-bytevector)
     - (write-irritant . write-irritant)
-  - list
-    - list
-      - stak
-      - backtrace
   - list
     - list
       - stak
@@ -17228,69 +16895,89 @@
               - expression
         - expressions
       - list
-        - values
+        - let
         - list
-          - cons
           - list
-            - car
             - expression
-          - list
-            - append
             - list
-              - expand-library-bodies
-              - context
+              - cons
               - list
-                - map
                 - car
-                - sets
-            - list
-              - resolve-environment-symbols
+                - expression
               - list
-                - let
+                - append
                 - list
+                  - expand-library-bodies
+                  - context
                   - list
-                    - names
-                    - list
-                      - collect-imported-names
-                      - context
-                      - sets
+                    - map
+                    - car
+                    - sets
                 - list
-                  - lambda
+                  - resolve-environment-symbols
                   - list
-                    - name
-                  - list
-                    - cond
+                    - let
                     - list
                       - list
-                        - assq
-                        - name
                         - names
-                      - =>
-                      - cdr
+                        - list
+                          - collect-imported-names
+                          - context
+                          - sets
                     - list
-                      - else
-                      - name
-              - list
-                - filter
-                - list
-                  - lambda
-                  - list
-                    - expression
-                  - list
-                    - not
-                    - list
-                      - memq
+                      - lambda
                       - list
-                        - maybe-car
+                        - name
+                      - list
+                        - cond
+                        - list
+                          - list
+                            - assq
+                            - name
+                            - names
+                          - =>
+                          - cdr
+                        - list
+                          - else
+                          - name
+                  - list
+                    - filter
+                    - list
+                      - lambda
+                      - list
                         - expression
-                      - library-predicates
-                - expressions
+                      - list
+                        - not
+                        - list
+                          - memq
+                          - list
+                            - maybe-car
+                            - expression
+                          - library-predicates
+                    - expressions
         - list
-          - map-values
-          - library-exports
+          - values
+          - expression
           - list
-            - library-context-libraries
-            - context
+            - map-values
+            - library-exports
+            - list
+              - filter
+              - list
+                - lambda
+                - list
+                  - pair
+                - list
+                  - member
+                  - list
+                    - car
+                    - pair
+                  - list
+                    - library-context-imported
+                    - context
+              - list
+                - library-context-libraries
+                - context
   - list
     - define
     - list

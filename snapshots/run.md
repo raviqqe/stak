@@ -3279,7 +3279,6 @@
   - mapping-insert!
   - mapping->list
   - list->mapping
-  - rust
   - r5rs
   - exact->inexact
   - inexact->exact
@@ -11148,10 +11147,6 @@
     - (mapping-insert! . mapping-insert!)
     - (mapping->list . mapping->list)
     - (list->mapping . list->mapping)
-  - list
-    - list
-      - stak
-      - rust
   - list
     - list
       - scheme

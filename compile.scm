@@ -1237,23 +1237,31 @@
         (when (eq? (maybe-car expression) 'define-library)
          (add-library-definition! context expression)))
        expressions)
-      (values
-       (cons
-        (car expression)
-        (append
-         (expand-library-bodies context (map car sets))
-         (resolve-environment-symbols
-          (let ((names (collect-imported-names context sets)))
-           (lambda (name)
-            (cond
-             ((assq name names) =>
-              cdr)
-             (else
-              name))))
-          (filter
-           (lambda (expression) (not (memq (maybe-car expression) library-predicates)))
-           expressions))))
-       (map-values library-exports (library-context-libraries context)))))
+      (let ((expression
+             (cons
+              (car expression)
+              (append
+               (expand-library-bodies context (map car sets))
+               (resolve-environment-symbols
+                (let ((names (collect-imported-names context sets)))
+                 (lambda (name)
+                  (cond
+                   ((assq name names) =>
+                    cdr)
+                   (else
+                    name))))
+                (filter
+                 (lambda (expression)
+                  (not (memq (maybe-car expression) library-predicates)))
+                 expressions))))))
+       (values
+        expression
+        (map-values
+         library-exports
+         (filter
+          (lambda (pair)
+           (member (car pair) (library-context-imported context)))
+          (library-context-libraries context)))))))
 
     ; Macro system
 
