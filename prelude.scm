@@ -6877,7 +6877,7 @@
       (define fill (and (pair? rest) (car rest)))
 
       (do ((index 0 (+ index 1))
-           (node #f (node-insert node index fill)))
+           (node #f (node-insert (+ index 1) node index fill)))
         ((= index length)
           (make-radix-vector* length node))))
 
@@ -6911,12 +6911,12 @@
           ((if less car cdr) node)
           (node-ref node (if less index (- index pivot))))))
 
-    (define (node-insert node index value)
+    (define (node-insert node length index value)
       (cond
         ((not node)
           (make-node value #f 1 #t))
         ((node-leaf? node)
-          (if (< index 1)
+          (if (= length 1)
             (cons value (cdr node))
             (cons (car node) value)))
         ((< index (node-pivot node))
