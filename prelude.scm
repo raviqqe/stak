@@ -6898,6 +6898,9 @@
     (define (make-node left right pivot leaf)
       (rib left right (+ (* 2 pivot) (if leaf 0 1))))
 
+    (define (make-leaf left right)
+      (make-node left right 1 #t))
+
     (define (node-pivot node)
       (quotient (rib-tag node) 2))
 
@@ -6917,7 +6920,9 @@
           (make-node value #f 1 #t))
         ((node-leaf? node)
           (if (= length 1)
-            (cons value (cdr node))
+            (if (< index 1)
+              (make-leaf value (cdr node))
+              (make-leaf (car node) value))
             (cons (car node) value)))
         ((< index (node-pivot node))
           (error "todo"))
