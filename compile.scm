@@ -1254,7 +1254,12 @@
            (lambda (expression)
             (not (memq (maybe-car expression) library-predicates)))
            expressions))))
-       (map-values library-exports (library-context-libraries context)))))
+       (map-values
+        library-exports
+        (filter
+         (lambda (pair)
+          (member (car pair) (library-context-imported context)))
+         (library-context-libraries context))))))
 
     ; Macro system
 
