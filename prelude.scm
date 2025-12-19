@@ -6849,6 +6849,63 @@
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
 
+(define-library (stak radix-vector)
+  (export
+    make-radix-vector
+    radix-vector?
+    radix-vector-length
+    radix-vector-ref
+    radix-vector-append
+    radix-vector->list)
+
+  (import (stak base))
+
+  (begin
+    (define factor 32)
+
+    (define-record-type radix-vector
+      (make-radix-vector* length root)
+      radix-vector?
+      (length radix-vector-length)
+      (root radix-vector-root))
+
+    (define (make-radix-vector length . rest)
+      (define fill (and (pair? rest) (car rest)))
+
+      (do ((xs
+             (make-radix-vector* 0 '())
+             (radix-vector-append
+               xs
+               (let ((length (min length factor)))
+                 (make-radix-vector* length (make-list length fill)))))
+           (length length (- length factor)))
+        ((< length 1)
+          xs)))
+
+    (define (make-radix-height xs)
+      (let loop ((length (radix-vector-length xs)))
+        (if (> length factor)
+          (+ 1 (loop (remainder length factor)))
+          0)))
+
+    (define (radix-vector-ref xs index)
+      (do ((xs (radix-vector-root xs) (list-ref xs index))
+           (index index (remainder index 32)))
+        ((< index 32)
+          (list-ref xs index))))
+
+    (define (radix-vector-append xs ys)
+      (let ((xs-length (radix-vector-length xs)))
+        (make-radix-vector*
+          (+ xs-length (radix-vector-length ys))
+          (node-append (radix-vector-root xs) (radix-vector-root ys)))))
+
+    (define (node-append xs ys)
+      (append xs ys))
+
+    (define (radix-vector->list xs)
+      (radix-vector-root xs))))
+
 ; TODO Implement this as SRFI-146.
 (define-library (stak mapping)
   (export

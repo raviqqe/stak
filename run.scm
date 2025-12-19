@@ -18,7 +18,8 @@
   (only (scheme write))
   (only (srfi 1))
   (only (stak backtrace))
-  (only (stak mapping)))
+  (only (stak mapping))
+  (only (stak radix-vector)))
 
 (define (run environment path)
   (define file (open-input-file path))
