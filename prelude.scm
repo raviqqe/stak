@@ -6884,7 +6884,7 @@
           0)))
 
     (define (radix-vector-ref xs index)
-      (do ((h (radix-vector-height xs))
+      (do ((h (radix-vector-height xs) (- h 1))
            (xs
              (radix-vector-root xs)
              (list-ref xs (quotient index (expt factor h))))
