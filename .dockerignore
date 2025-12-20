@@ -1,5 +1,5 @@
-*.bc
+**/*.bc
+**/node_modules
+**/target
 .git
 doc
-node_modules
-target

@@ -12,6 +12,7 @@ ADD . /src
 WORKDIR /src/$DIRECTORY
 RUN cargo build --locked --release --bin $BINARY --target $(uname -m)-unknown-linux-musl
 RUN cp target/*-unknown-linux-musl/release/$BINARY /app
+RUN strip /app
 
 FROM scratch
 
