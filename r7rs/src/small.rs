@@ -3,6 +3,7 @@ mod primitive;
 
 pub use self::error::Error;
 use self::primitive::Primitive;
+use core::num::Saturating;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
