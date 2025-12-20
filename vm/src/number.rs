@@ -53,6 +53,14 @@ impl Number {
     pub(crate) const fn to_raw(self) -> u64 {
         value_inner::to_raw(self.0)
     }
+
+    /// Calculates a the power.
+    pub fn power(self, number: Number) -> Self {
+        Self::new(value_inner::power(
+            self.to_representation(),
+            number.to_representation(),
+        ))
+    }
 }
 
 impl Default for Number {

@@ -3,7 +3,6 @@ mod primitive;
 
 pub use self::error::Error;
 use self::primitive::Primitive;
-use core::num::Saturating;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
@@ -143,7 +142,7 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
-            Primitive::EXPT => memory.operate_binary(Number::pow)?,
+            Primitive::EXPT => memory.operate_binary(Number::power)?,
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => {
                 maybe_await!(self.type_check.operate(memory, primitive - Primitive::NULL))?
