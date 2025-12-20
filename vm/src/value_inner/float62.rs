@@ -58,5 +58,5 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 }
 
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
-    from_f64(pow(x.to_f64(), y.to_f64()))
+    Float62::from_float(pow(x.to_float_unchecked(), y.to_float_unchecked() as _))
 }
