@@ -120,6 +120,9 @@
 - constant 15
 - call 1 #f primitive
 - set remainder
+- constant 16
+- call 1 #f primitive
+- set expt
 - constant 40
 - call 1 #f primitive
 - set ||
@@ -145,12 +148,6 @@
 - call 1 #f primitive
 - set eqv?
 - constant 71
-- call 1 #f primitive
-- set ||
-- constant 500
-- call 1 #f primitive
-- set exp
-- constant 501
 - call 1 #f primitive
 - set ||
 - constant 502
@@ -502,26 +499,6 @@
     - call 1 #f -
   - get 0
 - set abs
-- constant procedure 1 #t
-  - get 0
-  - call 1 #f null?
-  - if
-    - get 1
-    - call 1 #f ||
-  - get 1
-  - call 1 #f ||
-  - get 1
-  - call 1 #f car
-  - call 1 #f ||
-  - call 2 #f ||
-- set log
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f log
-  - get 1
-  - call 2 #f ||
-  - call 1 #f exp
-- set expt
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
@@ -3357,6 +3334,8 @@
   - imag-part
   - magnitude
   - angle
+  - exp
+  - log
   - finite?
   - infinite?
   - nan?
@@ -3582,9 +3561,7 @@
   - exact
   - inexact
   - abs
-  - exp
   - expt
-  - log
   - square
   - exact-integer-sqrt
   - gcd
@@ -7489,6 +7466,12 @@
   - 12288
 - call 2 #f append
 - set space-table
+- constant 500
+- call 1 #f primitive
+- set exp
+- constant 501
+- call 1 #f primitive
+- set ||
 - constant 504
 - call 1 #f primitive
 - set sqrt
@@ -7510,6 +7493,19 @@
 - constant 510
 - call 1 #f primitive
 - set atan
+- constant procedure 1 #t
+  - get 0
+  - call 1 #f null?
+  - if
+    - get 1
+    - call 1 #f ||
+  - get 1
+  - call 1 #f ||
+  - get 1
+  - call 1 #f car
+  - call 1 #f ||
+  - call 2 #f ||
+- set log
 - constant procedure 1 #f
   - get 0
   - call 1 #f infinite?
@@ -11856,9 +11852,7 @@
     - (exact . exact)
     - (inexact . inexact)
     - (abs . abs)
-    - (exp . exp)
     - (expt . expt)
-    - (log . log)
     - (square . square)
     - (exact-integer-sqrt . exact-integer-sqrt)
     - (gcd . gcd)
