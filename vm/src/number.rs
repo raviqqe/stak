@@ -55,7 +55,7 @@ impl Number {
     }
 
     /// Calculates a the power.
-    pub fn power(self, number: Number) -> Self {
+    pub fn power(self, number: Self) -> Self {
         Self::new(value_inner::power(
             self.to_representation(),
             number.to_representation(),

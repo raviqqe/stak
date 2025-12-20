@@ -1,5 +1,5 @@
-use nonbox::f62::{Float62, box_payload, is_payload, unbox_payload_unchecked};
 use libm::pow;
+use nonbox::f62::{Float62, box_payload, is_payload, unbox_payload_unchecked};
 
 pub type NumberInner = Float62;
 
