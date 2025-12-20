@@ -48,5 +48,5 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 }
 
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
-    pow(x, y as _)
+    pow(x, y)
 }
