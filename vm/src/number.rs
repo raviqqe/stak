@@ -55,6 +55,7 @@ impl Number {
     }
 
     /// Calculates a the power.
+    #[allow(clippy::missing_const_for_fn)]
     pub fn power(self, number: Self) -> Self {
         Self::new(value_inner::power(
             self.to_representation(),
