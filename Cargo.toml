@@ -77,7 +77,6 @@ debug-assertions = false
 overflow-checks = false
 
 [profile.release]
-strip = true
 lto = true
 panic = "abort"
 codegen-units = 1
