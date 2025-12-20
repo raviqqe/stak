@@ -142,6 +142,7 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
+            Primitive::EXPT => memory.operate_binary(Number::power)?,
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => {
                 maybe_await!(self.type_check.operate(memory, primitive - Primitive::NULL))?

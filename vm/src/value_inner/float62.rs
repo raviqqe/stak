@@ -1,3 +1,4 @@
+use libm::pow;
 use nonbox::f62::{Float62, box_payload, is_payload, unbox_payload_unchecked};
 
 pub type NumberInner = Float62;
@@ -54,4 +55,8 @@ pub const fn from_raw(raw: u64) -> NumberInner {
 
 pub const fn to_raw(number: NumberInner) -> u64 {
     number.to_bits()
+}
+
+pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
+    Float62::from_float(pow(x.to_float_unchecked(), y.to_float_unchecked()))
 }

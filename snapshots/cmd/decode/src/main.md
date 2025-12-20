@@ -78,6 +78,9 @@
 - constant 15
 - call 1 #f ||
 - set ||
+- constant 16
+- call 1 #f ||
+- set ||
 - constant 40
 - call 1 #f ||
 - set ||
@@ -103,12 +106,6 @@
 - call 1 #f ||
 - set ||
 - constant 71
-- call 1 #f ||
-- set ||
-- constant 500
-- call 1 #f ||
-- set ||
-- constant 501
 - call 1 #f ||
 - set ||
 - constant 502
@@ -335,26 +332,6 @@
     - get 0
     - call 1 #f ||
   - get 0
-- set ||
-- constant procedure 1 #t
-  - get 0
-  - call 1 #f ||
-  - if
-    - get 1
-    - call 1 #f ||
-  - get 1
-  - call 1 #f ||
-  - get 1
-  - call 1 #f ||
-  - call 1 #f ||
-  - call 2 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f ||
-  - get 1
-  - call 2 #f ||
-  - call 1 #f ||
 - set ||
 - get ||
 - call 1 #f ||

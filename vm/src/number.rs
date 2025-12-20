@@ -53,6 +53,15 @@ impl Number {
     pub(crate) const fn to_raw(self) -> u64 {
         value_inner::to_raw(self.0)
     }
+
+    /// Calculates the power.
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn power(self, number: Self) -> Self {
+        Self::new(value_inner::power(
+            self.to_representation(),
+            number.to_representation(),
+        ))
+    }
 }
 
 impl Default for Number {

@@ -114,9 +114,7 @@
     exact
     inexact
     abs
-    exp
     expt
-    log
     square
     exact-integer-sqrt
     gcd
@@ -683,6 +681,7 @@
     (define $* (primitive 13))
     (define $/ (primitive 14))
     (define remainder (primitive 15))
+    (define expt (primitive 16))
     (define $halt (primitive 40))
     (define null? (primitive 50))
     (define pair? (primitive 51))
@@ -692,8 +691,6 @@
     (define list-tail (primitive 63))
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
-    (define exp (primitive 500))
-    (define $log (primitive 501))
     (define infinite? (primitive 502))
     (define nan? (primitive 503))
     (define sqrt (primitive 504))
@@ -878,14 +875,6 @@
       (if (negative? x)
         (- x)
         x))
-
-    (define (log x . xs)
-      (if (null? xs)
-        ($log x)
-        (/ ($log x) ($log (car xs)))))
-
-    (define (expt x y)
-      (exp (* (log x) y)))
 
     (define (exact-integer-sqrt x)
       (let ((y (floor (sqrt x))))
@@ -2914,12 +2903,12 @@
     (scheme base)
     (only (stak base)
       primitive
-      exp
-      log
       infinite?
       nan?))
 
   (begin
+    (define exp (primitive 500))
+    (define $log (primitive 501))
     (define sqrt (primitive 504))
     (define cos (primitive 505))
     (define sin (primitive 506))
@@ -2927,6 +2916,11 @@
     (define acos (primitive 508))
     (define asin (primitive 509))
     (define atan (primitive 510))
+
+    (define (log x . xs)
+      (if (null? xs)
+        ($log x)
+        (/ ($log x) ($log (car xs)))))
 
     (define (finite? x)
       (not (or (infinite? x) (nan? x))))))
