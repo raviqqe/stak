@@ -6884,13 +6884,16 @@
           0)))
 
     (define (radix-vector-ref xs index)
-      (do ((h (radix-vector-height xs) (- h 1))
-           (xs
-             (radix-vector-root xs)
-             (list-ref xs (quotient index (expt factor h))))
-           (index index (remainder index factor)))
-        ((< index factor)
-          (list-ref xs index))))
+      (let loop ((height (radix-vector-height xs))
+                 (index index)
+                 (x (radix-vector-root xs)))
+        (if (negative? height)
+          x
+          (let ((q (expt factor height)))
+            (loop
+              (- height 1)
+              (remainder index q)
+              (list-ref x (quotient index q)))))))
 
     (define (radix-vector-append xs ys)
       (do ((xs xs (radix-vector-insert xs (radix-vector-ref ys index)))
