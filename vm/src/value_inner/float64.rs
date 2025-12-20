@@ -1,3 +1,4 @@
+use libm::pow;
 use nonbox::f64::{box_unsigned, is_boxed, unbox_unsigned_unchecked};
 
 pub type NumberInner = f64;
@@ -47,5 +48,5 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 }
 
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
-    x.powf(y)
+    pow(x, y as _)
 }
