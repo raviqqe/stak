@@ -6882,7 +6882,7 @@
         ((< length 1)
           xs)))
 
-    (define (make-radix-height xs)
+    (define (radix-vector-height xs)
       (let loop ((length (radix-vector-length xs)))
         (if (> length factor)
           (+ 1 (loop (remainder length factor)))
@@ -6890,18 +6890,36 @@
 
     (define (radix-vector-ref xs index)
       (do ((xs (radix-vector-root xs) (list-ref xs index))
-           (index index (remainder index 32)))
-        ((< index 32)
+           (index index (remainder index factor)))
+        ((< index factor)
           (list-ref xs index))))
 
     (define (radix-vector-append xs ys)
-      (let ((xs-length (radix-vector-length xs)))
+      (let ((ys-length (radix-vector-length ys)))
         (make-radix-vector*
-          (+ xs-length (radix-vector-length ys))
-          (node-append (radix-vector-root xs) (radix-vector-root ys)))))
+          (+ (radix-vector-length xs) ys-length)
+          (do ((xs
+                 (radix-vector-root xs)
+                 (node-insert
+                   xs
+                   (radix-vector-height xs)
+                   (radix-vector-root ys)
+                   (radix-vector-height ys)))
+               (index 0 (+ index 1)))
+            ((>= index ys-length)
+              xs)))))
 
-    (define (node-append xs ys)
-      (append xs ys))
+    (define (node-insert xs ys)
+      (let ((h (- xs-height ys-height)))
+        (cond
+          ((zero? h)
+            (if (zero? xs-height)
+              (append xs ys)
+              (error "todo")))
+          ((positive? h)
+            (error "todo"))
+          (else
+            (error "todo")))))
 
     (define (radix-vector->list xs)
       (radix-vector-root xs))))
