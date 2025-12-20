@@ -45,3 +45,7 @@ pub const fn from_raw(raw: u64) -> NumberInner {
 pub const fn to_raw(number: NumberInner) -> u64 {
     number.to_bits()
 }
+
+pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
+    x.powf(y)
+}
