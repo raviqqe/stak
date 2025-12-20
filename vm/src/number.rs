@@ -54,7 +54,7 @@ impl Number {
         value_inner::to_raw(self.0)
     }
 
-    /// Calculates a the power.
+    /// Calculates the power.
     #[allow(clippy::missing_const_for_fn)]
     pub fn power(self, number: Self) -> Self {
         Self::new(value_inner::power(
