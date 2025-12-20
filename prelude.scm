@@ -6924,7 +6924,10 @@
                   (quotient n factor))))))))
 
     (define (radix-vector->list xs)
-      (radix-vector-root xs))))
+      (do ((height (radix-vector-height xs) (- height 1))
+           (xs (radix-vector-root xs) (apply append xs)))
+        ((zero? height)
+          xs)))))
 
 ; TODO Implement this as SRFI-146.
 (define-library (stak mapping)
