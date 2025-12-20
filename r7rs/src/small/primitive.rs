@@ -16,6 +16,7 @@ pub(super) enum Primitive {
     Multiply,
     Divide,
     Remainder,
+    Expt,
     Halt = 40,
     Null = 50,
     Pair,
