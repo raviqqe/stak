@@ -12,10 +12,13 @@ Feature: Radix vector
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | length | fill | output |
-      | 0      |      | ()     |
-      | 1      |      | (#f)   |
-      | 1      | 42   | (42)   |
+      | length | fill | output                    |
+      | 0      |      | ()                        |
+      | 1      |      | (#f)                      |
+      | 1      | 42   | (42)                      |
+      | 2      | 42   | (42 42)                   |
+      | 3      | 42   | (42 42 42)                |
+      | 8      | 42   | (42 42 42 42 42 42 42 42) |
 
   Scenario Outline: Reference an element
     Given a file named "main.scm" with:
@@ -32,3 +35,13 @@ Feature: Radix vector
       | 1      | 0     |
       | 2      | 0     |
       | 2      | 1     |
+      | 3      | 0     |
+      | 3      | 1     |
+      | 3      | 2     |
+      | 8      | 0     |
+      | 8      | 1     |
+      | 8      | 6     |
+      | 8      | 7     |
+      | 9      | 0     |
+      | 9      | 7     |
+      | 9      | 8     |

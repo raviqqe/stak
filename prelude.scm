@@ -6861,7 +6861,7 @@
   (import (stak base))
 
   (begin
-    (define factor 32)
+    (define factor 8)
 
     (define-record-type radix-vector
       (make-radix-vector* length root)
@@ -6872,20 +6872,15 @@
     (define (make-radix-vector length . rest)
       (define fill (and (pair? rest) (car rest)))
 
-      (do ((xs
-             (make-radix-vector* 0 '())
-             (radix-vector-append
-               xs
-               (let ((length (min length factor)))
-                 (make-radix-vector* length (make-list length fill)))))
-           (length length (- length factor)))
+      (do ((xs (make-radix-vector* 0 '()) (radix-vector-insert xs fill))
+           (length length (- length 1)))
         ((< length 1)
           xs)))
 
     (define (radix-vector-height xs)
       (let loop ((length (radix-vector-length xs)))
         (if (> length factor)
-          (+ 1 (loop (remainder length factor)))
+          (+ 1 (loop (quotient length factor)))
           0)))
 
     (define (radix-vector-ref xs index)
@@ -6895,31 +6890,32 @@
           (list-ref xs index))))
 
     (define (radix-vector-append xs ys)
-      (let ((ys-length (radix-vector-length ys)))
-        (make-radix-vector*
-          (+ (radix-vector-length xs) ys-length)
-          (do ((xs
-                 (radix-vector-root xs)
-                 (node-insert
-                   xs
-                   (radix-vector-height xs)
-                   (radix-vector-root ys)
-                   (radix-vector-height ys)))
-               (index 0 (+ index 1)))
-            ((>= index ys-length)
-              xs)))))
+      (do ((xs xs (radix-vector-insert xs (radix-vector-ref ys index)))
+           (index 0 (+ index 1)))
+        ((>= index (radix-vector-length ys))
+          xs)))
 
-    (define (node-insert xs ys)
-      (let ((h (- xs-height ys-height)))
-        (cond
-          ((zero? h)
-            (if (zero? xs-height)
-              (append xs ys)
-              (error "todo")))
-          ((positive? h)
-            (error "todo"))
-          (else
-            (error "todo")))))
+    (define (radix-vector-insert xs x)
+      (let ((n (radix-vector-length xs)))
+        (make-radix-vector*
+          (+ (radix-vector-length xs) 1)
+          (car
+            (let loop ((xs (radix-vector-root xs))
+                       (h (radix-vector-height xs)))
+              (let* ((pair
+                       (if (zero? h)
+                         (cons x n)
+                         (loop (last xs) (- h 1))))
+                     (x (car pair))
+                     (n (cdr pair)))
+                (cons
+                  (if (and
+                       (positive? n)
+                       (zero? (remainder n factor)))
+                    (list xs (list x))
+                    (append xs (list x)))
+                  ; TODO Use the ceil quotient.
+                  (quotient n factor))))))))
 
     (define (radix-vector->list xs)
       (radix-vector-root xs))))

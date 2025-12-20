@@ -14,7 +14,8 @@
   (scheme write)
   (only (srfi 1))
   (only (stak backtrace))
-  (only (stak mapping)))
+  (only (stak mapping))
+  (only (stak radix-vector)))
 
 (define (write-value value)
   (if (error-object? value)
