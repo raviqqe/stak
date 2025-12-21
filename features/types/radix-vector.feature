@@ -46,8 +46,15 @@ Feature: Radix vector
       | 8      | 6     |
       | 8      | 7     |
       | 9      | 0     |
+      | 9      | 1     |
       | 9      | 7     |
       | 9      | 8     |
+      | 64     | 63    |
+      | 65     | 64    |
+      | 512    | 511   |
+      | 513    | 512   |
+      | 4096   | 4095  |
+      | 4097   | 4096  |
 
   Scenario Outline: Convert between a list and a vector
     Given a file named "main.scm" with:
