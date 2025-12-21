@@ -6881,7 +6881,9 @@
           xs)))
 
     (define (radix-vector-height xs)
-      (do ((length (radix-vector-length xs) (quotient length factor))
+      (do ((length
+             (radix-vector-length xs)
+             (+ 1 (quotient (- length 1) factor)))
            (height 0 (+ height 1)))
         ((<= length factor)
           height)))
