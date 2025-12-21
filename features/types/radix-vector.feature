@@ -56,7 +56,7 @@ Feature: Radix vector
       | 4096   | 4095  |
       | 4097   | 4096  |
 
-  Scenario Outline: Convert between a list and a vector
+  Scenario Outline: Convert values between a list and a vector
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write) (srfi 1) (stak radix-vector))
