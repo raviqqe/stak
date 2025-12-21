@@ -6902,9 +6902,9 @@
           xs)))
 
     (define (radix-vector-insert xs x)
-      (let ((n (radix-vector-length xs)))
-        (make-radix-vector*
-          (+ (radix-vector-length xs) 1)
+      (make-radix-vector*
+        (+ (radix-vector-length xs) 1)
+        (let ((n (radix-vector-length xs)))
           (car
             (let loop ((xs (radix-vector-root xs))
                        (h (radix-vector-height xs)))
