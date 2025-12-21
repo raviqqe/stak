@@ -6858,7 +6858,7 @@
     radix-vector-append
     radix-vector->list)
 
-  (import (stak base))
+  (import (stak base) (srfi 1))
 
   (begin
     (define factor 8)
