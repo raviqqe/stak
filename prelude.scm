@@ -6925,12 +6925,14 @@
         (let* ((result (node-push (last xs) x (- h 1)))
                (x (car result))
                (xs (list-copy xs)))
+          ; TODO Optimize a length.
           (list-set! xs (- (length xs) 1) x)
           (if (pair? (cdr result))
             (node-push* xs (list (cadr result)))
             (list xs)))))
 
     (define (node-push* xs x)
+      ; TODO Optimize a length.
       (if (< (length xs) factor)
         (list (append xs (list x)))
         (list xs x)))
