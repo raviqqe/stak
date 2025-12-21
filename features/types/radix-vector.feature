@@ -48,3 +48,22 @@ Feature: Radix vector
       | 9      | 0     |
       | 9      | 7     |
       | 9      | 8     |
+
+  Scenario Outline: Convert between a list and a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write) (srfi 1) (stak radix-vector))
+
+      (define xs (iota <count>))
+
+      (write (equal? (radix-vector->list (list->radix-vector xs)) xs))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "#t"
+
+    Examples:
+      | count |
+      | 0     |
+      | 1     |
+      | 2     |
+      | 3     |

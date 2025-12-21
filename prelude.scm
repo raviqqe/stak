@@ -6856,7 +6856,8 @@
     radix-vector-length
     radix-vector-ref
     radix-vector-append
-    radix-vector->list)
+    radix-vector->list
+    list->radix-vector)
 
   (import (stak base) (srfi 1))
 
