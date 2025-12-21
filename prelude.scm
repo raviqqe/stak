@@ -6878,10 +6878,10 @@
           xs)))
 
     (define (radix-vector-height xs)
-      (let loop ((length (radix-vector-length xs)))
-        (if (> length factor)
-          (+ 1 (loop (quotient length factor)))
-          0)))
+      (do ((length (radix-vector-length xs) (quotient length factor))
+           (height 0 (+ height 1)))
+        ((<= length factor)
+          height)))
 
     (define (radix-vector-ref xs index)
       (let loop ((height (radix-vector-height xs))
