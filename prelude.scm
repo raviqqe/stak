@@ -6924,6 +6924,22 @@
                 ; TODO Use the ceil quotient.
                 (quotient n factor)))))))
 
+    (define (node-push xs x h)
+      (if (zero? h)
+        (node-push* xs x)
+        (let* ((result (node-push (last xs) x (- h 1)))
+               (x (car result))
+               (xs (list-copy xs)))
+          (list-set! xs (- (length xs) 1) x)
+          (if (pair? (cdr result))
+            (node-push* xs (list (cadr result)))
+            (list xs)))))
+
+    (define (node-push* xs x)
+      (if (< (length xs) factor)
+        (list (append xs (list x)))
+        (list xs x)))
+
     (define (radix-vector->list xs)
       (do ((height (radix-vector-height xs) (- height 1))
            (xs (radix-vector-root xs) (apply append xs)))
