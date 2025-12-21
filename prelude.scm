@@ -6872,7 +6872,7 @@
     (define (make-radix-vector length . rest)
       (define fill (and (pair? rest) (car rest)))
 
-      (do ((xs (make-radix-vector* 0 '()) (radix-vector-insert xs fill))
+      (do ((xs (make-radix-vector* 0 '()) (radix-vector-push xs fill))
            (length length (- length 1)))
         ((< length 1)
           xs)))
@@ -6896,12 +6896,12 @@
               (list-ref x (quotient index q)))))))
 
     (define (radix-vector-append xs ys)
-      (do ((xs xs (radix-vector-insert xs (radix-vector-ref ys index)))
+      (do ((xs xs (radix-vector-push xs (radix-vector-ref ys index)))
            (index 0 (+ index 1)))
         ((>= index (radix-vector-length ys))
           xs)))
 
-    (define (radix-vector-insert xs x)
+    (define (radix-vector-push xs x)
       (make-radix-vector*
         (+ (radix-vector-length xs) 1)
         (car
