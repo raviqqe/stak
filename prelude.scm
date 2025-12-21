@@ -6914,11 +6914,13 @@
                    (x (car pair))
                    (n (cdr pair)))
               (cons
-                (if (and
-                     (positive? n)
-                     (zero? (remainder n factor)))
-                  (list ys (list x))
-                  (append ys (list x)))
+                (cond
+                  ((zero? n)
+                    (list x))
+                  ((zero? (remainder n factor))
+                    (list ys (list x)))
+                  (else
+                    (append ys (list x))))
                 ; TODO Use the ceil quotient.
                 (quotient n factor)))))))
 
