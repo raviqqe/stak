@@ -100,12 +100,17 @@ Feature: Radix vector
 
       (write
         (equal?
-          (radix-vector-append (radix-vector <lhs>) (radix-vector <rhs>))
+          (radix-vector->list
+            (radix-vector-append (radix-vector <lhs>) (radix-vector <rhs>)))
           '(<values>)))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "#t"
 
     Examples:
-      | lhs | rhs | values |
-      |     |     |        |
+      | lhs   | rhs   | values      |
+      |       |       |             |
+      | 1     | 2     | 1 2         |
+      | 1     | 2 3   | 1 2 3       |
+      | 1 2   | 3     | 1 2 3       |
+      | 1 2 3 | 4 5 6 | 1 2 3 4 5 6 |
