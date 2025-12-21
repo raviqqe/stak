@@ -6869,10 +6869,12 @@
       (length radix-vector-length)
       (root radix-vector-root))
 
+    (define empty-vector (make-radix-vector* 0 '()))
+
     (define (make-radix-vector length . rest)
       (define fill (and (pair? rest) (car rest)))
 
-      (do ((xs (make-radix-vector* 0 '()) (radix-vector-push xs fill))
+      (do ((xs empty-vector (radix-vector-push xs fill))
            (length length (- length 1)))
         ((< length 1)
           xs)))
@@ -6925,6 +6927,12 @@
       (if (< (length xs) factor)
         (list (append xs (list x)))
         (list xs x)))
+
+    (define (list->radix-vector xs)
+      (do ((xs xs (cdr xs))
+           (ys empty-vector (radix-vector-push ys (car xs))))
+        ((not (pair? xs))
+          ys)))
 
     (define (radix-vector->list xs)
       (do ((height (radix-vector-height xs) (- height 1))
