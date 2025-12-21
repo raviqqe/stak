@@ -6907,7 +6907,7 @@
     (define (radix-vector-append xs ys)
       (do ((xs xs (radix-vector-push xs (radix-vector-ref ys index)))
            (index 0 (+ index 1)))
-        ((>= index (radix-vector-length ys))
+        ((= index (radix-vector-length ys))
           xs)))
 
     (define (radix-vector-push xs x)
