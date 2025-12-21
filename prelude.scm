@@ -6914,24 +6914,23 @@
       (make-radix-vector*
         (+ (radix-vector-length xs) 1)
         (let ((result
-                (node-push (radix-vector-root xs) x (radix-vector-height xs))))
+                (let loop ((xs (radix-vector-root xs))
+                           (h (radix-vector-height xs)))
+                  (if (zero? h)
+                    (node-push xs x)
+                    (let* ((result (loop (last xs) (- h 1)))
+                           (y (car result))
+                           (xs (list-copy xs)))
+                      ; TODO Optimize a length.
+                      (list-set! xs (- (length xs) 1) y)
+                      (if (pair? (cdr result))
+                        (node-push xs (list (cadr result)))
+                        (list xs)))))))
           (if (pair? (cdr result))
             (list (car result) (list (cadr result)))
             (car result)))))
 
-    (define (node-push xs x h)
-      (if (zero? h)
-        (node-push* xs x)
-        (let* ((result (node-push (last xs) x (- h 1)))
-               (x (car result))
-               (xs (list-copy xs)))
-          ; TODO Optimize a length.
-          (list-set! xs (- (length xs) 1) x)
-          (if (pair? (cdr result))
-            (node-push* xs (list (cadr result)))
-            (list xs)))))
-
-    (define (node-push* xs x)
+    (define (node-push xs x)
       ; TODO Optimize a length.
       (if (< (length xs) factor)
         (list (append xs (list x)))
