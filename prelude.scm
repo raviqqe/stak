@@ -6904,25 +6904,11 @@
     (define (radix-vector-push xs x)
       (make-radix-vector*
         (+ (radix-vector-length xs) 1)
-        (car
-          (let loop ((ys (radix-vector-root xs))
-                     (h (radix-vector-height xs)))
-            (let* ((pair
-                     (if (zero? h)
-                       (cons x (radix-vector-length xs))
-                       (loop (last ys) (- h 1))))
-                   (x (car pair))
-                   (n (cdr pair)))
-              (cons
-                (cond
-                  ((zero? n)
-                    (list x))
-                  ((zero? (remainder n factor))
-                    (list ys (list x)))
-                  (else
-                    (append ys (list x))))
-                ; TODO Use the ceil quotient.
-                (quotient n factor)))))))
+        (let ((result
+                (node-push (radix-vector-root xs) x (radix-vector-height xs))))
+          (if (pair? (cdr result))
+            (list (car result) (list (cadr result)))
+            (car result)))))
 
     (define (node-push xs x h)
       (if (zero? h)
