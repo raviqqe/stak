@@ -6904,24 +6904,23 @@
     (define (radix-vector-insert xs x)
       (make-radix-vector*
         (+ (radix-vector-length xs) 1)
-        (let ((n (radix-vector-length xs)))
-          (car
-            (let loop ((xs (radix-vector-root xs))
-                       (h (radix-vector-height xs)))
-              (let* ((pair
-                       (if (zero? h)
-                         (cons x n)
-                         (loop (last xs) (- h 1))))
-                     (x (car pair))
-                     (n (cdr pair)))
-                (cons
-                  (if (and
-                       (positive? n)
-                       (zero? (remainder n factor)))
-                    (list xs (list x))
-                    (append xs (list x)))
-                  ; TODO Use the ceil quotient.
-                  (quotient n factor))))))))
+        (car
+          (let loop ((ys (radix-vector-root xs))
+                     (h (radix-vector-height xs)))
+            (let* ((pair
+                     (if (zero? h)
+                       (cons x (radix-vector-length xs))
+                       (loop (last ys) (- h 1))))
+                   (x (car pair))
+                   (n (cdr pair)))
+              (cons
+                (if (and
+                     (positive? n)
+                     (zero? (remainder n factor)))
+                  (list ys (list x))
+                  (append ys (list x)))
+                ; TODO Use the ceil quotient.
+                (quotient n factor)))))))
 
     (define (radix-vector->list xs)
       (do ((height (radix-vector-height xs) (- height 1))
