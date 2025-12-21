@@ -6852,6 +6852,7 @@
 (define-library (stak radix-vector)
   (export
     make-radix-vector
+    radix-vector
     radix-vector?
     radix-vector-length
     radix-vector-ref
@@ -6879,6 +6880,9 @@
            (length length (- length 1)))
         ((< length 1)
           xs)))
+
+    (define (radix-vector . xs)
+      (list->radix-vector xs))
 
     (define (radix-vector-height xs)
       (do ((length

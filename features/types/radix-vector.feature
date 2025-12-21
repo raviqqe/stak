@@ -92,3 +92,20 @@ Feature: Radix vector
       | 513   |
       | 4096  |
       | 4097  |
+
+  Scenario Outline: Append vectors
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write) (srfi 1) (stak radix-vector))
+
+      (write
+        (equal?
+          (radix-vector-append (radix-vector <lhs>) (radix-vector <rhs>))
+          '(<values>)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "#t"
+
+    Examples:
+      | lhs | rhs | values |
+      |     |     |        |
