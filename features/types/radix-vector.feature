@@ -96,7 +96,7 @@ Feature: Radix vector
   Scenario Outline: Append vectors
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write) (srfi 1) (stak radix-vector))
+      (import (scheme base) (scheme write) (stak radix-vector))
 
       (write
         (equal?
