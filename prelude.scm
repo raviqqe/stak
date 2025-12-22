@@ -1906,7 +1906,7 @@
     open-output-bytevector
     get-output-bytevector)
 
-  (import (stak base) (stak parameter))
+  (import (stak base) (stak vector) (stak parameter))
 
   (begin
     (define $read-input (primitive 100))
