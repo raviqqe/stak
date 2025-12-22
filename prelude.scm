@@ -167,6 +167,17 @@
     reduce-right
     list-copy
 
+    list->sequence
+    make-sequence
+    sequence->list
+    sequence-append
+    sequence-copy
+    sequence-copy!
+    sequence-fill!
+    sequence-length
+    sequence-ref
+    sequence-set!
+
     string?
     string
     list->string
