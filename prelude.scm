@@ -167,35 +167,6 @@
     reduce-right
     list-copy
 
-    vector?
-    vector
-    make-vector
-    vector-append
-    vector-copy
-    vector-copy!
-    vector-fill!
-    vector-for-each
-    vector-length
-    vector-map
-    vector-ref
-    vector-set!
-    list->vector
-    vector->list
-    string->vector
-    vector->string
-
-    bytevector?
-    bytevector
-    make-bytevector
-    bytevector-append
-    bytevector-copy
-    bytevector-copy!
-    bytevector-length
-    bytevector-u8-ref
-    bytevector-u8-set!
-    list->bytevector
-    bytevector->list
-
     string?
     string
     list->string
@@ -1147,53 +1118,6 @@
           #f)
         (set-car! ys (car xs))))
 
-    ;; Vector
-
-    (define vector? (instance? vector-type))
-
-    (define (vector . xs)
-      (list->vector xs))
-
-    (define vector-length sequence-length)
-    (define vector->list sequence->list)
-    (define list->vector (list->sequence vector-type))
-    (define vector-ref sequence-ref)
-    (define vector-set! sequence-set!)
-    (define vector-fill! sequence-fill!)
-    (define make-vector (make-sequence list->vector))
-    (define vector-append (sequence-append list->vector))
-    (define vector-copy (sequence-copy list->vector))
-    (define vector-copy! sequence-copy!)
-
-    (define (vector-for-each f xs)
-      (for-each f (vector->list xs)))
-
-    (define (vector-map f xs)
-      (list->vector (map f (vector->list xs))))
-
-    (define (string->vector xs . rest)
-      (apply vector-copy (list->vector (string->list xs)) rest))
-
-    (define (vector->string xs . rest)
-      (list->string (vector->list (apply vector-copy xs rest))))
-
-    ;; Bytevector
-
-    (define bytevector? (instance? bytevector-type))
-
-    (define (bytevector . xs)
-      (list->bytevector xs))
-
-    (define bytevector-length sequence-length)
-    (define bytevector->list sequence->list)
-    (define list->bytevector (list->sequence bytevector-type))
-    (define bytevector-u8-ref sequence-ref)
-    (define bytevector-u8-set! sequence-set!)
-    (define make-bytevector (make-sequence list->bytevector))
-    (define bytevector-append (sequence-append list->bytevector))
-    (define bytevector-copy (sequence-copy list->bytevector))
-    (define bytevector-copy! sequence-copy!)
-
     ;; String
 
     (define string? (instance? string-type))
@@ -1823,8 +1747,83 @@
         (fold f (car xs) (cdr xs))))))
 
 (define-library (stak vector)
+  (export
+    vector?
+    vector
+    make-vector
+    vector-append
+    vector-copy
+    vector-copy!
+    vector-fill!
+    vector-for-each
+    vector-length
+    vector-map
+    vector-ref
+    vector-set!
+    list->vector
+    vector->list
+    string->vector
+    vector->string
+
+    bytevector?
+    bytevector
+    make-bytevector
+    bytevector-append
+    bytevector-copy
+    bytevector-copy!
+    bytevector-length
+    bytevector-u8-ref
+    bytevector-u8-set!
+    list->bytevector
+    bytevector->list)
+
   (begin
-    foo))
+    ;; Vector
+
+    (define vector? (instance? vector-type))
+
+    (define (vector . xs)
+      (list->vector xs))
+
+    (define vector-length sequence-length)
+    (define vector->list sequence->list)
+    (define list->vector (list->sequence vector-type))
+    (define vector-ref sequence-ref)
+    (define vector-set! sequence-set!)
+    (define vector-fill! sequence-fill!)
+    (define make-vector (make-sequence list->vector))
+    (define vector-append (sequence-append list->vector))
+    (define vector-copy (sequence-copy list->vector))
+    (define vector-copy! sequence-copy!)
+
+    (define (vector-for-each f xs)
+      (for-each f (vector->list xs)))
+
+    (define (vector-map f xs)
+      (list->vector (map f (vector->list xs))))
+
+    (define (string->vector xs . rest)
+      (apply vector-copy (list->vector (string->list xs)) rest))
+
+    (define (vector->string xs . rest)
+      (list->string (vector->list (apply vector-copy xs rest))))
+
+    ;; Bytevector
+
+    (define bytevector? (instance? bytevector-type))
+
+    (define (bytevector . xs)
+      (list->bytevector xs))
+
+    (define bytevector-length sequence-length)
+    (define bytevector->list sequence->list)
+    (define list->bytevector (list->sequence bytevector-type))
+    (define bytevector-u8-ref sequence-ref)
+    (define bytevector-u8-set! sequence-set!)
+    (define make-bytevector (make-sequence list->bytevector))
+    (define bytevector-append (sequence-append list->bytevector))
+    (define bytevector-copy (sequence-copy list->bytevector))
+    (define bytevector-copy! sequence-copy!)))
 
 (define-library (stak parameter)
   (export make-parameter)
