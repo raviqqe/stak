@@ -1777,6 +1777,8 @@
     list->bytevector
     bytevector->list)
 
+  (import (stak base))
+
   (begin
     ;; Vector
 
