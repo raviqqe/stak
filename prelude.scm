@@ -2869,6 +2869,7 @@
 
   (import
     (stak base)
+    (stak vector)
     (stak parameter)
     (stak io)
     (stak unicode)
