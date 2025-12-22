@@ -1822,6 +1822,10 @@
         y
         (fold f (car xs) (cdr xs))))))
 
+(define-library (stak vector)
+  (begin
+    foo))
+
 (define-library (stak parameter)
   (export make-parameter)
 
