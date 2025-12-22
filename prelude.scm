@@ -167,6 +167,7 @@
     reduce-right
     list-copy
 
+    instance?
     list->sequence
     make-sequence
     sequence->list
