@@ -168,31 +168,6 @@
     sequence-ref
     sequence-set!
 
-    string?
-    string
-    list->string
-    string->code-points
-    code-points->string
-    string->list
-    string-append
-    string-fill!
-    string-length
-    string-ref
-    string-set!
-    number->string
-    string->number
-    string-copy
-    string-copy!
-    substring
-    make-string
-    string-for-each
-    string-map
-    string<=?
-    string<?
-    string=?
-    string>=?
-    string>?
-
     define-record-type
     record?
 
@@ -621,7 +596,6 @@
     (define null-type 1)
     (define boolean-type 2)
     (define procedure-type 3)
-    (define string-type 5)
     (define char-type 6)
     (define record-type 9)
 
@@ -1111,202 +1085,6 @@
           #f)
         (set-car! ys (car xs))))
 
-    ;; String
-
-    (define string? (instance? string-type))
-
-    (define (string-rib codes length)
-      (data-rib string-type length codes))
-
-    (define (string . xs)
-      (list->string xs))
-
-    (define string-length sequence-length)
-    (define string->code-points sequence->list)
-    (define code-points->string (list->sequence string-type))
-    (define string-append (sequence-append code-points->string))
-    (define string-copy (sequence-copy code-points->string))
-    (define string-copy! sequence-copy!)
-    (define substring string-copy)
-
-    (define (list->string x)
-      (code-points->string (map char->integer x)))
-
-    (define (string->list x)
-      (map integer->char (string->code-points x)))
-
-    (define (string-ref xs index)
-      (integer->char (sequence-ref xs index)))
-
-    (define (string-set! x index y)
-      (sequence-set! x index (char->integer y)))
-
-    (define (string-fill! xs fill . rest)
-      (apply sequence-fill! xs (char->integer fill) rest))
-
-    (define (make-string length . rest)
-      ((make-sequence code-points->string)
-        length
-        (if (null? rest) 0 (char->integer (car rest)))))
-
-    (define (string-for-each f xs)
-      (for-each f (string->list xs)))
-
-    (define (string-map f xs)
-      (list->string (map f (string->list xs))))
-
-    (define (string-less? x y)
-      (integer-list<?
-        (string->code-points x)
-        (string->code-points y)))
-
-    (define (integer-list<? x y)
-      (and
-        (not (null? y))
-        (boolean-or
-          (null? x)
-          (< (car x) (car y))
-          (and
-            (= (car x) (car y))
-            (integer-list<? (cdr x) (cdr y))))))
-
-    (define string=? (comparison-operator equal?))
-
-    (define string<? (comparison-operator string-less?))
-
-    (define string<=?
-      (comparison-operator
-        (lambda (x y)
-          (or (equal? x y) (string-less? x y)))))
-
-    (define string>?
-      (comparison-operator
-        (lambda (x y)
-          (string-less? y x))))
-
-    (define string>=?
-      (comparison-operator
-        (lambda (x y)
-          (or (equal? x y) (string-less? y x)))))
-
-    ;;; Number
-
-    (define (number->string x . rest)
-      (define radix (if (null? rest) 10 (car rest)))
-
-      (define (format-digit x)
-        (integer->char
-          (if (< 9 x)
-            (+ (char->integer #\a) (- x 10))
-            (+ (char->integer #\0) x))))
-
-      (define (format-point x)
-        (if (< x epsilon)
-          '()
-          (cons
-            #\.
-            (let loop ((x x) (d epsilon) (ys '()))
-              (if (< x d)
-                '()
-                (let* ((x (* x radix))
-                       (r (remainder x 1))
-                       (q (quotient x 1))
-                       (d (* d radix)))
-                  (if (< (- 1 r) d)
-                    (cons
-                      (format-digit (+ q 1))
-                      '())
-                    (cons
-                      (format-digit q)
-                      (loop r d ys)))))))))
-
-      (cond
-        ((infinite? x)
-          (string-append
-            (if (negative? x) "-" "")
-            "infinity"))
-        ((nan? x)
-          "nan")
-        (else
-          (list->string
-            (append
-              (if (negative? x)
-                (list #\-)
-                '())
-              (let loop ((x (abs x)) (ys '()))
-                (let* ((q (quotient x radix))
-                       (ys
-                         (cons
-                           (format-digit (quotient (remainder x radix) 1))
-                           ys)))
-                  (if (positive? q)
-                    (loop q ys)
-                    ys)))
-              (format-point (remainder (abs x) 1)))))))
-
-    (define (string->number x . rest)
-      (define radix (if (null? rest) 10 (car rest)))
-
-      (define digit-characters
-        (map
-          (lambda (pair)
-            (cons
-              (cons
-                (char->integer (caar pair))
-                (char->integer (cdar pair)))
-              (cdr pair)))
-          '(((#\0 . #\9) . 0)
-            ((#\A . #\Z) . 10)
-            ((#\a . #\z) . 10))))
-
-      (define (convert-digit x)
-        (let* ((x (char->integer x))
-               (y
-                 (member
-                   x
-                   digit-characters
-                   (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-          (and
-            y
-            (let* ((y (car y))
-                   (y (+ (- x (caar y)) (cdr y))))
-              (and (< y radix) y)))))
-
-      (define (convert-point xs)
-        (let loop ((xs xs) (y 0) (d 1))
-          (if (null? xs)
-            (/ y d)
-            (let ((x (convert-digit (car xs))))
-              (and
-                x
-                (loop
-                  (cdr xs)
-                  (+ (* radix y) x)
-                  (* d radix)))))))
-
-      (define (convert xs)
-        (and
-          (pair? xs)
-          (let loop ((initial #t) (xs xs) (y 0))
-            (cond
-              ((null? xs)
-                y)
-
-              ((and
-                  (not initial)
-                  (eqv? (car xs) #\.))
-                (+ y (convert-point (cdr xs))))
-
-              (else
-                (let ((x (convert-digit (car xs))))
-                  (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
-
-      (let ((xs (string->list x)))
-        (if (and (pair? xs) (eqv? (car xs) #\-))
-          (let ((x (convert (cdr xs))))
-            (and x (- x)))
-          (convert xs))))
-
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
@@ -1727,6 +1505,235 @@
         y
         (fold f (car xs) (cdr xs))))))
 
+(define-library (stak string)
+  (export
+    string?
+    string
+    list->string
+    string->code-points
+    code-points->string
+    string->list
+    string-append
+    string-fill!
+    string-length
+    string-ref
+    string-set!
+    string-copy
+    string-copy!
+    substring
+    make-string
+    string-for-each
+    string-map
+    string<=?
+    string<?
+    string=?
+    string>=?
+    string>?
+
+    string->number
+    number->string)
+
+  (import (stak base))
+
+  (begin
+    (define string-type 5)
+
+    ;; String
+
+    (define string? (instance? string-type))
+
+    (define (string-rib codes length)
+      (data-rib string-type length codes))
+
+    (define (string . xs)
+      (list->string xs))
+
+    (define string-length sequence-length)
+    (define string->code-points sequence->list)
+    (define code-points->string (list->sequence string-type))
+    (define string-append (sequence-append code-points->string))
+    (define string-copy (sequence-copy code-points->string))
+    (define string-copy! sequence-copy!)
+    (define substring string-copy)
+
+    (define (list->string x)
+      (code-points->string (map char->integer x)))
+
+    (define (string->list x)
+      (map integer->char (string->code-points x)))
+
+    (define (string-ref xs index)
+      (integer->char (sequence-ref xs index)))
+
+    (define (string-set! x index y)
+      (sequence-set! x index (char->integer y)))
+
+    (define (string-fill! xs fill . rest)
+      (apply sequence-fill! xs (char->integer fill) rest))
+
+    (define (make-string length . rest)
+      ((make-sequence code-points->string)
+        length
+        (if (null? rest) 0 (char->integer (car rest)))))
+
+    (define (string-for-each f xs)
+      (for-each f (string->list xs)))
+
+    (define (string-map f xs)
+      (list->string (map f (string->list xs))))
+
+    (define (string-less? x y)
+      (integer-list<?
+        (string->code-points x)
+        (string->code-points y)))
+
+    (define (integer-list<? x y)
+      (and
+        (not (null? y))
+        (boolean-or
+          (null? x)
+          (< (car x) (car y))
+          (and
+            (= (car x) (car y))
+            (integer-list<? (cdr x) (cdr y))))))
+
+    (define string=? (comparison-operator equal?))
+
+    (define string<? (comparison-operator string-less?))
+
+    (define string<=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? x y)))))
+
+    (define string>?
+      (comparison-operator
+        (lambda (x y)
+          (string-less? y x))))
+
+    (define string>=?
+      (comparison-operator
+        (lambda (x y)
+          (or (equal? x y) (string-less? y x)))))
+
+    ;;; Number
+
+    (define (number->string x . rest)
+      (define radix (if (null? rest) 10 (car rest)))
+
+      (define (format-digit x)
+        (integer->char
+          (if (< 9 x)
+            (+ (char->integer #\a) (- x 10))
+            (+ (char->integer #\0) x))))
+
+      (define (format-point x)
+        (if (< x epsilon)
+          '()
+          (cons
+            #\.
+            (let loop ((x x) (d epsilon) (ys '()))
+              (if (< x d)
+                '()
+                (let* ((x (* x radix))
+                       (r (remainder x 1))
+                       (q (quotient x 1))
+                       (d (* d radix)))
+                  (if (< (- 1 r) d)
+                    (cons
+                      (format-digit (+ q 1))
+                      '())
+                    (cons
+                      (format-digit q)
+                      (loop r d ys)))))))))
+
+      (cond
+        ((infinite? x)
+          (string-append
+            (if (negative? x) "-" "")
+            "infinity"))
+        ((nan? x)
+          "nan")
+        (else
+          (list->string
+            (append
+              (if (negative? x)
+                (list #\-)
+                '())
+              (let loop ((x (abs x)) (ys '()))
+                (let* ((q (quotient x radix))
+                       (ys
+                         (cons
+                           (format-digit (quotient (remainder x radix) 1))
+                           ys)))
+                  (if (positive? q)
+                    (loop q ys)
+                    ys)))
+              (format-point (remainder (abs x) 1)))))))
+
+    (define (string->number x . rest)
+      (define radix (if (null? rest) 10 (car rest)))
+
+      (define digit-characters
+        (map
+          (lambda (pair)
+            (cons
+              (cons
+                (char->integer (caar pair))
+                (char->integer (cdar pair)))
+              (cdr pair)))
+          '(((#\0 . #\9) . 0)
+            ((#\A . #\Z) . 10)
+            ((#\a . #\z) . 10))))
+
+      (define (convert-digit x)
+        (let* ((x (char->integer x))
+               (y
+                 (member
+                   x
+                   digit-characters
+                   (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+          (and
+            y
+            (let* ((y (car y))
+                   (y (+ (- x (caar y)) (cdr y))))
+              (and (< y radix) y)))))
+
+      (define (convert-point xs)
+        (let loop ((xs xs) (y 0) (d 1))
+          (if (null? xs)
+            (/ y d)
+            (let ((x (convert-digit (car xs))))
+              (and
+                x
+                (loop
+                  (cdr xs)
+                  (+ (* radix y) x)
+                  (* d radix)))))))
+
+      (define (convert xs)
+        (and
+          (pair? xs)
+          (let loop ((initial #t) (xs xs) (y 0))
+            (cond
+              ((null? xs)
+                y)
+
+              ((and
+                  (not initial)
+                  (eqv? (car xs) #\.))
+                (+ y (convert-point (cdr xs))))
+
+              (else
+                (let ((x (convert-digit (car xs))))
+                  (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
+
+      (let ((xs (string->list x)))
+        (if (and (pair? xs) (eqv? (car xs) #\-))
+          (let ((x (convert (cdr xs))))
+            (and x (- x)))
+          (convert xs))))))
+
 (define-library (stak symbol)
   (export
     symbol?
@@ -1734,7 +1741,7 @@
     symbol->string
     string->uninterned-symbol)
 
-  (import (stak base))
+  (import (stak base) (stak string))
 
   (begin
     (define symbol-type 4)
@@ -2862,6 +2869,7 @@
 
   (import
     (stak base)
+    (stak string)
     (stak symbol)
     (stak vector)
     (stak parameter)
