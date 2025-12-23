@@ -1,4 +1,4 @@
-(import (scheme base) (scheme read) (scheme write))
+(import (scheme base) (scheme read) (scheme write) (srfi 1))
 
 (define (read-all)
   (let ((x (read)))
