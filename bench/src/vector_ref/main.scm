@@ -1,12 +1,13 @@
-(import (scheme base) (scheme write) (srfi 1))
+(import (scheme base) (scheme write))
 
 (define count 4096)
 
 (define xs
-  (do ((index 0 (+ index 1))
-       (xs #() (vector-append xs (vector index))))
-    ((= index count)
-      xs)))
+  (let ((xs (make-vector count)))
+    (do ((index 0 (+ index 1)))
+      ((= index count))
+      (vector-set! xs index index))
+    xs))
 
 (do ((index 0 (+ index 1)))
   ((= index count))
