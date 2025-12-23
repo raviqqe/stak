@@ -6886,14 +6886,31 @@
 
 (define-library (stak radix-vector)
   (export
+    ; list->vector
+    ; make-vector
+    ; vector
+    ; vector->list
+    ; vector-append
+    ; vector-copy
+    ; vector-copy!
+    ; vector-fill!
+    ; vector-for-each
+    ; vector-length
+    ; vector-map
+    ; vector-ref
+    ; vector-set!
+    ; vector?
+
+    list->radix-vector
     make-radix-vector
     radix-vector
-    radix-vector?
-    radix-vector-length
-    radix-vector-ref
-    radix-vector-append
     radix-vector->list
-    list->radix-vector)
+    radix-vector-append
+    radix-vector-for-each
+    radix-vector-length
+    radix-vector-map
+    radix-vector-ref
+    radix-vector?)
 
   (import (stak base) (srfi 1))
 
@@ -6981,7 +6998,20 @@
       (do ((height (radix-vector-height xs) (- height 1))
            (xs (radix-vector-root xs) (apply append xs)))
         ((zero? height)
-          xs)))))
+          xs)))
+
+    (define (radix-vector-map f xs)
+      (do ((index 0 (+ index 1))
+           (ys
+             (make-radix-vector 0)
+             (radix-vector-push ys (f (radix-vector-ref xs index)))))
+        ((= index (radix-vector-length xs))
+          ys)))
+
+    (define (radix-vector-for-each f xs)
+      (do ((index 0 (+ index 1)))
+        ((= index (radix-vector-length xs)))
+        (f (radix-vector-ref xs index))))))
 
 ; TODO Implement this as SRFI-146.
 (define-library (stak mapping)

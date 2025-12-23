@@ -114,3 +114,46 @@ Feature: Radix vector
       | 1     | 2 3   | 1 2 3       |
       | 1 2   | 3     | 1 2 3       |
       | 1 2 3 | 4 5 6 | 1 2 3 4 5 6 |
+
+  Scenario Outline: Map a function over a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write) (stak radix-vector))
+
+      (write
+        (equal?
+          (radix-vector-map
+            (lambda (x) (* x x))
+            (radix-vector <values>))
+          (radix-vector <result>)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "#t"
+
+    Examples:
+      | values | result |
+      |        |        |
+      | 1      | 1      |
+      | 2      | 4      |
+      | 1 2 3  | 1 4 9  |
+
+  Scenario Outline: Iterate over a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write) (stak radix-vector))
+
+      (radix-vector-for-each
+        (lambda (x)
+          (write x)
+          (write-char #\space))
+        (radix-vector <values>))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain "<values>"
+
+    Examples:
+      | values |
+      |        |
+      | 1      |
+      | 2      |
+      | 1 2 3  |
