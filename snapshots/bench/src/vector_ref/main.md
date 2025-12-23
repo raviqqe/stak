@@ -335,6 +335,34 @@
 - constant procedure 0 #t
   - get 0
 - set ||
+- constant procedure 1 #t
+  - constant #f
+  - get 1
+  - call 1 #f ||
+  - if
+    - constant #f
+    - continue
+  - get 1
+  - call 1 #f ||
+  - set 1
+  - constant #f
+  - constant procedure 1 #f
+    - get 0
+    - constant 0
+    - call 2 #f ||
+    - if
+      - constant ()
+    - get 3
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - call 1 #f 4
+    - call 2 #f ||
+  - call 1 #f ||
+  - set 1
+  - get 3
+  - call 1 #f 1
+- set ||
 - constant procedure 1 #f
   - constant #f
   - constant procedure 2 #f
@@ -545,6 +573,23 @@
   - call 1 #f ||
   - get 1
   - call 2 #f ||
+- set ||
+- constant procedure 3 #f
+  - get 2
+  - call 1 #f ||
+  - get 2
+  - get 2
+  - call 3 #f ||
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #t
+    - get ||
+    - get 2
+    - get 2
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 1 #f 4
+  - call 1 #f ||
 - set ||
 - constant procedure 1 #f
   - constant procedure 0 #t
@@ -780,14 +825,12 @@
 - get ||
 - call 1 #f ||
 - set ||
-- constant procedure 0 #t
-  - get 0
-  - call 1 #f ||
-- set ||
 - get ||
 - set ||
 - get ||
 - call 1 #f ||
+- set ||
+- get ||
 - set ||
 - get ||
 - set ||
@@ -1864,28 +1907,31 @@
 - set ||
 - constant 4096
 - set ||
+- get ||
+- call 1 #f ||
+- set ||
 - constant #f
-- constant procedure 2 #f
-  - get 1
+- constant procedure 1 #f
+  - get 0
   - get ||
   - call 2 #f ||
   - if
-    - get 0
+    - constant #f
+  - get ||
   - get 1
+  - get 2
+  - call 3 #f ||
+  - set 0
+  - get 0
   - constant 1
   - call 2 #f ||
-  - get 1
-  - get 3
-  - call 1 #f ||
-  - call 2 #f ||
-  - call 2 #f 5
+  - call 1 #f 3
 - call 1 #f ||
 - set 1
 - constant 0
-- constant #()
-- call 2 #f 2
+- call 1 #f 1
 - call 2 #f ||
-- set ||
+- set 0
 - constant #f
 - constant procedure 1 #f
   - get 0
