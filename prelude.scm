@@ -6886,20 +6886,10 @@
 
 (define-library (stak radix-vector)
   (export
-    ; list->vector
-    ; make-vector
-    ; vector
-    ; vector->list
-    ; vector-append
     ; vector-copy
     ; vector-copy!
     ; vector-fill!
-    ; vector-for-each
-    ; vector-length
-    ; vector-map
-    ; vector-ref
     ; vector-set!
-    ; vector?
 
     list->radix-vector
     make-radix-vector
