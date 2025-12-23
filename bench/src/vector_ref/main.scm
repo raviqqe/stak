@@ -1,4 +1,4 @@
-(import (scheme base) (srfi 1))
+(import (scheme base) (scheme write) (srfi 1))
 
 (define count 4096)
 
