@@ -49,7 +49,6 @@
     null-type
     boolean-type
     procedure-type
-    symbol-type
     string-type
     char-type
     vector-type
@@ -203,11 +202,6 @@
     string=?
     string>=?
     string>?
-
-    symbol?
-    symbol=?
-    symbol->string
-    string->uninterned-symbol
 
     define-record-type
     record?
@@ -637,7 +631,6 @@
     (define null-type 1)
     (define boolean-type 2)
     (define procedure-type 3)
-    (define symbol-type 4)
     (define string-type 5)
     (define char-type 6)
     (define vector-type 7)
@@ -1326,17 +1319,6 @@
             (and x (- x)))
           (convert xs))))
 
-    ;; Symbol
-
-    (define symbol? (instance? symbol-type))
-
-    (define symbol=? (comparison-operator eq?))
-
-    (define symbol->string cdr)
-
-    (define (string->uninterned-symbol x)
-      (data-rib symbol-type #f x))
-
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
@@ -1756,6 +1738,27 @@
       (if (null? xs)
         y
         (fold f (car xs) (cdr xs))))))
+
+(define-library (stak symbol)
+  (export
+    symbol?
+    symbol=?
+    symbol->string
+    string->uninterned-symbol)
+
+  (import (stak base))
+
+  (begin
+    (define symbol-type 4)
+
+    (define symbol? (instance? symbol-type))
+
+    (define symbol=? (comparison-operator eq?))
+
+    (define symbol->string cdr)
+
+    (define (string->uninterned-symbol x)
+      (data-rib symbol-type #f x))))
 
 (define-library (stak vector)
   (export
@@ -2868,6 +2871,7 @@
 
   (import
     (stak base)
+    (stak symbol)
     (stak vector)
     (stak parameter)
     (stak io)
