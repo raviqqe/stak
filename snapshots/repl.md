@@ -58,8 +58,6 @@
 - set ||
 - constant 3
 - set ||
-- constant 5
-- set ||
 - constant 6
 - set ||
 - constant 9
@@ -142,12 +140,6 @@
 - call 1 #f primitive
 - set eqv?
 - constant 71
-- call 1 #f primitive
-- set ||
-- constant 502
-- call 1 #f primitive
-- set ||
-- constant 503
 - call 1 #f primitive
 - set ||
 - constant 504
@@ -585,17 +577,6 @@
   - call 2 #f ||
 - call 1 #f ||
 - set max
-- constant 1000000000
-- call 1 #f /
-- get 0
-- constant 0
-- call 2 #f eq?
-- if
-  - constant 1
-  - continue
-- get 0
-- call 2 #f $$unbind
-- set ||
 - get ||
 - call 1 #f instance?
 - set char?
@@ -1189,6 +1170,114 @@
 - set sequence-copy!
 - get ||
 - call 1 #f instance?
+- set record?
+- constant procedure 1 #f
+  - constant procedure 0 #t
+    - get ||
+    - get 3
+    - get 2
+    - call 3 #f data-rib
+  - call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f record?
+    - if
+      - get 0
+      - call 1 #f car
+      - get 3
+      - call 2 #f eq?
+    - constant #f
+  - call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f cdr
+    - get 3
+    - call 2 #f list-ref
+  - call 1 #f $$close
+- set ||
+- constant procedure 1 #f
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f cdr
+    - get 4
+    - get 2
+    - call 3 #f list-set!
+  - call 1 #f $$close
+- set ||
+- constant 0
+- constant 0
+- call 2 #f cons
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- constant 0
+- call 1 #f ||
+- set ||
+- constant procedure 0 #t
+  - get 0
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f cdr
+    - call 1 #f null?
+    - continue
+  - constant #f
+  - if
+    - get 0
+    - call 1 #f car
+  - get 0
+  - call 1 #f ||
+- set values
+- constant procedure 2 #f
+  - call 0 #f 1
+  - get 0
+  - call 1 #f ||
+  - if
+    - get 1
+    - get 1
+    - call 1 #f ||
+    - call 2 #f apply
+  - get 0
+  - call 1 #f 2
+- set call-with-values
+- constant procedure 1 #t
+  - get 1
+  - call 1 #f write-message
+  - set 0
+  - call 0 #f ||
+- set error
+- constant procedure 0 #t
+  - constant #f
+- set write-message
+- constant 502
+- call 1 #f primitive
+- set ||
+- constant 503
+- call 1 #f primitive
+- set ||
+- constant 5
+- set ||
+- constant 1000000000
+- call 1 #f /
+- get 0
+- constant 0
+- call 2 #f eq?
+- if
+  - constant 1
+  - continue
+- get 0
+- call 2 #f $$unbind
+- set ||
+- get ||
+- call 1 #f instance?
 - set string?
 - constant procedure 2 #f
   - get ||
@@ -1664,95 +1753,6 @@
   - get 0
   - call 1 #f 2
 - set string->number
-- get ||
-- call 1 #f instance?
-- set record?
-- constant procedure 1 #f
-  - constant procedure 0 #t
-    - get ||
-    - get 3
-    - get 2
-    - call 3 #f data-rib
-  - call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f record?
-    - if
-      - get 0
-      - call 1 #f car
-      - get 3
-      - call 2 #f eq?
-    - constant #f
-  - call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f cdr
-    - get 3
-    - call 2 #f list-ref
-  - call 1 #f $$close
-- set ||
-- constant procedure 1 #f
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f cdr
-    - get 4
-    - get 2
-    - call 3 #f list-set!
-  - call 1 #f $$close
-- set ||
-- constant 0
-- constant 0
-- call 2 #f cons
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- constant 0
-- call 1 #f ||
-- set ||
-- constant procedure 0 #t
-  - get 0
-  - call 1 #f pair?
-  - if
-    - get 0
-    - call 1 #f cdr
-    - call 1 #f null?
-    - continue
-  - constant #f
-  - if
-    - get 0
-    - call 1 #f car
-  - get 0
-  - call 1 #f ||
-- set values
-- constant procedure 2 #f
-  - call 0 #f 1
-  - get 0
-  - call 1 #f ||
-  - if
-    - get 1
-    - get 1
-    - call 1 #f ||
-    - call 2 #f apply
-  - get 0
-  - call 1 #f 2
-- set call-with-values
-- constant procedure 1 #t
-  - get 1
-  - call 1 #f write-message
-  - set 0
-  - call 0 #f ||
-- set error
-- constant procedure 0 #t
-  - constant #f
-- set write-message
 - constant 4
 - set ||
 - get ||
@@ -3447,6 +3447,30 @@
   - symbol=?
   - symbol->string
   - string->uninterned-symbol
+  - string?
+  - string
+  - list->string
+  - string->code-points
+  - code-points->string
+  - string->list
+  - string-append
+  - string-fill!
+  - string-length
+  - string-ref
+  - string-set!
+  - string-copy
+  - string-copy!
+  - substring
+  - make-string
+  - string-for-each
+  - string-map
+  - string<=?
+  - string<?
+  - string=?
+  - string>=?
+  - string>?
+  - string->number
+  - number->string
   - srfi
   - iota
   - first
@@ -3644,30 +3668,6 @@
   - sequence-length
   - sequence-ref
   - sequence-set!
-  - string?
-  - string
-  - list->string
-  - string->code-points
-  - code-points->string
-  - string->list
-  - string-append
-  - string-fill!
-  - string-length
-  - string-ref
-  - string-set!
-  - number->string
-  - string->number
-  - string-copy
-  - string-copy!
-  - substring
-  - make-string
-  - string-for-each
-  - string-map
-  - string<=?
-  - string<?
-  - string=?
-  - string>=?
-  - string>?
   - define-record-type
   - record?
   - values
@@ -4025,9 +4025,7 @@
   - constant procedure 1 #f
     - get 2
     - get 1
-    - call 1 #f string->list
-    - call 2 #f map
-    - call 1 #f list->string
+    - call 2 #f string-map
   - call 1 #f $$close
 - set ||
 - get char-downcase
@@ -11689,6 +11687,34 @@
     - (string->uninterned-symbol . string->uninterned-symbol)
   - list
     - list
+      - stak
+      - string
+    - (string? . string?)
+    - (string . string)
+    - (list->string . list->string)
+    - (string->code-points . string->code-points)
+    - (code-points->string . code-points->string)
+    - (string->list . string->list)
+    - (string-append . string-append)
+    - (string-fill! . string-fill!)
+    - (string-length . string-length)
+    - (string-ref . string-ref)
+    - (string-set! . string-set!)
+    - (string-copy . string-copy)
+    - (string-copy! . string-copy!)
+    - (substring . substring)
+    - (make-string . make-string)
+    - (string-for-each . string-for-each)
+    - (string-map . string-map)
+    - (string<=? . string<=?)
+    - (string<? . string<?)
+    - (string=? . string=?)
+    - (string>=? . string>=?)
+    - (string>? . string>?)
+    - (string->number . string->number)
+    - (number->string . number->string)
+  - list
+    - list
       - srfi
       - 1
     - (iota . iota)
@@ -11944,30 +11970,6 @@
     - (sequence-length . sequence-length)
     - (sequence-ref . sequence-ref)
     - (sequence-set! . sequence-set!)
-    - (string? . string?)
-    - (string . string)
-    - (list->string . list->string)
-    - (string->code-points . string->code-points)
-    - (code-points->string . code-points->string)
-    - (string->list . string->list)
-    - (string-append . string-append)
-    - (string-fill! . string-fill!)
-    - (string-length . string-length)
-    - (string-ref . string-ref)
-    - (string-set! . string-set!)
-    - (number->string . number->string)
-    - (string->number . string->number)
-    - (string-copy . string-copy)
-    - (string-copy! . string-copy!)
-    - (substring . substring)
-    - (make-string . make-string)
-    - (string-for-each . string-for-each)
-    - (string-map . string-map)
-    - (string<=? . string<=?)
-    - (string<? . string<?)
-    - (string=? . string=?)
-    - (string>=? . string>=?)
-    - (string>? . string>?)
     - (define-record-type . define-record-type)
     - (record? . record?)
     - (values . values)
