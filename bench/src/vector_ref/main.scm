@@ -4,10 +4,11 @@
 
 (define xs
   (do ((index 0 (+ index 1))
-       (xs #() (vector-append xs index)))
+       (xs #() (vector-append xs (vector index))))
     ((= index count)
       xs)))
 
 (do ((index 0 (+ index 1)))
   ((= index count))
-  (write (vector-ref xs index)))
+  (write (vector-ref xs index))
+  (newline))
