@@ -556,16 +556,6 @@
 - get ||
 - call 1 #f ||
 - set ||
-- get ||
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- get ||
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
 - constant procedure 0 #t
   - get 0
   - call 1 #f ||
@@ -787,6 +777,16 @@
 - set ||
 - constant procedure 0 #t
   - constant #f
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
 - set ||
 - constant procedure 1 #t
   - constant #f

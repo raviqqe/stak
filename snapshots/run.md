@@ -230,7 +230,7 @@
       - call 2 #f eq?
     - constant #f
   - call 1 #f $$close
-- set ||
+- set instance?
 - constant procedure 2 #f
   - get 1
   - get 1
@@ -256,10 +256,10 @@
   - constant #f
 - set equal?
 - get procedure-type
-- call 1 #f ||
+- call 1 #f instance?
 - set procedure?
 - get boolean-type
-- call 1 #f ||
+- call 1 #f instance?
 - set boolean?
 - constant procedure 1 #f
   - get 0
@@ -603,7 +603,7 @@
 - call 2 #f $$unbind
 - set ||
 - get char-type
-- call 1 #f ||
+- call 1 #f instance?
 - set char?
 - constant procedure 1 #f
   - get char-type
@@ -1011,9 +1011,9 @@
   - get 0
 - set list-copy
 - get car
-- set ||
+- set sequence-length
 - get cdr
-- set ||
+- set sequence->list
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 2
@@ -1022,20 +1022,20 @@
     - get 2
     - call 3 #f data-rib
   - call 1 #f $$close
-- set ||
+- set list->sequence
 - constant procedure 2 #f
   - get 1
-  - call 1 #f ||
+  - call 1 #f sequence->list
   - get 1
   - call 2 #f list-ref
-- set ||
+- set sequence-ref
 - constant procedure 3 #f
   - get 2
-  - call 1 #f ||
+  - call 1 #f sequence->list
   - get 2
   - get 2
   - call 3 #f list-set!
-- set ||
+- set sequence-set!
 - constant procedure 2 #t
   - constant #f
   - constant #f
@@ -1059,7 +1059,7 @@
   - call 2 #f $$unbind
   - if
     - get 4
-    - call 1 #f ||
+    - call 1 #f sequence-length
     - continue
   - get 2
   - call 1 #f cadr
@@ -1091,14 +1091,14 @@
   - call 1 #f $$close
   - set 1
   - get 5
-  - call 1 #f ||
+  - call 1 #f sequence->list
   - get 3
   - call 2 #f list-tail
   - get 2
   - get 4
   - call 2 #f ||
   - call 2 #f 2
-- set ||
+- set sequence-fill!
 - constant procedure 1 #f
   - constant procedure 1 #t
     - get make-list
@@ -1108,27 +1108,27 @@
     - call 2 #f apply
     - call 1 #f 4
   - call 1 #f $$close
-- set ||
+- set make-sequence
 - constant procedure 1 #f
   - constant procedure 0 #t
     - get append
-    - get ||
+    - get sequence->list
     - get 2
     - call 2 #f map
     - call 2 #f apply
     - call 1 #f 3
   - call 1 #f $$close
-- set ||
+- set sequence-append
 - constant procedure 1 #f
   - constant procedure 1 #t
     - get list-copy
     - get 2
-    - call 1 #f ||
+    - call 1 #f sequence->list
     - get 2
     - call 3 #f apply
     - call 1 #f 4
   - call 1 #f $$close
-- set ||
+- set sequence-copy
 - constant procedure 3 #t
   - constant #f
   - constant #f
@@ -1152,7 +1152,7 @@
   - call 2 #f $$unbind
   - if
     - get 3
-    - call 1 #f ||
+    - call 1 #f sequence-length
     - continue
   - get 2
   - call 1 #f cadr
@@ -1176,114 +1176,25 @@
   - call 1 #f $$close
   - set 1
   - get 4
-  - call 1 #f ||
+  - call 1 #f sequence->list
   - get 3
   - get 3
   - get 5
   - get 10
-  - call 1 #f ||
+  - call 1 #f sequence-length
   - get 10
   - call 2 #f ||
   - call 2 #f ||
   - call 2 #f min
   - call 3 #f list-copy
   - get 7
-  - call 1 #f ||
+  - call 1 #f sequence->list
   - get 7
   - call 2 #f list-tail
   - call 2 #f 2
-- set ||
-- get vector-type
-- call 1 #f ||
-- set vector?
-- constant procedure 0 #t
-  - get 0
-  - call 1 #f list->vector
-- set vector
-- get ||
-- set vector-length
-- get ||
-- set vector->list
-- get vector-type
-- call 1 #f ||
-- set list->vector
-- get ||
-- set vector-ref
-- get ||
-- set vector-set!
-- get ||
-- set vector-fill!
-- get list->vector
-- call 1 #f ||
-- set make-vector
-- get list->vector
-- call 1 #f ||
-- set vector-append
-- get list->vector
-- call 1 #f ||
-- set vector-copy
-- get ||
-- set vector-copy!
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 1 #f vector->list
-  - call 2 #f for-each
-- set vector-for-each
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 1 #f vector->list
-  - call 2 #f map
-  - call 1 #f list->vector
-- set vector-map
-- constant procedure 1 #t
-  - get vector-copy
-  - get 2
-  - call 1 #f string->list
-  - call 1 #f list->vector
-  - get 2
-  - call 3 #f apply
-- set string->vector
-- constant procedure 1 #t
-  - get vector-copy
-  - get 2
-  - get 2
-  - call 3 #f apply
-  - call 1 #f vector->list
-  - call 1 #f list->string
-- set vector->string
-- get bytevector-type
-- call 1 #f ||
-- set bytevector?
-- constant procedure 0 #t
-  - get 0
-  - call 1 #f list->bytevector
-- set bytevector
-- get ||
-- set bytevector-length
-- get ||
-- set bytevector->list
-- get bytevector-type
-- call 1 #f ||
-- set list->bytevector
-- get ||
-- set bytevector-u8-ref
-- get ||
-- set bytevector-u8-set!
-- get list->bytevector
-- call 1 #f ||
-- set make-bytevector
-- get list->bytevector
-- call 1 #f ||
-- set bytevector-append
-- get list->bytevector
-- call 1 #f ||
-- set bytevector-copy
-- get ||
-- set bytevector-copy!
+- set sequence-copy!
 - get string-type
-- call 1 #f ||
+- call 1 #f instance?
 - set string?
 - constant procedure 2 #f
   - get string-type
@@ -1295,20 +1206,20 @@
   - get 0
   - call 1 #f list->string
 - set string
-- get ||
+- get sequence-length
 - set string-length
-- get ||
+- get sequence->list
 - set string->code-points
 - get string-type
-- call 1 #f ||
+- call 1 #f list->sequence
 - set code-points->string
 - get code-points->string
-- call 1 #f ||
+- call 1 #f sequence-append
 - set string-append
 - get code-points->string
-- call 1 #f ||
+- call 1 #f sequence-copy
 - set string-copy
-- get ||
+- get sequence-copy!
 - set string-copy!
 - get string-copy
 - set substring
@@ -1327,7 +1238,7 @@
 - constant procedure 2 #f
   - get 1
   - get 1
-  - call 2 #f ||
+  - call 2 #f sequence-ref
   - call 1 #f integer->char
 - set string-ref
 - constant procedure 3 #f
@@ -1335,10 +1246,10 @@
   - get 2
   - get 2
   - call 1 #f char->integer
-  - call 3 #f ||
+  - call 3 #f sequence-set!
 - set string-set!
 - constant procedure 2 #t
-  - get ||
+  - get sequence-fill!
   - get 3
   - get 3
   - call 1 #f char->integer
@@ -1347,7 +1258,7 @@
 - set string-fill!
 - constant procedure 1 #t
   - get code-points->string
-  - call 1 #f ||
+  - call 1 #f make-sequence
   - get 2
   - get 2
   - call 1 #f null?
@@ -1760,7 +1671,7 @@
   - call 1 #f 2
 - set string->number
 - get symbol-type
-- call 1 #f ||
+- call 1 #f instance?
 - set symbol?
 - get eq?
 - call 1 #f comparison-operator
@@ -1774,7 +1685,7 @@
   - call 3 #f data-rib
 - set string->uninterned-symbol
 - get record-type
-- call 1 #f ||
+- call 1 #f instance?
 - set record?
 - constant procedure 1 #f
   - constant procedure 0 #t
@@ -1862,6 +1773,95 @@
 - constant procedure 0 #t
   - constant #f
 - set write-message
+- get vector-type
+- call 1 #f instance?
+- set vector?
+- constant procedure 0 #t
+  - get 0
+  - call 1 #f list->vector
+- set vector
+- get sequence-length
+- set vector-length
+- get sequence->list
+- set vector->list
+- get vector-type
+- call 1 #f list->sequence
+- set list->vector
+- get sequence-ref
+- set vector-ref
+- get sequence-set!
+- set vector-set!
+- get sequence-fill!
+- set vector-fill!
+- get list->vector
+- call 1 #f make-sequence
+- set make-vector
+- get list->vector
+- call 1 #f sequence-append
+- set vector-append
+- get list->vector
+- call 1 #f sequence-copy
+- set vector-copy
+- get sequence-copy!
+- set vector-copy!
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f vector->list
+  - call 2 #f for-each
+- set vector-for-each
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 1 #f vector->list
+  - call 2 #f map
+  - call 1 #f list->vector
+- set vector-map
+- constant procedure 1 #t
+  - get vector-copy
+  - get 2
+  - call 1 #f string->list
+  - call 1 #f list->vector
+  - get 2
+  - call 3 #f apply
+- set string->vector
+- constant procedure 1 #t
+  - get vector-copy
+  - get 2
+  - get 2
+  - call 3 #f apply
+  - call 1 #f vector->list
+  - call 1 #f list->string
+- set vector->string
+- get bytevector-type
+- call 1 #f instance?
+- set bytevector?
+- constant procedure 0 #t
+  - get 0
+  - call 1 #f list->bytevector
+- set bytevector
+- get sequence-length
+- set bytevector-length
+- get sequence->list
+- set bytevector->list
+- get bytevector-type
+- call 1 #f list->sequence
+- set list->bytevector
+- get sequence-ref
+- set bytevector-u8-ref
+- get sequence-set!
+- set bytevector-u8-set!
+- get list->bytevector
+- call 1 #f make-sequence
+- set make-bytevector
+- get list->bytevector
+- call 1 #f sequence-append
+- set bytevector-append
+- get list->bytevector
+- call 1 #f sequence-copy
+- set bytevector-copy
+- get sequence-copy!
+- set bytevector-copy!
 - constant procedure 1 #t
   - constant #f
   - get 1
@@ -3422,6 +3422,33 @@
   - get-output-bytevector
   - parameter
   - make-parameter
+  - vector?
+  - vector
+  - make-vector
+  - vector-append
+  - vector-copy
+  - vector-copy!
+  - vector-fill!
+  - vector-for-each
+  - vector-length
+  - vector-map
+  - vector-ref
+  - vector-set!
+  - list->vector
+  - vector->list
+  - string->vector
+  - vector->string
+  - bytevector?
+  - bytevector
+  - make-bytevector
+  - bytevector-append
+  - bytevector-copy
+  - bytevector-copy!
+  - bytevector-length
+  - bytevector-u8-ref
+  - bytevector-u8-set!
+  - list->bytevector
+  - bytevector->list
   - srfi
   - iota
   - first
@@ -3618,33 +3645,17 @@
   - fold
   - reduce-right
   - list-copy
-  - vector?
-  - vector
-  - make-vector
-  - vector-append
-  - vector-copy
-  - vector-copy!
-  - vector-fill!
-  - vector-for-each
-  - vector-length
-  - vector-map
-  - vector-ref
-  - vector-set!
-  - list->vector
-  - vector->list
-  - string->vector
-  - vector->string
-  - bytevector?
-  - bytevector
-  - make-bytevector
-  - bytevector-append
-  - bytevector-copy
-  - bytevector-copy!
-  - bytevector-length
-  - bytevector-u8-ref
-  - bytevector-u8-set!
-  - list->bytevector
-  - bytevector->list
+  - instance?
+  - list->sequence
+  - make-sequence
+  - sequence->list
+  - sequence-append
+  - sequence-copy
+  - sequence-copy!
+  - sequence-fill!
+  - sequence-length
+  - sequence-ref
+  - sequence-set!
   - string?
   - string
   - list->string
@@ -11890,6 +11901,37 @@
     - (make-parameter . make-parameter)
   - list
     - list
+      - stak
+      - vector
+    - (vector? . vector?)
+    - (vector . vector)
+    - (make-vector . make-vector)
+    - (vector-append . vector-append)
+    - (vector-copy . vector-copy)
+    - (vector-copy! . vector-copy!)
+    - (vector-fill! . vector-fill!)
+    - (vector-for-each . vector-for-each)
+    - (vector-length . vector-length)
+    - (vector-map . vector-map)
+    - (vector-ref . vector-ref)
+    - (vector-set! . vector-set!)
+    - (list->vector . list->vector)
+    - (vector->list . vector->list)
+    - (string->vector . string->vector)
+    - (vector->string . vector->string)
+    - (bytevector? . bytevector?)
+    - (bytevector . bytevector)
+    - (make-bytevector . make-bytevector)
+    - (bytevector-append . bytevector-append)
+    - (bytevector-copy . bytevector-copy)
+    - (bytevector-copy! . bytevector-copy!)
+    - (bytevector-length . bytevector-length)
+    - (bytevector-u8-ref . bytevector-u8-ref)
+    - (bytevector-u8-set! . bytevector-u8-set!)
+    - (list->bytevector . list->bytevector)
+    - (bytevector->list . bytevector->list)
+  - list
+    - list
       - srfi
       - 1
     - (iota . iota)
@@ -12144,33 +12186,17 @@
     - (fold . fold)
     - (reduce-right . reduce-right)
     - (list-copy . list-copy)
-    - (vector? . vector?)
-    - (vector . vector)
-    - (make-vector . make-vector)
-    - (vector-append . vector-append)
-    - (vector-copy . vector-copy)
-    - (vector-copy! . vector-copy!)
-    - (vector-fill! . vector-fill!)
-    - (vector-for-each . vector-for-each)
-    - (vector-length . vector-length)
-    - (vector-map . vector-map)
-    - (vector-ref . vector-ref)
-    - (vector-set! . vector-set!)
-    - (list->vector . list->vector)
-    - (vector->list . vector->list)
-    - (string->vector . string->vector)
-    - (vector->string . vector->string)
-    - (bytevector? . bytevector?)
-    - (bytevector . bytevector)
-    - (make-bytevector . make-bytevector)
-    - (bytevector-append . bytevector-append)
-    - (bytevector-copy . bytevector-copy)
-    - (bytevector-copy! . bytevector-copy!)
-    - (bytevector-length . bytevector-length)
-    - (bytevector-u8-ref . bytevector-u8-ref)
-    - (bytevector-u8-set! . bytevector-u8-set!)
-    - (list->bytevector . list->bytevector)
-    - (bytevector->list . bytevector->list)
+    - (instance? . instance?)
+    - (list->sequence . list->sequence)
+    - (make-sequence . make-sequence)
+    - (sequence->list . sequence->list)
+    - (sequence-append . sequence-append)
+    - (sequence-copy . sequence-copy)
+    - (sequence-copy! . sequence-copy!)
+    - (sequence-fill! . sequence-fill!)
+    - (sequence-length . sequence-length)
+    - (sequence-ref . sequence-ref)
+    - (sequence-set! . sequence-set!)
     - (string? . string?)
     - (string . string)
     - (list->string . list->string)
