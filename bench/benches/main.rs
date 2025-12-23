@@ -24,6 +24,7 @@ static FIBONACCI_MODULE: UniversalModule = include_module!("fibonacci/main.scm")
 static HELLO_MODULE: UniversalModule = include_module!("hello/main.scm");
 static SUM_MODULE: UniversalModule = include_module!("sum/main.scm");
 static TAK_MODULE: UniversalModule = include_module!("tak/main.scm");
+static VECTOR_REF_MODULE: UniversalModule = include_module!("vector_ref/main.scm");
 
 fn initialize(module: &'static UniversalModule) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
@@ -65,6 +66,7 @@ static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
     ("hello", "hello", &HELLO_MODULE),
     ("sum", "sum_10000000", &SUM_MODULE),
     ("tak", "tak_16_8_0", &TAK_MODULE),
+    ("vector_ref", "vector_ref_4096", &VECTOR_REF_MODULE),
 ];
 
 fn stak_run(criterion: &mut Criterion) {
