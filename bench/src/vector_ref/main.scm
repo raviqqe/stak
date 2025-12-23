@@ -1,4 +1,4 @@
-(import (scheme base) (scheme write))
+(import (scheme base))
 
 (define count 4096)
 
@@ -10,5 +10,4 @@
 
 (do ((index 0 (+ index 1)))
   ((= index count))
-  (write (vector-ref xs index))
-  (newline))
+  (vector-ref xs index))
