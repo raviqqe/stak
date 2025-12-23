@@ -16,8 +16,6 @@
 - set ||
 - constant 3
 - set ||
-- constant 7
-- set ||
 - constant 9
 - set ||
 - constant procedure 1 #f
@@ -315,6 +313,8 @@
     - get 3
     - call 2 #f ||
   - call 1 #f ||
+- set ||
+- constant 7
 - set ||
 - get ||
 - call 1 #f ||
