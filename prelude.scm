@@ -45,16 +45,6 @@
     scheme
     stak
 
-    pair-type
-    null-type
-    boolean-type
-    procedure-type
-    string-type
-    char-type
-    vector-type
-    bytevector-type
-    record-type
-
     primitive
     rib
     cons
@@ -633,8 +623,6 @@
     (define procedure-type 3)
     (define string-type 5)
     (define char-type 6)
-    (define vector-type 7)
-    (define bytevector-type 8)
     (define record-type 9)
 
     ; Primitives
@@ -1794,6 +1782,9 @@
   (import (stak base))
 
   (begin
+    (define vector-type 7)
+    (define bytevector-type 8)
+
     ;; Vector
 
     (define vector? (instance? vector-type))
@@ -6435,7 +6426,7 @@
   (import
     (scheme base)
     (scheme lazy)
-    (only (stak base) data-rib code-points->string primitive procedure-type))
+    (only (stak base) code-points->string primitive))
 
   (begin
     (define $halt (primitive 40))
@@ -6865,7 +6856,7 @@
         (set-car!
           (car
             (member
-              (data-rib string-type (length name) name)
+              (code-points->string name)
               ($$dynamic-symbols)
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
