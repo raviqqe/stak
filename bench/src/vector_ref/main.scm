@@ -1,9 +1,6 @@
-(import (scheme base) (scheme read) (scheme write) (srfi 1))
+(import (scheme base) (srfi 1))
 
-(define (read-all)
-  (let ((x (read)))
-    (if (eof-object? x)
-      '()
-      (cons x (read-all)))))
+(define count 4096)
 
-(write (read-all))
+(for-each
+  (write (vector-ref foo)))
