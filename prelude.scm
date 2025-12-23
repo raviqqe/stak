@@ -629,8 +629,6 @@
     (define list-tail (primitive 63))
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
-    (define infinite? (primitive 502))
-    (define nan? (primitive 503))
     (define sqrt (primitive 504))
 
     (define (data-rib type car cdr)
@@ -860,14 +858,6 @@
         (fold (lambda (x y) (if (f x y) x y)) x xs)))
     (define min (extremum $<))
     (define max (extremum (lambda (x y) ($< y x))))
-
-    ; TODO Set a true machine epsilon.
-    ;
-    ; Currently, we have a precision limitation due to compression of floating point number in a compiler.
-    (define epsilon
-      ; Variadic arguments to arithmetic operators are not available at this point.
-      (let ((x (/ 1000000000)))
-        (if (zero? x) 1 x)))
 
     ;; Character
 
@@ -1536,7 +1526,18 @@
   (import (stak base))
 
   (begin
+    (define infinite? (primitive 502))
+    (define nan? (primitive 503))
+
     (define string-type 5)
+
+    ; TODO Set a true machine epsilon.
+    ;
+    ; Currently, we have a precision limitation due to compression of floating point number in a compiler.
+    (define epsilon
+      ; Variadic arguments to arithmetic operators are not available at this point.
+      (let ((x (/ 1000000000)))
+        (if (zero? x) 1 x)))
 
     ;; String
 
@@ -1786,7 +1787,7 @@
     list->bytevector
     bytevector->list)
 
-  (import (stak base))
+  (import (stak base) (stak string))
 
   (begin
     (define vector-type 7)
@@ -1906,7 +1907,11 @@
     open-output-bytevector
     get-output-bytevector)
 
-  (import (stak base) (stak vector) (stak parameter))
+  (import
+    (stak base)
+    (stak string)
+    (stak vector)
+    (stak parameter))
 
   (begin
     (define $read-input (primitive 100))
@@ -2386,7 +2391,12 @@
     backtrace
     write-irritant)
 
-  (import (stak base) (stak parameter) (stak io) (stak continue))
+  (import
+    (stak base)
+    (stak string)
+    (stak parameter)
+    (stak io)
+    (stak continue))
 
   (begin
     (define $halt (primitive 40))
@@ -3064,7 +3074,7 @@
     special-chars
     upcase-table)
 
-  (import (stak base))
+  (import (stak base) (stak string))
 
   (begin
     (define alphabetic-table '())
@@ -3184,7 +3194,7 @@
 
     (define (string-case f)
       (lambda (xs)
-        (list->string (map f (string->list xs)))))
+        (string-map f xs)))
 
     (define string-downcase (string-case char-downcase))
     (define string-foldcase (string-case char-foldcase))
@@ -6434,7 +6444,8 @@
   (import
     (scheme base)
     (scheme lazy)
-    (only (stak base) code-points->string primitive))
+    (only (stak base) primitive)
+    (only (stak string) code-points->string))
 
   (begin
     (define $halt (primitive 40))
@@ -6484,7 +6495,8 @@
 
   (import
     (scheme base)
-    (only (stak base) primitive string->code-points))
+    (only (stak base) primitive)
+    (only (stak string) string->code-points))
 
   (begin
     (define $open-file (primitive 200))
@@ -6611,19 +6623,6 @@
           (car rest))))))
 
 (define-library (scheme r5rs)
-  (import
-    (scheme base)
-    (scheme char)
-    (scheme complex)
-    (scheme cxr)
-    (scheme eval)
-    (scheme file)
-    (scheme inexact)
-    (scheme lazy)
-    (scheme read)
-    (scheme repl)
-    (scheme write))
-
   (export
     *
     +
@@ -6847,6 +6846,19 @@
     write-char
     zero?)
 
+  (import
+    (scheme base)
+    (scheme char)
+    (scheme complex)
+    (scheme cxr)
+    (scheme eval)
+    (scheme file)
+    (scheme inexact)
+    (scheme lazy)
+    (scheme read)
+    (scheme repl)
+    (scheme write))
+
   (begin
     (define (scheme-report-environment version)
       (unless (= version 5)
@@ -6854,7 +6866,10 @@
       (environment '(scheme r5rs)))))
 
 (define-library (stak rust)
-  (import (stak base) (scheme base))
+  (import
+    (stak base)
+    (stak string)
+    (stak symbol))
 
   (begin
     (do ((names ((primitive 1000)) (cdr names))
