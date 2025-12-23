@@ -51,29 +51,23 @@
         - exception
 - set features
 - constant 0
-- set pair-type
+- set ||
 - constant 1
-- set null-type
+- set ||
 - constant 2
-- set boolean-type
+- set ||
 - constant 3
-- set procedure-type
-- constant 4
-- set symbol-type
+- set ||
 - constant 5
-- set string-type
+- set ||
 - constant 6
-- set char-type
-- constant 7
-- set vector-type
-- constant 8
-- set bytevector-type
+- set ||
 - constant 9
-- set record-type
+- set ||
 - constant procedure 1 #f
   - get 0
   - constant ()
-  - get procedure-type
+  - get ||
   - call 3 #f $$rib
 - set primitive
 - get $$rib
@@ -255,10 +249,10 @@
     - constant #f
   - constant #f
 - set equal?
-- get procedure-type
+- get ||
 - call 1 #f instance?
 - set procedure?
-- get boolean-type
+- get ||
 - call 1 #f instance?
 - set boolean?
 - constant procedure 1 #f
@@ -602,11 +596,11 @@
 - get 0
 - call 2 #f $$unbind
 - set ||
-- get char-type
+- get ||
 - call 1 #f instance?
 - set char?
 - constant procedure 1 #f
-  - get char-type
+  - get ||
   - get 1
   - constant ()
   - call 3 #f data-rib
@@ -1193,11 +1187,11 @@
   - call 2 #f list-tail
   - call 2 #f 2
 - set sequence-copy!
-- get string-type
+- get ||
 - call 1 #f instance?
 - set string?
 - constant procedure 2 #f
-  - get string-type
+  - get ||
   - get 1
   - get 3
   - call 3 #f data-rib
@@ -1210,7 +1204,7 @@
 - set string-length
 - get sequence->list
 - set string->code-points
-- get string-type
+- get ||
 - call 1 #f list->sequence
 - set code-points->string
 - get code-points->string
@@ -1670,26 +1664,12 @@
   - get 0
   - call 1 #f 2
 - set string->number
-- get symbol-type
-- call 1 #f instance?
-- set symbol?
-- get eq?
-- call 1 #f comparison-operator
-- set symbol=?
-- get cdr
-- set symbol->string
-- constant procedure 1 #f
-  - get symbol-type
-  - constant #f
-  - get 2
-  - call 3 #f data-rib
-- set string->uninterned-symbol
-- get record-type
+- get ||
 - call 1 #f instance?
 - set record?
 - constant procedure 1 #f
   - constant procedure 0 #t
-    - get record-type
+    - get ||
     - get 3
     - get 2
     - call 3 #f data-rib
@@ -1773,7 +1753,27 @@
 - constant procedure 0 #t
   - constant #f
 - set write-message
-- get vector-type
+- constant 4
+- set ||
+- get ||
+- call 1 #f instance?
+- set symbol?
+- get eq?
+- call 1 #f comparison-operator
+- set symbol=?
+- get cdr
+- set symbol->string
+- constant procedure 1 #f
+  - get ||
+  - constant #f
+  - get 2
+  - call 3 #f data-rib
+- set string->uninterned-symbol
+- constant 7
+- set ||
+- constant 8
+- set ||
+- get ||
 - call 1 #f instance?
 - set vector?
 - constant procedure 0 #t
@@ -1784,7 +1784,7 @@
 - set vector-length
 - get sequence->list
 - set vector->list
-- get vector-type
+- get ||
 - call 1 #f list->sequence
 - set list->vector
 - get sequence-ref
@@ -1833,7 +1833,7 @@
   - call 1 #f vector->list
   - call 1 #f list->string
 - set vector->string
-- get bytevector-type
+- get ||
 - call 1 #f instance?
 - set bytevector?
 - constant procedure 0 #t
@@ -1844,7 +1844,7 @@
 - set bytevector-length
 - get sequence->list
 - set bytevector->list
-- get bytevector-type
+- get ||
 - call 1 #f list->sequence
 - set list->bytevector
 - get sequence-ref
@@ -3442,6 +3442,11 @@
   - bytevector-u8-set!
   - list->bytevector
   - bytevector->list
+  - symbol
+  - symbol?
+  - symbol=?
+  - symbol->string
+  - string->uninterned-symbol
   - srfi
   - iota
   - first
@@ -3525,16 +3530,6 @@
   - r7rs
   - scheme
   - stak
-  - pair-type
-  - null-type
-  - boolean-type
-  - procedure-type
-  - symbol-type
-  - string-type
-  - char-type
-  - vector-type
-  - bytevector-type
-  - record-type
   - primitive
   - rib
   - cons
@@ -3673,10 +3668,6 @@
   - string=?
   - string>=?
   - string>?
-  - symbol?
-  - symbol=?
-  - symbol->string
-  - string->uninterned-symbol
   - define-record-type
   - record?
   - values
@@ -11690,6 +11681,14 @@
     - (bytevector->list . bytevector->list)
   - list
     - list
+      - stak
+      - symbol
+    - (symbol? . symbol?)
+    - (symbol=? . symbol=?)
+    - (symbol->string . symbol->string)
+    - (string->uninterned-symbol . string->uninterned-symbol)
+  - list
+    - list
       - srfi
       - 1
     - (iota . iota)
@@ -11831,16 +11830,6 @@
     - (r7rs . r7rs)
     - (scheme . scheme)
     - (stak . stak)
-    - (pair-type . pair-type)
-    - (null-type . null-type)
-    - (boolean-type . boolean-type)
-    - (procedure-type . procedure-type)
-    - (symbol-type . symbol-type)
-    - (string-type . string-type)
-    - (char-type . char-type)
-    - (vector-type . vector-type)
-    - (bytevector-type . bytevector-type)
-    - (record-type . record-type)
     - (primitive . primitive)
     - (rib . rib)
     - (cons . cons)
@@ -11979,10 +11968,6 @@
     - (string=? . string=?)
     - (string>=? . string>=?)
     - (string>? . string>?)
-    - (symbol? . symbol?)
-    - (symbol=? . symbol=?)
-    - (symbol->string . symbol->string)
-    - (string->uninterned-symbol . string->uninterned-symbol)
     - (define-record-type . define-record-type)
     - (record? . record?)
     - (values . values)

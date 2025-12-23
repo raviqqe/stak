@@ -434,8 +434,6 @@
   - call 2 #f ||
 - set ||
 - get ||
-- set ||
-- get ||
 - call 1 #f ||
 - set ||
 - constant procedure 1 #f
@@ -474,6 +472,8 @@
 - set ||
 - constant procedure 0 #t
   - constant #f
+- set ||
+- get ||
 - set ||
 - constant procedure 1 #t
   - constant #f
@@ -988,11 +988,8 @@
     - constant #f
   - get 1
   - call 1 #f ||
-  - get ||
-  - get 1
+  - get 0
   - call 1 #f ||
-  - get 2
-  - call 3 #f ||
   - constant list
     - person-throw-pie
     - person-wasted

@@ -16,15 +16,9 @@
 - set ||
 - constant 3
 - set ||
-- constant 4
-- set ||
 - constant 5
 - set ||
 - constant 6
-- set ||
-- constant 7
-- set ||
-- constant 8
 - set ||
 - constant 9
 - set ||
@@ -727,11 +721,6 @@
 - get ||
 - call 1 #f ||
 - set ||
-- get ||
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
 - constant procedure 1 #f
   - constant procedure 0 #t
     - get ||
@@ -777,6 +766,17 @@
 - set ||
 - constant procedure 0 #t
   - constant #f
+- set ||
+- constant 4
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- set ||
+- constant 7
+- set ||
+- constant 8
 - set ||
 - get ||
 - call 1 #f ||
