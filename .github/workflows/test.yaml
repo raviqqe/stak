@@ -180,6 +180,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup-node
       - run: tools/decode_test.sh
   r7rs_compatible_compiler:
     runs-on: ubuntu-latest
