@@ -190,3 +190,76 @@ Feature: Vector
       | 0 1     | 2 1       | AC     |
       | 0 1 2   | 3         | DDD    |
       | 0 1 2 3 | 4 1 3     | AEED   |
+
+  @long
+  Rule: Large vectors
+
+    Scenario Outline: Reference an element
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+
+        (write (radix-vector-ref (make-radix-vector <length> 42) <index>))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "42"
+
+      Examples:
+        | length | index |
+        | 1      | 0     |
+        | 2      | 0     |
+        | 2      | 1     |
+        | 3      | 0     |
+        | 3      | 1     |
+        | 3      | 2     |
+        | 8      | 0     |
+        | 8      | 1     |
+        | 8      | 6     |
+        | 8      | 7     |
+        | 9      | 0     |
+        | 9      | 1     |
+        | 9      | 7     |
+        | 9      | 8     |
+        | 64     | 63    |
+        | 65     | 64    |
+        | 512    | 511   |
+        | 513    | 512   |
+        | 4096   | 4095  |
+        | 4097   | 4096  |
+
+    Scenario Outline: Convert values between a list and a vector
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write) (srfi 1))
+
+        (define xs (iota <count>))
+
+        (write (equal? (radix-vector->list (list->radix-vector xs)) xs))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "#t"
+
+      Examples:
+        | count |
+        | 0     |
+        | 1     |
+        | 2     |
+        | 3     |
+        | 4     |
+        | 5     |
+        | 6     |
+        | 7     |
+        | 8     |
+        | 9     |
+        | 16    |
+        | 17    |
+        | 32    |
+        | 33    |
+        | 64    |
+        | 65    |
+        | 128   |
+        | 129   |
+        | 512   |
+        | 513   |
+        | 4096  |
+        | 4097  |
