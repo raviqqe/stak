@@ -6886,10 +6886,7 @@
 
 (define-library (stak radix-vector)
   (export
-    ; vector-copy
-    ; vector-copy!
     ; vector-fill!
-    ; vector-set!
 
     list->radix-vector
     make-radix-vector
@@ -6906,7 +6903,7 @@
   (import (stak base) (srfi 1))
 
   (begin
-    (define factor 8)
+    (define factor 16)
 
     (define-record-type radix-vector
       (make-radix-vector* length root)
@@ -6984,6 +6981,23 @@
       (if (< (length xs) factor)
         (list (append xs (list x)))
         (list xs x)))
+
+    (define (parse-copy-arguments xs)
+      (ons
+        (or (and (pair? xs) (car xs)) 0)
+        (or
+          (and (pair? xs) (pair? (cdr xs)) (cadr xs))
+          (radix-vector-length xs))))
+
+    (define (radix-vector-copy xs . rest)
+      (define range (parse-copy-arguments rest))
+
+      (do ((index (car range) (+ index 1))
+           (ys
+             (make-radix-vector 0)
+             (radix-vector-push ys (radix-vector-ref xs index))))
+        ((not (< index (cdr range)))
+          ys)))
 
     (define (list->radix-vector xs)
       (do ((xs xs (cdr xs))
