@@ -1,11 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: daily
-  - package-ecosystem: github-actions
-    directory: /.github/actions/setup
+    directories:
+      - /
+      - /.github/actions/setup
+      - /.github/actions/setup-node
+      - /.github/actions/setup-scheme
     schedule:
       interval: daily
   - package-ecosystem: gitsubmodule
@@ -13,11 +13,9 @@ updates:
     schedule:
       interval: daily
   - package-ecosystem: cargo
-    directory: /
-    schedule:
-      interval: daily
-  - package-ecosystem: cargo
-    directory: /cmd/minimal
+    directories:
+      - /
+      - /cmd/minimal
     schedule:
       interval: daily
   - package-ecosystem: gomod
