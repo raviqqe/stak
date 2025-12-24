@@ -1769,54 +1769,825 @@
   - get 2
   - call 3 #f data-rib
 - set string->uninterned-symbol
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caar
+  - call 1 #f car
+- set caaar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cadr
+  - call 1 #f car
+- set caadr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdar
+  - call 1 #f car
+- set cadar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cddr
+  - call 1 #f car
+- set caddr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caar
+  - call 1 #f cdr
+- set cdaar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cadr
+  - call 1 #f cdr
+- set cdadr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdar
+  - call 1 #f cdr
+- set cddar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cddr
+  - call 1 #f cdr
+- set cdddr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caaar
+  - call 1 #f car
+- set caaaar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caadr
+  - call 1 #f car
+- set caaadr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cadar
+  - call 1 #f car
+- set caadar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caddr
+  - call 1 #f car
+- set caaddr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdaar
+  - call 1 #f car
+- set cadaar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdadr
+  - call 1 #f car
+- set cadadr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cddar
+  - call 1 #f car
+- set caddar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdddr
+  - call 1 #f car
+- set cadddr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caaar
+  - call 1 #f cdr
+- set cdaaar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caadr
+  - call 1 #f cdr
+- set cdaadr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cadar
+  - call 1 #f cdr
+- set cdadar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f caddr
+  - call 1 #f cdr
+- set cdaddr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdaar
+  - call 1 #f cdr
+- set cddaar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdadr
+  - call 1 #f cdr
+- set cddadr
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cddar
+  - call 1 #f cdr
+- set cdddar
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdddr
+  - call 1 #f cdr
+- set cddddr
+- constant procedure 1 #t
+  - constant #f
+  - constant #f
+  - get 2
+  - call 1 #f null?
+  - if
+    - constant 0
+    - continue
+  - get 2
+  - call 1 #f car
+  - set 2
+  - get 2
+  - call 1 #f null?
+  - get 0
+  - if
+    - get 0
+    - continue
+  - get 3
+  - call 1 #f cdr
+  - call 1 #f null?
+  - call 2 #f $$unbind
+  - if
+    - constant 1
+    - continue
+  - get 2
+  - call 1 #f cadr
+  - set 1
+  - constant #f
+  - constant procedure 2 #f
+    - constant 0
+    - get 2
+    - call 2 #f ||
+    - if
+      - get 0
+      - get 2
+      - constant 1
+      - call 2 #f ||
+      - get 2
+      - get 7
+      - call 2 #f ||
+      - call 2 #f 6
+      - call 2 #f cons
+    - constant ()
+  - call 1 #f $$close
+  - set 1
+  - get 4
+  - get 3
+  - call 2 #f 2
+- set iota
+- get car
+- set first
+- get cadr
+- set second
+- get caddr
+- set third
+- get cadddr
+- set fourth
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f cdr
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f cdr
+    - call 1 #f last-pair
+  - get 0
+- set last-pair
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f last-pair
+  - call 1 #f car
+- set last
+- constant procedure 2 #f
+  - get append
+  - get 2
+  - get 2
+  - call 2 #f map
+  - call 2 #f apply
+- set append-map
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f null?
+  - if
+    - constant ()
+  - get 0
+  - call 1 #f cdr
+  - call 1 #f delete-duplicates
+  - get 1
+  - call 1 #f car
+  - get 1
+  - call 2 #f memq
+  - if
+    - get 0
+  - get 1
+  - call 1 #f car
+  - get 1
+  - call 2 #f cons
+- set delete-duplicates
+- constant procedure 2 #f
+  - get 0
+  - call 1 #f null?
+  - if
+    - constant ()
+  - get 0
+  - call 1 #f car
+  - get 2
+  - get 2
+  - call 1 #f cdr
+  - call 2 #f filter
+  - get 1
+  - call 1 #f 4
+  - if
+    - get 1
+    - get 1
+    - call 2 #f cons
+  - get 0
+- set filter
+- constant procedure 3 #f
+  - get 0
+  - call 1 #f null?
+  - if
+    - get 1
+  - get 2
+  - get 2
+  - get 2
+  - call 1 #f cdr
+  - call 3 #f fold-right
+  - get 1
+  - call 1 #f car
+  - call 2 #f 4
+- set fold-right
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f find-tail
+  - get 0
+  - if
+    - get 0
+    - call 1 #f car
+  - constant #f
+- set find
+- constant procedure 2 #f
+  - constant #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f null?
+    - if
+      - constant #f
+    - get 0
+    - call 1 #f car
+    - call 1 #f 5
+    - if
+      - get 0
+    - get 0
+    - call 1 #f cdr
+    - call 1 #f 3
+  - call 1 #f $$close
+  - set 1
+  - get 1
+  - call 1 #f 1
+- set find-tail
+- constant procedure 2 #t
+  - constant #f
+  - constant procedure 2 #f
+    - get null?
+    - get 2
+    - call 2 #f find-tail
+    - if
+      - constant #f
+    - get 6
+    - get car
+    - get 3
+    - call 2 #f map
+    - call 2 #f apply
+    - if
+      - get 0
+    - get cdr
+    - get 2
+    - call 2 #f map
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get 2
+  - get 2
+  - call 2 #f cons
+  - constant 0
+  - call 2 #f 2
+- set list-index
+- constant procedure 2 #t
+  - get list-index
+  - get 3
+  - get 3
+  - get 3
+  - call 4 #f apply
+  - if
+    - constant #t
+  - constant #f
+- set any
+- constant procedure 2 #t
+  - get any
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f 6
+    - constant #f
+    - call 2 #f eq?
+  - call 1 #f $$close
+  - get 3
+  - get 3
+  - call 4 #f apply
+  - constant #f
+  - call 2 #f eq?
+- set every
+- constant procedure 3 #f
+  - get 0
+  - call 1 #f null?
+  - if
+    - get 1
+  - get 2
+  - get 1
+  - call 1 #f car
+  - get 2
+  - call 1 #f cdr
+  - call 3 #f fold
+- set reduce
 - constant 7
 - set ||
 - constant 8
 - set ||
+- constant 16
+- set ||
 - get ||
 - call 1 #f instance?
 - set vector?
+- get car
+- set vector-length
+- get cdr
+- set ||
+- constant procedure 2 #f
+  - get ||
+  - get 2
+  - get 2
+  - call 3 #f data-rib
+- set ||
+- constant 0
+- constant ()
+- call 2 #f ||
+- set ||
+- constant procedure 1 #t
+  - constant #f
+  - get 1
+  - call 1 #f pair?
+  - if
+    - get 1
+    - call 1 #f car
+    - continue
+  - constant #f
+  - set 1
+  - constant #f
+  - constant procedure 2 #f
+    - get 0
+    - constant 1
+    - call 2 #f ||
+    - if
+      - get 1
+    - get 1
+    - get 5
+    - call 2 #f ||
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get ||
+  - get 4
+  - call 2 #f 2
+- set make-vector
 - constant procedure 0 #t
   - get 0
   - call 1 #f list->vector
 - set vector
-- get sequence-length
-- set vector-length
-- get sequence->list
-- set vector->list
-- get ||
-- call 1 #f list->sequence
-- set list->vector
-- get sequence-ref
+- constant procedure 1 #f
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - get ||
+    - call 2 #f <=
+    - if
+      - get 0
+    - constant 1
+    - get 2
+    - constant 1
+    - call 2 #f ||
+    - get ||
+    - call 2 #f quotient
+    - call 2 #f ||
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get 1
+  - call 1 #f vector-length
+  - constant 0
+  - call 2 #f 2
+- set ||
+- constant procedure 2 #f
+  - constant #f
+  - constant procedure 3 #f
+    - get 2
+    - call 1 #f negative?
+    - if
+      - get 0
+    - get ||
+    - get 3
+    - call 2 #f expt
+    - get 3
+    - constant 1
+    - call 2 #f ||
+    - get 3
+    - get 2
+    - call 2 #f remainder
+    - get 3
+    - call 1 #f car
+    - get 5
+    - get 4
+    - call 2 #f quotient
+    - call 2 #f list-tail
+    - call 3 #f 8
+  - call 1 #f $$close
+  - set 1
+  - get 2
+  - call 1 #f ||
+  - get 2
+  - get 4
+  - call 1 #f ||
+  - constant #f
+  - call 2 #f cons
+  - call 3 #f 3
+- set ||
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f ||
+  - call 1 #f car
 - set vector-ref
-- get sequence-set!
+- constant procedure 3 #f
+  - get 2
+  - get 2
+  - call 2 #f ||
+  - get 1
+  - call 2 #f set-car!
 - set vector-set!
-- get sequence-fill!
-- set vector-fill!
-- get list->vector
-- call 1 #f make-sequence
-- set make-vector
-- get list->vector
-- call 1 #f sequence-append
+- constant procedure 0 #t
+  - constant procedure 2 #f
+    - constant #f
+    - constant procedure 2 #f
+      - get 0
+      - get 5
+      - call 1 #f vector-length
+      - call 2 #f eq?
+      - if
+        - get 1
+      - get 1
+      - get 5
+      - get 2
+      - call 2 #f vector-ref
+      - call 2 #f ||
+      - get 1
+      - constant 1
+      - call 2 #f ||
+      - call 2 #f 5
+    - call 1 #f $$close
+    - set 1
+    - get 2
+    - constant 0
+    - call 2 #f 2
+  - get ||
+  - get 2
+  - call 3 #f fold
 - set vector-append
-- get list->vector
-- call 1 #f sequence-copy
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f vector-length
+  - constant 1
+  - call 2 #f ||
+  - constant #f
+  - constant procedure 2 #f
+    - get 0
+    - constant 0
+    - call 2 #f eq?
+    - if
+      - get 1
+      - get 6
+      - call 2 #f ||
+    - get 1
+    - call 1 #f last
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - call 2 #f 5
+    - get 0
+    - call 1 #f car
+    - get 3
+    - call 1 #f list-copy
+    - get 0
+    - get 1
+    - call 1 #f length
+    - constant 1
+    - call 2 #f ||
+    - get 3
+    - call 3 #f list-set!
+    - set 0
+    - get 2
+    - call 1 #f cdr
+    - call 1 #f pair?
+    - if
+      - get 0
+      - get 3
+      - call 1 #f cadr
+      - call 1 #f list
+      - call 2 #f ||
+    - get 0
+    - call 1 #f list
+  - call 1 #f $$close
+  - set 1
+  - get 3
+  - call 1 #f ||
+  - get 4
+  - call 1 #f ||
+  - call 2 #f 2
+  - call 2 #f $$unbind
+  - get 0
+  - call 1 #f cdr
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f car
+    - get 1
+    - call 1 #f cadr
+    - call 1 #f list
+    - call 2 #f list
+    - continue
+  - get 0
+  - call 1 #f car
+  - call 2 #f $$unbind
+  - call 2 #f ||
+- set ||
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f length
+  - get ||
+  - call 2 #f ||
+  - if
+    - get 1
+    - get 1
+    - call 1 #f list
+    - call 2 #f append
+    - call 1 #f list
+  - get 1
+  - get 1
+  - call 2 #f list
+- set ||
+- constant procedure 2 #f
+  - get 0
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f car
+    - continue
+  - constant #f
+  - get 0
+  - if
+    - get 0
+    - continue
+  - constant 0
+  - call 2 #f $$unbind
+  - get 1
+  - call 1 #f pair?
+  - if
+    - get 1
+    - call 1 #f cdr
+    - call 1 #f pair?
+    - if
+      - get 1
+      - call 1 #f cadr
+      - continue
+    - constant #f
+    - continue
+  - constant #f
+  - get 0
+  - if
+    - get 0
+    - continue
+  - get 3
+  - call 1 #f vector-length
+  - call 2 #f $$unbind
+  - call 2 #f cons
+- set ||
+- constant procedure 1 #t
+  - constant #f
+  - get 2
+  - get 2
+  - call 2 #f ||
+  - set 1
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - get 5
+    - call 1 #f cdr
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
+    - if
+      - get 0
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - get 1
+    - get 8
+    - get 4
+    - call 2 #f vector-ref
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get 1
+  - call 1 #f car
+  - constant 0
+  - call 1 #f make-vector
+  - call 2 #f 2
 - set vector-copy
-- get sequence-copy!
+- constant procedure 3 #t
+  - constant #f
+  - get 2
+  - get 2
+  - call 2 #f ||
+  - set 1
+  - constant #f
+  - constant procedure 1 #f
+    - get 0
+    - get 4
+    - call 1 #f cdr
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
+    - if
+      - constant #f
+    - get 7
+    - get 7
+    - get 2
+    - get 6
+    - call 1 #f car
+    - call 2 #f ||
+    - call 2 #f ||
+    - get 7
+    - get 3
+    - call 2 #f vector-ref
+    - call 3 #f vector-set!
+    - set 0
+    - get 0
+    - constant 1
+    - call 2 #f ||
+    - call 1 #f 3
+  - call 1 #f $$close
+  - set 1
+  - get 1
+  - call 1 #f car
+  - call 1 #f 1
 - set vector-copy!
+- constant procedure 2 #t
+  - constant #f
+  - get 3
+  - get 2
+  - call 2 #f ||
+  - set 1
+  - constant #f
+  - constant procedure 1 #f
+    - get 0
+    - get 4
+    - call 1 #f cdr
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
+    - if
+      - constant #f
+    - get 6
+    - get 1
+    - get 7
+    - call 3 #f vector-set!
+    - set 0
+    - get 0
+    - constant 1
+    - call 2 #f ||
+    - call 1 #f 3
+  - call 1 #f $$close
+  - set 1
+  - get 1
+  - call 1 #f car
+  - call 1 #f 1
+- set vector-fill!
+- constant procedure 1 #f
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f pair?
+    - constant #f
+    - call 2 #f eq?
+    - if
+      - get 0
+    - get 1
+    - call 1 #f cdr
+    - get 1
+    - get 3
+    - call 1 #f car
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get 1
+  - get ||
+  - call 2 #f 2
+- set list->vector
+- constant procedure 1 #f
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - constant 0
+    - call 2 #f eq?
+    - if
+      - get 0
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - get append
+    - get 2
+    - call 2 #f apply
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get 1
+  - call 1 #f ||
+  - get 2
+  - call 1 #f ||
+  - call 2 #f 2
+- set vector->list
 - constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 1 #f vector->list
-  - call 2 #f for-each
-- set vector-for-each
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 1 #f vector->list
-  - call 2 #f map
-  - call 1 #f list->vector
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - get 5
+    - call 1 #f vector-length
+    - call 2 #f eq?
+    - if
+      - get 0
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - get 1
+    - get 6
+    - get 4
+    - call 2 #f vector-ref
+    - call 1 #f 8
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - constant 0
+  - constant 0
+  - call 1 #f make-vector
+  - call 2 #f 2
 - set vector-map
+- constant procedure 2 #f
+  - constant #f
+  - constant procedure 1 #f
+    - get 0
+    - get 4
+    - call 1 #f vector-length
+    - call 2 #f eq?
+    - if
+      - constant #f
+    - get 3
+    - get 1
+    - call 2 #f vector-ref
+    - call 1 #f 5
+    - set 0
+    - get 0
+    - constant 1
+    - call 2 #f ||
+    - call 1 #f 3
+  - call 1 #f $$close
+  - set 1
+  - constant 0
+  - call 1 #f 1
+- set vector-for-each
 - constant procedure 1 #t
   - get vector-copy
   - get 2
@@ -3256,20 +4027,6 @@
   - mapping-insert!
   - mapping->list
   - list->mapping
-  - list->radix-vector
-  - make-radix-vector
-  - radix-vector
-  - radix-vector->list
-  - radix-vector-append
-  - radix-vector-copy
-  - radix-vector-copy!
-  - radix-vector-fill!
-  - radix-vector-for-each
-  - radix-vector-length
-  - radix-vector-map
-  - radix-vector-ref
-  - radix-vector-set!
-  - radix-vector?
   - r5rs
   - exact->inexact
   - inexact->exact
@@ -7565,126 +8322,6 @@
     - call 1 #f acos
   - constant 0
 - set angle
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caar
-  - call 1 #f car
-- set caaar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cadr
-  - call 1 #f car
-- set caadr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdar
-  - call 1 #f car
-- set cadar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cddr
-  - call 1 #f car
-- set caddr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caar
-  - call 1 #f cdr
-- set cdaar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cadr
-  - call 1 #f cdr
-- set cdadr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdar
-  - call 1 #f cdr
-- set cddar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cddr
-  - call 1 #f cdr
-- set cdddr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caaar
-  - call 1 #f car
-- set caaaar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caadr
-  - call 1 #f car
-- set caaadr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cadar
-  - call 1 #f car
-- set caadar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caddr
-  - call 1 #f car
-- set caaddr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdaar
-  - call 1 #f car
-- set cadaar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdadr
-  - call 1 #f car
-- set cadadr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cddar
-  - call 1 #f car
-- set caddar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdddr
-  - call 1 #f car
-- set cadddr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caaar
-  - call 1 #f cdr
-- set cdaaar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caadr
-  - call 1 #f cdr
-- set cdaadr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cadar
-  - call 1 #f cdr
-- set cdadar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f caddr
-  - call 1 #f cdr
-- set cdaddr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdaar
-  - call 1 #f cdr
-- set cddaar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdadr
-  - call 1 #f cdr
-- set cddadr
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cddar
-  - call 1 #f cdr
-- set cdddar
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdddr
-  - call 1 #f cdr
-- set cddddr
 - constant 200
 - call 1 #f primitive
 - set ||
@@ -11157,24 +11794,6 @@
     - (mapping-insert! . mapping-insert!)
     - (mapping->list . mapping->list)
     - (list->mapping . list->mapping)
-  - list
-    - list
-      - stak
-      - radix-vector
-    - (list->radix-vector . list->radix-vector)
-    - (make-radix-vector . make-radix-vector)
-    - (radix-vector . radix-vector)
-    - (radix-vector->list . radix-vector->list)
-    - (radix-vector-append . radix-vector-append)
-    - (radix-vector-copy . radix-vector-copy)
-    - (radix-vector-copy! . radix-vector-copy!)
-    - (radix-vector-fill! . radix-vector-fill!)
-    - (radix-vector-for-each . radix-vector-for-each)
-    - (radix-vector-length . radix-vector-length)
-    - (radix-vector-map . radix-vector-map)
-    - (radix-vector-ref . radix-vector-ref)
-    - (radix-vector-set! . radix-vector-set!)
-    - (radix-vector? . radix-vector?)
   - list
     - list
       - scheme
@@ -15368,233 +15987,6 @@
   - call 1 #f $$close
   - call 1 #f unwind
 - set exit
-- constant procedure 1 #t
-  - constant #f
-  - constant #f
-  - get 2
-  - call 1 #f null?
-  - if
-    - constant 0
-    - continue
-  - get 2
-  - call 1 #f car
-  - set 2
-  - get 2
-  - call 1 #f null?
-  - get 0
-  - if
-    - get 0
-    - continue
-  - get 3
-  - call 1 #f cdr
-  - call 1 #f null?
-  - call 2 #f $$unbind
-  - if
-    - constant 1
-    - continue
-  - get 2
-  - call 1 #f cadr
-  - set 1
-  - constant #f
-  - constant procedure 2 #f
-    - constant 0
-    - get 2
-    - call 2 #f ||
-    - if
-      - get 0
-      - get 2
-      - constant 1
-      - call 2 #f ||
-      - get 2
-      - get 7
-      - call 2 #f ||
-      - call 2 #f 6
-      - call 2 #f cons
-    - constant ()
-  - call 1 #f $$close
-  - set 1
-  - get 4
-  - get 3
-  - call 2 #f 2
-- set iota
-- get car
-- set first
-- get cadr
-- set second
-- get caddr
-- set third
-- get cadddr
-- set fourth
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f cdr
-  - call 1 #f pair?
-  - if
-    - get 0
-    - call 1 #f cdr
-    - call 1 #f last-pair
-  - get 0
-- set last-pair
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f last-pair
-  - call 1 #f car
-- set last
-- constant procedure 2 #f
-  - get append
-  - get 2
-  - get 2
-  - call 2 #f map
-  - call 2 #f apply
-- set append-map
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f null?
-  - if
-    - constant ()
-  - get 0
-  - call 1 #f cdr
-  - call 1 #f delete-duplicates
-  - get 1
-  - call 1 #f car
-  - get 1
-  - call 2 #f memq
-  - if
-    - get 0
-  - get 1
-  - call 1 #f car
-  - get 1
-  - call 2 #f cons
-- set delete-duplicates
-- constant procedure 2 #f
-  - get 0
-  - call 1 #f null?
-  - if
-    - constant ()
-  - get 0
-  - call 1 #f car
-  - get 2
-  - get 2
-  - call 1 #f cdr
-  - call 2 #f filter
-  - get 1
-  - call 1 #f 4
-  - if
-    - get 1
-    - get 1
-    - call 2 #f cons
-  - get 0
-- set filter
-- constant procedure 3 #f
-  - get 0
-  - call 1 #f null?
-  - if
-    - get 1
-  - get 2
-  - get 2
-  - get 2
-  - call 1 #f cdr
-  - call 3 #f fold-right
-  - get 1
-  - call 1 #f car
-  - call 2 #f 4
-- set fold-right
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 2 #f find-tail
-  - get 0
-  - if
-    - get 0
-    - call 1 #f car
-  - constant #f
-- set find
-- constant procedure 2 #f
-  - constant #f
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f null?
-    - if
-      - constant #f
-    - get 0
-    - call 1 #f car
-    - call 1 #f 5
-    - if
-      - get 0
-    - get 0
-    - call 1 #f cdr
-    - call 1 #f 3
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - call 1 #f 1
-- set find-tail
-- constant procedure 2 #t
-  - constant #f
-  - constant procedure 2 #f
-    - get null?
-    - get 2
-    - call 2 #f find-tail
-    - if
-      - constant #f
-    - get 6
-    - get car
-    - get 3
-    - call 2 #f map
-    - call 2 #f apply
-    - if
-      - get 0
-    - get cdr
-    - get 2
-    - call 2 #f map
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 2
-  - get 2
-  - call 2 #f cons
-  - constant 0
-  - call 2 #f 2
-- set list-index
-- constant procedure 2 #t
-  - get list-index
-  - get 3
-  - get 3
-  - get 3
-  - call 4 #f apply
-  - if
-    - constant #t
-  - constant #f
-- set any
-- constant procedure 2 #t
-  - get any
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f 6
-    - constant #f
-    - call 2 #f eq?
-  - call 1 #f $$close
-  - get 3
-  - get 3
-  - call 4 #f apply
-  - constant #f
-  - call 2 #f eq?
-- set every
-- constant procedure 3 #f
-  - get 0
-  - call 1 #f null?
-  - if
-    - get 1
-  - get 2
-  - get 1
-  - call 1 #f car
-  - get 2
-  - call 1 #f cdr
-  - call 3 #f fold
-- set reduce
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
@@ -16447,475 +16839,6 @@
     - get 1
   - get 2
 - set ||
-- constant 16
-- set ||
-- constant 0
-- constant 0
-- call 2 #f cons
-- set radix-vector
-- get radix-vector
-- call 1 #f ||
-- set ||
-- get radix-vector
-- call 1 #f ||
-- set radix-vector?
-- constant 0
-- call 1 #f ||
-- set radix-vector-length
-- constant 0
-- constant 1
-- call 2 #f ||
-- call 1 #f ||
-- set ||
-- constant 0
-- constant ()
-- call 2 #f ||
-- set ||
-- constant procedure 1 #t
-  - constant #f
-  - get 1
-  - call 1 #f pair?
-  - if
-    - get 1
-    - call 1 #f car
-    - continue
-  - constant #f
-  - set 1
-  - constant #f
-  - constant procedure 2 #f
-    - get 0
-    - constant 1
-    - call 2 #f ||
-    - if
-      - get 1
-    - get 1
-    - get 5
-    - call 2 #f ||
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get ||
-  - get 4
-  - call 2 #f 2
-- set make-radix-vector
-- constant procedure 0 #t
-  - get 0
-  - call 1 #f list->radix-vector
-- set radix-vector
-- constant procedure 1 #f
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - get ||
-    - call 2 #f <=
-    - if
-      - get 0
-    - constant 1
-    - get 2
-    - constant 1
-    - call 2 #f ||
-    - get ||
-    - call 2 #f quotient
-    - call 2 #f ||
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - call 1 #f radix-vector-length
-  - constant 0
-  - call 2 #f 2
-- set ||
-- constant procedure 2 #f
-  - constant #f
-  - constant procedure 3 #f
-    - get 2
-    - call 1 #f negative?
-    - if
-      - get 0
-    - get ||
-    - get 3
-    - call 2 #f expt
-    - get 3
-    - constant 1
-    - call 2 #f ||
-    - get 3
-    - get 2
-    - call 2 #f remainder
-    - get 3
-    - call 1 #f car
-    - get 5
-    - get 4
-    - call 2 #f quotient
-    - call 2 #f list-tail
-    - call 3 #f 8
-  - call 1 #f $$close
-  - set 1
-  - get 2
-  - call 1 #f ||
-  - get 2
-  - get 4
-  - call 1 #f ||
-  - constant #f
-  - call 2 #f cons
-  - call 3 #f 3
-- set ||
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 2 #f ||
-  - call 1 #f car
-- set radix-vector-ref
-- constant procedure 3 #f
-  - get 2
-  - get 2
-  - call 2 #f ||
-  - get 1
-  - call 2 #f set-car!
-- set radix-vector-set!
-- constant procedure 2 #f
-  - constant #f
-  - constant procedure 2 #f
-    - get 0
-    - get 5
-    - call 1 #f radix-vector-length
-    - call 2 #f eq?
-    - if
-      - get 1
-    - get 1
-    - get 5
-    - get 2
-    - call 2 #f radix-vector-ref
-    - call 2 #f ||
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 2
-  - constant 0
-  - call 2 #f 2
-- set radix-vector-append
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f radix-vector-length
-  - constant 1
-  - call 2 #f ||
-  - constant #f
-  - constant procedure 2 #f
-    - get 0
-    - constant 0
-    - call 2 #f eq?
-    - if
-      - get 1
-      - get 6
-      - call 2 #f ||
-    - get 1
-    - call 1 #f last
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-    - get 0
-    - call 1 #f car
-    - get 3
-    - call 1 #f list-copy
-    - get 0
-    - get 1
-    - call 1 #f length
-    - constant 1
-    - call 2 #f ||
-    - get 3
-    - call 3 #f list-set!
-    - set 0
-    - get 2
-    - call 1 #f cdr
-    - call 1 #f pair?
-    - if
-      - get 0
-      - get 3
-      - call 1 #f cadr
-      - call 1 #f list
-      - call 2 #f ||
-    - get 0
-    - call 1 #f list
-  - call 1 #f $$close
-  - set 1
-  - get 3
-  - call 1 #f ||
-  - get 4
-  - call 1 #f ||
-  - call 2 #f 2
-  - call 2 #f $$unbind
-  - get 0
-  - call 1 #f cdr
-  - call 1 #f pair?
-  - if
-    - get 0
-    - call 1 #f car
-    - get 1
-    - call 1 #f cadr
-    - call 1 #f list
-    - call 2 #f list
-    - continue
-  - get 0
-  - call 1 #f car
-  - call 2 #f $$unbind
-  - call 2 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f length
-  - get ||
-  - call 2 #f ||
-  - if
-    - get 1
-    - get 1
-    - call 1 #f list
-    - call 2 #f append
-    - call 1 #f list
-  - get 1
-  - get 1
-  - call 2 #f list
-- set ||
-- constant procedure 2 #f
-  - get 0
-  - call 1 #f pair?
-  - if
-    - get 0
-    - call 1 #f car
-    - continue
-  - constant #f
-  - get 0
-  - if
-    - get 0
-    - continue
-  - constant 0
-  - call 2 #f $$unbind
-  - get 1
-  - call 1 #f pair?
-  - if
-    - get 1
-    - call 1 #f cdr
-    - call 1 #f pair?
-    - if
-      - get 1
-      - call 1 #f cadr
-      - continue
-    - constant #f
-    - continue
-  - constant #f
-  - get 0
-  - if
-    - get 0
-    - continue
-  - get 3
-  - call 1 #f radix-vector-length
-  - call 2 #f $$unbind
-  - call 2 #f cons
-- set ||
-- constant procedure 1 #t
-  - constant #f
-  - get 2
-  - get 2
-  - call 2 #f ||
-  - set 1
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - get 5
-    - call 1 #f cdr
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
-    - if
-      - get 0
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - get 1
-    - get 8
-    - get 4
-    - call 2 #f radix-vector-ref
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - call 1 #f car
-  - constant 0
-  - call 1 #f make-radix-vector
-  - call 2 #f 2
-- set radix-vector-copy
-- constant procedure 3 #t
-  - constant #f
-  - get 2
-  - get 2
-  - call 2 #f ||
-  - set 1
-  - constant #f
-  - constant procedure 1 #f
-    - get 0
-    - get 4
-    - call 1 #f cdr
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
-    - if
-      - constant #f
-    - get 7
-    - get 7
-    - get 2
-    - get 6
-    - call 1 #f car
-    - call 2 #f ||
-    - call 2 #f ||
-    - get 7
-    - get 3
-    - call 2 #f radix-vector-ref
-    - call 3 #f radix-vector-set!
-    - set 0
-    - get 0
-    - constant 1
-    - call 2 #f ||
-    - call 1 #f 3
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - call 1 #f car
-  - call 1 #f 1
-- set radix-vector-copy!
-- constant procedure 2 #t
-  - constant #f
-  - get 3
-  - get 2
-  - call 2 #f ||
-  - set 1
-  - constant #f
-  - constant procedure 1 #f
-    - get 0
-    - get 4
-    - call 1 #f cdr
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
-    - if
-      - constant #f
-    - get 6
-    - get 1
-    - get 7
-    - call 3 #f radix-vector-set!
-    - set 0
-    - get 0
-    - constant 1
-    - call 2 #f ||
-    - call 1 #f 3
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - call 1 #f car
-  - call 1 #f 1
-- set radix-vector-fill!
-- constant procedure 1 #f
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f pair?
-    - constant #f
-    - call 2 #f eq?
-    - if
-      - get 0
-    - get 1
-    - call 1 #f cdr
-    - get 1
-    - get 3
-    - call 1 #f car
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - get ||
-  - call 2 #f 2
-- set list->radix-vector
-- constant procedure 1 #f
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - constant 0
-    - call 2 #f eq?
-    - if
-      - get 0
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - get append
-    - get 2
-    - call 2 #f apply
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - call 1 #f ||
-  - get 2
-  - call 1 #f ||
-  - call 2 #f 2
-- set radix-vector->list
-- constant procedure 2 #f
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - get 5
-    - call 1 #f radix-vector-length
-    - call 2 #f eq?
-    - if
-      - get 0
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - get 1
-    - get 6
-    - get 4
-    - call 2 #f radix-vector-ref
-    - call 1 #f 8
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - constant 0
-  - constant 0
-  - call 1 #f make-radix-vector
-  - call 2 #f 2
-- set radix-vector-map
-- constant procedure 2 #f
-  - constant #f
-  - constant procedure 1 #f
-    - get 0
-    - get 4
-    - call 1 #f radix-vector-length
-    - call 2 #f eq?
-    - if
-      - constant #f
-    - get 3
-    - get 1
-    - call 2 #f radix-vector-ref
-    - call 1 #f 5
-    - set 0
-    - get 0
-    - constant 1
-    - call 2 #f ||
-    - call 1 #f 3
-  - call 1 #f $$close
-  - set 1
-  - constant 0
-  - call 1 #f 1
-- set radix-vector-for-each
 - constant procedure 2 #f
   - constant #f
   - get 1
