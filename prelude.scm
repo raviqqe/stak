@@ -6934,17 +6934,20 @@
         ((<= length factor)
           height)))
 
-    (define (radix-vector-ref xs index)
+    (define (radix-vector-cell xs index)
       (let loop ((height (radix-vector-height xs))
                  (index index)
-                 (x (radix-vector-root xs)))
+                 (x (cons (radix-vector-root xs) #f)))
         (if (negative? height)
           x
           (let ((q (expt factor height)))
             (loop
               (- height 1)
               (remainder index q)
-              (list-ref x (quotient index q)))))))
+              (list-tail (car x) (quotient index q)))))))
+
+    (define (radix-vector-ref xs index)
+      (car (radix-vector-cell xs index)))
 
     (define (radix-vector-append xs ys)
       (do ((xs xs (radix-vector-push xs (radix-vector-ref ys index)))
