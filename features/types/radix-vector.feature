@@ -180,3 +180,73 @@ Feature: Radix vector
       | 65 66 67 | 0     | XBC    |
       | 65 66 67 | 1     | AXC    |
       | 65 66 67 | 2     | ABX    |
+
+  Scenario Outline: Copy a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak radix-vector))
+
+      (radix-vector-for-each write-u8 (radix-vector-copy (radix-vector <values>)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values   | output |
+      |          |        |
+      | 65       | A      |
+      | 65 66    | AB     |
+      | 65 66 67 | ABC    |
+
+  Scenario Outline: Copy a vector in place
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak radix-vector))
+
+      (define xs (radix-vector <values>))
+
+      (radix-vector-copy! xs <arguments>)
+
+      (for-each
+        (lambda (x) (write-u8 (+ x 65)))
+        (radix-vector->list xs))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    # spell-checker: disable
+    Examples:
+      | values    | arguments        | output |
+      | 0         | 0 #()            | A      |
+      | 0 1 2     | 0 #(3 4 5)       | DEF    |
+      | 0 1 2     | 1 #(3 4)         | ADE    |
+      | 0 1 2     | 2 #(3)           | ABD    |
+      | 0 1 2 3 4 | 1 #(5 6 7)       | AFGHE  |
+      | 0 1 2 3   | 1 #(4 5 6 7) 1   | AFGH   |
+      | 0 1 2 3   | 1 #(4 5 6 7) 1 3 | AFGD   |
+
+  # spell-checker: enable
+  Scenario Outline: Fill a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak radix-vector))
+
+      (define xs (vector <values>))
+
+      (radix-vector-fill! xs <arguments>)
+
+      (for-each
+        (lambda (x) (write-u8 (+ x 65)))
+        (radix-vector->list xs))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    # spell-checker: disable
+    Examples:
+      | values  | arguments | output |
+      | 0       | 1         | B      |
+      | 0 1     | 2 0       | CC     |
+      | 0 1     | 2 1       | AC     |
+      | 0 1 2   | 3         | DDD    |
+      | 0 1 2 3 | 4 1 3     | AEED   |

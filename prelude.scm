@@ -6886,13 +6886,13 @@
 
 (define-library (stak radix-vector)
   (export
-    ; vector-fill!
-
     list->radix-vector
     make-radix-vector
     radix-vector
     radix-vector->list
     radix-vector-append
+    radix-vector-copy
+    radix-vector-copy!
     radix-vector-for-each
     radix-vector-length
     radix-vector-map
@@ -6982,15 +6982,15 @@
         (list (append xs (list x)))
         (list xs x)))
 
-    (define (parse-range xs)
-      (ons
-        (or (and (pair? xs) (car xs)) 0)
+    (define (parse-range xs rest)
+      (cons
+        (or (and (pair? rest) (car rest)) 0)
         (or
-          (and (pair? xs) (pair? (cdr xs)) (cadr xs))
+          (and (pair? rest) (pair? (cdr rest)) (cadr rest))
           (radix-vector-length xs))))
 
     (define (radix-vector-copy xs . rest)
-      (define range (parse-range rest))
+      (define range (parse-range xs rest))
 
       (do ((index (car range) (+ index 1))
            (ys
@@ -7000,7 +7000,7 @@
           ys)))
 
     (define (radix-vector-copy! from at to . rest)
-      (define range (parse-range rest))
+      (define range (parse-range to rest))
 
       (do ((index (car range) (+ index 1)))
         ((not (< index (cdr range))))
