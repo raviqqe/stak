@@ -3,9 +3,7 @@ updates:
   - package-ecosystem: github-actions
     directories:
       - /
-      - /.github/actions/setup
-      - /.github/actions/setup-node
-      - /.github/actions/setup-scheme
+      - /.github/actions/*
     schedule:
       interval: daily
   - package-ecosystem: gitsubmodule
