@@ -268,20 +268,23 @@ Feature: Vector
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme write))
+
+        (define xs (include "./vector.scm"))
+
+        (write (vector-ref xs <index>))
         """
       And I run the following script:
         """sh
         {
-          echo '(define xs #('
+          echo '#('
 
           for index in $(seq <length>); do
             echo $index
             echo ' '
           done
 
-          echo '))'
-          echo '(write (vector-ref xs <index>))'
-        } >> main.scm
+          echo ')'
+        } >> vector.scm
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "<output>"
