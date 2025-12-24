@@ -1843,11 +1843,14 @@
     (define (vector-set! xs index x)
       (set-car! (vector-cell xs index) x))
 
-    (define (vector-append xs ys)
-      (do ((xs xs (vector-push xs (vector-ref ys index)))
-           (index 0 (+ index 1)))
-        ((= index (vector-length ys))
-          xs)))
+    (define (vector-append xs . rest)
+      (for-each
+        (lambda (ys)
+          (do ((xs xs (vector-push xs (vector-ref ys index)))
+               (index 0 (+ index 1)))
+            ((= index (vector-length ys))
+              xs)))
+        rest))
 
     (define (vector-push xs x)
       (make-vector*
