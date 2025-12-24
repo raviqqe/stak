@@ -10,6 +10,9 @@ ARG DIRECTORY=.
 
 ADD . /src
 WORKDIR /src/$DIRECTORY
+# TODO Enable the `--lock` option always.
+# The current implementation of Dependabot cannot update internal dependencies
+# in different workspaces automatically.
 RUN cargo build $([ $DIRECTORY = . ] && echo --locked) --release --bin $BINARY --target $(uname -m)-unknown-linux-musl
 RUN cp target/*-unknown-linux-musl/release/$BINARY /app
 RUN strip /app
