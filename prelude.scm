@@ -6893,6 +6893,7 @@
     radix-vector-append
     radix-vector-copy
     radix-vector-copy!
+    radix-vector-fill!
     radix-vector-for-each
     radix-vector-length
     radix-vector-map
@@ -7008,6 +7009,13 @@
           to
           (+ at (- index (car range)))
           (radix-vector-ref from index))))
+
+    (define (radix-vector-fill! xs fill . rest)
+      (define range (parse-range xs rest))
+
+      (do ((index (car range) (+ index 1)))
+        ((not (< index (cdr range))))
+        (radix-vector-set! xs index fill)))
 
     (define (list->radix-vector xs)
       (do ((xs xs (cdr xs))

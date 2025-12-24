@@ -231,7 +231,7 @@ Feature: Radix vector
       """scheme
       (import (scheme base) (stak radix-vector))
 
-      (define xs (vector <values>))
+      (define xs (radix-vector <values>))
 
       (radix-vector-fill! xs <arguments>)
 
