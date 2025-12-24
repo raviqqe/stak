@@ -6999,14 +6999,14 @@
         ((not (< index (cdr range)))
           ys)))
 
-    (define (radix-vector-copy! from at to . rest)
-      (define range (parse-range to rest))
+    (define (radix-vector-copy! to at from . rest)
+      (define range (parse-range from rest))
 
       (do ((index (car range) (+ index 1)))
         ((not (< index (cdr range))))
         (radix-vector-set!
           to
-          (+ at index)
+          (+ at (- index (car range)))
           (radix-vector-ref from index))))
 
     (define (list->radix-vector xs)

@@ -216,14 +216,14 @@ Feature: Radix vector
 
     # spell-checker: disable
     Examples:
-      | values    | arguments        | output |
-      | 0         | 0 #()            | A      |
-      | 0 1 2     | 0 #(3 4 5)       | DEF    |
-      | 0 1 2     | 1 #(3 4)         | ADE    |
-      | 0 1 2     | 2 #(3)           | ABD    |
-      | 0 1 2 3 4 | 1 #(5 6 7)       | AFGHE  |
-      | 0 1 2 3   | 1 #(4 5 6 7) 1   | AFGH   |
-      | 0 1 2 3   | 1 #(4 5 6 7) 1 3 | AFGD   |
+      | values    | arguments                    | output |
+      | 0         | 0 (radix-vector)             | A      |
+      | 0 1 2     | 0 (radix-vector 3 4 5)       | DEF    |
+      | 0 1 2     | 1 (radix-vector 3 4)         | ADE    |
+      | 0 1 2     | 2 (radix-vector 3)           | ABD    |
+      | 0 1 2 3 4 | 1 (radix-vector 5 6 7)       | AFGHE  |
+      | 0 1 2 3   | 1 (radix-vector 4 5 6 7) 1   | AFGH   |
+      | 0 1 2 3   | 1 (radix-vector 4 5 6 7) 1 3 | AFGD   |
 
   # spell-checker: enable
   Scenario Outline: Fill a vector
