@@ -20,5 +20,5 @@ for file in $(list_scheme_files); do
   stak-decode <$base.bc >$base.md
 done
 
-pnpx oxfmt --write snapshots
+pnpx oxfmt snapshots
 git diff --exit-code
