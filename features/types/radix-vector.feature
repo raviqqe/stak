@@ -157,3 +157,26 @@ Feature: Radix vector
       | 1      |
       | 2      |
       | 1 2 3  |
+
+  Scenario Outline: Set an element in a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak radix-vector))
+
+      (define xs (radix-vector <values>))
+
+      (radix-vector-set! xs <index> 88)
+
+      (radix-vector-for-each write-u8 xs)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values   | index | output |
+      | 65       | 0     | X      |
+      | 65 66    | 0     | XB     |
+      | 65 66    | 1     | AX     |
+      | 65 66 67 | 0     | XBC    |
+      | 65 66 67 | 1     | AXC    |
+      | 65 66 67 | 2     | ABX    |

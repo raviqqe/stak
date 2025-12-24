@@ -6900,6 +6900,7 @@
     radix-vector-length
     radix-vector-map
     radix-vector-ref
+    radix-vector-set!
     radix-vector?)
 
   (import (stak base) (srfi 1))
@@ -6948,6 +6949,9 @@
 
     (define (radix-vector-ref xs index)
       (car (radix-vector-cell xs index)))
+
+    (define (radix-vector-set! xs index x)
+      (set-car! (radix-vector-cell xs index) x))
 
     (define (radix-vector-append xs ys)
       (do ((xs xs (radix-vector-push xs (radix-vector-ref ys index)))
