@@ -264,6 +264,7 @@ Feature: Vector
         | 4096  |
         | 4097  |
 
+    @gauche @guile @stak
     Scenario Outline: Use a large vector literal
       Given a file named "main.scm" with:
         """scheme
