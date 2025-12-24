@@ -23,6 +23,7 @@ Feature: Radix vector
       | 10     | 42   | (42 42 42 42 42 42 42 42 42 42)                      |
       | 17     | 42   | (42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42) |
 
+  @long
   Scenario Outline: Reference an element
     Given a file named "main.scm" with:
       """scheme
@@ -56,6 +57,7 @@ Feature: Radix vector
       | 4096   | 4095  |
       | 4097   | 4096  |
 
+  @long
   Scenario Outline: Convert values between a list and a vector
     Given a file named "main.scm" with:
       """scheme
