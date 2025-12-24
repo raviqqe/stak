@@ -1539,7 +1539,7 @@
       (let ((x (/ 1000000000)))
         (if (zero? x) 1 x)))
 
-    ;; String
+    ; String
 
     (define string? (instance? string-type))
 
