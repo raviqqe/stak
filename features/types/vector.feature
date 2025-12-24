@@ -263,3 +263,35 @@ Feature: Vector
         | 513   |
         | 4096  |
         | 4097  |
+
+    Scenario Outline: Use a large vector literal
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme write))
+        """
+      And I run the following script:
+        """sh
+        {
+          echo '(define xs #('
+
+          for index in $(seq <length>); do
+            echo $index
+            echo ' '
+          done
+
+          echo '))'
+          echo '(write (vector-ref xs <index>))'
+        } >> main.scm
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "<output>"
+
+      Examples:
+        | length | index | output |
+        | 1      | 0     | 1      |
+        | 2      | 0     | 1      |
+        | 2      | 1     | 2      |
+        | 4096   | 0     | 1      |
+        | 4096   | 1     | 2      |
+        | 4096   | 4094  | 4095   |
+        | 4096   | 4095  | 4096   |
