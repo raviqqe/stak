@@ -6982,7 +6982,7 @@
         (list (append xs (list x)))
         (list xs x)))
 
-    (define (parse-copy-arguments xs)
+    (define (parse-range xs)
       (ons
         (or (and (pair? xs) (car xs)) 0)
         (or
@@ -6990,7 +6990,7 @@
           (radix-vector-length xs))))
 
     (define (radix-vector-copy xs . rest)
-      (define range (parse-copy-arguments rest))
+      (define range (parse-range rest))
 
       (do ((index (car range) (+ index 1))
            (ys
@@ -6998,6 +6998,16 @@
              (radix-vector-push ys (radix-vector-ref xs index))))
         ((not (< index (cdr range)))
           ys)))
+
+    (define (radix-vector-copy! from at to . rest)
+      (define range (parse-range rest))
+
+      (do ((index (car range) (+ index 1)))
+        ((not (< index (cdr range))))
+        (radix-vector-set!
+          to
+          (+ at index)
+          (radix-vector-ref from index))))
 
     (define (list->radix-vector xs)
       (do ((xs xs (cdr xs))
