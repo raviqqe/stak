@@ -1843,14 +1843,14 @@
     (define (vector-set! xs index x)
       (set-car! (vector-cell xs index) x))
 
-    (define (vector-append xs . rest)
+    (define (vector-append . rest)
       (fold
         (lambda (xs ys)
           (do ((xs xs (vector-push xs (vector-ref ys index)))
                (index 0 (+ index 1)))
             ((= index (vector-length ys))
               xs)))
-        xs
+        empty-vector
         rest))
 
     (define (vector-push xs x)
@@ -1925,6 +1925,7 @@
         ((zero? height)
           xs)))
 
+    ; TODO Support multiple vectors.
     (define (vector-map f xs)
       (do ((index 0 (+ index 1))
            (ys
@@ -1933,6 +1934,7 @@
         ((= index (vector-length xs))
           ys)))
 
+    ; TODO Support multiple vectors.
     (define (vector-for-each f xs)
       (do ((index 0 (+ index 1)))
         ((= index (vector-length xs)))

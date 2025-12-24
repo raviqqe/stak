@@ -104,6 +104,7 @@ Feature: Vector
 
     Examples:
       | values                     | output |
+      |                            |        |
       | #()                        |        |
       | #() #()                    |        |
       | #(65)                      | A      |
