@@ -1799,35 +1799,36 @@
 
     (define vector? (instance? vector-type))
     (define vector-length car)
+    (define vector-root cdr)
 
-    (define (make-radix-vector* length root)
+    (define (make-vector* length root)
       (data-rib vector-type length root))
 
-    (define empty-vector (make-radix-vector* 0 '()))
+    (define empty-vector (make-vector* 0 '()))
 
-    (define (make-radix-vector length . rest)
+    (define (make-vector length . rest)
       (define fill (and (pair? rest) (car rest)))
 
-      (do ((xs empty-vector (radix-vector-push xs fill))
+      (do ((xs empty-vector (vector-push xs fill))
            (length length (- length 1)))
         ((< length 1)
           xs)))
 
-    (define (radix-vector . xs)
-      (list->radix-vector xs))
+    (define (vector . xs)
+      (list->vector xs))
 
-    (define (radix-vector-height xs)
+    (define (vector-height xs)
       (do ((length
-             (radix-vector-length xs)
+             (vector-length xs)
              (+ 1 (quotient (- length 1) factor)))
            (height 0 (+ height 1)))
         ((<= length factor)
           height)))
 
-    (define (radix-vector-cell xs index)
-      (let loop ((height (radix-vector-height xs))
+    (define (vector-cell xs index)
+      (let loop ((height (vector-height xs))
                  (index index)
-                 (x (cons (radix-vector-root xs) #f)))
+                 (x (cons (vector-root xs) #f)))
         (if (negative? height)
           x
           (let ((q (expt factor height)))
@@ -1836,24 +1837,24 @@
               (remainder index q)
               (list-tail (car x) (quotient index q)))))))
 
-    (define (radix-vector-ref xs index)
-      (car (radix-vector-cell xs index)))
+    (define (vector-ref xs index)
+      (car (vector-cell xs index)))
 
-    (define (radix-vector-set! xs index x)
-      (set-car! (radix-vector-cell xs index) x))
+    (define (vector-set! xs index x)
+      (set-car! (vector-cell xs index) x))
 
-    (define (radix-vector-append xs ys)
-      (do ((xs xs (radix-vector-push xs (radix-vector-ref ys index)))
+    (define (vector-append xs ys)
+      (do ((xs xs (vector-push xs (vector-ref ys index)))
            (index 0 (+ index 1)))
-        ((= index (radix-vector-length ys))
+        ((= index (vector-length ys))
           xs)))
 
-    (define (radix-vector-push xs x)
-      (make-radix-vector*
-        (+ (radix-vector-length xs) 1)
+    (define (vector-push xs x)
+      (make-vector*
+        (+ (vector-length xs) 1)
         (let ((result
-                (let loop ((xs (radix-vector-root xs))
-                           (h (radix-vector-height xs)))
+                (let loop ((xs (vector-root xs))
+                           (h (vector-height xs)))
                   (if (zero? h)
                     (node-push xs x)
                     (let* ((result (loop (last xs) (- h 1)))
@@ -1879,59 +1880,59 @@
         (or (and (pair? rest) (car rest)) 0)
         (or
           (and (pair? rest) (pair? (cdr rest)) (cadr rest))
-          (radix-vector-length xs))))
+          (vector-length xs))))
 
-    (define (radix-vector-copy xs . rest)
+    (define (vector-copy xs . rest)
       (define range (parse-range xs rest))
 
       (do ((index (car range) (+ index 1))
            (ys
-             (make-radix-vector 0)
-             (radix-vector-push ys (radix-vector-ref xs index))))
+             (make-vector 0)
+             (vector-push ys (vector-ref xs index))))
         ((not (< index (cdr range)))
           ys)))
 
-    (define (radix-vector-copy! to at from . rest)
+    (define (vector-copy! to at from . rest)
       (define range (parse-range from rest))
 
       (do ((index (car range) (+ index 1)))
         ((not (< index (cdr range))))
-        (radix-vector-set!
+        (vector-set!
           to
           (+ at (- index (car range)))
-          (radix-vector-ref from index))))
+          (vector-ref from index))))
 
-    (define (radix-vector-fill! xs fill . rest)
+    (define (vector-fill! xs fill . rest)
       (define range (parse-range xs rest))
 
       (do ((index (car range) (+ index 1)))
         ((not (< index (cdr range))))
-        (radix-vector-set! xs index fill)))
+        (vector-set! xs index fill)))
 
-    (define (list->radix-vector xs)
+    (define (list->vector xs)
       (do ((xs xs (cdr xs))
-           (ys empty-vector (radix-vector-push ys (car xs))))
+           (ys empty-vector (vector-push ys (car xs))))
         ((not (pair? xs))
           ys)))
 
-    (define (radix-vector->list xs)
-      (do ((height (radix-vector-height xs) (- height 1))
-           (xs (radix-vector-root xs) (apply append xs)))
+    (define (vector->list xs)
+      (do ((height (vector-height xs) (- height 1))
+           (xs (vector-root xs) (apply append xs)))
         ((zero? height)
           xs)))
 
-    (define (radix-vector-map f xs)
+    (define (vector-map f xs)
       (do ((index 0 (+ index 1))
            (ys
-             (make-radix-vector 0)
-             (radix-vector-push ys (f (radix-vector-ref xs index)))))
-        ((= index (radix-vector-length xs))
+             (make-vector 0)
+             (vector-push ys (f (vector-ref xs index)))))
+        ((= index (vector-length xs))
           ys)))
 
-    (define (radix-vector-for-each f xs)
+    (define (vector-for-each f xs)
       (do ((index 0 (+ index 1)))
-        ((= index (radix-vector-length xs)))
-        (f (radix-vector-ref xs index))))
+        ((= index (vector-length xs)))
+        (f (vector-ref xs index))))
 
     ; TODO Move to the `(stak string)` library.
     (define (string->vector xs . rest)
