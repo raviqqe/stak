@@ -98,6 +98,10 @@ jobs:
             echo repository=${{ vars.DOCKER_USER || 'test' }}/${{ matrix.image.binary }}
             echo version=$(git tag --points-at | sed s/^v//)
           ) >> ${{ github.output }}
+      - name: Update a lock file
+        run: |
+          cd ${{ matrix.image.directory || '.' }}
+          cargo build ${{ matrix.image.binary }}
       - uses: docker/build-push-action@v6
         with:
           build-args: |
