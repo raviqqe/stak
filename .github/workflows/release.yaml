@@ -85,6 +85,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - name: Update a lock file
         run: |
