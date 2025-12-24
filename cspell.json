@@ -96,6 +96,7 @@
     "optarg",
     "optind",
     "otool",
+    "oxfmt",
     "picolight",
     "preact",
     "println",
