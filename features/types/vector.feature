@@ -199,7 +199,7 @@ Feature: Vector
         """scheme
         (import (scheme base) (scheme write))
 
-        (write (radix-vector-ref (make-radix-vector <length> 42) <index>))
+        (write (vector-ref (make-vector <length> 42) <index>))
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "42"
@@ -234,7 +234,7 @@ Feature: Vector
 
         (define xs (iota <count>))
 
-        (write (equal? (radix-vector->list (list->radix-vector xs)) xs))
+        (write (equal? (vector->list (list->vector xs)) xs))
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "#t"
