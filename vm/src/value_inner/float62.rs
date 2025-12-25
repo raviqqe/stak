@@ -60,3 +60,15 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
     Float62::from_float(pow(x.to_float_unchecked(), y.to_float_unchecked()))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn calculate_power() {
+        assert_eq!(to_f64(power(from_f64(2.0), from_f64(0.0))), 1.0);
+        assert_eq!(to_f64(power(from_f64(2.0), from_f64(3.0))), 8.0);
+        assert_eq!(to_f64(power(from_f64(3.0), from_f64(5.0))), 243.0);
+    }
+}
