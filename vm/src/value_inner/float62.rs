@@ -58,7 +58,16 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 }
 
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
-    Float62::from_float(pow(x.to_float_unchecked(), y.to_float_unchecked()))
+    let (Some(x), Some(y)) = (x.to_integer(), y.to_integer()) else {
+        // Unlikely
+        return Float62::from_float(pow(x.to_float_unchecked(), y.to_float_unchecked()));
+    };
+
+    if y < 0 {
+        Float62::from_float(pow(x as _, y as _))
+    } else {
+        Float62::from_integer(x.pow(y as _))
+    }
 }
 
 #[cfg(test)]
