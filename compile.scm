@@ -1537,6 +1537,27 @@
       (rib? codes)
       (= (rib-tag codes) nop-instruction)))
 
+    (define vector-factor 64)
+
+    (define (list->vector-nodes xs)
+     (let ((xs
+            (let loop ((xs xs))
+             (if (null? xs)
+              '()
+              (let ((ys
+                     (let loop ((xs xs) (length 0))
+                      (if (and (pair? xs) (< length vector-factor))
+                       (cons (car xs) (loop (cdr xs) (+ length 1)))
+                       '()))))
+               (cons ys (loop (list-tail xs (length ys)))))))))
+      (case (length xs)
+       ((0)
+        '())
+       ((1)
+        (car xs))
+       (else
+        (list->vector-nodes xs)))))
+
     (define (marshal-constant context value)
      (define (marshal value)
       (marshal-rib context value #t))
@@ -1573,7 +1594,10 @@
        (cons-rib (marshal (car value)) (marshal (cdr value))))
 
       ((vector? value)
-       (data-rib vector-type (vector-length value) (marshal (vector->list value))))
+       (data-rib
+        vector-type
+        (vector-length value)
+        (marshal (list->vector-nodes (vector->list value)))))
 
       ((bytevector? value)
        (data-rib bytevector-type (bytevector-length value) (marshal (bytes->list value))))

@@ -1539,7 +1539,7 @@
       (let ((x (/ 1000000000)))
         (if (zero? x) 1 x)))
 
-    ;; String
+    ; String
 
     (define string? (instance? string-type))
 
@@ -1787,43 +1787,167 @@
     list->bytevector
     bytevector->list)
 
-  (import (stak base) (stak string))
+  (import (stak base) (stak string) (srfi 1))
 
   (begin
     (define vector-type 7)
     (define bytevector-type 8)
 
-    ;; Vector
+    ; Vector
+
+    ; This branch factor is optimized purely for the speed because the interface
+    ; of vectors in R7RS is not designed for their persistency and branch sharing.
+    (define factor 64)
 
     (define vector? (instance? vector-type))
+    (define vector-length car)
+    (define vector-root cdr)
+
+    (define (make-vector* length root)
+      (data-rib vector-type length root))
+
+    (define (make-vector length . rest)
+      (define fill (and (pair? rest) (car rest)))
+
+      (do ((xs (make-vector* 0 '()) (vector-push xs fill))
+           (length length (- length 1)))
+        ((< length 1)
+          xs)))
 
     (define (vector . xs)
       (list->vector xs))
 
-    (define vector-length sequence-length)
-    (define vector->list sequence->list)
-    (define list->vector (list->sequence vector-type))
-    (define vector-ref sequence-ref)
-    (define vector-set! sequence-set!)
-    (define vector-fill! sequence-fill!)
-    (define make-vector (make-sequence list->vector))
-    (define vector-append (sequence-append list->vector))
-    (define vector-copy (sequence-copy list->vector))
-    (define vector-copy! sequence-copy!)
+    (define (vector-height xs)
+      (do ((length
+             (vector-length xs)
+             (+ 1 (quotient (- length 1) factor)))
+           (height 0 (+ height 1)))
+        ((<= length factor)
+          height)))
 
-    (define (vector-for-each f xs)
-      (for-each f (vector->list xs)))
+    (define (vector-cell xs index)
+      (let loop ((height (vector-height xs))
+                 (index index)
+                 (x (cons (vector-root xs) #f)))
+        (if (negative? height)
+          x
+          (let ((q (expt factor height)))
+            (loop
+              (- height 1)
+              (remainder index q)
+              (list-tail (car x) (quotient index q)))))))
 
+    (define (vector-ref xs index)
+      (car (vector-cell xs index)))
+
+    (define (vector-set! xs index x)
+      (set-car! (vector-cell xs index) x))
+
+    (define (vector-append . rest)
+      (fold
+        (lambda (xs ys)
+          (do ((xs xs (vector-push xs (vector-ref ys index)))
+               (index 0 (+ index 1)))
+            ((= index (vector-length ys))
+              xs)))
+        (make-vector 0)
+        rest))
+
+    (define (vector-push xs x)
+      (make-vector*
+        (+ (vector-length xs) 1)
+        (let ((result
+                (let loop ((xs (vector-root xs))
+                           (h (vector-height xs)))
+                  (if (zero? h)
+                    (node-push xs x)
+                    (let* ((result (loop (last xs) (- h 1)))
+                           (y (car result))
+                           (xs (list-copy xs)))
+                      ; TODO Optimize a length.
+                      (list-set! xs (- (length xs) 1) y)
+                      (if (pair? (cdr result))
+                        (node-push xs (list (cadr result)))
+                        (list xs)))))))
+          (if (pair? (cdr result))
+            (list (car result) (list (cadr result)))
+            (car result)))))
+
+    (define (node-push xs x)
+      ; TODO Optimize a length.
+      (if (< (length xs) factor)
+        (list (append xs (list x)))
+        (list xs x)))
+
+    (define (parse-range xs rest)
+      (cons
+        (or (and (pair? rest) (car rest)) 0)
+        (or
+          (and (pair? rest) (pair? (cdr rest)) (cadr rest))
+          (vector-length xs))))
+
+    (define (vector-copy xs . rest)
+      (define range (parse-range xs rest))
+
+      (do ((index (car range) (+ index 1))
+           (ys
+             (make-vector 0)
+             (vector-push ys (vector-ref xs index))))
+        ((not (< index (cdr range)))
+          ys)))
+
+    (define (vector-copy! to at from . rest)
+      (define range (parse-range from rest))
+
+      (do ((index (car range) (+ index 1)))
+        ((not (< index (cdr range))))
+        (vector-set!
+          to
+          (+ at (- index (car range)))
+          (vector-ref from index))))
+
+    (define (vector-fill! xs fill . rest)
+      (define range (parse-range xs rest))
+
+      (do ((index (car range) (+ index 1)))
+        ((not (< index (cdr range))))
+        (vector-set! xs index fill)))
+
+    (define (list->vector xs)
+      (do ((xs xs (cdr xs))
+           (ys (make-vector 0) (vector-push ys (car xs))))
+        ((not (pair? xs))
+          ys)))
+
+    (define (vector->list xs)
+      (do ((height (vector-height xs) (- height 1))
+           (xs (vector-root xs) (apply append xs)))
+        ((zero? height)
+          xs)))
+
+    ; TODO Support multiple vectors.
     (define (vector-map f xs)
-      (list->vector (map f (vector->list xs))))
+      (do ((index 0 (+ index 1))
+           (ys
+             (make-vector 0)
+             (vector-push ys (f (vector-ref xs index)))))
+        ((= index (vector-length xs))
+          ys)))
 
+    ; TODO Support multiple vectors.
+    (define (vector-for-each f xs)
+      (do ((index 0 (+ index 1)))
+        ((= index (vector-length xs)))
+        (f (vector-ref xs index))))
+
+    ; TODO Move to the `(stak string)` library.
     (define (string->vector xs . rest)
       (apply vector-copy (list->vector (string->list xs)) rest))
 
     (define (vector->string xs . rest)
       (list->string (vector->list (apply vector-copy xs rest))))
 
-    ;; Bytevector
+    ; Bytevector
 
     (define bytevector? (instance? bytevector-type))
 
@@ -6883,164 +7007,6 @@
               ($$dynamic-symbols)
               (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
-
-(define-library (stak radix-vector)
-  (export
-    list->radix-vector
-    make-radix-vector
-    radix-vector
-    radix-vector->list
-    radix-vector-append
-    radix-vector-copy
-    radix-vector-copy!
-    radix-vector-fill!
-    radix-vector-for-each
-    radix-vector-length
-    radix-vector-map
-    radix-vector-ref
-    radix-vector-set!
-    radix-vector?)
-
-  (import (stak base) (srfi 1))
-
-  (begin
-    (define factor 16)
-
-    (define-record-type radix-vector
-      (make-radix-vector* length root)
-      radix-vector?
-      (length radix-vector-length)
-      (root radix-vector-root))
-
-    (define empty-vector (make-radix-vector* 0 '()))
-
-    (define (make-radix-vector length . rest)
-      (define fill (and (pair? rest) (car rest)))
-
-      (do ((xs empty-vector (radix-vector-push xs fill))
-           (length length (- length 1)))
-        ((< length 1)
-          xs)))
-
-    (define (radix-vector . xs)
-      (list->radix-vector xs))
-
-    (define (radix-vector-height xs)
-      (do ((length
-             (radix-vector-length xs)
-             (+ 1 (quotient (- length 1) factor)))
-           (height 0 (+ height 1)))
-        ((<= length factor)
-          height)))
-
-    (define (radix-vector-cell xs index)
-      (let loop ((height (radix-vector-height xs))
-                 (index index)
-                 (x (cons (radix-vector-root xs) #f)))
-        (if (negative? height)
-          x
-          (let ((q (expt factor height)))
-            (loop
-              (- height 1)
-              (remainder index q)
-              (list-tail (car x) (quotient index q)))))))
-
-    (define (radix-vector-ref xs index)
-      (car (radix-vector-cell xs index)))
-
-    (define (radix-vector-set! xs index x)
-      (set-car! (radix-vector-cell xs index) x))
-
-    (define (radix-vector-append xs ys)
-      (do ((xs xs (radix-vector-push xs (radix-vector-ref ys index)))
-           (index 0 (+ index 1)))
-        ((= index (radix-vector-length ys))
-          xs)))
-
-    (define (radix-vector-push xs x)
-      (make-radix-vector*
-        (+ (radix-vector-length xs) 1)
-        (let ((result
-                (let loop ((xs (radix-vector-root xs))
-                           (h (radix-vector-height xs)))
-                  (if (zero? h)
-                    (node-push xs x)
-                    (let* ((result (loop (last xs) (- h 1)))
-                           (y (car result))
-                           (xs (list-copy xs)))
-                      ; TODO Optimize a length.
-                      (list-set! xs (- (length xs) 1) y)
-                      (if (pair? (cdr result))
-                        (node-push xs (list (cadr result)))
-                        (list xs)))))))
-          (if (pair? (cdr result))
-            (list (car result) (list (cadr result)))
-            (car result)))))
-
-    (define (node-push xs x)
-      ; TODO Optimize a length.
-      (if (< (length xs) factor)
-        (list (append xs (list x)))
-        (list xs x)))
-
-    (define (parse-range xs rest)
-      (cons
-        (or (and (pair? rest) (car rest)) 0)
-        (or
-          (and (pair? rest) (pair? (cdr rest)) (cadr rest))
-          (radix-vector-length xs))))
-
-    (define (radix-vector-copy xs . rest)
-      (define range (parse-range xs rest))
-
-      (do ((index (car range) (+ index 1))
-           (ys
-             (make-radix-vector 0)
-             (radix-vector-push ys (radix-vector-ref xs index))))
-        ((not (< index (cdr range)))
-          ys)))
-
-    (define (radix-vector-copy! to at from . rest)
-      (define range (parse-range from rest))
-
-      (do ((index (car range) (+ index 1)))
-        ((not (< index (cdr range))))
-        (radix-vector-set!
-          to
-          (+ at (- index (car range)))
-          (radix-vector-ref from index))))
-
-    (define (radix-vector-fill! xs fill . rest)
-      (define range (parse-range xs rest))
-
-      (do ((index (car range) (+ index 1)))
-        ((not (< index (cdr range))))
-        (radix-vector-set! xs index fill)))
-
-    (define (list->radix-vector xs)
-      (do ((xs xs (cdr xs))
-           (ys empty-vector (radix-vector-push ys (car xs))))
-        ((not (pair? xs))
-          ys)))
-
-    (define (radix-vector->list xs)
-      (do ((height (radix-vector-height xs) (- height 1))
-           (xs (radix-vector-root xs) (apply append xs)))
-        ((zero? height)
-          xs)))
-
-    (define (radix-vector-map f xs)
-      (do ((index 0 (+ index 1))
-           (ys
-             (make-radix-vector 0)
-             (radix-vector-push ys (f (radix-vector-ref xs index)))))
-        ((= index (radix-vector-length xs))
-          ys)))
-
-    (define (radix-vector-for-each f xs)
-      (do ((index 0 (+ index 1)))
-        ((= index (radix-vector-length xs)))
-        (f (radix-vector-ref xs index))))))
 
 ; TODO Implement this as SRFI-146.
 (define-library (stak mapping)
