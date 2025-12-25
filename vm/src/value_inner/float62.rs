@@ -79,6 +79,7 @@ mod tests {
         assert_eq!(to_f64(power(from_i64(2), from_i64(0))), 1.0);
         assert_eq!(to_f64(power(from_f64(2.0), from_i64(0))), 1.0);
         assert_eq!(to_f64(power(from_f64(2.0), from_f64(0.0))), 1.0);
+
         assert_eq!(to_f64(power(from_f64(2.0), from_f64(3.0))), 8.0);
         assert_eq!(to_f64(power(from_f64(3.0), from_f64(5.0))), 243.0);
     }
