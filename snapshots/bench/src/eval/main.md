@@ -1606,8 +1606,6 @@
 - set reduce
 - constant 7
 - set ||
-- constant 8
-- set ||
 - constant 64
 - set ||
 - get ||
@@ -2076,35 +2074,50 @@
   - constant 0
   - call 1 #f 1
 - set vector-for-each
+- constant 8
+- set ||
 - get ||
 - call 1 #f instance?
 - set bytevector?
+- constant procedure 1 #f
+  - constant procedure 0 #t
+    - get 2
+    - get 1
+    - call 2 #f apply
+    - get ||
+    - get 1
+    - call 1 #f vector-length
+    - get 2
+    - call 1 #f ||
+    - call 3 #f data-rib
+  - call 1 #f $$close
+- set ||
 - constant procedure 0 #t
   - get 0
   - call 1 #f list->bytevector
 - set bytevector
-- get sequence-length
-- set bytevector-length
-- get sequence->list
+- get vector->list
 - set bytevector->list
-- get ||
-- call 1 #f list->sequence
-- set list->bytevector
-- get sequence-ref
-- set bytevector-u8-ref
-- get sequence-set!
-- set bytevector-u8-set!
-- get list->bytevector
-- call 1 #f make-sequence
-- set make-bytevector
-- get list->bytevector
-- call 1 #f sequence-append
+- get vector-append
+- call 1 #f ||
 - set bytevector-append
-- get list->bytevector
-- call 1 #f sequence-copy
+- get vector-copy
+- call 1 #f ||
 - set bytevector-copy
-- get sequence-copy!
+- get vector-copy!
 - set bytevector-copy!
+- get vector-length
+- set bytevector-length
+- get vector-ref
+- set bytevector-u8-ref
+- get vector-set!
+- set bytevector-u8-set!
+- get list->vector
+- call 1 #f ||
+- set list->bytevector
+- get make-vector
+- call 1 #f ||
+- set make-bytevector
 - constant 502
 - call 1 #f primitive
 - set ||

@@ -686,8 +686,6 @@
 - set ||
 - constant 7
 - set ||
-- constant 8
-- set ||
 - constant 64
 - set ||
 - get ||
@@ -862,6 +860,21 @@
   - constant 0
   - call 1 #f ||
   - call 2 #f 2
+- set ||
+- constant 8
+- set ||
+- constant procedure 1 #f
+  - constant procedure 0 #t
+    - get 2
+    - get 1
+    - call 2 #f ||
+    - get ||
+    - get 1
+    - call 1 #f ||
+    - get 2
+    - call 1 #f ||
+    - call 3 #f ||
+  - call 1 #f ||
 - set ||
 - get ||
 - call 1 #f ||
