@@ -266,7 +266,7 @@ Feature: Vector
         | 4097  |
 
     @gauche @guile @stak
-    Scenario Outline: Use a large vector literal
+    Scenario Outline: Use a vector literal
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme write))
