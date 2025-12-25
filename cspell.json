@@ -59,6 +59,8 @@
     "ftell",
     "getopts",
     "gettime",
+    "gitsubmodule",
+    "gomod",
     "goreleaser",
     "heapless",
     "imag",
