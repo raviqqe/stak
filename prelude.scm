@@ -1795,7 +1795,7 @@
 
     ; Vector
 
-    (define factor 16)
+    (define factor 64)
 
     (define vector? (instance? vector-type))
     (define vector-length car)
