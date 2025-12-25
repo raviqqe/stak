@@ -1524,7 +1524,7 @@
     list->bytevector
     bytevector->list)
 
-  (import (stak base) (only (srfi 1) fold))
+  (import (stak base) (only (srfi 1) fold last))
 
   (begin
     (define vector-type 7)
