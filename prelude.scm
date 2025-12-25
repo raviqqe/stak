@@ -1681,18 +1681,26 @@
 
     (define bytevector? (instance? bytevector-type))
 
+    (define (construct-bytevector f)
+      (lambda rest
+        (let ((xs (apply f rest)))
+          (data-rib
+            bytevector-type
+            (vector-length xs)
+            (vector-root xs)))))
+
     (define (bytevector . xs)
       (list->bytevector xs))
 
-    (define bytevector-length sequence-length)
-    (define bytevector->list sequence->list)
-    (define list->bytevector (list->sequence bytevector-type))
-    (define bytevector-u8-ref sequence-ref)
-    (define bytevector-u8-set! sequence-set!)
-    (define make-bytevector (make-sequence list->bytevector))
-    (define bytevector-append (sequence-append list->bytevector))
-    (define bytevector-copy (sequence-copy list->bytevector))
-    (define bytevector-copy! sequence-copy!)))
+    (define bytevector->list vector->list)
+    (define bytevector-append (construct-bytevector vector-append))
+    (define bytevector-copy (construct-bytevector vector-copy))
+    (define bytevector-copy! vector-copy!)
+    (define bytevector-length vector-length)
+    (define bytevector-u8-ref vector-ref)
+    (define bytevector-u8-set! vector-set!)
+    (define list->bytevector (construct-bytevector list->vector))
+    (define make-bytevector (construct-bytevector make-vector))))
 
 (define-library (stak string)
   (export
