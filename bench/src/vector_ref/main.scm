@@ -1,6 +1,6 @@
 (import (scheme base))
 
-(define count 4096)
+(define count 16384)
 
 (define xs (make-vector count))
 

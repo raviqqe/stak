@@ -66,7 +66,7 @@ static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
     ("hello", "hello", &HELLO_MODULE),
     ("sum", "sum_10000000", &SUM_MODULE),
     ("tak", "tak_16_8_0", &TAK_MODULE),
-    ("vector_ref", "vector_ref_4096", &VECTOR_REF_MODULE),
+    ("vector_ref", "vector_ref_16384", &VECTOR_REF_MODULE),
 ];
 
 fn stak_run(criterion: &mut Criterion) {
