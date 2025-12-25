@@ -60,7 +60,7 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
     let (Some(x), Some(y)) = (x.to_integer(), y.to_integer()) else {
         // Unlikely
-        return Float62::from_float(pow(x.to_float_unchecked(), y.to_float_unchecked()));
+        return from_f64(pow(to_f64(x), to_f64(y)));
     };
 
     if y < 0 {
