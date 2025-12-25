@@ -58,5 +58,36 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 }
 
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
-    Float62::from_float(pow(x.to_float_unchecked(), y.to_float_unchecked()))
+    let (Some(x), Some(y)) = (x.to_integer(), y.to_integer()) else {
+        // Unlikely
+        return from_f64(pow(to_f64(x), to_f64(y)));
+    };
+
+    if y >= 0
+        && let Some(x) = x.checked_pow(y as _)
+    {
+        Float62::from_integer(x)
+    } else {
+        Float62::from_float(pow(x as _, y as _))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn zero_power() {
+        assert_eq!(to_f64(power(from_i64(2), from_i64(0))), 1.0);
+        assert_eq!(to_f64(power(from_f64(2.0), from_i64(0))), 1.0);
+        assert_eq!(to_f64(power(from_f64(2.0), from_f64(0.0))), 1.0);
+    }
+
+    #[test]
+    fn non_zero_power() {
+        assert_eq!(to_i64(power(from_i64(2), from_i64(3))), 8);
+        assert_eq!(to_f64(power(from_f64(2.0), from_f64(3.0))), 8.0);
+        assert_eq!(to_f64(power(from_f64(3.0), from_f64(5.0))), 243.0);
+        assert_eq!(to_f64(power(from_i64(2), from_i64(-1))), 0.5);
+    }
 }
