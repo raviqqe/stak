@@ -353,6 +353,24 @@ Feature: Number
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario Outline: Calculate an exponentiation
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (expt <base> <power>) <result>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | base | power | result |
+      | 1    | 0     | 1      |
+      | 1    | 1     | 1      |
+      | 2    | 0     | 1      |
+      | 2    | 3     | 8      |
+      | 3    | 5     | 243    |
+
   Scenario Outline: Compare numbers
     Given a file named "main.scm" with:
       """scheme
