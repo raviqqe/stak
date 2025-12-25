@@ -1795,6 +1795,8 @@
 
     ; Vector
 
+    ; This branch factor is optimized purely for the speed because the interface
+    ; of vectors in R7RS is not designed for their persistency and branch sharing.
     (define factor 64)
 
     (define vector? (instance? vector-type))
