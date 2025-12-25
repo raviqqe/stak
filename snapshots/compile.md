@@ -18464,17 +18464,14 @@
                       - list
                         - if
                         - list
-                          - or
+                          - and
                           - list
-                            - =
+                            - pair?
+                            - xs
+                          - list
+                            - <
                             - length
                             - vector-factor
-                          - list
-                            - null?
-                            - xs
-                        - list
-                          - quote
-                          - ()
                         - list
                           - cons
                           - list
@@ -18489,6 +18486,9 @@
                               - -
                               - length
                               - 1
+                        - list
+                          - quote
+                          - ()
                 - list
                   - cons
                   - ys

@@ -1546,9 +1546,9 @@
               '()
               (let ((ys
                      (let loop ((xs xs) (length 0))
-                      (if (or (= length vector-factor) (null? xs))
-                       '()
-                       (cons (car xs) (loop (cdr xs) (+ length 1)))))))
+                      (if (and (pair? xs) (< length vector-factor))
+                       (cons (car xs) (loop (cdr xs) (+ length 1)))
+                       '()))))
                (cons ys (loop (list-tail xs (length ys)))))))))
       (case (length xs)
        ((0)
