@@ -1621,6 +1621,10 @@
   - get 2
   - call 3 #f data-rib
 - set ||
+- constant 0
+- constant ()
+- call 2 #f ||
+- set ||
 - constant procedure 1 #t
   - constant #f
   - get 1
@@ -1647,9 +1651,7 @@
     - call 2 #f 5
   - call 1 #f $$close
   - set 1
-  - constant 0
-  - constant ()
-  - call 2 #f ||
+  - get ||
   - get 4
   - call 2 #f 2
 - set make-vector
@@ -1754,8 +1756,7 @@
     - get 2
     - constant 0
     - call 2 #f 2
-  - constant 0
-  - call 1 #f make-vector
+  - get ||
   - get 2
   - call 3 #f fold
 - set vector-append
@@ -1906,8 +1907,7 @@
   - set 1
   - get 1
   - call 1 #f car
-  - constant 0
-  - call 1 #f make-vector
+  - get ||
   - call 2 #f 2
 - set vector-copy
 - constant procedure 3 #t
@@ -1998,8 +1998,7 @@
   - call 1 #f $$close
   - set 1
   - get 1
-  - constant 0
-  - call 1 #f make-vector
+  - get ||
   - call 2 #f 2
 - set list->vector
 - constant procedure 1 #f
@@ -2047,8 +2046,7 @@
   - call 1 #f $$close
   - set 1
   - constant 0
-  - constant 0
-  - call 1 #f make-vector
+  - get ||
   - call 2 #f 2
 - set vector-map
 - constant procedure 2 #f

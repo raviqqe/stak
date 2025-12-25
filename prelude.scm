@@ -1542,10 +1542,12 @@
     (define (make-vector* length root)
       (data-rib vector-type length root))
 
+    (define empty-vector (make-vector* 0 '()))
+
     (define (make-vector length . rest)
       (define fill (and (pair? rest) (car rest)))
 
-      (do ((xs (make-vector* 0 '()) (vector-push xs fill))
+      (do ((xs empty-vector (vector-push xs fill))
            (length length (- length 1)))
         ((< length 1)
           xs)))
@@ -1586,7 +1588,7 @@
                (index 0 (+ index 1)))
             ((= index (vector-length ys))
               xs)))
-        (make-vector 0)
+        empty-vector
         rest))
 
     (define (vector-push xs x)
@@ -1627,7 +1629,7 @@
 
       (do ((index (car range) (+ index 1))
            (ys
-             (make-vector 0)
+             empty-vector
              (vector-push ys (vector-ref xs index))))
         ((not (< index (cdr range)))
           ys)))
@@ -1651,7 +1653,7 @@
 
     (define (list->vector xs)
       (do ((xs xs (cdr xs))
-           (ys (make-vector 0) (vector-push ys (car xs))))
+           (ys empty-vector (vector-push ys (car xs))))
         ((not (pair? xs))
           ys)))
 
@@ -1665,7 +1667,7 @@
     (define (vector-map f xs)
       (do ((index 0 (+ index 1))
            (ys
-             (make-vector 0)
+             empty-vector
              (vector-push ys (f (vector-ref xs index)))))
         ((= index (vector-length xs))
           ys)))

@@ -396,6 +396,10 @@
   - get 2
   - call 3 #f ||
 - set ||
+- constant 0
+- constant ()
+- call 2 #f ||
+- set ||
 - constant procedure 1 #t
   - constant #f
   - get 1
@@ -422,9 +426,7 @@
     - call 2 #f 5
   - call 1 #f ||
   - set 1
-  - constant 0
-  - constant ()
-  - call 2 #f ||
+  - get ||
   - get 4
   - call 2 #f 2
 - set ||
