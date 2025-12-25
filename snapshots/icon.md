@@ -662,8 +662,6 @@
 - set ||
 - constant 7
 - set ||
-- constant 8
-- set ||
 - constant 64
 - set ||
 - get ||
@@ -721,6 +719,8 @@
   - get 2
   - call 1 #f ||
   - call 2 #f 2
+- set ||
+- constant 8
 - set ||
 - get ||
 - call 1 #f ||
