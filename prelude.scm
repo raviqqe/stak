@@ -1527,10 +1527,9 @@
   (import (stak base) (only (srfi 1) fold last))
 
   (begin
-    (define vector-type 7)
-    (define bytevector-type 8)
-
     ; Vector
+
+    (define vector-type 7)
 
     ; This branch factor is optimized purely for the speed because the interface
     ; of vectors in R7RS is not designed for their persistency and branch sharing.
@@ -1678,6 +1677,8 @@
         (f (vector-ref xs index))))
 
     ; Bytevector
+
+    (define bytevector-type 8)
 
     (define bytevector? (instance? bytevector-type))
 
