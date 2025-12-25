@@ -2120,7 +2120,7 @@
 - set ||
 - constant 8
 - set ||
-- constant 16
+- constant 64
 - set ||
 - get ||
 - call 1 #f instance?
@@ -4204,10 +4204,12 @@
   - marshal-context?
   - constants
   - continuations
+  - vector-factor
   - marshal-context-symbols
   - symbols
   - resolve-symbol-string
   - vector-type
+  - list->vector-nodes
   - bytevector-type
   - bytes->list
   - marshal-context-constants
@@ -18417,6 +18419,111 @@
         - nop-instruction
   - list
     - define
+    - vector-factor
+    - 64
+  - list
+    - define
+    - list
+      - list->vector-nodes
+      - xs
+    - list
+      - let
+      - list
+        - list
+          - xs
+          - list
+            - let
+            - loop
+            - list
+              - list
+                - xs
+                - xs
+            - list
+              - if
+              - list
+                - null?
+                - xs
+              - list
+                - quote
+                - ()
+              - list
+                - let
+                - list
+                  - list
+                    - ys
+                    - list
+                      - let
+                      - loop
+                      - list
+                        - list
+                          - xs
+                          - xs
+                        - list
+                          - length
+                          - 0
+                      - list
+                        - if
+                        - list
+                          - or
+                          - list
+                            - =
+                            - length
+                            - vector-factor
+                          - list
+                            - null?
+                            - xs
+                        - list
+                          - quote
+                          - ()
+                        - list
+                          - cons
+                          - list
+                            - car
+                            - xs
+                          - list
+                            - loop
+                            - list
+                              - cdr
+                              - xs
+                            - list
+                              - -
+                              - length
+                              - 1
+                - list
+                  - cons
+                  - ys
+                  - list
+                    - loop
+                    - list
+                      - list-tail
+                      - xs
+                      - list
+                        - length
+                        - ys
+      - list
+        - case
+        - list
+          - length
+          - xs
+        - list
+          - list
+            - 0
+          - list
+            - quote
+            - ()
+        - list
+          - list
+            - 1
+          - list
+            - car
+            - xs
+        - list
+          - else
+          - list
+            - list->vector-nodes
+            - xs
+  - list
+    - define
     - list
       - marshal-constant
       - context
@@ -18569,8 +18676,10 @@
           - list
             - marshal
             - list
-              - vector->list
-              - value
+              - list->vector-nodes
+              - list
+                - vector->list
+                - value
       - list
         - list
           - bytevector?
