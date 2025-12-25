@@ -271,40 +271,37 @@ Feature: Vector
         """scheme
         (import (scheme base) (scheme write))
 
-        (define xs (include "./vector.scm"))
+        (define xs (include "./value.scm"))
 
         (write (vector-ref xs <index>))
         """
+      And a file named "write.scm" with:
+        """scheme
+        (import (scheme base) (scheme write) (srfi 1))
+
+        (write (list->vector (iota <length>)))
+        """
       And I run the following script:
         """sh
-        {
-          echo '#('
-
-          for index in $(seq <length>); do
-            echo $index
-            echo ' '
-          done
-
-          echo ')'
-        } >> vector.scm
+        stak write.scm > value.scm
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "<output>"
+      Then the stdout should contain exactly "<index>"
 
       Examples:
-        | length | index | output |
-        | 1      | 0     | 1      |
-        | 2      | 0     | 1      |
-        | 2      | 1     | 2      |
-        | 512    | 0     | 1      |
-        | 512    | 1     | 2      |
-        | 512    | 510   | 511    |
-        | 512    | 511   | 512    |
-        | 4096   | 0     | 1      |
-        | 4096   | 1     | 2      |
-        | 4096   | 4094  | 4095   |
-        | 4096   | 4095  | 4096   |
-        | 8192   | 0     | 1      |
-        | 8192   | 1     | 2      |
-        | 8192   | 8190  | 8191   |
-        | 8192   | 8191  | 8192   |
+        | length | index |
+        | 1      | 0     |
+        | 2      | 0     |
+        | 2      | 1     |
+        | 512    | 0     |
+        | 512    | 1     |
+        | 512    | 510   |
+        | 512    | 511   |
+        | 4096   | 0     |
+        | 4096   | 1     |
+        | 4096   | 4094  |
+        | 4096   | 4095  |
+        | 8192   | 0     |
+        | 8192   | 1     |
+        | 8192   | 8190  |
+        | 8192   | 8191  |
