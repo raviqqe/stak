@@ -1679,9 +1679,14 @@
             ys))))
 
     (define (vector-for-each f x . xs)
-      (do ((index 0 (+ index 1)))
-        ((= index (vector-length xs)))
-        (f (vector-ref xs index))))
+      (let ((length (apply min (map vector-length (cons x xs)))))
+        (do ((index 0 (+ index 1)))
+          ((= index length))
+          (apply
+            f
+            (map
+              (lambda (xs) (vector-ref xs index))
+              (cons x xs))))))
 
     ; Bytevector
 
