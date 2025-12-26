@@ -125,9 +125,10 @@ Feature: Vector
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | procedure              | vectors              | output |
-      | (lambda (x) (+ x 65))  | #(0 1 2)             | ABC    |
-      | (lambda (x y) (+ x y)) | #(65 66 67) #(0 1 2) | ACE    |
+      | procedure                  | vectors                       | output |
+      | (lambda (x) (+ x 65))      | #(0 1 2)                      | ABC    |
+      | (lambda (x y) (+ x y))     | #(65 66 67) #(0 1 2)          | ACE    |
+      | (lambda (x y z) (+ x y z)) | #(65 66 67) #(0 1 2) #(3 4 5) | DGJ    |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
