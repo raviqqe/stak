@@ -125,10 +125,10 @@ Feature: Vector
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | vectors                       | output |
-      | #(65 66 67)                   | ABC    |
-      | #(65 66 67) #(0 1 2)          | ACE    |
-      | #(65 66 67) #(0 1 2) #(3 4 5) | D      |
+      | vectors                   | output |
+      | #(65 66 67)               | ABC    |
+      | #(65 66 67) #(0 1 2)      | ACE    |
+      | #(65 66 67) #(0 1 2) #(3) | D      |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
