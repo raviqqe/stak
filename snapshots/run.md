@@ -2033,14 +2033,15 @@
   - call 2 #f map
   - call 2 #f apply
 - set ||
-- constant procedure 3 #f
-  - get 2
+- constant procedure 4 #f
+  - get 3
   - constant procedure 1 #f
     - get 0
-    - get ||
+    - get 4
     - call 2 #f vector-ref
-  - get 3
-  - get 3
+  - call 1 #f $$close
+  - get 4
+  - get 4
   - call 2 #f cons
   - call 2 #f map
   - call 2 #f apply
@@ -2063,7 +2064,8 @@
     - get 9
     - get 9
     - get 9
-    - call 3 #f ||
+    - get 6
+    - call 4 #f ||
     - call 2 #f ||
     - call 2 #f 5
   - call 1 #f $$close
@@ -2086,7 +2088,8 @@
     - get 6
     - get 6
     - get 6
-    - call 3 #f ||
+    - get 3
+    - call 4 #f ||
     - set 0
     - get 0
     - constant 1
