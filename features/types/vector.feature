@@ -122,7 +122,7 @@ Feature: Vector
         (vector-map <procedure> <vectors>))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "ABC"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
       | procedure              | vectors              | output |
