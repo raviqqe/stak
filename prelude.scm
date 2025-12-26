@@ -1664,13 +1664,14 @@
           xs)))
 
     ; TODO Support multiple vectors.
-    (define (vector-map f xs)
-      (do ((index 0 (+ index 1))
-           (ys
-             empty-vector
-             (vector-push ys (f (vector-ref xs index)))))
-        ((= index (vector-length xs))
-          ys)))
+    (define (vector-map f x . xs)
+      (let ((length (apply min (map vector-length (cons x xs)))))
+        (do ((index 0 (+ index 1))
+             (ys
+               empty-vector
+               (vector-push ys (f (vector-ref xs index)))))
+          ((= index length)
+            ys))))
 
     ; TODO Support multiple vectors.
     (define (vector-for-each f xs)
