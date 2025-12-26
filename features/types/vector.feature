@@ -156,21 +156,17 @@ Feature: Vector
       """scheme
       (import (scheme base))
 
-      (vector-for-each
-        (lambda xs (write-u8 (apply + xs))
-        <vectors>)
+      (vector-for-each write-u8 (vector-copy <value>))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | vectors                   | output |
-      | #()                       |        |
-      | #(65)                     | A      |
-      | #(65 66)                  | AB     |
-      | #(65 66 67)               | ABC    |
-      | #(65 66 67) #(0 1 2)      | ACE    |
-      | #(65 66 67) #(0 1 2) #(3) | D      |
+      | value       | output |
+      | #()         |        |
+      | #(65)       | A      |
+      | #(65 66)    | AB     |
+      | #(65 66 67) | ABC    |
 
   Scenario Outline: Copy a vector in place
     Given a file named "main.scm" with:
