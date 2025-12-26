@@ -125,10 +125,10 @@ Feature: Vector
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | vectors                   | output |
-      | #(65 66 67)               | ABC    |
-      | #(65 66 67) #(0 1 2)      | ACE    |
-      | #(65 66 67) #(0 1 2) #(3) | D      |
+      | vectors                     | output |
+      | #(65 66 67)                 | ABC    |
+      | #(65 66 67) #(0 1 2)        | ACE    |
+      | #(65 66 67) #(0 1 2) #(3 4) | DG     |
 
   Scenario Outline: Iterate over a vector
     Given a file named "main.scm" with:
@@ -143,13 +143,13 @@ Feature: Vector
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | vectors                   | output |
-      | #()                       |        |
-      | #(65)                     | A      |
-      | #(65 66)                  | AB     |
-      | #(65 66 67)               | ABC    |
-      | #(65 66 67) #(0 1 2)      | ACE    |
-      | #(65 66 67) #(0 1 2) #(3) | D      |
+      | vectors                     | output |
+      | #()                         |        |
+      | #(65)                       | A      |
+      | #(65 66)                    | AB     |
+      | #(65 66 67)                 | ABC    |
+      | #(65 66 67) #(0 1 2)        | ACE    |
+      | #(65 66 67) #(0 1 2) #(3 4) | DG     |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
