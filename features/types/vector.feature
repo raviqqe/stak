@@ -125,8 +125,8 @@ Feature: Vector
     Then the stdout should contain exactly "ABC"
 
     Examples:
-      | procedure | vectors  | output |
-      |           | #(0 1 2) | ABC    |
+      | procedure             | vectors  | output |
+      | (lambda (x) (+ x 65)) | #(0 1 2) | ABC    |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
