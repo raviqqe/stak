@@ -1619,7 +1619,9 @@
 
     (define (parse-range xs rest)
       (cons
-        (or (and (pair? rest) (car rest)) 0)
+        (or
+          (and (pair? rest) (car rest))
+          0)
         (or
           (and (pair? rest) (pair? (cdr rest)) (cadr rest))
           (vector-length xs))))
