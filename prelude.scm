@@ -1669,7 +1669,13 @@
         (do ((index 0 (+ index 1))
              (ys
                empty-vector
-               (vector-push ys (f (vector-ref xs index)))))
+               (vector-push
+                 ys
+                 (apply
+                   f
+                   (map
+                     (lambda (xs) (vector-ref xs index))
+                     (cons x xs))))))
           ((= index length)
             ys))))
 
