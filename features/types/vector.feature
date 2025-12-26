@@ -130,6 +130,27 @@ Feature: Vector
       | #(65 66 67) #(0 1 2)      | ACE    |
       | #(65 66 67) #(0 1 2) #(3) | D      |
 
+  Scenario Outline: Iterate over a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (vector-for-each
+        (lambda xs (write-u8 (apply + xs))
+        <vectors>)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | vectors                   | output |
+      | #()                       |        |
+      | #(65)                     | A      |
+      | #(65 66)                  | AB     |
+      | #(65 66 67)               | ABC    |
+      | #(65 66 67) #(0 1 2)      | ACE    |
+      | #(65 66 67) #(0 1 2) #(3) | D      |
+
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
       """scheme
