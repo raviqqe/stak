@@ -1605,7 +1605,7 @@
                       ; TODO Optimize a length.
                       (list-set! xs (- (length xs) 1) y)
                       (if (pair? (cdr result))
-                        (node-push xs (list (cadr result)))
+                        (node-push xs (cdr result))
                         (list xs)))))))
           (if (pair? (cdr result))
             (list (car result) (cdr result))
