@@ -1548,8 +1548,8 @@
       (define fill (and (pair? rest) (car rest)))
 
       (do ((xs empty-vector (vector-push xs fill))
-           (length length (- length 1)))
-        ((< length 1)
+           (index 0 (+ index 1)))
+        ((not (< index length))
           xs)))
 
     (define (vector . xs)
