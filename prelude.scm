@@ -1666,13 +1666,13 @@
     (define (min-length x xs)
       (apply min (map vector-length (cons x xs))))
 
-    (define (map-element f x xs)
+    (define (map-element f x xs index)
       (apply f (map (lambda (xs) (vector-ref xs index)) (cons x xs))))
 
     (define (vector-map f x . xs)
       (let ((length (min-length x xs)))
         (do ((index 0 (+ index 1))
-             (ys empty-vector (vector-push ys (map-element f x xs))))
+             (ys empty-vector (vector-push ys (map-element f x xs index))))
           ((= index length)
             ys))))
 
@@ -1680,7 +1680,7 @@
       (let ((length (min-length x xs)))
         (do ((index 0 (+ index 1)))
           ((= index length))
-          (map-element f x xs))))
+          (map-element f x xs index))))
 
     ; Bytevector
 
