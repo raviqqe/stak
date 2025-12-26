@@ -1663,7 +1663,6 @@
         ((zero? height)
           xs)))
 
-    ; TODO Support multiple vectors.
     (define (vector-map f x . xs)
       (let ((length (apply min (map vector-length (cons x xs)))))
         (do ((index 0 (+ index 1))
@@ -1679,8 +1678,7 @@
           ((= index length)
             ys))))
 
-    ; TODO Support multiple vectors.
-    (define (vector-for-each f xs)
+    (define (vector-for-each f x . xs)
       (do ((index 0 (+ index 1)))
         ((= index (vector-length xs)))
         (f (vector-ref xs index))))

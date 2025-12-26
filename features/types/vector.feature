@@ -119,33 +119,37 @@ Feature: Vector
 
       (vector-for-each
         write-u8
-        (vector-map <procedure> <vectors>))
+        (vector-map + <vectors>))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | procedure                  | vectors                       | output |
-      | (lambda (x) (+ x 65))      | #(0 1 2)                      | ABC    |
-      | (lambda (x y) (+ x y))     | #(65 66 67) #(0 1 2)          | ACE    |
-      | (lambda (x y z) (+ x y z)) | #(65 66 67) #(0 1 2) #(3 4 5) | DGJ    |
+      | vectors                       | output |
+      | #(65 66 67)                   | ABC    |
+      | #(65 66 67) #(0 1 2)          | ACE    |
+      | #(65 66 67) #(0 1 2) #(3 4 5) | D      |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (vector-for-each write-u8 (vector-copy <value>))
+      (vector-for-each
+        (lambda xs (write-u8 (apply + xs))
+        <vectors>)
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value       | output |
-      | #()         |        |
-      | #(65)       | A      |
-      | #(65 66)    | AB     |
-      | #(65 66 67) | ABC    |
+      | vectors                   | output |
+      | #()                       |        |
+      | #(65)                     | A      |
+      | #(65 66)                  | AB     |
+      | #(65 66 67)               | ABC    |
+      | #(65 66 67) #(0 1 2)      | ACE    |
+      | #(65 66 67) #(0 1 2) #(3) | D      |
 
   Scenario Outline: Copy a vector in place
     Given a file named "main.scm" with:
