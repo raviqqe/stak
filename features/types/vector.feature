@@ -119,14 +119,14 @@ Feature: Vector
 
       (vector-for-each
         write-u8
-        (vector-map (lambda (x) (+ x 65)) <vectors>))
+        (vector-map <procedure> <vectors>))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
 
     Examples:
-      | vectors  | output |
-      | #(0 1 2) | ABC    |
+      | procedure | vectors  | output |
+      |           | #(0 1 2) | ABC    |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
