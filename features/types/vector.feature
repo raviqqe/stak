@@ -112,7 +112,7 @@ Feature: Vector
       | #(65) #(66) #(67)          | ABC    |
       | #(65) #(66 67) #(68 69 70) | ABCDEF |
 
-  Scenario: Map a function on a vector
+  Scenario Outline: Map a function on a vector
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -121,6 +121,10 @@ Feature: Vector
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
+
+    Examples:
+      | vectors  | output |
+      | #(0 1 2) | ABC    |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
