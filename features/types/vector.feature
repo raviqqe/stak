@@ -193,7 +193,7 @@ Feature: Vector
       | 0 1 2 3 | 4 1 3     | AEED   |
 
   @long
-  Rule: Large vectors
+  Rule: Large vector
 
     Scenario Outline: Reference an element
       Given a file named "main.scm" with:

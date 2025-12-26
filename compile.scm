@@ -1600,7 +1600,10 @@
         (marshal (list->vector-nodes (vector->list value)))))
 
       ((bytevector? value)
-       (data-rib bytevector-type (bytevector-length value) (marshal (bytes->list value))))
+       (data-rib
+        bytevector-type
+        (bytevector-length value)
+        (marshal (list->vector-nodes (bytes->list value)))))
 
       (else
        (error "invalid type"))))
