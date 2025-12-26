@@ -4220,8 +4220,8 @@
   - symbols
   - resolve-symbol-string
   - vector-type
-  - list->vector-nodes
   - bytevector-type
+  - list->vector-nodes
   - bytes->list
   - marshal-context-constants
   - constant-set-simple
@@ -18704,8 +18704,10 @@
           - list
             - marshal
             - list
-              - bytes->list
-              - value
+              - list->vector-nodes
+              - list
+                - bytes->list
+                - value
       - list
         - else
         - list
