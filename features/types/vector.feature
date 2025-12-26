@@ -136,7 +136,7 @@ Feature: Vector
       (import (scheme base))
 
       (vector-for-each
-        (lambda xs (write-u8 (apply + xs))
+        (lambda xs (write-u8 (apply + xs)))
         <vectors>)
       """
     When I successfully run `stak main.scm`
