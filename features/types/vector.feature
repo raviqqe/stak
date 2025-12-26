@@ -117,7 +117,9 @@ Feature: Vector
       """scheme
       (import (scheme base))
 
-      (vector-for-each write-u8 (vector-map (lambda (x) (+ x 65)) #(0 1 2)))
+      (vector-for-each
+        write-u8
+        (vector-map (lambda (x) (+ x 65)) <vectors>))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
