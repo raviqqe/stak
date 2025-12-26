@@ -1663,8 +1663,11 @@
         ((zero? height)
           xs)))
 
+    (define (min-length x xs)
+      (apply min (map vector-length (cons x xs))))
+
     (define (vector-map f x . xs)
-      (let ((length (apply min (map vector-length (cons x xs)))))
+      (let ((length (min-length x xs)))
         (do ((index 0 (+ index 1))
              (ys
                empty-vector
@@ -1679,7 +1682,7 @@
             ys))))
 
     (define (vector-for-each f x . xs)
-      (let ((length (apply min (map vector-length (cons x xs)))))
+      (let ((length (min-length x xs)))
         (do ((index 0 (+ index 1)))
           ((= index length))
           (apply
