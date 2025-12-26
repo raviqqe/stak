@@ -112,15 +112,44 @@ Feature: Vector
       | #(65) #(66) #(67)          | ABC    |
       | #(65) #(66 67) #(68 69 70) | ABCDEF |
 
-  Scenario: Map a function on a vector
+  Scenario Outline: Map a function on a vector
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (vector-for-each write-u8 (vector-map (lambda (x) (+ x 65)) #(0 1 2)))
+      (vector-for-each
+        write-u8
+        (vector-map + <vectors>))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "ABC"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | vectors                     | output |
+      | #(65 66 67)                 | ABC    |
+      | #(65 66 67) #(0 1 2)        | ACE    |
+      | #(65 66 67) #(0 1 2) #(3 4) | DG     |
+
+  Scenario Outline: Iterate over a vector
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (vector-for-each
+        (lambda xs (write-u8 (apply + xs)))
+        <vectors>)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | vectors                     | output |
+      | #()                         |        |
+      | #(65)                       | A      |
+      | #(65 66)                    | AB     |
+      | #(65 66 67)                 | ABC    |
+      | #(65 66 67) #(0 1 2)        | ACE    |
+      | #(65 66 67) #(0 1 2) #(3 4) | DG     |
 
   Scenario Outline: Copy a vector
     Given a file named "main.scm" with:
