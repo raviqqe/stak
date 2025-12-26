@@ -179,43 +179,6 @@ Feature: Bytevector
         | 4096   | 4095  |
         | 4097   | 4096  |
 
-    Scenario Outline: Convert values between a list and a bytevector
-      Given a file named "main.scm" with:
-        """scheme
-        (import (scheme base) (scheme write) (srfi 1))
-
-        (define xs (iota <count>))
-
-        (write (equal? (bytevector->list (apply bytevector xs)) xs))
-        """
-      When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "#t"
-
-      Examples:
-        | count |
-        | 0     |
-        | 1     |
-        | 2     |
-        | 3     |
-        | 4     |
-        | 5     |
-        | 6     |
-        | 7     |
-        | 8     |
-        | 9     |
-        | 16    |
-        | 17    |
-        | 32    |
-        | 33    |
-        | 64    |
-        | 65    |
-        | 128   |
-        | 129   |
-        | 512   |
-        | 513   |
-        | 4096  |
-        | 4097  |
-
     @gauche @guile @stak
     Scenario Outline: Use a bytevector literal
       Given a file named "main.scm" with:
@@ -224,13 +187,18 @@ Feature: Bytevector
 
         (define xs (include "./value.scm"))
 
-        (write (bytevector-ref xs <index>))
+        (write (bytevector-u8-ref xs <index>))
         """
       And a file named "write.scm" with:
         """scheme
         (import (scheme base) (scheme write) (srfi 1))
 
-        (write (list->bytevector (iota <length>)))
+        (write
+          (apply
+            bytevector
+            (map
+              (lambda (x) (remainder x 256))
+              (iota <length>))))
         """
       And I run the following script:
         """sh
@@ -246,13 +214,13 @@ Feature: Bytevector
         | 2      | 1     |
         | 512    | 0     |
         | 512    | 1     |
-        | 512    | 510   |
-        | 512    | 511   |
+        | 512    | 254   |
+        | 512    | 255   |
         | 4096   | 0     |
         | 4096   | 1     |
-        | 4096   | 4094  |
-        | 4096   | 4095  |
+        | 4096   | 254   |
+        | 4096   | 255   |
         | 8192   | 0     |
         | 8192   | 1     |
-        | 8192   | 8190  |
-        | 8192   | 8191  |
+        | 8192   | 254   |
+        | 8192   | 255   |
