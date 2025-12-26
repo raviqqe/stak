@@ -1638,8 +1638,10 @@
   - constant #f
   - constant procedure 2 #f
     - get 0
-    - constant 1
+    - get 7
     - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
     - if
       - get 1
     - get 1
@@ -1652,7 +1654,7 @@
   - call 1 #f $$close
   - set 1
   - get ||
-  - get 4
+  - constant 0
   - call 2 #f 2
 - set make-vector
 - constant procedure 0 #t

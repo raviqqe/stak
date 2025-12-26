@@ -413,7 +413,9 @@
   - constant #f
   - constant procedure 2 #f
     - get 0
-    - constant 1
+    - get 7
+    - call 2 #f ||
+    - constant #f
     - call 2 #f ||
     - if
       - get 1
@@ -427,7 +429,7 @@
   - call 1 #f ||
   - set 1
   - get ||
-  - get 4
+  - constant 0
   - call 2 #f 2
 - set ||
 - constant procedure 1 #f
