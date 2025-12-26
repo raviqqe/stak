@@ -1608,7 +1608,7 @@
                         (node-push xs (list (cadr result)))
                         (list xs)))))))
           (if (pair? (cdr result))
-            (list (car result) (list (cadr result)))
+            (list (car result) (cdr result))
             (car result)))))
 
     (define (node-push xs x)
