@@ -1555,10 +1555,13 @@
     (define (vector . xs)
       (list->vector xs))
 
+    (define (ceiling-quotient x y)
+      (+ 1 (quotient (- x 1) y)))
+
     (define (vector-height xs)
       (do ((length
              (vector-length xs)
-             (+ 1 (quotient (- length 1) factor)))
+             (ceiling-quotient length factor))
            (height 0 (+ height 1)))
         ((<= length factor)
           height)))
@@ -1599,7 +1602,8 @@
                   (let ((m (length xs)))
                     (if (<= n factor)
                       (node-push xs m x)
-                      (let* ((result (loop (last xs) (quotient n factor)))
+                      (let* ((result
+                               (loop (last xs) (ceiling-quotient n factor)))
                              (y (car result))
                              (xs (list-copy xs)))
                         (list-set! xs (- m 1) y)
