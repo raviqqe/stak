@@ -339,7 +339,11 @@
       - get 3
       - get 2
       - call 2 #f 6
-    - get 4
+    - constant procedure 2 #f
+      - get 0
+      - get 2
+      - call 2 #f 9
+    - call 1 #f $$close
     - get 2
     - get 2
     - call 3 #f fold
@@ -898,9 +902,9 @@
   - if
     - get 1
   - get 2
-  - get 2
-  - get 2
+  - get 1
   - call 1 #f car
+  - get 3
   - call 2 #f 5
   - get 2
   - call 1 #f cdr
@@ -9251,9 +9255,9 @@
   - if
     - get 1
   - get 2
-  - get 2
-  - get 2
+  - get 1
   - call 1 #f car
+  - get 3
   - call 2 #f 5
   - get 2
   - call 1 #f cdr
@@ -9313,11 +9317,11 @@
 - set 9
 - constant procedure 2 #f
   - constant procedure 2 #f
-    - get 0
-    - call 1 #f car
     - get 1
+    - call 1 #f car
+    - get 2
     - call 1 #f cdr
-    - get 3
+    - get 2
     - call 3 #f 17
   - call 1 #f $$close
   - get 1
@@ -11765,13 +11769,13 @@
 - set 6
 - constant procedure 2 #f
   - constant procedure 2 #f
-    - get 0
-    - get 2
+    - get 1
+    - get 1
     - call 2 #f member
     - if
-      - get 1
-    - get 0
-    - get 2
+      - get 0
+    - get 1
+    - get 1
     - call 2 #f cons
   - get 2
   - get 2

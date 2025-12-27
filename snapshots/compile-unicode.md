@@ -223,7 +223,11 @@
       - get 3
       - get 2
       - call 2 #f 6
-    - get 4
+    - constant procedure 2 #f
+      - get 0
+      - get 2
+      - call 2 #f 9
+    - call 1 #f ||
     - get 2
     - get 2
     - call 3 #f ||
@@ -528,9 +532,9 @@
   - if
     - get 1
   - get 2
-  - get 2
-  - get 2
+  - get 1
   - call 1 #f ||
+  - get 3
   - call 2 #f 5
   - get 2
   - call 1 #f ||
