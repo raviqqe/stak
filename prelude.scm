@@ -993,7 +993,7 @@
         y
         (fold
           f
-          (f y (car xs))
+          (f (car xs) y)
           (cdr xs))))
 
     (define (reduce-right f y xs)
