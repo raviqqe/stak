@@ -1606,9 +1606,9 @@
                         (let ((ys (loop (last xs) (- h 1))))
                           (and
                             ys
-                            (node-push! xs n (car ys)))))))))
+                            (node-push! xs n ys))))))))
             (if ys
-              (list (vector-root xs) (car ys))
+              (list (vector-root xs) ys)
               (vector-root xs))))))
 
     (define (node-push! xs n x)
