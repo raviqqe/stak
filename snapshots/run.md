@@ -2027,11 +2027,35 @@
   - call 2 #f 2
 - set vector->list
 - constant procedure 2 #f
+  - get min
+  - get vector-length
+  - get 3
+  - get 3
+  - call 2 #f cons
+  - call 2 #f map
+  - call 2 #f apply
+- set ||
+- constant procedure 4 #f
+  - get 3
+  - constant procedure 1 #f
+    - get 0
+    - get 4
+    - call 2 #f vector-ref
+  - call 1 #f $$close
+  - get 4
+  - get 4
+  - call 2 #f cons
+  - call 2 #f map
+  - call 2 #f apply
+- set ||
+- constant procedure 2 #t
+  - get 1
+  - get 1
+  - call 2 #f ||
   - constant #f
   - constant procedure 2 #f
     - get 1
     - get 5
-    - call 1 #f vector-length
     - call 2 #f eq?
     - if
       - get 0
@@ -2039,10 +2063,11 @@
     - constant 1
     - call 2 #f ||
     - get 1
+    - get 9
+    - get 9
+    - get 9
     - get 6
-    - get 4
-    - call 2 #f vector-ref
-    - call 1 #f 8
+    - call 4 #f ||
     - call 2 #f ||
     - call 2 #f 5
   - call 1 #f $$close
@@ -2051,19 +2076,22 @@
   - get ||
   - call 2 #f 2
 - set vector-map
-- constant procedure 2 #f
+- constant procedure 2 #t
+  - get 1
+  - get 1
+  - call 2 #f ||
   - constant #f
   - constant procedure 1 #f
     - get 0
     - get 4
-    - call 1 #f vector-length
     - call 2 #f eq?
     - if
       - constant #f
+    - get 6
+    - get 6
+    - get 6
     - get 3
-    - get 1
-    - call 2 #f vector-ref
-    - call 1 #f 5
+    - call 4 #f ||
     - set 0
     - get 0
     - constant 1
