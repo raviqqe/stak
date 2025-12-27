@@ -854,6 +854,16 @@
         ((_ x y)
           ($< y x))))
 
+    (define-optimizer <=
+      (syntax-rules ()
+        ((_ x y)
+          ($< x y))))
+
+    (define-optimizer >=
+      (syntax-rules ()
+        ((_ x y)
+          (not ($< x y)))))
+
     (define (extremum f)
       (lambda (x . xs)
         (fold (lambda (x y) (if (f x y) x y)) x xs)))
