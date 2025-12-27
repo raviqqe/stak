@@ -1597,21 +1597,22 @@
     (define (vector-push! xs x)
       (vector-set-root!
         xs
-        (if (null? (vector-root xs))
-          (list x)
-          (let ((ys
-                  (let loop ((xs (vector-root xs))
-                             (h (vector-height xs)))
-                    (let ((n (length xs)))
-                      (if (zero? h)
-                        (node-push! xs n x)
-                        (let ((ys (loop (last xs) (- h 1))))
-                          (and
-                            ys
-                            (node-push! xs n ys))))))))
-            (if ys
-              (list (vector-root xs) ys)
-              (vector-root xs)))))
+        (let ((root (vector-root xs)))
+          (if (null? root)
+            (list x)
+            (let ((ys
+                    (let loop ((xs root)
+                               (h (vector-height xs)))
+                      (let ((n (length xs)))
+                        (if (zero? h)
+                          (node-push! xs n x)
+                          (let ((ys (loop (last xs) (- h 1))))
+                            (and
+                              ys
+                              (node-push! xs n ys))))))))
+              (if ys
+                (list root ys)
+                root)))))
       (vector-set-length! xs (+ (vector-length xs) 1)))
 
     (define (node-push! xs n x)
