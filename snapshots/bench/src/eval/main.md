@@ -1639,9 +1639,7 @@
   - constant procedure 2 #f
     - get 0
     - get 7
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
+    - call 2 #f >=
     - if
       - get 1
     - get 1
@@ -1691,29 +1689,29 @@
   - constant #f
   - constant procedure 3 #f
     - get 2
-    - call 1 #f negative?
+    - constant 0
+    - call 2 #f eq?
     - if
       - get 0
-    - get ||
-    - get 3
-    - call 2 #f expt
-    - get 3
-    - constant 1
-    - call 2 #f ||
-    - get 3
     - get 2
-    - call 2 #f remainder
-    - get 3
-    - call 1 #f car
-    - get 5
+    - get ||
+    - call 2 #f quotient
+    - get 2
     - get 4
+    - call 2 #f remainder
+    - get 2
+    - call 1 #f car
+    - get 4
+    - get 6
     - call 2 #f quotient
     - call 2 #f list-tail
-    - call 3 #f 8
+    - call 3 #f 7
   - call 1 #f $$close
   - set 1
-  - get 2
+  - get ||
+  - get 3
   - call 1 #f ||
+  - call 2 #f expt
   - get 2
   - get 4
   - call 1 #f ||
@@ -1769,26 +1767,28 @@
   - call 2 #f ||
   - constant #f
   - constant procedure 2 #f
-    - get 0
+    - get 1
+    - call 1 #f length
+    - get 1
     - constant 0
     - call 2 #f eq?
     - if
+      - get 2
       - get 1
-      - get 6
-      - call 2 #f ||
-    - get 1
+      - get 8
+      - call 3 #f ||
+    - get 2
     - call 1 #f last
-    - get 1
+    - get 2
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
+    - call 2 #f 6
     - get 0
     - call 1 #f car
-    - get 3
+    - get 4
     - call 1 #f list-copy
     - get 0
-    - get 1
-    - call 1 #f length
+    - get 4
     - constant 1
     - call 2 #f ||
     - get 3
@@ -1799,10 +1799,10 @@
     - call 1 #f pair?
     - if
       - get 0
-      - get 3
-      - call 1 #f cadr
-      - call 1 #f list
-      - call 2 #f ||
+      - get 4
+      - get 4
+      - call 1 #f cdr
+      - call 3 #f ||
     - get 0
     - call 1 #f list
   - call 1 #f $$close
@@ -1820,8 +1820,7 @@
     - get 0
     - call 1 #f car
     - get 1
-    - call 1 #f cadr
-    - call 1 #f list
+    - call 1 #f cdr
     - call 2 #f list
     - continue
   - get 0
@@ -1829,18 +1828,17 @@
   - call 2 #f $$unbind
   - call 2 #f ||
 - set ||
-- constant procedure 2 #f
+- constant procedure 3 #f
   - get 1
-  - call 1 #f length
   - get ||
   - call 2 #f ||
   - if
-    - get 1
+    - get 2
     - get 1
     - call 1 #f list
     - call 2 #f append
     - call 1 #f list
-  - get 1
+  - get 2
   - get 1
   - call 2 #f list
 - set ||
@@ -1891,9 +1889,7 @@
     - get 1
     - get 5
     - call 1 #f cdr
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
+    - call 2 #f >=
     - if
       - get 0
     - get 1
@@ -1923,9 +1919,7 @@
     - get 0
     - get 4
     - call 1 #f cdr
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
+    - call 2 #f >=
     - if
       - constant #f
     - get 7
@@ -1961,9 +1955,7 @@
     - get 0
     - get 4
     - call 1 #f cdr
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
+    - call 2 #f >=
     - if
       - constant #f
     - get 6
