@@ -2021,11 +2021,10 @@
      (define-values (expression2 libraries) (expand-libraries expression1))
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
      (define features (detect-features expression3))
-     (define-values (expression4 optimizers)
-      (optimize
-       (if (memq 'shake-tree options)
-        (shake-tree features expression3)
-        expression3)))
+     (define-values (expression4 optimizers) (optimize expression3))
+     (define expression5 (if (memq 'shake-tree options)
+                          (shake-tree features expression4)
+                          expression4))
      (define metadata
       (compile-metadata
        features
@@ -2033,8 +2032,8 @@
        (shake-syntax-tree libraries macros)
        optimizers
        dynamic-symbols
-       expression4))
-     (define expression5 (analyze-free-variables expression4))
+       expression5))
+     (define expression6 (analyze-free-variables expression5))
 
      (encode
       (marshal
@@ -2044,7 +2043,7 @@
         #f
         (build-primitives
          primitives
-         (compile metadata expression5))))))
+         (compile metadata expression6))))))
 
     main))
 
