@@ -1549,7 +1549,7 @@
 
       (do ((xs empty-vector (vector-push xs fill))
            (index 0 (+ index 1)))
-        ((not (< index length))
+        ((>= index length)
           xs)))
 
     (define (vector . xs)
@@ -1631,14 +1631,14 @@
            (ys
              empty-vector
              (vector-push ys (vector-ref xs index))))
-        ((not (< index (cdr range)))
+        ((>= index (cdr range))
           ys)))
 
     (define (vector-copy! to at from . rest)
       (define range (parse-range from rest))
 
       (do ((index (car range) (+ index 1)))
-        ((not (< index (cdr range))))
+        ((>= index (cdr range)))
         (vector-set!
           to
           (+ at (- index (car range)))
@@ -1648,7 +1648,7 @@
       (define range (parse-range xs rest))
 
       (do ((index (car range) (+ index 1)))
-        ((not (< index (cdr range))))
+        ((>= index (cdr range)))
         (vector-set! xs index fill)))
 
     (define (list->vector xs)
