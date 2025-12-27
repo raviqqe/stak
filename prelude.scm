@@ -1615,7 +1615,7 @@
         (begin
           (set-cdr! (list-tail xs (- n 1)) (list x))
           #f)
-        (list xs x)))
+        (list x)))
 
     (define (parse-range xs rest)
       (cons
