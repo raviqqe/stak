@@ -1595,7 +1595,6 @@
         xs))
 
     (define (vector-push! xs x)
-      (vector-set-length! xs (+ (vector-length xs) 1))
       (vector-set-root!
         xs
         (if (null? (vector-root xs))
@@ -1612,7 +1611,8 @@
                             (node-push! xs n ys))))))))
             (if ys
               (list (vector-root xs) ys)
-              (vector-root xs))))))
+              (vector-root xs)))))
+      (vector-set-length! xs (+ (vector-length xs) 1)))
 
     (define (node-push! xs n x)
       (if (< n factor)
