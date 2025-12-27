@@ -1603,22 +1603,22 @@
             (let ((ys
                     (let loop ((xs root)
                                (h (vector-height xs)))
-                      (let ((n (length xs)))
-                        (if (zero? h)
-                          (node-push! xs n x)
-                          (let ((ys (loop (last xs) (- h 1))))
-                            (and ys (node-push! xs n ys))))))))
+                      (if (zero? h)
+                        (node-push! xs x)
+                        (let ((ys (loop (last xs) (- h 1))))
+                          (and ys (node-push! xs ys)))))))
               (if ys
                 (list root ys)
                 root)))))
       (vector-set-length! xs (+ (vector-length xs) 1)))
 
-    (define (node-push! xs n x)
-      (if (< n factor)
-        (begin
-          (set-cdr! (list-tail xs (- n 1)) (list x))
-          #f)
-        (list x)))
+    (define (node-push! xs x)
+      (let ((n (length xs)))
+        (if (< n factor)
+          (begin
+            (set-cdr! (list-tail xs (- n 1)) (list x))
+            #f)
+          (list x))))
 
     (define (parse-range xs rest)
       (cons
