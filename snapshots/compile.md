@@ -4331,20 +4331,23 @@
   - expression2
   - detect-features
   - expression3
+  - expression4
+  - shake
+  - expression5
+  - expression6
   - compile-metadata
   - shake-syntax-tree
   - libraries
   - macros
   - optimizers
   - dynamic-symbols
-  - expression4
   - encode
   - marshal
   - options
   - build-primitives
   - primitives
   - metadata
-  - expression5
+  - expression7
   - main
   - _rib_
   - tag
@@ -20323,25 +20326,53 @@
         - detect-features
         - expression3
     - list
+      - define
+      - list
+        - shake
+        - expression
+      - list
+        - if
+        - list
+          - memq
+          - list
+            - quote
+            - shake-tree
+          - options
+        - list
+          - shake-tree
+          - features
+          - expression
+        - expression
+    - list
+      - define
+      - expression4
+      - list
+        - shake
+        - expression3
+    - list
       - define-values
       - list
-        - expression4
+        - expression5
         - optimizers
       - list
         - optimize
+        - expression4
+    - list
+      - define-values
+      - list
+        - expression6
+        - \_
+      - list
+        - optimize
         - list
-          - if
-          - list
-            - memq
-            - list
-              - quote
-              - shake-tree
-            - options
-          - list
-            - shake-tree
-            - features
-            - expression3
-          - expression3
+          - shake
+          - expression5
+    - list
+      - define
+      - expression7
+      - list
+        - analyze-free-variables
+        - expression6
     - list
       - define
       - metadata
@@ -20355,13 +20386,7 @@
           - macros
         - optimizers
         - dynamic-symbols
-        - expression4
-    - list
-      - define
-      - expression5
-      - list
-        - analyze-free-variables
-        - expression4
+        - expression7
     - list
       - encode
       - list
@@ -20377,7 +20402,7 @@
             - list
               - compile
               - metadata
-              - expression5
+              - expression7
   - main
 - set ||
 - constant let
