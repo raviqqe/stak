@@ -857,7 +857,7 @@
     (define-optimizer <=
       (syntax-rules ()
         ((_ x y)
-          ($< x y))))
+          (not ($< y x)))))
 
     (define-optimizer >=
       (syntax-rules ()
