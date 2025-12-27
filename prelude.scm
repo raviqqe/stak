@@ -1594,8 +1594,9 @@
         rest))
 
     (define (vector-push! xs x)
-      (make-vector*
-        (+ (vector-length xs) 1)
+      (vector-set-length! xs (+ (vector-length xs) 1))
+      (vector-set-root!
+        xs
         (if (null? (vector-root xs))
           (list x)
           (let ((ys
