@@ -627,6 +627,7 @@
     (define cons (primitive 61))
     (define memq (primitive 62))
     (define list-tail (primitive 63))
+    (define length (primitive 64))
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
     (define sqrt (primitive 504))
@@ -900,11 +901,6 @@
         (if (zero? length)
           '()
           (cons fill (loop (- length 1))))))
-
-    (define (length xs)
-      (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
-        ((null? xs)
-          y)))
 
     (define (map* f xs)
       (if (null? xs)

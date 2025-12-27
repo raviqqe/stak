@@ -1,4 +1,4 @@
-use stak_vm::{Error, Heap, Memory, PrimitiveSet, Type};
+use stak_vm::{Error, Heap, Memory, Number, PrimitiveSet, Type};
 use winter_maybe_async::maybe_async;
 
 /// A list primitive.
@@ -11,6 +11,8 @@ pub enum ListPrimitive {
     Memq,
     /// A `list-tail` procedure.
     Tail,
+    /// A `length` procedure.
+    Length,
 }
 
 impl ListPrimitive {
@@ -18,6 +20,7 @@ impl ListPrimitive {
     const CONS: usize = Self::Cons as _;
     const MEMQ: usize = Self::Memq as _;
     const TAIL: usize = Self::Tail as _;
+    const LENGTH: usize = Self::Length as _;
 }
 
 /// A list primitive set.
@@ -96,6 +99,11 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
                 }
 
                 memory.push(xs)?;
+            }
+            ListPrimitive::LENGTH => {
+                let xs = memory.pop()?;
+
+                memory.push(Number::from_i64(memory.list_length(xs.assume_cons())? as _).into())?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }

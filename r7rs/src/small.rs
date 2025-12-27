@@ -147,7 +147,11 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::NULL | Primitive::PAIR => {
                 maybe_await!(self.type_check.operate(memory, primitive - Primitive::NULL))?
             }
-            Primitive::ASSQ | Primitive::CONS | Primitive::MEMQ | Primitive::TAIL => {
+            Primitive::ASSQ
+            | Primitive::CONS
+            | Primitive::MEMQ
+            | Primitive::TAIL
+            | Primitive::LENGTH => {
                 maybe_await!(self.list.operate(memory, primitive - Primitive::ASSQ))?
             }
             Primitive::EQV | Primitive::EQUAL_INNER => {
