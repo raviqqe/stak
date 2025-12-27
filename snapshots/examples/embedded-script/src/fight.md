@@ -88,6 +88,9 @@
 - constant 63
 - call 1 #f ||
 - set ||
+- constant 64
+- call 1 #f ||
+- set ||
 - constant 71
 - call 1 #f ||
 - set ||
@@ -268,25 +271,6 @@
   - get 0
   - call 1 #f ||
   - call 1 #f ||
-- set ||
-- constant procedure 1 #f
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f ||
-    - if
-      - get 0
-    - get 1
-    - call 1 #f ||
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
-  - set 1
-  - get 1
-  - constant 0
-  - call 2 #f 2
 - set ||
 - constant procedure 2 #f
   - get 0
