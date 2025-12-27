@@ -817,6 +817,15 @@
 - constant ()
 - call 2 #f ||
 - set ||
+- constant procedure 2 #f
+  - constant 1
+  - get 2
+  - constant 1
+  - call 2 #f ||
+  - get 2
+  - call 2 #f ||
+  - call 2 #f ||
+- set ||
 - constant procedure 1 #f
   - constant #f
   - constant procedure 2 #f
@@ -825,12 +834,8 @@
     - call 2 #f ||
     - if
       - get 0
-    - constant 1
-    - get 2
-    - constant 1
-    - call 2 #f ||
+    - get 1
     - get ||
-    - call 2 #f ||
     - call 2 #f ||
     - get 1
     - constant 1
@@ -853,7 +858,7 @@
     - get 1
     - call 1 #f ||
     - get 1
-    - constant 0
+    - get ||
     - call 2 #f ||
     - if
       - get 2
@@ -863,7 +868,7 @@
     - get 2
     - call 1 #f ||
     - get 2
-    - constant 1
+    - get ||
     - call 2 #f ||
     - call 2 #f 6
     - get 0

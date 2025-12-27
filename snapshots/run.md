@@ -1659,6 +1659,15 @@
   - get 0
   - call 1 #f list->vector
 - set vector
+- constant procedure 2 #f
+  - constant 1
+  - get 2
+  - constant 1
+  - call 2 #f ||
+  - get 2
+  - call 2 #f quotient
+  - call 2 #f ||
+- set ||
 - constant procedure 1 #f
   - constant #f
   - constant procedure 2 #f
@@ -1667,12 +1676,8 @@
     - call 2 #f <=
     - if
       - get 0
-    - constant 1
-    - get 2
-    - constant 1
-    - call 2 #f ||
+    - get 1
     - get ||
-    - call 2 #f quotient
     - call 2 #f ||
     - get 1
     - constant 1
@@ -1770,8 +1775,8 @@
     - get 1
     - call 1 #f length
     - get 1
-    - constant 0
-    - call 2 #f eq?
+    - get ||
+    - call 2 #f <=
     - if
       - get 2
       - get 1
@@ -1780,7 +1785,7 @@
     - get 2
     - call 1 #f last
     - get 2
-    - constant 1
+    - get ||
     - call 2 #f ||
     - call 2 #f 6
     - get 0
@@ -1810,7 +1815,7 @@
   - get 3
   - call 1 #f ||
   - get 4
-  - call 1 #f ||
+  - call 1 #f vector-length
   - call 2 #f 2
   - call 2 #f $$unbind
   - get 0
