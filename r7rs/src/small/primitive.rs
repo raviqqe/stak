@@ -24,6 +24,7 @@ pub(super) enum Primitive {
     Cons,
     Memq,
     Tail,
+    Length,
     Eqv = 70,
     EqualInner,
     Read = 100,
@@ -78,6 +79,7 @@ impl Primitive {
     pub const CONS: usize = Self::Cons as _;
     pub const MEMQ: usize = Self::Memq as _;
     pub const TAIL: usize = Self::Tail as _;
+    pub const LENGTH: usize = Self::Length as _;
     pub const EQV: usize = Self::Eqv as _;
     pub const EQUAL_INNER: usize = Self::EqualInner as _;
     pub const READ: usize = Self::Read as _;

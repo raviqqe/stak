@@ -136,6 +136,9 @@
 - constant 63
 - call 1 #f primitive
 - set list-tail
+- constant 64
+- call 1 #f primitive
+- set length
 - constant 70
 - call 1 #f primitive
 - set eqv?
@@ -676,25 +679,6 @@
   - get 3
   - call 1 #f 1
 - set make-list
-- constant procedure 1 #f
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f null?
-    - if
-      - get 0
-    - get 1
-    - call 1 #f cdr
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 1
-  - constant 0
-  - call 2 #f 2
-- set length
 - constant procedure 2 #f
   - get 0
   - call 1 #f null?
