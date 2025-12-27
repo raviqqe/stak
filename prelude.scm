@@ -1588,9 +1588,9 @@
       (let ((xs (empty-vector)))
         (for-each
           (lambda (ys)
-            (do ((index 0 (+ index 1)))
-              ((= index (vector-length ys)))
-              (vector-push! xs (vector-ref ys index))))
+            (vector-for-each
+              (lambda (x) (vector-push! xs x))
+              ys))
           rest)
         xs))
 
@@ -1657,11 +1657,11 @@
         (vector-set! xs index fill)))
 
     (define (list->vector xs)
-      (do ((xs xs (cdr xs))
-           (ys (empty-vector)))
-        ((not (pair? xs))
-          ys)
-        (vector-push! ys (car xs))))
+      (let ((ys (empty-vector)))
+        (for-each
+          (lambda (x) (vector-push! ys x))
+          xs)
+        ys))
 
     (define (vector->list xs)
       (do ((height (vector-height xs) (- height 1))
