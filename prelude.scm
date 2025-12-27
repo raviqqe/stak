@@ -724,8 +724,8 @@
     (define (inverse-arithmetic-operator f y)
       (lambda (x . xs)
         (if (null? xs)
-          (f x y)
-          (fold f x xs))))
+          (f y x)
+          (fold (lambda (x y) (f y x)) x xs))))
 
     (define + (arithmetic-operator $+ 0))
     (define - (inverse-arithmetic-operator $- 0))
