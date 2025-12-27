@@ -1564,16 +1564,15 @@
           height)))
 
     (define (vector-cell xs index)
-      (let loop ((height (vector-height xs))
+      (let loop ((p (expt factor (vector-height xs)))
                  (index index)
                  (x (cons (vector-root xs) #f)))
-        (if (negative? height)
+        (if (zero? p)
           x
-          (let ((q (expt factor height)))
-            (loop
-              (- height 1)
-              (remainder index q)
-              (list-tail (car x) (quotient index q)))))))
+          (loop
+            (quotient p factor)
+            (remainder index p)
+            (list-tail (car x) (quotient index p))))))
 
     (define (vector-ref xs index)
       (car (vector-cell xs index)))
