@@ -2029,7 +2029,7 @@
 
      (define expression4 (shake expression3))
      (define-values (expression5 optimizers) (optimize expression4))
-     (define expression6 (shake expression5))
+     (define-values (expression6 _) (optimize (shake expression5)))
      (define expression7 (analyze-free-variables expression6))
 
      (define metadata

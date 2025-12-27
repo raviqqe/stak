@@ -20358,11 +20358,15 @@
         - optimize
         - expression4
     - list
-      - define
-      - expression6
+      - define-values
       - list
-        - shake
-        - expression5
+        - expression6
+        - \_
+      - list
+        - optimize
+        - list
+          - shake
+          - expression5
     - list
       - define
       - expression7
