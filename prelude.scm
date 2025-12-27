@@ -1595,20 +1595,19 @@
     (define (vector-push! xs x)
       (make-vector*
         (+ (vector-length xs) 1)
-        (let ((result
+        (let ((ys
                 (let loop ((xs (vector-root xs))
                            (h (vector-height xs)))
                   (let ((n (length xs)))
                     (if (zero? h)
                       (node-push! xs n x)
-                      (let ((result (loop (last xs) (- h 1))))
-                        (list-set! xs (- n 1) (car result))
-                        (if (pair? (cdr result))
-                          (node-push! xs n (cdr result))
-                          (list xs))))))))
-          (if (pair? (cdr result))
-            (list (car result) (cdr result))
-            (car result)))))
+                      (let ((ys (loop (last xs) (- h 1))))
+                        (and
+                          ys
+                          (node-push! xs n (car ys)))))))))
+          (if ys
+            (list (vector-root xs) (car ys))
+            (vector-root xs)))))
 
     (define (node-push! xs n x)
       (if (< n factor)
