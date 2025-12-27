@@ -1614,7 +1614,7 @@
       (if (< n factor)
         (begin
           (set-cdr! (list-tail xs (- n 1)) (list x))
-          (list (append xs (list x))))
+          #f)
         (list xs x)))
 
     (define (parse-range xs rest)
