@@ -223,6 +223,8 @@
     - get 0
     - get 7
     - call 2 #f ||
+    - constant #f
+    - call 2 #f ||
     - if
       - get 1
     - get 1
@@ -243,8 +245,10 @@
 - constant procedure 1 #f
   - constant #f
   - constant procedure 2 #f
-    - get 1
     - get ||
+    - get 2
+    - call 2 #f ||
+    - constant #f
     - call 2 #f ||
     - if
       - get 0
