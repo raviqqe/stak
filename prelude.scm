@@ -1548,8 +1548,8 @@
       (define fill (and (pair? rest) (car rest)))
 
       (do ((xs empty-vector (vector-push xs fill))
-           (length length (- length 1)))
-        ((< length 1)
+           (index 0 (+ index 1)))
+        ((>= index length)
           xs)))
 
     (define (vector . xs)
@@ -1564,16 +1564,15 @@
           height)))
 
     (define (vector-cell xs index)
-      (let loop ((height (vector-height xs))
+      (let loop ((p (expt factor (vector-height xs)))
                  (index index)
                  (x (cons (vector-root xs) #f)))
-        (if (negative? height)
+        (if (zero? p)
           x
-          (let ((q (expt factor height)))
-            (loop
-              (- height 1)
-              (remainder index q)
-              (list-tail (car x) (quotient index q)))))))
+          (loop
+            (quotient p factor)
+            (remainder index p)
+            (list-tail (car x) (quotient index p))))))
 
     (define (vector-ref xs index)
       (car (vector-cell xs index)))
@@ -1597,29 +1596,30 @@
         (let ((result
                 (let loop ((xs (vector-root xs))
                            (h (vector-height xs)))
-                  (if (zero? h)
-                    (node-push xs x)
-                    (let* ((result (loop (last xs) (- h 1)))
-                           (y (car result))
-                           (xs (list-copy xs)))
-                      ; TODO Optimize a length.
-                      (list-set! xs (- (length xs) 1) y)
-                      (if (pair? (cdr result))
-                        (node-push xs (list (cadr result)))
-                        (list xs)))))))
+                  (let ((n (length xs)))
+                    (if (zero? h)
+                      (node-push xs n x)
+                      (let* ((result (loop (last xs) (- h 1)))
+                             (y (car result))
+                             (xs (list-copy xs)))
+                        (list-set! xs (- n 1) y)
+                        (if (pair? (cdr result))
+                          (node-push xs n (cdr result))
+                          (list xs))))))))
           (if (pair? (cdr result))
-            (list (car result) (list (cadr result)))
+            (list (car result) (cdr result))
             (car result)))))
 
-    (define (node-push xs x)
-      ; TODO Optimize a length.
-      (if (< (length xs) factor)
+    (define (node-push xs n x)
+      (if (< n factor)
         (list (append xs (list x)))
         (list xs x)))
 
     (define (parse-range xs rest)
       (cons
-        (or (and (pair? rest) (car rest)) 0)
+        (or
+          (and (pair? rest) (car rest))
+          0)
         (or
           (and (pair? rest) (pair? (cdr rest)) (cadr rest))
           (vector-length xs))))
@@ -1631,14 +1631,14 @@
            (ys
              empty-vector
              (vector-push ys (vector-ref xs index))))
-        ((not (< index (cdr range)))
+        ((>= index (cdr range))
           ys)))
 
     (define (vector-copy! to at from . rest)
       (define range (parse-range from rest))
 
       (do ((index (car range) (+ index 1)))
-        ((not (< index (cdr range))))
+        ((>= index (cdr range)))
         (vector-set!
           to
           (+ at (- index (car range)))
@@ -1648,7 +1648,7 @@
       (define range (parse-range xs rest))
 
       (do ((index (car range) (+ index 1)))
-        ((not (< index (cdr range))))
+        ((>= index (cdr range)))
         (vector-set! xs index fill)))
 
     (define (list->vector xs)

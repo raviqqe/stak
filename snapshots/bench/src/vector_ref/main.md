@@ -122,11 +122,6 @@
   - constant 0
   - call 2 #f ||
 - set ||
-- constant procedure 1 #f
-  - get 0
-  - constant 0
-  - call 2 #f ||
-- set ||
 - constant procedure 2 #f
   - constant procedure 0 #t
     - get 3
@@ -189,6 +184,14 @@
 - constant procedure 2 #f
   - get 0
   - get 2
+  - call 2 #f ||
+  - constant #f
+  - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 2 #f
+  - get 1
+  - get 1
   - call 2 #f ||
   - constant #f
   - call 2 #f ||
@@ -413,7 +416,7 @@
   - constant #f
   - constant procedure 2 #f
     - get 0
-    - constant 1
+    - get 7
     - call 2 #f ||
     - if
       - get 1
@@ -427,7 +430,7 @@
   - call 1 #f ||
   - set 1
   - get ||
-  - get 4
+  - constant 0
   - call 2 #f 2
 - set ||
 - constant procedure 1 #f
@@ -460,29 +463,29 @@
   - constant #f
   - constant procedure 3 #f
     - get 2
-    - call 1 #f ||
+    - constant 0
+    - call 2 #f ||
     - if
       - get 0
-    - get ||
-    - get 3
-    - call 2 #f ||
-    - get 3
-    - constant 1
-    - call 2 #f ||
-    - get 3
     - get 2
+    - get ||
     - call 2 #f ||
-    - get 3
-    - call 1 #f ||
-    - get 5
+    - get 2
     - get 4
     - call 2 #f ||
+    - get 2
+    - call 1 #f ||
+    - get 4
+    - get 6
     - call 2 #f ||
-    - call 3 #f 8
+    - call 2 #f ||
+    - call 3 #f 7
   - call 1 #f ||
   - set 1
-  - get 2
+  - get ||
+  - get 3
   - call 1 #f ||
+  - call 2 #f ||
   - get 2
   - get 4
   - call 1 #f ||
@@ -510,26 +513,28 @@
   - call 2 #f ||
   - constant #f
   - constant procedure 2 #f
-    - get 0
+    - get 1
+    - call 1 #f ||
+    - get 1
     - constant 0
     - call 2 #f ||
     - if
+      - get 2
       - get 1
-      - get 6
-      - call 2 #f ||
-    - get 1
+      - get 8
+      - call 3 #f ||
+    - get 2
     - call 1 #f ||
-    - get 1
+    - get 2
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
+    - call 2 #f 6
     - get 0
     - call 1 #f ||
-    - get 3
+    - get 4
     - call 1 #f ||
     - get 0
-    - get 1
-    - call 1 #f ||
+    - get 4
     - constant 1
     - call 2 #f ||
     - get 3
@@ -540,10 +545,10 @@
     - call 1 #f ||
     - if
       - get 0
-      - get 3
+      - get 4
+      - get 4
       - call 1 #f ||
-      - call 1 #f ||
-      - call 2 #f ||
+      - call 3 #f ||
     - get 0
     - call 1 #f ||
   - call 1 #f ||
@@ -562,7 +567,6 @@
     - call 1 #f ||
     - get 1
     - call 1 #f ||
-    - call 1 #f ||
     - call 2 #f ||
     - continue
   - get 0
@@ -570,18 +574,17 @@
   - call 2 #f ||
   - call 2 #f ||
 - set ||
-- constant procedure 2 #f
+- constant procedure 3 #f
   - get 1
-  - call 1 #f ||
   - get ||
   - call 2 #f ||
   - if
-    - get 1
+    - get 2
     - get 1
     - call 1 #f ||
     - call 2 #f ||
     - call 1 #f ||
-  - get 1
+  - get 2
   - get 1
   - call 2 #f ||
 - set ||
