@@ -1585,14 +1585,14 @@
       (set-car! (vector-cell xs index) x))
 
     (define (vector-append . rest)
-      (let ((xs (empty-vector)))
+      (let ((ys (empty-vector)))
         (for-each
-          (lambda (ys)
+          (lambda (xs)
             (vector-for-each
-              (lambda (x) (vector-push! xs x))
-              ys))
+              (lambda (x) (vector-push! ys x))
+              xs))
           rest)
-        xs))
+        ys))
 
     (define (vector-push! xs x)
       (vector-set-root!
