@@ -1524,7 +1524,7 @@
     list->bytevector
     bytevector->list)
 
-  (import (stak base) (only (srfi 1) fold last))
+  (import (stak base) (only (srfi 1) last))
 
   (begin
     ; Vector
@@ -1537,20 +1537,24 @@
 
     (define vector? (instance? vector-type))
     (define vector-length car)
+    (define vector-set-length! set-car!)
     (define vector-root cdr)
+    (define vector-set-root! set-cdr!)
 
     (define (make-vector* length root)
       (data-rib vector-type length root))
 
-    (define empty-vector (make-vector* 0 '()))
+    (define (empty-vector)
+      (make-vector* 0 '()))
 
     (define (make-vector length . rest)
       (define fill (and (pair? rest) (car rest)))
 
-      (do ((xs empty-vector (vector-push xs fill))
+      (do ((xs (empty-vector))
            (index 0 (+ index 1)))
         ((>= index length)
-          xs)))
+          xs)
+        (vector-push! xs fill)))
 
     (define (vector . xs)
       (list->vector xs))
@@ -1581,39 +1585,40 @@
       (set-car! (vector-cell xs index) x))
 
     (define (vector-append . rest)
-      (fold
-        (lambda (xs ys)
-          (do ((xs xs (vector-push xs (vector-ref ys index)))
-               (index 0 (+ index 1)))
-            ((= index (vector-length ys))
-              xs)))
-        empty-vector
-        rest))
+      (let ((ys (empty-vector)))
+        (for-each
+          (lambda (xs)
+            (vector-for-each
+              (lambda (x) (vector-push! ys x))
+              xs))
+          rest)
+        ys))
 
-    (define (vector-push xs x)
-      (make-vector*
-        (+ (vector-length xs) 1)
-        (let ((result
-                (let loop ((xs (vector-root xs))
-                           (h (vector-height xs)))
-                  (let ((n (length xs)))
-                    (if (zero? h)
-                      (node-push xs n x)
-                      (let* ((result (loop (last xs) (- h 1)))
-                             (y (car result))
-                             (xs (list-copy xs)))
-                        (list-set! xs (- n 1) y)
-                        (if (pair? (cdr result))
-                          (node-push xs n (cdr result))
-                          (list xs))))))))
-          (if (pair? (cdr result))
-            (list (car result) (cdr result))
-            (car result)))))
+    (define (vector-push! xs x)
+      (vector-set-root!
+        xs
+        (let ((root (vector-root xs)))
+          (if (null? root)
+            (list x)
+            (let ((ys
+                    (let loop ((xs root)
+                               (h (vector-height xs)))
+                      (if (zero? h)
+                        (node-push! xs x)
+                        (let ((ys (loop (last xs) (- h 1))))
+                          (and ys (node-push! xs ys)))))))
+              (if ys
+                (list root ys)
+                root)))))
+      (vector-set-length! xs (+ (vector-length xs) 1)))
 
-    (define (node-push xs n x)
-      (if (< n factor)
-        (list (append xs (list x)))
-        (list xs x)))
+    (define (node-push! xs x)
+      (let ((n (length xs)))
+        (if (< n factor)
+          (begin
+            (set-cdr! (list-tail xs (- n 1)) (list x))
+            #f)
+          (list x))))
 
     (define (parse-range xs rest)
       (cons
@@ -1628,11 +1633,10 @@
       (define range (parse-range xs rest))
 
       (do ((index (car range) (+ index 1))
-           (ys
-             empty-vector
-             (vector-push ys (vector-ref xs index))))
+           (ys (empty-vector)))
         ((>= index (cdr range))
-          ys)))
+          ys)
+        (vector-push! ys (vector-ref xs index))))
 
     (define (vector-copy! to at from . rest)
       (define range (parse-range from rest))
@@ -1652,10 +1656,11 @@
         (vector-set! xs index fill)))
 
     (define (list->vector xs)
-      (do ((xs xs (cdr xs))
-           (ys empty-vector (vector-push ys (car xs))))
-        ((not (pair? xs))
-          ys)))
+      (let ((ys (empty-vector)))
+        (for-each
+          (lambda (x) (vector-push! ys x))
+          xs)
+        ys))
 
     (define (vector->list xs)
       (do ((height (vector-height xs) (- height 1))
@@ -1670,11 +1675,12 @@
       (apply f (map (lambda (xs) (vector-ref xs index)) (cons x xs))))
 
     (define (vector-map f x . xs)
-      (let ((length (min-length x xs)))
-        (do ((index 0 (+ index 1))
-             (ys empty-vector (vector-push ys (map-element f x xs index))))
-          ((= index length)
-            ys))))
+      (do ((index 0 (+ index 1))
+           (length (min-length x xs))
+           (ys (empty-vector)))
+        ((= index length)
+          ys)
+        (vector-push! ys (map-element f x xs index))))
 
     (define (vector-for-each f x . xs)
       (let ((length (min-length x xs)))
