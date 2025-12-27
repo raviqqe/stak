@@ -1607,9 +1607,7 @@
                         (if (zero? h)
                           (node-push! xs n x)
                           (let ((ys (loop (last xs) (- h 1))))
-                            (and
-                              ys
-                              (node-push! xs n ys))))))))
+                            (and ys (node-push! xs n ys))))))))
               (if ys
                 (list root ys)
                 root)))))
