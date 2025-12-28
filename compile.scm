@@ -842,6 +842,9 @@
        (cons name literal)
        (optimization-context-literals context))))
 
+    (define optimizer-macro-context
+     (make-macro-context (make-macro-state '() '() '() '()) '()))
+
     (define (make-optimizer optimizer)
      (define (match-pattern pattern expression)
       (cond
