@@ -4027,7 +4027,6 @@
   - prefix
   - rename
   - export
-  - $$define-optimizer
   - $$unbind
   - $procedure
   - $$apply
@@ -4266,6 +4265,7 @@
   - syntax-rules
   - define-syntax
   - syntax-error
+  - define-optimizer
   - \_
   - ...
   - define
@@ -4426,6 +4426,7 @@
   - $$...
   - $$define-syntax
   - $$syntax-error
+  - $$define-optimizer
   - $$define
   - $$lambda
   - $$let-syntax
@@ -7441,10 +7442,26 @@
   - constant $$syntax-rules
   - call 2 #f eqv?
   - if
-    - get 1
-    - call 1 #f caddr
+    - get 9
     - get 2
+    - call 1 #f cadr
+    - call 2 #f 41
+    - get 2
+    - call 1 #f caddr
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 15
+        - get 6
+        - get 6
+        - get 3
+        - call 4 #f 36
+      - call 1 #f $$close
+      - get 1
+      - call 2 #f map
+    - call 1 #f $$close
+    - get 4
     - call 1 #f cdddr
+    - call 2 #f map
     - constant procedure 1 #f
       - constant #f
       - constant procedure 1 #f
@@ -7452,6 +7469,8 @@
         - call 1 #f null?
         - if
           - get 3
+          - constant #f
+          - call 2 #f values
         - constant procedure 1 #f
           - constant procedure 1 #f
             - constant procedure 1 #f
@@ -7478,19 +7497,21 @@
           - constant procedure 0 #f
             - get 4
             - call 1 #f car
-            - get 21
             - get 22
+            - get 23
             - get 13
-            - call 3 #f 59
+            - call 3 #f 60
             - get 0
             - get 1
             - get 3
             - call 1 #f car
             - get 12
-            - call 3 #f 41
+            - call 3 #f 42
             - get 3
             - call 1 #f cadr
-            - call 3 #f 38
+            - call 3 #f 39
+            - constant #t
+            - call 2 #f values
             - call 2 #f $$unbind
             - call 2 #f $$unbind
             - constant procedure 0 #f
@@ -7609,10 +7630,23 @@
   - get 0
   - if
     - get 0
-    - get 0
-    - call 1 #f cdr
-    - get 4
-    - call 1 #f 1
+    - constant procedure 0 #f
+      - get 1
+      - call 1 #f cdr
+      - get 5
+      - call 1 #f 1
+    - call 1 #f $$close
+    - constant procedure 2 #f
+      - get 1
+      - get 1
+      - get 0
+      - if
+        - get 11
+        - get 2
+        - call 2 #f 19
+      - get 1
+    - call 1 #f $$close
+    - call 2 #f call-with-values
   - get 2
 - call 1 #f $$close
 - set 5
@@ -8845,6 +8879,7 @@
     - (syntax-rules . syntax-rules)
     - (define-syntax . define-syntax)
     - (syntax-error . syntax-error)
+    - (define-optimizer . define-optimizer)
     - (_ . _)
     - (... . ...)
     - (define . define)
@@ -9159,6 +9194,19 @@
         - ||
         - ||
         - ...
+  - list
+    - define-optimizer
+    - syntax-rules
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - $$define-optimizer
+        - ||
+        - ||
   - list
     - define
     - syntax-rules
