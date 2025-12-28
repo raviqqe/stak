@@ -846,35 +846,6 @@
      (make-macro-context (make-macro-state '() '() '() '()) '()))
 
     (define (make-optimizer optimizer)
-     (define (match-pattern pattern expression)
-      (cond
-       ((and (pair? pattern) (pair? expression))
-        (maybe-append
-         (match-pattern (car pattern) (car expression))
-         (match-pattern (cdr pattern) (cdr expression))))
-
-       ((symbol? pattern)
-        (list (cons pattern expression)))
-
-       ((equal? pattern expression)
-        '())
-
-       (else
-        #f)))
-
-     (define (fill-template matches template)
-      (cond
-       ((pair? template)
-        (cons
-         (fill-template matches (car template))
-         (fill-template matches (cdr template))))
-
-       ((and (symbol? template) (assq template matches)) =>
-        cdr)
-
-       (else
-        template)))
-
      (case (car optimizer)
       (($$syntax-rules)
        (let ((rules (cdddr optimizer)))
@@ -887,10 +858,8 @@
              ((match-pattern (car rule) expression) =>
               (lambda (matches)
                (fill-template matches (cadr rule))))
-
              (else
               (loop (cdr rules))))))))))
-
       (else
        (error "unsupported optimizer" optimizer))))
 
