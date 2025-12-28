@@ -848,8 +848,17 @@
     (define (make-optimizer optimizer)
      (case (car optimizer)
       (($$syntax-rules)
-       (let ((literals (caddr optimizer))
-             (rules (cdddr optimizer)))
+       (let* ((ellipsis
+               (resolve-denotation optimizer-macro-context (cadr optimizer)))
+              (literals (caddr optimizer))
+              (rules
+               (map
+                (lambda (rule)
+                 (map
+                  (lambda (pattern)
+                   (compile-pattern optimizer-macro-context ellipsis literals pattern))
+                  rule))
+                (cdddr optimizer))))
         (lambda (expression)
          (let loop ((rules rules))
           (if (null? rules)
