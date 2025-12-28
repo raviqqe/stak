@@ -4095,12 +4095,12 @@
   - expand
   - optimization-context
   - optimization-context?
-  - literals
   - optimization-context-set-optimizers!
   - literal
   - rules
   - make-rule-context
   - optimizer-macro-context
+  - literals
   - fill-template
   - match-pattern
   - rule-context
@@ -7841,6 +7841,8 @@
   - call 2 #f eqv?
   - if
     - get 1
+    - call 1 #f caddr
+    - get 2
     - call 1 #f cdddr
     - constant procedure 1 #f
       - constant #f
@@ -7875,19 +7877,19 @@
           - constant procedure 0 #f
             - get 4
             - call 1 #f car
-            - get 20
             - get 21
-            - constant ()
-            - call 3 #f 58
+            - get 22
+            - get 13
+            - call 3 #f 59
             - get 0
             - get 1
             - get 3
             - call 1 #f car
             - get 12
-            - call 3 #f 40
+            - call 3 #f 41
             - get 3
             - call 1 #f cadr
-            - call 3 #f 37
+            - call 3 #f 38
             - call 2 #f $$unbind
             - call 2 #f $$unbind
             - constant procedure 0 #f
@@ -16016,6 +16018,11 @@
           - let
           - list
             - list
+              - literals
+              - list
+                - caddr
+                - optimizer
+            - list
               - rules
               - list
                 - cdddr
@@ -16064,9 +16071,7 @@
                           - make-rule-context
                           - optimizer-macro-context
                           - optimizer-macro-context
-                          - list
-                            - quote
-                            - ()
+                          - literals
                     - list
                       - fill-template
                       - rule-context
