@@ -853,7 +853,7 @@
         (lambda (expression)
          (let loop ((rules rules))
           (if (null? rules)
-           expression
+           (values expression #f)
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
@@ -863,10 +863,12 @@
                     optimizer-macro-context
                     optimizer-macro-context
                     literals)))
-             (fill-template
-              rule-context
-              (match-pattern rule-context (car rule) expression)
-              (cadr rule)))))))))
+             (values
+              (fill-template
+               rule-context
+               (match-pattern rule-context (car rule) expression)
+               (cadr rule))
+              #t))))))))
       (else
        (error "unsupported optimizer" optimizer))))
 
@@ -887,7 +889,10 @@
          #f)
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
-          ((cdr pair) expression)))
+          (let-values (((expression optimized) ((cdr pair) expression)))
+           (if optimized
+            (optimize-expression context expression)
+            expression))))
         (else
          expression)))))
 
