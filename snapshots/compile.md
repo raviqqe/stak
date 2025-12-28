@@ -50,6 +50,36 @@
         - stak
         - exception
 - set features
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant 0
 - set ||
 - constant 1
@@ -255,6 +285,8 @@
   - constant #f
   - call 2 #f eq?
 - set not
+- constant #f
+- set 0
 - get eq?
 - call 1 #f comparison-operator
 - set boolean=?
@@ -277,7 +309,8 @@
     - get 0
     - constant 1
     - call 2 #f remainder
-    - call 1 #f zero?
+    - constant 0
+    - call 2 #f eq?
   - constant #f
 - set integer?
 - get integer?
@@ -302,20 +335,21 @@
   - call 2 #f eq?
 - set zero?
 - constant procedure 1 #f
-  - get 0
   - constant 0
-  - call 2 #f >
+  - get 1
+  - call 2 #f ||
 - set positive?
 - constant procedure 1 #f
   - get 0
   - constant 0
-  - call 2 #f <
+  - call 2 #f ||
 - set negative?
 - constant procedure 1 #f
   - get 0
   - constant 2
   - call 2 #f modulo
-  - call 1 #f zero?
+  - constant 0
+  - call 2 #f eq?
 - set even?
 - constant procedure 1 #f
   - get 0
@@ -323,6 +357,8 @@
   - constant #f
   - call 2 #f eq?
 - set odd?
+- constant #f
+- set 0
 - constant procedure 2 #f
   - constant procedure 0 #t
     - get 3
@@ -365,6 +401,14 @@
 - constant 1
 - call 2 #f ||
 - set /
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #f
   - get 0
   - get 1
@@ -467,7 +511,7 @@
   - constant 2
   - call 2 #f modulo
   - constant 1
-  - call 2 #f =
+  - call 2 #f eq?
   - if
     - get 0
     - get 1
@@ -560,6 +604,16 @@
   - call 2 #f eq?
 - call 1 #f comparison-operator
 - set >=
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #f
   - constant procedure 1 #t
     - constant procedure 2 #f
@@ -1158,6 +1212,10 @@
   - call 2 #f list-tail
   - call 2 #f 2
 - set sequence-copy!
+- constant #f
+- set 0
+- constant #f
+- set 0
 - get ||
 - call 1 #f instance?
 - set record?
@@ -1211,6 +1269,12 @@
 - constant 0
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 0 #t
   - get 0
   - call 1 #f pair?
@@ -3751,6 +3815,8 @@
   - get 1
   - call 2 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 40
 - call 1 #f primitive
 - set ||
@@ -3980,6 +4046,10 @@
 - constant file
 - call 1 #f ||
 - set file-error?
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant #f
 - set unwind
 - constant procedure 1 #f
@@ -4849,11 +4919,11 @@
   - $$lambda
   - $$let-syntax
   - $$letrec-syntax
-  - $$begin
   - $$quote
   - $$set!
   - $$if
   - $$syntax-rules
+  - $$begin
 - call 1 #f make-symbol-table
 - constant procedure 1 #t
   - constant #f
@@ -7997,50 +8067,6 @@
     - call 2 #f $$unbind
     - set 0
     - constant #f
-  - get 0
-  - constant $$begin
-  - call 2 #f eq?
-  - if
-    - constant $$begin
-    - constant #f
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f car
-      - get 1
-      - call 1 #f cdr
-      - get 0
-      - call 1 #f null?
-      - if
-        - get 1
-        - call 1 #f list
-      - get 1
-      - call 1 #f pair?
-      - constant #f
-      - call 2 #f eq?
-      - if
-        - get 0
-        - call 1 #f 5
-      - get 1
-      - call 1 #f car
-      - constant $$begin
-      - call 2 #f eq?
-      - if
-        - get 1
-        - call 1 #f cdr
-        - get 1
-        - call 2 #f append
-        - call 1 #f 5
-      - get 1
-      - get 1
-      - call 1 #f 6
-      - call 2 #f cons
-    - call 1 #f $$close
-    - set 1
-    - get 3
-    - call 1 #f cdr
-    - call 1 #f 1
-    - call 2 #f $$unbind
-    - call 2 #f cons
   - get 0
   - get 4
   - call 1 #f 19
@@ -12164,6 +12190,42 @@
         - eq?
         - ||
         - #f
+  - list
+    - $$begin
+    - $$syntax-rules
+    - ...
+    - list
+      - $$begin
+    - list
+      - list
+        - \_
+        - ||
+      - ||
+    - list
+      - list
+        - \_
+        - #f
+        - ||
+        - ...
+      - list
+        - $$begin
+        - ||
+        - ...
+    - list
+      - list
+        - \_
+        - list
+          - $$begin
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - $$begin
+        - ||
+        - ...
+        - ||
+        - ...
 - call 2 #f 126
 - constant ()
 - call 2 #f 41
@@ -12481,6 +12543,10 @@
   - constant #f
   - call 2 #f eq?
 - set finite?
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #f
   - call 0 #f 0
 - set force
@@ -13086,6 +13152,8 @@
 - set display
 - get write
 - set write-irritant
+- constant #f
+- set 0
 - constant list
   - list
     - define
@@ -16304,83 +16372,6 @@
                   - caddr
                   - expression
             - #f
-          - list
-            - list
-              - eq?
-              - predicate
-              - list
-                - quote
-                - $$begin
-            - list
-              - cons
-              - list
-                - quote
-                - $$begin
-              - list
-                - let
-                - loop
-                - list
-                  - list
-                    - expressions
-                    - list
-                      - cdr
-                      - expression
-                - list
-                  - let
-                  - list
-                    - list
-                      - expression
-                      - list
-                        - car
-                        - expressions
-                    - list
-                      - expressions
-                      - list
-                        - cdr
-                        - expressions
-                  - list
-                    - cond
-                    - list
-                      - list
-                        - null?
-                        - expressions
-                      - list
-                        - list
-                        - expression
-                    - list
-                      - list
-                        - not
-                        - list
-                          - pair?
-                          - expression
-                      - list
-                        - loop
-                        - expressions
-                    - list
-                      - list
-                        - eq?
-                        - list
-                          - car
-                          - expression
-                        - list
-                          - quote
-                          - $$begin
-                      - list
-                        - loop
-                        - list
-                          - append
-                          - list
-                            - cdr
-                            - expression
-                          - expressions
-                    - list
-                      - else
-                      - list
-                        - cons
-                        - expression
-                        - list
-                          - loop
-                          - expressions
           - list
             - list
               - assq

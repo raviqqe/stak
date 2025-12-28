@@ -70,6 +70,8 @@
 - constant 15
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 40
 - call 1 #f ||
 - set ||
@@ -79,6 +81,8 @@
 - constant 51
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 61
 - call 1 #f ||
 - set ||
@@ -91,9 +95,13 @@
 - constant 64
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 71
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant procedure 3 #f
   - get 1
   - get 1
@@ -122,6 +130,8 @@
   - call 2 #f ||
   - call 0 #t 3
 - set ||
+- constant #f
+- set 0
 - constant procedure 1 #f
   - constant procedure 1 #f
     - get 0
@@ -158,6 +168,66 @@
     - constant #f
   - constant #f
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 2 #f
   - get 1
   - get 2
@@ -167,6 +237,74 @@
   - get 1
   - call 2 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #f
   - get ||
   - get 1
@@ -175,11 +313,35 @@
 - set ||
 - get ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
   - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 2 #f
   - get 0
   - call 1 #f ||
@@ -257,6 +419,10 @@
   - call 2 #f ||
   - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 2 #t
   - constant #f
   - get 1
@@ -287,6 +453,26 @@
   - get 3
   - call 1 #f 1
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - get ||
 - set ||
 - constant procedure 1 #f
@@ -298,6 +484,24 @@
     - call 3 #f ||
   - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - get ||
 - call 1 #f ||
 - set ||
@@ -329,6 +533,20 @@
     - call 2 #f ||
   - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #t
   - get 1
   - call 1 #f ||
@@ -338,21 +556,251 @@
 - constant procedure 0 #t
   - constant #f
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant 5
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - get ||
 - set ||
 - get ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #f
   - get ||
   - get 1
   - call 1 #f ||
   - call 2 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - get ||
 - set ||
+- constant #f
+- set 0
 - constant procedure 1 #t
   - constant #f
   - get 1
@@ -379,12 +827,18 @@
     - constant #f
   - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 101
 - call 1 #f ||
 - set ||
 - constant 102
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant 0
 - constant 0
 - call 2 #f ||
@@ -392,11 +846,41 @@
 - get ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant 0
 - constant 1
 - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 3 #t
   - constant #f
   - get 4
@@ -411,6 +895,8 @@
   - call 1 #f ||
   - call 5 #f ||
 - set ||
+- constant #f
+- set 0
 - get ||
 - constant procedure 0 #f
   - constant #f
@@ -427,6 +913,44 @@
 - call 3 #f ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
@@ -541,6 +1065,8 @@
   - call 1 #f ||
   - call 2 #f ||
 - set ||
+- constant #f
+- set 0
 - constant procedure 0 #t
   - constant #\newline
   - get 1
@@ -552,6 +1078,26 @@
   - call 0 #f ||
   - call 2 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant procedure 0 #f
   - constant #f
 - set ||
@@ -579,6 +1125,8 @@
   - call 1 #f ||
   - call 1 #f 3
 - set ||
+- constant #f
+- set 0
 - constant 0
 - constant 0
 - call 2 #f ||
@@ -586,6 +1134,8 @@
 - get ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 0
 - call 1 #f ||
 - set ||
@@ -673,6 +1223,8 @@
   - get 1
   - call 2 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 40
 - call 1 #f ||
 - set ||
@@ -686,6 +1238,8 @@
 - get ||
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant 0
 - constant 1
 - call 2 #f ||
@@ -816,6 +1370,8 @@
   - get 0
 - call 2 #f ||
 - set ||
+- constant #f
+- set 0
 - constant procedure 1 #f
   - constant procedure 1 #f
     - call 0 #f ||
@@ -828,6 +1384,8 @@
 - constant #f
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
 - constant procedure 1 #f
   - constant procedure 1 #t
     - get 3
@@ -839,8 +1397,22 @@
   - call 1 #f ||
 - set ||
 - constant #f
+- set 0
+- constant #f
 - call 1 #f ||
 - set ||
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
+- set 0
 - constant #f
 - set ||
 - constant procedure 1 #f
@@ -859,6 +1431,10 @@
   - call 3 #f ||
 - set ||
 - constant #f
+- set 0
+- constant #f
+- set 0
+- constant #f
 - constant procedure 2 #f
   - get 1
   - call 1 #f ||
@@ -873,6 +1449,7 @@
     - person-wasted
     - person-pies
     - make-person
+    - ||
     - ||
     - ||
     - ||
@@ -905,6 +1482,8 @@
 - constant 1
 - call 2 #f 2
 - call 2 #f ||
+- set 0
+- constant #f
 - set 0
 - constant 4
 - constant 221582786524942688448062400206464066048828084844806404288602000400460884262624626864648280824200866482444628662222824060268006606622668646888066846240868488680646642620626208886482200622880668642066204464004468060006088288420680062806682062044602622602040064006662802208282826
