@@ -291,22 +291,22 @@
           x)
 
         ((_ "normal" (#f x ...) y ...)
-          ($$begin "normal" (x ...) (y ...)))
+          ($$begin "normal" (x ...) y ...))
 
         ((_ "normal" (($$begin x ...) y ...) z ...)
-          ($$begin "normal" (x ... y ...) (z ...)))
+          ($$begin "normal" (x ... y ...) z ...))
 
         ((_ "normal" (x y ...) z ...)
-          ($$begin "normal" (y ...) (z ... x)))
+          ($$begin "normal" (y ...) z ... x))
 
-        ((_ "normal" () ())
+        ((_ "normal" ())
           #f)
 
-        ((_ "normal" () (x ...))
+        ((_ "normal" () x ...)
           ($$begin x ...))
 
         ((_ x ...)
-          ($$begin "normal" (x ...) ()))))
+          ($$begin "normal" (x ...)))))
 
     (define-syntax quasiquote
       (syntax-rules (unquote unquote-splicing)
