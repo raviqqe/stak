@@ -271,11 +271,8 @@
 
     (define-syntax begin
       (syntax-rules ()
-        ((_ value)
-          value)
-
         ((_ value1 value2 ...)
-          ($$begin value1 value2 ...))))
+          ($$begin #f value1 value2 ...))))
 
     (define-syntax relaxed-begin
       (syntax-rules ()
@@ -290,6 +287,9 @@
         ((_ x)
           x)
 
+        ((_ #f x ...)
+          ($$begin "normal" (x ...)))
+
         ((_ "normal" (#f x ...) y ...)
           ($$begin "normal" (x ...) y ...))
 
@@ -303,10 +303,7 @@
           #f)
 
         ((_ "normal" () x ...)
-          ($$begin x ...))
-
-        ((_ x ...)
-          ($$begin "normal" (x ...)))))
+          ($$begin x ...))))
 
     (define-syntax quasiquote
       (syntax-rules (unquote unquote-splicing)
