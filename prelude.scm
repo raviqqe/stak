@@ -290,9 +290,6 @@
         ((_ x)
           x)
 
-        ((_ x ...)
-          ($$begin "normal" (x ...) ()))
-
         ((_ "normal" (#f x ...) y ...)
           ($$begin "normal" (x ...) (y ...)))
 
@@ -306,7 +303,10 @@
           #f)
 
         ((_ "normal" () (x ...))
-          ($$begin x ...))))
+          ($$begin x ...))
+
+        ((_ x ...)
+          ($$begin "normal" (x ...) ()))))
 
     (define-syntax quasiquote
       (syntax-rules (unquote unquote-splicing)
