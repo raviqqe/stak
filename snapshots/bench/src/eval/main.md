@@ -7539,8 +7539,6 @@
         - call 1 #f null?
         - if
           - get 3
-          - constant #f
-          - call 2 #f values
         - constant procedure 1 #f
           - constant procedure 1 #f
             - constant procedure 1 #f
@@ -7580,8 +7578,6 @@
             - get 3
             - call 1 #f cadr
             - call 3 #f 39
-            - constant #t
-            - call 2 #f values
             - call 2 #f $$unbind
             - call 2 #f $$unbind
             - constant procedure 0 #f
@@ -7656,23 +7652,19 @@
   - get 0
   - if
     - get 0
-    - constant procedure 0 #f
-      - get 1
-      - call 1 #f cdr
-      - get 5
-      - call 1 #f 1
-    - call 1 #f $$close
-    - constant procedure 2 #f
-      - get 1
-      - get 1
-      - get 0
-      - if
-        - get 11
-        - get 2
-        - call 2 #f 19
-      - get 1
-    - call 1 #f $$close
-    - call 2 #f call-with-values
+    - get 0
+    - call 1 #f cdr
+    - get 4
+    - call 1 #f 1
+    - set 1
+    - get 0
+    - get 5
+    - call 2 #f equal?
+    - if
+      - get 4
+    - get 6
+    - get 1
+    - call 2 #f 14
   - get 2
 - call 1 #f $$close
 - set 5
