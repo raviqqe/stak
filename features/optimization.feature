@@ -1,5 +1,5 @@
 @stak
-Feature: Optimizer
+Feature: Optimization
 
   Scenario: Match a rule
     Given a file named "main.scm" with:
