@@ -83,38 +83,6 @@
   - get 4
   - call 3 #f ||
 - set ||
-- constant procedure 1 #f
-  - constant procedure 0 #t
-    - get 0
-    - call 1 #f ||
-    - if
-      - constant #t
-    - constant #f
-    - constant procedure 2 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - constant #t
-      - get 0
-      - call 1 #f ||
-      - get 2
-      - get 1
-      - call 2 #f 9
-      - if
-        - get 0
-        - get 2
-        - call 1 #f ||
-        - call 2 #f 6
-      - constant #f
-    - call 1 #f ||
-    - set 1
-    - get 1
-    - call 1 #f ||
-    - get 2
-    - call 1 #f ||
-    - call 2 #f 2
-  - call 1 #f ||
-- set ||
 - constant procedure 2 #f
   - get 1
   - get 2
@@ -123,22 +91,6 @@
   - call 2 #f ||
   - get 1
   - call 2 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 0
-  - get 2
-  - call 2 #f ||
-  - constant #f
-  - call 2 #f ||
-- call 1 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 2 #f ||
-  - constant #f
-  - call 2 #f ||
-- call 1 #f ||
 - set ||
 - constant procedure 1 #f
   - get 0
@@ -223,6 +175,8 @@
     - get 0
     - get 7
     - call 2 #f ||
+    - constant #f
+    - call 2 #f ||
     - if
       - get 1
     - get 1
@@ -243,8 +197,10 @@
 - constant procedure 1 #f
   - constant #f
   - constant procedure 2 #f
-    - get 1
     - get ||
+    - get 2
+    - call 2 #f ||
+    - constant #f
     - call 2 #f ||
     - if
       - get 0

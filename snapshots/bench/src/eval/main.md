@@ -1031,9 +1031,11 @@
     - if
       - get 0
       - continue
-    - get 1
     - constant 0
-    - call 2 #f <=
+    - get 2
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
     - call 2 #f $$unbind
     - if
       - constant #f
@@ -1628,7 +1630,9 @@
   - constant procedure 2 #f
     - get 0
     - get 7
-    - call 2 #f >=
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
     - if
       - get 1
     - get 1
@@ -1653,9 +1657,11 @@
 - constant procedure 1 #f
   - constant #f
   - constant procedure 2 #f
-    - get 1
     - get ||
-    - call 2 #f <=
+    - get 2
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
     - if
       - get 0
     - constant 1
@@ -1862,7 +1868,9 @@
     - get 1
     - get 5
     - call 1 #f cdr
-    - call 2 #f >=
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
     - if
       - get 0
     - get 0
@@ -1894,7 +1902,9 @@
     - get 0
     - get 4
     - call 1 #f cdr
-    - call 2 #f >=
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
     - if
       - constant #f
     - get 7
@@ -1930,7 +1940,9 @@
     - get 0
     - get 4
     - call 1 #f cdr
-    - call 2 #f >=
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
     - if
       - constant #f
     - get 6
@@ -3248,7 +3260,9 @@
     - if
       - get 4
       - get 8
-      - call 2 #f >=
+      - call 2 #f ||
+      - constant #f
+      - call 2 #f eq?
       - continue
     - constant #f
     - call 2 #f $$unbind
@@ -11459,6 +11473,40 @@
 - set 3
 - get 30
 - constant list
+  - list
+    - > =
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - eq?
+        - list
+          - ||
+          - ||
+          - ||
+        - #f
+  - list
+    - <=
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - eq?
+        - list
+          - ||
+          - ||
+          - ||
+        - #f
   - list
     - >
     - $$syntax-rules
