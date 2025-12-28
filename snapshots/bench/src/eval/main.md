@@ -7888,6 +7888,23 @@
 - call 1 #f $$close
 - set 14
 - constant procedure 3 #f
+  - get 1
+  - call 1 #f car
+  - call 1 #f pair?
+  - constant #f
+  - call 2 #f eq?
+  - if
+    - get 1
+    - call 1 #f cdr
+    - call 1 #f pair?
+    - continue
+  - constant #f
+  - if
+    - get 2
+    - get 2
+    - call 1 #f cdr
+    - get 2
+    - call 3 #f 19
   - get 2
   - get 2
   - call 1 #f car

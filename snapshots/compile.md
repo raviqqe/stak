@@ -8306,6 +8306,23 @@
 - call 1 #f $$close
 - set 14
 - constant procedure 3 #f
+  - get 1
+  - call 1 #f car
+  - call 1 #f pair?
+  - constant #f
+  - call 2 #f eq?
+  - if
+    - get 1
+    - call 1 #f cdr
+    - call 1 #f pair?
+    - continue
+  - constant #f
+  - if
+    - get 2
+    - get 2
+    - call 1 #f cdr
+    - get 2
+    - call 3 #f 19
   - get 2
   - get 2
   - call 1 #f car
@@ -16749,28 +16766,51 @@
       - expressions
       - continuation
     - list
-      - compile-expression
-      - context
+      - if
       - list
-        - car
-        - expressions
-      - list
-        - if
+        - and
         - list
-          - null?
+          - not
+          - list
+            - pair?
+            - list
+              - car
+              - expressions
+        - list
+          - pair?
           - list
             - cdr
             - expressions
-        - continuation
+      - list
+        - compile-sequence
+        - context
         - list
-          - compile-drop
+          - cdr
+          - expressions
+        - continuation
+      - list
+        - compile-expression
+        - context
+        - list
+          - car
+          - expressions
+        - list
+          - if
           - list
-            - compile-sequence
-            - context
+            - null?
             - list
               - cdr
               - expressions
-            - continuation
+          - continuation
+          - list
+            - compile-drop
+            - list
+              - compile-sequence
+              - context
+              - list
+                - cdr
+                - expressions
+              - continuation
   - list
     - define
     - list
