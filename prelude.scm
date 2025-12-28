@@ -293,6 +293,9 @@
         ((_ #f x ...)
           ($$begin x ...))
 
+        ((_ w x y z ...)
+          ($$begin w ($$begin x y z ...)))
+
         ((_ ($$begin x ...) y ...)
           ($$begin x ... y ...))))
 
