@@ -284,17 +284,6 @@
         ((_ body ...)
           (begin body ...))))
 
-    (define-optimizer $$begin
-      (syntax-rules ($$begin)
-        ((_ x)
-          x)
-
-        ((_ #f x ...)
-          ($$begin x ...))
-
-        ((_ ($$begin x ...) y ...)
-          ($$begin x ... y ...))))
-
     (define-syntax quasiquote
       (syntax-rules (unquote unquote-splicing)
         ((_ (unquote value))
