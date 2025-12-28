@@ -848,7 +848,8 @@
     (define (make-optimizer optimizer)
      (case (car optimizer)
       (($$syntax-rules)
-       (let ((rules (cdddr optimizer)))
+       (let ((literals (caddr optimizer))
+             (rules (cdddr optimizer)))
         (lambda (expression)
          (let loop ((rules rules))
           (if (null? rules)
@@ -861,7 +862,7 @@
                    (make-rule-context
                     optimizer-macro-context
                     optimizer-macro-context
-                    '())))
+                    literals)))
              (fill-template
               rule-context
               (match-pattern rule-context (car rule) expression)
