@@ -1032,12 +1032,14 @@
       (code-rib set-instruction 0 continuation)))
 
     (define (compile-sequence context expressions continuation)
-     (compile-expression
-      context
-      (car expressions)
-      (if (null? (cdr expressions))
-       continuation
-       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
+     (if (and (not (pair? (car expressions))) (pair? (cdr expressions)))
+      (compile-sequence context (cdr expressions) continuation)
+      (compile-expression
+       context
+       (car expressions)
+       (if (null? (cdr expressions))
+        continuation
+        (compile-drop (compile-sequence context (cdr expressions) continuation))))))
 
     (define (compile-unbind continuation)
      (if (null? continuation)
