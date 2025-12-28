@@ -848,12 +848,21 @@
     (define (make-optimizer optimizer)
      (case (car optimizer)
       (($$syntax-rules)
-       (let ((literals (caddr optimizer))
-             (rules (cdddr optimizer)))
+       (let* ((ellipsis
+               (resolve-denotation optimizer-macro-context (cadr optimizer)))
+              (literals (caddr optimizer))
+              (rules
+               (map
+                (lambda (rule)
+                 (map
+                  (lambda (pattern)
+                   (compile-pattern optimizer-macro-context ellipsis literals pattern))
+                  rule))
+                (cdddr optimizer))))
         (lambda (expression)
          (let loop ((rules rules))
           (if (null? rules)
-           expression
+           (values expression #f)
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
@@ -863,10 +872,12 @@
                     optimizer-macro-context
                     optimizer-macro-context
                     literals)))
-             (fill-template
-              rule-context
-              (match-pattern rule-context (car rule) expression)
-              (cadr rule)))))))))
+             (values
+              (fill-template
+               rule-context
+               (match-pattern rule-context (car rule) expression)
+               (cadr rule))
+              #t))))))))
       (else
        (error "unsupported optimizer" optimizer))))
 
@@ -903,7 +914,10 @@
               (cons expression (loop expressions))))))))
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
-          ((cdr pair) expression)))
+          (let-values (((expression optimized) ((cdr pair) expression)))
+           (if optimized
+            (optimize-expression context expression)
+            expression))))
         (else
          expression)))))
 
