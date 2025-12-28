@@ -853,13 +853,19 @@
          (let loop ((rules rules))
           (if (null? rules)
            expression
-           (let ((rule (car rules)))
-            (cond
-             ((match-pattern (car rule) expression) =>
-              (lambda (matches)
-               (fill-template matches (cadr rule))))
-             (else
-              (loop (cdr rules))))))))))
+           (guard (value
+                   ((not value)
+                    (loop (cdr rules))))
+            (let ((rule (car rules))
+                  (rule-context
+                   (make-rule-context
+                    optimizer-macro-context
+                    optimizer-macro-context
+                    '())))
+             (fill-template
+              rule-context
+              (match-pattern rule-context (car rule) expression)
+              (cadr rule)))))))))
       (else
        (error "unsupported optimizer" optimizer))))
 
