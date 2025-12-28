@@ -91,9 +91,9 @@
   - if
     - get 1
   - get 2
-  - get 2
-  - get 2
+  - get 1
   - call 1 #f ||
+  - get 3
   - call 2 #f 5
   - get 2
   - call 1 #f ||

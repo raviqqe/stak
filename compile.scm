@@ -184,7 +184,7 @@
       y
       (fold-left
        f
-       (f y (car xs))
+       (f (car xs) y)
        (cdr xs))))
 
     (define (map-values f xs)
@@ -211,7 +211,7 @@
 
     (define (merge-multi-maps xs ys)
      (fold-left
-      (lambda (ys pair)
+      (lambda (pair ys)
        (append-multi-map (car pair) (cdr pair) ys))
       ys
       xs))
@@ -1334,7 +1334,7 @@
      (case (maybe-car expression)
       (($$begin)
        (fold-left
-        (lambda (xs expression)
+        (lambda (expression xs)
          (merge-multi-maps (find-symbol-dependencies expression) xs))
         '()
         (cdr expression)))
@@ -2142,7 +2142,7 @@
 
              (define (append-imports old-imports new-imports)
               (fold-left
-               (lambda (names name)
+               (lambda (name names)
                 (if (member name names)
                  names
                  (cons name names)))

@@ -725,7 +725,7 @@
       (lambda (x . xs)
         (if (null? xs)
           (f y x)
-          (fold f x xs))))
+          (fold (lambda (x y) (f y x)) x xs))))
 
     (define + (arithmetic-operator $+ 0))
     (define - (inverse-arithmetic-operator $- 0))
@@ -1003,7 +1003,7 @@
         y
         (fold
           f
-          (f y (car xs))
+          (f (car xs) y)
           (cdr xs))))
 
     (define (reduce-right f y xs)
