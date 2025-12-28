@@ -5,6 +5,7 @@
     syntax-rules
     define-syntax
     syntax-error
+    define-optimizer
     _
     ...
     define
