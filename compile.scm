@@ -842,52 +842,31 @@
        (cons name literal)
        (optimization-context-literals context))))
 
+    (define optimizer-macro-context
+     (make-macro-context (make-macro-state '() '() '() '()) '()))
+
     (define (make-optimizer optimizer)
-     (define (match-pattern pattern expression)
-      (cond
-       ((and (pair? pattern) (pair? expression))
-        (maybe-append
-         (match-pattern (car pattern) (car expression))
-         (match-pattern (cdr pattern) (cdr expression))))
-
-       ((symbol? pattern)
-        (list (cons pattern expression)))
-
-       ((equal? pattern expression)
-        '())
-
-       (else
-        #f)))
-
-     (define (fill-template matches template)
-      (cond
-       ((pair? template)
-        (cons
-         (fill-template matches (car template))
-         (fill-template matches (cdr template))))
-
-       ((and (symbol? template) (assq template matches)) =>
-        cdr)
-
-       (else
-        template)))
-
      (case (car optimizer)
       (($$syntax-rules)
-       (let ((rules (cdddr optimizer)))
+       (let ((literals (caddr optimizer))
+             (rules (cdddr optimizer)))
         (lambda (expression)
          (let loop ((rules rules))
           (if (null? rules)
            expression
-           (let ((rule (car rules)))
-            (cond
-             ((match-pattern (car rule) expression) =>
-              (lambda (matches)
-               (fill-template matches (cadr rule))))
-
-             (else
-              (loop (cdr rules))))))))))
-
+           (guard (value
+                   ((not value)
+                    (loop (cdr rules))))
+            (let ((rule (car rules))
+                  (rule-context
+                   (make-rule-context
+                    optimizer-macro-context
+                    optimizer-macro-context
+                    literals)))
+             (fill-template
+              rule-context
+              (match-pattern rule-context (car rule) expression)
+              (cadr rule)))))))))
       (else
        (error "unsupported optimizer" optimizer))))
 
