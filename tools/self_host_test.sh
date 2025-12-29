@@ -17,21 +17,29 @@ run_stage() (
   fi
 )
 
-artifact_path() (
-  echo tmp/stage$1.$2
-)
-
 cd $(dirname $0)/..
 
-mkdir -p tmp
+directory=tmp/self_host
+
+mkdir -p $directory/compile
 cargo build --profile $profile
 
 for stage in $(seq 0 $(expr $stage_count - 1)); do
-  cat prelude.scm compile.scm | run_stage $stage >stage$(expr $stage + 1).bc
+  cat prelude.scm compile.scm | run_stage $stage >$directory/compile/stage$(expr $stage + 1).bc
 done
 
-for file in $(list_scheme_files); do
+compile() (
+  file=$1
+
   echo FILE $file
+
+  directory=$directory/${file%.*}
+
+  mkdir -p $directory
+
+  artifact_path() (
+    echo $directory/stage$1.$2
+  )
 
   for stage in $(seq 0 $stage_count); do
     bytecode_file=$(artifact_path $stage bc)
@@ -44,4 +52,6 @@ for file in $(list_scheme_files); do
       log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
     done
   done
-done
+)
+
+list_scheme_files | parallel compile
