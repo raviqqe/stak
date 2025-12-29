@@ -888,28 +888,24 @@
         expression))))
 
     (define (optimize-custom-expression context expression)
-     (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
-      expression
-      (let* ((expression
-              (relaxed-map
-               (lambda (expression)
-                (optimize-custom-expression context expression))
-               expression))
-             (predicate (car expression)))
-       (cond
-        ((eq? predicate '$$define-optimizer)
-         (let ((name (cadr expression)))
-          (optimization-context-append! context name (make-optimizer (caddr expression)))
-          (optimization-context-append-literal! context name (caddr expression)))
-         #f)
-        ((assq predicate (optimization-context-optimizers context)) =>
-         (lambda (pair)
-          (let ((optimized ((cdr pair) expression)))
-           (if (equal? optimized expression)
-            expression
-            (optimize-custom-expression context optimized)))))
-        (else
-         expression)))))
+     (optimize-expression
+      (lambda (expression)
+       (let ((predicate (car expression)))
+        (cond
+         ((eq? predicate '$$define-optimizer)
+          (let ((name (cadr expression)))
+           (optimization-context-append! context name (make-optimizer (caddr expression)))
+           (optimization-context-append-literal! context name (caddr expression)))
+          #f)
+         ((assq predicate (optimization-context-optimizers context)) =>
+          (lambda (pair)
+           (let ((optimized ((cdr pair) expression)))
+            (if (equal? optimized expression)
+             expression
+             (optimize-custom-expression context optimized)))))
+         (else
+          expression))))
+      expression))
 
     (define (optimize-begin expression)
      (optimize-expression
