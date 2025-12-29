@@ -10,7 +10,9 @@ cargo build --profile release_test
 
 export PATH=$PWD/target/release_test:$PATH
 
-for file in $(list_scheme_files); do
+decode() (
+  file=$1
+
   echo FILE $file
 
   base=snapshots/${file%.scm}
@@ -18,7 +20,9 @@ for file in $(list_scheme_files); do
   mkdir -p $(dirname $base)
   cat prelude.scm $file | stak-compile --shake-tree >$base.bc
   stak-decode <$base.bc >$base.md
-done
+)
+
+list_scheme_files | parallel decode
 
 pnpm oxfmt snapshots
 git diff --exit-code

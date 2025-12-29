@@ -879,45 +879,54 @@
       (else
        (error "unsupported optimizer" optimizer))))
 
-    (define (optimize-expression context expression)
+    (define (optimize-expression optimize expression)
      (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
       expression
-      (let* ((expression
-              (relaxed-map
-               (lambda (expression)
-                (optimize-expression context expression))
-               expression))
-             (predicate (car expression)))
-       (cond
-        ((eq? predicate '$$define-optimizer)
-         (let ((name (cadr expression)))
-          (optimization-context-append! context name (make-optimizer (caddr expression)))
-          (optimization-context-append-literal! context name (caddr expression)))
-         #f)
-        ((eq? predicate '$$begin)
-         ; Omit top-level constants.
-         ; TODO Define this pass by `define-optimizer`.
-         (cons '$$begin
-          (let loop ((expressions (cdr expression)))
-           (let ((expression (car expressions))
-                 (expressions (cdr expressions)))
-            (cond
-             ((null? expressions)
-              (list expression))
-             ((not (pair? expression))
-              (loop expressions))
-             ((eq? (car expression) '$$begin)
-              (loop (append (cdr expression) expressions)))
-             (else
-              (cons expression (loop expressions))))))))
-        ((assq predicate (optimization-context-optimizers context)) =>
-         (lambda (pair)
-          (let ((optimized ((cdr pair) expression)))
-           (if (equal? optimized expression)
-            expression
-            (optimize-expression context optimized)))))
-        (else
-         expression)))))
+      (optimize
+       (relaxed-map
+        (lambda (expression) (optimize-expression optimize expression))
+        expression))))
+
+    (define (optimize-custom-expression context expression)
+     (optimize-expression
+      (lambda (expression)
+       (let ((predicate (car expression)))
+        (cond
+         ((eq? predicate '$$define-optimizer)
+          (let ((name (cadr expression)))
+           (optimization-context-append! context name (make-optimizer (caddr expression)))
+           (optimization-context-append-literal! context name (caddr expression)))
+          #f)
+         ((assq predicate (optimization-context-optimizers context)) =>
+          (lambda (pair)
+           (let ((optimized ((cdr pair) expression)))
+            (if (equal? optimized expression)
+             expression
+             (optimize-custom-expression context optimized)))))
+         (else
+          expression))))
+      expression))
+
+    (define (optimize-begin expression)
+     (optimize-expression
+      (lambda (expression)
+       (if (eq? (car expression) '$$begin)
+        ; TODO Define this pass by `define-optimizer`.
+        (cons '$$begin
+         (let loop ((expressions (cdr expression)))
+          (let ((expression (car expressions))
+                (expressions (cdr expressions)))
+           (cond
+            ((null? expressions)
+             (list expression))
+            ((not (pair? expression))
+             (loop expressions))
+            ((eq? (car expression) '$$begin)
+             (loop (append (cdr expression) expressions)))
+            (else
+             (cons expression (loop expressions)))))))
+        expression))
+      expression))
 
     ; Free variable analysis
 
@@ -1276,9 +1285,9 @@
 
     ; Optimization
 
-    (define (optimize expression)
+    (define (optimize-custom expression)
      (let* ((context (make-optimization-context '() '()))
-            (expression (optimize-expression context expression)))
+            (expression (optimize-custom-expression context expression)))
       (values expression (optimization-context-literals context))))
 
     ; Tree shaking
@@ -2011,16 +2020,12 @@
      (define expression1 (include-files source))
      (define-values (expression2 libraries) (expand-libraries expression1))
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
-     (define features (detect-features expression3))
-
-     (define (shake expression)
-      (if (memq 'shake-tree options)
-       (shake-tree features expression)
-       expression))
-
-     (define expression4 (shake expression3))
-     (define-values (expression5 optimizers) (optimize expression4))
-     (define-values (expression6 _) (optimize (shake expression5)))
+     (define-values (expression4 optimizers) (optimize-custom expression3))
+     (define features (detect-features expression4))
+     (define expression5 (if (memq 'shake-tree options)
+                          (shake-tree features expression4)
+                          expression4))
+     (define expression6 (optimize-begin expression5))
      (define expression7 (analyze-free-variables expression6))
 
      (define metadata
@@ -2201,7 +2206,7 @@
                       (map-values make-optimizer ($$optimizers))
                       '())))
                (lambda (expression)
-                (optimize-expression context expression))))
+                (optimize-begin (optimize-custom-expression context expression)))))
 
              ; Compilation
 
