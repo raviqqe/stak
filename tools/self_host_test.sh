@@ -21,11 +21,11 @@ cd $(dirname $0)/..
 
 directory=tmp/self_host
 
-mkdir -p $directory/compile
+mkdir -p $directory
 cargo build --profile $profile
 
 for stage in $(seq 0 $(expr $stage_count - 1)); do
-  cat prelude.scm compile.scm | run_stage $stage >$directory/compile/stage$(expr $stage + 1).bc
+  cat prelude.scm compile.scm | run_stage $stage >$directory/stage$(expr $stage + 1).bc
 done
 
 compile() (
