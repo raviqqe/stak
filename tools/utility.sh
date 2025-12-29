@@ -4,8 +4,6 @@ log() (
 )
 
 parallel() (
-  trap 'pkill -P $$' INT TERM
-
   while read line; do
     $1 $line &
     jobs="$jobs $!"
