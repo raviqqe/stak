@@ -3,6 +3,15 @@ log() (
   "$@"
 )
 
+parallel() (
+  while read line; do
+    $1 "$line" &
+    jobs="$jobs $!"
+  done
+
+  wait $jobs
+)
+
 list_scheme_files() (
   [ $# -eq 0 ]
 
