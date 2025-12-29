@@ -1059,7 +1059,7 @@
           (compilation-context-push-local body-context (car binding))
           (cdr bindings)
           (compile-unbind continuation))))
-       (compile-sequence body-context body continuation))))
+       (compile-expression body-context body continuation))))
 
     (define (compile-unsafe-unbind continuation)
      (if (null? continuation)
@@ -1121,7 +1121,7 @@
         (compile-let
          context
          (map list (caddr predicate) (cdr expression))
-         (cdddr predicate)
+         (cadddr predicate)
          continuation)))
 
       ((pair? expression)
