@@ -425,9 +425,11 @@
     - get 0
     - continue
   - get 3
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f <
   - get 3
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f <
   - call 2 #f eq?
   - call 2 #f $$unbind
   - if
@@ -486,7 +488,8 @@
 - set rationalize
 - constant procedure 1 #f
   - get 0
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f <
   - if
     - get 0
     - call 1 #f -
@@ -2410,7 +2413,8 @@
   - call 1 #f ||
   - if
     - get 4
-    - call 1 #f negative?
+    - constant 0
+    - call 2 #f ||
     - if
       - constant "-"
       - continue
@@ -2422,7 +2426,8 @@
   - if
     - constant "nan"
   - get 4
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f ||
   - if
     - constant #\-
     - call 1 #f list
@@ -2441,8 +2446,9 @@
     - call 1 #f 8
     - get 2
     - call 2 #f cons
-    - get 1
-    - call 1 #f positive?
+    - constant 0
+    - get 2
+    - call 2 #f ||
     - if
       - get 1
       - get 1
@@ -4584,7 +4590,8 @@
         - get 0
         - continue
       - get 1
-      - call 1 #f negative?
+      - constant 0
+      - call 2 #f ||
       - call 2 #f $$unbind
       - if
         - get 5
@@ -4674,8 +4681,9 @@
     - get 0
     - if
       - get 0
-    - get 1
-    - call 1 #f positive?
+    - constant 0
+    - get 2
+    - call 2 #f ||
     - if
       - get 2
       - call 1 #f pair?
@@ -8329,7 +8337,8 @@
 - set magnitude
 - constant procedure 1 #f
   - get 0
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f ||
   - if
     - constant -1
     - call 1 #f acos
@@ -10330,7 +10339,8 @@
       - call 1 #f 98
       - call 2 #f ||
       - get 0
-      - call 1 #f negative?
+      - constant 0
+      - call 2 #f ||
       - if
         - constant #f
         - call 1 #f raise
@@ -15320,6 +15330,32 @@
         - ||
         - ||
         - ||
+  - list
+    - negative?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - <
+        - ||
+        - 0
+  - list
+    - positive?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - >
+        - ||
+        - 0
   - list
     - zero?
     - $$syntax-rules
