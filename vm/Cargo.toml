@@ -18,7 +18,7 @@ stak-util = { path = "../util", version = "0.12.3" }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
-insta = "1.45.0"
+insta = "1.45.1"
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
