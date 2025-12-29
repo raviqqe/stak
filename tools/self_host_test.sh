@@ -8,18 +8,17 @@ stage_count=3
 
 profile=release_test
 target=target/$profile
+directory=tmp/self_host
 
 run_stage() (
   if [ $1 -eq 0 ]; then
     log stak compile.scm
   else
-    log $target/stak-interpret stage$1.bc
+    log $target/stak-interpret $directory/stage$1.bc
   fi
 )
 
 cd $(dirname $0)/..
-
-directory=tmp/self_host
 
 mkdir -p $directory
 cargo build --profile $profile
