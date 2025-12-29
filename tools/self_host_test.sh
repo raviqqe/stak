@@ -32,12 +32,12 @@ compile() (
 
   echo FILE $file
 
-  directory=$directory/${file%.*}
+  sub_directory=$directory/${file%.*}
 
-  mkdir -p $directory
+  mkdir -p $sub_directory
 
   bytecode_file() (
-    echo $directory/stage$1.bc
+    echo $sub_directory/stage$1.bc
   )
 
   compile_stage() (
