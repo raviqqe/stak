@@ -912,22 +912,22 @@
                 (optimize-begin context expression))
                expression)))
        (if (eq? (car expression) '$$begin)
-         ; Omit top-level constants.
-         ; TODO Define this pass by `define-optimizer`.
-         (cons '$$begin
-          (let loop ((expressions (cdr expression)))
-           (let ((expression (car expressions))
-                 (expressions (cdr expressions)))
-            (cond
-             ((null? expressions)
-              (list expression))
-             ((not (pair? expression))
-              (loop expressions))
-             ((eq? (car expression) '$$begin)
-              (loop (append (cdr expression) expressions)))
-             (else
-              (cons expression (loop expressions)))))))
-          expression)))))
+        ; Omit top-level constants.
+        ; TODO Define this pass by `define-optimizer`.
+        (cons '$$begin
+         (let loop ((expressions (cdr expression)))
+          (let ((expression (car expressions))
+                (expressions (cdr expressions)))
+           (cond
+            ((null? expressions)
+             (list expression))
+            ((not (pair? expression))
+             (loop expressions))
+            ((eq? (car expression) '$$begin)
+             (loop (append (cdr expression) expressions)))
+            (else
+             (cons expression (loop expressions)))))))
+        expression))))
 
     ; Free variable analysis
 
