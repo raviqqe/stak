@@ -919,6 +919,40 @@
         (else
          expression)))))
 
+    (define (optimize-begin context expression)
+     (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
+      expression
+      (let* ((expression
+              (relaxed-map
+               (lambda (expression)
+                (optimize-begin context expression))
+               expression))
+             (predicate (car expression)))
+       (cond
+        ((eq? predicate '$$define-optimizer)
+         (let ((name (cadr expression)))
+          (optimization-context-append! context name (make-optimizer (caddr expression)))
+          (optimization-context-append-literal! context name (caddr expression)))
+         #f)
+        ((eq? predicate '$$begin)
+         ; Omit top-level constants.
+         ; TODO Define this pass by `define-optimizer`.
+         (cons '$$begin
+          (let loop ((expressions (cdr expression)))
+           (let ((expression (car expressions))
+                 (expressions (cdr expressions)))
+            (cond
+             ((null? expressions)
+              (list expression))
+             ((not (pair? expression))
+              (loop expressions))
+             ((eq? (car expression) '$$begin)
+              (loop (append (cdr expression) expressions)))
+             (else
+              (cons expression (loop expressions))))))))
+        (else
+         expression)))))
+
     ; Free variable analysis
 
     (define (find-free-variables bound-variables expression)
