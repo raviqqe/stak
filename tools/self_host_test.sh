@@ -37,20 +37,18 @@ compile() (
 
   mkdir -p $directory
 
-  artifact_path() (
-    echo $directory/stage$1.$2
+  bytecode_file() (
+    echo $directory/stage$1.bc
   )
 
   for stage in $(seq 0 $stage_count); do
-    bytecode_file=$(artifact_path $stage bc)
+    bytecode_file=$(bytecode_file $stage)
 
     cat prelude.scm $file | run_stage $stage >$bytecode_file
   done
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
-    for extension in bc; do
-      log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
-    done
+    log diff $(bytecode_file $stage) $(bytecode_file $(expr $stage + 1))
   done
 )
 
