@@ -455,7 +455,7 @@
 - call 0 #f 0
 - set 1
 - set 0
-- constant 4096
+- constant 2048
 - set ||
 - get ||
 - call 1 #f ||
