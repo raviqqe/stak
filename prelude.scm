@@ -719,6 +719,16 @@
         ((_ x)
           (eq? x 0))))
 
+    (define-optimizer positive?
+      (syntax-rules ()
+        ((_ x)
+          (> x 0))))
+
+    (define-optimizer negative?
+      (syntax-rules ()
+        ((_ x)
+          (< x 0))))
+
     (define (arithmetic-operator f y)
       (lambda xs (fold f y xs)))
 
