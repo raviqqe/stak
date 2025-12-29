@@ -4,7 +4,7 @@ log() (
 )
 
 parallel() (
-  trap 'pkill -P $$' SIGINT SIGTERM
+  trap 'pkill -P $$' INT TERM
 
   while read line; do
     $1 $line &

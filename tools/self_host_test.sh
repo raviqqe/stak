@@ -2,6 +2,8 @@
 
 set -e
 
+trap 'pkill -P $$' INT TERM
+
 stage_count=3
 
 . $(dirname $0)/utility.sh
