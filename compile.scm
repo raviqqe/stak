@@ -1286,7 +1286,7 @@
 
     ; Optimization
 
-    (define (optimize expression)
+    (define (optimize-custom expression)
      (let* ((context (make-optimization-context '() '()))
             (expression (optimize-expression context expression)))
       (values expression (optimization-context-literals context))))
@@ -2029,8 +2029,8 @@
        expression))
 
      (define expression4 (shake expression3))
-     (define-values (expression5 optimizers) (optimize expression4))
-     (define-values (expression6 _) (optimize (shake expression5)))
+     (define-values (expression5 optimizers) (optimize-custom expression4))
+     (define expression6 (optimize-begin (shake expression5)))
      (define expression7 (analyze-free-variables expression6))
 
      (define metadata
@@ -2211,7 +2211,7 @@
                       (map-values make-optimizer ($$optimizers))
                       '())))
                (lambda (expression)
-                (optimize-expression context expression))))
+                (optimize-begin (optimize-expression context expression)))))
 
              ; Compilation
 
