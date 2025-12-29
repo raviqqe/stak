@@ -5,7 +5,7 @@ log() (
 
 parallel() (
   while read line; do
-    $1 "$line" &
+    $1 $line &
     jobs="$jobs $!"
   done
 
