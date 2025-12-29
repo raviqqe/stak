@@ -4124,11 +4124,11 @@
   - rule-context
   - rule
   - optimizer
-  - relaxed-map
   - optimization-context-append!
   - optimization-context-append-literal!
   - optimization-context-optimizers
   - optimized
+  - relaxed-map
   - analyze-expressions
   - find-free-variables
   - bound-variables
@@ -4350,6 +4350,7 @@
   - expression2
   - detect-features
   - expression3
+  - optimize-custom
   - expression4
   - shake
   - expression5
@@ -4419,6 +4420,7 @@
   - map-values
   - make-optimizer
   - $$optimizers
+  - optimize-begin
   - optimize-expression
   - context
   - compile-expression
@@ -7797,20 +7799,26 @@
 - constant #f
 - constant #f
 - constant #f
+- constant #f
 - constant 0
 - constant 0
 - call 2 #f cons
+- set 17
+- get 16
+- call 1 #f ||
 - set 16
-- get 15
+- get 16
 - call 1 #f ||
 - set 15
-- get 15
+- constant 0
 - call 1 #f ||
 - set 14
 - constant 0
 - call 1 #f ||
 - set 13
 - constant 0
+- constant 1
+- call 2 #f ||
 - call 1 #f ||
 - set 12
 - constant 0
@@ -7818,10 +7826,16 @@
 - call 2 #f ||
 - call 1 #f ||
 - set 11
-- constant 0
-- constant 1
-- call 2 #f ||
-- call 1 #f ||
+- constant procedure 3 #f
+  - get 2
+  - get 2
+  - get 2
+  - call 2 #f cons
+  - get 4
+  - call 1 #f 20
+  - call 2 #f cons
+  - call 2 #f 18
+- call 1 #f $$close
 - set 10
 - constant procedure 3 #f
   - get 2
@@ -7829,30 +7843,19 @@
   - get 2
   - call 2 #f cons
   - get 4
-  - call 1 #f 19
+  - call 1 #f 18
   - call 2 #f cons
-  - call 2 #f 17
+  - call 2 #f 16
 - call 1 #f $$close
 - set 9
-- constant procedure 3 #f
-  - get 2
-  - get 2
-  - get 2
-  - call 2 #f cons
-  - get 4
-  - call 1 #f 17
-  - call 2 #f cons
-  - call 2 #f 15
-- call 1 #f $$close
+- constant ()
+- constant ()
+- constant ()
+- constant ()
+- call 4 #f 68
+- constant ()
+- call 2 #f 55
 - set 8
-- constant ()
-- constant ()
-- constant ()
-- constant ()
-- call 4 #f 67
-- constant ()
-- call 2 #f 54
-- set 7
 - constant procedure 1 #f
   - get 0
   - call 1 #f car
@@ -7860,19 +7863,19 @@
   - constant $$syntax-rules
   - call 2 #f eqv?
   - if
-    - get 9
+    - get 10
     - get 2
     - call 1 #f cadr
-    - call 2 #f 41
+    - call 2 #f 42
     - get 2
     - call 1 #f caddr
     - constant procedure 1 #f
       - constant procedure 1 #f
-        - get 15
+        - get 16
         - get 6
         - get 6
         - get 3
-        - call 4 #f 36
+        - call 4 #f 37
       - call 1 #f $$close
       - get 1
       - call 2 #f map
@@ -7913,19 +7916,19 @@
           - constant procedure 0 #f
             - get 4
             - call 1 #f car
-            - get 22
             - get 23
+            - get 24
             - get 13
-            - call 3 #f 60
+            - call 3 #f 61
             - get 0
             - get 1
             - get 3
             - call 1 #f car
             - get 12
-            - call 3 #f 42
+            - call 3 #f 43
             - get 3
             - call 1 #f cadr
-            - call 3 #f 39
+            - call 3 #f 40
             - call 2 #f $$unbind
             - call 2 #f $$unbind
             - constant procedure 0 #f
@@ -7946,7 +7949,7 @@
   - get 2
   - call 2 #f error
 - call 1 #f $$close
-- set 6
+- set 7
 - constant procedure 2 #f
   - get 0
   - call 1 #f pair?
@@ -7966,10 +7969,10 @@
   - constant procedure 1 #f
     - get 3
     - get 1
-    - call 2 #f 11
+    - call 2 #f 12
   - call 1 #f $$close
   - get 1
-  - call 2 #f 111
+  - call 2 #f 112
   - get 0
   - call 1 #f car
   - get 0
@@ -7982,18 +7985,64 @@
     - get 1
     - get 4
     - call 1 #f caddr
-    - call 1 #f 14
-    - call 3 #f 17
+    - call 1 #f 15
+    - call 3 #f 18
     - set 0
     - get 4
     - get 1
     - get 4
     - call 1 #f caddr
-    - call 3 #f 16
+    - call 3 #f 17
     - call 2 #f $$unbind
     - set 0
     - constant #f
   - get 0
+  - get 4
+  - call 1 #f 20
+  - call 2 #f assq
+  - get 0
+  - if
+    - get 0
+    - get 0
+    - call 1 #f cdr
+    - get 4
+    - call 1 #f 1
+    - set 1
+    - get 0
+    - get 5
+    - call 2 #f equal?
+    - if
+      - get 4
+    - get 6
+    - get 1
+    - call 2 #f 15
+  - get 2
+- call 1 #f $$close
+- set 6
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f pair?
+  - constant #f
+  - call 2 #f eq?
+  - get 0
+  - if
+    - get 0
+    - continue
+  - get 1
+  - call 1 #f car
+  - constant $$quote
+  - call 2 #f eq?
+  - call 2 #f $$unbind
+  - if
+    - get 0
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f 9
+  - call 1 #f $$close
+  - get 1
+  - call 2 #f 111
+  - get 0
+  - call 1 #f car
   - constant $$begin
   - call 2 #f eq?
   - if
@@ -8032,32 +8081,12 @@
       - call 2 #f cons
     - call 1 #f $$close
     - set 1
-    - get 3
+    - get 2
     - call 1 #f cdr
     - call 1 #f 1
     - call 2 #f $$unbind
     - call 2 #f cons
   - get 0
-  - get 4
-  - call 1 #f 19
-  - call 2 #f assq
-  - get 0
-  - if
-    - get 0
-    - get 0
-    - call 1 #f cdr
-    - get 4
-    - call 1 #f 1
-    - set 1
-    - get 0
-    - get 5
-    - call 2 #f equal?
-    - if
-      - get 4
-    - get 6
-    - get 1
-    - call 2 #f 14
-  - get 2
 - call 1 #f $$close
 - set 5
 - constant procedure 2 #f
@@ -8084,7 +8113,7 @@
       - call 1 #f $$close
       - get 3
       - call 1 #f cadr
-      - call 2 #f 121
+      - call 2 #f 122
     - get 0
     - constant $$quote
     - call 2 #f eqv?
@@ -8097,7 +8126,7 @@
     - call 1 #f cdr
     - call 1 #f 3
     - call 2 #f append
-    - call 1 #f 108
+    - call 1 #f 109
   - get 1
   - call 1 #f symbol?
   - if
@@ -8134,10 +8163,10 @@
       - get 1
       - call 1 #f cadr
       - get 0
-      - call 1 #f 98
+      - call 1 #f 99
       - get 4
       - call 2 #f append
-      - call 1 #f 108
+      - call 1 #f 109
       - get 3
       - call 1 #f cddr
       - call 2 #f 9
@@ -8148,8 +8177,8 @@
         - call 2 #f 14
       - call 1 #f $$close
       - get 2
-      - call 2 #f 117
-      - call 1 #f 110
+      - call 2 #f 118
+      - call 1 #f 111
       - get 3
       - get 3
       - call 2 #f cons
@@ -8242,7 +8271,7 @@
   - get 0
   - get 2
   - call 1 #f 26
-  - call 2 #f 139
+  - call 2 #f 140
   - get 0
   - if
     - get 0
@@ -8271,11 +8300,11 @@
     - if
       - get 0
       - call 1 #f rib-tag
-      - get 166
+      - get 167
       - call 2 #f eq?
       - if
         - get 0
-        - call 1 #f 170
+        - call 1 #f 171
         - constant 0
         - call 2 #f eq?
       - constant #f
@@ -8288,10 +8317,10 @@
   - call 1 #f 18
   - if
     - get 0
-    - call 1 #f 169
+    - call 1 #f 170
   - constant #f
   - get 1
-  - call 2 #f 150
+  - call 2 #f 151
 - call 1 #f $$close
 - set 15
 - constant procedure 1 #f
@@ -8299,10 +8328,10 @@
   - call 1 #f null?
   - if
     - get 0
-  - get 165
+  - get 166
   - constant 0
   - get 2
-  - call 3 #f 153
+  - call 3 #f 154
 - call 1 #f $$close
 - set 14
 - constant procedure 3 #f
@@ -8334,7 +8363,7 @@
   - call 2 #f 20
   - constant $$unbind
   - get 2
-  - call 3 #f 152
+  - call 3 #f 153
 - call 1 #f $$close
 - set 12
 - constant procedure 4 #f
@@ -8379,10 +8408,10 @@
   - call 1 #f null?
   - if
     - get 0
-  - get 165
+  - get 166
   - constant 1
   - get 2
-  - call 3 #f 153
+  - call 3 #f 154
 - call 1 #f $$close
 - set 10
 - constant procedure 5 #f
@@ -8394,7 +8423,7 @@
     - get 5
     - call 2 #f 26
     - get 2
-    - call 3 #f 156
+    - call 3 #f 157
   - get 4
   - get 3
   - call 1 #f car
@@ -8455,16 +8484,16 @@
   - get 1
   - call 1 #f symbol?
   - if
-    - get 168
+    - get 169
     - get 3
     - get 3
     - call 2 #f 24
     - get 2
-    - call 3 #f 155
+    - call 3 #f 156
   - get 1
-  - call 1 #f 124
-  - get 0
   - call 1 #f 125
+  - get 0
+  - call 1 #f 126
   - constant $$lambda
   - call 2 #f eq?
   - if
@@ -8525,8 +8554,8 @@
         - constant ()
         - continue
       - get 3
-      - call 1 #f 153
-      - get 170
+      - call 1 #f 154
+      - get 171
       - get 7
       - get 7
       - call 1 #f caddr
@@ -8537,7 +8566,7 @@
       - call 1 #f cadddr
       - get 4
       - call 3 #f 19
-      - call 3 #f 159
+      - call 3 #f 160
       - call 2 #f $$unbind
       - call 3 #f 14
     - get 0
@@ -8547,15 +8576,15 @@
       - get 2
       - call 1 #f caddr
       - get 0
-      - call 1 #f 125
+      - call 1 #f 126
       - get 1
-      - call 1 #f 149
+      - call 1 #f 150
       - call 1 #f symbol?
       - call 2 #f 24
       - get 5
       - constant #f
       - get 3
-      - call 1 #f 127
+      - call 1 #f 128
       - call 2 #f cons
       - call 1 #f reverse
       - call 2 #f 28
@@ -8564,7 +8593,7 @@
       - constant ()
       - call 3 #f 22
       - constant ()
-      - call 3 #f 152
+      - call 3 #f 153
       - get 4
       - call 1 #f cadr
       - call 1 #f null?
@@ -8576,8 +8605,8 @@
       - call 2 #f 25
       - constant $$close
       - get 5
-      - call 3 #f 157
-      - call 2 #f 154
+      - call 3 #f 158
+      - call 2 #f 155
     - get 0
     - constant $$libraries
     - call 2 #f eqv?
@@ -8586,7 +8615,7 @@
       - call 1 #f 26
       - call 1 #f ||
       - get 2
-      - call 2 #f 153
+      - call 2 #f 154
     - get 0
     - constant $$macros
     - call 2 #f eqv?
@@ -8595,7 +8624,7 @@
       - call 1 #f 26
       - call 1 #f ||
       - get 2
-      - call 2 #f 153
+      - call 2 #f 154
     - get 0
     - constant $$optimizers
     - call 2 #f eqv?
@@ -8604,7 +8633,7 @@
       - call 1 #f 26
       - call 1 #f ||
       - get 2
-      - call 2 #f 153
+      - call 2 #f 154
     - get 0
     - constant $$quote
     - call 2 #f eqv?
@@ -8612,7 +8641,7 @@
       - get 2
       - call 1 #f cadr
       - get 2
-      - call 2 #f 153
+      - call 2 #f 154
     - get 0
     - constant $$set!
     - call 2 #f eqv?
@@ -8620,7 +8649,7 @@
       - get 3
       - get 3
       - call 1 #f caddr
-      - get 170
+      - get 171
       - get 6
       - constant #f
       - call 2 #f 28
@@ -8629,7 +8658,7 @@
       - call 2 #f 27
       - get 5
       - call 1 #f 24
-      - call 3 #f 158
+      - call 3 #f 159
       - call 3 #f 14
     - get 0
     - constant $$symbols
@@ -8639,7 +8668,7 @@
       - call 1 #f 26
       - call 1 #f ||
       - get 2
-      - call 2 #f 153
+      - call 2 #f 154
     - get 0
     - constant $$dynamic-symbols
     - call 2 #f eqv?
@@ -8648,7 +8677,7 @@
       - call 1 #f 26
       - call 1 #f ||
       - get 2
-      - call 2 #f 153
+      - call 2 #f 154
     - get 3
     - get 3
     - constant #f
@@ -8656,22 +8685,22 @@
     - call 4 #f 16
   - get 1
   - get 1
-  - call 2 #f 152
+  - call 2 #f 153
 - call 1 #f $$close
 - set 7
 - constant procedure 0 #t
   - constant #f
 - constant procedure 1 #f
   - get 0
-- set 147
+- set 148
 - get 0
-- set 85
+- set 86
 - get 0
-- set 83
+- set 84
 - get 0
-- set 81
+- set 82
 - get 0
-- set 36
+- set 37
 - constant #f
 - call 2 #f $$unbind
 - set 6
@@ -8687,14 +8716,14 @@
     - call 2 #f cons
   - get 2
   - get 2
-  - call 3 #f 131
+  - call 3 #f 132
 - call 1 #f $$close
 - set 5
 - constant procedure 1 #f
   - get 0
   - constant ()
   - constant ()
-  - call 3 #f 117
+  - call 3 #f 118
 - call 1 #f $$close
 - constant list
   - list
@@ -9481,19 +9510,19 @@
     - (call-with-values . call-with-values)
     - (error . error)
     - (write-message . write-message)
-- call 2 #f 126
+- call 2 #f 127
 - constant ()
-- call 2 #f 108
+- call 2 #f 109
 - constant procedure 3 #f
   - get 0
-  - call 1 #f 125
+  - call 1 #f 126
   - get 0
   - constant define-library
   - call 2 #f eqv?
   - if
     - get 5
     - get 2
-    - call 2 #f 98
+    - call 2 #f 99
     - set 0
     - constant #f
     - get 4
@@ -9509,11 +9538,11 @@
     - constant $$begin
     - get 7
     - get car
-    - get 104
+    - get 105
     - get 4
     - call 2 #f map
     - call 2 #f map
-    - call 2 #f 102
+    - call 2 #f 103
     - constant #f
     - call 1 #f list
     - call 2 #f append
@@ -9521,10 +9550,10 @@
     - get 1
     - call 2 #f values
   - get 5
-  - get 101
+  - get 102
   - get 5
   - call 2 #f map
-  - call 2 #f 99
+  - call 2 #f 100
   - constant procedure 1 #f
     - get 0
     - get 3
@@ -9540,7 +9569,7 @@
   - call 1 #f $$close
   - call 2 #f $$unbind
   - get 2
-  - call 2 #f 101
+  - call 2 #f 102
   - get 4
   - call 2 #f values
 - call 1 #f $$close
@@ -9550,9 +9579,9 @@
 - constant ()
 - constant ()
 - constant ()
-- call 4 #f 92
+- call 4 #f 93
 - constant ()
-- call 2 #f 79
+- call 2 #f 80
 - constant procedure 1 #f
   - get 2
   - get 1
@@ -9560,8 +9589,8 @@
   - get 4
   - get 3
   - call 1 #f cdr
-  - call 2 #f 50
-  - call 3 #f 77
+  - call 2 #f 51
+  - call 3 #f 78
 - call 1 #f $$close
 - constant list
   - list
@@ -11992,11 +12021,11 @@
 - constant procedure 1 #f
   - get 2
   - get 1
-  - call 2 #f 46
+  - call 2 #f 47
 - call 1 #f $$close
 - call 2 #f $$unbind
 - set 3
-- get 30
+- get 31
 - constant list
   - list
     - > =
@@ -12156,13 +12185,14 @@
         - eq?
         - ||
         - #f
-- call 2 #f 126
+- call 2 #f 127
 - constant ()
-- call 2 #f 41
+- call 2 #f 42
 - constant procedure 1 #f
   - get 2
   - get 1
-  - call 2 #f 34
+  - call 2 #f 35
+  - call 1 #f 33
 - call 1 #f $$close
 - call 2 #f $$unbind
 - set 2
@@ -12180,7 +12210,7 @@
     - get 3
     - get 3
     - get 3
-    - call 1 #f 122
+    - call 1 #f 123
     - call 3 #f 11
   - call 1 #f $$close
   - constant procedure 2 #f
@@ -12195,12 +12225,13 @@
     - call 1 #f 37
     - call 1 #f 12
     - constant ()
-    - call 3 #f 156
+    - call 3 #f 157
     - get 1
     - call 2 #f values
   - call 1 #f $$close
   - call 2 #f call-with-values
 - call 1 #f $$close
+- call 2 #f $$unbind
 - call 2 #f $$unbind
 - call 2 #f $$unbind
 - call 2 #f $$unbind
@@ -16292,83 +16323,6 @@
             - #f
           - list
             - list
-              - eq?
-              - predicate
-              - list
-                - quote
-                - $$begin
-            - list
-              - cons
-              - list
-                - quote
-                - $$begin
-              - list
-                - let
-                - loop
-                - list
-                  - list
-                    - expressions
-                    - list
-                      - cdr
-                      - expression
-                - list
-                  - let
-                  - list
-                    - list
-                      - expression
-                      - list
-                        - car
-                        - expressions
-                    - list
-                      - expressions
-                      - list
-                        - cdr
-                        - expressions
-                  - list
-                    - cond
-                    - list
-                      - list
-                        - null?
-                        - expressions
-                      - list
-                        - list
-                        - expression
-                    - list
-                      - list
-                        - not
-                        - list
-                          - pair?
-                          - expression
-                      - list
-                        - loop
-                        - expressions
-                    - list
-                      - list
-                        - eq?
-                        - list
-                          - car
-                          - expression
-                        - list
-                          - quote
-                          - $$begin
-                      - list
-                        - loop
-                        - list
-                          - append
-                          - list
-                            - cdr
-                            - expression
-                          - expressions
-                    - list
-                      - else
-                      - list
-                        - cons
-                        - expression
-                        - list
-                          - loop
-                          - expressions
-          - list
-            - list
               - assq
               - predicate
               - list
@@ -16403,6 +16357,125 @@
           - list
             - else
             - expression
+  - list
+    - define
+    - list
+      - optimize-begin
+      - expression
+    - list
+      - if
+      - list
+        - or
+        - list
+          - not
+          - list
+            - pair?
+            - expression
+        - list
+          - eq?
+          - list
+            - car
+            - expression
+          - list
+            - quote
+            - $$quote
+      - expression
+      - list
+        - let\*
+        - list
+          - list
+            - expression
+            - list
+              - relaxed-map
+              - list
+                - lambda
+                - list
+                  - expression
+                - list
+                  - optimize-begin
+                  - expression
+              - expression
+        - list
+          - if
+          - list
+            - eq?
+            - list
+              - car
+              - expression
+            - list
+              - quote
+              - $$begin
+          - list
+            - cons
+            - list
+              - quote
+              - $$begin
+            - list
+              - let
+              - loop
+              - list
+                - list
+                  - expressions
+                  - list
+                    - cdr
+                    - expression
+              - list
+                - let
+                - list
+                  - list
+                    - expression
+                    - list
+                      - car
+                      - expressions
+                  - list
+                    - expressions
+                    - list
+                      - cdr
+                      - expressions
+                - list
+                  - cond
+                  - list
+                    - list
+                      - null?
+                      - expressions
+                    - list
+                      - list
+                      - expression
+                  - list
+                    - list
+                      - not
+                      - list
+                        - pair?
+                        - expression
+                    - list
+                      - loop
+                      - expressions
+                  - list
+                    - list
+                      - eq?
+                      - list
+                        - car
+                        - expression
+                      - list
+                        - quote
+                        - $$begin
+                    - list
+                      - loop
+                      - list
+                        - append
+                        - list
+                          - cdr
+                          - expression
+                        - expressions
+                  - list
+                    - else
+                    - list
+                      - cons
+                      - expression
+                      - list
+                        - loop
+                        - expressions
+          - expression
   - list
     - define
     - list
@@ -17561,7 +17634,7 @@
   - list
     - define
     - list
-      - optimize
+      - optimize-custom
       - expression
     - list
       - let\*
@@ -20409,15 +20482,13 @@
         - expression5
         - optimizers
       - list
-        - optimize
+        - optimize-custom
         - expression4
     - list
-      - define-values
+      - define
+      - expression6
       - list
-        - expression6
-        - \_
-      - list
-        - optimize
+        - optimize-begin
         - list
           - shake
           - expression5
@@ -21295,11 +21366,15 @@
     - constant expression
     - constant ()
     - call 2 #f cons
+    - constant optimize-begin
     - constant optimize-expression
     - constant context
     - constant expression
     - constant ()
     - call 2 #f cons
+    - call 2 #f cons
+    - call 2 #f cons
+    - constant ()
     - call 2 #f cons
     - call 2 #f cons
     - constant ()
