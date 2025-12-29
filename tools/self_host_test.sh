@@ -10,7 +10,7 @@ profile=release_test
 target=target/$profile
 directory=tmp/self_host
 
-run_stage() (
+compile() (
   if [ $1 -eq 0 ]; then
     log stak compile.scm
   else
@@ -24,7 +24,7 @@ mkdir -p $directory
 cargo build --profile $profile
 
 for stage in $(seq 0 $(expr $stage_count - 1)); do
-  cat prelude.scm compile.scm | run_stage $stage >$directory/stage$(expr $stage + 1).bc
+  cat prelude.scm compile.scm | compile $stage >$directory/stage$(expr $stage + 1).bc
 done
 
 test_file() (
@@ -41,7 +41,7 @@ test_file() (
   )
 
   for stage in $(seq 0 $stage_count); do
-    cat prelude.scm $file | run_stage $stage >$(bytecode_file $stage)
+    cat prelude.scm $file | compile $stage >$(bytecode_file $stage)
   done
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
