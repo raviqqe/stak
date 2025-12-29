@@ -879,13 +879,13 @@
       (else
        (error "unsupported optimizer" optimizer))))
 
-    (define (optimize-expression context expression)
+    (define (optimize-custom-expression context expression)
      (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
       expression
       (let* ((expression
               (relaxed-map
                (lambda (expression)
-                (optimize-expression context expression))
+                (optimize-custom-expression context expression))
                expression))
              (predicate (car expression)))
        (cond
@@ -899,7 +899,7 @@
           (let ((optimized ((cdr pair) expression)))
            (if (equal? optimized expression)
             expression
-            (optimize-expression context optimized)))))
+            (optimize-custom-expression context optimized)))))
         (else
          expression)))))
 
@@ -1288,7 +1288,7 @@
 
     (define (optimize-custom expression)
      (let* ((context (make-optimization-context '() '()))
-            (expression (optimize-expression context expression)))
+            (expression (optimize-custom-expression context expression)))
       (values expression (optimization-context-literals context))))
 
     ; Tree shaking
@@ -2211,7 +2211,7 @@
                       (map-values make-optimizer ($$optimizers))
                       '())))
                (lambda (expression)
-                (optimize-begin (optimize-expression context expression)))))
+                (optimize-begin (optimize-custom-expression context expression)))))
 
              ; Compilation
 
