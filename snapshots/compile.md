@@ -8364,7 +8364,7 @@
     - get 2
     - get 8
     - get 2
-    - call 3 #f 26
+    - call 3 #f 20
   - call 1 #f $$close
   - set 1
   - get 4
@@ -8485,7 +8485,7 @@
     - call 1 #f cdr
     - call 3 #f map
     - get 2
-    - call 1 #f cdddr
+    - call 1 #f cadddr
     - get 4
     - call 4 #f 19
   - get 1
@@ -16854,7 +16854,7 @@
                 - compile-unbind
                 - continuation
         - list
-          - compile-sequence
+          - compile-expression
           - body-context
           - body
           - continuation
@@ -17056,7 +17056,7 @@
                 - cdr
                 - expression
             - list
-              - cdddr
+              - cadddr
               - predicate
             - continuation
       - list
