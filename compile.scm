@@ -1029,7 +1029,7 @@
        (else
         (compile-expression
          context
-         (car expressions)
+         expression
          (if (null? (cdr expressions))
           continuation
           (compile-drop (compile-sequence context (cdr expressions) continuation))))))))
