@@ -264,38 +264,6 @@
   - constant #f
   - call 2 #f eq?
 - set number?
-- get number?
-- set complex?
-- get complex?
-- set real?
-- get real?
-- set rational?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f number?
-  - if
-    - get 0
-    - constant 1
-    - call 2 #f remainder
-    - call 1 #f zero?
-  - constant #f
-- set integer?
-- get integer?
-- set exact?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f exact?
-  - constant #f
-  - call 2 #f eq?
-- set inexact?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f exact?
-  - if
-    - get 0
-    - call 1 #f integer?
-  - constant #f
-- set exact-integer?
 - get eq?
 - call 1 #f comparison-operator
 - set =
@@ -342,8 +310,9 @@
 - constant procedure 1 #f
   - get 0
   - constant 2
-  - call 2 #f modulo
-  - call 1 #f zero?
+  - call 2 #f remainder
+  - constant 0
+  - call 2 #f eq?
 - set even?
 - constant procedure 1 #f
   - get 0
@@ -587,6 +556,39 @@
   - call 2 #f ||
 - call 1 #f ||
 - set max
+- get number?
+- set complex?
+- get complex?
+- set real?
+- get real?
+- set rational?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f number?
+  - if
+    - get 0
+    - constant 1
+    - call 2 #f remainder
+    - constant 0
+    - call 2 #f eq?
+  - constant #f
+- set integer?
+- get integer?
+- set exact?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f exact?
+  - constant #f
+  - call 2 #f eq?
+- set inexact?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f exact?
+  - if
+    - get 0
+    - call 1 #f integer?
+  - constant #f
+- set exact-integer?
 - get ||
 - call 1 #f instance?
 - set char?

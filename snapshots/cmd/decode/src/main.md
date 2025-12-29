@@ -178,14 +178,10 @@
 - set ||
 - constant procedure 1 #f
   - get 0
-  - constant 0
-  - call 2 #f ||
-- set ||
-- constant procedure 1 #f
-  - get 0
   - constant 2
   - call 2 #f ||
-  - call 1 #f ||
+  - constant 0
+  - call 2 #f ||
 - set ||
 - constant procedure 1 #f
   - get 0
