@@ -1016,14 +1016,23 @@
       (code-rib set-instruction 0 continuation)))
 
     (define (compile-sequence context expressions continuation)
-     (if (and (not (pair? (car expressions))) (pair? (cdr expressions)))
-      (compile-sequence context (cdr expressions) continuation)
-      (compile-expression
-       context
-       (car expressions)
-       (if (null? (cdr expressions))
-        continuation
-        (compile-drop (compile-sequence context (cdr expressions) continuation))))))
+     (let* ((expression (car expressions))
+            (predicate (maybe-car expression)))
+      (cond
+       ((eq? predicate '$$begin)
+        (compile-sequence
+         context
+         (append (cdr expression) (cdr expressions))
+         continuation))
+       ((and (not predicate) (pair? (cdr expressions)))
+        (compile-sequence context (cdr expressions) continuation))
+       (else
+        (compile-expression
+         context
+         (car expressions)
+         (if (null? (cdr expressions))
+          continuation
+          (compile-drop (compile-sequence context (cdr expressions) continuation))))))))
 
     (define (compile-unbind continuation)
      (if (null? continuation)
