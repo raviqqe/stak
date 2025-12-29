@@ -9,6 +9,8 @@ parallel() (
     jobs="$jobs $!"
   done
 
+  trap 'pkill -P $$' SIGINT SIGTERM
+
   wait $jobs
 )
 
