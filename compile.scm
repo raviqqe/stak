@@ -903,13 +903,13 @@
         (else
          expression)))))
 
-    (define (optimize-begin context expression)
+    (define (optimize-begin expression)
      (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
       expression
       (let* ((expression
               (relaxed-map
                (lambda (expression)
-                (optimize-begin context expression))
+                (optimize-begin expression))
                expression)))
        (if (eq? (car expression) '$$begin)
         ; Omit top-level constants.
