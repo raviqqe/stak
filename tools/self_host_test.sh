@@ -40,11 +40,11 @@ compile() (
     echo $sub_directory/stage$1.bc
   )
 
-  compile_stage() (
-    cat prelude.scm $file | run_stage $stage >$(bytecode_file $stage)
-  )
+  for stage in $(seq 0 $stage_count); do
+    bytecode_file=$(bytecode_file $stage)
 
-  seq 0 $stage_count | parallel compile_stage
+    cat prelude.scm $file | run_stage $stage >$bytecode_file
+  done
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
     log diff $(bytecode_file $stage) $(bytecode_file $(expr $stage + 1))
