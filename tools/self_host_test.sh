@@ -27,10 +27,10 @@ for stage in $(seq 0 $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage $stage >$directory/stage$(expr $stage + 1).bc
 done
 
-compile() (
+test_file() (
   file=$1
 
-  echo START $file
+  echo FILE $file
 
   sub_directory=$directory/${file%.*}
 
@@ -41,16 +41,12 @@ compile() (
   )
 
   for stage in $(seq 0 $stage_count); do
-    bytecode_file=$(bytecode_file $stage)
-
-    cat prelude.scm $file | run_stage $stage >$bytecode_file
+    cat prelude.scm $file | run_stage $stage >$(bytecode_file $stage)
   done
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
     log diff $(bytecode_file $stage) $(bytecode_file $(expr $stage + 1))
   done
-
-  echo END $file
 )
 
-list_scheme_files | parallel compile
+list_scheme_files | parallel test_file
