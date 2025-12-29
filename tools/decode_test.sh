@@ -10,7 +10,7 @@ cargo build --profile release_test
 
 export PATH=$PWD/target/release_test:$PATH
 
-decode() {
+decode() (
   file=$1
 
   echo FILE $file
@@ -20,7 +20,7 @@ decode() {
   mkdir -p $(dirname $base)
   cat prelude.scm $file | stak-compile --shake-tree >$base.bc
   stak-decode <$base.bc >$base.md
-}
+)
 
 list_scheme_files | parallel decode
 
