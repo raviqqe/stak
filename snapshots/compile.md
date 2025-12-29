@@ -4349,11 +4349,10 @@
   - source
   - expression1
   - expression2
-  - detect-features
-  - expression3
   - optimize-custom
+  - expression3
+  - detect-features
   - expression4
-  - shake
   - expression5
   - expression6
   - compile-metadata
@@ -20427,16 +20426,22 @@
         - expand-macros
         - expression2
     - list
+      - define-values
+      - list
+        - expression4
+        - optimizers
+      - list
+        - optimize-custom
+        - expression3
+    - list
       - define
       - features
       - list
         - detect-features
-        - expression3
+        - expression4
     - list
       - define
-      - list
-        - shake
-        - expression
+      - expression5
       - list
         - if
         - list
@@ -20448,30 +20453,14 @@
         - list
           - shake-tree
           - features
-          - expression
-        - expression
-    - list
-      - define
-      - expression4
-      - list
-        - shake
-        - expression3
-    - list
-      - define-values
-      - list
-        - expression5
-        - optimizers
-      - list
-        - optimize-custom
+          - expression4
         - expression4
     - list
       - define
       - expression6
       - list
         - optimize-begin
-        - list
-          - shake
-          - expression5
+        - expression5
     - list
       - define
       - expression7

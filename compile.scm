@@ -2020,16 +2020,12 @@
      (define expression1 (include-files source))
      (define-values (expression2 libraries) (expand-libraries expression1))
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
-     (define features (detect-features expression3))
-
-     (define (shake expression)
-      (if (memq 'shake-tree options)
-       (shake-tree features expression)
-       expression))
-
-     (define expression4 (shake expression3))
-     (define-values (expression5 optimizers) (optimize-custom expression4))
-     (define expression6 (optimize-begin (shake expression5)))
+     (define-values (expression4 optimizers) (optimize-custom expression3))
+     (define features (detect-features expression4))
+     (define expression5 (if (memq 'shake-tree options)
+                          (shake-tree features expression4)
+                          expression4))
+     (define expression6 (optimize-begin expression5))
      (define expression7 (analyze-free-variables expression6))
 
      (define metadata
