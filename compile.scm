@@ -879,6 +879,14 @@
       (else
        (error "unsupported optimizer" optimizer))))
 
+    (define (optimize-expression optimize expression)
+     (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
+      expression
+      (optimize
+       (relaxed-map
+        (lambda (expression) (optimize-expression optimize expression))
+        expression))))
+
     (define (optimize-custom-expression context expression)
      (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
       expression
@@ -904,15 +912,9 @@
          expression)))))
 
     (define (optimize-begin expression)
-     (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
-      expression
-      (let* ((expression
-              (relaxed-map
-               (lambda (expression)
-                (optimize-begin expression))
-               expression)))
+     (optimize-expression
+      (lambda (expression)
        (if (eq? (car expression) '$$begin)
-        ; Omit top-level constants.
         ; TODO Define this pass by `define-optimizer`.
         (cons '$$begin
          (let loop ((expressions (cdr expression)))
@@ -927,7 +929,8 @@
              (loop (append (cdr expression) expressions)))
             (else
              (cons expression (loop expressions)))))))
-        expression))))
+        expression))
+      expression))
 
     ; Free variable analysis
 
