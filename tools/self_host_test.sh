@@ -30,7 +30,7 @@ done
 compile() (
   file=$1
 
-  echo FILE $file
+  echo START $file
 
   sub_directory=$directory/${file%.*}
 
@@ -49,6 +49,8 @@ compile() (
   for stage in $(seq 0 $(expr $stage_count - 1)); do
     log diff $(bytecode_file $stage) $(bytecode_file $(expr $stage + 1))
   done
+
+  echo END $file
 )
 
 list_scheme_files | parallel compile
