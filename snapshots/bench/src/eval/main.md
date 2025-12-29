@@ -296,20 +296,48 @@
     - call 1 #f integer?
   - constant #f
 - set exact-integer?
+- get eq?
+- call 1 #f comparison-operator
+- set =
+- get ||
+- call 1 #f comparison-operator
+- set <
+- constant procedure 2 #f
+  - get 0
+  - get 2
+  - call 2 #f ||
+- call 1 #f comparison-operator
+- set >
+- constant procedure 2 #f
+  - get 0
+  - get 2
+  - call 2 #f ||
+  - constant #f
+  - call 2 #f eq?
+- call 1 #f comparison-operator
+- set <=
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f ||
+  - constant #f
+  - call 2 #f eq?
+- call 1 #f comparison-operator
+- set >=
 - constant procedure 1 #f
   - get 0
   - constant 0
   - call 2 #f eq?
 - set zero?
 - constant procedure 1 #f
-  - get 0
   - constant 0
-  - call 2 #f >
+  - get 1
+  - call 2 #f ||
 - set positive?
 - constant procedure 1 #f
   - get 0
   - constant 0
-  - call 2 #f <
+  - call 2 #f ||
 - set negative?
 - constant procedure 1 #f
   - get 0
@@ -426,10 +454,10 @@
     - continue
   - get 3
   - constant 0
-  - call 2 #f <
+  - call 2 #f ||
   - get 3
   - constant 0
-  - call 2 #f <
+  - call 2 #f ||
   - call 2 #f eq?
   - call 2 #f $$unbind
   - if
@@ -469,7 +497,7 @@
   - constant 2
   - call 2 #f modulo
   - constant 1
-  - call 2 #f =
+  - call 2 #f eq?
   - if
     - get 0
     - get 1
@@ -489,7 +517,7 @@
 - constant procedure 1 #f
   - get 0
   - constant 0
-  - call 2 #f <
+  - call 2 #f ||
   - if
     - get 0
     - call 1 #f -
@@ -535,34 +563,6 @@
 - constant procedure 1 #f
   - constant 1
 - set denominator
-- get eq?
-- call 1 #f comparison-operator
-- set =
-- get ||
-- call 1 #f comparison-operator
-- set <
-- constant procedure 2 #f
-  - get 0
-  - get 2
-  - call 2 #f ||
-- call 1 #f comparison-operator
-- set >
-- constant procedure 2 #f
-  - get 0
-  - get 2
-  - call 2 #f ||
-  - constant #f
-  - call 2 #f eq?
-- call 1 #f comparison-operator
-- set <=
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 2 #f ||
-  - constant #f
-  - call 2 #f eq?
-- call 1 #f comparison-operator
-- set >=
 - constant procedure 1 #f
   - constant procedure 1 #t
     - constant procedure 2 #f
@@ -11525,6 +11525,101 @@
 - get 32
 - constant list
   - list
+    - /
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - -
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - -
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - -
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - negative?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - ||
+        - ||
+        - 0
+  - list
+    - positive?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - ||
+        - 0
+        - ||
+  - list
+    - zero?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - eq?
+        - ||
+        - 0
+  - list
     - > =
     - $$syntax-rules
     - ...
@@ -11600,101 +11695,6 @@
         - eq?
         - ||
         - ||
-  - list
-    - /
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - negative?
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-      - list
-        - <
-        - ||
-        - 0
-  - list
-    - positive?
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-      - list
-        - >
-        - ||
-        - 0
-  - list
-    - zero?
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-      - list
-        - eq?
-        - ||
-        - 0
   - list
     - not
     - $$syntax-rules

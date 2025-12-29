@@ -206,6 +206,14 @@
   - call 2 #f ||
 - set ||
 - constant procedure 2 #f
+  - get 0
+  - get 2
+  - call 2 #f ||
+  - constant #f
+  - call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant procedure 2 #f
   - constant procedure 0 #t
     - get 3
     - get 3
@@ -260,17 +268,6 @@
     - get 0
     - call 1 #f ||
   - get 0
-- set ||
-- get ||
-- call 1 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 0
-  - get 2
-  - call 2 #f ||
-  - constant #f
-  - call 2 #f ||
-- call 1 #f ||
 - set ||
 - get ||
 - call 1 #f ||
