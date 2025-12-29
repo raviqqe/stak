@@ -894,22 +894,6 @@
           (optimization-context-append! context name (make-optimizer (caddr expression)))
           (optimization-context-append-literal! context name (caddr expression)))
          #f)
-        ((eq? predicate '$$begin)
-         ; Omit top-level constants.
-         ; TODO Define this pass by `define-optimizer`.
-         (cons '$$begin
-          (let loop ((expressions (cdr expression)))
-           (let ((expression (car expressions))
-                 (expressions (cdr expressions)))
-            (cond
-             ((null? expressions)
-              (list expression))
-             ((not (pair? expression))
-              (loop expressions))
-             ((eq? (car expression) '$$begin)
-              (loop (append (cdr expression) expressions)))
-             (else
-              (cons expression (loop expressions))))))))
         ((assq predicate (optimization-context-optimizers context)) =>
          (lambda (pair)
           (let ((optimized ((cdr pair) expression)))
@@ -926,15 +910,8 @@
               (relaxed-map
                (lambda (expression)
                 (optimize-begin context expression))
-               expression))
-             (predicate (car expression)))
-       (cond
-        ((eq? predicate '$$define-optimizer)
-         (let ((name (cadr expression)))
-          (optimization-context-append! context name (make-optimizer (caddr expression)))
-          (optimization-context-append-literal! context name (caddr expression)))
-         #f)
-        ((eq? predicate '$$begin)
+               expression)))
+       (if (eq? (car expression) '$$begin)
          ; Omit top-level constants.
          ; TODO Define this pass by `define-optimizer`.
          (cons '$$begin
@@ -949,9 +926,8 @@
              ((eq? (car expression) '$$begin)
               (loop (append (cdr expression) expressions)))
              (else
-              (cons expression (loop expressions))))))))
-        (else
-         expression)))))
+              (cons expression (loop expressions)))))))
+          expression)))))
 
     ; Free variable analysis
 
