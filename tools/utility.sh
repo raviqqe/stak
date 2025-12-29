@@ -4,12 +4,12 @@ log() (
 )
 
 parallel() (
+  trap 'pkill -P $$' SIGINT SIGTERM
+
   while read line; do
     $1 $line &
     jobs="$jobs $!"
   done
-
-  trap 'pkill -P $$' SIGINT SIGTERM
 
   wait $jobs
 )
