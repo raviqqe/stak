@@ -102,10 +102,10 @@ Feature: cond-expand
       """scheme
       (import (scheme base) (scheme write))
 
-      (write (features))
+      (write-u8 (if (memq 'r7rs (features)) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain "r7rs"
+    Then the stdout should contain "A"
 
   Rule: `and`
 
