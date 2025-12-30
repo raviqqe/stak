@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-vm = { path = "../vm", version = "0.12.3" }
+stak-vm = { path = "../vm", version = "0.12.4" }
 winter-maybe-async = "0.13.1"
 
 [features]
