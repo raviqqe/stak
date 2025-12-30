@@ -31,7 +31,7 @@ Feature: Smoke
   Scenario: Compile symbols in an if expression in a procedure
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write))
+      (import (scheme base))
 
       (define (foo)
         (if #f 'foo 'bar))
@@ -45,7 +45,7 @@ Feature: Smoke
   Scenario: Compile many sequential `if` expressions
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write))
+      (import (scheme base))
       """
     And a file named "foo.scm" with:
       """scheme

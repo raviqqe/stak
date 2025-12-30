@@ -100,12 +100,12 @@ Feature: cond-expand
   Scenario: Examine features
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write))
+      (import (scheme base))
 
-      (write (features))
+      (write-u8 (if (memq 'r7rs (features)) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain "r7rs"
+    Then the stdout should contain exactly "A"
 
   Rule: `and`
 

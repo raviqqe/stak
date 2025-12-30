@@ -227,12 +227,12 @@ Feature: Vector
     Scenario Outline: Reference an element
       Given a file named "main.scm" with:
         """scheme
-        (import (scheme base) (scheme write))
+        (import (scheme base))
 
-        (write (vector-ref (make-vector <length> 42) <index>))
+        (write-u8 (vector-ref (make-vector <length> 65) <index>))
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "42"
+      Then the stdout should contain exactly "A"
 
       Examples:
         | length | index |
@@ -260,14 +260,14 @@ Feature: Vector
     Scenario Outline: Convert values between a list and a vector
       Given a file named "main.scm" with:
         """scheme
-        (import (scheme base) (scheme write) (srfi 1))
+        (import (scheme base) (srfi 1))
 
         (define xs (iota <count>))
 
-        (write (equal? (vector->list (list->vector xs)) xs))
+        (write-u8 (if (equal? (vector->list (list->vector xs)) xs) 65 66))
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "#t"
+      Then the stdout should contain exactly "A"
 
       Examples:
         | count |
@@ -298,11 +298,11 @@ Feature: Vector
     Scenario Outline: Use a vector literal
       Given a file named "main.scm" with:
         """scheme
-        (import (scheme base) (scheme write))
+        (import (scheme base))
 
         (define xs (include "./value.scm"))
 
-        (write (vector-ref xs <index>))
+        (write-u8 (if (= (vector-ref xs <index>) <index>) 65 66))
         """
       And a file named "write.scm" with:
         """scheme
@@ -315,7 +315,7 @@ Feature: Vector
         stak write.scm > value.scm
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "<index>"
+      Then the stdout should contain exactly "A"
 
       Examples:
         | length | index |
