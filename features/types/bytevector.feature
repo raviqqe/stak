@@ -149,12 +149,12 @@ Feature: Bytevector
     Scenario Outline: Reference an element
       Given a file named "main.scm" with:
         """scheme
-        (import (scheme base) (scheme write))
+        (import (scheme base))
 
-        (write (bytevector-u8-ref (make-bytevector <length> 42) <index>))
+        (write-u8 (bytevector-u8-ref (make-bytevector <length> 65) <index>))
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "42"
+      Then the stdout should contain exactly "A"
 
       Examples:
         | length | index |
