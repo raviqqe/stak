@@ -264,10 +264,10 @@ Feature: Vector
 
         (define xs (iota <count>))
 
-        (write (equal? (vector->list (list->vector xs)) xs))
+        (write-u8 (if (equal? (vector->list (list->vector xs)) xs) 65 66))
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "#t"
+      Then the stdout should contain exactly "A"
 
       Examples:
         | count |
