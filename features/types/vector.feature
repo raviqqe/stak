@@ -302,7 +302,7 @@ Feature: Vector
 
         (define xs (include "./value.scm"))
 
-        (write-u8 (if (= (vector-u8-ref xs <index>) <index>) 65 66))
+        (write-u8 (if (= (vector-ref xs <index>) <index>) 65 66))
         """
       And a file named "write.scm" with:
         """scheme
