@@ -100,7 +100,7 @@ Feature: cond-expand
   Scenario: Examine features
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write))
+      (import (scheme base))
 
       (write-u8 (if (memq 'r7rs (features)) 65 66))
       """

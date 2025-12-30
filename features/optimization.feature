@@ -4,7 +4,7 @@ Feature: Optimization
   Scenario: Match a rule
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write) (stak base))
+      (import (scheme base) (stak base))
 
       (define-optimizer foo
         (syntax-rules ()
@@ -19,7 +19,7 @@ Feature: Optimization
   Scenario: Match a variable pattern
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write) (stak base))
+      (import (scheme base) (stak base))
 
       (define-optimizer foo
         (syntax-rules ()
@@ -34,7 +34,7 @@ Feature: Optimization
   Scenario: Match an ellipsis pattern
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write) (stak base))
+      (import (scheme base) (stak base))
 
       (define-optimizer foo
         (syntax-rules ()
