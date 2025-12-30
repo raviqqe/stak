@@ -260,7 +260,7 @@ Feature: Vector
     Scenario Outline: Convert values between a list and a vector
       Given a file named "main.scm" with:
         """scheme
-        (import (scheme base) (scheme write) (srfi 1))
+        (import (scheme base) (srfi 1))
 
         (define xs (iota <count>))
 

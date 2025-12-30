@@ -15,7 +15,7 @@ Feature: Intrinsics
   Scenario: Preserve a tag when a `cdr` is set
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write))
+      (import (scheme base))
 
       (define x (rib 0 #f #f 7))
 

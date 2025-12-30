@@ -11,7 +11,7 @@ Feature: Niche functionalities
   Scenario: Dump a stack trace on an error
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write) (stak backtrace))
+      (import (scheme base) (stak backtrace))
 
       (define (foo)
         (error "foo")

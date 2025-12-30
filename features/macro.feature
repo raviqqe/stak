@@ -267,7 +267,7 @@ Feature: Macro
   Scenario: Expand an empty ellipsis pattern and an improper list
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write))
+      (import (scheme base))
 
       (define-syntax foo
         (syntax-rules ()

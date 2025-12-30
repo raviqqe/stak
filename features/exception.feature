@@ -25,7 +25,7 @@ Feature: Exception
   Scenario: Raise an error with a pretty-printed value
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme write))
+      (import (scheme base))
 
       (error "Oh, no!" 42)
       """
