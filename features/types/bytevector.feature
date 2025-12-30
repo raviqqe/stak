@@ -183,11 +183,11 @@ Feature: Bytevector
     Scenario Outline: Use a bytevector literal
       Given a file named "main.scm" with:
         """scheme
-        (import (scheme base) (scheme write))
+        (import (scheme base))
 
         (define xs (include "./value.scm"))
 
-        (write (bytevector-u8-ref xs <index>))
+        (write-u8 (if (= (bytevector-u8-ref xs <index>) <index>) 65 66))
         """
       And a file named "write.scm" with:
         """scheme
@@ -205,7 +205,7 @@ Feature: Bytevector
         stak write.scm > value.scm
         """
       When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "<index>"
+      Then the stdout should contain exactly "A"
 
       Examples:
         | length | index |
