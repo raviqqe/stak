@@ -105,7 +105,7 @@ Feature: cond-expand
       (write-u8 (if (memq 'r7rs (features)) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain "A"
+    Then the stdout should contain exactly "A"
 
   Rule: `and`
 
