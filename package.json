@@ -10,7 +10,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
     "@raviqqe/biome-config": "^2.0.23",
-    "oxfmt": "^0.20.0",
+    "oxfmt": "^0.21.0",
     "tombi": "^0.7.14"
   }
 }
