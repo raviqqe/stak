@@ -694,30 +694,58 @@
     (define (number? x)
       (not (rib? x)))
 
-    (define complex? number?)
-    (define real? complex?)
-    (define rational? real?)
-    (define (integer? x)
-      (and
-        (number? x)
-        (zero? (remainder x 1))))
+    (define = (comparison-operator eq?))
+    (define < (comparison-operator $<))
+    (define > (comparison-operator (lambda (x y) ($< y x))))
+    (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
+    (define >= (comparison-operator (lambda (x y) (not ($< x y)))))
 
-    (define exact? integer?)
-    (define (inexact? x)
-      (not (exact? x)))
-    (define (exact-integer? x)
-      (and (exact? x) (integer? x)))
+    (define-optimizer =
+      (syntax-rules ()
+        ((_ x y)
+          (eq? x y))))
+
+    (define-optimizer <
+      (syntax-rules ()
+        ((_ x y)
+          ($< x y))))
+
+    (define-optimizer >
+      (syntax-rules ()
+        ((_ x y)
+          ($< y x))))
+
+    (define-optimizer <=
+      (syntax-rules ()
+        ((_ x y)
+          (not ($< y x)))))
+
+    (define-optimizer >=
+      (syntax-rules ()
+        ((_ x y)
+          (not ($< x y)))))
 
     (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
     (define (negative? x) (< x 0))
-    (define (even? x) (zero? (modulo x 2)))
-    (define (odd? x) (not (even? x)))
 
     (define-optimizer zero?
       (syntax-rules ()
         ((_ x)
           (eq? x 0))))
+
+    (define-optimizer positive?
+      (syntax-rules ()
+        ((_ x)
+          (> x 0))))
+
+    (define-optimizer negative?
+      (syntax-rules ()
+        ((_ x)
+          (< x 0))))
+
+    (define (even? x) (zero? (remainder x 2)))
+    (define (odd? x) (not (even? x)))
 
     (define (arithmetic-operator f y)
       (lambda xs (fold f y xs)))
@@ -834,42 +862,25 @@
     (define (denominator x)
       1)
 
-    (define = (comparison-operator eq?))
-    (define < (comparison-operator $<))
-    (define > (comparison-operator (lambda (x y) ($< y x))))
-    (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
-    (define >= (comparison-operator (lambda (x y) (not ($< x y)))))
-
-    (define-optimizer =
-      (syntax-rules ()
-        ((_ x y)
-          (eq? x y))))
-
-    (define-optimizer <
-      (syntax-rules ()
-        ((_ x y)
-          ($< x y))))
-
-    (define-optimizer >
-      (syntax-rules ()
-        ((_ x y)
-          ($< y x))))
-
-    (define-optimizer <=
-      (syntax-rules ()
-        ((_ x y)
-          (not ($< y x)))))
-
-    (define-optimizer >=
-      (syntax-rules ()
-        ((_ x y)
-          (not ($< x y)))))
-
     (define (extremum f)
       (lambda (x . xs)
         (fold (lambda (x y) (if (f x y) x y)) x xs)))
     (define min (extremum $<))
     (define max (extremum (lambda (x y) ($< y x))))
+
+    (define complex? number?)
+    (define real? complex?)
+    (define rational? real?)
+    (define (integer? x)
+      (and
+        (number? x)
+        (zero? (remainder x 1))))
+
+    (define exact? integer?)
+    (define (inexact? x)
+      (not (exact? x)))
+    (define (exact-integer? x)
+      (and (exact? x) (integer? x)))
 
     ;; Character
 

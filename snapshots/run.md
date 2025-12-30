@@ -264,58 +264,55 @@
   - constant #f
   - call 2 #f eq?
 - set number?
-- get number?
-- set complex?
-- get complex?
-- set real?
-- get real?
-- set rational?
-- constant procedure 1 #f
+- get eq?
+- call 1 #f comparison-operator
+- set =
+- get ||
+- call 1 #f comparison-operator
+- set <
+- constant procedure 2 #f
   - get 0
-  - call 1 #f number?
-  - if
-    - get 0
-    - constant 1
-    - call 2 #f remainder
-    - call 1 #f zero?
-  - constant #f
-- set integer?
-- get integer?
-- set exact?
-- constant procedure 1 #f
+  - get 2
+  - call 2 #f ||
+- call 1 #f comparison-operator
+- set >
+- constant procedure 2 #f
   - get 0
-  - call 1 #f exact?
+  - get 2
+  - call 2 #f ||
   - constant #f
   - call 2 #f eq?
-- set inexact?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f exact?
-  - if
-    - get 0
-    - call 1 #f integer?
+- call 1 #f comparison-operator
+- set <=
+- constant procedure 2 #f
+  - get 1
+  - get 1
+  - call 2 #f ||
   - constant #f
-- set exact-integer?
+  - call 2 #f eq?
+- call 1 #f comparison-operator
+- set >=
 - constant procedure 1 #f
   - get 0
   - constant 0
   - call 2 #f eq?
 - set zero?
 - constant procedure 1 #f
-  - get 0
   - constant 0
-  - call 2 #f >
+  - get 1
+  - call 2 #f ||
 - set positive?
 - constant procedure 1 #f
   - get 0
   - constant 0
-  - call 2 #f <
+  - call 2 #f ||
 - set negative?
 - constant procedure 1 #f
   - get 0
   - constant 2
-  - call 2 #f modulo
-  - call 1 #f zero?
+  - call 2 #f remainder
+  - constant 0
+  - call 2 #f eq?
 - set even?
 - constant procedure 1 #f
   - get 0
@@ -425,9 +422,11 @@
     - get 0
     - continue
   - get 3
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f ||
   - get 3
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f ||
   - call 2 #f eq?
   - call 2 #f $$unbind
   - if
@@ -467,7 +466,7 @@
   - constant 2
   - call 2 #f modulo
   - constant 1
-  - call 2 #f =
+  - call 2 #f eq?
   - if
     - get 0
     - get 1
@@ -486,7 +485,8 @@
 - set rationalize
 - constant procedure 1 #f
   - get 0
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f ||
   - if
     - get 0
     - call 1 #f -
@@ -532,34 +532,6 @@
 - constant procedure 1 #f
   - constant 1
 - set denominator
-- get eq?
-- call 1 #f comparison-operator
-- set =
-- get ||
-- call 1 #f comparison-operator
-- set <
-- constant procedure 2 #f
-  - get 0
-  - get 2
-  - call 2 #f ||
-- call 1 #f comparison-operator
-- set >
-- constant procedure 2 #f
-  - get 0
-  - get 2
-  - call 2 #f ||
-  - constant #f
-  - call 2 #f eq?
-- call 1 #f comparison-operator
-- set <=
-- constant procedure 2 #f
-  - get 1
-  - get 1
-  - call 2 #f ||
-  - constant #f
-  - call 2 #f eq?
-- call 1 #f comparison-operator
-- set >=
 - constant procedure 1 #f
   - constant procedure 1 #t
     - constant procedure 2 #f
@@ -584,6 +556,39 @@
   - call 2 #f ||
 - call 1 #f ||
 - set max
+- get number?
+- set complex?
+- get complex?
+- set real?
+- get real?
+- set rational?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f number?
+  - if
+    - get 0
+    - constant 1
+    - call 2 #f remainder
+    - constant 0
+    - call 2 #f eq?
+  - constant #f
+- set integer?
+- get integer?
+- set exact?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f exact?
+  - constant #f
+  - call 2 #f eq?
+- set inexact?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f exact?
+  - if
+    - get 0
+    - call 1 #f integer?
+  - constant #f
+- set exact-integer?
 - get ||
 - call 1 #f instance?
 - set char?
@@ -2410,7 +2415,8 @@
   - call 1 #f ||
   - if
     - get 4
-    - call 1 #f negative?
+    - constant 0
+    - call 2 #f ||
     - if
       - constant "-"
       - continue
@@ -2422,7 +2428,8 @@
   - if
     - constant "nan"
   - get 4
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f ||
   - if
     - constant #\-
     - call 1 #f list
@@ -2441,8 +2448,9 @@
     - call 1 #f 8
     - get 2
     - call 2 #f cons
-    - get 1
-    - call 1 #f positive?
+    - constant 0
+    - get 2
+    - call 2 #f ||
     - if
       - get 1
       - get 1
@@ -4591,7 +4599,8 @@
         - get 0
         - continue
       - get 1
-      - call 1 #f negative?
+      - constant 0
+      - call 2 #f ||
       - call 2 #f $$unbind
       - if
         - get 5
@@ -4681,8 +4690,9 @@
     - get 0
     - if
       - get 0
-    - get 1
-    - call 1 #f positive?
+    - constant 0
+    - get 2
+    - call 2 #f ||
     - if
       - get 2
       - call 1 #f pair?
@@ -8336,7 +8346,8 @@
 - set magnitude
 - constant procedure 1 #f
   - get 0
-  - call 1 #f negative?
+  - constant 0
+  - call 2 #f ||
   - if
     - constant -1
     - call 1 #f acos
@@ -10337,7 +10348,8 @@
       - call 1 #f 98
       - call 2 #f ||
       - get 0
-      - call 1 #f negative?
+      - constant 0
+      - call 2 #f ||
       - if
         - constant #f
         - call 1 #f raise
@@ -15514,6 +15526,101 @@
 - get 32
 - constant list
   - list
+    - /
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - -
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - -
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - -
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - negative?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - ||
+        - ||
+        - 0
+  - list
+    - positive?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - ||
+        - 0
+        - ||
+  - list
+    - zero?
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - \_
+        - ||
+      - list
+        - eq?
+        - ||
+        - 0
+  - list
     - > =
     - $$syntax-rules
     - ...
@@ -15589,75 +15696,6 @@
         - eq?
         - ||
         - ||
-  - list
-    - /
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - zero?
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-      - list
-        - eq?
-        - ||
-        - 0
   - list
     - not
     - $$syntax-rules
