@@ -764,12 +764,18 @@
     (define-optimizer +
       (syntax-rules ()
         ((_ x y)
-          ($+ x y))))
+          ($+ x y))
+
+        ((_ x y z ...)
+          (+ ($+ x y) z ...))))
 
     (define-optimizer -
       (syntax-rules ()
         ((_ x y)
-          ($- x y))))
+          ($- x y))
+
+        ((_ x y z ...)
+          (- ($- x y) z ...))))
 
     (define-optimizer *
       (syntax-rules ()
