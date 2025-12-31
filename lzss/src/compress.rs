@@ -79,10 +79,10 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .unwrap_or_default();
 
             if m > MIN_LENGTH {
-                self.next = Some(m as _);
                 self.ahead -= m;
+                self.next = Some(n as _);
 
-                (n as u8) << 1 | 1
+                (m as u8) << 1 | 1
             } else {
                 self.next()? << 1
             }
