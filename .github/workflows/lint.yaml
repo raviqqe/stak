@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - run: cargo install schemat
-      - run: schemat -cvi r7rs-benchmarks '**/*.scm'
+      - run: schemat -cv -i r7rs-benchmarks -i target '**/*.scm'
   gherkin_format:
     runs-on: ubuntu-latest
     steps:
