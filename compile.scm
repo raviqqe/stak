@@ -1693,9 +1693,9 @@
 
     ; Compression
 
-    (define maximum-window-size 128) ; inclusive
+    (define window-size 256)
     (define minimum-match 2) ; exclusive
-    (define maximum-match 255) ; inclusive
+    (define maximum-match 127) ; inclusive
 
     ;; Compressor
 
@@ -1726,12 +1726,12 @@
       (compressor-set-ahead! compressor (- (compressor-ahead compressor) n))
       (compressor-set-back! compressor (+ (compressor-back compressor) n))
 
-      (let ((d (- (compressor-back compressor) maximum-window-size)))
+      (let ((d (- (compressor-back compressor) window-size)))
        (when (positive? d)
         (compressor-set-buffer!
          compressor
          (list-tail (compressor-buffer compressor) d))
-        (compressor-set-back! compressor maximum-window-size)))
+        (compressor-set-back! compressor window-size)))
 
       (car xs)))
 
@@ -1758,8 +1758,8 @@
              (n (cdr match)))
        (if (> n minimum-match)
         (begin
-         (write-u8 (+ 1 (* 2 (- back (car match) 1))))
-         (write-u8 n)
+         (write-u8 (+ 1 (* 2 n)))
+         (write-u8 (- back (car match) 1))
          (compressor-pop! compressor n))
         (write-u8 (* 2 (compressor-pop! compressor 1)))))))
 

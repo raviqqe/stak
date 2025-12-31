@@ -2,7 +2,7 @@ use crate::ring_buffer::RingBuffer;
 
 const MIN_LENGTH: usize = 2;
 /// The maximum match length.
-pub const MAX_LENGTH: usize = u8::MAX as _;
+pub const MAX_LENGTH: usize = (u8::MAX / 2) as _;
 
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const B: usize, I: Iterator<Item = u8>> {
