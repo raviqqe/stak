@@ -228,7 +228,8 @@ mod tests {
             )
             .collect::<Vec<_>>(),
             chunk
-                .iter().rev()
+                .iter()
+                .rev()
                 .chain(&chunk)
                 .copied()
                 .map(|x| x << 1)
