@@ -81,7 +81,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 self.ahead -= m;
                 self.next = Some(n as _);
 
-                (m as u8) << 1 | 1
+                (m - 1 << 1) as u8 | 1
             } else {
                 self.next()? << 1
             }
@@ -231,8 +231,7 @@ mod tests {
                 .chain(&chunk)
                 .copied()
                 .map(|x| x << 1)
-                // TODO Set the length base to 0.
-                .chain([u8::MAX, u8::MAX, 0])
+                .chain([u8::MAX, u8::MAX])
                 .collect::<Vec<_>>()
         );
     }

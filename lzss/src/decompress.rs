@@ -38,7 +38,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
                 self.buffer.push(y);
                 Some(y)
             } else {
-                self.length = y;
+                self.length = y + 1;
                 self.offset = self.iterator.next()?;
 
                 self.next()
@@ -77,7 +77,7 @@ mod tests {
     fn max_length() {
         assert_eq!(
             LzssDecompressionIterator::<1, _>::new(
-                [84, (MAX_LENGTH as u8) << 1 | 1, 0].into_iter()
+                [84, (MAX_LENGTH - 1 << 1) as u8 | 1, 0].into_iter()
             )
             .collect::<Vec<_>>(),
             repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>()
