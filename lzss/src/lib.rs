@@ -174,4 +174,16 @@ mod tests {
             .collect::<Vec<_>>()
             == data
     }
+
+    #[quickcheck]
+    fn random_max(data: Vec<u8>) -> bool {
+        let data = data.into_iter().map(|x| x >> 1).collect::<Vec<_>>();
+
+        data.iter()
+            .copied()
+            .compress::<{ MAX_WINDOW_SIZE + MAX_LENGTH }>()
+            .decompress::<WINDOW_SIZE>()
+            .collect::<Vec<_>>()
+            == data
+    }
 }
