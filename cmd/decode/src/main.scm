@@ -62,8 +62,8 @@
             (decompressor-push! decompressor y)
             y)
           (begin
-            (decompressor-set-offset! decompressor y)
-            (decompressor-set-length! decompressor (read-u8))
+            (decompressor-set-length! decompressor y)
+            (decompressor-set-offset! decompressor (read-u8))
             (decompressor-read decompressor)))))
     (else
       (let ((x
