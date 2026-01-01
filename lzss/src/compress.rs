@@ -178,7 +178,7 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([42, 42, 42, 42].into_iter())
                 .collect::<Vec<_>>(),
-            [84, 7, 0]
+            [84, 5, 0]
         );
     }
 
@@ -189,7 +189,7 @@ mod tests {
                 [42, 42, 42, 42, 7, 7, 7, 127, 127, 127, 127, 127].into_iter()
             )
             .collect::<Vec<_>>(),
-            [84, 7, 0, 14, 14, 14, 254, 9, 0]
+            [84, 5, 0, 14, 14, 14, 254, 7, 0]
         );
     }
 
@@ -198,7 +198,7 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([0, 0, 0].into_iter())
                 .collect::<Vec<_>>(),
-            [7, 0]
+            [5, 0]
         );
     }
 
