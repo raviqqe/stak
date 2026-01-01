@@ -58,7 +58,7 @@ mod tests {
     #[test]
     fn repetition() {
         assert_eq!(
-            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 7, 5].into_iter())
+            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 11, 3].into_iter())
                 .collect::<Vec<_>>(),
             [1, 2, 3, 4, 1, 2, 3, 4, 1]
         );
