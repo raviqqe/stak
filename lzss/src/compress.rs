@@ -207,9 +207,9 @@ mod tests {
     #[test]
     fn max_length() {
         assert_eq!(
-            LzssCompressionIterator::<{ 1 + MAX_LENGTH }, _>::new(repeat(42).take(256))
+            LzssCompressionIterator::<{ 1 + MAX_LENGTH }, _>::new(repeat(42).take(MAX_LENGTH + 1))
                 .collect::<Vec<_>>(),
-            [84, 1, MAX_LENGTH as u8]
+            [84, u8::MAX, 0]
         );
     }
 
@@ -224,7 +224,7 @@ mod tests {
             .collect::<Vec<_>>(),
             (0..offset)
                 .map(|x| x << 1)
-                .chain([255, offset])
+                .chain([u8::MAX, offset])
                 .collect::<Vec<_>>()
         );
     }
