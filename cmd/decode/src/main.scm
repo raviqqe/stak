@@ -62,7 +62,7 @@
             (decompressor-push! decompressor y)
             y)
           (begin
-            (decompressor-set-length! decompressor y)
+            (decompressor-set-length! decompressor (+ y 1))
             (decompressor-set-offset! decompressor (read-u8))
             (decompressor-read decompressor)))))
     (else
