@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn max_length() {
         const WINDOW_SIZE: usize = 1;
-        let data = repeat(42).take(256).collect::<Vec<_>>();
+        let data = repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
@@ -151,7 +151,7 @@ mod tests {
     #[test]
     fn max_offset() {
         const WINDOW_SIZE: usize = 128;
-        let data = (0..128).chain(0..128).collect::<Vec<_>>();
+        let data = repeat(0..128).take(2).flatten().collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
