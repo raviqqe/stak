@@ -215,16 +215,20 @@ mod tests {
 
     #[test]
     fn max_offset() {
-        let offset = MAX_WINDOW_SIZE as u8;
+        let chunk = (0..(1 << 7)).collect::<Vec<_>>();
 
         assert_eq!(
             LzssCompressionIterator::<{ MAX_WINDOW_SIZE + MAX_LENGTH }, _>::new(
-                (0..offset).chain(0..offset)
+                chunk.iter().rev().chain(&chunk).chain(chunk.iter().rev()).copied()
             )
             .collect::<Vec<_>>(),
-            (0..offset)
+            chunk
+                .iter().rev()
+                .chain(&chunk)
+                .copied()
                 .map(|x| x << 1)
-                .chain([u8::MAX, offset])
+                // TODO Set the length base to 0.
+                .chain([u8::MAX, u8::MAX, 0])
                 .collect::<Vec<_>>()
         );
     }
