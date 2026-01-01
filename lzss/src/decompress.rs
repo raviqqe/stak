@@ -84,14 +84,15 @@ mod tests {
 
     #[test]
     fn max_offset() {
-        let offset = MAX_WINDOW_SIZE as u8;
+        let offset = (MAX_WINDOW_SIZE - 1) as u8;
+        let chunk = (0..=offset).map(|x| x << 1).collect::<Vec<_>>();
 
         assert_eq!(
             LzssDecompressionIterator::<MAX_WINDOW_SIZE, _>::new(
-                (0..offset).map(|x| x << 1).chain([255, offset])
+                chunk.iter().copied().chain([u8::MAX, offset])
             )
             .collect::<Vec<_>>(),
-            (0..offset).chain(0..offset).collect::<Vec<_>>()
+            chunk.iter().chain(chunk.iter().take(MAX_LENGTH)).copied().map(|x| x >> 1).collect::<Vec<_>>()
         );
     }
 }
