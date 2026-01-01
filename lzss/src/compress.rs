@@ -219,7 +219,12 @@ mod tests {
 
         assert_eq!(
             LzssCompressionIterator::<{ MAX_WINDOW_SIZE + MAX_LENGTH }, _>::new(
-                chunk.iter().rev().chain(&chunk).chain(chunk.iter().rev()).copied()
+                chunk
+                    .iter()
+                    .rev()
+                    .chain(&chunk)
+                    .chain(chunk.iter().rev())
+                    .copied()
             )
             .collect::<Vec<_>>(),
             chunk
