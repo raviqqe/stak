@@ -38,8 +38,8 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
                 self.buffer.push(y);
                 Some(y)
             } else {
-                self.offset = y;
-                self.length = self.iterator.next()?;
+                self.length = y;
+                self.offset = self.iterator.next()?;
 
                 self.next()
             }
@@ -58,7 +58,7 @@ mod tests {
     #[test]
     fn repetition() {
         assert_eq!(
-            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 7, 5].into_iter())
+            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 11, 3].into_iter())
                 .collect::<Vec<_>>(),
             [1, 2, 3, 4, 1, 2, 3, 4, 1]
         );
@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn repetitions() {
         assert_eq!(
-            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 7, 5, 10, 12, 3, 3].into_iter())
+            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 11, 3, 10, 12, 7, 1].into_iter())
                 .collect::<Vec<_>>(),
             [1, 2, 3, 4, 1, 2, 3, 4, 1, 5, 6, 5, 6, 5]
         );
@@ -76,22 +76,30 @@ mod tests {
     #[test]
     fn max_length() {
         assert_eq!(
-            LzssDecompressionIterator::<1, _>::new([84, 1, MAX_LENGTH as u8].into_iter())
-                .collect::<Vec<_>>(),
+            LzssDecompressionIterator::<1, _>::new(
+                [84, (MAX_LENGTH as u8) << 1 | 1, 0].into_iter()
+            )
+            .collect::<Vec<_>>(),
             repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>()
         );
     }
 
     #[test]
     fn max_offset() {
-        let offset = MAX_WINDOW_SIZE as u8;
+        let offset = (MAX_WINDOW_SIZE - 1) as u8;
+        let chunk = (0..=offset).map(|x| x << 1).collect::<Vec<_>>();
 
         assert_eq!(
             LzssDecompressionIterator::<MAX_WINDOW_SIZE, _>::new(
-                (0..offset).map(|x| x << 1).chain([255, offset])
+                chunk.iter().copied().chain([u8::MAX, offset])
             )
             .collect::<Vec<_>>(),
-            (0..offset).chain(0..offset).collect::<Vec<_>>()
+            chunk
+                .iter()
+                .chain(chunk.iter().take(MAX_LENGTH))
+                .copied()
+                .map(|x| x >> 1)
+                .collect::<Vec<_>>()
         );
     }
 }

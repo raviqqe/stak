@@ -4268,7 +4268,7 @@
   - compressor-set-buffer!
   - d
   - compressor-set-back!
-  - maximum-window-size
+  - window-size
   - compressor-back
   - compressor-buffer
   - current
@@ -19174,8 +19174,8 @@
       - #f
   - list
     - define
-    - maximum-window-size
-    - 128
+    - window-size
+    - 256
   - list
     - define
     - minimum-match
@@ -19183,7 +19183,7 @@
   - list
     - define
     - maximum-match
-    - 255
+    - 127
   - list
     - define-record-type
     - compressor
@@ -19314,7 +19314,7 @@
               - list
                 - compressor-back
                 - compressor
-              - maximum-window-size
+              - window-size
         - list
           - when
           - list
@@ -19332,7 +19332,7 @@
           - list
             - compressor-set-back!
             - compressor
-            - maximum-window-size
+            - window-size
       - list
         - car
         - xs
@@ -19474,16 +19474,16 @@
                 - list
                   - -
                   - 2
-                  - list
-                    - -
-                    - back
-                    - list
-                      - car
-                      - match
-                    - 1
+                  - n
             - list
               - write-u8
-              - n
+              - list
+                - -
+                - back
+                - list
+                  - car
+                  - match
+                - 1
             - list
               - compressor-pop!
               - compressor

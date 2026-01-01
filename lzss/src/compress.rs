@@ -2,7 +2,7 @@ use crate::ring_buffer::RingBuffer;
 
 const MIN_LENGTH: usize = 2;
 /// The maximum match length.
-pub const MAX_LENGTH: usize = u8::MAX as _;
+pub const MAX_LENGTH: usize = (u8::MAX / 2) as _;
 
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const B: usize, I: Iterator<Item = u8>> {
@@ -64,6 +64,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
         } else {
             // This implementation reads uninitialized zeros from the buffer.
             let (n, m) = (0..Self::WINDOW_SIZE)
+                .rev()
                 .map(|i| {
                     let mut j = 0;
 
@@ -79,10 +80,10 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 .unwrap_or_default();
 
             if m > MIN_LENGTH {
-                self.next = Some(m as _);
                 self.ahead -= m;
+                self.next = Some(n as _);
 
-                (n as u8) << 1 | 1
+                (m as u8) << 1 | 1
             } else {
                 self.next()? << 1
             }
@@ -179,7 +180,7 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([42, 42, 42, 42].into_iter())
                 .collect::<Vec<_>>(),
-            [84, 1, 3]
+            [84, 7, 0]
         );
     }
 
@@ -190,7 +191,7 @@ mod tests {
                 [42, 42, 42, 42, 7, 7, 7, 127, 127, 127, 127, 127].into_iter()
             )
             .collect::<Vec<_>>(),
-            [84, 1, 3, 14, 14, 14, 254, 1, 4]
+            [84, 7, 0, 14, 14, 14, 254, 9, 0]
         );
     }
 
@@ -199,31 +200,41 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([0, 0, 0].into_iter())
                 .collect::<Vec<_>>(),
-            [15, 3]
+            [7, 0]
         );
     }
 
     #[test]
     fn max_length() {
         assert_eq!(
-            LzssCompressionIterator::<{ 1 + MAX_LENGTH }, _>::new(repeat(42).take(256))
+            LzssCompressionIterator::<{ 1 + MAX_LENGTH }, _>::new(repeat(42).take(MAX_LENGTH + 1))
                 .collect::<Vec<_>>(),
-            [84, 1, MAX_LENGTH as u8]
+            [84, u8::MAX, 0]
         );
     }
 
     #[test]
     fn max_offset() {
-        let offset = MAX_WINDOW_SIZE as u8;
+        let chunk = (0..(1 << 7)).collect::<Vec<_>>();
 
         assert_eq!(
             LzssCompressionIterator::<{ MAX_WINDOW_SIZE + MAX_LENGTH }, _>::new(
-                (0..offset).chain(0..offset)
+                chunk
+                    .iter()
+                    .rev()
+                    .chain(&chunk)
+                    .chain(chunk.iter().rev())
+                    .copied()
             )
             .collect::<Vec<_>>(),
-            (0..offset)
+            chunk
+                .iter()
+                .rev()
+                .chain(&chunk)
+                .copied()
                 .map(|x| x << 1)
-                .chain([255, offset])
+                // TODO Set the length base to 0.
+                .chain([u8::MAX, u8::MAX, 0])
                 .collect::<Vec<_>>()
         );
     }
