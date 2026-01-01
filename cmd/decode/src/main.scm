@@ -12,7 +12,7 @@
 (define tag-base 16)
 (define share-base 31)
 
-(define window-size 127)
+(define window-size 256)
 
 ; Window
 
