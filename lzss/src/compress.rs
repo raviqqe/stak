@@ -81,7 +81,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 self.ahead -= m;
                 self.next = Some(n as _);
 
-                (m - 1 << 1) as u8 | 1
+                ((m - 1) << 1) as u8 | 1
             } else {
                 self.next()? << 1
             }
