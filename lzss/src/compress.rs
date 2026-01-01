@@ -63,7 +63,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
             x
         } else {
             // This implementation reads uninitialized zeros from the buffer.
-            let (n, m) = (0..Self::WINDOW_SIZE)
+            let (n, m) = (0..Self::WINDOW_SIZE).rev()
                 .map(|i| {
                     let mut j = 0;
 
@@ -179,7 +179,7 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([42, 42, 42, 42].into_iter())
                 .collect::<Vec<_>>(),
-            [84, 1, 3]
+            [84, 7, 0]
         );
     }
 
@@ -190,7 +190,7 @@ mod tests {
                 [42, 42, 42, 42, 7, 7, 7, 127, 127, 127, 127, 127].into_iter()
             )
             .collect::<Vec<_>>(),
-            [84, 1, 3, 14, 14, 14, 254, 1, 4]
+            [84, 7, 0, 14, 14, 14, 254, 9, 0]
         );
     }
 
@@ -199,7 +199,7 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([0, 0, 0].into_iter())
                 .collect::<Vec<_>>(),
-            [15, 3]
+            [7, 0]
         );
     }
 
