@@ -16,14 +16,14 @@ main_error = { version = "0.1.2", optional = true }
 origin = { version = "0.26.2", default-features = false, features = [
   "libc",
 ], optional = true }
-stak-configuration = { path = "../configuration", version = "0.12.4" }
-stak-device = { path = "../device", version = "0.12.4" }
-stak-file = { path = "../file", version = "0.12.4" }
-stak-macro = { path = "../macro", version = "0.12.4" }
-stak-process-context = { path = "../process-context", version = "0.12.4" }
-stak-r7rs = { path = "../r7rs", version = "0.12.4" }
-stak-time = { path = "../time", version = "0.12.4" }
-stak-vm = { path = "../vm", version = "0.12.4" }
+stak-configuration = { path = "../configuration", version = "0.12.5" }
+stak-device = { path = "../device", version = "0.12.5" }
+stak-file = { path = "../file", version = "0.12.5" }
+stak-macro = { path = "../macro", version = "0.12.5" }
+stak-process-context = { path = "../process-context", version = "0.12.5" }
+stak-r7rs = { path = "../r7rs", version = "0.12.5" }
+stak-time = { path = "../time", version = "0.12.5" }
+stak-vm = { path = "../vm", version = "0.12.5" }
 
 [dev-dependencies]
 stak = { path = "../root" }
