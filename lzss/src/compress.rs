@@ -1,8 +1,6 @@
-use crate::ring_buffer::RingBuffer;
+use crate::{MAX_LENGTH, ring_buffer::RingBuffer};
 
 const MIN_LENGTH: usize = 2;
-/// The maximum match length.
-pub const MAX_LENGTH: usize = (u8::MAX / 2) as _;
 
 /// LZSS compression iterator.
 pub struct LzssCompressionIterator<const B: usize, I: Iterator<Item = u8>> {
@@ -83,7 +81,7 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
                 self.ahead -= m;
                 self.next = Some(n as _);
 
-                (m as u8) << 1 | 1
+                ((m - 1) << 1) as u8 | 1
             } else {
                 self.next()? << 1
             }
@@ -180,7 +178,7 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([42, 42, 42, 42].into_iter())
                 .collect::<Vec<_>>(),
-            [84, 7, 0]
+            [84, 5, 0]
         );
     }
 
@@ -191,7 +189,7 @@ mod tests {
                 [42, 42, 42, 42, 7, 7, 7, 127, 127, 127, 127, 127].into_iter()
             )
             .collect::<Vec<_>>(),
-            [84, 7, 0, 14, 14, 14, 254, 9, 0]
+            [84, 5, 0, 14, 14, 14, 254, 7, 0]
         );
     }
 
@@ -200,7 +198,7 @@ mod tests {
         assert_eq!(
             LzssCompressionIterator::<BUFFER_SIZE, _>::new([0, 0, 0].into_iter())
                 .collect::<Vec<_>>(),
-            [7, 0]
+            [5, 0]
         );
     }
 
@@ -233,8 +231,7 @@ mod tests {
                 .chain(&chunk)
                 .copied()
                 .map(|x| x << 1)
-                // TODO Set the length base to 0.
-                .chain([u8::MAX, u8::MAX, 0])
+                .chain([u8::MAX, u8::MAX])
                 .collect::<Vec<_>>()
         );
     }

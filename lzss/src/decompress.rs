@@ -38,7 +38,7 @@ impl<const W: usize, I: Iterator<Item = u8>> Iterator for LzssDecompressionItera
                 self.buffer.push(y);
                 Some(y)
             } else {
-                self.length = y;
+                self.length = y + 1;
                 self.offset = self.iterator.next()?;
 
                 self.next()
@@ -58,7 +58,7 @@ mod tests {
     #[test]
     fn repetition() {
         assert_eq!(
-            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 11, 3].into_iter())
+            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 9, 3].into_iter())
                 .collect::<Vec<_>>(),
             [1, 2, 3, 4, 1, 2, 3, 4, 1]
         );
@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn repetitions() {
         assert_eq!(
-            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 11, 3, 10, 12, 7, 1].into_iter())
+            LzssDecompressionIterator::<8, _>::new([2, 4, 6, 8, 9, 3, 10, 12, 5, 1].into_iter())
                 .collect::<Vec<_>>(),
             [1, 2, 3, 4, 1, 2, 3, 4, 1, 5, 6, 5, 6, 5]
         );
@@ -77,7 +77,7 @@ mod tests {
     fn max_length() {
         assert_eq!(
             LzssDecompressionIterator::<1, _>::new(
-                [84, (MAX_LENGTH as u8) << 1 | 1, 0].into_iter()
+                [84, (MAX_LENGTH - 1 << 1) as u8 | 1, 0].into_iter()
             )
             .collect::<Vec<_>>(),
             repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>()

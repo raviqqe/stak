@@ -19183,7 +19183,7 @@
   - list
     - define
     - maximum-match
-    - 127
+    - 128
   - list
     - define-record-type
     - compressor
@@ -19474,7 +19474,10 @@
                 - list
                   - -
                   - 2
-                  - n
+                  - list
+                    - -
+                    - n
+                    - 1
             - list
               - write-u8
               - list

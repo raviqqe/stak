@@ -1695,7 +1695,7 @@
 
     (define window-size 256)
     (define minimum-match 2) ; exclusive
-    (define maximum-match 127) ; inclusive
+    (define maximum-match 128) ; inclusive
 
     ;; Compressor
 
@@ -1758,7 +1758,7 @@
              (n (cdr match)))
        (if (> n minimum-match)
         (begin
-         (write-u8 (+ 1 (* 2 n)))
+         (write-u8 (+ 1 (* 2 (- n 1))))
          (write-u8 (- back (car match) 1))
          (compressor-pop! compressor n))
         (write-u8 (* 2 (compressor-pop! compressor 1)))))))

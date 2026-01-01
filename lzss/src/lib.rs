@@ -11,11 +11,13 @@ mod compress;
 mod decompress;
 mod ring_buffer;
 
-pub use self::compress::MAX_LENGTH;
 use self::{compress::LzssCompressionIterator, decompress::LzssDecompressionIterator};
 
 /// The maximum window size.
 pub const MAX_WINDOW_SIZE: usize = 1 << 8;
+
+/// The maximum match length.
+pub const MAX_LENGTH: usize = 1 << 7;
 
 /// LZSS compression for 7-bit bytes.
 pub trait Lzss {
@@ -27,8 +29,8 @@ pub trait Lzss {
 }
 
 impl<I: IntoIterator<Item = u8>> Lzss for I {
-    fn compress<const W: usize>(self) -> impl Iterator<Item = u8> {
-        LzssCompressionIterator::<W, _>::new(self.into_iter())
+    fn compress<const B: usize>(self) -> impl Iterator<Item = u8> {
+        LzssCompressionIterator::<B, _>::new(self.into_iter())
     }
 
     fn decompress<const W: usize>(self) -> impl Iterator<Item = u8> {
@@ -134,7 +136,7 @@ mod tests {
     #[test]
     fn max_length() {
         const WINDOW_SIZE: usize = 1;
-        let data = repeat(42).take(256).collect::<Vec<_>>();
+        let data = repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
@@ -149,7 +151,7 @@ mod tests {
     #[test]
     fn max_offset() {
         const WINDOW_SIZE: usize = 128;
-        let data = (0..128).chain(0..128).collect::<Vec<_>>();
+        let data = repeat(0..128).take(2).flatten().collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
@@ -169,6 +171,18 @@ mod tests {
             .copied()
             .compress::<{ WINDOW_SIZE + MAX_LENGTH }>()
             .decompress::<WINDOW_SIZE>()
+            .collect::<Vec<_>>()
+            == data
+    }
+
+    #[quickcheck]
+    fn random_max(data: Vec<u8>) -> bool {
+        let data = data.into_iter().map(|x| x >> 1).collect::<Vec<_>>();
+
+        data.iter()
+            .copied()
+            .compress::<{ MAX_WINDOW_SIZE + MAX_LENGTH }>()
+            .decompress::<MAX_WINDOW_SIZE>()
             .collect::<Vec<_>>()
             == data
     }
