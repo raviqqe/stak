@@ -76,8 +76,10 @@ mod tests {
     #[test]
     fn max_length() {
         assert_eq!(
-            LzssDecompressionIterator::<1, _>::new([84, (MAX_LENGTH as u8) << 1 | 1, 0].into_iter())
-                .collect::<Vec<_>>(),
+            LzssDecompressionIterator::<1, _>::new(
+                [84, (MAX_LENGTH as u8) << 1 | 1, 0].into_iter()
+            )
+            .collect::<Vec<_>>(),
             repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>()
         );
     }
@@ -92,7 +94,12 @@ mod tests {
                 chunk.iter().copied().chain([u8::MAX, offset])
             )
             .collect::<Vec<_>>(),
-            chunk.iter().chain(chunk.iter().take(MAX_LENGTH)).copied().map(|x| x >> 1).collect::<Vec<_>>()
+            chunk
+                .iter()
+                .chain(chunk.iter().take(MAX_LENGTH))
+                .copied()
+                .map(|x| x >> 1)
+                .collect::<Vec<_>>()
         );
     }
 }
