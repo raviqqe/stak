@@ -29,8 +29,8 @@ pub trait Lzss {
 }
 
 impl<I: IntoIterator<Item = u8>> Lzss for I {
-    fn compress<const W: usize>(self) -> impl Iterator<Item = u8> {
-        LzssCompressionIterator::<W, _>::new(self.into_iter())
+    fn compress<const B: usize>(self) -> impl Iterator<Item = u8> {
+        LzssCompressionIterator::<B, _>::new(self.into_iter())
     }
 
     fn decompress<const W: usize>(self) -> impl Iterator<Item = u8> {
@@ -182,7 +182,7 @@ mod tests {
         data.iter()
             .copied()
             .compress::<{ MAX_WINDOW_SIZE + MAX_LENGTH }>()
-            .decompress::<WINDOW_SIZE>()
+            .decompress::<MAX_WINDOW_SIZE>()
             .collect::<Vec<_>>()
             == data
     }
