@@ -11,11 +11,13 @@ mod compress;
 mod decompress;
 mod ring_buffer;
 
-pub use self::compress::MAX_LENGTH;
 use self::{compress::LzssCompressionIterator, decompress::LzssDecompressionIterator};
 
 /// The maximum window size.
 pub const MAX_WINDOW_SIZE: usize = 1 << 8;
+
+/// The maximum match length.
+pub const MAX_LENGTH: usize = 1 << 7;
 
 /// LZSS compression for 7-bit bytes.
 pub trait Lzss {
