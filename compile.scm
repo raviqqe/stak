@@ -1695,7 +1695,7 @@
 
     (define window-size 256)
     (define minimum-match 2) ; exclusive
-    (define maximum-match 127) ; inclusive
+    (define maximum-match 128) ; inclusive
 
     ;; Compressor
 
