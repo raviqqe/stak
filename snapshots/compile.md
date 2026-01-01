@@ -19474,7 +19474,10 @@
                 - list
                   - -
                   - 2
-                  - n
+                  - list
+                    - -
+                    - n
+                    - 1
             - list
               - write-u8
               - list

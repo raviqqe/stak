@@ -2293,6 +2293,8 @@
       - get 0
     - get 2
     - get 1
+    - constant 1
+    - call 2 #f ||
     - call 2 #f ||
     - set 0
     - get 2
