@@ -63,7 +63,8 @@ impl<const B: usize, I: Iterator<Item = u8>> Iterator for LzssCompressionIterato
             x
         } else {
             // This implementation reads uninitialized zeros from the buffer.
-            let (n, m) = (0..Self::WINDOW_SIZE).rev()
+            let (n, m) = (0..Self::WINDOW_SIZE)
+                .rev()
                 .map(|i| {
                     let mut j = 0;
 
