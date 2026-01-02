@@ -33,7 +33,7 @@ impl<H: Heap> PrimitiveSet<H> for ArithmeticPrimitiveSet {
                 let x = x.assume_number();
                 let y = y.assume_number();
 
-                memory.push((x / y - x % y).into())?;
+                memory.push((x - x % y)/ y).into())?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
