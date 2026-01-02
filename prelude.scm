@@ -631,6 +631,7 @@
     (define length (primitive 64))
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
+    (define quotient (primitive 80))
     (define sqrt (primitive 504))
 
     (define (data-rib type car cdr)
@@ -789,9 +790,6 @@
 
     (define (square x)
       (* x x))
-
-    (define (quotient x y)
-      (/ (- x (remainder x y)) y))
 
     (define truncate-quotient quotient)
     (define truncate-remainder remainder)
