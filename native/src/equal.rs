@@ -67,7 +67,6 @@ impl<H: Heap> PrimitiveSet<H> for EqualPrimitiveSet {
                         .into(),
                 )?;
             }
-
             _ => return Err(Error::IllegalPrimitive),
         }
 
