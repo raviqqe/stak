@@ -157,6 +157,9 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::EQV | Primitive::EQUAL_INNER => {
                 maybe_await!(self.equal.operate(memory, primitive - Primitive::EQV))?
             }
+            Primitive::QUOTIENT => {
+                maybe_await!(self.arithmetic.operate(memory, primitive - Primitive::QUOTIENT))?
+            }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 maybe_await!(self.device.operate(memory, primitive - Primitive::READ))?
             }
