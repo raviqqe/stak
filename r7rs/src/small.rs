@@ -7,7 +7,9 @@ use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
 use stak_inexact::InexactPrimitiveSet;
-use stak_native::{EqualPrimitiveSet, ListPrimitiveSet, TypeCheckPrimitiveSet};
+use stak_native::{
+    ArithmeticPrimitiveSet, EqualPrimitiveSet, ListPrimitiveSet, TypeCheckPrimitiveSet,
+};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
 use stak_vm::{Heap, Memory, Number, PrimitiveSet, Tag, Type, Value};
@@ -21,6 +23,7 @@ pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clo
     time: TimePrimitiveSet<C>,
     inexact: InexactPrimitiveSet,
     equal: EqualPrimitiveSet,
+    arithmetic: ArithmeticPrimitiveSet,
     type_check: TypeCheckPrimitiveSet,
     list: ListPrimitiveSet,
 }
@@ -35,6 +38,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             time: TimePrimitiveSet::new(clock),
             inexact: Default::default(),
             equal: Default::default(),
+            arithmetic: Default::default(),
             type_check: Default::default(),
             list: Default::default(),
         }
@@ -157,6 +161,10 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::EQV | Primitive::EQUAL_INNER => {
                 maybe_await!(self.equal.operate(memory, primitive - Primitive::EQV))?
             }
+            Primitive::QUOTIENT => maybe_await!(
+                self.arithmetic
+                    .operate(memory, primitive - Primitive::QUOTIENT)
+            )?,
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 maybe_await!(self.device.operate(memory, primitive - Primitive::READ))?
             }

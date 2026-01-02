@@ -100,6 +100,9 @@
 - constant 71
 - call 1 #f ||
 - set ||
+- constant 80
+- call 1 #f ||
+- set ||
 - constant procedure 3 #f
   - get 1
   - get 1
@@ -198,15 +201,6 @@
 - get ||
 - constant 1
 - call 2 #f ||
-- set ||
-- constant procedure 2 #f
-  - get 1
-  - get 2
-  - get 2
-  - call 2 #f ||
-  - call 2 #f ||
-  - get 1
-  - call 2 #f ||
 - set ||
 - constant procedure 1 #f
   - get 0

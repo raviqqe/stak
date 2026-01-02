@@ -145,6 +145,9 @@
 - constant 71
 - call 1 #f primitive
 - set ||
+- constant 80
+- call 1 #f primitive
+- set quotient
 - constant 504
 - call 1 #f primitive
 - set ||
@@ -367,15 +370,6 @@
   - get 1
   - call 2 #f ||
 - set square
-- constant procedure 2 #f
-  - get 1
-  - get 2
-  - get 2
-  - call 2 #f remainder
-  - call 2 #f ||
-  - get 1
-  - call 2 #f ||
-- set quotient
 - get quotient
 - set truncate-quotient
 - get remainder
