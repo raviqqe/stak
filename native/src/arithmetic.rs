@@ -1,4 +1,4 @@
-use stak_vm::{Error, Heap, Memory, PrimitiveSet, Type};
+use stak_vm::{Error, Heap, Memory, PrimitiveSet};
 use winter_maybe_async::maybe_async;
 
 /// An arithmetic primitive.
@@ -11,7 +11,7 @@ impl ArithmeticPrimitive {
     const QUOTIENT: usize = Self::Quotient as _;
 }
 
-/// An equality primitive set.
+/// An arithmetic primitive set.
 #[derive(Debug, Default)]
 pub struct ArithmeticPrimitiveSet {}
 
