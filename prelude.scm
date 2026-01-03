@@ -185,18 +185,17 @@
 
     ;; Base
 
-    ($$define-syntax syntax-rules
-      ($$syntax-rules $$... ()
-        ((_ (literal $$...) (pattern body) $$...)
-          ($$syntax-rules ... (literal $$...) (pattern body) $$...))
-
-        ((_ ellipsis (literal $$...) (pattern body) $$...)
-          ($$syntax-rules ellipsis (literal $$...) (pattern body) $$...))))
-
     ($$define-syntax define-syntax
-      (syntax-rules ()
-        ((_ name value)
-          ($$define-syntax name value))))
+      ($$syntax-rules ::: (syntax-rules)
+        ((_ name (syntax-rules (literal :::) (pattern body) :::))
+          (define-syntax
+            name
+            (syntax-rules ... (literal :::) (pattern body) :::)))
+
+        ((_ name (syntax-rules ellipsis (literal :::) (pattern body) :::))
+          ($$define-syntax
+            name
+            ($$syntax-rules ellipsis (literal :::) (pattern body) :::)))))
 
     (define-syntax syntax-error
       (syntax-rules ()
