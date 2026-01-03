@@ -662,8 +662,11 @@
      (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
       (case (resolve-denotation definition-context (maybe-car transformer))
        (($$syntax-rules)
-        (let* ((ellipsis (cadr transformer))
-               (literals (caddr transformer))
+        (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
+               (literals
+                (map
+                 (lambda (x) (resolve-denotation definition-context x))
+                 (caddr transformer)))
                (rules
                 (map
                  (lambda (rule)
