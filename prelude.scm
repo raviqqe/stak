@@ -185,6 +185,14 @@
 
     ;; Base
 
+    ($$define-syntax define-define-syntax
+      ($$syntax-rules $$... ()
+        ((_ (literal $$...) (pattern body) $$...)
+          ($$syntax-rules ... (literal $$...) (pattern body) $$...))
+
+        ((_ ellipsis (literal $$...) (pattern body) $$...)
+          ($$syntax-rules ellipsis (literal $$...) (pattern body) $$...))))
+
     ($$define-syntax syntax-rules
       ($$syntax-rules $$... ()
         ((_ (literal $$...) (pattern body) $$...)
