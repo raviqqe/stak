@@ -202,7 +202,7 @@
         ((_ message value ...)
           ($$syntax-error message value ...))))
 
-    (define-syntax define-optimizer
+    ($$define-syntax define-optimizer
       ($$syntax-rules ::: (syntax-rules)
         ((_ name (syntax-rules (literal :::) (pattern body) :::))
           (define-optimizer
