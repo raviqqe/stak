@@ -386,20 +386,20 @@
         continue
         exception
         library
-        r7rs
         read
-        scheme
-        stak
         write)
-      (r7rs
+      (full-unicode
+        r7rs
         scheme
         stak
-        (library (scheme base))
-        (library (scheme read))
-        (library (scheme write))
-        (library (stak base))
-        (library (stak continue))
-        (library (stak exception))))
+        ieee-float
+        little-endian)
+      ((scheme base)
+        (scheme read)
+        (scheme write)
+        (stak base)
+        (stak continue)
+        (stak exception)))
 
     ;; Binding
 
