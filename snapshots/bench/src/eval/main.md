@@ -9166,11 +9166,11 @@
     - list
       - list
         - \_
-        - define
+        - define-syntax
         - primitive
       - list
         - $$define-syntax
-        - define
+        - define-syntax
         - list
           - $$syntax-rules
           - ||
@@ -9190,7 +9190,7 @@
                   - ||
                 - ||
             - list
-              - define
+              - define-syntax
               - ||
               - list
                 - syntax-rules
@@ -9679,11 +9679,11 @@
     - list
       - list
         - \_
-        - let
+        - let-syntax
         - primitive
       - list
         - $$define-syntax
-        - let
+        - let-syntax
         - list
           - $$syntax-rules
           - ||
@@ -9701,7 +9701,7 @@
               - ||
               - ||
             - list
-              - let
+              - let-syntax
               - "expand"
               - list
                 - list
@@ -9738,7 +9738,7 @@
                 - ||
               - ||
             - list
-              - let
+              - let-syntax
               - "expand"
               - list
                 - ||
@@ -9783,7 +9783,7 @@
                 - ||
               - ||
             - list
-              - let
+              - let-syntax
               - "expand"
               - list
                 - ||
@@ -9856,7 +9856,7 @@
           - ||
         - ()
         - list
-          - let-syntax
+          - let
           - ()
           - ||
           - ||
@@ -10002,7 +10002,7 @@
           - ||
         - ()
         - list
-          - letrec-syntax
+          - let
           - ()
           - ||
           - ||

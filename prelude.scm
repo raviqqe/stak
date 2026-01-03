@@ -195,11 +195,11 @@
 
     ($$define-syntax define-define-syntax
       ($$syntax-rules !!! ()
-        ((_ define primitive)
-          ($$define-syntax define
+        ((_ define-syntax primitive)
+          ($$define-syntax define-syntax
             ($$syntax-rules ::: (syntax-rules)
               ((_ name (syntax-rules (literal :::) (pattern body) :::))
-                (define
+                (define-syntax
                   name
                   (syntax-rules ... (literal :::) (pattern body) :::)))
 
@@ -269,11 +269,11 @@
 
     ($$define-syntax define-let-syntax
       ($$syntax-rules !!! ()
-        ((_ let primitive)
-          ($$define-syntax let
+        ((_ let-syntax primitive)
+          ($$define-syntax let-syntax
             ($$syntax-rules ::: (syntax-rules)
               ((_ ((name value) :::) body1 body2 :::)
-                (let "expand" ((name value) :::) () (let () body1 body2 :::)))
+                (let-syntax "expand" ((name value) :::) () (let () body1 body2 :::)))
 
               ((_ "expand"
                   ((name (syntax-rules (literal :::) (pattern body) :::))
@@ -281,7 +281,7 @@
                     :::)
                   (syntax2 :::)
                   body)
-                (let "expand"
+                (let-syntax "expand"
                   (syntax1 :::)
                   (syntax2
                     :::
@@ -294,7 +294,7 @@
                     :::)
                   (syntax2 :::)
                   body)
-                (let "expand"
+                (let-syntax "expand"
                   (syntax1 :::)
                   (syntax2
                     :::
