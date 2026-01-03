@@ -4044,6 +4044,7 @@
   - denotation
   - syntax
   - rule-context?
+  - rule-context-definition-context
   - macro-state-globals
   - symbol-name-separator
   - excluded-variables
@@ -4054,7 +4055,6 @@
   - make-ellipsis-match
   - rule-context-literals
   - rule-context-use-context
-  - rule-context-definition-context
   - relaxed-length
   - match-ellipsis-pattern
   - ellipsis-pattern-variables
@@ -7172,10 +7172,7 @@
     - call 1 #f 28
     - get 2
     - call 2 #f 27
-    - get 4
-    - call 1 #f 30
-    - get 4
-    - call 2 #f 28
+    - get 3
     - call 2 #f eq?
     - constant #f
     - call 2 #f eq?
@@ -15274,12 +15271,7 @@
                 - rule-context-use-context
                 - context
               - expression
-            - list
-              - resolve-denotation
-              - list
-                - rule-context-definition-context
-                - context
-              - pattern
+            - pattern
           - list
             - raise
             - #f

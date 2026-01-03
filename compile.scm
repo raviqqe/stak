@@ -595,7 +595,7 @@
         (memq pattern (rule-context-literals context)))
        (unless (eq?
                 (resolve-denotation (rule-context-use-context context) expression)
-                (resolve-denotation (rule-context-definition-context context) pattern))
+                pattern)
         (raise #f))
        '())
 
