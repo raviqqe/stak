@@ -663,7 +663,10 @@
       (case (resolve-denotation definition-context (maybe-car transformer))
        (($$syntax-rules)
         (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-               (literals (caddr transformer))
+               (literals
+                (map
+                 (lambda (x) (resolve-denotation definition-context x))
+                 (caddr transformer)))
                (rules
                 (map
                  (lambda (rule)
@@ -738,17 +741,15 @@
 
         (($$define-syntax)
          (let ((name (cadr expression))
-               (transformer (caddr expression)))
+               (transformer
+                (relaxed-deep-map
+                 (lambda (value) (resolve-denotation context value))
+                 (caddr expression))))
           (macro-context-set-global!
            context
            name
            (make-transformer context transformer))
-          (macro-context-append-literal!
-           context
-           name
-           (relaxed-deep-map
-            (lambda (value) (resolve-denotation context value))
-            transformer))
+          (macro-context-append-literal! context name transformer)
           (macro-context-append-static-symbol! context name)
           #f))
 
