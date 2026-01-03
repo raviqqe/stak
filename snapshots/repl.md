@@ -16,39 +16,12 @@
 - set $$/
 - constant procedure 0 #f
   - constant list
+    - full-unicode
+    - ieee-float
+    - little-endian
     - r7rs
     - scheme
     - stak
-    - list
-      - library
-      - list
-        - scheme
-        - base
-    - list
-      - library
-      - list
-        - scheme
-        - read
-    - list
-      - library
-      - list
-        - scheme
-        - write
-    - list
-      - library
-      - list
-        - stak
-        - base
-    - list
-      - library
-      - list
-        - stak
-        - continue
-    - list
-      - library
-      - list
-        - stak
-        - exception
 - set features
 - constant 0
 - set ||
@@ -4016,6 +3989,9 @@
 - call 1 #f ||
 - set ||
 - constant list
+  - full-unicode
+  - ieee-float
+  - little-endian
   - runtime
   - $$rib
   - $$<
@@ -13336,11 +13312,14 @@
       - ||
       - ||
       - library
-      - r7rs
       - ||
+      - ||
+      - ||
+      - ||
+      - ||
+      - r7rs
       - scheme
       - stak
-      - ||
     - list
       - list
         - cond-expand
@@ -13600,6 +13579,45 @@
         - cond-expand
         - list
           - r7rs
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - ||
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - ||
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - ||
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - ||
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - ||
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - ||
           - ||
           - ...
         - ||
