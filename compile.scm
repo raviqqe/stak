@@ -663,7 +663,10 @@
       (case (resolve-denotation definition-context (maybe-car transformer))
        (($$syntax-rules)
         (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-               (literals (caddr transformer))
+               (literals
+                (map
+                 (lambda (x) (resolve-denotation definition-context x))
+                 (caddr transformer)))
                (rules
                 (map
                  (lambda (rule)
