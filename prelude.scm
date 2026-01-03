@@ -194,7 +194,7 @@
           ($$syntax-rules ellipsis (literal $$...) (pattern body) $$...))))
 
     ($$define-syntax define-define-syntax
-      ($$syntax-rules ::: (syntax-rules)
+      ($$syntax-rules !!! (syntax-rules)
         ((_ define primitive)
           ($$define-syntax define
             ($$syntax-rules ::: (syntax-rules)
