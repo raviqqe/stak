@@ -208,20 +208,13 @@
                   name
                   ($$syntax-rules ellipsis (literal :::) (pattern body) :::))))))))
 
-    ($$define-syntax define-syntax
-      (syntax-rules ()
-        ((_ name value)
-          ($$define-syntax name value))))
+    (define-define-syntax define-syntax $$define-syntax)
+    (define-define-syntax define-optimizer $$define-optimizer)
 
     (define-syntax syntax-error
       (syntax-rules ()
         ((_ message value ...)
           ($$syntax-error message value ...))))
-
-    (define-syntax define-optimizer
-      (syntax-rules ()
-        ((_ name value)
-          ($$define-optimizer name value))))
 
     (define-syntax define
       (syntax-rules ()
