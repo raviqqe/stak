@@ -319,7 +319,7 @@
             (define-features
               "cond"
               cond-expand
-              (literal ::: identifier :::)
+              (and else not or library literal ::: identifier :::)
               (identifier ::: (library library-name) :::))))
 
         ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
@@ -381,15 +381,9 @@
 
     (define-features
       cond-expand
-      (and
-        else
-        not
-        or
-
-        base
+      (base
         continue
         exception
-        library
         read
         write)
       (full-unicode
