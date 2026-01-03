@@ -267,6 +267,38 @@
         ((_ arguments body1 body2 ...)
           ($$lambda arguments (begin body1 body2 ...)))))
 
+    ($$define-syntax define-let-syntax
+      ($$syntax-rules !!! (syntax-rules)
+        ((_ let primitive)
+          ($$define-syntax let
+            ($$syntax-rules ::: (syntax-rules)
+              ((_ ((name value) :::) body1 body2 :::)
+                (let "expand" ((name value) :::) () (let () body1 body2 :::)))
+
+              ((_ ((name value) :::) body1 body2 :::)
+                (let "expand" ((name value) :::) () (let () body1 body2 :::)))
+
+              ((_ "expand"
+                  ((name (syntax-rules (literal :::) (pattern body) :::))
+                    syntax1
+                    :::)
+                  (syntax2 :::)
+                  body)
+                (_ "expand"
+                  (syntax1 :::)
+                  (syntax2
+                    :::
+                    (name (syntax-rules ... (literal :::) (pattern body) :::)))
+                  body))
+
+              ((_ "expand" ((name (syntax-rules ellipsis (literal :::) (pattern body) :::))) (syntax :::) body)
+                (_ "expand" ((name (syntax-rules ... (literal :::) (pattern body) :::))) (syntax :::) body))
+
+              ((_ name (syntax-rules ellipsis (literal :::) (pattern body) :::))
+                (primitive
+                  name
+                  ($$syntax-rules ellipsis (literal :::) (pattern body) :::))))))))
+
     (define-syntax let-syntax
       (syntax-rules ()
         ((_ ((name value) ...) body1 body2 ...)
