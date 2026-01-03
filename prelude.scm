@@ -313,10 +313,14 @@
 
     (define-syntax define-features
       (syntax-rules ::: ()
-        ((_ cond-expand literals (identifier ...) (library-name ...))
+        ((_ cond-expand (literal ...) (identifier ...) (library-name ...))
           (begin
             (define (features) '(identifier ...))
-            (define-features "cond" cond-expand literals (feature-value ... (library library-name) ...))))
+            (define-features
+              "cond"
+              cond-expand
+              (literal ... identifier ...)
+              (identifier ... (library library-name) ...))))
 
         ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
           (define-features
