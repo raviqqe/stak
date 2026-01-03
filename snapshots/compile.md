@@ -7372,8 +7372,14 @@
       - get 3
       - call 1 #f cadr
       - call 2 #f 32
-      - get 3
+      - constant procedure 1 #f
+        - get 4
+        - get 1
+        - call 2 #f 35
+      - call 1 #f $$close
+      - get 4
       - call 1 #f caddr
+      - call 2 #f map
       - constant procedure 1 #f
         - constant procedure 1 #f
           - get 7
@@ -7610,8 +7616,14 @@
     - if
       - get 3
       - call 1 #f cadr
-      - get 4
+      - constant procedure 1 #f
+        - get 7
+        - get 1
+        - call 2 #f 31
+      - call 1 #f $$close
+      - get 5
       - call 1 #f caddr
+      - call 2 #f 97
       - get 6
       - get 2
       - get 8
@@ -7621,13 +7633,7 @@
       - set 0
       - get 6
       - get 2
-      - constant procedure 1 #f
-        - get 10
-        - get 1
-        - call 2 #f 34
-      - call 1 #f $$close
-      - get 3
-      - call 2 #f 100
+      - get 2
       - call 3 #f 40
       - set 0
       - get 6
@@ -10135,9 +10141,9 @@
     - list
       - and
       - else
+      - library
       - not
       - or
-      - library
       - base
       - ||
       - ||
@@ -10455,6 +10461,35 @@
         - ||
         - ||
         - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - list
+            - library
+            - ||
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - cond-expand
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - list
+            - ||
+            - ...
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - syntax-error
+        - "invalid feature"
     - list
       - list
         - cond-expand
@@ -15559,8 +15594,18 @@
               - list
                 - literals
                 - list
-                  - caddr
-                  - transformer
+                  - map
+                  - list
+                    - lambda
+                    - list
+                      - x
+                    - list
+                      - resolve-denotation
+                      - definition-context
+                      - x
+                  - list
+                    - caddr
+                    - transformer
               - list
                 - rules
                 - list
@@ -15885,8 +15930,18 @@
                 - list
                   - transformer
                   - list
-                    - caddr
-                    - expression
+                    - relaxed-deep-map
+                    - list
+                      - lambda
+                      - list
+                        - value
+                      - list
+                        - resolve-denotation
+                        - context
+                        - value
+                    - list
+                      - caddr
+                      - expression
               - list
                 - macro-context-set-global!
                 - context
@@ -15899,17 +15954,7 @@
                 - macro-context-append-literal!
                 - context
                 - name
-                - list
-                  - relaxed-deep-map
-                  - list
-                    - lambda
-                    - list
-                      - value
-                    - list
-                      - resolve-denotation
-                      - context
-                      - value
-                  - transformer
+                - transformer
               - list
                 - macro-context-append-static-symbol!
                 - context
