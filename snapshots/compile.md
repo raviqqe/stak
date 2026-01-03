@@ -4104,6 +4104,7 @@
   - macro-context-append-literal!
   - macro-context-append-static-symbol!
   - rename-variable
+  - resolve-denotation
   - transformer
   - macro-context-append
   - macro-context-set-local!
@@ -4113,7 +4114,6 @@
   - optimization-context?
   - optimization-context-set-optimizers!
   - literal
-  - resolve-denotation
   - compile-pattern
   - ellipsis
   - pattern
@@ -7869,10 +7869,8 @@
   - constant $$syntax-rules
   - call 2 #f eqv?
   - if
-    - get 11
-    - get 2
+    - get 1
     - call 1 #f cadr
-    - call 2 #f 43
     - get 2
     - call 1 #f caddr
     - constant procedure 1 #f
@@ -16197,11 +16195,8 @@
             - list
               - ellipsis
               - list
-                - resolve-denotation
-                - optimizer-macro-context
-                - list
-                  - cadr
-                  - optimizer
+                - cadr
+                - optimizer
             - list
               - literals
               - list
