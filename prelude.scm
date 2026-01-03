@@ -205,12 +205,12 @@
     (define-syntax define-optimizer
       ($$syntax-rules ::: (syntax-rules)
         ((_ name (syntax-rules (literal :::) (pattern body) :::))
-          (define-syntax
+          (define-optimizer
             name
             (syntax-rules ... (literal :::) (pattern body) :::)))
 
         ((_ name (syntax-rules ellipsis (literal :::) (pattern body) :::))
-          ($$define-syntax
+          ($$define-optimizer
             name
             ($$syntax-rules ellipsis (literal :::) (pattern body) :::)))))
 
