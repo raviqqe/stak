@@ -10307,10 +10307,7 @@
     - call 1 #f 28
     - get 2
     - call 2 #f 27
-    - get 4
-    - call 1 #f 30
-    - get 4
-    - call 2 #f 28
+    - get 3
     - call 2 #f eq?
     - constant #f
     - call 2 #f eq?
