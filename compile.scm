@@ -848,8 +848,7 @@
     (define (make-optimizer optimizer)
      (case (car optimizer)
       (($$syntax-rules)
-       (let* ((ellipsis
-               (resolve-denotation optimizer-macro-context (cadr optimizer)))
+       (let* ((ellipsis (cadr optimizer))
               (literals (caddr optimizer))
               (rules
                (map
