@@ -301,20 +301,11 @@
                     (name (syntax-rules ellipsis (literal :::) (pattern body) :::)))
                   body))
 
-              ((_ name (syntax-rules ellipsis (literal :::) (pattern body) :::))
-                (primitive
-                  name
-                  ($$syntax-rules ellipsis (literal :::) (pattern body) :::))))))))
+              ((_ "expand" () ((name (syntax-rules item ...)) :::) body)
+                (primitive ((name (%$syntax-rules item ...)) ...) body)))))))
 
-    (define-syntax let-syntax
-      (syntax-rules ()
-        ((_ ((name value) ...) body1 body2 ...)
-          ($$let-syntax ((name value) ...) (let () body1 body2 ...)))))
-
-    (define-syntax letrec-syntax
-      (syntax-rules ()
-        ((_ ((name value) ...) body1 body2 ...)
-          ($$letrec-syntax ((name value) ...) (let () body1 body2 ...)))))
+    (define-syntax let-syntax $$let-syntax)
+    (define-syntax letrec-syntax $$letrec-syntax)
 
     (define-syntax begin
       (syntax-rules ()
