@@ -313,10 +313,14 @@
 
     (define-syntax define-features
       (syntax-rules ::: ()
-        ((_ cond-expand literals feature-values)
+        ((_ cond-expand (literal :::) (identifier :::) (library-name :::))
           (begin
-            (define (features) 'feature-values)
-            (define-features "cond" cond-expand literals feature-values)))
+            (define (features) '(identifier :::))
+            (define-features
+              "cond"
+              cond-expand
+              (literal ::: identifier :::)
+              (identifier ::: (library library-name) :::))))
 
         ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
           (define-features
@@ -329,9 +333,9 @@
             outer-clause
             :::))
 
-        ((_ "cond" cond-expand (and else not or literal :::) () outer-clause :::)
+        ((_ "cond" cond-expand (literal :::) () outer-clause :::)
           (define-syntax cond-expand
-            (syntax-rules (and else not or literal :::)
+            (syntax-rules (and else library not or literal :::)
               ((cond-expand)
                 (syntax-error "unfulfilled cond-expand"))
 
@@ -372,34 +376,34 @@
               outer-clause
               :::
 
+              ((cond-expand ((library name) body ...) clause ...)
+                (cond-expand clause ...))
+
+              ((cond-expand ((feature ...) body ...) clause ...)
+                (syntax-error "invalid feature"))
+
               ((cond-expand (feature body ...) clause ...)
                 (cond-expand clause ...)))))))
 
     (define-features
       cond-expand
-      (and
-        else
-        not
-        or
-
-        base
+      (base
         continue
         exception
-        library
-        r7rs
         read
-        scheme
-        stak
         write)
-      (r7rs
+      (full-unicode
+        ieee-float
+        little-endian
+        r7rs
         scheme
-        stak
-        (library (scheme base))
-        (library (scheme read))
-        (library (scheme write))
-        (library (stak base))
-        (library (stak continue))
-        (library (stak exception))))
+        stak)
+      ((scheme base)
+        (scheme read)
+        (scheme write)
+        (stak base)
+        (stak continue)
+        (stak exception)))
 
     ;; Binding
 
