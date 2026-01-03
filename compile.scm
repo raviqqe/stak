@@ -2273,7 +2273,7 @@
          (member "-h" arguments)
          (member "--help" arguments))
     (write-string "The Stak Scheme bytecode compiler.\n\n")
-    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+    (write-string "Usage: stak-compile [-A DIRECTORY] [-I DIRECTORY] < SOURCE_FILE > BYTECODE_FILE\n")
     (exit))
 
   (compile
