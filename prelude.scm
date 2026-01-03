@@ -392,11 +392,11 @@
         read
         write)
       (full-unicode
+        ieee-float
+        little-endian
         r7rs
         scheme
-        stak
-        ieee-float
-        little-endian)
+        stak)
       ((scheme base)
         (scheme read)
         (scheme write)
