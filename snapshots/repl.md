@@ -10955,10 +10955,8 @@
   - constant $$syntax-rules
   - call 2 #f eqv?
   - if
-    - get 11
-    - get 2
+    - get 1
     - call 1 #f cadr
-    - call 2 #f 43
     - get 2
     - call 1 #f caddr
     - constant procedure 1 #f
