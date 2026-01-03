@@ -65,7 +65,6 @@ Feature: cond-expand
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
-  @stak
   Scenario: Match an invalid library literal
     Given a file named "main.scm" with:
       """scheme
@@ -77,8 +76,8 @@ Feature: cond-expand
         (else
           (write-u8 66)))
       """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "B"
+    When I run `stak main.scm`
+    Then the exit status should not be 0
 
   Scenario: Expand an empty clause
     Given a file named "main.scm" with:
