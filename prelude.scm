@@ -194,7 +194,7 @@
           ($$syntax-rules ellipsis (literal $$...) (pattern body) $$...))))
 
     ($$define-syntax define-define-syntax
-      ($$syntax-rules !!! (syntax-rules)
+      ($$syntax-rules !!! ()
         ((_ define primitive)
           ($$define-syntax define
             ($$syntax-rules ::: (syntax-rules)
@@ -268,7 +268,7 @@
           ($$lambda arguments (begin body1 body2 ...)))))
 
     ($$define-syntax define-let-syntax
-      ($$syntax-rules !!! (syntax-rules)
+      ($$syntax-rules !!! ()
         ((_ let primitive)
           ($$define-syntax let
             ($$syntax-rules ::: (syntax-rules)
