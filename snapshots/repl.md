@@ -4443,11 +4443,11 @@
   - error
   - write-message
   - $$...
-  - $$define-syntax
-  - $$syntax-error
   - $$define-optimizer
+  - $$syntax-error
   - $$define
   - $$lambda
+  - $$define-syntax
   - $$let-syntax
   - $$letrec-syntax
   - $$begin
@@ -12784,21 +12784,198 @@
           - ||
         - $$...
   - list
-    - define-syntax
-    - syntax-rules
+    - ||
+    - $$syntax-rules
+    - ||
     - ()
     - list
       - list
         - \_
+        - define
+        - primitive
+      - list
+        - $$define-syntax
+        - define
+        - list
+          - $$syntax-rules
+          - ||
+          - list
+            - syntax-rules
+          - list
+            - list
+              - \_
+              - ||
+              - list
+                - syntax-rules
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+            - list
+              - define
+              - ||
+              - list
+                - syntax-rules
+                - ...
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+          - list
+            - list
+              - \_
+              - ||
+              - list
+                - syntax-rules
+                - ||
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+            - list
+              - primitive
+              - ||
+              - list
+                - $$syntax-rules
+                - ||
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+  - list
+    - define-syntax
+    - $$syntax-rules
+    - ||
+    - list
+      - syntax-rules
+    - list
+      - list
         - ||
         - ||
+        - list
+          - syntax-rules
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
+      - list
+        - define-syntax
+        - ||
+        - list
+          - syntax-rules
+          - ...
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
+    - list
+      - list
+        - ||
+        - ||
+        - list
+          - syntax-rules
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
       - list
         - $$define-syntax
         - ||
+        - list
+          - $$syntax-rules
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
+  - list
+    - define-optimizer
+    - $$syntax-rules
+    - ||
+    - list
+      - syntax-rules
+    - list
+      - list
         - ||
+        - ||
+        - list
+          - syntax-rules
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
+      - list
+        - define-optimizer
+        - ||
+        - list
+          - syntax-rules
+          - ...
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
+    - list
+      - list
+        - ||
+        - ||
+        - list
+          - syntax-rules
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
+      - list
+        - $$define-optimizer
+        - ||
+        - list
+          - $$syntax-rules
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - ||
+            - ||
+          - ||
   - list
     - syntax-error
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -12812,21 +12989,9 @@
         - ||
         - ...
   - list
-    - define-optimizer
-    - syntax-rules
-    - ()
-    - list
-      - list
-        - \_
-        - ||
-        - ||
-      - list
-        - $$define-optimizer
-        - ||
-        - ||
-  - list
     - define
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -12855,7 +13020,8 @@
         - ||
   - list
     - lambda
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - list
       - define
       - define-syntax
@@ -13131,64 +13297,459 @@
           - ||
           - ...
   - list
-    - let-syntax
-    - syntax-rules
+    - ||
+    - $$syntax-rules
+    - ||
     - ()
     - list
       - list
         - \_
+        - let
+        - primitive
+      - list
+        - $$define-syntax
+        - let
+        - list
+          - $$syntax-rules
+          - ||
+          - list
+            - syntax-rules
+          - list
+            - list
+              - \_
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - let
+              - "expand"
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ()
+              - list
+                - let
+                - ()
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - \_
+              - "expand"
+              - list
+                - list
+                  - ||
+                  - list
+                    - syntax-rules
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+            - list
+              - let
+              - "expand"
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - syntax-rules
+                    - ...
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+              - ||
+          - list
+            - list
+              - \_
+              - "expand"
+              - list
+                - list
+                  - ||
+                  - list
+                    - syntax-rules
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+            - list
+              - let
+              - "expand"
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - syntax-rules
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+              - ||
+          - list
+            - list
+              - \_
+              - "expand"
+              - ()
+              - list
+                - list
+                  - ||
+                  - list
+                    - syntax-rules
+                    - ||
+                    - ||
+                - ||
+              - ||
+            - list
+              - primitive
+              - list
+                - list
+                  - ||
+                  - list
+                    - $$syntax-rules
+                    - ||
+                    - ||
+                - ||
+              - ||
+  - list
+    - let-syntax
+    - $$syntax-rules
+    - ||
+    - list
+      - syntax-rules
+    - list
+      - list
+        - ||
         - list
           - list
             - ||
             - ||
-          - ...
+          - ||
         - ||
         - ||
-        - ...
+        - ||
+      - list
+        - let-syntax
+        - "expand"
+        - list
+          - list
+            - ||
+            - ||
+          - ||
+        - ()
+        - list
+          - let-syntax
+          - ()
+          - ||
+          - ||
+          - ||
+    - list
+      - list
+        - ||
+        - "expand"
+        - list
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+        - ||
+      - list
+        - let-syntax
+        - "expand"
+        - list
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ...
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+        - ||
+    - list
+      - list
+        - ||
+        - "expand"
+        - list
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+        - ||
+      - list
+        - let-syntax
+        - "expand"
+        - list
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+        - ||
+    - list
+      - list
+        - ||
+        - "expand"
+        - ()
+        - list
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ||
+              - ||
+          - ||
+        - ||
       - list
         - $$let-syntax
         - list
           - list
             - ||
-            - ||
-          - ...
-        - list
-          - let
-          - ()
+            - list
+              - $$syntax-rules
+              - ||
+              - ||
           - ||
-          - ||
-          - ...
+        - ||
   - list
     - letrec-syntax
-    - syntax-rules
-    - ()
+    - $$syntax-rules
+    - ||
+    - list
+      - syntax-rules
     - list
       - list
-        - \_
+        - ||
         - list
           - list
             - ||
             - ||
-          - ...
+          - ||
         - ||
         - ||
-        - ...
+        - ||
+      - list
+        - letrec-syntax
+        - "expand"
+        - list
+          - list
+            - ||
+            - ||
+          - ||
+        - ()
+        - list
+          - letrec-syntax
+          - ()
+          - ||
+          - ||
+          - ||
+    - list
+      - list
+        - ||
+        - "expand"
+        - list
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+        - ||
+      - list
+        - letrec-syntax
+        - "expand"
+        - list
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ...
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+        - ||
+    - list
+      - list
+        - ||
+        - "expand"
+        - list
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+        - ||
+      - list
+        - letrec-syntax
+        - "expand"
+        - list
+          - ||
+          - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+              - ||
+        - ||
+    - list
+      - list
+        - ||
+        - "expand"
+        - ()
+        - list
+          - list
+            - ||
+            - list
+              - syntax-rules
+              - ||
+              - ||
+          - ||
+        - ||
       - list
         - $$letrec-syntax
         - list
           - list
             - ||
-            - ||
-          - ...
-        - list
-          - let
-          - ()
+            - list
+              - $$syntax-rules
+              - ||
+              - ||
           - ||
-          - ||
-          - ...
+        - ||
   - list
     - begin
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13208,7 +13769,8 @@
         - ...
   - list
     - ||
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13225,7 +13787,8 @@
         - ...
   - list
     - quasiquote
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - list
       - unquote
       - unquote-splicing
@@ -13279,7 +13842,8 @@
         - ||
   - list
     - quote
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13290,7 +13854,8 @@
         - ||
   - list
     - set!
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13303,7 +13868,8 @@
         - ||
   - list
     - cond-expand
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - list
       - and
       - else
@@ -13671,7 +14237,8 @@
         - ...
   - list
     - let
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - list
       - define
       - define-record-type
@@ -13830,7 +14397,8 @@
           - ...
   - list
     - let\*
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13877,7 +14445,8 @@
           - ...
   - list
     - letrec
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13902,7 +14471,8 @@
         - ...
   - list
     - letrec\*
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13935,7 +14505,8 @@
           - ...
   - list
     - if
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -13960,7 +14531,8 @@
         - #f
   - list
     - cond
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - list
       - else
       - =>
@@ -14044,7 +14616,8 @@
       - #f
   - list
     - case
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - list
       - else
       - =>
@@ -14160,7 +14733,8 @@
       - #f
   - list
     - ||
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14191,7 +14765,8 @@
             - ...
   - list
     - and
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14218,7 +14793,8 @@
         - #f
   - list
     - or
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14251,7 +14827,8 @@
             - ...
   - list
     - boolean-or
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14278,7 +14855,8 @@
           - ...
   - list
     - when
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14297,7 +14875,8 @@
           - ...
   - list
     - unless
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14316,7 +14895,8 @@
         - ...
   - list
     - do
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14378,7 +14958,8 @@
       - ||
   - list
     - define-record-type
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14516,7 +15097,8 @@
           - ...
   - list
     - ||
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14550,7 +15132,8 @@
         - ...
   - list
     - define-values
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14707,7 +15290,8 @@
           - list
   - list
     - let-values
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14857,7 +15441,8 @@
             - ||
   - list
     - let\*-values
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14896,7 +15481,8 @@
           - ...
   - list
     - parameterize
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -14959,7 +15545,8 @@
               - ||
   - list
     - guard
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -15035,7 +15622,8 @@
                       - ||
   - list
     - ||
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - list
       - else
       - =>
@@ -15184,7 +15772,8 @@
           - ...
   - list
     - delay
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
@@ -15219,7 +15808,8 @@
               - ||
   - list
     - delay-force
-    - syntax-rules
+    - $$syntax-rules
+    - ...
     - ()
     - list
       - list
