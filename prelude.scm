@@ -288,8 +288,18 @@
                     (name (syntax-rules ... (literal :::) (pattern body) :::)))
                   body))
 
-              ((_ "expand" ((name (syntax-rules ellipsis (literal :::) (pattern body) :::))) (syntax :::) body)
-                (_ "expand" ((name (syntax-rules ... (literal :::) (pattern body) :::))) (syntax :::) body))
+              ((_ "expand"
+                  ((name (syntax-rules ellipsis (literal :::) (pattern body) :::))
+                    syntax1
+                    :::)
+                  (syntax2 :::)
+                  body)
+                (_ "expand"
+                  (syntax1 :::)
+                  (syntax2
+                    :::
+                    (name (syntax-rules ellipsis (literal :::) (pattern body) :::)))
+                  body))
 
               ((_ name (syntax-rules ellipsis (literal :::) (pattern body) :::))
                 (primitive
