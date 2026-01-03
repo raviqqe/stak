@@ -275,9 +275,6 @@
               ((_ ((name value) :::) body1 body2 :::)
                 (let "expand" ((name value) :::) () (let () body1 body2 :::)))
 
-              ((_ ((name value) :::) body1 body2 :::)
-                (let "expand" ((name value) :::) () (let () body1 body2 :::)))
-
               ((_ "expand"
                   ((name (syntax-rules (literal :::) (pattern body) :::))
                     syntax1
