@@ -281,7 +281,7 @@
                     :::)
                   (syntax2 :::)
                   body)
-                (_ "expand"
+                (let "expand"
                   (syntax1 :::)
                   (syntax2
                     :::
@@ -294,18 +294,18 @@
                     :::)
                   (syntax2 :::)
                   body)
-                (_ "expand"
+                (let "expand"
                   (syntax1 :::)
                   (syntax2
                     :::
                     (name (syntax-rules ellipsis (literal :::) (pattern body) :::)))
                   body))
 
-              ((_ "expand" () ((name (syntax-rules item ...)) :::) body)
-                (primitive ((name (%$syntax-rules item ...)) ...) body)))))))
+              ((_ "expand" () ((name (syntax-rules item :::)) :::) body)
+                (primitive ((name ($$syntax-rules item :::)) :::) body)))))))
 
-    (define-syntax let-syntax $$let-syntax)
-    (define-syntax letrec-syntax $$letrec-syntax)
+    (define-let-syntax let-syntax $$let-syntax)
+    (define-let-syntax letrec-syntax $$letrec-syntax)
 
     (define-syntax begin
       (syntax-rules ()
