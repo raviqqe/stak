@@ -65,6 +65,7 @@ Feature: cond-expand
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
+  @stak
   Scenario: Match an invalid library literal
     Given a file named "main.scm" with:
       """scheme
