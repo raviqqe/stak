@@ -65,6 +65,20 @@ Feature: cond-expand
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
+  Scenario: Match an invalid library literal
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (cond-expand
+        ((lib (scheme base))
+          (write-u8 65))
+        (else
+          (write-u8 66)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "B"
+
   Scenario: Expand an empty clause
     Given a file named "main.scm" with:
       """scheme
