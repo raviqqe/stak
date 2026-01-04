@@ -665,7 +665,7 @@
         (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
                (literals
                 (map
-                 (lambda (x) (resolve-denotation definition-context x))
+                 (lambda (literal) (resolve-denotation definition-context literal))
                  (caddr transformer)))
                (rules
                 (map
