@@ -659,13 +659,13 @@
        template)))
 
     (define (make-transformer definition-context transformer)
-     (case (resolve-denotation definition-context (maybe-car transformer))
+     (define (resolve value)
+      (resolve-denotation definition-context value))
+
+     (case (resolve (maybe-car transformer))
       (($$syntax-rules)
-       (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-              (literals
-               (map
-                (lambda (literal) (resolve-denotation definition-context literal))
-                (caddr transformer)))
+       (let* ((ellipsis (resolve (cadr transformer)))
+              (literals (map resolve (caddr transformer)))
               (rules
                (map
                 (lambda (rule)
@@ -695,9 +695,7 @@
                use-context
                (map
                 (lambda (pair)
-                 (cons
-                  (cdr pair)
-                  (resolve-denotation definition-context (car pair))))
+                 (cons (cdr pair) (resolve (car pair))))
                 names))))))))))
       (else
        (error "unsupported macro transformer" transformer))))

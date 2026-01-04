@@ -6927,38 +6927,39 @@
 - call 1 #f $$close
 - set 3
 - constant procedure 2 #f
-  - get 1
+  - constant #f
+  - constant procedure 1 #f
+    - get 4
+    - get 1
+    - call 2 #f 27
+  - call 1 #f $$close
+  - set 1
   - get 1
   - call 1 #f 82
-  - call 2 #f 24
+  - call 1 #f 1
   - get 0
   - constant $$syntax-rules
   - call 2 #f eqv?
   - if
     - get 2
-    - get 2
     - call 1 #f cadr
-    - call 2 #f 25
-    - constant procedure 1 #f
-      - get 5
-      - get 1
-      - call 2 #f 28
-    - call 1 #f $$close
-    - get 3
+    - call 1 #f 2
+    - get 2
+    - get 4
     - call 1 #f caddr
     - call 2 #f map
     - constant procedure 1 #f
       - constant procedure 1 #f
-        - get 8
+        - get 9
         - get 6
         - get 6
         - get 3
-        - call 4 #f 20
+        - call 4 #f 21
       - call 1 #f $$close
       - get 1
       - call 2 #f map
     - call 1 #f $$close
-    - get 4
+    - get 5
     - call 1 #f cdddr
     - call 2 #f map
     - constant procedure 2 #f
@@ -6977,10 +6978,10 @@
         - set 0
         - get 0
         - call 1 #f car
-        - get 12
+        - get 13
         - get 6
         - get 10
-        - call 3 #f 41
+        - call 3 #f 42
         - constant procedure 1 #f
           - constant procedure 1 #f
             - constant procedure 1 #f
@@ -7009,13 +7010,13 @@
             - get 6
             - call 1 #f car
             - get 11
-            - call 3 #f 26
+            - call 3 #f 27
             - get 6
             - call 1 #f cadr
             - constant procedure 1 #f
               - get 0
               - get 1
-              - call 1 #f 42
+              - call 1 #f 43
               - call 2 #f cons
             - call 1 #f $$close
             - get 17
@@ -7025,27 +7026,26 @@
             - call 2 #f map
             - call 2 #f append
             - get 3
-            - call 3 #f 41
+            - call 3 #f 42
             - call 2 #f map
             - get 7
             - get 1
             - get 4
             - call 2 #f append
             - get 3
-            - call 3 #f 27
+            - call 3 #f 28
             - get 14
             - constant procedure 1 #f
               - get 0
               - call 1 #f cdr
-              - get 25
-              - get 2
+              - get 1
               - call 1 #f car
-              - call 2 #f 48
+              - call 1 #f 25
               - call 2 #f cons
             - call 1 #f $$close
             - get 3
             - call 2 #f map
-            - call 2 #f 56
+            - call 2 #f 57
             - call 2 #f values
             - call 2 #f $$unbind
             - call 2 #f $$unbind
@@ -7065,7 +7065,7 @@
       - call 1 #f 1
     - call 1 #f $$close
   - constant "unsupported macro transformer"
-  - get 2
+  - get 3
   - call 2 #f error
 - call 1 #f $$close
 - set 2
