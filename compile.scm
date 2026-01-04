@@ -595,12 +595,16 @@
      (cond
       ((and
         (symbol? pattern)
-        (memq pattern (rule-context-literals context)))
-       (unless (eq?
-                (resolve-denotation (rule-context-use-context context) expression)
-                pattern)
-        (raise #f))
-       '())
+        (memq
+         (resolve-denotation (rule-context-definition-context context) pattern)
+         (rule-context-literals context)))
+       =>
+       (lambda (pair)
+        (unless (eq?
+                 (resolve-denotation (rule-context-use-context context) expression)
+                 (car pair))
+         (raise #f))
+        '()))
 
       ((symbol? pattern)
        (list (cons pattern expression)))
