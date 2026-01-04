@@ -729,10 +729,7 @@
 
         (($$define-syntax)
          (let ((name (cadr expression))
-               (transformer
-                (relaxed-deep-map
-                 (lambda (value) (resolve-denotation context value))
-                 (caddr expression))))
+               (transformer (caddr expression)))
           (macro-context-set-global!
            context
            name
