@@ -775,7 +775,7 @@
                  (macro-context-append
                   context
                   (map-values
-                   (lambda (transformer) (lambda () #f))
+                   (lambda (transformer) #f)
                    bindings))))
           (for-each
            (lambda (pair)
