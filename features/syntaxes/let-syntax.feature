@@ -245,3 +245,23 @@ Feature: let-syntax
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Define a global macro in a local macro with shared variables
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ bar x)
+            (define-syntax bar
+              (syntax-rules ()
+                ((_ x)
+                  (write-u8 y)))))))
+
+      (foo bar y)
+
+      (bar 65)
+      """
+    When I run `stak main.scm`
+    Then the exit status should not be 0
