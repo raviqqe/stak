@@ -185,28 +185,28 @@
 
     ;; Base
 
-    ($$define-syntax syntax-rules
-      ($$syntax-rules $$... ()
-        ((_ (literal $$...) (pattern body) $$...)
-          ($$syntax-rules ... (literal $$...) (pattern body) $$...))
+    ($$define-syntax define-define-syntax
+      ($$syntax-rules !!! ()
+        ((_ define-syntax primitive)
+          ($$define-syntax define-syntax
+            ($$syntax-rules ::: (syntax-rules)
+              ((_ name (syntax-rules (literal :::) (pattern body) :::))
+                (define-syntax
+                  name
+                  (syntax-rules ... (literal :::) (pattern body) :::)))
 
-        ((_ ellipsis (literal $$...) (pattern body) $$...)
-          ($$syntax-rules ellipsis (literal $$...) (pattern body) $$...))))
+              ((_ name (syntax-rules ellipsis (literal :::) (pattern body) :::))
+                (primitive
+                  name
+                  ($$syntax-rules ellipsis (literal :::) (pattern body) :::))))))))
 
-    ($$define-syntax define-syntax
-      (syntax-rules ()
-        ((_ name value)
-          ($$define-syntax name value))))
+    (define-define-syntax define-syntax $$define-syntax)
+    (define-define-syntax define-optimizer $$define-optimizer)
 
     (define-syntax syntax-error
       (syntax-rules ()
         ((_ message value ...)
           ($$syntax-error message value ...))))
-
-    (define-syntax define-optimizer
-      (syntax-rules ()
-        ((_ name value)
-          ($$define-optimizer name value))))
 
     (define-syntax define
       (syntax-rules ()
@@ -259,15 +259,45 @@
         ((_ arguments body1 body2 ...)
           ($$lambda arguments (begin body1 body2 ...)))))
 
-    (define-syntax let-syntax
-      (syntax-rules ()
-        ((_ ((name value) ...) body1 body2 ...)
-          ($$let-syntax ((name value) ...) (let () body1 body2 ...)))))
+    (define-syntax define-let-syntax
+      (syntax-rules !!! ()
+        ((_ let-syntax primitive)
+          (define-syntax let-syntax
+            (syntax-rules ::: (syntax-rules)
+              ((_ ((name value) :::) body1 body2 :::)
+                (let-syntax "expand" ((name value) :::) () (let () body1 body2 :::)))
 
-    (define-syntax letrec-syntax
-      (syntax-rules ()
-        ((_ ((name value) ...) body1 body2 ...)
-          ($$letrec-syntax ((name value) ...) (let () body1 body2 ...)))))
+              ((_ "expand"
+                  ((name (syntax-rules (literal :::) (pattern body1) :::))
+                    syntax1
+                    :::)
+                  (syntax2 :::)
+                  body2)
+                (let-syntax "expand"
+                  (syntax1 :::)
+                  (syntax2
+                    :::
+                    (name (syntax-rules ... (literal :::) (pattern body1) :::)))
+                  body2))
+
+              ((_ "expand"
+                  ((name (syntax-rules ellipsis (literal :::) (pattern body1) :::))
+                    syntax1
+                    :::)
+                  (syntax2 :::)
+                  body2)
+                (let-syntax "expand"
+                  (syntax1 :::)
+                  (syntax2
+                    :::
+                    (name (syntax-rules ellipsis (literal :::) (pattern body1) :::)))
+                  body2))
+
+              ((_ "expand" () ((name (syntax-rules item :::)) :::) body)
+                (primitive ((name ($$syntax-rules item :::)) :::) body)))))))
+
+    (define-let-syntax let-syntax $$let-syntax)
+    (define-let-syntax letrec-syntax $$letrec-syntax)
 
     (define-syntax begin
       (syntax-rules ()
