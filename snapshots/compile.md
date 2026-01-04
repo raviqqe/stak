@@ -18414,7 +18414,9 @@
                       - list
                         - cadr
                         - expression
-                  - transformer
+                  - list
+                    - cdddr
+                    - transformer
             - macros
         - list
           - context
