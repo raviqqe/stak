@@ -259,11 +259,11 @@
         ((_ arguments body1 body2 ...)
           ($$lambda arguments (begin body1 body2 ...)))))
 
-    ($$define-syntax define-let-syntax
-      ($$syntax-rules !!! ()
+    (define-syntax define-let-syntax
+      (syntax-rules !!! ()
         ((_ let-syntax primitive)
-          ($$define-syntax let-syntax
-            ($$syntax-rules ::: (syntax-rules)
+          (define-syntax let-syntax
+            (syntax-rules ::: (syntax-rules)
               ((_ ((name value) :::) body1 body2 :::)
                 (let-syntax "expand" ((name value) :::) () (let () body1 body2 :::)))
 

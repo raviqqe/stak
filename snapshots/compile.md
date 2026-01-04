@@ -4821,11 +4821,11 @@
   - call-with-values
   - error
   - write-message
+  - $$define-syntax
   - $$define-optimizer
   - $$syntax-error
   - $$define
   - $$lambda
-  - $$define-syntax
   - $$let-syntax
   - $$letrec-syntax
   - $$begin
@@ -10089,10 +10089,10 @@
         - let-syntax
         - primitive
       - list
-        - $$define-syntax
+        - define-syntax
         - let-syntax
         - list
-          - $$syntax-rules
+          - syntax-rules
           - ||
           - list
             - syntax-rules
