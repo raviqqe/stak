@@ -1388,8 +1388,14 @@
     (define (shake-syntax-tree libraries macros)
      (let* ((dependencies
              (map-values
-              (lambda (expression)
-               (find-library-symbols '() expression))
+              (lambda (transformer)
+               (let ((literals (cons (cadr transformer) (caddr transformer))))
+                (append-map
+                 (lambda (expression)
+                  (find-library-symbols
+                   (append (find-symbols (car expression)) literals)
+                   (cadr expression)))
+                 transformer)))
               macros))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (map cdr (append-map cdr libraries)))

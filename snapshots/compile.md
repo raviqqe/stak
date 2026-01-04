@@ -4080,7 +4080,6 @@
   - macro-context-append-static-symbol!
   - rename-variable
   - resolve-denotation
-  - transformer
   - macro-context-append
   - macro-context-set-local!
   - relaxed-deep-map
@@ -4095,7 +4094,6 @@
   - rules
   - make-rule-context
   - optimizer-macro-context
-  - literals
   - fill-template
   - match-pattern
   - rule-context
@@ -4174,6 +4172,8 @@
   - find-symbol-dependencies
   - shake-expression
   - find-library-symbols
+  - literals
+  - transformer
   - make-tree-shake-context
   - dependencies
   - tree-shake-context-append!
@@ -9522,77 +9522,6 @@
 - call 1 #f $$close
 - constant list
   - list
-    - ||
-    - $$syntax-rules
-    - ||
-    - ()
-    - list
-      - list
-        - \_
-        - define-syntax
-        - primitive
-      - list
-        - $$define-syntax
-        - define-syntax
-        - list
-          - $$syntax-rules
-          - ||
-          - list
-            - syntax-rules
-          - list
-            - list
-              - \_
-              - ||
-              - list
-                - syntax-rules
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-            - list
-              - define-syntax
-              - ||
-              - list
-                - syntax-rules
-                - ...
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-          - list
-            - list
-              - \_
-              - ||
-              - list
-                - syntax-rules
-                - ||
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-            - list
-              - primitive
-              - ||
-              - list
-                - $$syntax-rules
-                - ||
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-  - list
     - define-syntax
     - $$syntax-rules
     - ||
@@ -10034,164 +9963,6 @@
           - ||
           - ||
           - ...
-  - list
-    - ||
-    - $$syntax-rules
-    - ||
-    - ()
-    - list
-      - list
-        - \_
-        - let-syntax
-        - primitive
-      - list
-        - define-syntax
-        - let-syntax
-        - list
-          - syntax-rules
-          - ||
-          - list
-            - syntax-rules
-          - list
-            - list
-              - \_
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - let-syntax
-              - "expand"
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ()
-              - list
-                - let
-                - ()
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - \_
-              - "expand"
-              - list
-                - list
-                  - ||
-                  - list
-                    - syntax-rules
-                    - list
-                      - ||
-                      - ||
-                    - list
-                      - ||
-                      - ||
-                    - ||
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - let-syntax
-              - "expand"
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - syntax-rules
-                    - ...
-                    - list
-                      - ||
-                      - ||
-                    - list
-                      - ||
-                      - ||
-                    - ||
-              - ||
-          - list
-            - list
-              - \_
-              - "expand"
-              - list
-                - list
-                  - ||
-                  - list
-                    - syntax-rules
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                    - list
-                      - ||
-                      - ||
-                    - ||
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - let-syntax
-              - "expand"
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - syntax-rules
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                    - list
-                      - ||
-                      - ||
-                    - ||
-              - ||
-          - list
-            - list
-              - \_
-              - "expand"
-              - ()
-              - list
-                - list
-                  - ||
-                  - list
-                    - syntax-rules
-                    - ||
-                    - ||
-                - ||
-              - ||
-            - list
-              - primitive
-              - list
-                - list
-                  - ||
-                  - list
-                    - $$syntax-rules
-                    - ||
-                    - ||
-                - ||
-              - ||
   - list
     - let-syntax
     - $$syntax-rules
@@ -18610,13 +18381,40 @@
             - list
               - lambda
               - list
-                - expression
+                - transformer
               - list
-                - find-library-symbols
+                - let
                 - list
-                  - quote
-                  - ()
-                - expression
+                  - list
+                    - literals
+                    - list
+                      - cons
+                      - list
+                        - cadr
+                        - transformer
+                      - list
+                        - caddr
+                        - transformer
+                - list
+                  - append-map
+                  - list
+                    - lambda
+                    - list
+                      - expression
+                    - list
+                      - find-library-symbols
+                      - list
+                        - append
+                        - list
+                          - find-symbols
+                          - list
+                            - car
+                            - expression
+                        - literals
+                      - list
+                        - cadr
+                        - expression
+                  - transformer
             - macros
         - list
           - context
