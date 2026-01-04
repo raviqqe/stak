@@ -522,6 +522,17 @@
        (string symbol-name-separator)
        (resolve-symbol-string name))))
 
+    (define-record-type ellipsis-match
+     (make-ellipsis-match value)
+     ellipsis-match?
+     (value ellipsis-match-value))
+
+    (define-record-type ellipsis-pattern
+     (make-ellipsis-pattern element variables)
+     ellipsis-pattern?
+     (element ellipsis-pattern-element)
+     (variables ellipsis-pattern-variables))
+
     (define (find-pattern-variables ellipsis bound-variables pattern)
      (define excluded-variables (cons ellipsis bound-variables))
 
@@ -537,19 +548,11 @@
        ((and (symbol? pattern) (not (memq pattern excluded-variables)))
         (cons pattern variables))
 
+       ((ellipsis-pattern? pattern)
+        (loop (ellipsis-pattern-element pattern) variables))
+
        (else
         variables))))
-
-    (define-record-type ellipsis-match
-     (make-ellipsis-match value)
-     ellipsis-match?
-     (value ellipsis-match-value))
-
-    (define-record-type ellipsis-pattern
-     (make-ellipsis-pattern element variables)
-     ellipsis-pattern?
-     (element ellipsis-pattern-element)
-     (variables ellipsis-pattern-variables))
 
     (define (compile-pattern context ellipsis literals pattern)
      (define (compile pattern)
@@ -729,15 +732,17 @@
 
         (($$define-syntax)
          (let ((name (cadr expression))
-               (transformer
-                (relaxed-deep-map
-                 (lambda (value) (resolve-denotation context value))
-                 (caddr expression))))
+               (transformer (caddr expression)))
           (macro-context-set-global!
            context
            name
            (make-transformer context transformer))
-          (macro-context-append-literal! context name transformer)
+          (macro-context-append-literal!
+           context
+           name
+           (relaxed-deep-map
+            (lambda (value) (resolve-denotation context value))
+            transformer))
           (macro-context-append-static-symbol! context name)
           #f))
 
@@ -775,7 +780,7 @@
                  (macro-context-append
                   context
                   (map-values
-                   (lambda (value) #f)
+                   (lambda (transformer) #f)
                    bindings))))
           (for-each
            (lambda (pair)
