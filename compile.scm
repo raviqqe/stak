@@ -659,58 +659,46 @@
        template)))
 
     (define (make-transformer definition-context transformer)
-     (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
-      (case (resolve-denotation definition-context (maybe-car transformer))
-       (($$syntax-rules)
-        (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-               (literals
-                (map
-                 (lambda (x) (resolve-denotation definition-context x))
-                 (caddr transformer)))
-               (rules
-                (map
-                 (lambda (rule)
-                  (map
-                   (lambda (pattern)
-                    (compile-pattern definition-context ellipsis literals pattern))
-                   rule))
-                 (cdddr transformer))))
-         (lambda (use-context expression)
-          (let loop ((rules rules))
-           (unless (pair? rules)
-            (error "invalid syntax" expression))
-           (let ((rule (car rules))
-                 (rule-context (make-rule-context definition-context use-context literals)))
-            (guard (value
-                    ((not value)
-                     (loop (cdr rules))))
-             (let* ((matches (match-pattern rule-context (car rule) expression))
-                    (template (cadr rule))
-                    (names
-                     (map
-                      (lambda (name) (cons name (rename-variable name)))
-                      (find-pattern-variables ellipsis (append literals (map car matches)) template))))
-              (values
-               (fill-template rule-context (append names matches) template)
-               (macro-context-append
-                use-context
-                (map
-                 (lambda (pair)
-                  (cons
-                   (cdr pair)
-                   (resolve-denotation definition-context (car pair))))
-                 names))))))))))
-       (else
-        (error "unsupported macro transformer" transformer)))))
+     (define (resolve value)
+      (resolve-denotation definition-context value))
 
-    (define (expand-outer-macro context expression)
-     (if (pair? expression)
-      (let ((value (resolve-denotation-value context (car expression))))
-       (if (procedure? value)
-        (let-values (((expression context) (value context expression)))
-         (expand-outer-macro context expression))
-        (values expression context)))
-      (values expression context)))
+     (case (resolve (maybe-car transformer))
+      (($$syntax-rules)
+       (let* ((ellipsis (resolve (cadr transformer)))
+              (literals (map resolve (caddr transformer)))
+              (rules
+               (map
+                (lambda (rule)
+                 (map
+                  (lambda (pattern)
+                   (compile-pattern definition-context ellipsis literals pattern))
+                  rule))
+                (cdddr transformer))))
+        (lambda (use-context expression)
+         (let loop ((rules rules))
+          (unless (pair? rules)
+           (error "invalid syntax" expression))
+          (let ((rule (car rules))
+                (rule-context (make-rule-context definition-context use-context literals)))
+           (guard (value
+                   ((not value)
+                    (loop (cdr rules))))
+            (let* ((matches (match-pattern rule-context (car rule) expression))
+                   (template (cadr rule))
+                   (names
+                    (map
+                     (lambda (name) (cons name (rename-variable name)))
+                     (find-pattern-variables ellipsis (append literals (map car matches)) template))))
+             (values
+              (fill-template rule-context (append names matches) template)
+              (macro-context-append
+               use-context
+               (map
+                (lambda (pair)
+                 (cons (cdr pair) (resolve (car pair))))
+                names))))))))))
+      (else
+       (error "unsupported macro transformer" transformer))))
 
     ; https://www.researchgate.net/publication/220997237_Macros_That_Work
     (define (expand-macro context expression)
@@ -1398,8 +1386,14 @@
     (define (shake-syntax-tree libraries macros)
      (let* ((dependencies
              (map-values
-              (lambda (expression)
-               (find-library-symbols '() expression))
+              (lambda (transformer)
+               (let ((literals (cons (cadr transformer) (caddr transformer))))
+                (append-map
+                 (lambda (expression)
+                  (find-library-symbols
+                   (append (find-symbols (car expression)) literals)
+                   (cadr expression)))
+                 (cdddr transformer))))
               macros))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (map cdr (append-map cdr libraries)))
