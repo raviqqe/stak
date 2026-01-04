@@ -522,6 +522,7 @@
        (string symbol-name-separator)
        (resolve-symbol-string name))))
 
+    ; TODO Move this after `define-record-type ellipsis-pattern`.
     (define (find-pattern-variables ellipsis bound-variables pattern)
      (define excluded-variables (cons ellipsis bound-variables))
 
@@ -536,6 +537,9 @@
 
        ((and (symbol? pattern) (not (memq pattern excluded-variables)))
         (cons pattern variables))
+
+       ((ellipsis-pattern? pattern)
+        (loop (ellipsis-pattern-element pattern) variables))
 
        (else
         variables))))
