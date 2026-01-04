@@ -791,6 +791,8 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
+      (define y 65)
+
       (define-syntax foo
         (syntax-rules ()
           ((_ bar x)
@@ -801,7 +803,7 @@ Feature: Macro
 
       (foo bar y)
 
-      (bar 65)
+      (bar 66)
       """
-    When I run `stak main.scm`
-    Then the exit status should not be 0
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
