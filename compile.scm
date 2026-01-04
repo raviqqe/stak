@@ -1395,7 +1395,7 @@
                   (find-library-symbols
                    (append (find-symbols (car expression)) literals)
                    (cadr expression)))
-                 transformer)))
+                 (cdddr transformer))))
               macros))
             (context (make-tree-shake-context dependencies '())))
       (tree-shake-context-append! context (map cdr (append-map cdr libraries)))
