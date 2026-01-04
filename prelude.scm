@@ -276,30 +276,30 @@
                 (let-syntax "expand" ((name value) :::) () (let () body1 body2 :::)))
 
               ((_ "expand"
-                  ((name (syntax-rules (literal :::) (pattern body) :::))
+                  ((name (syntax-rules (literal :::) (pattern body1) :::))
                     syntax1
                     :::)
                   (syntax2 :::)
-                  body)
+                  body2)
                 (let-syntax "expand"
                   (syntax1 :::)
                   (syntax2
                     :::
-                    (name (syntax-rules ... (literal :::) (pattern body) :::)))
-                  body))
+                    (name (syntax-rules ... (literal :::) (pattern body1) :::)))
+                  body2))
 
               ((_ "expand"
-                  ((name (syntax-rules ellipsis (literal :::) (pattern body) :::))
+                  ((name (syntax-rules ellipsis (literal :::) (pattern body1) :::))
                     syntax1
                     :::)
                   (syntax2 :::)
-                  body)
+                  body2)
                 (let-syntax "expand"
                   (syntax1 :::)
                   (syntax2
                     :::
-                    (name (syntax-rules ellipsis (literal :::) (pattern body) :::)))
-                  body))
+                    (name (syntax-rules ellipsis (literal :::) (pattern body1) :::)))
+                  body2))
 
               ((_ "expand" () ((name (syntax-rules item :::)) :::) body)
                 (primitive ((name ($$syntax-rules item :::)) :::) body)))))))
