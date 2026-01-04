@@ -673,7 +673,7 @@
                   (lambda (pattern)
                    (compile-pattern definition-context ellipsis literals pattern))
                   rule))
-                (cdddr transformer))))
+                (relaxed-deep-map resolve (cdddr transformer)))))
         (lambda (use-context expression)
          (let loop ((rules rules))
           (unless (pair? rules)
@@ -775,7 +775,7 @@
                  (macro-context-append
                   context
                   (map-values
-                   (lambda (transformer) #f)
+                   (lambda (transformer) (lambda () #f))
                    bindings))))
           (for-each
            (lambda (pair)
