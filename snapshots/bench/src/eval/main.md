@@ -6637,6 +6637,13 @@
       - call 2 #f 6
       - call 2 #f 5
     - get 1
+    - call 1 #f 20
+    - if
+      - get 1
+      - call 1 #f 19
+      - get 1
+      - call 2 #f 5
+    - get 1
     - call 1 #f symbol?
     - if
       - get 1
@@ -6656,6 +6663,7 @@
   - get 2
   - constant ()
   - call 2 #f 2
+- call 1 #f $$close
 - set 8
 - constant procedure 4 #f
   - constant #f
