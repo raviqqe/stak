@@ -245,3 +245,33 @@ Feature: let-syntax
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Match an ellipsis pattern
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (let-syntax (
+          (s
+            (syntax-rules ()
+              ((_ x ...)
+                (+ x ...)))))
+        (write-u8 (s 1 2 3 59)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match a nested ellipsis pattern
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (let-syntax (
+          (foo
+            (syntax-rules ()
+              ((_ (x ...) ...)
+                (+ (+ x ...) ...)))))
+        (write-u8 (foo (1 2) (3 59))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
