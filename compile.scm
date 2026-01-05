@@ -545,6 +545,9 @@
           (cdr pattern)
           variables)))
 
+       ((ellipsis-pattern? pattern)
+        (loop (ellipsis-pattern-element pattern) variables))
+
        ((and (symbol? pattern) (not (memq pattern excluded-variables)))
         (cons pattern variables))
 
