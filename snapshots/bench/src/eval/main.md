@@ -6618,12 +6618,7 @@
 - call 2 #f ||
 - call 1 #f ||
 - set 9
-- constant procedure 3 #f
-  - constant #f
-  - get 3
-  - get 3
-  - call 2 #f cons
-  - set 1
+- constant procedure 2 #f
   - constant #f
   - constant procedure 2 #f
     - get 1
@@ -6637,17 +6632,17 @@
       - call 2 #f 6
       - call 2 #f 5
     - get 1
-    - call 1 #f 20
+    - call 1 #f 18
     - if
       - get 1
-      - call 1 #f 19
+      - call 1 #f 17
       - get 1
       - call 2 #f 5
     - get 1
     - call 1 #f symbol?
     - if
       - get 1
-      - get 5
+      - get 6
       - call 2 #f memq
       - constant #f
       - call 2 #f eq?
@@ -6660,7 +6655,7 @@
     - get 0
   - call 1 #f $$close
   - set 1
-  - get 2
+  - get 1
   - constant ()
   - call 2 #f 2
 - call 1 #f $$close
@@ -6697,12 +6692,14 @@
     - get 1
     - call 1 #f car
     - call 1 #f 1
-    - get 4
-    - get 4
-    - get 4
-    - call 1 #f car
-    - call 3 #f 17
-    - call 2 #f 19
+    - get 0
+    - get 5
+    - get 5
+    - call 2 #f cons
+    - get 2
+    - call 2 #f 17
+    - call 2 #f 20
+    - call 2 #f $$unbind
     - get 2
     - call 1 #f cddr
     - call 1 #f 2
@@ -7033,8 +7030,9 @@
             - get 5
             - call 2 #f map
             - call 2 #f append
-            - get 3
-            - call 3 #f 33
+            - call 2 #f cons
+            - get 2
+            - call 2 #f 32
             - call 2 #f map
             - get 7
             - get 1
