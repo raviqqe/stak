@@ -10224,9 +10224,7 @@
     - call 1 #f car
     - call 1 #f 1
     - get 0
-    - get 5
-    - get 5
-    - call 2 #f cons
+    - get 4
     - get 2
     - call 2 #f 17
     - call 2 #f 20
@@ -10555,13 +10553,11 @@
               - call 1 #f 43
               - call 2 #f cons
             - call 1 #f $$close
-            - get 17
-            - get 17
+            - get 16
             - get car
-            - get 5
+            - get 4
             - call 2 #f map
             - call 2 #f append
-            - call 2 #f cons
             - get 2
             - call 2 #f 32
             - call 2 #f map
