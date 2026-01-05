@@ -65,7 +65,7 @@ Feature: cond-expand
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
-  Scenario: Match an invalid library literal
+  Scenario: Match an invalid feature
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))

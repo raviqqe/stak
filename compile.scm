@@ -522,24 +522,6 @@
        (string symbol-name-separator)
        (resolve-symbol-string name))))
 
-    (define (find-pattern-variables ellipsis bound-variables pattern)
-     (define excluded-variables (cons ellipsis bound-variables))
-
-     (let loop ((pattern pattern) (variables '()))
-      (cond
-       ((pair? pattern)
-        (loop
-         (car pattern)
-         (loop
-          (cdr pattern)
-          variables)))
-
-       ((and (symbol? pattern) (not (memq pattern excluded-variables)))
-        (cons pattern variables))
-
-       (else
-        variables))))
-
     (define-record-type ellipsis-match
      (make-ellipsis-match value)
      ellipsis-match?
@@ -550,6 +532,25 @@
      ellipsis-pattern?
      (element ellipsis-pattern-element)
      (variables ellipsis-pattern-variables))
+
+    (define (find-pattern-variables bound-variables pattern)
+     (let loop ((pattern pattern) (variables '()))
+      (cond
+       ((pair? pattern)
+        (loop
+         (car pattern)
+         (loop
+          (cdr pattern)
+          variables)))
+
+       ((ellipsis-pattern? pattern)
+        (loop (ellipsis-pattern-element pattern) variables))
+
+       ((and (symbol? pattern) (not (memq pattern bound-variables)))
+        (cons pattern variables))
+
+       (else
+        variables))))
 
     (define (compile-pattern context ellipsis literals pattern)
      (define (compile pattern)
@@ -563,9 +564,10 @@
         (pair? (cdr pattern))
         (eq? ellipsis (resolve-denotation context (cadr pattern))))
        (cons
-        (make-ellipsis-pattern
-         (compile (car pattern))
-         (find-pattern-variables ellipsis literals (car pattern)))
+        (let ((pattern (compile (car pattern))))
+         (make-ellipsis-pattern
+          pattern
+          (find-pattern-variables literals pattern)))
         (compile (cddr pattern))))
 
       (else
@@ -679,7 +681,8 @@
           (unless (pair? rules)
            (error "invalid syntax" expression))
           (let ((rule (car rules))
-                (rule-context (make-rule-context definition-context use-context literals)))
+                (rule-context
+                 (make-rule-context definition-context use-context literals)))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
@@ -688,7 +691,9 @@
                    (names
                     (map
                      (lambda (name) (cons name (rename-variable name)))
-                     (find-pattern-variables ellipsis (append literals (map car matches)) template))))
+                     (find-pattern-variables
+                      (append literals (map car matches))
+                      template))))
              (values
               (fill-template rule-context (append names matches) template)
               (macro-context-append
@@ -775,7 +780,7 @@
                  (macro-context-append
                   context
                   (map-values
-                   (lambda (value) #f)
+                   (lambda (transformer) #f)
                    bindings))))
           (for-each
            (lambda (pair)

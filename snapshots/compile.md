@@ -4047,7 +4047,6 @@
   - rule-context-definition-context
   - macro-state-globals
   - symbol-name-separator
-  - excluded-variables
   - ellipsis-match
   - ellipsis-pattern
   - element
@@ -6922,36 +6921,35 @@
 - constant #f
 - constant #f
 - constant #f
-- constant #f
 - constant 0
 - constant 0
 - call 2 #f cons
-- set 10
-- get 9
-- call 1 #f ||
 - set 9
-- get 9
+- get 8
 - call 1 #f ||
 - set 8
-- constant 0
+- get 8
 - call 1 #f ||
 - set 7
 - constant 0
-- constant 1
-- call 2 #f ||
 - call 1 #f ||
 - set 6
 - constant 0
 - constant 1
 - call 2 #f ||
+- call 1 #f ||
+- set 5
+- constant 0
+- constant 1
+- call 2 #f ||
 - constant 1
 - call 2 #f ||
 - call 1 #f ||
-- set 5
+- set 4
 - constant procedure 2 #f
   - get 0
   - get 2
-  - call 1 #f 21
+  - call 1 #f 20
   - call 2 #f assq
   - get 0
   - if
@@ -6959,18 +6957,18 @@
     - call 1 #f cdr
   - get 1
 - call 1 #f $$close
-- set 4
+- set 3
 - constant procedure 2 #f
   - get 1
   - get 1
-  - call 2 #f 8
+  - call 2 #f 7
   - get 0
   - call 1 #f symbol?
   - if
     - get 0
     - get 3
-    - call 1 #f 23
-    - call 1 #f 34
+    - call 1 #f 22
+    - call 1 #f 33
     - call 2 #f assq
     - continue
   - constant #f
@@ -6980,22 +6978,65 @@
     - call 1 #f cdr
   - get 1
 - call 1 #f $$close
-- set 3
+- set 2
 - constant procedure 1 #f
-  - get 59
+  - get 58
   - call 1 #f string
   - get 1
-  - call 1 #f 42
+  - call 1 #f 41
   - call 2 #f string-append
   - call 1 #f string->uninterned-symbol
 - call 1 #f $$close
+- set 1
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant 0
+- constant 0
+- call 2 #f cons
+- set 4
+- get 3
+- call 1 #f ||
+- set 3
+- get 3
+- call 1 #f ||
 - set 2
-- constant procedure 3 #f
-  - constant #f
-  - get 3
-  - get 3
-  - call 2 #f cons
-  - set 1
+- constant 0
+- call 1 #f ||
+- set 1
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant #f
+- constant 0
+- constant 0
+- call 2 #f cons
+- set 13
+- get 12
+- call 1 #f ||
+- set 12
+- get 12
+- call 1 #f ||
+- set 11
+- constant 0
+- call 1 #f ||
+- set 10
+- constant 0
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set 9
+- constant procedure 2 #f
   - constant #f
   - constant procedure 2 #f
     - get 1
@@ -7009,10 +7050,17 @@
       - call 2 #f 6
       - call 2 #f 5
     - get 1
+    - call 1 #f 18
+    - if
+      - get 1
+      - call 1 #f 17
+      - get 1
+      - call 2 #f 5
+    - get 1
     - call 1 #f symbol?
     - if
       - get 1
-      - get 5
+      - get 6
       - call 2 #f memq
       - constant #f
       - call 2 #f eq?
@@ -7025,56 +7073,10 @@
     - get 0
   - call 1 #f $$close
   - set 1
-  - get 2
+  - get 1
   - constant ()
   - call 2 #f 2
-- set 1
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant 0
-- constant 0
-- call 2 #f cons
-- set 4
-- get 3
-- call 1 #f ||
-- set 3
-- get 3
-- call 1 #f ||
-- set 2
-- constant 0
-- call 1 #f ||
-- set 1
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant #f
-- constant 0
-- constant 0
-- call 2 #f cons
-- set 12
-- get 11
-- call 1 #f ||
-- set 11
-- get 11
-- call 1 #f ||
-- set 10
-- constant 0
-- call 1 #f ||
-- set 9
-- constant 0
-- constant 1
-- call 2 #f ||
-- call 1 #f ||
+- call 1 #f $$close
 - set 8
 - constant procedure 4 #f
   - constant #f
@@ -7108,12 +7110,12 @@
     - get 1
     - call 1 #f car
     - call 1 #f 1
+    - get 0
     - get 4
-    - get 4
-    - get 4
-    - call 1 #f car
-    - call 3 #f 26
-    - call 2 #f 18
+    - get 2
+    - call 2 #f 17
+    - call 2 #f 20
+    - call 2 #f $$unbind
     - get 2
     - call 1 #f cddr
     - call 1 #f 2
@@ -7128,15 +7130,15 @@
 - call 1 #f $$close
 - set 7
 - constant procedure 3 #f
-  - get 18
+  - get 19
   - get map
   - get list
   - get 4
-  - call 1 #f 15
+  - call 1 #f 16
   - constant procedure 1 #f
     - get 8
     - get 8
-    - call 1 #f 20
+    - call 1 #f 21
     - get 2
     - call 3 #f 17
   - call 1 #f $$close
@@ -7192,7 +7194,7 @@
   - if
     - get 2
     - call 1 #f car
-    - call 1 #f 15
+    - call 1 #f 16
     - if
       - get 1
       - call 1 #f 96
@@ -7250,9 +7252,9 @@
 - set 5
 - constant procedure 3 #f
   - get 0
-  - call 1 #f 12
+  - call 1 #f 13
   - get 1
-  - call 1 #f 14
+  - call 1 #f 15
   - constant procedure 1 #f
     - get 0
     - call 1 #f car
@@ -7263,13 +7265,13 @@
   - call 2 #f 105
   - constant procedure 1 #f
     - get 0
-    - call 1 #f 23
+    - call 1 #f 24
     - constant #f
     - call 2 #f eq?
   - call 1 #f $$close
   - get 1
   - call 2 #f 90
-  - get 21
+  - get 22
   - get 2
   - call 2 #f 91
   - get 0
@@ -7293,7 +7295,7 @@
   - constant procedure 1 #f
     - get 0
     - call 1 #f cdr
-    - call 1 #f 26
+    - call 1 #f 27
   - call 1 #f $$close
   - get 3
   - call 2 #f map
@@ -7327,7 +7329,7 @@
     - get 2
     - call 1 #f car
     - get 0
-    - call 1 #f 17
+    - call 1 #f 18
     - if
       - get 5
       - get 5
@@ -7438,14 +7440,13 @@
               - call 1 #f 43
               - call 2 #f cons
             - call 1 #f $$close
-            - get 17
-            - get 17
+            - get 16
             - get car
-            - get 5
+            - get 4
             - call 2 #f map
             - call 2 #f append
-            - get 3
-            - call 3 #f 42
+            - get 2
+            - call 2 #f 32
             - call 2 #f map
             - get 7
             - get 1
@@ -15302,19 +15303,35 @@
           - resolve-symbol-string
           - name
   - list
+    - define-record-type
+    - ellipsis-match
+    - list
+      - make-ellipsis-match
+      - value
+    - ellipsis-match?
+    - list
+      - value
+      - ellipsis-match-value
+  - list
+    - define-record-type
+    - ellipsis-pattern
+    - list
+      - make-ellipsis-pattern
+      - element
+      - variables
+    - ellipsis-pattern?
+    - list
+      - element
+      - ellipsis-pattern-element
+    - list
+      - variables
+      - ellipsis-pattern-variables
+  - list
     - define
     - list
       - find-pattern-variables
-      - ellipsis
       - bound-variables
       - pattern
-    - list
-      - define
-      - excluded-variables
-      - list
-        - cons
-        - ellipsis
-        - bound-variables
     - list
       - let
       - loop
@@ -15346,6 +15363,16 @@
               - variables
         - list
           - list
+            - ellipsis-pattern?
+            - pattern
+          - list
+            - loop
+            - list
+              - ellipsis-pattern-element
+              - pattern
+            - variables
+        - list
+          - list
             - and
             - list
               - symbol?
@@ -15355,7 +15382,7 @@
               - list
                 - memq
                 - pattern
-                - excluded-variables
+                - bound-variables
           - list
             - cons
             - pattern
@@ -15363,30 +15390,6 @@
         - list
           - else
           - variables
-  - list
-    - define-record-type
-    - ellipsis-match
-    - list
-      - make-ellipsis-match
-      - value
-    - ellipsis-match?
-    - list
-      - value
-      - ellipsis-match-value
-  - list
-    - define-record-type
-    - ellipsis-pattern
-    - list
-      - make-ellipsis-pattern
-      - element
-      - variables
-    - ellipsis-pattern?
-    - list
-      - element
-      - ellipsis-pattern-element
-    - list
-      - variables
-      - ellipsis-pattern-variables
   - list
     - define
     - list
@@ -15435,18 +15438,21 @@
         - list
           - cons
           - list
-            - make-ellipsis-pattern
+            - let
             - list
-              - compile
               - list
-                - car
                 - pattern
+                - list
+                  - compile
+                  - list
+                    - car
+                    - pattern
             - list
-              - find-pattern-variables
-              - ellipsis
-              - literals
+              - make-ellipsis-pattern
+              - pattern
               - list
-                - car
+                - find-pattern-variables
+                - literals
                 - pattern
           - list
             - compile
@@ -15960,7 +15966,6 @@
                                 - name
                           - list
                             - find-pattern-variables
-                            - ellipsis
                             - list
                               - append
                               - literals
@@ -16260,7 +16265,7 @@
                       - list
                         - lambda
                         - list
-                          - value
+                          - transformer
                         - #f
                       - bindings
               - list
