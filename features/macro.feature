@@ -341,7 +341,7 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Match a literal identifier
+  Scenario: Match a literal
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -800,6 +800,26 @@ Feature: Macro
 
       (let ((y 31))
         (write-u8 (foo (1 1 1) (1 1))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match a literal in a nested syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ name)
+            (define-syntax name
+              (syntax-rules (baz)
+                ((_ baz)
+                  65))))))
+
+      (foo bar)
+
+      (write-u8 (bar baz))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
