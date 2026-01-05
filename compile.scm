@@ -567,7 +567,7 @@
         (let ((pattern (compile (car pattern))))
          (make-ellipsis-pattern
           pattern
-          (find-pattern-variables (cons ellipsis literals) pattern)))
+          (find-pattern-variables literals pattern)))
         (compile (cddr pattern))))
 
       (else
@@ -681,7 +681,8 @@
           (unless (pair? rules)
            (error "invalid syntax" expression))
           (let ((rule (car rules))
-                (rule-context (make-rule-context definition-context use-context literals)))
+                (rule-context
+                 (make-rule-context definition-context use-context literals)))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
@@ -691,7 +692,7 @@
                     (map
                      (lambda (name) (cons name (rename-variable name)))
                      (find-pattern-variables
-                      (cons ellipsis (append literals (map car matches)))
+                      (append literals (map car matches))
                       template))))
              (values
               (fill-template rule-context (append names matches) template)
