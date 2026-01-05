@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-clap = { version = "4.5.53", features = ["derive"], optional = true }
+clap = { version = "4.5.54", features = ["derive"], optional = true }
 dlmalloc = { version = "0.2.12", features = ["global"], optional = true }
 main_error = { version = "0.1.2", optional = true }
 origin = { version = "0.26.2", default-features = false, features = [
