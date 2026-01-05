@@ -522,6 +522,17 @@
        (string symbol-name-separator)
        (resolve-symbol-string name))))
 
+    (define-record-type ellipsis-match
+     (make-ellipsis-match value)
+     ellipsis-match?
+     (value ellipsis-match-value))
+
+    (define-record-type ellipsis-pattern
+     (make-ellipsis-pattern element variables)
+     ellipsis-pattern?
+     (element ellipsis-pattern-element)
+     (variables ellipsis-pattern-variables))
+
     (define (find-pattern-variables ellipsis bound-variables pattern)
      (define excluded-variables (cons ellipsis bound-variables))
 
@@ -539,17 +550,6 @@
 
        (else
         variables))))
-
-    (define-record-type ellipsis-match
-     (make-ellipsis-match value)
-     ellipsis-match?
-     (value ellipsis-match-value))
-
-    (define-record-type ellipsis-pattern
-     (make-ellipsis-pattern element variables)
-     ellipsis-pattern?
-     (element ellipsis-pattern-element)
-     (variables ellipsis-pattern-variables))
 
     (define (compile-pattern context ellipsis literals pattern)
      (define (compile pattern)
