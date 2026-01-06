@@ -751,7 +751,9 @@
           (macro-context-append-literal!
            context
            name
-           (relaxed-deep-map resolve transformer))
+           (relaxed-deep-map
+            (lambda (value) (resolve-denotation context value))
+            transformer))
           (macro-context-append-static-symbol! context name)
           #f))
 
