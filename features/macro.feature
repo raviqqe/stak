@@ -844,7 +844,7 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Match ellipsis defined and passed in a nested syntax
+  Scenario: Match ellipsis passed in a nested syntax
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -863,3 +863,25 @@ Feature: Macro
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Match different ellipsis defined and passed in a nested syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ name ellipsis)
+            (define-syntax name
+              (syntax-rules ::: (baz)
+                ((_ literal ellipsis)
+                  65)
+                ((_ literal :::)
+                  66))))))
+
+      (foo bar ...)
+
+      (write-u8 (bar 1 2 3))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "B"
