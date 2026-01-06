@@ -666,8 +666,7 @@
 
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
-       (let* ((transformer (relaxed-deep-map resolve transformer))
-              (ellipsis (resolve (cadr transformer)))
+       (let* ((ellipsis (resolve (cadr transformer)))
               (literals (map resolve (caddr transformer)))
               (rules
                (map
@@ -675,7 +674,7 @@
                  (map
                   (lambda (pattern)
                    (compile-pattern definition-context ellipsis literals pattern))
-                  rule))
+                  (relaxed-deep-map resolve rule)))
                 (cdddr transformer))))
         (lambda (use-context expression)
          (let loop ((rules rules))
