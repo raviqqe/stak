@@ -594,10 +594,12 @@
      (cond
       ((and
         (symbol? pattern)
-        (memq pattern (rule-context-literals context)))
+        (memq
+         (resolve-denotation (rule-context-definition-context context) pattern)
+         (rule-context-literals context)))
        (unless (eq?
                 (resolve-denotation (rule-context-use-context context) expression)
-                pattern)
+                (resolve-denotation (rule-context-definition-context context) pattern))
         (raise #f))
        '())
 
@@ -667,13 +669,13 @@
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
        (let* ((ellipsis (resolve (cadr transformer)))
-              (literals (map resolve (caddr transformer)))
+              (literals (caddr transformer))
               (rules
                (map
                 (lambda (rule)
                  (map
                   (lambda (pattern)
-                   (compile-pattern definition-context ellipsis literals pattern))
+                   (compile-pattern definition-context ellipsis (map resolve literals) pattern))
                   (relaxed-deep-map resolve rule)))
                 (cdddr transformer))))
         (lambda (use-context expression)
@@ -682,7 +684,7 @@
            (error "invalid syntax" expression))
           (let ((rule (car rules))
                 (rule-context
-                 (make-rule-context definition-context use-context literals)))
+                 (make-rule-context definition-context use-context (map resolve literals))))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
@@ -692,7 +694,7 @@
                     (map
                      (lambda (name) (cons name (rename-variable name)))
                      (find-pattern-variables
-                      (append literals (map car matches))
+                      (append (map resolve literals) (map car matches))
                       template))))
              (values
               (fill-template rule-context (append names matches) template)
