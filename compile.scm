@@ -533,7 +533,7 @@
      (element ellipsis-pattern-element)
      (variables ellipsis-pattern-variables))
 
-    (define (find-pattern-variables bound-variables pattern)
+    (define (find-pattern-variables context literals bound-variables pattern)
      (let loop ((pattern pattern) (variables '()))
       (cond
        ((pair? pattern)
@@ -546,7 +546,12 @@
        ((ellipsis-pattern? pattern)
         (loop (ellipsis-pattern-element pattern) variables))
 
-       ((and (symbol? pattern) (not (memq pattern bound-variables)))
+       ((and
+         (symbol? pattern)
+         (not
+          (or
+           (memq pattern bound-variables)
+           (memq (resolve-denotation context pattern) literals))))
         (cons pattern variables))
 
        (else
@@ -567,7 +572,7 @@
         (let ((pattern (compile (car pattern))))
          (make-ellipsis-pattern
           pattern
-          (find-pattern-variables literals pattern)))
+          (find-pattern-variables context literals '() pattern)))
         (compile (cddr pattern))))
 
       (else
@@ -594,10 +599,12 @@
      (cond
       ((and
         (symbol? pattern)
-        (memq pattern (rule-context-literals context)))
+        (memq
+         (resolve-denotation (rule-context-definition-context context) pattern)
+         (rule-context-literals context)))
        (unless (eq?
                 (resolve-denotation (rule-context-use-context context) expression)
-                pattern)
+                (resolve-denotation (rule-context-definition-context context) pattern))
         (raise #f))
        '())
 
@@ -667,13 +674,13 @@
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
        (let* ((ellipsis (resolve (cadr transformer)))
-              (literals (map resolve (caddr transformer)))
+              (literals (caddr transformer))
               (rules
                (map
                 (lambda (rule)
                  (map
                   (lambda (pattern)
-                   (compile-pattern definition-context ellipsis literals pattern))
+                   (compile-pattern definition-context ellipsis (map resolve literals) pattern))
                   rule))
                 (cdddr transformer))))
         (lambda (use-context expression)
@@ -682,7 +689,7 @@
            (error "invalid syntax" expression))
           (let ((rule (car rules))
                 (rule-context
-                 (make-rule-context definition-context use-context literals)))
+                 (make-rule-context definition-context use-context (map resolve literals))))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
@@ -692,7 +699,9 @@
                     (map
                      (lambda (name) (cons name (rename-variable name)))
                      (find-pattern-variables
-                      (append literals (map car matches))
+                      definition-context
+                      literals
+                      (map car matches)
                       template))))
              (values
               (fill-template rule-context (append names matches) template)
@@ -734,15 +743,17 @@
 
         (($$define-syntax)
          (let ((name (cadr expression))
-               (transformer
-                (relaxed-deep-map
-                 (lambda (value) (resolve-denotation context value))
-                 (caddr expression))))
+               (transformer (caddr expression)))
           (macro-context-set-global!
            context
            name
            (make-transformer context transformer))
-          (macro-context-append-literal! context name transformer)
+          (macro-context-append-literal!
+           context
+           name
+           (relaxed-deep-map
+            (lambda (value) (resolve-denotation context value))
+            transformer))
           (macro-context-append-static-symbol! context name)
           #f))
 

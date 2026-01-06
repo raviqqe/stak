@@ -901,3 +901,24 @@ Feature: Macro
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
+
+  Scenario: Define a nested syntax with shared variables
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define y 65)
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ bar x)
+            (define-syntax bar
+              (syntax-rules ()
+                ((_ x)
+                  (write-u8 y)))))))
+
+      (foo bar y)
+      (bar 66)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
