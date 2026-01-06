@@ -666,7 +666,8 @@
 
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
-       (let* ((ellipsis (resolve (cadr transformer)))
+       (let* ((transformer (relaxed-deep-map resolve transformer))
+              (ellipsis (resolve (cadr transformer)))
               (literals (map resolve (caddr transformer)))
               (rules
                (map
@@ -738,10 +739,7 @@
           (macro-context-set-global!
            context
            name
-           (make-transformer context
-            (relaxed-deep-map
-             (lambda (value) (resolve-denotation context value))
-             transformer)))
+           (make-transformer context transformer))
           (macro-context-append-literal!
            context
            name
