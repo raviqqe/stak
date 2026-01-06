@@ -853,7 +853,7 @@ Feature: Macro
         (syntax-rules ()
           ((_ name ellipsis)
             (define-syntax name
-              (syntax-rules (baz)
+              (syntax-rules ()
                 ((_ x ellipsis)
                   65))))))
 
@@ -874,7 +874,7 @@ Feature: Macro
         (syntax-rules ()
           ((_ name ellipsis)
             (define-syntax name
-              (syntax-rules ::: (baz)
+              (syntax-rules ::: ()
                 ((_ x ellipsis)
                   65)
                 ((_ x :::)
