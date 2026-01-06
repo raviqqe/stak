@@ -864,6 +864,7 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @stak
   Scenario: Match different ellipsis defined and passed in a nested syntax
     Given a file named "main.scm" with:
       """scheme
