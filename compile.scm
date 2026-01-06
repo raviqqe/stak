@@ -674,13 +674,13 @@
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
        (let* ((ellipsis (resolve (cadr transformer)))
-              (literals (caddr transformer))
+              (literals (map resolve (caddr transformer)))
               (rules
                (map
                 (lambda (rule)
                  (map
                   (lambda (pattern)
-                   (compile-pattern definition-context ellipsis (map resolve literals) pattern))
+                   (compile-pattern definition-context ellipsis literals pattern))
                   rule))
                 (cdddr transformer))))
         (lambda (use-context expression)
@@ -689,7 +689,7 @@
            (error "invalid syntax" expression))
           (let ((rule (car rules))
                 (rule-context
-                 (make-rule-context definition-context use-context (map resolve literals))))
+                 (make-rule-context definition-context use-context literals)))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
