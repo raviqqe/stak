@@ -11,7 +11,7 @@ categories.workspace = true
 
 [dependencies]
 proc-macro2 = "1.0.104"
-quote = "1.0.42"
+quote = "1.0.43"
 syn = "2.0.113"
 
 [lints]
