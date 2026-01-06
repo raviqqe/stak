@@ -533,7 +533,7 @@
      (element ellipsis-pattern-element)
      (variables ellipsis-pattern-variables))
 
-    (define (find-pattern-variables bound-variables pattern)
+    (define (find-pattern-variables context literals bound-variables pattern)
      (let loop ((pattern pattern) (variables '()))
       (cond
        ((pair? pattern)
@@ -546,7 +546,12 @@
        ((ellipsis-pattern? pattern)
         (loop (ellipsis-pattern-element pattern) variables))
 
-       ((and (symbol? pattern) (not (memq pattern bound-variables)))
+       ((and
+         (symbol? pattern)
+         (not
+          (or
+           (memq pattern bound-variables)
+           (memq (resolve-denotation context pattern) literals))))
         (cons pattern variables))
 
        (else
@@ -567,7 +572,7 @@
         (let ((pattern (compile (car pattern))))
          (make-ellipsis-pattern
           pattern
-          (find-pattern-variables literals pattern)))
+          (find-pattern-variables context literals '() pattern)))
         (compile (cddr pattern))))
 
       (else
@@ -694,7 +699,9 @@
                     (map
                      (lambda (name) (cons name (rename-variable name)))
                      (find-pattern-variables
-                      (append (map resolve literals) (map car matches))
+                      definition-context
+                      literals
+                      (map car matches)
                       template))))
              (values
               (fill-template rule-context (append names matches) template)
