@@ -672,11 +672,6 @@
       (($$syntax-rules)
        (let* ((ellipsis (resolve (cadr transformer)))
               (literals (map resolve (caddr transformer)))
-              (literal-denotations
-               (map
-                (lambda (literal)
-                 (resolve-denotation definition-context literal))
-                literals))
               (rules
                (map
                 (lambda (rule)
@@ -691,7 +686,7 @@
            (error "invalid syntax" expression))
           (let ((rule (car rules))
                 (rule-context
-                 (make-rule-context definition-context use-context literal-denotations)))
+                 (make-rule-context definition-context use-context literals)))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
