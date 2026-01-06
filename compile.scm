@@ -681,7 +681,7 @@
                  (map
                   (lambda (pattern)
                    (compile-pattern definition-context ellipsis (map resolve literals) pattern))
-                  (relaxed-deep-map resolve rule)))
+                  rule))
                 (cdddr transformer))))
         (lambda (use-context expression)
          (let loop ((rules rules))
