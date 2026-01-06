@@ -734,15 +734,20 @@
 
         (($$define-syntax)
          (let ((name (cadr expression))
-               (transformer
-                (relaxed-deep-map
-                 (lambda (value) (resolve-denotation context value))
-                 (caddr expression))))
+               (transformer (caddr expression)))
           (macro-context-set-global!
            context
            name
-           (make-transformer context transformer))
-          (macro-context-append-literal! context name transformer)
+           (make-transformer context
+            (relaxed-deep-map
+             (lambda (value) (resolve-denotation context value))
+             transformer)))
+          (macro-context-append-literal!
+           context
+           name
+           (relaxed-deep-map
+            (lambda (value) (resolve-denotation context value))
+            transformer))
           (macro-context-append-static-symbol! context name)
           #f))
 
