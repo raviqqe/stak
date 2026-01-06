@@ -700,7 +700,7 @@
                      (lambda (name) (cons name (rename-variable name)))
                      (find-pattern-variables
                       definition-context
-                      literals
+                      '()
                       (map car matches)
                       template))))
              (values
