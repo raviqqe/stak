@@ -677,10 +677,7 @@
               (rules
                (map
                 (lambda (rule)
-                 (map
-                  (lambda (pattern)
-                   (compile-pattern context ellipsis literals pattern))
-                  rule))
+                 (compile-pattern context ellipsis literals rule))
                 (cdddr transformer))))
         (lambda (context expression)
          (let loop ((rules rules))

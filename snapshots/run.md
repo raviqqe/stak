@@ -10483,15 +10483,11 @@
     - call 1 #f caddr
     - call 2 #f map
     - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 9
-        - get 6
-        - get 6
-        - get 3
-        - call 4 #f 21
-      - call 1 #f $$close
-      - get 1
-      - call 2 #f map
+      - get 7
+      - get 4
+      - get 4
+      - get 3
+      - call 4 #f 19
     - call 1 #f $$close
     - get 5
     - call 1 #f cdddr
