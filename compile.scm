@@ -678,10 +678,16 @@
               (rules
                (map
                 (lambda (rule)
-                 (map
-                  (lambda (pattern)
-                   (compile-pattern definition-context ellipsis literals pattern))
-                  rule))
+                 (let ((rule
+                        (map
+                         (lambda (pattern)
+                          (compile-pattern definition-context ellipsis literals pattern))
+                         rule)))
+                  (append
+                   rule
+                   (find-pattern-variables
+                    (append literals (find-pattern-variables literals (car rule)))
+                    (cadr rule)))))
                 (cdddr transformer))))
         (lambda (use-context expression)
          (let loop ((rules rules))
@@ -692,14 +698,13 @@
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
-            (let* ((matches (match-pattern rule-context (car rule) expression))
-                   (template (cadr rule))
-                   (names
-                    (map
-                     (lambda (name) (cons name (rename-variable name)))
-                     (find-pattern-variables (map car matches) template))))
+            (let ((matches (match-pattern rule-context (car rule) expression))
+                  (names
+                   (map
+                    (lambda (name) (cons name (rename-variable name)))
+                    (cddr rule))))
              (values
-              (fill-template rule-context (append names matches) template)
+              (fill-template rule-context (append names matches) (cadr rule))
               (macro-context-append
                use-context
                (map
