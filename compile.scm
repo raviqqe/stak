@@ -495,6 +495,22 @@
      (use-context rule-context-use-context)
      (literals rule-context-literals))
 
+    (define-record-type ellipsis-pattern
+     (make-ellipsis-pattern element variables)
+     ellipsis-pattern?
+     (element ellipsis-pattern-element)
+     (variables ellipsis-pattern-variables))
+
+    (define-record-type literal-pattern
+     (make-literal-pattern denotation)
+     literal-pattern?
+     (denotation literal-pattern-denotation))
+
+    (define-record-type ellipsis-match
+     (make-ellipsis-match value)
+     ellipsis-match?
+     (value ellipsis-match-value))
+
     ;; Procedures
 
     (define (resolve-denotation context value)
@@ -520,17 +536,6 @@
       (string-append
        (string symbol-name-separator)
        (resolve-symbol-string name))))
-
-    (define-record-type ellipsis-match
-     (make-ellipsis-match value)
-     ellipsis-match?
-     (value ellipsis-match-value))
-
-    (define-record-type ellipsis-pattern
-     (make-ellipsis-pattern element variables)
-     ellipsis-pattern?
-     (element ellipsis-pattern-element)
-     (variables ellipsis-pattern-variables))
 
     (define (find-pattern-variables excluded-patterns pattern)
      (let loop ((pattern pattern) (variables '()))
@@ -560,7 +565,8 @@
         (symbol? pattern)
         (memq (resolve-denotation context pattern) literals))
        =>
-       car)
+       (lambda (pair)
+        (make-literal-pattern (car pair))))
 
       ((not (pair? pattern))
        pattern)
@@ -597,13 +603,9 @@
       (match-pattern context pattern expression))
 
      (cond
-      ((and
-        (symbol? pattern)
-        (memq
-         pattern
-         (rule-context-literals context)))
+      ((literal-pattern? pattern)
        (unless (eq?
-                pattern
+                (literal-pattern-denotation pattern)
                 (resolve-denotation (rule-context-use-context context) expression))
         (raise #f))
        '())
@@ -663,6 +665,9 @@
           (fill-ellipsis-template context matches first)
           (list (fill first))))
         (fill (cdr template))))
+
+      ((literal-pattern? template)
+       (literal-pattern-denotation template))
 
       (else
        template)))
