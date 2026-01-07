@@ -490,9 +490,8 @@
       (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
     (define-record-type rule-context
-     (make-rule-context definition-context use-context literals)
+     (make-rule-context use-context literals)
      rule-context?
-     (definition-context rule-context-definition-context)
      (use-context rule-context-use-context)
      (literals rule-context-literals))
 
@@ -689,8 +688,7 @@
           (unless (pair? rules)
            (error "invalid syntax" expression))
           (let ((rule (car rules))
-                (rule-context
-                 (make-rule-context definition-context use-context literals)))
+                (rule-context (make-rule-context use-context literals)))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
@@ -699,7 +697,9 @@
                    (names
                     (map
                      (lambda (name) (cons name (rename-variable name)))
-                     (find-pattern-variables (map car matches) template))))
+                     (find-pattern-variables
+                      (append literals (map car matches))
+                      template))))
              (values
               (fill-template rule-context (append names matches) template)
               (macro-context-append
@@ -844,41 +844,37 @@
        (cons name literal)
        (optimization-context-literals context))))
 
-    (define optimizer-macro-context
-     (make-macro-context (make-macro-state '() '() '() '()) '()))
-
-    (define (make-optimizer optimizer)
-     (case (car optimizer)
-      (($$syntax-rules)
-       (let* ((ellipsis (cadr optimizer))
-              (literals (caddr optimizer))
-              (rules
-               (map
-                (lambda (rule)
+    (define make-optimizer
+     (let ((macro-context
+            (make-macro-context (make-macro-state '() '() '() '()) '())))
+      (lambda (optimizer)
+       (case (car optimizer)
+        (($$syntax-rules)
+         (let* ((ellipsis (cadr optimizer))
+                (literals (caddr optimizer))
+                (rules
                  (map
-                  (lambda (pattern)
-                   (compile-pattern optimizer-macro-context ellipsis literals pattern))
-                  rule))
-                (cdddr optimizer))))
-        (lambda (expression)
-         (let loop ((rules rules))
-          (if (null? rules)
-           expression
-           (guard (value
-                   ((not value)
-                    (loop (cdr rules))))
-            (let ((rule (car rules))
-                  (rule-context
-                   (make-rule-context
-                    optimizer-macro-context
-                    optimizer-macro-context
-                    literals)))
-             (fill-template
-              rule-context
-              (match-pattern rule-context (car rule) expression)
-              (cadr rule)))))))))
-      (else
-       (error "unsupported optimizer" optimizer))))
+                  (lambda (rule)
+                   (map
+                    (lambda (pattern)
+                     (compile-pattern macro-context ellipsis literals pattern))
+                    rule))
+                  (cdddr optimizer))))
+          (lambda (expression)
+           (let loop ((rules rules))
+            (if (null? rules)
+             expression
+             (guard (value
+                     ((not value)
+                      (loop (cdr rules))))
+              (let ((rule (car rules))
+                    (rule-context (make-rule-context macro-context literals)))
+               (fill-template
+                rule-context
+                (match-pattern rule-context (car rule) expression)
+                (cadr rule)))))))))
+        (else
+         (error "unsupported optimizer" optimizer))))))
 
     (define (optimize-expression optimize expression)
      (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
