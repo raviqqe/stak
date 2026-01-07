@@ -578,7 +578,7 @@
         (let ((pattern (compile (car pattern))))
          (make-ellipsis-pattern
           pattern
-          (find-pattern-variables literals pattern)))
+          (find-pattern-variables '() pattern)))
         (compile (cddr pattern))))
 
       (else
@@ -603,13 +603,6 @@
       (match-pattern context pattern expression))
 
      (cond
-      ((literal-pattern? pattern)
-       (unless (eq?
-                (literal-pattern-denotation pattern)
-                (resolve-denotation (rule-context-use-context context) expression))
-        (raise #f))
-       '())
-
       ((symbol? pattern)
        (list (cons pattern expression)))
 
@@ -630,6 +623,13 @@
 
         (else
          (raise #f))))
+
+      ((literal-pattern? pattern)
+       (unless (eq?
+                (literal-pattern-denotation pattern)
+                (resolve-denotation (rule-context-use-context context) expression))
+        (raise #f))
+       '())
 
       ((equal? pattern expression)
        '())
@@ -702,9 +702,7 @@
                    (names
                     (map
                      (lambda (name) (cons name (rename-variable name)))
-                     (find-pattern-variables
-                      (append literals (map car matches))
-                      template))))
+                     (find-pattern-variables (map car matches) template))))
              (values
               (fill-template rule-context (append names matches) template)
               (macro-context-append
