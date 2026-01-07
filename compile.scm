@@ -604,8 +604,8 @@
          pattern
          (rule-context-literals context)))
        (unless (eq?
-                (resolve-denotation (rule-context-use-context context) expression)
-                pattern)
+                pattern
+                (resolve-denotation (rule-context-use-context context) expression))
         (raise #f))
        '())
 
