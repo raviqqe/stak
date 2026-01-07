@@ -4065,10 +4065,10 @@
   - ellipsis-pattern?
   - fill-ellipsis-template
   - fill
-  - template
   - definition-context
   - find-pattern-variables
   - matches
+  - template
   - use-context
   - resolve-denotation-value
   - macro-context-locals
@@ -7384,17 +7384,6 @@
       - call 1 #f $$close
       - get 1
       - call 2 #f map
-      - get 0
-      - get 4
-      - get 5
-      - get 3
-      - call 1 #f car
-      - call 2 #f 21
-      - call 2 #f append
-      - get 2
-      - call 1 #f cadr
-      - call 2 #f 20
-      - call 2 #f append
     - call 1 #f $$close
     - get 5
     - call 1 #f cdddr
@@ -7447,35 +7436,42 @@
             - call 1 #f car
             - get 11
             - call 3 #f 27
+            - get 6
+            - call 1 #f cadr
             - constant procedure 1 #f
               - get 0
               - get 1
-              - call 1 #f 42
+              - call 1 #f 43
               - call 2 #f cons
             - call 1 #f $$close
-            - get 7
-            - call 1 #f cddr
+            - get 16
+            - get car
+            - get 4
             - call 2 #f map
-            - get 6
-            - get 1
-            - get 3
             - call 2 #f append
-            - get 9
-            - call 1 #f cadr
-            - call 3 #f 27
-            - get 13
+            - get 2
+            - call 2 #f 32
+            - call 2 #f map
+            - get 7
+            - get 1
+            - get 4
+            - call 2 #f append
+            - get 3
+            - call 3 #f 28
+            - get 14
             - constant procedure 1 #f
               - get 0
               - call 1 #f cdr
               - get 1
               - call 1 #f car
-              - call 1 #f 24
+              - call 1 #f 25
               - call 2 #f cons
             - call 1 #f $$close
             - get 3
             - call 2 #f map
-            - call 2 #f 55
+            - call 2 #f 56
             - call 2 #f values
+            - call 2 #f $$unbind
             - call 2 #f $$unbind
             - call 2 #f $$unbind
             - constant procedure 0 #f
@@ -15884,40 +15880,18 @@
                   - list
                     - rule
                   - list
-                    - let
+                    - map
                     - list
+                      - lambda
                       - list
-                        - rule
-                        - list
-                          - map
-                          - list
-                            - lambda
-                            - list
-                              - pattern
-                            - list
-                              - compile-pattern
-                              - definition-context
-                              - ellipsis
-                              - literals
-                              - pattern
-                          - rule
-                    - list
-                      - append
-                      - rule
+                        - pattern
                       - list
-                        - find-pattern-variables
-                        - list
-                          - append
-                          - literals
-                          - list
-                            - find-pattern-variables
-                            - literals
-                            - list
-                              - car
-                              - rule
-                        - list
-                          - cadr
-                          - rule
+                        - compile-pattern
+                        - definition-context
+                        - ellipsis
+                        - literals
+                        - pattern
+                    - rule
                 - list
                   - cdddr
                   - transformer
@@ -15970,7 +15944,7 @@
                           - cdr
                           - rules
                   - list
-                    - let
+                    - let\*
                     - list
                       - list
                         - matches
@@ -15981,6 +15955,11 @@
                             - car
                             - rule
                           - expression
+                      - list
+                        - template
+                        - list
+                          - cadr
+                          - rule
                       - list
                         - names
                         - list
@@ -15996,8 +15975,15 @@
                                 - rename-variable
                                 - name
                           - list
-                            - cddr
-                            - rule
+                            - find-pattern-variables
+                            - list
+                              - append
+                              - literals
+                              - list
+                                - map
+                                - car
+                                - matches
+                            - template
                     - list
                       - values
                       - list
@@ -16007,9 +15993,7 @@
                           - append
                           - names
                           - matches
-                        - list
-                          - cadr
-                          - rule
+                        - template
                       - list
                         - macro-context-append
                         - use-context
