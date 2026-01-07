@@ -866,8 +866,7 @@
                      ((not value)
                       (loop (cdr rules))))
               (let ((rule (car rules))
-                    (rule-context
-                     (make-rule-context macro-context literals)))
+                    (rule-context (make-rule-context macro-context literals)))
                (fill-template
                 rule-context
                 (match-pattern rule-context (car rule) expression)
