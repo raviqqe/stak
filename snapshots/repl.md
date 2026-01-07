@@ -10287,11 +10287,11 @@
     - continue
   - constant #f
   - if
-    - get 3
-    - call 1 #f 27
     - get 2
-    - call 2 #f 26
+    - get 4
+    - call 1 #f 28
     - get 3
+    - call 2 #f 27
     - call 2 #f eq?
     - constant #f
     - call 2 #f eq?
