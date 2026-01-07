@@ -489,12 +489,6 @@
      (unless (memq symbol symbols)
       (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
-    (define-record-type rule-context
-     (make-rule-context use-context literals)
-     rule-context?
-     (use-context rule-context-use-context)
-     (literals rule-context-literals))
-
     (define-record-type ellipsis-pattern
      (make-ellipsis-pattern element variables)
      ellipsis-pattern?
@@ -627,7 +621,7 @@
       ((literal-pattern? pattern)
        (unless (eq?
                 (literal-pattern-denotation pattern)
-                (resolve-denotation (rule-context-use-context context) expression))
+                (resolve-denotation context expression))
         (raise #f))
        '())
 
@@ -672,9 +666,9 @@
       (else
        template)))
 
-    (define (make-transformer definition-context transformer)
+    (define (make-transformer context transformer)
      (define (resolve value)
-      (resolve-denotation definition-context value))
+      (resolve-denotation context value))
 
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
@@ -685,28 +679,27 @@
                 (lambda (rule)
                  (map
                   (lambda (pattern)
-                   (compile-pattern definition-context ellipsis literals pattern))
+                   (compile-pattern context ellipsis literals pattern))
                   rule))
                 (cdddr transformer))))
-        (lambda (use-context expression)
+        (lambda (context expression)
          (let loop ((rules rules))
           (unless (pair? rules)
            (error "invalid syntax" expression))
-          (let ((rule (car rules))
-                (rule-context (make-rule-context use-context literals)))
+          (let ((rule (car rules)))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
-            (let* ((matches (match-pattern rule-context (car rule) expression))
+            (let* ((matches (match-pattern context (car rule) expression))
                    (template (cadr rule))
                    (names
                     (map
                      (lambda (name) (cons name (rename-variable name)))
                      (find-pattern-variables (map car matches) template))))
              (values
-              (fill-template rule-context (append names matches) template)
+              (fill-template context (append names matches) template)
               (macro-context-append
-               use-context
+               context
                (map
                 (lambda (pair)
                  (cons (cdr pair) (resolve (car pair))))
@@ -848,7 +841,7 @@
        (optimization-context-literals context))))
 
     (define make-optimizer
-     (let ((macro-context
+     (let ((context
             (make-macro-context (make-macro-state '() '() '() '()) '())))
       (lambda (optimizer)
        (case (car optimizer)
@@ -860,7 +853,7 @@
                   (lambda (rule)
                    (map
                     (lambda (pattern)
-                     (compile-pattern macro-context ellipsis literals pattern))
+                     (compile-pattern context ellipsis literals pattern))
                     rule))
                   (cdddr optimizer))))
           (lambda (expression)
@@ -870,11 +863,10 @@
              (guard (value
                      ((not value)
                       (loop (cdr rules))))
-              (let ((rule (car rules))
-                    (rule-context (make-rule-context macro-context literals)))
+              (let ((rule (car rules)))
                (fill-template
-                rule-context
-                (match-pattern rule-context (car rule) expression)
+                context
+                (match-pattern context (car rule) expression)
                 (cadr rule)))))))))
         (else
          (error "unsupported optimizer" optimizer))))))
