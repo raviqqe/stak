@@ -7020,14 +7020,7 @@
             - get 2
             - call 2 #f 31
             - call 2 #f map
-            - get 7
-            - call 1 #f cddr
-            - call 2 #f map
-            - call 2 #f append
-            - get 2
-            - call 2 #f 32
-            - call 2 #f map
-            - get 7
+            - get 12
             - get 1
             - get 4
             - call 2 #f append
