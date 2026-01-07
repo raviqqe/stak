@@ -489,11 +489,21 @@
      (unless (memq symbol symbols)
       (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
-    (define-record-type rule-context
-     (make-rule-context use-context literals)
-     rule-context?
-     (use-context rule-context-use-context)
-     (literals rule-context-literals))
+    (define-record-type ellipsis-pattern
+     (make-ellipsis-pattern element variables)
+     ellipsis-pattern?
+     (element ellipsis-pattern-element)
+     (variables ellipsis-pattern-variables))
+
+    (define-record-type literal-pattern
+     (make-literal-pattern denotation)
+     literal-pattern?
+     (denotation literal-pattern-denotation))
+
+    (define-record-type ellipsis-match
+     (make-ellipsis-match value)
+     ellipsis-match?
+     (value ellipsis-match-value))
 
     ;; Procedures
 
@@ -520,17 +530,6 @@
       (string-append
        (string symbol-name-separator)
        (resolve-symbol-string name))))
-
-    (define-record-type ellipsis-match
-     (make-ellipsis-match value)
-     ellipsis-match?
-     (value ellipsis-match-value))
-
-    (define-record-type ellipsis-pattern
-     (make-ellipsis-pattern element variables)
-     ellipsis-pattern?
-     (element ellipsis-pattern-element)
-     (variables ellipsis-pattern-variables))
 
     (define (find-pattern-variables excluded-patterns pattern)
      (let loop ((pattern pattern) (variables '()))
@@ -560,7 +559,8 @@
         (symbol? pattern)
         (memq (resolve-denotation context pattern) literals))
        =>
-       car)
+       (lambda (pair)
+        (make-literal-pattern (car pair))))
 
       ((not (pair? pattern))
        pattern)
@@ -572,7 +572,7 @@
         (let ((pattern (compile (car pattern))))
          (make-ellipsis-pattern
           pattern
-          (find-pattern-variables literals pattern)))
+          (find-pattern-variables '() pattern)))
         (compile (cddr pattern))))
 
       (else
@@ -597,17 +597,6 @@
       (match-pattern context pattern expression))
 
      (cond
-      ((and
-        (symbol? pattern)
-        (memq
-         pattern
-         (rule-context-literals context)))
-       (unless (eq?
-                pattern
-                (resolve-denotation (rule-context-use-context context) expression))
-        (raise #f))
-       '())
-
       ((symbol? pattern)
        (list (cons pattern expression)))
 
@@ -628,6 +617,13 @@
 
         (else
          (raise #f))))
+
+      ((literal-pattern? pattern)
+       (unless (eq?
+                (literal-pattern-denotation pattern)
+                (resolve-denotation context expression))
+        (raise #f))
+       '())
 
       ((equal? pattern expression)
        '())
@@ -664,12 +660,15 @@
           (list (fill first))))
         (fill (cdr template))))
 
+      ((literal-pattern? template)
+       (literal-pattern-denotation template))
+
       (else
        template)))
 
-    (define (make-transformer definition-context transformer)
+    (define (make-transformer context transformer)
      (define (resolve value)
-      (resolve-denotation definition-context value))
+      (resolve-denotation context value))
 
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
@@ -678,32 +677,26 @@
               (rules
                (map
                 (lambda (rule)
-                 (map
-                  (lambda (pattern)
-                   (compile-pattern definition-context ellipsis literals pattern))
-                  rule))
+                 (compile-pattern context ellipsis literals rule))
                 (cdddr transformer))))
-        (lambda (use-context expression)
+        (lambda (context expression)
          (let loop ((rules rules))
           (unless (pair? rules)
            (error "invalid syntax" expression))
-          (let ((rule (car rules))
-                (rule-context (make-rule-context use-context literals)))
+          (let ((rule (car rules)))
            (guard (value
                    ((not value)
                     (loop (cdr rules))))
-            (let* ((matches (match-pattern rule-context (car rule) expression))
+            (let* ((matches (match-pattern context (car rule) expression))
                    (template (cadr rule))
                    (names
                     (map
                      (lambda (name) (cons name (rename-variable name)))
-                     (find-pattern-variables
-                      (append literals (map car matches))
-                      template))))
+                     (find-pattern-variables (map car matches) template))))
              (values
-              (fill-template rule-context (append names matches) template)
+              (fill-template context (append names matches) template)
               (macro-context-append
-               use-context
+               context
                (map
                 (lambda (pair)
                  (cons (cdr pair) (resolve (car pair))))
@@ -845,7 +838,7 @@
        (optimization-context-literals context))))
 
     (define make-optimizer
-     (let ((macro-context
+     (let ((context
             (make-macro-context (make-macro-state '() '() '() '()) '())))
       (lambda (optimizer)
        (case (car optimizer)
@@ -857,7 +850,7 @@
                   (lambda (rule)
                    (map
                     (lambda (pattern)
-                     (compile-pattern macro-context ellipsis literals pattern))
+                     (compile-pattern context ellipsis literals pattern))
                     rule))
                   (cdddr optimizer))))
           (lambda (expression)
@@ -867,11 +860,10 @@
              (guard (value
                      ((not value)
                       (loop (cdr rules))))
-              (let ((rule (car rules))
-                    (rule-context (make-rule-context macro-context literals)))
+              (let ((rule (car rules)))
                (fill-template
-                rule-context
-                (match-pattern rule-context (car rule) expression)
+                context
+                (match-pattern context (car rule) expression)
                 (cadr rule)))))))))
         (else
          (error "unsupported optimizer" optimizer))))))
