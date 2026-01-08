@@ -5,6 +5,7 @@
 (import
   (scheme base)
   (only (scheme cxr))
+  (only (scheme lazy))
   (scheme eval)
   (only (scheme file))
   (only (scheme inexact))
@@ -672,15 +673,16 @@
 
      (case (resolve (maybe-car transformer))
       (($$syntax-rules)
-       (let* ((ellipsis (resolve (cadr transformer)))
-              (literals (map resolve (caddr transformer)))
-              (rules
-               (map
-                (lambda (rule)
-                 (compile-pattern context ellipsis literals rule))
-                (cdddr transformer))))
+       (let ((rules
+              (delay
+               (let ((ellipsis (resolve (cadr transformer)))
+                     (literals (map resolve (caddr transformer))))
+                (map
+                 (lambda (rule)
+                  (compile-pattern context ellipsis literals rule))
+                 (cdddr transformer))))))
         (lambda (context expression)
-         (let loop ((rules rules))
+         (let loop ((rules (force rules)))
           (unless (pair? rules)
            (error "invalid syntax" expression))
           (let ((rule (car rules)))
@@ -2107,6 +2109,7 @@
           (import
            (scheme base)
            (scheme cxr)
+           (scheme lazy)
            (scheme file)
            (scheme read)
            (only (stak base) rib string->uninterned-symbol))
@@ -2238,6 +2241,7 @@
       (environment
         '(scheme base)
         '(scheme cxr)
+        '(scheme lazy)
         '(scheme file)
         '(scheme inexact)
         '(scheme read)

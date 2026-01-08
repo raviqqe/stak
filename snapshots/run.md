@@ -8322,6 +8322,20 @@
     - call 1 #f acos
   - constant 0
 - set angle
+- constant procedure 1 #f
+  - call 0 #f 0
+- set force
+- get procedure?
+- set promise?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f promise?
+  - if
+    - get 0
+  - constant procedure 0 #f
+    - get 1
+  - call 1 #f $$close
+- set make-promise
 - constant 200
 - call 1 #f primitive
 - set ||
@@ -10475,23 +10489,38 @@
   - constant $$syntax-rules
   - call 2 #f eqv?
   - if
-    - get 2
-    - call 1 #f cadr
-    - call 1 #f 2
-    - get 2
-    - get 4
-    - call 1 #f caddr
-    - call 2 #f map
-    - constant procedure 1 #f
+    - constant #f
+    - constant #f
+    - constant procedure 0 #f
+      - get 2
+      - if
+        - get 1
+      - get 5
+      - call 1 #f cadr
+      - call 1 #f 5
+      - get 5
       - get 7
-      - get 4
-      - get 4
-      - get 3
-      - call 4 #f 19
+      - call 1 #f caddr
+      - call 2 #f map
+      - constant procedure 1 #f
+        - get 10
+        - get 4
+        - get 4
+        - get 3
+        - call 4 #f 22
+      - call 1 #f $$close
+      - get 8
+      - call 1 #f cdddr
+      - call 2 #f map
+      - call 2 #f $$unbind
+      - call 2 #f $$unbind
+      - set 2
+      - constant #t
+      - set 3
+      - get 1
     - call 1 #f $$close
-    - get 5
-    - call 1 #f cdddr
-    - call 2 #f map
+    - call 2 #f $$unbind
+    - call 2 #f $$unbind
     - constant procedure 2 #f
       - constant #f
       - constant procedure 1 #f
@@ -10536,39 +10565,39 @@
             - get 5
             - call 1 #f car
             - get 10
-            - call 3 #f 26
+            - call 3 #f 24
             - get 5
             - call 1 #f cadr
             - constant procedure 1 #f
               - get 0
               - get 1
-              - call 1 #f 33
+              - call 1 #f 31
               - call 2 #f cons
             - call 1 #f $$close
             - get car
             - get 3
             - call 2 #f map
             - get 2
-            - call 2 #f 31
+            - call 2 #f 29
             - call 2 #f map
             - get 12
             - get 1
             - get 4
             - call 2 #f append
             - get 3
-            - call 3 #f 27
+            - call 3 #f 25
             - get 13
             - constant procedure 1 #f
               - get 0
               - call 1 #f cdr
               - get 1
               - call 1 #f car
-              - call 1 #f 24
+              - call 1 #f 22
               - call 2 #f cons
             - call 1 #f $$close
             - get 3
             - call 2 #f map
-            - call 2 #f 54
+            - call 2 #f 52
             - call 2 #f values
             - call 2 #f $$unbind
             - call 2 #f $$unbind
@@ -10585,6 +10614,7 @@
       - call 1 #f $$close
       - set 1
       - get 4
+      - call 1 #f force
       - call 1 #f 1
     - call 1 #f $$close
   - constant "unsupported macro transformer"
@@ -16302,20 +16332,6 @@
   - call 1 #f $$close
   - call 2 #f call-with-values
 - set eval
-- constant procedure 1 #f
-  - call 0 #f 0
-- set force
-- get procedure?
-- set promise?
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f promise?
-  - if
-    - get 0
-  - constant procedure 0 #f
-    - get 1
-  - call 1 #f $$close
-- set make-promise
 - constant ()
 - call 1 #f make-symbol-table
 - constant ()
