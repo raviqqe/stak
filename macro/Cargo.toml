@@ -16,8 +16,8 @@ proc-macro = true
 cfg-elif = "0.6.5"
 proc-macro2 = { version = "1.0.105", features = ["proc-macro"] }
 quote = "1.0.43"
-stak-compiler = { path = "../compiler", version = "0.12.7" }
-stak-macro-util = { path = "../macro-util", version = "0.12.7" }
+stak-compiler = { path = "../compiler", version = "0.12.8" }
+stak-macro-util = { path = "../macro-util", version = "0.12.8" }
 syn = "2.0.114"
 
 [dev-dependencies]
