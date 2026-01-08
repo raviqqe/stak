@@ -5,6 +5,7 @@
 (import
   (scheme base)
   (only (scheme cxr))
+  (only (scheme lazy))
   (scheme eval)
   (only (scheme file))
   (only (scheme inexact))
@@ -2107,6 +2108,7 @@
           (import
            (scheme base)
            (scheme cxr)
+           (scheme lazy)
            (scheme file)
            (scheme read)
            (only (stak base) rib string->uninterned-symbol))
@@ -2238,6 +2240,7 @@
       (environment
         '(scheme base)
         '(scheme cxr)
+        '(scheme lazy)
         '(scheme file)
         '(scheme inexact)
         '(scheme read)
