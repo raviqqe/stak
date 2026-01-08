@@ -679,7 +679,15 @@
                      (literals (map resolve (caddr transformer))))
                 (map
                  (lambda (rule)
-                  (compile-pattern context ellipsis literals rule))
+                  (let ((rule
+                         (compile-pattern context ellipsis literals rule)))
+                   (append
+                    rule
+                    (map
+                     (lambda (name) (cons name (resolve name)))
+                     (find-pattern-variables
+                      (find-pattern-variables '() (car rule))
+                      (cadr rule))))))
                  (cdddr transformer))))))
         (lambda (context expression)
          (let loop ((rules (force rules)))
@@ -691,17 +699,21 @@
                     (loop (cdr rules))))
             (let* ((matches (match-pattern context (car rule) expression))
                    (template (cadr rule))
-                   (names
+                   (names (cddr rule))
+                   (renames
                     (map
-                     (lambda (name) (cons name (rename-variable name)))
-                     (find-pattern-variables (map car matches) template))))
+                     (lambda (pair)
+                      (let ((name (car pair)))
+                       (cons name (rename-variable name))))
+                     names)))
              (values
-              (fill-template context (append names matches) template)
+              (fill-template context (append renames matches) template)
               (macro-context-append
                context
                (map
-                (lambda (pair)
-                 (cons (cdr pair) (resolve (car pair))))
+                (lambda (rename name)
+                 (cons (cdr rename) (cdr name)))
+                renames
                 names))))))))))
       (else
        (error "unsupported macro transformer" transformer))))
