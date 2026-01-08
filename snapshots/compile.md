@@ -4030,7 +4030,6 @@
   - library-context-find
   - renamed
   - library-context-add!
-  - rename
   - resolve-symbol
   - collect-bodies
   - macro-state
@@ -4070,6 +4069,8 @@
   - find-pattern-variables
   - matches
   - template
+  - rename
+  - renames
   - resolve-denotation-value
   - macro-context-locals
   - macro-context-append-dynamic-symbol!
@@ -7391,6 +7392,22 @@
         - get 4
         - get 3
         - call 4 #f 22
+        - get 0
+        - constant procedure 1 #f
+          - get 0
+          - get 1
+          - call 1 #f 14
+          - call 2 #f cons
+        - call 1 #f $$close
+        - constant ()
+        - get 3
+        - call 1 #f car
+        - call 2 #f 24
+        - get 3
+        - call 1 #f cadr
+        - call 2 #f 24
+        - call 2 #f map
+        - call 2 #f append
       - call 1 #f $$close
       - get 8
       - call 1 #f cdddr
@@ -7451,37 +7468,37 @@
             - call 3 #f 24
             - get 5
             - call 1 #f cadr
+            - get 6
+            - call 1 #f cddr
             - constant procedure 1 #f
+              - get 0
+              - call 1 #f car
               - get 0
               - get 1
-              - call 1 #f 31
+              - call 1 #f 33
               - call 2 #f cons
             - call 1 #f $$close
-            - get car
-            - get 3
-            - call 2 #f map
-            - get 2
-            - call 2 #f 29
-            - call 2 #f map
-            - get 12
             - get 1
-            - get 4
-            - call 2 #f append
-            - get 3
-            - call 3 #f 25
+            - call 2 #f map
             - get 13
-            - constant procedure 1 #f
-              - get 0
+            - get 1
+            - get 5
+            - call 2 #f append
+            - get 4
+            - call 3 #f 26
+            - get 14
+            - constant procedure 2 #f
+              - get 1
               - call 1 #f cdr
               - get 1
-              - call 1 #f car
-              - call 1 #f 22
+              - call 1 #f cdr
               - call 2 #f cons
-            - call 1 #f $$close
             - get 3
-            - call 2 #f map
-            - call 2 #f 52
+            - get 5
+            - call 3 #f map
+            - call 2 #f 53
             - call 2 #f values
+            - call 2 #f $$unbind
             - call 2 #f $$unbind
             - call 2 #f $$unbind
             - call 2 #f $$unbind
@@ -15883,11 +15900,44 @@
                       - list
                         - rule
                       - list
-                        - compile-pattern
-                        - context
-                        - ellipsis
-                        - literals
-                        - rule
+                        - let
+                        - list
+                          - list
+                            - rule
+                            - list
+                              - compile-pattern
+                              - context
+                              - ellipsis
+                              - literals
+                              - rule
+                        - list
+                          - append
+                          - rule
+                          - list
+                            - map
+                            - list
+                              - lambda
+                              - list
+                                - name
+                              - list
+                                - cons
+                                - name
+                                - list
+                                  - resolve
+                                  - name
+                            - list
+                              - find-pattern-variables
+                              - list
+                                - find-pattern-variables
+                                - list
+                                  - quote
+                                  - ()
+                                - list
+                                  - car
+                                  - rule
+                              - list
+                                - cadr
+                                - rule
                     - list
                       - cdddr
                       - transformer
@@ -15955,24 +16005,31 @@
                       - list
                         - names
                         - list
+                          - cddr
+                          - rule
+                      - list
+                        - renames
+                        - list
                           - map
                           - list
                             - lambda
                             - list
-                              - name
+                              - pair
                             - list
-                              - cons
-                              - name
+                              - let
                               - list
-                                - rename-variable
+                                - list
+                                  - name
+                                  - list
+                                    - car
+                                    - pair
+                              - list
+                                - cons
                                 - name
-                          - list
-                            - find-pattern-variables
-                            - list
-                              - map
-                              - car
-                              - matches
-                            - template
+                                - list
+                                  - rename-variable
+                                  - name
+                          - names
                     - list
                       - values
                       - list
@@ -15980,7 +16037,7 @@
                         - context
                         - list
                           - append
-                          - names
+                          - renames
                           - matches
                         - template
                       - list
@@ -15991,17 +16048,17 @@
                           - list
                             - lambda
                             - list
-                              - pair
+                              - rename
+                              - name
                             - list
                               - cons
                               - list
                                 - cdr
-                                - pair
+                                - rename
                               - list
-                                - resolve
-                                - list
-                                  - car
-                                  - pair
+                                - cdr
+                                - name
+                          - renames
                           - names
       - list
         - else
