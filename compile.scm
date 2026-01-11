@@ -574,7 +574,7 @@
               (do ((patterns (cddr pattern) (cdr patterns))
                    (count 0 (+ count 1)))
                ((or
-                 (null? patterns)
+                 (not (pair? patterns))
                  (not (eq? ellipsis (resolve-denotation context (car patterns)))))
                 count))))
         (cons
@@ -642,13 +642,13 @@
        (raise #f))))
 
     (define (fill-ellipsis-template context matches template)
-     (let* ((count (ellipsis-pattern-count template))
-            (matches (filter (lambda (pair) (memq (car pair) (ellipsis-pattern-variables template))) matches))
+     (let* ((matches (filter (lambda (pair) (memq (car pair) (ellipsis-pattern-variables template))) matches))
             (singleton-matches (filter-values (lambda (match) (not (ellipsis-match? match))) matches))
             (ellipsis-matches (filter-values ellipsis-match? matches)))
       (when (null? ellipsis-matches)
        (error "no ellipsis pattern variables" (ellipsis-pattern-element template)))
-      (let loop ((expressions
+      (let loop ((count (ellipsis-pattern-count template))
+                 (expressions
                   (apply
                    map
                    (lambda matches
@@ -656,7 +656,9 @@
                    (map ellipsis-match-value (map cdr ellipsis-matches)))))
        (if (zero? count)
         expressions
-        (error "TODO")))))
+        (loop
+         (- count 1)
+         (apply append expressions))))))
 
     (define (fill-template context matches template)
      (define (fill template)
