@@ -643,7 +643,7 @@
       (apply
        map
        (lambda matches (fill-template context (append matches singleton-matches) template))
-       (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches))))
+       (map ellipsis-match-value (map cdr ellipsis-matches)))))
 
     (define (fill-template context matches template)
      (define (fill template)
