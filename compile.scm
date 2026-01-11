@@ -491,10 +491,11 @@
       (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
     (define-record-type ellipsis-pattern
-     (make-ellipsis-pattern element variables)
+     (make-ellipsis-pattern element variables count)
      ellipsis-pattern?
      (element ellipsis-pattern-element)
-     (variables ellipsis-pattern-variables))
+     (variables ellipsis-pattern-variables)
+     (count ellipsis-pattern-count))
 
     (define-record-type literal-pattern
      (make-literal-pattern denotation)
