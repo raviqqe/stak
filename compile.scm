@@ -569,12 +569,17 @@
       ((and
         (pair? (cdr pattern))
         (eq? ellipsis (resolve-denotation context (cadr pattern))))
-       (cons
-        (let ((pattern (compile (car pattern))))
-         (make-ellipsis-pattern
-          pattern
-          (find-pattern-variables '() pattern)))
-        (compile (cddr pattern))))
+       (let ((count
+              (do ((patterns (cddr pattern) (cdr patterns))
+                   (count 0 (+ count 1)))
+               ((eq? ellipsis (resolve-denotation context (cddr pattern)))
+                count))))
+        (cons
+         (let ((pattern (compile (car pattern))))
+          (make-ellipsis-pattern
+           pattern
+           (find-pattern-variables '() pattern)))
+         (compile (cddr pattern)))))
 
       (else
        (cons
