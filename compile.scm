@@ -642,7 +642,8 @@
        (error "no ellipsis pattern variables" template))
       (apply
        map
-       (lambda matches (fill-template context (append matches singleton-matches) template))
+       (lambda matches
+        (fill-template context (append matches singleton-matches) template))
        (map ellipsis-match-value (map cdr ellipsis-matches)))))
 
     (define (fill-template context matches template)
