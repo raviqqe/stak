@@ -581,7 +581,8 @@
          (let ((pattern (compile (car pattern))))
           (make-ellipsis-pattern
            pattern
-           (find-pattern-variables '() pattern)))
+           (find-pattern-variables '() pattern)
+           count))
          (compile (cddr pattern)))))
 
       (else
