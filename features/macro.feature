@@ -923,7 +923,7 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Define a nested syntax with shared variables
+  Scenario: Flatten a nested ellipsis pattern
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
