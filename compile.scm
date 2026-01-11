@@ -572,7 +572,9 @@
        (let ((count
               (do ((patterns (cddr pattern) (cdr patterns))
                    (count 0 (+ count 1)))
-               ((eq? ellipsis (resolve-denotation context (cddr pattern)))
+               ((or
+                 (null? patterns)
+                 (eq? ellipsis (resolve-denotation context (car patterns))))
                 count))))
         (cons
          (let ((pattern (compile (car pattern))))
