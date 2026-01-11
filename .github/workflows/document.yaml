@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
-      - run: cargo +nightly doc --all-features
+      - run: cargo +nightly-2026-01-01 doc --all-features
   web_build:
     runs-on: ubuntu-latest
     steps:
