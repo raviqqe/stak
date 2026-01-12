@@ -569,12 +569,13 @@
       ((and
         (pair? (cdr pattern))
         (eq? ellipsis (resolve-denotation context (cadr pattern))))
-       (cons
-        (let ((pattern (compile (car pattern))))
-         (make-ellipsis-pattern
-          pattern
-          (find-pattern-variables '() pattern)))
-        (compile (cddr pattern))))
+       (compile
+        (cons
+         (let ((pattern (compile (car pattern))))
+          (make-ellipsis-pattern
+           pattern
+           (find-pattern-variables '() pattern)))
+         (cddr pattern))))
 
       (else
        (cons
@@ -633,17 +634,19 @@
        (raise #f))))
 
     (define (fill-ellipsis-template context matches template)
-     (let* ((variables (ellipsis-pattern-variables template))
-            (template (ellipsis-pattern-element template))
-            (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
+     (let* ((matches (filter (lambda (pair) (memq (car pair) (ellipsis-pattern-variables template))) matches))
             (singleton-matches (filter-values (lambda (match) (not (ellipsis-match? match))) matches))
-            (ellipsis-matches (filter-values ellipsis-match? matches)))
+            (ellipsis-matches (filter-values ellipsis-match? matches))
+            (template (ellipsis-pattern-element template)))
       (when (null? ellipsis-matches)
        (error "no ellipsis pattern variables" template))
       (apply
-       map
-       (lambda matches (fill-template context (append matches singleton-matches) template))
-       (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches))))
+       append
+       (apply
+        map
+        (lambda matches
+         (fill-template context (append matches singleton-matches) template))
+        (map ellipsis-match-value (map cdr ellipsis-matches))))))
 
     (define (fill-template context matches template)
      (define (fill template)
@@ -651,21 +654,27 @@
 
      (cond
       ((and (symbol? template) (assq template matches)) =>
-       cdr)
+       (lambda (pair)
+        (list (cdr pair))))
 
       ((pair? template)
-       (append
-        (let ((first (car template)))
-         (if (ellipsis-pattern? first)
-          (fill-ellipsis-template context matches first)
-          (list (fill first))))
-        (fill (cdr template))))
+       (list
+        (apply
+         append
+         (fill (car template))
+         (fill (cdr template)))))
 
       ((literal-pattern? template)
-       (literal-pattern-denotation template))
+       (list (literal-pattern-denotation template)))
+
+      ((ellipsis-pattern? template)
+       (fill-ellipsis-template context matches template))
 
       (else
-       template)))
+       (list template))))
+
+    (define (fill-top-template context matches template)
+     (car (fill-template context matches template)))
 
     (define (make-transformer context transformer)
      (define (resolve value)
@@ -707,7 +716,7 @@
                        (cons name (rename-variable name))))
                      names)))
              (values
-              (fill-template context (append renames matches) template)
+              (fill-top-template context (append renames matches) template)
               (macro-context-append
                context
                (map
@@ -875,7 +884,7 @@
                      ((not value)
                       (loop (cdr rules))))
               (let ((rule (car rules)))
-               (fill-template
+               (fill-top-template
                 context
                 (match-pattern context (car rule) expression)
                 (cadr rule)))))))))
