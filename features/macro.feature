@@ -938,6 +938,21 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Flatten a deeply nested ellipsis pattern
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (let-syntax
+        ((foo
+          (syntax-rules ()
+            ((_ ((x ...) ...) ...)
+              (+ x ... ... ...)))))
+        (write-u8 (foo ((1) (2)) ((3 59)))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Flatten a nested ellipsis pattern with multiple variables
     Given a file named "main.scm" with:
       """scheme
