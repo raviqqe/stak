@@ -652,7 +652,10 @@
                   (apply
                    map
                    (lambda matches
-                    (fill-template context (append matches singleton-matches) (ellipsis-pattern-element template)))
+                    (fill-template
+                     context
+                     (append matches singleton-matches)
+                     (ellipsis-pattern-element template)))
                    (map ellipsis-match-value (map cdr ellipsis-matches)))))
        (if (zero? count)
         expressions
