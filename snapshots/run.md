@@ -10448,23 +10448,16 @@
     - call 1 #f cdr
     - call 1 #f list
   - get 2
-  - call 1 #f 29
-  - if
-    - get 4
-    - get 4
-    - get 4
-    - call 3 #f 13
-  - get 2
   - call 1 #f pair?
   - if
-    - get 2
-    - call 1 #f car
-    - call 1 #f 2
+    - get append
     - get 3
-    - call 1 #f cdr
-    - call 1 #f 3
     - call 1 #f car
-    - call 2 #f append
+    - call 1 #f 3
+    - get 4
+    - call 1 #f cdr
+    - call 1 #f 4
+    - call 3 #f apply
     - call 1 #f list
   - get 2
   - call 1 #f 24
@@ -10472,6 +10465,13 @@
     - get 2
     - call 1 #f 23
     - call 1 #f list
+  - get 2
+  - call 1 #f 29
+  - if
+    - get 4
+    - get 4
+    - get 4
+    - call 3 #f 13
   - get 2
   - call 1 #f list
 - call 1 #f $$close

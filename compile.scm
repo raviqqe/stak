@@ -657,17 +657,18 @@
        (lambda (pair)
         (list (cdr pair))))
 
-      ((ellipsis-pattern? template)
-       (fill-ellipsis-template context matches template))
-
       ((pair? template)
        (list
-        (append
+        (apply
+         append
          (fill (car template))
-         (car (fill (cdr template))))))
+         (fill (cdr template)))))
 
       ((literal-pattern? template)
        (list (literal-pattern-denotation template)))
+
+      ((ellipsis-pattern? template)
+       (fill-ellipsis-template context matches template))
 
       (else
        (list template))))
