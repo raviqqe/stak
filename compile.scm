@@ -491,11 +491,10 @@
       (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
     (define-record-type ellipsis-pattern
-     (make-ellipsis-pattern element variables count)
+     (make-ellipsis-pattern element variables)
      ellipsis-pattern?
      (element ellipsis-pattern-element)
-     (variables ellipsis-pattern-variables)
-     (count ellipsis-pattern-count))
+     (variables ellipsis-pattern-variables))
 
     (define-record-type literal-pattern
      (make-literal-pattern denotation)
@@ -570,6 +569,7 @@
       ((and
         (pair? (cdr pattern))
         (eq? ellipsis (resolve-denotation context (cadr pattern))))
+       ; TODO
        (let ((count
               (do ((patterns (cddr pattern) (cdr patterns))
                    (count 0 (+ count 1)))
@@ -581,8 +581,7 @@
          (let ((pattern (compile (car pattern))))
           (make-ellipsis-pattern
            pattern
-           (find-pattern-variables '() pattern)
-           count))
+           (find-pattern-variables '() pattern)))
          (compile (list-tail (cddr pattern) count)))))
 
       (else
@@ -647,23 +646,16 @@
             (ellipsis-matches (filter-values ellipsis-match? matches)))
       (when (null? ellipsis-matches)
        (error "no ellipsis pattern variables" (ellipsis-pattern-element template)))
-      (let loop ((count (ellipsis-pattern-count template))
-                 (expressions
-                  (apply
-                   append
-                   (apply
-                    map
-                    (lambda matches
-                     (fill-template
-                      context
-                      (append matches singleton-matches)
-                      (ellipsis-pattern-element template)))
-                    (map ellipsis-match-value (map cdr ellipsis-matches))))))
-       (if (zero? count)
-        expressions
-        (loop
-         (- count 1)
-         (apply append expressions))))))
+      (apply
+       append
+       (apply
+        map
+        (lambda matches
+         (fill-template
+          context
+          (append matches singleton-matches)
+          (ellipsis-pattern-element template)))
+        (map ellipsis-match-value (map cdr ellipsis-matches))))))
 
     (define (fill-template context matches template)
      (define (fill template)
