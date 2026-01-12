@@ -650,13 +650,15 @@
       (let loop ((count (ellipsis-pattern-count template))
                  (expressions
                   (apply
-                   map
-                   (lambda matches
-                    (fill-template
-                     context
-                     (append matches singleton-matches)
-                     (ellipsis-pattern-element template)))
-                   (map ellipsis-match-value (map cdr ellipsis-matches)))))
+                   append
+                   (apply
+                    map
+                    (lambda matches
+                     (fill-template
+                      context
+                      (append matches singleton-matches)
+                      (ellipsis-pattern-element template)))
+                    (map ellipsis-match-value (map cdr ellipsis-matches))))))
        (if (zero? count)
         expressions
         (loop
@@ -669,21 +671,23 @@
 
      (cond
       ((and (symbol? template) (assq template matches)) =>
-       cdr)
+       (lambda (pair)
+        (list (cdr pair))))
+
+      ((ellipsis-pattern? template)
+       (fill-ellipsis-template context matches template))
 
       ((pair? template)
-       (append
-        (let ((first (car template)))
-         (if (ellipsis-pattern? first)
-          (fill-ellipsis-template context matches first)
-          (list (fill first))))
-        (fill (cdr template))))
+       (list
+        (append
+         (fill (car template))
+         (car (fill (cdr template))))))
 
       ((literal-pattern? template)
-       (literal-pattern-denotation template))
+       (list (literal-pattern-denotation template)))
 
       (else
-       template)))
+       (list template))))
 
     (define (make-transformer context transformer)
      (define (resolve value)
@@ -725,7 +729,7 @@
                        (cons name (rename-variable name))))
                      names)))
              (values
-              (fill-template context (append renames matches) template)
+              (car (fill-template context (append renames matches) template))
               (macro-context-append
                context
                (map
@@ -893,10 +897,11 @@
                      ((not value)
                       (loop (cdr rules))))
               (let ((rule (car rules)))
-               (fill-template
-                context
-                (match-pattern context (car rule) expression)
-                (cadr rule)))))))))
+               (car
+                (fill-template
+                 context
+                 (match-pattern context (car rule) expression)
+                 (cadr rule))))))))))
         (else
          (error "unsupported optimizer" optimizer))))))
 
