@@ -352,18 +352,7 @@
               (literal ::: identifier :::)
               (identifier ::: (library library-name) :::))))
 
-        ((_ "cond" cond-expand literals (feature1 feature2 :::) outer-clause :::)
-          (define-features
-            "cond"
-            cond-expand
-            literals
-            (feature2 :::)
-            ((cond-expand (feature1 body ...) clause ...)
-              (relaxed-begin body ...))
-            outer-clause
-            :::))
-
-        ((_ "cond" cond-expand (literal :::) () outer-clause :::)
+        ((_ "cond" cond-expand (literal :::) (feature1 ...))
           (define-syntax cond-expand
             (syntax-rules (and else library not or literal :::)
               ((cond-expand)
@@ -403,16 +392,17 @@
                       ...))
                   (else body ...)))
 
-              outer-clause
+              ((cond-expand (feature1 body ...) clause ...)
+                (relaxed-begin body ...))
               :::
 
               ((cond-expand ((library name) body ...) clause ...)
                 (cond-expand clause ...))
 
-              ((cond-expand ((feature ...) body ...) clause ...)
+              ((cond-expand ((feature2 ...) body ...) clause ...)
                 (syntax-error "invalid feature"))
 
-              ((cond-expand (feature body ...) clause ...)
+              ((cond-expand (feature2 body ...) clause ...)
                 (cond-expand clause ...)))))))
 
     (define-features
