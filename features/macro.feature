@@ -929,26 +929,26 @@ Feature: Macro
       (import (scheme base))
 
       (let-syntax
-        ((s
+        ((foo
           (syntax-rules ()
             ((_ (x ...) ...)
               (+ x ... ...)))))
-        (write-u8 (s (1 2) (3 59))))
+        (write-u8 (foo (1 2) (3 59))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Flatten a deeply nested ellipsis pattern
+  Scenario: Flatten a nested ellipsis pattern with multiple variables
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
       (let-syntax
-        ((s
+        ((foo
           (syntax-rules ()
-            ((_ ((x ...) ...) ...)
-              (+ x ... ... ...)))))
-        (write-u8 (s ((1) (2)) ((3 59)))))
+            ((_ ((x y) ...) ...)
+              (+ x ... ... y ... ...)))))
+        (write-u8 (foo ((1 2) (3 4)) ((5 50)))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
