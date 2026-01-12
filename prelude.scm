@@ -352,7 +352,7 @@
               (literal ::: identifier :::)
               (identifier ::: (library library-name) :::))))
 
-        ((_ "cond" cond-expand (literal :::) (feature1 ...))
+        ((_ "cond" cond-expand (literal :::) (feature1 :::))
           (define-syntax cond-expand
             (syntax-rules (and else library not or literal :::)
               ((cond-expand)
