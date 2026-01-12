@@ -672,6 +672,9 @@
       (else
        (list template))))
 
+    (define (fill-top-template context matches template)
+     (car (fill-template context matches template)))
+
     (define (make-transformer context transformer)
      (define (resolve value)
       (resolve-denotation context value))
@@ -712,7 +715,7 @@
                        (cons name (rename-variable name))))
                      names)))
              (values
-              (car (fill-template context (append renames matches) template))
+              (fill-top-template context (append renames matches) template)
               (macro-context-append
                context
                (map
@@ -880,11 +883,10 @@
                      ((not value)
                       (loop (cdr rules))))
               (let ((rule (car rules)))
-               (car
-                (fill-template
-                 context
-                 (match-pattern context (car rule) expression)
-                 (cadr rule))))))))))
+               (fill-top-template
+                context
+                (match-pattern context (car rule) expression)
+                (cadr rule)))))))))
         (else
          (error "unsupported optimizer" optimizer))))))
 
