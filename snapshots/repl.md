@@ -13740,11 +13740,7 @@
       - list
         - cond-expand
         - list
-          - list
-            - library
-            - list
-              - stak
-              - ||
+          - ||
           - ||
           - ...
         - ||
@@ -13757,11 +13753,7 @@
       - list
         - cond-expand
         - list
-          - list
-            - library
-            - list
-              - stak
-              - ||
+          - ||
           - ||
           - ...
         - ||
@@ -13774,11 +13766,7 @@
       - list
         - cond-expand
         - list
-          - list
-            - library
-            - list
-              - stak
-              - base
+          - ||
           - ||
           - ...
         - ||
@@ -13791,58 +13779,7 @@
       - list
         - cond-expand
         - list
-          - list
-            - library
-            - list
-              - scheme
-              - ||
-          - ||
-          - ...
-        - ||
-        - ...
-      - list
-        - ||
-        - ||
-        - ...
-    - list
-      - list
-        - cond-expand
-        - list
-          - list
-            - library
-            - list
-              - scheme
-              - ||
-          - ||
-          - ...
-        - ||
-        - ...
-      - list
-        - ||
-        - ||
-        - ...
-    - list
-      - list
-        - cond-expand
-        - list
-          - list
-            - library
-            - list
-              - scheme
-              - base
-          - ||
-          - ...
-        - ||
-        - ...
-      - list
-        - ||
-        - ||
-        - ...
-    - list
-      - list
-        - cond-expand
-        - list
-          - stak
+          - r7rs
           - ||
           - ...
         - ||
@@ -13868,7 +13805,7 @@
       - list
         - cond-expand
         - list
-          - r7rs
+          - stak
           - ||
           - ...
         - ||
@@ -13881,20 +13818,11 @@
       - list
         - cond-expand
         - list
-          - ||
-          - ||
-          - ...
-        - ||
-        - ...
-      - list
-        - ||
-        - ||
-        - ...
-    - list
-      - list
-        - cond-expand
-        - list
-          - ||
+          - list
+            - library
+            - list
+              - scheme
+              - base
           - ||
           - ...
         - ||
@@ -13907,7 +13835,79 @@
       - list
         - cond-expand
         - list
+          - list
+            - library
+            - list
+              - scheme
+              - ||
           - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - ||
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - list
+            - library
+            - list
+              - scheme
+              - ||
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - ||
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - list
+            - library
+            - list
+              - stak
+              - base
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - ||
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - list
+            - library
+            - list
+              - stak
+              - ||
+          - ||
+          - ...
+        - ||
+        - ...
+      - list
+        - ||
+        - ||
+        - ...
+    - list
+      - list
+        - cond-expand
+        - list
+          - list
+            - library
+            - list
+              - stak
+              - ||
           - ||
           - ...
         - ||
