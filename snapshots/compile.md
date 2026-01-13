@@ -5998,11 +5998,12 @@
 - get eq?
 - call 1 #f 23
 - set 21
-- constant procedure 2 #f
+- constant procedure 1 #t
   - get append
-  - get 2
-  - get 2
-  - call 2 #f map
+  - get map
+  - get 3
+  - get 3
+  - call 3 #f apply
   - call 2 #f apply
 - set 20
 - constant procedure 1 #f
@@ -7290,23 +7291,21 @@
     - continue
   - constant #f
   - set 0
-  - get append
-  - get map
+  - get 98
   - constant procedure 0 #t
-    - get 10
+    - get 9
     - get 1
-    - get 8
+    - get 7
     - call 2 #f append
-    - get 6
-    - call 3 #f 18
+    - get 5
+    - call 3 #f 17
   - call 1 #f $$close
-  - get 23
+  - get 22
   - get cdr
-  - get 6
+  - get 5
   - call 2 #f map
   - call 2 #f map
   - call 3 #f apply
-  - call 2 #f apply
 - call 1 #f $$close
 - set 5
 - constant procedure 3 #f
@@ -13898,14 +13897,12 @@
       - eq?
   - list
     - define
-    - list
-      - append-map
-      - f
-      - xs
+    - (append-map f . xs)
     - list
       - apply
       - append
       - list
+        - apply
         - map
         - f
         - xs
@@ -15753,28 +15750,25 @@
           - template
       - list
         - apply
-        - append
+        - append-map
         - list
-          - apply
-          - map
+          - lambda
+          - matches
           - list
-            - lambda
-            - matches
+            - fill-template
+            - context
             - list
-              - fill-template
-              - context
-              - list
-                - append
-                - matches
-                - singleton-matches
-              - template
+              - append
+              - matches
+              - singleton-matches
+            - template
+        - list
+          - map
+          - ellipsis-match-value
           - list
             - map
-            - ellipsis-match-value
-            - list
-              - map
-              - cdr
-              - ellipsis-matches
+            - cdr
+            - ellipsis-matches
   - list
     - define
     - list
