@@ -973,12 +973,16 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (define-syntax foo
+      (define-syntax be-like-begin
         (syntax-rules ()
-          ((_ x)
-            x)))
+          ((be-like-begin name)
+            (define-syntax name
+              (syntax-rules ()
+                ((name expression (... ...))
+                  (begin expression (... ...))))))))
 
-      (write-u8 (foo ((1 2) (3 4)) ((5 50))))
+      (write-u8 (be-like-begin 65))
+      (write-u8 (be-like-begin (write-u8 66) 67))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "ABC"
