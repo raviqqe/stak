@@ -928,12 +928,12 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (let-syntax
-        ((foo
-          (syntax-rules ()
-            ((_ (x ...) ...)
-              (+ x ... ...)))))
-        (write-u8 (foo (1 2) (3 59))))
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ (x ...) ...)
+            (+ x ... ...))))
+
+      (write-u8 (foo (1 2) (3 59))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
@@ -943,12 +943,12 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (let-syntax
-        ((foo
-          (syntax-rules ()
-            ((_ ((x ...) ...) ...)
-              (+ x ... ... ...)))))
-        (write-u8 (foo ((1) (2)) ((3 59)))))
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ ((x ...) ...) ...)
+            (+ x ... ... ...))))
+
+      (write-u8 (foo ((1) (2)) ((3 59)))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
@@ -958,12 +958,12 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (let-syntax
-        ((foo
-          (syntax-rules ()
-            ((_ ((x y) ...) ...)
-              (+ x ... ... y ... ...)))))
-        (write-u8 (foo ((1 2) (3 4)) ((5 50)))))
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ ((x y) ...) ...)
+            (+ x ... ... y ... ...))))
+
+      (write-u8 (foo ((1 2) (3 4)) ((5 50))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
