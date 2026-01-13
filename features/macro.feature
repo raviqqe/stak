@@ -933,7 +933,7 @@ Feature: Macro
           ((_ (x ...) ...)
             (+ x ... ...))))
 
-      (write-u8 (foo (1 2) (3 59))))
+      (write-u8 (foo (1 2) (3 59)))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
@@ -948,7 +948,7 @@ Feature: Macro
           ((_ ((x ...) ...) ...)
             (+ x ... ... ...))))
 
-      (write-u8 (foo ((1) (2)) ((3 59)))))
+      (write-u8 (foo ((1) (2)) ((3 59))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
@@ -981,8 +981,10 @@ Feature: Macro
                 ((name expression (... ...))
                   (begin expression (... ...))))))))
 
-      (write-u8 (be-like-begin 65))
-      (write-u8 (be-like-begin (write-u8 66) 67))
+      (be-like-begin begin*)
+
+      (write-u8 (begin* 65))
+      (write-u8 (begin* (write-u8 66) 67))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
