@@ -967,3 +967,18 @@ Feature: Macro
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Expand a literal with an ellipsis prefix
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ x)
+            x)))
+
+      (write-u8 (foo ((1 2) (3 4)) ((5 50))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
