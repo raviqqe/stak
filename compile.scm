@@ -2041,9 +2041,7 @@
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
      (define-values (expression4 optimizers) (optimize-custom expression3))
      (define features (detect-features expression4))
-     (define expression5 (if (memq 'shake-tree options)
-                          (shake-tree features expression4)
-                          expression4))
+     (define expression5 (shake-tree features expression4))
      (define expression6 (optimize-begin expression5))
      (define expression7 (analyze-free-variables expression6))
 
@@ -2279,9 +2277,7 @@
     (exit))
 
   (compile
-    (list
-      (and (member "--debug" arguments) 'debug)
-      (and (member "--shake-tree" arguments) 'shake-tree))
+    (list (and (member "--debug" arguments) 'debug))
     (incept (read-source))))
 
 (main)
