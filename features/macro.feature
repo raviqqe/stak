@@ -968,23 +968,43 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Expand a literal with an ellipsis prefix
+  Scenario: Expand an ellipsis with an ellipsis prefix
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (define-syntax be-like-begin
+      (define-syntax foo
         (syntax-rules ()
-          ((be-like-begin name)
+          ((_ name)
             (define-syntax name
               (syntax-rules ()
                 ((name expression (... ...))
                   (begin expression (... ...))))))))
 
-      (be-like-begin begin*)
+      (foo bar)
 
-      (write-u8 (begin* 65))
-      (write-u8 (begin* (write-u8 66) 67))
+      (write-u8 (bar 65))
+      (write-u8 (bar (write-u8 66) 67))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Expand a literal with an ellipsis prefix
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules (expression)
+          ((_ name)
+            (define-syntax name
+              (syntax-rules ()
+                ((name (... expression))
+                  (begin (... expression))))))))
+
+      (foo bar)
+
+      (write-u8 (bar 65))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"

@@ -570,7 +570,7 @@
         (pair? (cdr pattern))
         (eq? ellipsis (resolve-denotation context (cadr pattern))))
        (if (eq? ellipsis (resolve-denotation context (car pattern)))
-        ellipsis
+        (cadr pattern)
         (compile
          (cons
           (let ((pattern (compile (car pattern))))
