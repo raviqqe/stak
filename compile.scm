@@ -566,9 +566,7 @@
       ((not (pair? pattern))
        pattern)
 
-      ((and
-        (pair? (cdr pattern))
-        (eq? ellipsis (resolve-denotation context (car pattern))))
+      ((eq? ellipsis (resolve-denotation context (car pattern)))
        (cadr pattern))
 
       ((and
