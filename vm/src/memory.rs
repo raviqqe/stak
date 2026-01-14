@@ -1,6 +1,7 @@
 use crate::{
     Error,
     cons::{Cons, NEVER, Tag},
+    heap::Heap,
     number::Number,
     r#type::Type,
     value::Value,
@@ -526,11 +527,6 @@ impl<H: Heap> Display for Memory<H> {
         Ok(())
     }
 }
-
-/// A heap memory.
-pub trait Heap: AsRef<[Value]> + AsMut<[Value]> {}
-
-impl<T: AsRef<[Value]> + AsMut<[Value]>> Heap for T {}
 
 #[cfg(test)]
 mod tests {
