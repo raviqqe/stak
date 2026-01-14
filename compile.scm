@@ -568,6 +568,11 @@
 
       ((and
         (pair? (cdr pattern))
+        (eq? ellipsis (resolve-denotation context (car pattern))))
+       (cadr pattern))
+
+      ((and
+        (pair? (cdr pattern))
         (eq? ellipsis (resolve-denotation context (cadr pattern))))
        (compile
         (cons
