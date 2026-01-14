@@ -10225,18 +10225,12 @@
   - call 2 #f eq?
   - if
     - get 2
-  - get 2
-  - call 1 #f cdr
-  - call 1 #f pair?
-  - if
-    - get 4
-    - get 6
-    - get 4
-    - call 1 #f car
-    - call 2 #f 21
-    - call 2 #f eq?
-    - continue
-  - constant #f
+  - get 4
+  - get 6
+  - get 4
+  - call 1 #f car
+  - call 2 #f 21
+  - call 2 #f eq?
   - if
     - get 2
     - call 1 #f cadr
