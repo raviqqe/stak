@@ -18,7 +18,7 @@ decode() (
   base=snapshots/${file%.scm}
 
   mkdir -p $(dirname $base)
-  cat prelude.scm $file | stak-compile --shake-tree >$base.bc
+  cat prelude.scm $file | stak-compile >$base.bc
   stak-decode <$base.bc >$base.md
 )
 
