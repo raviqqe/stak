@@ -125,8 +125,8 @@
     (define memv-index (equal-index eqv?))
     (define memq-index (equal-index eq?))
 
-    (define (append-map f xs)
-     (apply append (map f xs)))
+    (define (append-map f . xs)
+     (apply append (apply map f xs)))
 
     (define (relaxed-length xs)
      (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
@@ -641,12 +641,10 @@
       (when (null? ellipsis-matches)
        (error "no ellipsis pattern variables" template))
       (apply
-       append
-       (apply
-        map
-        (lambda matches
-         (fill-template context (append matches singleton-matches) template))
-        (map ellipsis-match-value (map cdr ellipsis-matches))))))
+       append-map
+       (lambda matches
+        (fill-template context (append matches singleton-matches) template))
+       (map ellipsis-match-value (map cdr ellipsis-matches)))))
 
     (define (fill-template context matches template)
      (define (fill template)
