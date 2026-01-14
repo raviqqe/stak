@@ -4326,6 +4326,7 @@
   - optimize-custom
   - expression3
   - detect-features
+  - shake-tree
   - expression4
   - expression5
   - expression6
@@ -4410,7 +4411,6 @@
   - expression
   - imports
   - debug
-  - shake-tree
   - environment
   - eval
   - make-environment
@@ -20894,17 +20894,8 @@
       - define
       - expression5
       - list
-        - if
-        - list
-          - memq
-          - list
-            - quote
-            - shake-tree
-          - options
-        - list
-          - shake-tree
-          - features
-          - expression4
+        - shake-tree
+        - features
         - expression4
     - list
       - define
@@ -22026,14 +22017,7 @@
     - constant debug
     - continue
   - constant #f
-  - constant "--shake-tree"
-  - get 2
-  - call 2 #f member
-  - if
-    - constant shake-tree
-    - continue
-  - constant #f
-  - call 2 #f list
+  - call 1 #f list
   - call 0 #f ||
   - call 1 #f ||
   - call 2 #f 3
