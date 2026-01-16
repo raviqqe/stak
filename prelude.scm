@@ -1750,20 +1750,9 @@
     (define (string . xs)
       (list->string xs))
 
-    ;; Sequence
-
-    (define (sequence-set! xs index value)
-      (list-set! (sequence->list xs) index value))
-
-    (define (sequence-fill! xs fill . rest))
-
     (define (make-sequence list->sequence)
       (lambda (length . rest)
         (list->sequence (apply make-list (cons length rest)))))
-
-    (define (sequence-copy list->sequence)
-      (lambda (xs . rest)
-        (list->sequence (apply list-copy (sequence->list xs) rest))))
 
     (define (sequence-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1826,9 +1815,8 @@
         (set-car! xs fill)))
 
     (define (make-string length . rest)
-      ((make-sequence code-points->string)
-        length
-        (if (null? rest) 0 (char->integer (car rest)))))
+      (code-points->string
+        (make-list length (if (null? rest) 0 (char->integer (car rest))))))
 
     (define (string-for-each f xs)
       (for-each f (string->list xs)))
