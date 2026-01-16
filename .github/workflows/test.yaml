@@ -102,13 +102,13 @@ jobs:
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
           -t '${{ matrix.interpreter.tags || '~@none' }}'
-  niche_integration_test:
+  extra_integration_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
-      - run: tools/niche_integration_test.sh
+      - run: tools/extra_integration_test.sh
   self_host_integration_test:
     strategy:
       fail-fast: false
@@ -220,7 +220,7 @@ jobs:
       - build
       - unit_test
       - integration_test
-      - niche_integration_test
+      - extra_integration_test
       - self_host_test
       - wasm
       - minimal
