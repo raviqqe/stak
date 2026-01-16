@@ -1752,24 +1752,10 @@
 
     ;; Sequence
 
-    (define (list->sequence type))
-
-    (define (sequence-ref xs index)
-      (list-ref (sequence->list xs) index))
-
     (define (sequence-set! xs index value)
       (list-set! (sequence->list xs) index value))
 
-    (define (sequence-fill! xs fill . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end
-        (if (or (null? rest) (null? (cdr rest)))
-          (sequence-length xs)
-          (cadr rest)))
-
-      (do ((xs (list-tail (sequence->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
-        ((or (null? xs) (<= count 0)))
-        (set-car! xs fill)))
+    (define (sequence-fill! xs fill . rest))
 
     (define (make-sequence list->sequence)
       (lambda (length . rest)
@@ -1821,13 +1807,23 @@
       (map integer->char (string->code-points x)))
 
     (define (string-ref xs index)
-      (integer->char (sequence-ref xs index)))
+      (integer->char (list-ref (string->code-points xs) index)))
 
-    (define (string-set! x index y)
-      (sequence-set! x index (char->integer y)))
+    (define (string-set! xs index y)
+      (list-set! (string->code-points xs) index (char->integer y)))
 
     (define (string-fill! xs fill . rest)
-      (apply sequence-fill! xs (char->integer fill) rest))
+      (define fill (char->integer fill))
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (string-length xs)
+          (cadr rest)))
+
+      (do ((xs (list-tail (string->code-points xs) start) (cdr xs))
+           (count (- end start) (- count 1)))
+        ((or (null? xs) (<= count 0)))
+        (set-car! xs fill)))
 
     (define (make-string length . rest)
       ((make-sequence code-points->string)
