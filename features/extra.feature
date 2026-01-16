@@ -1,5 +1,5 @@
-@niche
-Feature: Niche functionalities
+@extra
+Feature: Extra functionalities
 
   Background:
     Given I run the following script:
