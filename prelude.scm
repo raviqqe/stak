@@ -1761,10 +1761,6 @@
       (lambda (length . rest)
         (list->sequence (apply make-list (cons length rest)))))
 
-    (define (sequence-append list->sequence)
-      (lambda xs
-        (list->sequence (apply append (map sequence->list xs)))))
-
     (define (sequence-copy list->sequence)
       (lambda (xs . rest)
         (list->sequence (apply list-copy (sequence->list xs) rest))))
@@ -1798,7 +1794,9 @@
     (define (string-append xs)
       (code-points->string (apply append (map string->code-points xs))))
 
-    (define string-copy (sequence-copy code-points->string))
+    (define (string-copy xs . rest)
+      (code-points->string (apply list-copy (string->code-points xs) rest)))
+
     (define string-copy! sequence-copy!)
     (define substring string-copy)
 
