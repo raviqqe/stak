@@ -945,191 +945,6 @@
     - call 2 #f list-head
   - get 0
 - set list-copy
-- get car
-- set sequence-length
-- get cdr
-- set sequence->list
-- constant procedure 1 #f
-  - constant procedure 1 #f
-    - get 2
-    - get 1
-    - call 1 #f length
-    - get 2
-    - call 3 #f data-rib
-  - call 1 #f $$close
-- set list->sequence
-- constant procedure 2 #f
-  - get 1
-  - call 1 #f sequence->list
-  - get 1
-  - call 2 #f list-ref
-- set sequence-ref
-- constant procedure 3 #f
-  - get 2
-  - call 1 #f sequence->list
-  - get 2
-  - get 2
-  - call 3 #f list-set!
-- set sequence-set!
-- constant procedure 2 #t
-  - constant #f
-  - constant #f
-  - get 2
-  - call 1 #f null?
-  - if
-    - constant 0
-    - continue
-  - get 2
-  - call 1 #f car
-  - set 2
-  - get 2
-  - call 1 #f null?
-  - get 0
-  - if
-    - get 0
-    - continue
-  - get 3
-  - call 1 #f cdr
-  - call 1 #f null?
-  - call 2 #f $$unbind
-  - if
-    - get 4
-    - call 1 #f sequence-length
-    - continue
-  - get 2
-  - call 1 #f cadr
-  - set 1
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f null?
-    - get 0
-    - if
-      - get 0
-      - continue
-    - constant 0
-    - get 2
-    - call 2 #f ||
-    - constant #f
-    - call 2 #f eq?
-    - call 2 #f $$unbind
-    - if
-      - constant #f
-    - get 1
-    - get 8
-    - call 2 #f set-car!
-    - set 0
-    - get 1
-    - call 1 #f cdr
-    - get 1
-    - constant 1
-    - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 5
-  - call 1 #f sequence->list
-  - get 3
-  - call 2 #f list-tail
-  - get 2
-  - get 4
-  - call 2 #f ||
-  - call 2 #f 2
-- set sequence-fill!
-- constant procedure 1 #f
-  - constant procedure 1 #t
-    - get make-list
-    - get 2
-    - get 2
-    - call 2 #f cons
-    - call 2 #f apply
-    - call 1 #f 4
-  - call 1 #f $$close
-- set make-sequence
-- constant procedure 1 #f
-  - constant procedure 0 #t
-    - get append
-    - get sequence->list
-    - get 2
-    - call 2 #f map
-    - call 2 #f apply
-    - call 1 #f 3
-  - call 1 #f $$close
-- set sequence-append
-- constant procedure 1 #f
-  - constant procedure 1 #t
-    - get list-copy
-    - get 2
-    - call 1 #f sequence->list
-    - get 2
-    - call 3 #f apply
-    - call 1 #f 4
-  - call 1 #f $$close
-- set sequence-copy
-- constant procedure 3 #t
-  - constant #f
-  - constant #f
-  - get 2
-  - call 1 #f null?
-  - if
-    - constant 0
-    - continue
-  - get 2
-  - call 1 #f car
-  - set 2
-  - get 2
-  - call 1 #f null?
-  - get 0
-  - if
-    - get 0
-    - continue
-  - get 3
-  - call 1 #f cdr
-  - call 1 #f null?
-  - call 2 #f $$unbind
-  - if
-    - get 3
-    - call 1 #f sequence-length
-    - continue
-  - get 2
-  - call 1 #f cadr
-  - set 1
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - call 1 #f null?
-    - if
-      - constant #f
-    - get 0
-    - get 2
-    - call 1 #f car
-    - call 2 #f set-car!
-    - set 0
-    - get 1
-    - call 1 #f cdr
-    - get 1
-    - call 1 #f cdr
-    - call 2 #f 5
-  - call 1 #f $$close
-  - set 1
-  - get 4
-  - call 1 #f sequence->list
-  - get 3
-  - get 3
-  - get 5
-  - get 10
-  - call 1 #f sequence-length
-  - get 10
-  - call 2 #f ||
-  - call 2 #f ||
-  - call 2 #f min
-  - call 3 #f list-copy
-  - get 7
-  - call 1 #f sequence->list
-  - get 7
-  - call 2 #f list-tail
-  - call 2 #f 2
-- set sequence-copy!
 - get ||
 - call 1 #f instance?
 - set record?
@@ -2126,23 +1941,99 @@
   - get 0
   - call 1 #f list->string
 - set string
-- get sequence-length
+- get car
 - set string-length
-- get sequence->list
+- get cdr
 - set string->code-points
-- get ||
-- call 1 #f list->sequence
+- constant procedure 1 #f
+  - get ||
+  - get 1
+  - call 1 #f length
+  - get 2
+  - call 3 #f data-rib
 - set code-points->string
-- get code-points->string
-- call 1 #f sequence-append
+- constant procedure 0 #t
+  - get append
+  - get string->code-points
+  - get 2
+  - call 2 #f map
+  - call 2 #f apply
+  - call 1 #f code-points->string
 - set string-append
-- get code-points->string
-- call 1 #f sequence-copy
+- constant procedure 1 #t
+  - get list-copy
+  - get 2
+  - call 1 #f string->code-points
+  - get 2
+  - call 3 #f apply
+  - call 1 #f code-points->string
 - set string-copy
-- get sequence-copy!
-- set string-copy!
 - get string-copy
 - set substring
+- constant procedure 3 #t
+  - constant #f
+  - constant #f
+  - get 2
+  - call 1 #f null?
+  - if
+    - constant 0
+    - continue
+  - get 2
+  - call 1 #f car
+  - set 2
+  - get 2
+  - call 1 #f null?
+  - get 0
+  - if
+    - get 0
+    - continue
+  - get 3
+  - call 1 #f cdr
+  - call 1 #f null?
+  - call 2 #f $$unbind
+  - if
+    - get 3
+    - call 1 #f string-length
+    - continue
+  - get 2
+  - call 1 #f cadr
+  - set 1
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f null?
+    - if
+      - constant #f
+    - get 0
+    - get 2
+    - call 1 #f car
+    - call 2 #f set-car!
+    - set 0
+    - get 1
+    - call 1 #f cdr
+    - get 1
+    - call 1 #f cdr
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get 4
+  - call 1 #f string->code-points
+  - get 3
+  - get 3
+  - get 5
+  - get 10
+  - call 1 #f string-length
+  - get 10
+  - call 2 #f ||
+  - call 2 #f ||
+  - call 2 #f min
+  - call 3 #f list-copy
+  - get 7
+  - call 1 #f string->code-points
+  - get 7
+  - call 2 #f list-tail
+  - call 2 #f 2
+- set string-copy!
 - constant procedure 1 #f
   - get char->integer
   - get 1
@@ -2157,38 +2048,100 @@
 - set string->list
 - constant procedure 2 #f
   - get 1
+  - call 1 #f string->code-points
   - get 1
-  - call 2 #f sequence-ref
+  - call 2 #f list-ref
   - call 1 #f integer->char
 - set string-ref
 - constant procedure 3 #f
   - get 2
+  - call 1 #f string->code-points
   - get 2
   - get 2
   - call 1 #f char->integer
-  - call 3 #f sequence-set!
+  - call 3 #f list-set!
 - set string-set!
 - constant procedure 2 #t
-  - get sequence-fill!
-  - get 3
-  - get 3
+  - constant #f
+  - constant #f
+  - constant #f
+  - get 2
   - call 1 #f char->integer
+  - set 3
   - get 3
-  - call 4 #f apply
-- set string-fill!
-- constant procedure 1 #t
-  - get code-points->string
-  - call 1 #f make-sequence
-  - get 2
-  - get 2
   - call 1 #f null?
   - if
     - constant 0
     - continue
+  - get 3
+  - call 1 #f car
+  - set 2
+  - get 3
+  - call 1 #f null?
+  - get 0
+  - if
+    - get 0
+    - continue
+  - get 4
+  - call 1 #f cdr
+  - call 1 #f null?
+  - call 2 #f $$unbind
+  - if
+    - get 5
+    - call 1 #f string-length
+    - continue
+  - get 3
+  - call 1 #f cadr
+  - set 1
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f null?
+    - get 0
+    - if
+      - get 0
+      - continue
+    - constant 0
+    - get 2
+    - call 2 #f ||
+    - constant #f
+    - call 2 #f eq?
+    - call 2 #f $$unbind
+    - if
+      - constant #f
+    - get 1
+    - get 7
+    - call 2 #f set-car!
+    - set 0
+    - get 1
+    - call 1 #f cdr
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f $$close
+  - set 1
+  - get 6
+  - call 1 #f string->code-points
+  - get 3
+  - call 2 #f list-tail
   - get 2
+  - get 4
+  - call 2 #f ||
+  - call 2 #f 2
+- set string-fill!
+- constant procedure 1 #t
+  - get 1
+  - get 1
+  - call 1 #f null?
+  - if
+    - constant 0
+    - continue
+  - get 1
   - call 1 #f car
   - call 1 #f char->integer
-  - call 2 #f 2
+  - call 2 #f make-list
+  - call 1 #f code-points->string
 - set make-string
 - constant procedure 2 #f
   - get 1
@@ -4710,6 +4663,7 @@
   - eq?
   - apply
   - data-rib
+  - instance?
   - eqv?
   - equal?
   - procedure?
@@ -4800,17 +4754,6 @@
   - fold
   - reduce-right
   - list-copy
-  - instance?
-  - list->sequence
-  - make-sequence
-  - sequence->list
-  - sequence-append
-  - sequence-copy
-  - sequence-copy!
-  - sequence-fill!
-  - sequence-length
-  - sequence-ref
-  - sequence-set!
   - define-record-type
   - record?
   - values
@@ -9378,6 +9321,7 @@
     - (eq? . eq?)
     - (apply . apply)
     - (data-rib . data-rib)
+    - (instance? . instance?)
     - (eqv? . eqv?)
     - (equal? . equal?)
     - (procedure? . procedure?)
@@ -9468,17 +9412,6 @@
     - (fold . fold)
     - (reduce-right . reduce-right)
     - (list-copy . list-copy)
-    - (instance? . instance?)
-    - (list->sequence . list->sequence)
-    - (make-sequence . make-sequence)
-    - (sequence->list . sequence->list)
-    - (sequence-append . sequence-append)
-    - (sequence-copy . sequence-copy)
-    - (sequence-copy! . sequence-copy!)
-    - (sequence-fill! . sequence-fill!)
-    - (sequence-length . sequence-length)
-    - (sequence-ref . sequence-ref)
-    - (sequence-set! . sequence-set!)
     - (define-record-type . define-record-type)
     - (record? . record?)
     - (values . values)
