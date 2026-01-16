@@ -1795,7 +1795,9 @@
     (define (code-points->string xs)
       (data-rib string-type (length xs) xs))
 
-    (define string-append (sequence-append code-points->string))
+    (define (string-append xs)
+      (code-points->string (apply append (map string->code-points xs))))
+
     (define string-copy (sequence-copy code-points->string))
     (define string-copy! sequence-copy!)
     (define substring string-copy)
