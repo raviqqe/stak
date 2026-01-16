@@ -2064,71 +2064,70 @@
 - constant procedure 2 #t
   - constant #f
   - constant #f
-  - constant #f
   - get 2
-  - call 1 #f char->integer
-  - set 3
-  - get 3
   - call 1 #f null?
   - if
     - constant 0
     - continue
-  - get 3
+  - get 2
   - call 1 #f car
   - set 2
-  - get 3
+  - get 2
   - call 1 #f null?
   - get 0
   - if
     - get 0
     - continue
-  - get 4
+  - get 3
   - call 1 #f cdr
   - call 1 #f null?
   - call 2 #f $$unbind
   - if
-    - get 5
+    - get 4
     - call 1 #f string-length
     - continue
-  - get 3
+  - get 2
   - call 1 #f cadr
   - set 1
   - constant #f
-  - constant procedure 2 #f
-    - get 1
+  - constant procedure 3 #f
+    - get 2
     - call 1 #f null?
     - get 0
     - if
       - get 0
       - continue
     - constant 0
-    - get 2
+    - get 3
     - call 2 #f ||
     - constant #f
     - call 2 #f eq?
     - call 2 #f $$unbind
     - if
       - constant #f
+    - get 2
     - get 1
-    - get 7
     - call 2 #f set-car!
     - set 0
-    - get 1
+    - get 2
     - call 1 #f cdr
-    - get 1
+    - get 2
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
+    - get 2
+    - call 3 #f 7
   - call 1 #f $$close
   - set 1
-  - get 6
+  - get 5
   - call 1 #f string->code-points
   - get 3
   - call 2 #f list-tail
   - get 2
   - get 4
   - call 2 #f ||
-  - call 2 #f 2
+  - get 6
+  - call 1 #f char->integer
+  - call 3 #f 3
 - set string-fill!
 - constant procedure 1 #t
   - get 1
