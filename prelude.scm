@@ -1063,64 +1063,6 @@
           (list-head xs (- end start))
           xs)))
 
-    ;; Sequence
-
-    (define sequence-length car)
-    (define sequence->list cdr)
-
-    (define (list->sequence type)
-      (lambda (xs)
-        (data-rib type (length xs) xs)))
-
-    (define (sequence-ref xs index)
-      (list-ref (sequence->list xs) index))
-
-    (define (sequence-set! xs index value)
-      (list-set! (sequence->list xs) index value))
-
-    (define (sequence-fill! xs fill . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end
-        (if (or (null? rest) (null? (cdr rest)))
-          (sequence-length xs)
-          (cadr rest)))
-
-      (do ((xs (list-tail (sequence->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
-        ((or (null? xs) (<= count 0)))
-        (set-car! xs fill)))
-
-    (define (make-sequence list->sequence)
-      (lambda (length . rest)
-        (list->sequence (apply make-list (cons length rest)))))
-
-    (define (sequence-append list->sequence)
-      (lambda xs
-        (list->sequence (apply append (map sequence->list xs)))))
-
-    (define (sequence-copy list->sequence)
-      (lambda (xs . rest)
-        (list->sequence (apply list-copy (sequence->list xs) rest))))
-
-    (define (sequence-copy! to at from . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end
-        (if (or (null? rest) (null? (cdr rest)))
-          (sequence-length from)
-          (cadr rest)))
-
-      (do ((xs
-             (list-copy
-               (sequence->list from)
-               start
-               (min end (+ start (- (sequence-length to) at))))
-             (cdr xs))
-           (ys
-             (list-tail (sequence->list to) at)
-             (cdr ys)))
-        ((null? xs)
-          #f)
-        (set-car! ys (car xs))))
-
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
@@ -1817,6 +1759,64 @@
 
     (define (string . xs)
       (list->string xs))
+
+    ;; Sequence
+
+    (define sequence-length car)
+    (define sequence->list cdr)
+
+    (define (list->sequence type)
+      (lambda (xs)
+        (data-rib type (length xs) xs)))
+
+    (define (sequence-ref xs index)
+      (list-ref (sequence->list xs) index))
+
+    (define (sequence-set! xs index value)
+      (list-set! (sequence->list xs) index value))
+
+    (define (sequence-fill! xs fill . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (sequence-length xs)
+          (cadr rest)))
+
+      (do ((xs (list-tail (sequence->list xs) start) (cdr xs)) (count (- end start) (- count 1)))
+        ((or (null? xs) (<= count 0)))
+        (set-car! xs fill)))
+
+    (define (make-sequence list->sequence)
+      (lambda (length . rest)
+        (list->sequence (apply make-list (cons length rest)))))
+
+    (define (sequence-append list->sequence)
+      (lambda xs
+        (list->sequence (apply append (map sequence->list xs)))))
+
+    (define (sequence-copy list->sequence)
+      (lambda (xs . rest)
+        (list->sequence (apply list-copy (sequence->list xs) rest))))
+
+    (define (sequence-copy! to at from . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (sequence-length from)
+          (cadr rest)))
+
+      (do ((xs
+             (list-copy
+               (sequence->list from)
+               start
+               (min end (+ start (- (sequence-length to) at))))
+             (cdr xs))
+           (ys
+             (list-tail (sequence->list to) at)
+             (cdr ys)))
+        ((null? xs)
+          #f)
+        (set-car! ys (car xs))))
 
     (define string-length sequence-length)
     (define string->code-points sequence->list)
