@@ -1750,30 +1750,6 @@
     (define (string . xs)
       (list->string xs))
 
-    (define (make-sequence list->sequence)
-      (lambda (length . rest)
-        (list->sequence (apply make-list (cons length rest)))))
-
-    (define (sequence-copy! to at from . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end
-        (if (or (null? rest) (null? (cdr rest)))
-          (sequence-length from)
-          (cadr rest)))
-
-      (do ((xs
-             (list-copy
-               (sequence->list from)
-               start
-               (min end (+ start (- (sequence-length to) at))))
-             (cdr xs))
-           (ys
-             (list-tail (sequence->list to) at)
-             (cdr ys)))
-        ((null? xs)
-          #f)
-        (set-car! ys (car xs))))
-
     (define string-length car)
     (define string->code-points cdr)
 
@@ -1786,8 +1762,27 @@
     (define (string-copy xs . rest)
       (code-points->string (apply list-copy (string->code-points xs) rest)))
 
-    (define string-copy! sequence-copy!)
     (define substring string-copy)
+
+    (define (string-copy! to at from . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end
+        (if (or (null? rest) (null? (cdr rest)))
+          (string-length from)
+          (cadr rest)))
+
+      (do ((xs
+             (list-copy
+               (string->code-points from)
+               start
+               (min end (+ start (- (string-length to) at))))
+             (cdr xs))
+           (ys
+             (list-tail (string->code-points to) at)
+             (cdr ys)))
+        ((null? xs)
+          #f)
+        (set-car! ys (car xs))))
 
     (define (list->string x)
       (code-points->string (map char->integer x)))
