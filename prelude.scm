@@ -1752,12 +1752,7 @@
 
     ;; Sequence
 
-    (define sequence-length car)
-    (define sequence->list cdr)
-
-    (define (list->sequence type)
-      (lambda (xs)
-        (data-rib type (length xs) xs)))
+    (define (list->sequence type))
 
     (define (sequence-ref xs index)
       (list-ref (sequence->list xs) index))
@@ -1808,9 +1803,12 @@
           #f)
         (set-car! ys (car xs))))
 
-    (define string-length sequence-length)
-    (define string->code-points sequence->list)
-    (define code-points->string (list->sequence string-type))
+    (define string-length car)
+    (define string->code-points cdr)
+
+    (define (code-points->string xs)
+      (data-rib string-type (length xs) xs))
+
     (define string-append (sequence-append code-points->string))
     (define string-copy (sequence-copy code-points->string))
     (define string-copy! sequence-copy!)
