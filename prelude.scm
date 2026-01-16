@@ -61,6 +61,8 @@
     apply
     data-rib
 
+    instance?
+
     eqv?
     equal?
 
@@ -156,18 +158,6 @@
     fold
     reduce-right
     list-copy
-
-    instance?
-    list->sequence
-    make-sequence
-    sequence->list
-    sequence-append
-    sequence-copy
-    sequence-copy!
-    sequence-fill!
-    sequence-length
-    sequence-ref
-    sequence-set!
 
     define-record-type
     record?
