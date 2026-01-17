@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-sac = { path = "../../sac", version = "0.12.9", features = ["std"] }
+stak-sac = { path = "../../sac", version = "0.12.10", features = ["std"] }
 
 [features]
 default = ["float"]
