@@ -11,6 +11,8 @@ type Item = { label: string; link: string } | { label: string; items: Item[] };
 
 const documentDirectory = "src/content/docs";
 
+const acronyms = ["srfi"];
+
 const listItems = async (directory: string): Promise<Item[]> =>
   sortBy(
     await Promise.all(
@@ -24,7 +26,16 @@ const listItems = async (directory: string): Promise<Item[]> =>
           return (await stat(fullPath)).isDirectory()
             ? {
                 items: await listItems(linkPath),
-                label: capitalize(name.replace("-", " ")),
+                label: name
+                  .split("-")
+                  .map((value, index) =>
+                    acronyms.includes(value.toLowerCase())
+                      ? value.toUpperCase()
+                      : index
+                        ? value
+                        : capitalize(value),
+                  )
+                  .join(" "),
               }
             : {
                 label:
