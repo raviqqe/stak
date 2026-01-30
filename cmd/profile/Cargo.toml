@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-clap = { version = "4.5.55", features = ["derive"] }
+clap = { version = "4.5.56", features = ["derive"] }
 main_error = "0.1.2"
 stak-configuration = { path = "../../configuration", version = "0.12.10" }
 stak-device = { path = "../../device", version = "0.12.10", features = ["std"] }
