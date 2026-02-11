@@ -15,7 +15,7 @@ clap = { version = "4.5.57", features = ["derive"] }
 [dev-dependencies]
 pretty_assertions = "1.4.1"
 quickcheck = "1.1.0"
-quickcheck_macros = "1.1.0"
+quickcheck_macros = "1.2.0"
 
 [lints]
 workspace = true
