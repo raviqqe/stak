@@ -18,7 +18,7 @@ proc-macro2 = { version = "1.0.106", features = ["proc-macro"] }
 quote = "1.0.44"
 stak-compiler = { path = "../compiler", version = "0.12.10" }
 stak-macro-util = { path = "../macro-util", version = "0.12.10" }
-syn = "2.0.114"
+syn = "2.0.115"
 
 [dev-dependencies]
 stak-device = { path = "../device" }
