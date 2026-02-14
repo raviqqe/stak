@@ -162,16 +162,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
-      - uses: actions/setup-node@v6
-        with:
-          node-version: ">=23.5.0"
-      - run: cargo install wasm-pack
-      - run: wasm-pack build
-        working-directory: wasm
-      - run: wasm-pack test --node --release
-        working-directory: wasm
-      - run: wasm-pack pack
-        working-directory: wasm
+      - uses: ./.github/actions/setup-node
+      - run: tools/wasm_build.sh
+      - run: tools/wasm_test.sh
+      # Test no changes in the lock file and ignored artifacts.
+      - run: git diff --exit-code
   decode:
     runs-on: ubuntu-latest
     steps:
