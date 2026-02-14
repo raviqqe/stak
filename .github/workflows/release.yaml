@@ -35,7 +35,7 @@ jobs:
       - run: tools/wasm_build.sh
       - uses: raviqqe/pnpm-publish@v2
         with:
-          directory: wasm
+          directory: wasm/pkg
           release: ${{ github.ref == 'refs/heads/main' }}
   goreleaser:
     permissions:
