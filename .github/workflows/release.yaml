@@ -38,6 +38,7 @@ jobs:
         with:
           node-version-file: wasm/package.json
       - run: tools/build_wasm.sh
+      # Test no changes in the Git repository.
       - run: git diff --exit-code
       - uses: raviqqe/pnpm-publish@v2
         with:
