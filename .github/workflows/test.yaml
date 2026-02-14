@@ -169,6 +169,8 @@ jobs:
         working-directory: wasm
       - run: wasm-pack pack
         working-directory: wasm
+      # Test no changes in the Git repository.
+      - run: git diff --exit-code
   decode:
     runs-on: ubuntu-latest
     steps:
