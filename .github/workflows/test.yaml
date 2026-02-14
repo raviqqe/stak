@@ -165,7 +165,7 @@ jobs:
       - uses: ./.github/actions/setup-node
       - run: tools/wasm_build.sh
       - run: tools/wasm_test.sh
-      # Test no changes in the Git repository.
+      # Test no changes in the lock file and ignored artifacts.
       - run: git diff --exit-code
   decode:
     runs-on: ubuntu-latest
