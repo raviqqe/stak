@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-stak-vm = { path = "../vm", version = "0.12.10" }
+stak-vm = { path = "../vm", version = "0.12.11" }
 
 [dev-dependencies]
 indoc = "2.0.7"
