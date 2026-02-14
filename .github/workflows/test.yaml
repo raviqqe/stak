@@ -164,7 +164,6 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
       - run: tools/build_wasm.sh
-        working-directory: wasm
       - run: wasm-pack test --node --release
         working-directory: wasm
       - run: wasm-pack pack
