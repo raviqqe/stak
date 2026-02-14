@@ -1,5 +1,6 @@
 *.bc
 *.info
 .cargo_cache
+node_modules
 target
 tmp
