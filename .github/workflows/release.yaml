@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
-      - run: tools/build_wasm.sh
+      - run: tools/wasm_build.sh
       - uses: raviqqe/pnpm-publish@v2
         with:
           directory: wasm

@@ -163,11 +163,8 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
-      - run: tools/build_wasm.sh
-      - run: wasm-pack test --node --release
-        working-directory: wasm
-      - run: wasm-pack pack
-        working-directory: wasm
+      - run: tools/wasm_build.sh
+      - run: tools/wasm_test.sh
       # Test no changes in the Git repository.
       - run: git diff --exit-code
   decode:
