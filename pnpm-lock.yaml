@@ -39,8 +39,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(nanostores@1.1.0)(preact@10.28.3)
       '@preact/signals':
-        specifier: ^2.7.1
-        version: 2.7.1(preact@10.28.3)
+        specifier: ^2.8.0
+        version: 2.8.0(preact@10.28.3)
       '@raviqqe/stak':
         specifier: ^0.12.10
         version: 0.12.10
@@ -1022,8 +1022,8 @@ packages:
   '@preact/signals-core@1.13.0':
     resolution: {integrity: sha512-slT6XeTCAbdql61GVLlGU4x7XHI7kCZV5Um5uhE4zLX4ApgiiXc0UYFvVOKq06xcovzp7p+61l68oPi563ARKg==}
 
-  '@preact/signals@2.7.1':
-    resolution: {integrity: sha512-mP2+wMYHqDXVKFGzjqkL6CiHj3okB8eVTTJUZBrSVGozi/XfA+zZRCEALKKZYRoSoqLyT4J6qM4lhwT9155s1Q==}
+  '@preact/signals@2.8.0':
+    resolution: {integrity: sha512-lcILM82mei8s/53n2M6uZlrDHLlgLld8Squ0PVSUL5Ae1M45uEstWfHm+wcDqp2U5I/ZYrBvCY65udFyTo5OZw==}
     peerDependencies:
       preact: '>= 10.25.0 || >=11.0.0-0'
 
@@ -3038,7 +3038,7 @@ snapshots:
   '@astrojs/preact@4.1.3(@babel/core@7.28.5)(@types/node@25.2.3)(preact@10.28.3)(yaml@2.8.2)':
     dependencies:
       '@preact/preset-vite': 2.10.2(@babel/core@7.28.5)(preact@10.28.3)(vite@6.4.1(@types/node@25.2.3)(yaml@2.8.2))
-      '@preact/signals': 2.7.1(preact@10.28.3)
+      '@preact/signals': 2.8.0(preact@10.28.3)
       preact: 10.28.3
       preact-render-to-string: 6.6.3(preact@10.28.3)
       vite: 6.4.1(@types/node@25.2.3)(yaml@2.8.2)
@@ -3762,7 +3762,7 @@ snapshots:
 
   '@preact/signals-core@1.13.0': {}
 
-  '@preact/signals@2.7.1(preact@10.28.3)':
+  '@preact/signals@2.8.0(preact@10.28.3)':
     dependencies:
       '@preact/signals-core': 1.13.0
       preact: 10.28.3
