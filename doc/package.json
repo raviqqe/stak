@@ -15,7 +15,7 @@
     "@astrojs/starlight": "^0.37.6",
     "@monza-editor/preact": "^0.1.9",
     "@nanostores/preact": "^1.0.0",
-    "@preact/signals": "^2.8.0",
+    "@preact/signals": "^2.8.1",
     "@raviqqe/stak": "^0.12.11",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
