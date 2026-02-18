@@ -7,7 +7,7 @@
     "@biomejs/biome": "^2.4.2",
     "@raviqqe/biome-config": "^2.0.24",
     "oxfmt": "^0.33.0",
-    "tombi": "^0.7.30"
+    "tombi": "^0.7.31"
   },
   "engines": {
     "node": ">=25.6.1"
