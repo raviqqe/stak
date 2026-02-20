@@ -25,7 +25,7 @@ importers:
     dependencies:
       '@astrojs/preact':
         specifier: ^4.1.3
-        version: 4.1.3(@babel/core@7.28.5)(@types/node@25.3.0)(preact@10.28.3)(yaml@2.8.2)
+        version: 4.1.3(@babel/core@7.28.5)(@types/node@25.3.0)(preact@10.28.4)(yaml@2.8.2)
       '@astrojs/sitemap':
         specifier: ^3.7.0
         version: 3.7.0
@@ -37,10 +37,10 @@ importers:
         version: 0.1.9
       '@nanostores/preact':
         specifier: ^1.0.0
-        version: 1.0.0(nanostores@1.1.0)(preact@10.28.3)
+        version: 1.0.0(nanostores@1.1.0)(preact@10.28.4)
       '@preact/signals':
         specifier: ^2.8.1
-        version: 2.8.1(preact@10.28.3)
+        version: 2.8.1(preact@10.28.4)
       '@raviqqe/stak':
         specifier: ^0.12.11
         version: 0.12.11
@@ -61,7 +61,7 @@ importers:
         version: 1.44.0
       lucide-preact:
         specifier: ^0.574.0
-        version: 0.574.0(preact@10.28.3)
+        version: 0.574.0(preact@10.28.4)
       monza-editor:
         specifier: ^0.5.7
         version: 0.5.7
@@ -72,8 +72,8 @@ importers:
         specifier: ^0.2.8
         version: 0.2.8
       preact:
-        specifier: ^10.28.3
-        version: 10.28.3
+        specifier: ^10.28.4
+        version: 10.28.4
       vite-plugin-wasm:
         specifier: ^3.5.0
         version: 3.5.0(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))
@@ -2307,8 +2307,8 @@ packages:
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
 
-  preact@10.28.3:
-    resolution: {integrity: sha512-tCmoRkPQLpBeWzpmbhryairGnhW9tKV6c6gr/w+RhoRoKEJwsjzipwp//1oCpGPOchvSLaAPlpcJi9MwMmoPyA==}
+  preact@10.28.4:
+    resolution: {integrity: sha512-uKFfOHWuSNpRFVTnljsCluEFq57OKT+0QdOiQo8XWnQ/pSvg7OpX5eNOejELXJMWy+BwM2nobz0FkvzmnpCNsQ==}
 
   prettier@3.7.4:
     resolution: {integrity: sha512-v6UNi1+3hSlVvv8fSaoUbggEM5VErKmmpGA7Pl3HF8V6uKY7rvClBOJlH6yNwQtfTueNkGVpOv/mtWL9L4bgRA==}
@@ -3035,12 +3035,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/preact@4.1.3(@babel/core@7.28.5)(@types/node@25.3.0)(preact@10.28.3)(yaml@2.8.2)':
+  '@astrojs/preact@4.1.3(@babel/core@7.28.5)(@types/node@25.3.0)(preact@10.28.4)(yaml@2.8.2)':
     dependencies:
-      '@preact/preset-vite': 2.10.2(@babel/core@7.28.5)(preact@10.28.3)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))
-      '@preact/signals': 2.8.1(preact@10.28.3)
-      preact: 10.28.3
-      preact-render-to-string: 6.6.3(preact@10.28.3)
+      '@preact/preset-vite': 2.10.2(@babel/core@7.28.5)(preact@10.28.4)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))
+      '@preact/signals': 2.8.1(preact@10.28.4)
+      preact: 10.28.4
+      preact-render-to-string: 6.6.3(preact@10.28.4)
       vite: 6.4.1(@types/node@25.3.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - '@babel/core'
@@ -3646,12 +3646,12 @@ snapshots:
   '@monza-editor/preact@0.1.9':
     dependencies:
       monza-editor: 0.5.5
-      preact: 10.28.3
+      preact: 10.28.4
 
-  '@nanostores/preact@1.0.0(nanostores@1.1.0)(preact@10.28.3)':
+  '@nanostores/preact@1.0.0(nanostores@1.1.0)(preact@10.28.4)':
     dependencies:
       nanostores: 1.1.0
-      preact: 10.28.3
+      preact: 10.28.4
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -3744,12 +3744,12 @@ snapshots:
   '@pagefind/windows-x64@1.4.0':
     optional: true
 
-  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.28.3)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))':
+  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.28.4)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.5)
-      '@prefresh/vite': 2.4.11(preact@10.28.3)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))
+      '@prefresh/vite': 2.4.11(preact@10.28.4)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.5)
       debug: 4.4.3
@@ -3762,27 +3762,27 @@ snapshots:
 
   '@preact/signals-core@1.13.0': {}
 
-  '@preact/signals@2.8.1(preact@10.28.3)':
+  '@preact/signals@2.8.1(preact@10.28.4)':
     dependencies:
       '@preact/signals-core': 1.13.0
-      preact: 10.28.3
+      preact: 10.28.4
 
   '@prefresh/babel-plugin@0.5.2': {}
 
-  '@prefresh/core@1.5.9(preact@10.28.3)':
+  '@prefresh/core@1.5.9(preact@10.28.4)':
     dependencies:
-      preact: 10.28.3
+      preact: 10.28.4
 
   '@prefresh/utils@1.2.1': {}
 
-  '@prefresh/vite@2.4.11(preact@10.28.3)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))':
+  '@prefresh/vite@2.4.11(preact@10.28.4)(vite@6.4.1(@types/node@25.3.0)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.5
       '@prefresh/babel-plugin': 0.5.2
-      '@prefresh/core': 1.5.9(preact@10.28.3)
+      '@prefresh/core': 1.5.9(preact@10.28.4)
       '@prefresh/utils': 1.2.1
       '@rollup/pluginutils': 4.2.1
-      preact: 10.28.3
+      preact: 10.28.4
       vite: 6.4.1(@types/node@25.3.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
@@ -4854,9 +4854,9 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-preact@0.574.0(preact@10.28.3):
+  lucide-preact@0.574.0(preact@10.28.4):
     dependencies:
-      preact: 10.28.3
+      preact: 10.28.4
 
   magic-string@0.30.21:
     dependencies:
@@ -5490,11 +5490,11 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  preact-render-to-string@6.6.3(preact@10.28.3):
+  preact-render-to-string@6.6.3(preact@10.28.4):
     dependencies:
-      preact: 10.28.3
+      preact: 10.28.4
 
-  preact@10.28.3: {}
+  preact@10.28.4: {}
 
   prettier@3.7.4: {}
 
