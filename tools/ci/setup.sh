@@ -14,7 +14,7 @@ done
 
 # Download Go commands by running it.
 # https://github.com/actions/setup-go/issues/358
-for command in agoa gherkin-format gherkin2markdown muffet; do
+for command in agoa gherkin-format gherkin2markdown; do
   go tool $command --version
 done
 
