@@ -57,12 +57,14 @@ jobs:
       - run: tools/document.sh -l
       - run: node --run preview &
         working-directory: doc
-      - run: go tool muffet $MUFFET_OPTIONS http://localhost:4321/stak/
+      - uses: raviqqe/muffy@3f57d393cbcfedd46dfa67fd5d8218d6d68700ae # v0.3.0
+        with:
+          config: muffy.local.toml
   web_release_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - run: go tool muffet $MUFFET_OPTIONS https://raviqqe.github.io/stak
+      - uses: raviqqe/muffy@3f57d393cbcfedd46dfa67fd5d8218d6d68700ae # v0.3.0
   document:
     needs:
       - rust_build
