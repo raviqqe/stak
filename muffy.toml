@@ -1,0 +1,54 @@
+[cache]
+persistent = true
+
+[sites.default]
+roots = []
+max_redirects = 8
+schemes = ["https"]
+statuses = [200]
+timeout = "30s"
+
+[sites.default.cache]
+max_age = "5m"
+
+[sites.default.retry]
+count = 3
+factor = 2
+interval = { initial = "500ms", cap = "10s" }
+
+[sites.default.headers]
+user-agent = "Muffy/0.2.0"
+
+[sites.external]
+extend = "default"
+
+[sites.external.cache]
+max_age = "1h"
+
+[sites.main]
+extend = "default"
+roots = ["https://raviqqe.com/stak"]
+recurse = true
+
+[sites.crates_io]
+extend = "external"
+roots = ["https://crates.io/"]
+statuses = [200, 403, 404]
+
+[sites.github]
+extend = "external"
+roots = ["https://github.com/"]
+concurrency = 64
+
+[sites.github.rate_limit]
+supply = 10
+window = "1s"
+
+[sites.forbidden]
+extend = "external"
+roots = ["https://en.wikipedia.org/wiki/"]
+statuses = [200, 403]
+
+[sites.ignored]
+roots = ["https://www.gnu.org/software/guile/"]
+ignore = true
