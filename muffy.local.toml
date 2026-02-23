@@ -1,0 +1,5 @@
+extend = "muffy.toml"
+
+[sites.main]
+roots = ["http://localhost:4321/stak"]
+schemes = ["http"]
