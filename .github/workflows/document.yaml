@@ -47,14 +47,14 @@ jobs:
       - run: tools/document.sh -l
       - run: node --run preview &
         working-directory: doc
-      - uses: raviqqe/muffy@3f57d393cbcfedd46dfa67fd5d8218d6d68700ae # v0.3.0
+      - uses: raviqqe/muffy@97dcfd3963c58d44cd0489b72a3867e3efb824ed # v0.3.2
         with:
           config: muffy.local.toml
   web_release_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: raviqqe/muffy@3f57d393cbcfedd46dfa67fd5d8218d6d68700ae # v0.3.0
+      - uses: raviqqe/muffy@97dcfd3963c58d44cd0489b72a3867e3efb824ed # v0.3.2
   document:
     needs:
       - rust_build
