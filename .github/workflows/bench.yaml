@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: tools/bench.sh ${{ matrix.options }}
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: time ${{ matrix.os }} ${{ matrix.options }}
           path: tmp/bench/time
@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: tools/memory_bench.sh
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: memory
           path: tmp/bench/memory
@@ -90,7 +90,7 @@ jobs:
           gosh tools/format-metrics.scm
           ${{ env.type }} "$(echo ${{ env.type }} | tr _ ' ')"
           <tmp/${{ env.type }}.txt >tmp/${{ env.type }}.json
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ env.type }}
           path: tmp/${{ env.type }}.json
@@ -117,7 +117,7 @@ jobs:
         working-directory: r7rs-benchmarks
       - run: cat results.Stak
         working-directory: r7rs-benchmarks
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: stak_r7rs_benchmark
           path: r7rs-benchmarks/results.Stak
