@@ -20,5 +20,4 @@ for command in agoa gherkin-format gherkin2markdown; do
   go tool $command --version
 done
 
-echo LIBRARY_PATH=$(brew --prefix lua@$lua_version)/lib:$LIBRARY_PATH >>$GITHUB_ENV
 echo LD_LIBRARY_PATH=$(brew --prefix lua@$lua_version)/lib:$LD_LIBRARY_PATH >>$GITHUB_ENV
