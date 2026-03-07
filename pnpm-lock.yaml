@@ -60,8 +60,8 @@ importers:
         specifier: ^1.45.0
         version: 1.45.0
       lucide-preact:
-        specifier: ^0.576.0
-        version: 0.576.0(preact@10.28.4)
+        specifier: ^0.577.0
+        version: 0.577.0(preact@10.28.4)
       monza-editor:
         specifier: ^0.5.7
         version: 0.5.7
@@ -1978,8 +1978,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-preact@0.576.0:
-    resolution: {integrity: sha512-qfbV5jlkBJAq/JKVFv2osBHwngNTb+R4H5BJhEEibKUdHY2sE8vCk9MXGUphowvS0a3WHM9Mxk4lyASdaZ0bUA==}
+  lucide-preact@0.577.0:
+    resolution: {integrity: sha512-fCY59YQ2OMYWqE1V7k8HwfXyiBMHAfTI1roCOasdc+Cekya7BIObSJ/cil+tVMSbU6siv4uZlaz5twAGmkYqIQ==}
     peerDependencies:
       preact: ^10.27.2
 
@@ -4857,7 +4857,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-preact@0.576.0(preact@10.28.4):
+  lucide-preact@0.577.0(preact@10.28.4):
     dependencies:
       preact: 10.28.4
 
