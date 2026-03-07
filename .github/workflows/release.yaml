@@ -93,7 +93,7 @@ jobs:
             echo repository=${{ vars.DOCKER_USER || 'test' }}/${{ matrix.image.binary }}
             echo version=$(git tag --points-at | sed s/^v//)
           ) >> ${{ github.output }}
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           build-args: |
             BINARY=${{ matrix.image.binary }}
