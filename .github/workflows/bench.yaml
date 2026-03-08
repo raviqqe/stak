@@ -25,26 +25,26 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.13"
       - run: tools/bench.sh ${{ matrix.options }}
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: time ${{ matrix.os }} ${{ matrix.options }}
           path: tmp/bench/time
   command_memory:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.13"
       - run: tools/memory_bench.sh
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: memory
           path: tmp/bench/memory
@@ -57,17 +57,17 @@ jobs:
           - --features float62
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: cargo bench ${{ matrix.options }}
   codspeed:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: cargo install --features vendored-openssl cargo-codspeed
       - run: cargo codspeed build
-      - uses: codspeedhq/action@v4
+      - uses: codspeedhq/action@a50965600eafa04edcd6717761f55b77e52aafbd # v4.0.0
         with:
           mode: simulation
           run: cargo codspeed run
@@ -81,7 +81,7 @@ jobs:
           - bytecode
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: echo type=${{ matrix.type }}_size >> ${{ github.env }}
@@ -90,20 +90,20 @@ jobs:
           gosh tools/format-metrics.scm
           ${{ env.type }} "$(echo ${{ env.type }} | tr _ ' ')"
           <tmp/${{ env.type }}.txt >tmp/${{ env.type }}.json
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: ${{ env.type }}
           path: tmp/${{ env.type }}.json
   loc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: tools/rust_loc_bench.sh
   r7rs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: true
       - uses: ./.github/actions/setup
@@ -117,7 +117,7 @@ jobs:
         working-directory: r7rs-benchmarks
       - run: cat results.Stak
         working-directory: r7rs-benchmarks
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: stak_r7rs_benchmark
           path: r7rs-benchmarks/results.Stak
@@ -130,11 +130,11 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: binary_size
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bytecode_size
       - run: |
@@ -142,7 +142,7 @@ jobs:
             echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=binary_size.json
             echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=bytecode_size.json
           ) > ${{ github.env }}
-      - uses: k1low/octocov-action@v1
+      - uses: k1low/octocov-action@98b913772e0216831bbb756274ea6a3a97e1de96 # v1.4.0
   bench:
     needs:
       - command_time
