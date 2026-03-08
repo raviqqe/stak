@@ -6,7 +6,7 @@ set -e
 
 . $(dirname $0)/utility.sh
 
-cargo install ast-grep tokei
+cargo install --locked ast-grep tokei
 
 for pattern in 'mod tests { $$$ }' '#[cfg(test)]'; do
   sg -Ul rs -p "$pattern" -r ''
