@@ -23,7 +23,7 @@ jobs:
           - --features async
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: cargo build --locked ${{ matrix.options }}
       - run: cargo test --no-run --locked ${{ matrix.options }}
@@ -45,16 +45,16 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: tools/coverage.sh
-      - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
+      - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.0.0
         with:
           fail_ci_if_error: true
           files: lcov.info
@@ -94,7 +94,7 @@ jobs:
       STAK_HOST: ${{ matrix.interpreter.host }}
       STAK_COMPILE_OPTIONS: ${{ matrix.interpreter.compile_options }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: >
@@ -105,7 +105,7 @@ jobs:
   extra_integration_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: tools/extra_integration_test.sh
@@ -127,7 +127,7 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: >
           tools/integration_test.sh
@@ -137,13 +137,13 @@ jobs:
   self_host_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: tools/self_host_test.sh
   minimal:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: cargo build
         working-directory: cmd/minimal
@@ -160,7 +160,7 @@ jobs:
   wasm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
       - run: tools/wasm_build.sh
@@ -170,27 +170,27 @@ jobs:
   decode:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
       - run: tools/decode_test.sh
   r7rs_compatible_compiler:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: tools/r7rs_compatible_compiler_test.sh
   r7rs_compatible_library:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: stak tools/r7rs-compatible-library-test.scm prelude.scm tools/r7rs
   profile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: tools/profile_test.sh
   unicode:
@@ -206,7 +206,7 @@ jobs:
     env:
       STAK_HOST: ${{ matrix.host }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-scheme
       - run: tools/unicode_test.sh
