@@ -18,7 +18,7 @@ tokio = { version = "1.50.0", features = [
   "process",
   "rt-multi-thread",
 ] }
-which = "8.0.1"
+which = "8.0.2"
 
 [lints]
 workspace = true
