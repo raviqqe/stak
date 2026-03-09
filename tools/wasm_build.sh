@@ -2,7 +2,7 @@
 
 set -e
 
-cargo install wasm-pack
+cargo install --locked wasm-pack
 
 cd wasm
 
