@@ -7,7 +7,7 @@ set -e
 lua_version=5.5
 
 brew install lua@$lua_version pkgconf uutils-coreutils uutils-findutils
-cargo install stak
+cargo install --lock stak
 
 for name in core find; do
   # spell-checker: disable-next-line
