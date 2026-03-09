@@ -33,7 +33,7 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
       - run: tools/wasm_build.sh
-      - uses: raviqqe/pnpm-publish@c2f48cc49385cc44336a02087644905ba7db05fd # v2.0.2
+      - uses: raviqqe/pnpm-publish@c2f48cc49385cc44336a02087644905ba7db05fd # v2
         with:
           directory: wasm/pkg
           release: ${{ github.ref == 'refs/heads/main' }}
@@ -50,7 +50,7 @@ jobs:
       - run: cargo install --locked cargo-zigbuild
       - id: version
         run: echo version=v$(cargo run --bin stak -- --version | grep -o '[0-9.]*') > ${{ github.output }}
-      - uses: raviqqe/goreleaser-action@1588919b35b739a726ede0254218430b7eda9828 # v1.1.0
+      - uses: raviqqe/goreleaser-action@1588919b35b739a726ede0254218430b7eda9828 # v1
         with:
           version: ${{ steps.version.outputs.version }}
           snapshot: ${{ github.ref != 'refs/heads/main' }}
