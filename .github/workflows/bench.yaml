@@ -142,7 +142,7 @@ jobs:
             echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=binary_size.json
             echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=bytecode_size.json
           ) > ${{ github.env }}
-      - uses: k1low/octocov-action@98b913772e0216831bbb756274ea6a3a97e1de96 # v1.4.0
+      - uses: k1low/octocov-action@73d561f65d59e66899ed5c87e4621a913b5d5c20 # v1.4.0
   bench:
     needs:
       - command_time
