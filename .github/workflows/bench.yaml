@@ -67,7 +67,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: cargo install --features vendored-openssl cargo-codspeed
       - run: cargo codspeed build
-      - uses: codspeedhq/action@a50965600eafa04edcd6717761f55b77e52aafbd # v4.0.0
+      - uses: codspeedhq/action@281164b0f014a4e7badd2c02cecad9b595b70537 # v4.11.1
         with:
           mode: simulation
           run: cargo codspeed run
@@ -142,7 +142,7 @@ jobs:
             echo OCTOCOV_CUSTOM_METRICS_BINARY_SIZE=binary_size.json
             echo OCTOCOV_CUSTOM_METRICS_BYTECODE_SIZE=bytecode_size.json
           ) > ${{ github.env }}
-      - uses: k1low/octocov-action@98b913772e0216831bbb756274ea6a3a97e1de96 # v1.4.0
+      - uses: k1low/octocov-action@73d561f65d59e66899ed5c87e4621a913b5d5c20 # v1.5.0
   bench:
     needs:
       - command_time

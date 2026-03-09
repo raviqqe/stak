@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: streetsidesoftware/cspell-action@f5aeed84b3c65d2c4181d6d36e301e04cf8372a2 # v8.0.0
+      - uses: streetsidesoftware/cspell-action@9cd41bb518a24fefdafd9880cbab8f0ceba04d28 # v8.3.0
         with:
           files: "**/*.{feature,md,rs,scm,sh,toml}"
   toml:
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: raviqqe/markdown-link-check@128cca8920275911f91f622b6d6c3e3599f8a71e # v1.0.12
+      - uses: raviqqe/markdown-link-check@67ee7b97bb8bc4966a622ae926eca617f64a395f # v1.0.1
         with:
           paths: README.md examples
   lint:
