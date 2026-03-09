@@ -41,7 +41,7 @@ git config user.email action@github.com
 git config user.name 'GitHub Action'
 git commit -m release
 
-cargo install --lock cargo-workspaces
+cargo install --locked cargo-workspaces
 
 for directory in . cmd/minimal; do
   (

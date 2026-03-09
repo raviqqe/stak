@@ -55,7 +55,7 @@ setup_bench() (
   feature=$1
 
   brew install chibi-scheme gambit-scheme gauche guile lua micropython mruby ruby
-  cargo install --lock hyperfine
+  cargo install --locked hyperfine
 
   case $feature in
   i63)
