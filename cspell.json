@@ -73,6 +73,7 @@
     "libc",
     "libfuzzer",
     "libm",
+    "lycheeverse",
     "lzss",
     "mediatypes",
     "memq",
