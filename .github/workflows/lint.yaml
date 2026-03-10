@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: raviqqe/markdown-link-check@67ee7b97bb8bc4966a622ae926eca617f64a395f # v1.0.1
+      - uses: raviqqe/markdown-link-check@f0dffa8d9e25af28aef34fa60088907525c96597 # v1.0.3
         with:
           paths: README.md examples
   lint:
