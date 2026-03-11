@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - uses: ./.github/actions/setup
-      - uses: rust-lang/crates-io-auth-action@b7e9a28eded4986ec6b1fa40eeee8f8f165559ec # v1.0.3
+      - uses: rust-lang/crates-io-auth-action@041cce5b4b821e6b0ebc9c9c38b58cac4e34dcc2 # v1.0.2
         id: auth
         if: github.ref == 'refs/heads/main'
       - run: tools/ci/release.sh ${{ github.ref != 'refs/heads/main' && '--dry-run' || '' }}
@@ -29,11 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
       - run: tools/wasm_build.sh
-      - uses: raviqqe/pnpm-publish@c2f48cc49385cc44336a02087644905ba7db05fd # v2
+      - uses: raviqqe/pnpm-publish@dbec8019d35ef3750b550654276768068d921a14 # v1.0.0
         with:
           directory: wasm/pkg
           release: ${{ github.ref == 'refs/heads/main' }}
@@ -42,7 +42,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
@@ -50,7 +50,7 @@ jobs:
       - run: cargo install --locked cargo-zigbuild
       - id: version
         run: echo version=v$(cargo run --bin stak -- --version | grep -o '[0-9.]*') > ${{ github.output }}
-      - uses: raviqqe/goreleaser-action@1588919b35b739a726ede0254218430b7eda9828 # v1
+      - uses: raviqqe/goreleaser-action@59e628266f05becd1659c0fd9b6be0fa2dab2bc9 # v1.0.0
         with:
           version: ${{ steps.version.outputs.version }}
           snapshot: ${{ github.ref != 'refs/heads/main' }}
@@ -77,12 +77,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
-      - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
-      - uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
-      - uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
@@ -93,7 +93,7 @@ jobs:
             echo repository=${{ vars.DOCKER_USER || 'test' }}/${{ matrix.image.binary }}
             echo version=$(git tag --points-at | sed s/^v//)
           ) >> ${{ github.output }}
-      - uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           build-args: |
             BINARY=${{ matrix.image.binary }}
@@ -106,7 +106,7 @@ jobs:
             ${{ steps.metadata.outputs.repository }}:latest
             ${{ steps.metadata.outputs.version && format('{0}:{1}', steps.metadata.outputs.repository, steps.metadata.outputs.version) || '' }}
       # spell-checker: disable-next-line
-      - uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
+      - uses: peter-evans/dockerhub-description@432a30c9e07499fd01da9f8a49f0faf9e0ca5b77 # v4.0.2
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
