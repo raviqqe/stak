@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - uses: ./.github/actions/setup
       # spell-checker: disable-next-line
-      - uses: bnjbvr/cargo-machete@9debef33b1b3f142e69e1818002196b4f76b02cb # v0.9.0
+      - uses: bnjbvr/cargo-machete@7959c845782fed02ee69303126d4a12d64f1db18 # v0.9.1
   readme:
     runs-on: ubuntu-latest
     steps:
