@@ -33,7 +33,7 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-node
       - run: tools/wasm_build.sh
-      - uses: raviqqe/pnpm-publish@861df6deae4193d882d368966a23f188e2252004 # v1.0.1
+      - uses: raviqqe/pnpm-publish@c2f48cc49385cc44336a02087644905ba7db05fd # v2
         with:
           directory: wasm/pkg
           release: ${{ github.ref == 'refs/heads/main' }}
