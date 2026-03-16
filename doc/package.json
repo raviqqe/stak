@@ -24,7 +24,7 @@
     "es-toolkit": "^1.45.1",
     "lucide-preact": "^0.577.0",
     "monza-editor": "^0.5.7",
-    "nanostores": "^1.1.1",
+    "nanostores": "^1.2.0",
     "picolight": "^0.2.8",
     "preact": "^10.29.0",
     "vite-plugin-wasm": "^3.5.0"
