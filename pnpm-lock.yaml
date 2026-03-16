@@ -75,8 +75,8 @@ importers:
         specifier: ^10.29.0
         version: 10.29.0
       vite-plugin-wasm:
-        specifier: ^3.5.0
-        version: 3.5.0(vite@7.3.1(@types/node@25.5.0)(yaml@2.8.2))
+        specifier: ^3.6.0
+        version: 3.6.0(vite@7.3.1(@types/node@25.5.0)(yaml@2.8.2))
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.7
@@ -2484,10 +2484,10 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vite-plugin-wasm@3.5.0:
-    resolution: {integrity: sha512-X5VWgCnqiQEGb+omhlBVsvTfxikKtoOgAzQ95+BZ8gQ+VfMHIjSHr0wyvXFQCa0eKQ0fKyaL0kWcEnYqBac4lQ==}
+  vite-plugin-wasm@3.6.0:
+    resolution: {integrity: sha512-mL/QPziiIA4RAA6DkaZZzOstdwbW5jO4Vz7Zenj0wieKWBlNvIvX5L5ljum9lcUX0ShNfBgCNLKTjNkRVVqcsw==}
     peerDependencies:
-      vite: ^2 || ^3 || ^4 || ^5 || ^6 || ^7
+      vite: ^2 || ^3 || ^4 || ^5 || ^6 || ^7 || ^8
 
   vite-prerender-plugin@0.5.12:
     resolution: {integrity: sha512-EiwhbMn+flg14EysbLTmZSzq8NGTxhytgK3bf4aGRF1evWLGwZiHiUJ1KZDvbxgKbMf2pG6fJWGEa3UZXOnR1g==}
@@ -5576,7 +5576,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-plugin-wasm@3.5.0(vite@7.3.1(@types/node@25.5.0)(yaml@2.8.2)):
+  vite-plugin-wasm@3.6.0(vite@7.3.1(@types/node@25.5.0)(yaml@2.8.2)):
     dependencies:
       vite: 7.3.1(@types/node@25.5.0)(yaml@2.8.2)
 
