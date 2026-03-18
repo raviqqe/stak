@@ -5,7 +5,7 @@ outputs: {}
 runs:
   using: composite
   steps:
-    - uses: raviqqe/cargo-cache@317322b53633417f67a46d1134375b837712c7a2 # v1.6.4
+    - uses: raviqqe/cargo-cache@98cf6adfd93fe558bc3ae1735b97f10998f2067f # v1.0.3
     - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
       with:
         go-version: stable
