@@ -1,25 +1,26 @@
 version: 2
+default:
+  schedule: &schedule
+    interval: daily
+    time: 01:00
+    timezone: America/Vancouver
 updates:
   - package-ecosystem: github-actions
     directories:
       - /
       - /.github/actions/*
-    schedule:
-      interval: daily
+    <<: *default
   - package-ecosystem: gitsubmodule
     directory: /
-    schedule:
-      interval: daily
+    <<: *default
   - package-ecosystem: cargo
     directories:
       - /
       - /cmd/minimal
-    schedule:
-      interval: daily
+    <<: *default
   - package-ecosystem: gomod
     directory: /
-    schedule:
-      interval: daily
+    <<: *default
   - package-ecosystem: npm
     directory: /
     groups:
@@ -27,5 +28,4 @@ updates:
         patterns:
           - astro
           - "@astrojs/*"
-    schedule:
-      interval: daily
+    <<: *default
