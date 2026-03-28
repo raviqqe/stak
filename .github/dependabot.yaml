@@ -16,7 +16,9 @@ updates:
       time: 01:00
   - package-ecosystem: gitsubmodule
     directory: /
-    <<: *default
+    schedule:
+      interval: daily
+      time: 01:00
   - package-ecosystem: gomod
     directory: /
     schedule:
