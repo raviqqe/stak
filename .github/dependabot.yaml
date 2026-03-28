@@ -1,6 +1,6 @@
 version: 2
-default:
-  schedule: &schedule
+default: &default
+  schedule:
     interval: daily
     time: 01:00
     timezone: America/Vancouver
