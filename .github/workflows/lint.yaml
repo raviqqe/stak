@@ -55,9 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2.8.0
+      - uses: raviqqe/markdown-link-check@7887babb24c34c0832a82f919da10792c2bed096 # v1.0.4
         with:
-          args: --verbose --no-progress --accept 200,429 README.md examples/**/*.md
+          paths: README.md examples/**/*.md
   lint:
     needs:
       - clippy
