@@ -13,7 +13,7 @@ categories.workspace = true
 proc-macro = true
 
 [dependencies]
-cfg-elif = "0.6.5"
+cfg-elif = "0.6.6"
 proc-macro2 = { version = "1.0.106", features = ["proc-macro"] }
 quote = "1.0.45"
 stak-compiler = { path = "../compiler", version = "0.12.11" }

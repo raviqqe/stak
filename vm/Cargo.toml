@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-cfg-elif = "0.6.5"
+cfg-elif = "0.6.6"
 libm = { version = "0.2.16", default-features = false, optional = true }
 nonbox = { version = "0.5.13", optional = true }
 stak-lzss = { path = "../lzss", version = "0.12.11" }
