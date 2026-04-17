@@ -8,6 +8,13 @@ updates:
       interval: daily
       time: "01:00"
       timezone: Canada/Pacific
+  - package-ecosystem: docker
+    directories:
+      - /
+    schedule:
+      interval: daily
+      time: "01:00"
+      timezone: Canada/Pacific
   - package-ecosystem: github-actions
     directories:
       - /
