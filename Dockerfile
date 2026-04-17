@@ -1,4 +1,4 @@
-FROM rust:1.95-alpine AS build
+FROM rust:1.94-alpine AS build
 
 RUN apk update && apk add build-base
 RUN cargo install --locked stak
