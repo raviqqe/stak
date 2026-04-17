@@ -1,4 +1,4 @@
-FROM rust:1.94.0-alpine AS build
+FROM rust:1.94.0-alpine@sha256:ff0adc35894eb79586ce752a1b5a9eadc88b938c56d8f2b4b537b6258ff3fa10 AS build
 
 RUN apk update && apk add build-base
 RUN cargo install --locked stak
