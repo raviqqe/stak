@@ -65,12 +65,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
-name = "cfg-elif"
-version = "0.6.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c9631f8ebf7c3b5f9e3199d2158babd5b9f500b8821c44fb2090101f14a9e92"
-
-[[package]]
 name = "cfg-if"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -337,7 +331,6 @@ dependencies = [
 name = "stak-macro"
 version = "0.12.11"
 dependencies = [
- "cfg-elif",
  "proc-macro2",
  "quote",
  "stak-compiler",
@@ -413,7 +406,6 @@ dependencies = [
 name = "stak-util"
 version = "0.12.11"
 dependencies = [
- "cfg-elif",
  "noop-executor",
 ]
 
@@ -421,7 +413,6 @@ dependencies = [
 name = "stak-vm"
 version = "0.12.11"
 dependencies = [
- "cfg-elif",
  "stak-lzss",
  "stak-util",
  "winter-maybe-async",

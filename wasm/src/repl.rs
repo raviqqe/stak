@@ -1,4 +1,3 @@
-use cfg_elif::item;
 use stak_device::Device;
 use stak_file::VoidFileSystem;
 use stak_macro::include_module;
@@ -11,23 +10,26 @@ use std::io;
 use wasm_bindgen::prelude::*;
 use winter_maybe_async::{maybe_async, maybe_await};
 
-item::feature!(if ("async") {
-    // `maybe_async` does not work here because `wasm_bindgen`'s expansion happens
-    // first.
-    #[wasm_bindgen]
-    extern "C" {
-        async fn read_stdin() -> JsValue;
-        async fn write_stdout(byte: u8);
-        async fn write_stderr(byte: u8);
+cfg_select! {
+    feature = "async" => {
+        // `maybe_async` does not work here because `wasm_bindgen`'s expansion happens
+        // first.
+        #[wasm_bindgen]
+        extern "C" {
+            async fn read_stdin() -> JsValue;
+            async fn write_stdout(byte: u8);
+            async fn write_stderr(byte: u8);
+        }
     }
-} else {
-    #[wasm_bindgen]
-    extern "C" {
-        fn read_stdin() -> JsValue;
-        fn write_stdout(byte: u8);
-        fn write_stderr(byte: u8);
+    _ => {
+        #[wasm_bindgen]
+        extern "C" {
+            fn read_stdin() -> JsValue;
+            fn write_stdout(byte: u8);
+            fn write_stderr(byte: u8);
+        }
     }
-});
+}
 
 /// Runs a REPL interpreter.
 #[maybe_async]

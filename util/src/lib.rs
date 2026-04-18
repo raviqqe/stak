@@ -4,7 +4,6 @@
 
 #[doc(hidden)]
 pub mod __private {
-    pub use cfg_elif;
     pub use noop_executor;
 }
 
@@ -13,10 +12,13 @@ pub mod __private {
 #[macro_export]
 macro_rules! block_on {
     ($value:expr) => {
-        $crate::__private::cfg_elif::expr::feature!(if ("async") {
-            $crate::__private::noop_executor::block_on($value)
-        } else {
-            $value
-        })
+        ::core::cfg_select! {
+            feature = "async" => {
+                $crate::__private::noop_executor::block_on($value)
+            }
+            _ => {
+                $value
+            }
+        }
     };
 }

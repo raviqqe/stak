@@ -1,6 +1,5 @@
 use crate::EngineError;
 use any_fn::AnyFn;
-use cfg_elif::item;
 use stak_dynamic::DynamicPrimitiveSet;
 use stak_file::VoidFileSystem;
 use stak_process_context::VoidProcessContext;
@@ -11,13 +10,17 @@ use winter_maybe_async::{maybe_async, maybe_await};
 
 const DYNAMIC_PRIMITIVE_OFFSET: usize = 1000;
 
-item::feature!(if ("std") {
-    type Device = stak_device::StdioDevice;
-} else if ("libc") {
-    type Device = stak_device::LibcDevice;
-} else {
-    type Device = stak_device::VoidDevice;
-});
+cfg_select! {
+    feature = "std" => {
+        type Device = stak_device::StdioDevice;
+    }
+    feature = "libc" => {
+        type Device = stak_device::LibcDevice;
+    }
+    _ => {
+        type Device = stak_device::VoidDevice;
+    }
+}
 
 /// A type check primitive set.
 pub struct EnginePrimitiveSet<'a, 'b, H> {

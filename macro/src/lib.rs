@@ -1,6 +1,5 @@
 //! Macros to bundle and use Scheme programs.
 
-use cfg_elif::expr::feature;
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
@@ -50,16 +49,19 @@ fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream
         .as_ref()
         .map_or_else(|| quote!(stak::module), |module| module.to_token_stream());
 
-    Ok(feature!(if ("hot-reload") {
-        quote! {
-            {
-                static MODULE: #module::HotReloadModule = #module::HotReloadModule::new(#full_path);
-                #module::UniversalModule::HotReload(&MODULE)
+    Ok(cfg_select! {
+        feature = "hot-reload" => {
+            quote! {
+                {
+                    static MODULE: #module::HotReloadModule = #module::HotReloadModule::new(#full_path);
+                    #module::UniversalModule::HotReload(&MODULE)
+                }
             }
         }
-    } else {
-        quote!(#module::UniversalModule::Static(#module::StaticModule::new(include_bytes!(#full_path))))
-    }))
+        _ => {
+            quote!(#module::UniversalModule::Static(#module::StaticModule::new(include_bytes!(#full_path))))
+        }
+    })
 }
 
 /// Compiles a module in R7RS Scheme into bytecode.
