@@ -204,12 +204,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cfg-elif"
-version = "0.6.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a9c20d0fccc9ce23a2418c96f42eb49fab740a42e74c514d077f3031c7f516b"
-
-[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1551,7 +1545,6 @@ name = "stak-engine"
 version = "0.12.11"
 dependencies = [
  "any-fn",
- "cfg-elif",
  "rand",
  "stak",
  "stak-build",
@@ -1623,7 +1616,6 @@ dependencies = [
 name = "stak-macro"
 version = "0.12.11"
 dependencies = [
- "cfg-elif",
  "proc-macro2",
  "quote",
  "stak-compiler",
@@ -1747,7 +1739,6 @@ dependencies = [
 name = "stak-util"
 version = "0.12.11"
 dependencies = [
- "cfg-elif",
  "noop-executor",
 ]
 
@@ -1755,7 +1746,6 @@ dependencies = [
 name = "stak-vm"
 version = "0.12.11"
 dependencies = [
- "cfg-elif",
  "insta",
  "libm",
  "nonbox",
@@ -1774,7 +1764,6 @@ dependencies = [
 name = "stak-wasm"
 version = "0.12.11"
 dependencies = [
- "cfg-elif",
  "stak-build",
  "stak-compiler",
  "stak-configuration",
