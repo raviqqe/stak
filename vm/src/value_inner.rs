@@ -1,20 +1,26 @@
-use cfg_elif::item;
+cfg_select! {
+    feature = "float62" => {
+        mod float62;
+    }
+    feature = "float" => {
+        mod float64;
+    }
+    _ => {
+        mod integer63;
+    }
+}
 
-item::feature!(if ("float62") {
-    mod float62;
-} else if ("float") {
-    mod float64;
-} else {
-    mod integer63;
-});
-
-item::feature!(if ("float62") {
-    pub(crate) use float62::*;
-} else if ("float") {
-    pub(crate) use float64::*;
-} else {
-    pub(crate) use integer63::*;
-});
+cfg_select! {
+    feature = "float62" => {
+        pub(crate) use float62::*;
+    }
+    feature = "float" => {
+        pub(crate) use float64::*;
+    }
+    _ => {
+        pub(crate) use integer63::*;
+    }
+}
 
 #[cfg(test)]
 mod tests {
