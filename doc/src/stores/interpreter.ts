@@ -21,8 +21,6 @@ export const source = atom(
 
 const run = computedAsync([source], async (source) => runProgram(source));
 
-export const output = computedAsync(run, (output) =>
-  output instanceof Error ? null : new TextDecoder().decode(output),
-);
+export const output = computedAsync(run, (output) => new TextDecoder().decode(output));
 
 export const error = computed(run, (error) => (error instanceof Error ? error : null));
