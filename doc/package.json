@@ -14,6 +14,7 @@
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/starlight": "^0.38.4",
     "@monza-editor/preact": "^0.1.9",
+    "@nanostores/async": "^0.1.0",
     "@nanostores/preact": "^1.1.0",
     "@preact/signals": "^2.9.0",
     "@raviqqe/stak": "^0.12.11",

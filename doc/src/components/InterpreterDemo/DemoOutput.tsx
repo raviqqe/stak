@@ -8,16 +8,17 @@ import styles from "./DemoOutput.module.css";
 
 export const DemoOutput: FunctionComponent = () => {
   const output = useStore(store.output);
-  const error = useStore(store.error);
 
   return (
     <div class={styles.root}>
       <Field>
         <Label for="output">Output</Label>
         <pre class={styles.output} id="output">
-          {output}
+          {output.state === "ready" ? output.value : null}
         </pre>
-        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        {output.state === "failed" && output.error instanceof Error && (
+          <ErrorMessage>{output.error.message}</ErrorMessage>
+        )}
       </Field>
     </div>
   );
