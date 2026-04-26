@@ -1,5 +1,5 @@
 import { computedAsync } from "@nanostores/async";
-import { atom, computed } from "nanostores";
+import { atom } from "nanostores";
 import { run as runProgram } from "../application/run.js";
 
 export const source = atom(
@@ -19,8 +19,6 @@ export const source = atom(
   `.trim(),
 );
 
-const run = computedAsync([source], async (source) => runProgram(source));
-
-export const output = computedAsync(run, (output) => new TextDecoder().decode(output));
-
-export const error = computed(run, (error) => (error instanceof Error ? error : null));
+export const output = computedAsync([source], async (source) =>
+  new TextDecoder().decode(await runProgram(source)),
+);
