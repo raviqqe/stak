@@ -20,7 +20,7 @@
     "@raviqqe/stak": "^0.12.11",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
-    "astro": "^6.1.9",
+    "astro": "^6.1.10",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.46.0",
     "lucide-preact": "^1.11.0",
@@ -31,7 +31,7 @@
     "vite-plugin-wasm": "^3.6.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.8",
+    "@astrojs/check": "^0.9.9",
     "@types/node": "^25.6.0",
     "sharp": "^0.34.5",
     "typescript": "^6.0.3"
