@@ -72,9 +72,9 @@ checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
 name = "clap"
-version = "4.6.0"
+version = "4.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b193af5b67834b676abd72466a96c1024e6a6ad978a1f484bd90b85c94041351"
+checksum = "1ddb117e43bbf7dacf0a4190fef4d345b9bad68dfc649cb349e7d17d28428e51"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -94,9 +94,9 @@ dependencies = [
 
 [[package]]
 name = "clap_derive"
-version = "4.6.0"
+version = "4.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1110bd8a634a1ab8cb04345d8d878267d57c3cf1b38d91b71af6686408bbca6a"
+checksum = "f2ce8604710f6733aa641a2b3731eaa1e8b3d9973d5e3565da11800813f997a9"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -148,9 +148,9 @@ dependencies = [
 
 [[package]]
 name = "heapless"
-version = "0.9.2"
+version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2af2455f757db2b292a9b1768c4b70186d443bcb3b316252d6b540aec1cd89ed"
+checksum = "25ba4bd83f9415b58b4ed8dc5714c76e626a105be4646c02630ad730ad3b5aa4"
 dependencies = [
  "hash32",
  "stable_deref_trait",
@@ -188,14 +188,14 @@ checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
 
 [[package]]
 name = "mstak"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "dlmalloc",
  "origin",
@@ -270,7 +270,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -283,11 +283,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.12.11"
+version = "0.12.12"
 
 [[package]]
 name = "stak-device"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -296,7 +296,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "heapless",
  "rustix",
@@ -306,7 +306,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "libm",
  "stak-vm",
@@ -315,21 +315,21 @@ dependencies = [
 
 [[package]]
 name = "stak-libc"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "rustix",
 ]
 
 [[package]]
 name = "stak-lzss"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "clap",
 ]
 
 [[package]]
 name = "stak-macro"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -340,7 +340,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -349,7 +349,7 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -357,7 +357,7 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -365,7 +365,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -379,7 +379,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "dlmalloc",
  "origin",
@@ -395,7 +395,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -404,14 +404,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "noop-executor",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.12.11"
+version = "0.12.12"
 dependencies = [
  "stak-lzss",
  "stak-util",
