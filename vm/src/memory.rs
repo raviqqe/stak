@@ -46,6 +46,8 @@ pub struct Memory<H> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
+    null: Cons,
+    r#true: Cons,
     register: Cons,
     allocation_index: usize,
     space: bool,
@@ -59,15 +61,21 @@ impl<H: Heap> Memory<H> {
             code: NEVER,
             stack: NEVER,
             r#false: NEVER,
+            null: NEVER,
+            r#true: NEVER,
             register: NEVER,
             allocation_index: 0,
             space: false,
             heap,
         };
 
-        // Initialize a fake false value.
+        // Initialize a fake false value with the same `null` and `true` cells in its
+        // `car` and `cdr` fields so that the constants are valid before the bytecode
+        // overwrites them.
         let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
         memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
+        memory.null = cons;
+        memory.r#true = cons;
 
         Ok(memory)
     }
@@ -111,22 +119,31 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Returns a boolean value.
-    pub fn boolean(&self, value: bool) -> Result<Cons, Error> {
-        Ok(if value {
-            self.cdr(self.r#false)?.assume_cons()
-        } else {
-            self.r#false
-        })
+    #[inline]
+    pub const fn boolean(&self, value: bool) -> Result<Cons, Error> {
+        Ok(if value { self.r#true } else { self.r#false })
     }
 
     /// Returns a null value.
-    pub fn null(&self) -> Result<Cons, Error> {
-        Ok(self.car(self.r#false)?.assume_cons())
+    #[inline]
+    pub const fn null(&self) -> Result<Cons, Error> {
+        Ok(self.null)
     }
 
     /// Sets a false value.
-    pub(crate) const fn set_false(&mut self, cons: Cons) {
+    pub(crate) fn set_false(&mut self, cons: Cons) -> Result<(), Error> {
         self.r#false = cons;
+        self.refresh_constants()
+    }
+
+    /// Refreshes cached `null` and `true` cons values from a false cons.
+    ///
+    /// A garbage collection or [`Self::set_false`] reassigns the false cons so
+    /// this must be called whenever they happen.
+    fn refresh_constants(&mut self) -> Result<(), Error> {
+        self.null = self.car(self.r#false)?.assume_cons();
+        self.r#true = self.cdr(self.r#false)?.assume_cons();
+        Ok(())
     }
 
     /// Pushes a value to a stack.
@@ -432,13 +449,18 @@ impl<H: Heap> Memory<H> {
             *cons = self.copy_cons(*cons)?;
         }
 
-        let mut index = self.allocation_start();
+        let start = self.allocation_start();
+        let mut index = 0;
 
-        while index < self.allocation_end() {
-            let value = self.copy_value(self.get::<false>(index)?)?;
-            self.set::<false>(index, value)?;
+        // The loop boundary grows as `copy_value` allocates new cells in to-space, so
+        // it must be re-read each iteration.
+        while index < self.allocation_index {
+            let value = self.copy_value(self.get::<false>(start + index)?)?;
+            self.set::<false>(start + index, value)?;
             index += 1;
         }
+
+        self.refresh_constants()?;
 
         Ok(())
     }
@@ -452,21 +474,26 @@ impl<H: Heap> Memory<H> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == NEVER {
-            NEVER
-        } else if self.garbage_car(cons)? == NEVER.into() {
+        if cons == NEVER {
+            return Ok(NEVER);
+        }
+
+        let car = self.garbage_car(cons)?;
+        let copy = if car == NEVER.into() {
             // Get a forward pointer.
             self.garbage_cdr(cons)?.assume_cons()
         } else {
-            let copy = self.allocate_unchecked(self.garbage_car(cons)?, self.garbage_cdr(cons)?)?;
+            let cdr = self.garbage_cdr(cons)?;
+            let copy = self.allocate_unchecked(car, cdr)?;
 
             // Set a forward pointer.
             self.set_garbage_car(cons, NEVER.into())?;
             self.set_garbage_cdr(cons, copy.into())?;
 
             copy
-        }
-        .set_tag(cons.tag()))
+        };
+
+        Ok(copy.set_tag(cons.tag()))
     }
 }
 

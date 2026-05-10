@@ -437,7 +437,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
         let program = self.decode_ribs(input.into_iter())?;
         self.memory
-            .set_false(self.memory.car(program)?.assume_cons());
+            .set_false(self.memory.car(program)?.assume_cons())?;
         self.memory
             .set_code(self.memory.cdr(program)?.assume_cons());
 
