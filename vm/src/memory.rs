@@ -46,6 +46,8 @@ pub struct Memory<H> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
+    r#true: Cons,
+    null: Cons,
     register: Cons,
     allocation_index: usize,
     space: bool,
@@ -59,15 +61,18 @@ impl<H: Heap> Memory<H> {
             code: NEVER,
             stack: NEVER,
             r#false: NEVER,
+            r#true: NEVER,
+            null: NEVER,
             register: NEVER,
             allocation_index: 0,
             space: false,
             heap,
         };
 
-        // Initialize a fake false value.
+        // Initialize singletons with fake values.
         let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
-        memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
+        let cons = memory.allocate_unchecked(cons.into(), cons.into())?;
+        memory.set_false(cons)?;
 
         Ok(memory)
     }
@@ -111,22 +116,28 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Returns a boolean value.
-    pub fn boolean(&self, value: bool) -> Result<Cons, Error> {
-        Ok(if value {
-            self.cdr(self.r#false)?.assume_cons()
-        } else {
-            self.r#false
-        })
+    #[inline]
+    pub const fn boolean(&self, value: bool) -> Result<Cons, Error> {
+        Ok(if value { self.r#true } else { self.r#false })
     }
 
     /// Returns a null value.
-    pub fn null(&self) -> Result<Cons, Error> {
-        Ok(self.car(self.r#false)?.assume_cons())
+    #[inline]
+    pub const fn null(&self) -> Result<Cons, Error> {
+        Ok(self.null)
     }
 
     /// Sets a false value.
-    pub(crate) const fn set_false(&mut self, cons: Cons) {
+    pub(crate) fn set_false(&mut self, cons: Cons) -> Result<(), Error> {
         self.r#false = cons;
+        self.refresh_singletons()
+    }
+
+    fn refresh_singletons(&mut self) -> Result<(), Error> {
+        self.r#true = self.cdr(self.r#false)?.assume_cons();
+        self.null = self.car(self.r#false)?.assume_cons();
+
+        Ok(())
     }
 
     /// Pushes a value to a stack.
@@ -440,6 +451,8 @@ impl<H: Heap> Memory<H> {
             index += 1;
         }
 
+        self.refresh_singletons()?;
+
         Ok(())
     }
 
@@ -452,13 +465,17 @@ impl<H: Heap> Memory<H> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == NEVER {
-            NEVER
-        } else if self.garbage_car(cons)? == NEVER.into() {
+        if cons == NEVER {
+            return Ok(NEVER);
+        }
+
+        let car = self.garbage_car(cons)?;
+
+        Ok(if car == NEVER.into() {
             // Get a forward pointer.
             self.garbage_cdr(cons)?.assume_cons()
         } else {
-            let copy = self.allocate_unchecked(self.garbage_car(cons)?, self.garbage_cdr(cons)?)?;
+            let copy = self.allocate_unchecked(car, self.garbage_cdr(cons)?)?;
 
             // Set a forward pointer.
             self.set_garbage_car(cons, NEVER.into())?;
