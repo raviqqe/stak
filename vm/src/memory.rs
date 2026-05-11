@@ -46,8 +46,8 @@ pub struct Memory<H> {
     code: Cons,
     stack: Cons,
     r#false: Cons,
-    null: Cons,
     r#true: Cons,
+    null: Cons,
     register: Cons,
     allocation_index: usize,
     space: bool,
@@ -61,21 +61,21 @@ impl<H: Heap> Memory<H> {
             code: NEVER,
             stack: NEVER,
             r#false: NEVER,
-            null: NEVER,
             r#true: NEVER,
+            null: NEVER,
             register: NEVER,
             allocation_index: 0,
             space: false,
             heap,
         };
 
-        // Initialize a fake false value with the same `null` and `true` cells in its
-        // `car` and `cdr` fields so that the constants are valid before the bytecode
+        // Initialize a fake false value with the same `true` and `null` cells in its
+        // `cdr` and `car` fields so that the constants are valid before the bytecode
         // overwrites them.
         let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
         memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
-        memory.null = cons;
         memory.r#true = cons;
+        memory.null = cons;
 
         Ok(memory)
     }
@@ -137,8 +137,8 @@ impl<H: Heap> Memory<H> {
     }
 
     fn refresh_constants(&mut self) -> Result<(), Error> {
-        self.null = self.car(self.r#false)?.assume_cons();
         self.r#true = self.cdr(self.r#false)?.assume_cons();
+        self.null = self.car(self.r#false)?.assume_cons();
 
         Ok(())
     }
