@@ -476,21 +476,20 @@ impl<H: Heap> Memory<H> {
         }
 
         let car = self.garbage_car(cons)?;
-        let copy = if car == NEVER.into() {
+
+        Ok(if car == NEVER.into() {
             // Get a forward pointer.
             self.garbage_cdr(cons)?.assume_cons()
         } else {
-            let cdr = self.garbage_cdr(cons)?;
-            let copy = self.allocate_unchecked(car, cdr)?;
+            let copy = self.allocate_unchecked(car, self.garbage_cdr(cons)?)?;
 
             // Set a forward pointer.
             self.set_garbage_car(cons, NEVER.into())?;
             self.set_garbage_cdr(cons, copy.into())?;
 
             copy
-        };
-
-        Ok(copy.set_tag(cons.tag()))
+        }
+        .set_tag(cons.tag()))
     }
 }
 
