@@ -69,9 +69,7 @@ impl<H: Heap> Memory<H> {
             heap,
         };
 
-        // Initialize a fake false value with the same `true` and `null` cells in its
-        // `cdr` and `car` fields so that the constants are valid before the bytecode
-        // overwrites them.
+        // Initialize singletons.
         let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
         memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
         memory.r#true = cons;
