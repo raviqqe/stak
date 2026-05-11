@@ -7,6 +7,7 @@ on:
 concurrency:
   group: bench-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  queue: ${{ github.ref == 'refs/heads/main' && 'max' || 'single' }}
 env:
   GUILE_AUTO_COMPILE: 0
 jobs:
