@@ -101,27 +101,6 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: tools/rust_loc_bench.sh
-  r7rs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          submodules: true
-      - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-scheme
-      - run: cargo install --path root
-      - run: rm results.*
-        working-directory: r7rs-benchmarks
-      - run: make stak
-        env:
-          CPU_LIMIT: 600
-        working-directory: r7rs-benchmarks
-      - run: cat results.Stak
-        working-directory: r7rs-benchmarks
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: stak_r7rs_benchmark
-          path: r7rs-benchmarks/results.Stak
   report:
     needs:
       - size
