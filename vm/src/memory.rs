@@ -443,14 +443,11 @@ impl<H: Heap> Memory<H> {
             *cons = self.copy_cons(*cons)?;
         }
 
-        let start = self.allocation_start();
-        let mut index = 0;
+        let mut index = self.allocation_start();
 
-        // The loop boundary grows as `copy_value` allocates new cells in to-space, so
-        // it must be re-read each iteration.
-        while index < self.allocation_index {
-            let value = self.copy_value(self.get::<false>(start + index)?)?;
-            self.set::<false>(start + index, value)?;
+        while index < self.allocation_end() {
+            let value = self.copy_value(self.get::<false>(index)?)?;
+            self.set::<false>(index, value)?;
             index += 1;
         }
 
