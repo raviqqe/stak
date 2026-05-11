@@ -72,8 +72,7 @@ impl<H: Heap> Memory<H> {
         // Initialize singletons with fake values.
         let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
         memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
-        memory.r#true = cons;
-        memory.null = cons;
+        memory.refresh_singletons()?;
 
         Ok(memory)
     }
@@ -131,10 +130,10 @@ impl<H: Heap> Memory<H> {
     /// Sets a false value.
     pub(crate) fn set_false(&mut self, cons: Cons) -> Result<(), Error> {
         self.r#false = cons;
-        self.refresh_constants()
+        self.refresh_singletons()
     }
 
-    fn refresh_constants(&mut self) -> Result<(), Error> {
+    fn refresh_singletons(&mut self) -> Result<(), Error> {
         self.r#true = self.cdr(self.r#false)?.assume_cons();
         self.null = self.car(self.r#false)?.assume_cons();
 
@@ -455,7 +454,7 @@ impl<H: Heap> Memory<H> {
             index += 1;
         }
 
-        self.refresh_constants()?;
+        self.refresh_singletons()?;
 
         Ok(())
     }
