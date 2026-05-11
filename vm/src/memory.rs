@@ -69,7 +69,7 @@ impl<H: Heap> Memory<H> {
             heap,
         };
 
-        // Initialize singletons.
+        // Initialize singletons with fake values.
         let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
         memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
         memory.r#true = cons;
