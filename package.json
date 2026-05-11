@@ -10,7 +10,7 @@
     "tombi": "^0.10.6"
   },
   "engines": {
-    "node": ">=26.0.0"
+    "node": ">=26.1.0"
   },
-  "packageManager": "pnpm@11.0.7+sha512.724a7b5d2319cdd7009d65e15a2c29aae9d3902b50585ca163d38a7737eb85bc4e72196879ff59768a71e81fe32aa71e8b70f088b2e24b9e4a2850d87e4607b5"
+  "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38"
 }
