@@ -136,13 +136,10 @@ impl<H: Heap> Memory<H> {
         self.refresh_constants()
     }
 
-    /// Refreshes cached `null` and `true` cons values from a false cons.
-    ///
-    /// A garbage collection or [`Self::set_false`] reassigns the false cons so
-    /// this must be called whenever they happen.
     fn refresh_constants(&mut self) -> Result<(), Error> {
         self.null = self.car(self.r#false)?.assume_cons();
         self.r#true = self.cdr(self.r#false)?.assume_cons();
+
         Ok(())
     }
 
