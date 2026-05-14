@@ -170,10 +170,10 @@ impl<H: Heap> Memory<H> {
 
     /// Pops numbers from a stack.
     pub fn pop_numbers<const M: usize>(&mut self) -> Result<[Number; M], Error> {
-        let mut numbers = [Default::default(); M];
+        let mut numbers = [Number::default(); M];
 
-        for (index, value) in self.pop_many::<M>()?.into_iter().enumerate() {
-            numbers[index] = value.assume_number();
+        for index in (0..M).rev() {
+            numbers[index] = self.pop()?.assume_number();
         }
 
         Ok(numbers)
@@ -399,9 +399,10 @@ impl<H: Heap> Memory<H> {
 
     /// Calculates a length of a list.
     pub fn list_length(&self, mut list: Cons) -> Result<usize, Error> {
+        let null = self.null()?;
         let mut length = 0;
 
-        while list != self.null()? {
+        while list != null {
             length += 1;
             list = self.cdr(list)?.assume_cons();
         }

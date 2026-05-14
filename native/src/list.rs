@@ -42,10 +42,11 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
         match primitive {
             ListPrimitive::ASSQ => {
                 let [x, xs] = memory.pop_many()?;
+                let null = memory.null()?;
                 let mut xs = xs.assume_cons();
                 let mut y = memory.boolean(false)?;
 
-                while xs != memory.null()? {
+                while xs != null {
                     let cons = memory.car(xs)?.assume_cons();
 
                     if x == memory.car(cons)? {
@@ -66,10 +67,11 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
             }
             ListPrimitive::MEMQ => {
                 let [x, xs] = memory.pop_many()?;
+                let null = memory.null()?;
                 let mut xs = xs.assume_cons();
                 let mut y = memory.boolean(false)?;
 
-                while xs != memory.null()? {
+                while xs != null {
                     if x == memory.car(xs)? {
                         y = xs;
                         break;
