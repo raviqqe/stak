@@ -161,8 +161,8 @@ impl<H: Heap> Memory<H> {
     pub fn pop_many<const M: usize>(&mut self) -> Result<[Value; M], Error> {
         let mut values = [Default::default(); M];
 
-        for index in 0..=M - 1 {
-            values[M - 1 - index] = self.pop()?;
+        for index in (0..M).rev() {
+            values[index] = self.pop()?;
         }
 
         Ok(values)
