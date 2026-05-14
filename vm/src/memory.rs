@@ -170,7 +170,7 @@ impl<H: Heap> Memory<H> {
 
     /// Pops numbers from a stack.
     pub fn pop_numbers<const M: usize>(&mut self) -> Result<[Number; M], Error> {
-        let mut numbers = [Number::default(); M];
+        let mut numbers = [Default::default(); M];
 
         for index in (0..M).rev() {
             numbers[index] = self.pop()?.assume_number();
