@@ -31,7 +31,7 @@ importers:
         version: 3.7.2
       '@astrojs/starlight':
         specifier: ^0.39.2
-        version: 0.39.2(astro@6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))(typescript@6.0.3)
+        version: 0.39.2(astro@6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))(typescript@6.0.3)
       '@monza-editor/preact':
         specifier: ^0.1.9
         version: 0.1.9
@@ -54,8 +54,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       astro:
-        specifier: ^6.3.2
-        version: 6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
+        specifier: ^6.3.3
+        version: 6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -1288,8 +1288,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^5.0.0-beta || ^3.3.0 || ^6.0.0-beta
 
-  astro@6.3.2:
-    resolution: {integrity: sha512-Wvl/420m99OjKRH9Q+Vk7JBed8H39n66R61FG2ty0yZjQXBplIIXvJWYXUouMn2U4znfjpYe1HLOA2Rpet6uog==}
+  astro@6.3.3:
+    resolution: {integrity: sha512-wvLIZQYbBZt6U8gyflBW4SLBypaqdwLZUH93rT3oT53cmQ0bTGubvMAGjqBRoheOYzYcTJZtW6czztzbu4kQ5g==}
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1800,8 +1800,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  magicast@0.5.2:
-    resolution: {integrity: sha512-E3ZJh4J3S9KfwdjZhe2afj6R9lGIN5Pher1pF39UGrXRqq/VDaGVIGN13BjHd2u8B61hArAGOnso7nBOouW3TQ==}
+  magicast@0.5.3:
+    resolution: {integrity: sha512-pVKE4UdSQ7DvHzivsCIFx2BJn1mHG6KsyrFcaxFx6tONdneEuThrDx0Cj3AMg58KyN4pzYT+LHOotxDQDjNvkw==}
 
   markdown-extensions@2.0.0:
     resolution: {integrity: sha512-o5vL7aDWatOTX8LzaS1WMoaoxIiLRQJuIKKe2wAw6IeULDHaqbiqiggmx+pKvZDb1Sj+pE46Sn1T7lCqfFtg1Q==}
@@ -2821,12 +2821,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@5.0.4(astro@6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))':
+  '@astrojs/mdx@5.0.4(astro@6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))':
     dependencies:
       '@astrojs/markdown-remark': 7.1.1
       '@mdx-js/mdx': 3.1.1
       acorn: 8.16.0
-      astro: 6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
+      astro: 6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
       es-module-lexer: 2.1.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -2879,17 +2879,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 4.3.6
 
-  '@astrojs/starlight@0.39.2(astro@6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))(typescript@6.0.3)':
+  '@astrojs/starlight@0.39.2(astro@6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))(typescript@6.0.3)':
     dependencies:
       '@astrojs/markdown-remark': 7.1.1
-      '@astrojs/mdx': 5.0.4(astro@6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))
+      '@astrojs/mdx': 5.0.4(astro@6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))
       '@astrojs/sitemap': 3.7.2
       '@pagefind/default-ui': 1.5.2
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
-      astro-expressive-code: 0.42.0(astro@6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))
+      astro: 6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
+      astro-expressive-code: 0.42.0(astro@6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -3828,12 +3828,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.42.0(astro@6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)):
+  astro-expressive-code@0.42.0(astro@6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)):
     dependencies:
-      astro: 6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
+      astro: 6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0)
       rehype-expressive-code: 0.42.0
 
-  astro@6.3.2(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0):
+  astro@6.3.3(@types/node@25.8.0)(rollup@4.60.3)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@astrojs/internal-helpers': 0.9.1
@@ -3863,7 +3863,7 @@ snapshots:
       js-yaml: 4.1.1
       jsonc-parser: 3.3.1
       magic-string: 0.30.21
-      magicast: 0.5.2
+      magicast: 0.5.3
       mrmime: 2.0.1
       neotraverse: 0.6.18
       obug: 2.1.1
@@ -4519,7 +4519,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  magicast@0.5.2:
+  magicast@0.5.3:
     dependencies:
       '@babel/parser': 7.29.3
       '@babel/types': 7.29.0
