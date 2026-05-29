@@ -9,6 +9,10 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[[bin]]
+name = "stak"
+required-features = ["std"]
+
 [dependencies]
 stak-device = { path = "../device", version = "0.12.13" }
 stak-dynamic = { path = "../dynamic", version = "0.12.13", optional = true }
@@ -34,6 +38,7 @@ stak-build = { path = "../build", version = "0.12.13" }
 default = ["float", "std"]
 alloc = ["dep:stak-dynamic", "dep:stak-engine"]
 async = [
+  "stak-build/async",
   "stak-device/async",
   "stak-dynamic/async",
   "stak-engine/async",
