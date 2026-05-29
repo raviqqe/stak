@@ -145,13 +145,6 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: tools/self_host_test.sh
-  minimal:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: ./.github/actions/setup
-      - run: cargo build --release -p mstak -p mstak-interpret
-      - run: ls -lB target/release
   wasm:
     runs-on: ubuntu-latest
     steps:
@@ -213,7 +206,6 @@ jobs:
       - extra_integration_test
       - self_host_test
       - wasm
-      - minimal
       - decode
       - r7rs_compatible_compiler
       - r7rs_compatible_library
