@@ -12,13 +12,19 @@ categories.workspace = true
 [dependencies]
 glob = "0.3.3"
 stak-compiler = { path = "../compiler", version = "0.12.13" }
-tokio = { version = "1.52.3", features = [
-  "fs",
-  "io-util",
-  "process",
-  "rt-multi-thread",
-] }
+tokio = {
+  version = "1.52.3",
+  features = [
+    "fs",
+    "io-util",
+    "process",
+    "rt-multi-thread",
+  ]
+}
 which = "8.0.2"
+
+[features]
+async = ["stak-compiler/async"]
 
 [lints]
 workspace = true
