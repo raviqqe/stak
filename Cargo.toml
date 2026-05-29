@@ -4,7 +4,6 @@ members = [
   "bench",
   "build",
   "cmd/*",
-  "cmd/minimal/*",
   "compiler",
   "configuration",
   "device",
