@@ -4,7 +4,7 @@
     "lint:toml": "tombi format --check && tombi lint"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.15",
+    "@biomejs/biome": "^2.4.16",
     "@raviqqe/biome-config": "^2.0.26",
     "oxfmt": "^0.52.0",
     "tombi": "^1.1.0"
