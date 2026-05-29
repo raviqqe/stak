@@ -9,6 +9,10 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[[bin]]
+name = "stak"
+required-features = ["std"]
+
 [dependencies]
 stak-device = { path = "../device", version = "0.12.13" }
 stak-dynamic = { path = "../dynamic", version = "0.12.13", optional = true }
