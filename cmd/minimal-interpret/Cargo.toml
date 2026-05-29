@@ -18,7 +18,11 @@ origin = {
     "libc",
   ]
 }
-stak-device = { path = "../../device", version = "0.12.14", features = ["libc"] }
+stak-device = {
+  path = "../../device",
+  version = "0.12.14",
+  features = ["libc"]
+}
 stak-file = { path = "../../file", version = "0.12.14", features = ["libc"] }
 stak-libc = { path = "../../libc", version = "0.12.14" }
 stak-process-context = {

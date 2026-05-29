@@ -71,8 +71,8 @@ warnings = "deny"
 
 [profile.dev]
 opt-level = 3
-panic = "abort"
 lto = true
+panic = "abort"
 
 [profile.dev.build-override]
 opt-level = 3
