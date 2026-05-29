@@ -15,7 +15,11 @@ categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 stak-device = { path = "../../device", version = "0.12.0", features = ["libc"] }
 stak-file = { path = "../../file", version = "0.12.0", features = ["libc"] }
 stak-libc = { path = "../../libc", version = "0.12.0" }
-stak-process-context = { path = "../../process-context", version = "0.12.0", features = ["libc"] }
+stak-process-context = {
+  path = "../../process-context",
+  version = "0.12.0",
+  features = ["libc"]
+}
 stak-r7rs = { path = "../../r7rs", version = "0.12.0" }
 stak-sac = { path = "../../sac", version = "0.12.0", features = ["libc"] }
 stak-time = { path = "../../time", version = "0.12.0", features = ["libc"] }
