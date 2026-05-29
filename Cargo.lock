@@ -988,6 +988,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "mstak"
+version = "0.12.14"
+dependencies = [
+ "stak-sac",
+]
+
+[[package]]
+name = "mstak-interpret"
+version = "0.12.14"
+dependencies = [
+ "dlmalloc",
+ "origin",
+ "stak-device",
+ "stak-file",
+ "stak-libc",
+ "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
+ "stak-vm",
+]
+
+[[package]]
 name = "no-std-no-alloc"
 version = "0.12.14"
 dependencies = [
