@@ -1740,7 +1740,6 @@ name = "stak-util"
 version = "0.12.13"
 dependencies = [
  "noop-executor",
- "winter-maybe-async",
 ]
 
 [[package]]
