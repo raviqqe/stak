@@ -1,7 +1,7 @@
 {
   "scripts": {
     "lint:document": "biome ci",
-    "lint:toml": "tombi check"
+    "lint:toml": "tombi format --check && tombi lint"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
