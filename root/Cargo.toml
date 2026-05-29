@@ -38,11 +38,11 @@ stak-build = { path = "../build", version = "0.12.13" }
 default = ["float", "std"]
 alloc = ["dep:stak-dynamic", "dep:stak-engine"]
 async = [
+  "stak-build/async",
   "stak-device/async",
   "stak-dynamic/async",
   "stak-engine/async",
   "stak-file/async",
-  "stak-macro/async",
   "stak-process-context/async",
   "stak-r7rs/async",
   "stak-time/async",
