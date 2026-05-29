@@ -3,7 +3,6 @@ updates:
   - package-ecosystem: cargo
     directories:
       - /
-      - /cmd/minimal
     schedule:
       interval: daily
       time: "01:00"

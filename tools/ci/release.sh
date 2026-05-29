@@ -43,9 +43,4 @@ git commit -m release
 
 cargo install --locked cargo-workspaces
 
-for directory in . cmd/minimal; do
-  (
-    cd $directory
-    cargo workspaces publish -y --from-git "$@"
-  )
-done
+cargo workspaces publish -y --from-git "$@"

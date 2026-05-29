@@ -27,10 +27,7 @@ shift $(expr $OPTIND - 1)
 cd $(dirname $0)/..
 
 cargo build --profile release_test --features $features
-(
-  cd cmd/minimal
-  cargo build --release
-)
+cargo build --release -p mstak -p mstak-interpret
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 

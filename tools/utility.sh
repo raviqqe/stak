@@ -67,7 +67,7 @@ setup_bench() (
   esac
 
   build_binary . -p stak -p stak-interpret $build_options
-  build_binary cmd/minimal -p mstak -p mstak-interpret
+  cargo build --release -p mstak -p mstak-interpret
 
   export PATH=$PWD/target/release:$PATH
 

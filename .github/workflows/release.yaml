@@ -71,9 +71,7 @@ jobs:
           - binary: stak-profile
           - binary: stak-repl
           - binary: mstak
-            directory: cmd/minimal
           - binary: mstak-interpret
-            directory: cmd/minimal
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:

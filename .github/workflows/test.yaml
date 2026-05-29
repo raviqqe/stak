@@ -150,18 +150,8 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
-      - run: cargo build
-        working-directory: cmd/minimal
-      - run: cargo build --release
-        working-directory: cmd/minimal
+      - run: cargo build --release -p mstak -p mstak-interpret
       - run: ls -lB target/release
-        working-directory: cmd/minimal
-      - run: cargo fmt --check
-        working-directory: cmd/minimal
-      - run: cargo clippy
-        working-directory: cmd/minimal
-      - run: cargo test
-        working-directory: cmd/minimal
   wasm:
     runs-on: ubuntu-latest
     steps:

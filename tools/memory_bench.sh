@@ -39,7 +39,7 @@ brew install valgrind
 
 setup_bench
 
-export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
+export PATH=$PWD/target/release:$PATH
 
 output_directory=$PWD/tmp/bench/memory
 mkdir -p $output_directory

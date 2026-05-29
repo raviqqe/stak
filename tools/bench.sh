@@ -28,7 +28,7 @@ cd $(dirname $0)/..
 
 setup_bench $feature
 
-export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
+export PATH=$PWD/target/release:$PATH
 
 output_directory=$PWD/tmp/bench/time
 mkdir -p $output_directory
