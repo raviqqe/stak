@@ -11,7 +11,6 @@ categories.workspace = true
 
 [dependencies]
 noop-executor = "0.1.2"
-winter-maybe-async = "0.13.1"
 
 [lints]
 workspace = true
