@@ -94,7 +94,7 @@ mod tests {
     use super::*;
     use crate::MAX_WINDOW_SIZE;
     use alloc::vec::Vec;
-    use core::iter::repeat;
+    use core::iter::repeat_n;
     use pretty_assertions::assert_eq;
 
     const WINDOW_SIZE: usize = 8;
@@ -205,7 +205,7 @@ mod tests {
     #[test]
     fn max_length() {
         assert_eq!(
-            LzssCompressionIterator::<{ 1 + MAX_LENGTH }, _>::new(repeat(42).take(MAX_LENGTH + 1))
+            LzssCompressionIterator::<{ 1 + MAX_LENGTH }, _>::new(repeat_n(42, MAX_LENGTH + 1))
                 .collect::<Vec<_>>(),
             [84, u8::MAX, 0]
         );

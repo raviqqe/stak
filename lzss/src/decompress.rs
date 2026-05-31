@@ -52,7 +52,7 @@ mod tests {
     use super::*;
     use crate::{MAX_LENGTH, MAX_WINDOW_SIZE};
     use alloc::vec::Vec;
-    use core::iter::repeat;
+    use core::iter::repeat_n;
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -77,10 +77,10 @@ mod tests {
     fn max_length() {
         assert_eq!(
             LzssDecompressionIterator::<1, _>::new(
-                [84, (MAX_LENGTH - 1 << 1) as u8 | 1, 0].into_iter()
+                [84, ((MAX_LENGTH - 1) << 1) as u8 | 1, 0].into_iter()
             )
             .collect::<Vec<_>>(),
-            repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>()
+            repeat_n(42, MAX_LENGTH + 1).collect::<Vec<_>>()
         );
     }
 
