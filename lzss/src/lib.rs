@@ -42,7 +42,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
 mod tests {
     use super::*;
     use alloc::vec::Vec;
-    use core::iter::repeat;
+    use core::iter::repeat_n;
     use pretty_assertions::assert_eq;
     use quickcheck_macros::quickcheck;
 
@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn max_length() {
         const WINDOW_SIZE: usize = 1;
-        let data = repeat(42).take(MAX_LENGTH + 1).collect::<Vec<_>>();
+        let data = repeat_n(42, MAX_LENGTH + 1).collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
