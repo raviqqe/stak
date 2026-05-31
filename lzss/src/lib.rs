@@ -42,7 +42,7 @@ impl<I: IntoIterator<Item = u8>> Lzss for I {
 mod tests {
     use super::*;
     use alloc::vec::Vec;
-    use core::iter::repeat_n;
+    use core::iter::{repeat, repeat_n};
     use pretty_assertions::assert_eq;
     use quickcheck_macros::quickcheck;
 
