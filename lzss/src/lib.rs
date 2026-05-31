@@ -151,7 +151,7 @@ mod tests {
     #[test]
     fn max_offset() {
         const WINDOW_SIZE: usize = 128;
-        let data = repeat(0..128).take(2).flatten().collect::<Vec<_>>();
+        let data = repeat_n(0..128, 2).flatten().collect::<Vec<_>>();
 
         assert_eq!(
             data.iter()
