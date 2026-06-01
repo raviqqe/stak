@@ -38,7 +38,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-15
+          - macos-16
         options:
           -
           - --no-default-features
@@ -47,7 +47,7 @@ jobs:
           - --features async
           - --features gc_always --exclude stak-compiler
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-16' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -69,7 +69,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-15
+          - macos-16
         interpreter:
           - name: stak-tools
             host: chibi-scheme
@@ -93,7 +93,7 @@ jobs:
           - name: guile
             tags: ~@stak,@guile
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-16' }}
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST: ${{ matrix.interpreter.host }}
@@ -120,7 +120,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-15
+          - macos-16
         interpreter:
           - name: stak
           - name: stak-tools
@@ -129,7 +129,7 @@ jobs:
           - name: mstak-tools
             tags: ~@environment-variable && ~@float
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-16' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

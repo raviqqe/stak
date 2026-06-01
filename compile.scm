@@ -1185,6 +1185,7 @@
              (cdddr expression)
              '())
             '())
+           ; TODO Eliminate closures for self-recursive lambdas.
            (if (null? (cadr expression))
             continuation
             (call-rib (compile-arity 1 #f) '$$close continuation)))))
