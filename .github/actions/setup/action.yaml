@@ -9,7 +9,7 @@ runs:
     - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
       with:
         go-version: stable
-    - uses: homebrew/actions/setup-homebrew@50b8c2ab4a835c38897ed2c56c293b07167c0b59 # main
+    - uses: raviqqe/enable-homebrew@a1458a466e3f3218b534472496fa03adb2926204 # v1.0.3
       with:
         stable: true
     - run: tools/ci/setup.sh
