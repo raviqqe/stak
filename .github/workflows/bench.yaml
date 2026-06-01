@@ -18,13 +18,13 @@ jobs:
         os:
           - ubuntu-latest
           - ubuntu-24.04-arm
-          - macos-16
+          - macos-26
         options:
           -
           - -f i63
           - -f f62
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-16' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-26' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
