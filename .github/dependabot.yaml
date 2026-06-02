@@ -6,35 +6,30 @@ updates:
       - /cmd/minimal
     schedule:
       interval: daily
-      time: "01:00"
-      timezone: Canada/Pacific
+      time: "08:00"
   - package-ecosystem: docker
     directories:
       - /
     schedule:
       interval: daily
-      time: "01:00"
-      timezone: Canada/Pacific
+      time: "08:00"
   - package-ecosystem: github-actions
     directories:
       - /
       - /.github/actions/*
     schedule:
       interval: daily
-      time: "01:00"
-      timezone: Canada/Pacific
+      time: "08:00"
   - package-ecosystem: gitsubmodule
     directory: /
     schedule:
       interval: daily
-      time: "01:00"
-      timezone: Canada/Pacific
+      time: "08:00"
   - package-ecosystem: gomod
     directory: /
     schedule:
       interval: daily
-      time: "01:00"
-      timezone: Canada/Pacific
+      time: "08:00"
   - package-ecosystem: npm
     directory: /
     groups:
@@ -44,11 +39,9 @@ updates:
           - "@astrojs/*"
     schedule:
       interval: daily
-      time: "01:00"
-      timezone: Canada/Pacific
+      time: "08:00"
   - package-ecosystem: rust-toolchain
     directory: /
     schedule:
       interval: daily
-      time: "01:00"
-      timezone: Canada/Pacific
+      time: "08:00"
