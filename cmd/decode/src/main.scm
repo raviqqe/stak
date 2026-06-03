@@ -7,10 +7,15 @@
 (define if-instruction 3)
 (define call-instruction 4)
 
+(define procedure-type 3)
+
 (define integer-base 64)
 (define number-base 16)
 (define tag-base 16)
 (define share-base 31)
+
+; A byte that no other operation produces, prefixing cyclic encoding operations.
+(define cyclic-marker 126)
 
 (define window-size 256)
 
@@ -136,6 +141,18 @@
   (do ((byte (decompressor-read decompressor) (decompressor-read decompressor)))
     ((eof-object? byte))
     (cond
+      ((= byte cyclic-marker)
+        (if (zero? (decompressor-read decompressor))
+          ; A cyclic node is always a procedure. Its tag lives in a cdr field, so a
+          ; placeholder needs a cons there to retain a tag across mutations.
+          (let ((placeholder (rib 0 '() procedure-type)))
+            (stack-push! stack placeholder)
+            (stack-push! dictionary placeholder))
+          (let* ((d (stack-pop! stack))
+                 (a (stack-pop! stack))
+                 (placeholder (stack-top stack)))
+            (set-car! placeholder a)
+            (set-cdr! placeholder d))))
       ((even? byte)
         (let ((head (quotient byte 2)))
           (if (zero? head)
@@ -181,21 +198,23 @@
       ; 0 as a false value
       0)))
 
-(define (marshal-value! context value)
-  (when (and (rib? value) (not (memq value '(#f #t ()))))
-    (let ((a (marshal-value context (car value)))
-          (d (marshal-value context (cdr value))))
-      (if (eq? a 0)
-        (marshal-value! context (car value))
-        (set-car! value a))
-      (if (eq? d 0)
-        (marshal-value! context (cdr value))
-        (set-cdr! value d)))))
-
 (define (marshal! rib)
-  (marshal-value!
-    (make-marshal-context (car rib) (cdar rib) (caar rib))
-    rib))
+  (let ((context (make-marshal-context (car rib) (cdar rib) (caar rib)))
+        (seen '()))
+    (let visit ((value rib))
+      (when (and
+              (rib? value)
+              (not (memq value '(#f #t ())))
+              (not (memq value seen)))
+        (set! seen (cons value seen))
+        (let ((a (marshal-value context (car value)))
+              (d (marshal-value context (cdr value))))
+          (if (eq? a 0)
+            (visit (car value))
+            (set-car! value a))
+          (if (eq? d 0)
+            (visit (cdr value))
+            (set-cdr! value d)))))))
 
 ; Display
 
@@ -258,6 +277,16 @@
       (newline))
     ((procedure? data)
       (display-procedure data depth))
+    ((and (pair? data) (procedure? (car data)))
+      ; A self-reference cell of a procedure encoded as cyclic bytecode. We do
+      ; not descend into the procedure again to avoid an infinite recursion.
+      (let ((arity (car (car (car data)))))
+        (write-string "procedure ")
+        (write (quotient arity 2))
+        (write-char #\space)
+        (write (odd? arity))
+        (write-string " self")
+        (newline)))
     (else
       (write data)
       (newline))))

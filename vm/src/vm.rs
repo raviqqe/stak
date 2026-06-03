@@ -2,7 +2,7 @@
 use crate::profiler::Profiler;
 use crate::{
     Error, Exception, StackSlot,
-    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
+    code::{CYCLIC_MARKER, INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     heap::Heap,
     instruction::Instruction,
@@ -465,7 +465,29 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
-            if head & 0b1 == 0 {
+            if head == CYCLIC_MARKER {
+                let operation = input.next().ok_or(Error::BytecodeEnd)?;
+
+                if operation == 0 {
+                    // Reserve a placeholder rooted on a stack and registered in a
+                    // dictionary so that a self-reference resolves back to it.
+                    let placeholder = self
+                        .memory
+                        .cons(self.memory.null()?.into(), self.memory.null()?)?;
+                    self.memory.push(placeholder.into())?;
+                    let placeholder = self.memory.top()?;
+                    let dictionary = self.memory.cons(placeholder, self.memory.code())?;
+                    self.memory.set_code(dictionary);
+                } else {
+                    // Fill the reserved placeholder with the two values on a stack.
+                    let cdr = self.memory.pop()?;
+                    let car = self.memory.pop()?;
+                    let placeholder = self.memory.top()?.assume_cons();
+                    self.memory.set_car(placeholder, car)?;
+                    self.memory
+                        .set_raw_cdr(placeholder, cdr.set_tag((operation - 1) as _))?;
+                }
+            } else if head & 0b1 == 0 {
                 let head = head >> 1;
 
                 if head == 0 {

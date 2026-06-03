@@ -1011,22 +1011,38 @@
     ;; Context
 
     (define-record-type compilation-context
-     (make-compilation-context environment metadata)
+     (make-compilation-context environment redirects metadata)
      compilation-context?
      (environment compilation-context-environment)
+     ; A map of names to operand cells for self-recursive procedures.
+     (redirects compilation-context-redirects)
      (metadata compilation-context-metadata))
 
     (define (compilation-context-append-locals context variables)
      (make-compilation-context
       (append variables (compilation-context-environment context))
+      (compilation-context-redirects context)
       (compilation-context-metadata context)))
 
     (define (compilation-context-push-local context variable)
      (compilation-context-append-locals context (list variable)))
 
-    ; If a variable is not in environment, it is considered to be global.
+    (define (compilation-context-add-redirect context name cell)
+     (make-compilation-context
+      (compilation-context-environment context)
+      (cons (cons name cell) (compilation-context-redirects context))
+      (compilation-context-metadata context)))
+
+    ; If a variable is not in environment, it is resolved to a self-recursive operand cell
+    ; if any, or otherwise considered to be global.
     (define (compilation-context-resolve context variable)
-     (or (memq-index variable (compilation-context-environment context)) variable))
+     (or
+      (memq-index variable (compilation-context-environment context))
+      (cond
+       ((assq variable (compilation-context-redirects context)) =>
+        cdr)
+       (else
+        variable))))
 
     ;; Procedures
 
@@ -1127,6 +1143,46 @@
          '$procedure
          (compile-unsafe-unbind continuation))))))
 
+    (define (compile-procedure context parameters body)
+     (make-procedure
+      (compile-arity
+       (count-parameters parameters)
+       (symbol? (last-cdr parameters)))
+      (compile-sequence
+       (compilation-context-append-locals
+        context
+        ; #f is for a frame.
+        (reverse (cons #f (parameter-names parameters))))
+       body
+       '())
+      '()))
+
+    ; A lambda can avoid a closure if it captures only its own binding and never
+    ; reassigns it. Then its self-references resolve to itself as cyclic bytecode.
+    (define (self-recursive-lambda? name value)
+     (and
+      (pair? value)
+      (eq? (car value) '$$lambda)
+      (let ((free-variables (cadr value)))
+       (and
+        (pair? free-variables)
+        (null? (cdr free-variables))
+        (eq? (car free-variables) name)))
+      (not (assigns? name (cdddr value)))))
+
+    (define (assigns? name expression)
+     (cond
+      ((not (pair? expression))
+       #f)
+      ((eq? (car expression) '$$quote)
+       #f)
+      ((and (eq? (car expression) '$$set!) (eq? (cadr expression) name))
+       #t)
+      (else
+       (or
+        (assigns? name (car expression))
+        (assigns? name (cdr expression))))))
+
     (define (compile-expression context expression continuation)
      (cond
       ((symbol? expression)
@@ -1171,24 +1227,11 @@
             (compile-expression context (cadddr expression) continuation)))))
 
         (($$lambda)
-         (let ((parameters (caddr expression)))
-          (constant-rib
-           (make-procedure
-            (compile-arity
-             (count-parameters parameters)
-             (symbol? (last-cdr parameters)))
-            (compile-sequence
-             (compilation-context-append-locals
-              context
-              ; #f is for a frame.
-              (reverse (cons #f (parameter-names parameters))))
-             (cdddr expression)
-             '())
-            '())
-           ; TODO Eliminate closures for self-recursive lambdas.
-           (if (null? (cadr expression))
-            continuation
-            (call-rib (compile-arity 1 #f) '$$close continuation)))))
+         (constant-rib
+          (compile-procedure context (caddr expression) (cdddr expression))
+          (if (null? (cadr expression))
+           continuation
+           (call-rib (compile-arity 1 #f) '$$close continuation))))
 
         (($$libraries)
          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
@@ -1203,15 +1246,33 @@
          (constant-rib (cadr expression) continuation))
 
         (($$set!)
-         (compile-expression
-          context
-          (caddr expression)
-          (code-rib
-           set-instruction
-           (compilation-context-resolve
-            (compilation-context-push-local context #f)
-            (cadr expression))
-           (compile-unspecified continuation))))
+         (let* ((name (cadr expression))
+                (value (caddr expression))
+                (store
+                 (lambda (continuation)
+                  (code-rib
+                   set-instruction
+                   (compilation-context-resolve
+                    (compilation-context-push-local context #f)
+                    name)
+                   (compile-unspecified continuation)))))
+          (if (self-recursive-lambda? name value)
+           ; A self-reference resolves to a cell whose car is the procedure itself.
+           (let* ((cell (cons-rib #f #f))
+                  (procedure
+                   (compile-procedure
+                    (compilation-context-add-redirect
+                     (make-compilation-context
+                      '()
+                      '()
+                      (compilation-context-metadata context))
+                     name
+                     cell)
+                    (caddr value)
+                    (cdddr value))))
+            (rib-set-car! cell procedure)
+            (constant-rib procedure (store continuation)))
+           (compile-expression context value (store continuation)))))
 
         (($$symbols)
          (constant-rib (metadata-symbols (compilation-context-metadata context)) continuation))
@@ -1525,7 +1586,7 @@
     ; Compilation
 
     (define (compile metadata expression)
-     (compile-expression (make-compilation-context '() metadata) expression '()))
+     (compile-expression (make-compilation-context '() '() metadata) expression '()))
 
     ; Marshalling
 
@@ -1546,11 +1607,13 @@
       (cons pair (constant-set-complex constant-set))))
 
     (define-record-type marshal-context
-     (make-marshal-context symbols constants continuations)
+     (make-marshal-context symbols constants continuations procedures)
      marshal-context?
      (symbols marshal-context-symbols)
      (constants marshal-context-constants)
-     (continuations marshal-context-continuations marshal-context-set-continuations!))
+     (continuations marshal-context-continuations marshal-context-set-continuations!)
+     ; A map of original procedures to marshalled ones to preserve cycles.
+     (procedures marshal-context-procedures marshal-context-set-procedures!))
 
     (define (nop-code? codes)
      (and
@@ -1662,7 +1725,20 @@
         ((target-procedure? value)
          (unless (null? (rib-cdr value))
           (error "invalid environment"))
-         (data-rib procedure-type (marshal (rib-car value) #f) (marshal '() #t)))
+         (let ((pair (assq value (marshal-context-procedures context))))
+          (if (and pair (eq? (rib-car (cdr pair)) #f))
+           ; A self-reference reached while still marshalling a body forms a
+           ; cycle and resolves to the reserved placeholder.
+           (cdr pair)
+           ; Reserve a placeholder before marshalling a body so that a
+           ; self-reference inside the body resolves back to this procedure.
+           (let ((procedure (data-rib procedure-type #f #f)))
+            (marshal-context-set-procedures!
+             context
+             (cons (cons value procedure) (marshal-context-procedures context)))
+            (rib-set-car! procedure (marshal (rib-car value) #f))
+            (rib-set-cdr! procedure (marshal '() #t))
+            procedure))))
 
         ((or
           (null? value)
@@ -1707,6 +1783,7 @@
           (lambda (pair) (map cdr (cdr pair)))
           (metadata-libraries metadata))))
        (make-constant-set '() '())
+       '()
        '())
       codes
       #f))
@@ -1799,12 +1876,23 @@
     ;; Context
 
     (define-record-type encode-context
-     (make-encode-context compressor dictionary counts null)
+     (make-encode-context compressor dictionary counts cyclic null)
      encode-context?
      (compressor encode-context-compressor)
      (dictionary encode-context-dictionary encode-context-set-dictionary!)
      (counts encode-context-counts encode-context-set-counts!)
+     ; A set of ribs that refer to themselves and need cyclic encoding.
+     (cyclic encode-context-cyclic encode-context-set-cyclic!)
      (null encode-context-null))
+
+    (define (encode-context-cyclic? context value)
+     (memq value (encode-context-cyclic context)))
+
+    (define (encode-context-mark-cyclic! context value)
+     (unless (encode-context-cyclic? context value)
+      (encode-context-set-cyclic!
+       context
+       (cons value (encode-context-cyclic context)))))
 
     (define (encode-context-push! context value)
      (encode-context-set-dictionary!
@@ -1829,6 +1917,10 @@
     (define number-base 16)
     (define tag-base 16)
     (define share-base 31)
+
+    ; A byte that no other encoding produces, prefixing cyclic encoding operations.
+    ; Other operations produce only 0, even values up to 124, and odd values up to 127.
+    (define cyclic-marker 126)
 
     (define (shared-value? value)
      (and
@@ -1863,13 +1955,24 @@
      (set-cdr! pair (- (cdr pair) 1)))
 
     (define (count-ribs! context codes)
+     ; A stack of ribs on the current path to detect cycles.
+     (define visiting '())
+
      (define (count-data! value)
       (when (rib? value)
-       (unless (and (shared-value? value) (encode-context-find-count context value))
-        ((if (target-procedure? value) count-code! count-data!) (rib-car value))
-        (count-data! (rib-cdr value)))
-       (when (shared-value? value)
-        (increment-count! context value))))
+       (cond
+        ((memq value visiting)
+         (encode-context-mark-cyclic! context value)
+         (increment-count! context value))
+
+        (else
+         (unless (and (shared-value? value) (encode-context-find-count context value))
+          (set! visiting (cons value visiting))
+          ((if (target-procedure? value) count-code! count-data!) (rib-car value))
+          (count-data! (rib-cdr value))
+          (set! visiting (cdr visiting)))
+         (when (or (shared-value? value) (encode-context-cyclic? context value))
+          (increment-count! context value))))))
 
      (define (count-code! codes)
       (cond
@@ -1972,6 +2075,17 @@
                           share-base)))
             (compressor-write compressor (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
+        ((and entry (encode-context-cyclic? context value))
+         ; Reserve a dictionary slot before encoding a body so that a
+         ; self-reference inside the body resolves back to this rib.
+         (compressor-write compressor cyclic-marker)
+         (compressor-write compressor 0)
+         (encode-context-push! context value)
+         (decrement-count! entry)
+         (encode-rib context (rib-car value))
+         (encode-rib context (rib-cdr value))
+         (compressor-write compressor cyclic-marker)
+         (compressor-write compressor (+ 1 (rib-tag value))))
         (else
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
@@ -2013,6 +2127,7 @@
      (let ((context
             (make-encode-context
              (make-compressor '() '() #f 0 0)
+             '()
              '()
              '()
              (rib-car (rib-car codes)))))
@@ -2074,14 +2189,16 @@
       (define cons-rib cons)
       (define rib-car car)
       (define rib-cdr cdr)
+      (define rib-set-car! set-car!)
+      (define rib-set-cdr! set-cdr!)
       (define target-procedure? procedure?))
 
      (else
       (define-record-type *rib*
        (rib car cdr tag)
        rib?
-       (car rib-car)
-       (cdr rib-cdr)
+       (car rib-car rib-set-car!)
+       (cdr rib-cdr rib-set-cdr!)
        (tag rib-tag))
 
       (define (cons-rib car cdr)
@@ -2141,6 +2258,8 @@
              (define cons-rib cons)
              (define rib-car car)
              (define rib-cdr cdr)
+             (define rib-set-car! set-car!)
+             (define rib-set-cdr! set-cdr!)
 
              ,@frontend
 
@@ -2230,7 +2349,7 @@
              ; Compilation
 
              (define (compile expression)
-              (compile-expression (make-compilation-context '() #f) expression '()))
+              (compile-expression (make-compilation-context '() '() #f) expression '()))
 
              (lambda (imports symbol-table expression)
               (let-values (((expression imports)
