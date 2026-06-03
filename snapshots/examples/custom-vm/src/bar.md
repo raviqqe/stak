@@ -105,13 +105,14 @@
     - if
       - get 1
     - get 1
-    - get 1
-    - call 1 #f ||
+    - constant procedure (recursion)
     - get 2
     - call 1 #f ||
-    - call 2 #f 6
+    - get 3
+    - call 1 #f ||
+    - call 2 #f 2
+    - set 1
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - get 2
   - get 2

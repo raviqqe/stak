@@ -195,18 +195,18 @@
     - call 2 #f ||
     - if
       - get 0
+    - constant procedure (recursion)
     - constant 1
-    - get 2
+    - get 3
     - constant 1
     - call 2 #f ||
     - get ||
     - call 2 #f ||
     - call 2 #f ||
-    - get 1
+    - get 2
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f 2
   - set 1
   - get 1
   - call 1 #f ||
@@ -221,20 +221,20 @@
     - call 2 #f ||
     - if
       - get 0
-    - get 2
+    - constant procedure (recursion)
+    - get 3
     - get ||
     - call 2 #f ||
-    - get 2
-    - get 4
+    - get 3
+    - get 5
     - call 2 #f ||
-    - get 2
+    - get 3
     - call 1 #f ||
-    - get 4
-    - get 6
+    - get 5
+    - get 7
     - call 2 #f ||
     - call 2 #f ||
-    - call 3 #f 7
-  - call 1 #f ||
+    - call 3 #f 3
   - set 1
   - get ||
   - get 3
@@ -463,11 +463,11 @@
   - get 2
   - call 3 #f ||
   - set 0
-  - get 0
+  - constant procedure (recursion)
+  - get 1
   - constant 1
   - call 2 #f ||
-  - call 1 #f 3
-- call 1 #f ||
+  - call 1 #f 1
 - set 1
 - constant 0
 - call 1 #f 1
@@ -484,11 +484,11 @@
   - get 1
   - call 2 #f ||
   - set 0
-  - get 0
+  - constant procedure (recursion)
+  - get 1
   - constant 1
   - call 2 #f ||
-  - call 1 #f 3
-- call 1 #f ||
+  - call 1 #f 1
 - set 1
 - constant 0
 - call 1 #f 1

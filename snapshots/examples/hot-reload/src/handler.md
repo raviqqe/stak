@@ -117,13 +117,14 @@
     - if
       - get 1
     - get 1
-    - get 1
-    - call 1 #f ||
+    - constant procedure (recursion)
     - get 2
     - call 1 #f ||
-    - call 2 #f 6
+    - get 3
+    - call 1 #f ||
+    - call 2 #f 2
+    - set 1
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - get 2
   - get 2
@@ -475,14 +476,14 @@
     - call 1 #f ||
     - if
       - get 0
-    - get 1
-    - call 1 #f ||
+    - constant procedure (recursion)
     - get 2
     - call 1 #f ||
-    - get 2
+    - get 3
+    - call 1 #f ||
+    - get 3
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f 2
   - set 1
   - get 1
   - constant ()
@@ -701,18 +702,18 @@
     - call 2 #f ||
     - if
       - get 0
+    - constant procedure (recursion)
     - constant 1
-    - get 2
+    - get 3
     - constant 1
     - call 2 #f ||
     - get ||
     - call 2 #f ||
     - call 2 #f ||
-    - get 1
+    - get 2
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f 2
   - set 1
   - get 1
   - call 1 #f ||
@@ -815,14 +816,14 @@
     - call 2 #f ||
     - if
       - get 0
-    - get 1
+    - constant procedure (recursion)
+    - get 2
     - constant 1
     - call 2 #f ||
     - get ||
-    - get 2
+    - get 3
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f 2
   - set 1
   - get 1
   - call 1 #f ||
@@ -1494,21 +1495,21 @@
       - get 1
       - get 1
       - call 2 #f ||
-    - get 2
+    - constant procedure (recursion)
+    - get 3
     - call 1 #f ||
     - constant 64
-    - get 3
-    - call 2 #f ||
     - get 4
+    - call 2 #f ||
+    - get 5
     - call 1 #f ||
     - constant 128
     - call 2 #f ||
     - call 2 #f ||
-    - get 2
+    - get 3
     - constant 32
     - call 2 #f ||
-    - call 3 #f 7
-  - call 1 #f ||
+    - call 3 #f 3
   - set 1
   - get 1
   - call 1 #f ||
@@ -2288,9 +2289,10 @@
     - if
       - constant ()
     - call 0 #f ||
-    - call 0 #f 7
+    - constant procedure (recursion)
+    - call 0 #f 0
+    - set 1
     - call 2 #f ||
-  - call 1 #f ||
   - set 5
   - constant procedure 0 #f
     - call 0 #f ||
@@ -2324,33 +2326,34 @@
       - call 2 #f ||
       - if
         - call 0 #f ||
-        - get 0
+        - constant procedure (recursion)
+        - get 1
         - constant #\n
         - call 2 #f ||
         - if
           - constant #\newline
           - continue
-        - get 0
+        - get 1
         - constant #\r
         - call 2 #f ||
         - if
           - constant #\return
           - continue
-        - get 0
+        - get 1
         - constant #\t
         - call 2 #f ||
         - if
           - constant #\tab
           - continue
-        - get 0
-        - get 3
+        - get 1
+        - get 4
         - call 2 #f ||
-        - call 1 #f 5
-      - get 0
-      - get 2
+        - call 1 #f 1
+      - constant procedure (recursion)
+      - get 1
+      - get 3
       - call 2 #f ||
-      - call 1 #f 4
-    - call 1 #f ||
+      - call 1 #f 1
     - set 1
     - constant ()
     - call 1 #f 1
