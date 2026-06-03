@@ -1119,7 +1119,7 @@
                (symbol? (last-cdr parameters)))
               0
               '())))
-      (set-cdr!
+      (rib-set-cdr!
        (rib-car procedure)
        (compile-sequence
         (compilation-context-add-self
@@ -1746,8 +1746,8 @@
             (marshal-context-set-procedures!
              context
              (cons (cons value procedure) (marshal-context-procedures context)))
-            (set-car! procedure (marshal (rib-car value) #f))
-            (set-cdr! procedure (marshal '() #t))
+            (rib-set-car! procedure (marshal (rib-car value) #f))
+            (rib-set-cdr! procedure (marshal '() #t))
             (marshal-context-set-procedures!
              context
              (cdr (marshal-context-procedures context)))
@@ -2208,14 +2208,16 @@
       (define cons-rib cons)
       (define rib-car car)
       (define rib-cdr cdr)
+      (define rib-set-car! set-car!)
+      (define rib-set-cdr! set-cdr!)
       (define target-procedure? procedure?))
 
      (else
       (define-record-type *rib*
        (rib car cdr tag)
        rib?
-       (car rib-car)
-       (cdr rib-cdr)
+       (car rib-car rib-set-car!)
+       (cdr rib-cdr rib-set-cdr!)
        (tag rib-tag))
 
       (define (cons-rib car cdr)
@@ -2275,6 +2277,8 @@
              (define cons-rib cons)
              (define rib-car car)
              (define rib-cdr cdr)
+             (define rib-set-car! set-car!)
+             (define rib-set-cdr! set-cdr!)
 
              ,@frontend
 
