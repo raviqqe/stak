@@ -112,9 +112,8 @@
     - call 1 #f ||
     - get 2
     - call 1 #f ||
-    - call 2 #f 6
+    - call 2 #f procedure 2 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - get 2
   - get 2
@@ -881,8 +880,7 @@
   - get 1
   - constant 1
   - call 2 #f ||
-  - call 2 #f 5
-- call 1 #f ||
+  - call 2 #f procedure 2 #f self
 - set 1
 - constant 1000
 - call 1 #f ||
@@ -937,8 +935,7 @@
   - get ||
   - call 2 #f person-throw-pie
   - set 0
-  - call 0 #f 1
-- call 1 #f ||
+  - call 0 #f procedure 0 #f self
 - set 1
 - call 0 #f 0
 - call 2 #f ||

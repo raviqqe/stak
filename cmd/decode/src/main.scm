@@ -203,9 +203,9 @@
         (seen '()))
     (let visit ((value rib))
       (when (and
-              (rib? value)
-              (not (memq value '(#f #t ())))
-              (not (memq value seen)))
+             (rib? value)
+             (not (memq value '(#f #t ())))
+             (not (memq value seen)))
         (set! seen (cons value seen))
         (let ((a (marshal-value context (car value)))
               (d (marshal-value context (cdr value))))

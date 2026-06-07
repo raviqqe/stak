@@ -121,9 +121,8 @@
     - call 1 #f ||
     - get 2
     - call 1 #f ||
-    - call 2 #f 6
+    - call 2 #f procedure 2 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - get 2
   - get 2
@@ -789,8 +788,7 @@
     - get 1
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f procedure 2 #f self
   - set 1
   - get 1
   - call 1 #f ||
@@ -899,8 +897,7 @@
     - get ||
     - get 2
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f procedure 2 #f self
   - set 1
   - get 1
   - call 1 #f ||
@@ -1652,8 +1649,7 @@
     - get 2
     - constant 32
     - call 2 #f ||
-    - call 3 #f 7
-  - call 1 #f ||
+    - call 3 #f procedure 3 #f self
   - set 1
   - get 1
   - call 1 #f ||
@@ -6359,8 +6355,7 @@
     - call 0 #f ||
     - set 0
     - call 0 #f ||
-    - call 1 #f 3
-  - call 1 #f ||
+    - call 1 #f procedure 1 #f self
   - set 1
   - call 0 #f ||
   - call 1 #f 1
@@ -6404,9 +6399,8 @@
       - constant ()
     - call 0 #f ||
     - get 0
-    - call 0 #f 3
+    - call 0 #f procedure 0 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - call 0 #f 0
   - call 2 #f ||
@@ -6460,10 +6454,9 @@
     - if
       - call 0 #f ||
       - get 0
-      - call 0 #f 4
+      - call 0 #f procedure 0 #f self
       - call 2 #f ||
     - constant ()
-  - call 1 #f ||
   - set 1
   - call 0 #f 0
   - call 2 #f ||
@@ -6595,9 +6588,8 @@
     - call 1 #f ||
     - get 2
     - call 1 #f ||
-    - call 2 #f 6
+    - call 2 #f procedure 2 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - constant 0
   - get 2
@@ -6637,9 +6629,8 @@
     - get 1
     - get 3
     - call 1 #f ||
-    - call 2 #f 7
+    - call 2 #f procedure 2 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - constant list
     - 0
@@ -6672,7 +6663,7 @@
       - constant 1
       - call 2 #f ||
       - get 1
-      - call 2 #f 7
+      - call 2 #f procedure 2 #f self
     - get 3
     - constant 0
     - call 2 #f ||
@@ -6684,9 +6675,8 @@
     - call 2 #f ||
     - constant 0
     - get 2
-    - call 2 #f 8
+    - call 2 #f procedure 2 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - constant 0
   - get 2
@@ -6722,7 +6712,7 @@
       - constant 1
       - call 2 #f ||
       - get 1
-      - call 2 #f 7
+      - call 2 #f procedure 2 #f self
     - get 1
     - call 1 #f ||
     - if
@@ -6733,9 +6723,8 @@
     - call 2 #f ||
     - constant 0
     - get 2
-    - call 2 #f 8
+    - call 2 #f procedure 2 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - constant 0
   - get 2
@@ -6926,9 +6915,8 @@
     - call 1 #f ||
     - get 3
     - call 1 #f ||
-    - call 2 #f 7
+    - call 2 #f procedure 2 #f self
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - constant 0
   - get 2
