@@ -240,7 +240,7 @@ impl<H: Heap> Memory<H> {
         Ok(cons)
     }
 
-    fn is_out_of_memory(&self) -> bool {
+    const fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
@@ -249,8 +249,8 @@ impl<H: Heap> Memory<H> {
         self.heap().len()
     }
 
-    fn space_size(&self) -> usize {
-        (self.index_mask + 1) / 2
+    const fn space_size(&self) -> usize {
+        (self.index_mask + 1) >> 1
     }
 
     /// Returns the current allocation index relative an allocation start index.
@@ -259,12 +259,12 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Returns an allocation start index.
-    pub fn allocation_start(&self) -> usize {
+    pub const fn allocation_start(&self) -> usize {
         if self.space { self.space_size() } else { 0 }
     }
 
     /// Returns an allocation end index.
-    pub fn allocation_end(&self) -> usize {
+    pub const fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
