@@ -281,7 +281,7 @@ mod tests {
         let cons = memory
             .allocate(
                 Number::from_i64(index as _).into(),
-                memory.null().unwrap().set_tag(Type::Foreign as _).into(),
+                memory.null().set_tag(Type::Foreign as _).into(),
             )
             .unwrap();
         memory.push(cons.into()).unwrap();
@@ -315,7 +315,7 @@ mod tests {
             assert_eq!(primitive_set.find_free(), None);
 
             // Pop a return value from the foreign primitive.
-            memory.pop().unwrap();
+            memory.pop();
             memory.collect_garbages(None).unwrap();
 
             primitive_set.collect_garbages(&memory).unwrap();
