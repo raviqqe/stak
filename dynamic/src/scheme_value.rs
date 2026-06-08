@@ -13,11 +13,11 @@ pub trait SchemeValue<H>: Sized {
 
 impl<H: Heap> SchemeValue<H> for bool {
     fn from_scheme(memory: &Memory<H>, value: Value) -> Result<Option<Self>, DynamicError> {
-        Ok(Some(value == memory.boolean(false)?.into()))
+        Ok(Some(value == memory.boolean(false).into()))
     }
 
     fn into_scheme(self, memory: &mut Memory<H>) -> Result<Value, DynamicError> {
-        Ok(memory.boolean(self)?.into())
+        Ok(memory.boolean(self).into())
     }
 }
 
@@ -72,16 +72,16 @@ implement_float!(f64);
 impl<H: Heap> SchemeValue<H> for String {
     fn from_scheme(memory: &Memory<H>, value: Value) -> Result<Option<Self>, DynamicError> {
         let cons = value.assume_cons();
-        let mut string = Self::with_capacity(memory.car(cons)?.assume_number().to_i64() as _);
-        let mut cons = memory.cdr(cons)?.assume_cons();
+        let mut string = Self::with_capacity(memory.car(cons).assume_number().to_i64() as _);
+        let mut cons = memory.cdr(cons).assume_cons();
 
-        while cons != memory.null()? {
-            let Some(character) = char::from_u32(memory.car(cons)?.assume_number().to_i64() as _)
+        while cons != memory.null() {
+            let Some(character) = char::from_u32(memory.car(cons).assume_number().to_i64() as _)
             else {
                 return Ok(None);
             };
             string.push(character);
-            cons = memory.cdr(cons)?.assume_cons();
+            cons = memory.cdr(cons).assume_cons();
         }
 
         Ok(Some(string))
@@ -89,7 +89,7 @@ impl<H: Heap> SchemeValue<H> for String {
 
     fn into_scheme(self, memory: &mut Memory<H>) -> Result<Value, DynamicError> {
         let mut length = 0;
-        let mut cons = memory.null()?;
+        let mut cons = memory.null();
 
         for character in self.chars().rev() {
             cons = memory.cons(Number::from_i64(character as _).into(), cons)?;
