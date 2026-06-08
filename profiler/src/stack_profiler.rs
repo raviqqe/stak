@@ -44,8 +44,7 @@ impl<T: Write> StackProfiler<T> {
                 write!(
                     self.writer,
                     "{}",
-                    char::from_u32(memory.car(string).assume_number().to_i64() as _)
-                        .unwrap_or('�')
+                    char::from_u32(memory.car(string).assume_number().to_i64() as _).unwrap_or('�')
                 )
                 .unwrap();
                 string = memory.cdr(string).assume_cons();
