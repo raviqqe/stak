@@ -29,7 +29,7 @@ impl<H: Heap> PrimitiveSet<H> for ArithmeticPrimitiveSet {
     fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             ArithmeticPrimitive::QUOTIENT => {
-                let [x, y] = memory.pop_many()?;
+                let [x, y] = memory.pop_many();
                 let x = x.assume_number();
                 let y = y.assume_number();
 
