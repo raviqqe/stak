@@ -32,18 +32,17 @@ impl<H: Heap> PrimitiveSet<H> for TypeCheckPrimitiveSet {
     fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             TypeCheckPrimitive::NULL => memory.operate_top(|memory, value| {
-                Ok(memory.boolean(value == memory.null()?.into())?.into())
+                memory.boolean(value == memory.null().into()).into()
             })?,
             TypeCheckPrimitive::PAIR => memory.operate_top(|memory, value| {
-                Ok(memory
+                memory
                     .boolean(
                         value
                             .to_cons()
-                            .map(|cons| Ok::<_, Error>(memory.cdr(cons)?.tag() == Type::Pair as _))
-                            .transpose()?
+                            .map(|cons| memory.cdr(cons).tag() == Type::Pair as _)
                             .unwrap_or_default(),
-                    )?
-                    .into())
+                    )
+                    .into()
             })?,
             _ => return Err(Error::IllegalPrimitive),
         }

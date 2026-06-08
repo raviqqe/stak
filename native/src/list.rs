@@ -41,54 +41,54 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
     fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             ListPrimitive::ASSQ => {
-                let [x, xs] = memory.pop_many()?;
+                let [x, xs] = memory.pop_many();
                 let mut xs = xs.assume_cons();
-                let mut y = memory.boolean(false)?;
+                let mut y = memory.boolean(false);
 
-                while xs != memory.null()? {
-                    let cons = memory.car(xs)?.assume_cons();
+                while xs != memory.null() {
+                    let cons = memory.car(xs).assume_cons();
 
-                    if x == memory.car(cons)? {
+                    if x == memory.car(cons) {
                         y = cons;
                         break;
                     }
 
-                    xs = memory.cdr(xs)?.assume_cons();
+                    xs = memory.cdr(xs).assume_cons();
                 }
 
                 memory.push(y.into())?;
             }
             ListPrimitive::CONS => {
-                let [car, cdr] = memory.pop_many()?;
+                let [car, cdr] = memory.pop_many();
 
                 let rib = memory.allocate(car, cdr.set_tag(Type::Pair as _))?;
                 memory.push(rib.into())?;
             }
             ListPrimitive::MEMQ => {
-                let [x, xs] = memory.pop_many()?;
+                let [x, xs] = memory.pop_many();
                 let mut xs = xs.assume_cons();
-                let mut y = memory.boolean(false)?;
+                let mut y = memory.boolean(false);
 
-                while xs != memory.null()? {
-                    if x == memory.car(xs)? {
+                while xs != memory.null() {
+                    if x == memory.car(xs) {
                         y = xs;
                         break;
                     }
 
-                    xs = memory.cdr(xs)?.assume_cons();
+                    xs = memory.cdr(xs).assume_cons();
                 }
 
                 memory.push(y.into())?;
             }
             ListPrimitive::TAIL => {
-                let [mut xs, index] = memory.pop_many()?;
+                let [mut xs, index] = memory.pop_many();
                 let mut index = index.assume_number().to_i64() as usize;
 
                 while index > 0 {
                     let Some(cons) = xs.to_cons() else {
                         break;
                     };
-                    let cdr = memory.cdr(cons)?;
+                    let cdr = memory.cdr(cons);
 
                     if cdr.tag() != Type::Pair as _ {
                         break;
@@ -101,9 +101,9 @@ impl<H: Heap> PrimitiveSet<H> for ListPrimitiveSet {
                 memory.push(xs)?;
             }
             ListPrimitive::LENGTH => {
-                let xs = memory.pop()?;
+                let xs = memory.pop();
 
-                memory.push(Number::from_i64(memory.list_length(xs.assume_cons())? as _).into())?;
+                memory.push(Number::from_i64(memory.list_length(xs.assume_cons()) as _).into())?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
