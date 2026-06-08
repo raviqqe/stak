@@ -21,7 +21,7 @@ tokio = {
     "rt-multi-thread",
   ]
 }
-which = "8.0.2"
+which = "8.0.3"
 
 [features]
 async = ["stak-compiler/async"]
