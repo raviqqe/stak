@@ -70,11 +70,11 @@ impl<'a, 'b, H: Heap> DynamicPrimitiveSet<'a, 'b, H> {
         for index in 0..(memory.allocation_index() / 2) {
             let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
 
-            if memory.cdr(cons)?.tag() != Type::Foreign as _ {
+            if memory.cdr(cons).tag() != Type::Foreign as _ {
                 continue;
             }
 
-            marks.set(memory.car(cons)?.assume_number().to_i64() as _, true);
+            marks.set(memory.car(cons).assume_number().to_i64() as _, true);
         }
 
         for (index, mark) in marks.into_iter().enumerate() {
@@ -138,7 +138,7 @@ impl<'a, 'b, H: Heap> DynamicPrimitiveSet<'a, 'b, H> {
         Ok(memory
             .allocate(
                 Number::from_i64(index as _).into(),
-                memory.null()?.set_tag(Type::Foreign as _).into(),
+                memory.null().set_tag(Type::Foreign as _).into(),
             )?
             .into())
     }
@@ -150,13 +150,13 @@ impl<H: Heap> PrimitiveSet<H> for DynamicPrimitiveSet<'_, '_, H> {
     #[maybe_async]
     fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         if primitive == 0 {
-            memory.set_register(memory.null()?);
+            memory.set_register(memory.null());
 
             for (name, _) in self.functions.iter().rev() {
-                let list = memory.cons(memory.null()?.into(), memory.register())?;
+                let list = memory.cons(memory.null().into(), memory.register())?;
                 memory.set_register(list);
                 let string = memory.build_raw_string(name)?;
-                memory.set_car(memory.register(), string.into())?;
+                memory.set_car(memory.register(), string.into());
             }
 
             memory.push(memory.register().into())?;
@@ -171,7 +171,7 @@ impl<H: Heap> PrimitiveSet<H> for DynamicPrimitiveSet<'_, '_, H> {
 
             let mut arguments = (0..function.arity())
                 .map(|_| memory.pop())
-                .collect::<Result<ArgumentVec<_>, _>>()?;
+                .collect::<ArgumentVec<_>>();
             arguments.reverse();
 
             let cloned_arguments = {
@@ -188,10 +188,10 @@ impl<H: Heap> PrimitiveSet<H> for DynamicPrimitiveSet<'_, '_, H> {
 
             for &value in &arguments {
                 let value =
-                    if value.is_cons() && memory.cdr_value(value)?.tag() == Type::Foreign as _ {
+                    if value.is_cons() && memory.cdr_value(value).tag() == Type::Foreign as _ {
                         Some(
                             self.values
-                                .get(memory.car_value(value)?.assume_number().to_i64() as usize)
+                                .get(memory.car_value(value).assume_number().to_i64() as usize)
                                 .ok_or(DynamicError::ValueIndex)?
                                 .as_ref()
                                 .ok_or(DynamicError::ValueIndex)?,

@@ -7,10 +7,10 @@ pub fn decode_path<const N: usize, H: Heap>(
 ) -> Option<Vec<u8, N>> {
     let mut path = Vec::new();
 
-    while list.assume_cons() != memory.null().ok()? {
-        path.push(memory.car_value(list).ok()?.assume_number().to_i64() as u8)
+    while list.assume_cons() != memory.null() {
+        path.push(memory.car_value(list).assume_number().to_i64() as u8)
             .ok()?;
-        list = memory.cdr_value(list).ok()?;
+        list = memory.cdr_value(list);
     }
 
     Some(path)
