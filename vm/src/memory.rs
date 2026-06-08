@@ -776,4 +776,49 @@ mod tests {
             assert_snapshot!(memory);
         }
     }
+
+    mod non_power_of_two_heap {
+        use super::*;
+
+        // A heap length that is not a power of two.
+        const HEAP_SIZE: usize = 768;
+
+        #[test]
+        fn round_size_down_to_power_of_two() {
+            let memory = Memory::new(alloc::vec![Default::default(); HEAP_SIZE]).unwrap();
+
+            // Only the largest power-of-two prefix of 512 values is addressed,
+            // so each semi-space holds 256 values.
+            assert_eq!(memory.space_size(), 256);
+        }
+
+        #[test]
+        fn allocate_list() {
+            let mut memory = Memory::new(alloc::vec![Default::default(); HEAP_SIZE]).unwrap();
+
+            let list = memory
+                .cons(Number::from_i64(1).into(), memory.null().unwrap())
+                .unwrap();
+            let list = memory.cons(Number::from_i64(2).into(), list).unwrap();
+
+            assert_eq!(memory.car(list).unwrap(), Number::from_i64(2).into());
+            assert_eq!(
+                memory.car(memory.cdr(list).unwrap().assume_cons()).unwrap(),
+                Number::from_i64(1).into()
+            );
+        }
+
+        #[test]
+        fn collect_garbage() {
+            let mut memory = Memory::new(alloc::vec![Default::default(); HEAP_SIZE]).unwrap();
+
+            memory.stack = memory.null().unwrap();
+            memory.push(Number::from_i64(1).into()).unwrap();
+            memory.push(Number::from_i64(2).into()).unwrap();
+            memory.collect_garbages(None).unwrap();
+
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(2).into());
+            assert_eq!(memory.pop().unwrap(), Number::from_i64(1).into());
+        }
+    }
 }
