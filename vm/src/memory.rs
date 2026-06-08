@@ -598,9 +598,7 @@ mod tests {
         let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
-            Value::from(memory.boolean(false))
-                .to_cons()
-                .unwrap(),
+            Value::from(memory.boolean(false)).to_cons().unwrap(),
             memory.boolean(false)
         );
     }
@@ -610,9 +608,7 @@ mod tests {
         let memory = Memory::new(create_heap()).unwrap();
 
         assert_eq!(
-            Value::from(memory.boolean(true))
-                .to_cons()
-                .unwrap(),
+            Value::from(memory.boolean(true)).to_cons().unwrap(),
             memory.boolean(true)
         );
     }
@@ -621,18 +617,12 @@ mod tests {
     fn convert_null() {
         let memory = Memory::new(create_heap()).unwrap();
 
-        assert_eq!(
-            Value::from(memory.null()).to_cons().unwrap(),
-            memory.null()
-        );
+        assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
     }
 
     fn assert_raw_string<H: Heap>(memory: &Memory<H>, mut cons: Cons, string: &str) {
         for character in string.chars() {
-            assert_eq!(
-                memory.car(cons).assume_number().to_i64(),
-                character as _
-            );
+            assert_eq!(memory.car(cons).assume_number().to_i64(), character as _);
             cons = memory.cdr(cons).assume_cons();
         }
 
