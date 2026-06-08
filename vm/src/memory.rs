@@ -51,6 +51,7 @@ pub struct Memory<H> {
     register: Cons,
     allocation_index: usize,
     space: bool,
+    index_mask: usize,
     heap: H,
 }
 
@@ -66,6 +67,13 @@ impl<H: Heap> Memory<H> {
             register: NEVER,
             allocation_index: 0,
             space: false,
+            // Address only a power-of-two prefix of a heap so that any index
+            // can be masked into bounds.
+            index_mask: heap
+                .as_ref()
+                .len()
+                .checked_ilog2()
+                .map_or(0, |logarithm| (1 << logarithm) - 1),
             heap,
         };
 
@@ -242,7 +250,7 @@ impl<H: Heap> Memory<H> {
     }
 
     fn space_size(&self) -> usize {
-        self.size() / 2
+        (self.index_mask + 1) / 2
     }
 
     /// Returns the current allocation index relative an allocation start index.
@@ -263,19 +271,23 @@ impl<H: Heap> Memory<H> {
     fn get<const G: bool>(&self, index: usize) -> Result<Value, Error> {
         assert_heap_index!(self, index, G);
 
-        self.heap()
-            .get(index)
-            .copied()
-            .ok_or(Error::InvalidMemoryAccess)
+        let index = index & self.index_mask;
+
+        // SAFETY: A masked index never exceeds a heap size minus one, so it is
+        // always within the bounds of a heap. A heap is addressed only up to
+        // its largest power-of-two prefix, so masking keeps every valid index.
+        Ok(*unsafe { self.heap().get_unchecked(index) })
     }
 
     fn set<const G: bool>(&mut self, index: usize, value: Value) -> Result<(), Error> {
         assert_heap_index!(self, index, G);
 
-        *self
-            .heap_mut()
-            .get_mut(index)
-            .ok_or(Error::InvalidMemoryAccess)? = value;
+        let index = index & self.index_mask;
+
+        // SAFETY: A masked index never exceeds a heap size minus one, so it is
+        // always within the bounds of a heap. A heap is addressed only up to
+        // its largest power-of-two prefix, so masking keeps every valid index.
+        *unsafe { self.heap_mut().get_unchecked_mut(index) } = value;
 
         Ok(())
     }
