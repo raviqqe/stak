@@ -73,9 +73,8 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
-          # TODO Test gosh
-          # - name: stak-tools
-          #   host: gosh
+          - name: stak-tools
+            host: gosh
           - name: stak-tools
             host: guile
           - name: stak-tools
