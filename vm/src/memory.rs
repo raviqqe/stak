@@ -51,7 +51,6 @@ pub struct Memory<H> {
     register: Cons,
     allocation_index: usize,
     space: bool,
-    index_mask: usize,
     heap: H,
 }
 
@@ -67,13 +66,6 @@ impl<H: Heap> Memory<H> {
             register: NEVER,
             allocation_index: 0,
             space: false,
-            // Address only a power-of-two prefix of a heap so that any index
-            // can be masked into bounds.
-            index_mask: heap
-                .as_ref()
-                .len()
-                .checked_ilog2()
-                .map_or(0, |logarithm| (1 << logarithm) - 1),
             heap,
         };
 
@@ -238,7 +230,7 @@ impl<H: Heap> Memory<H> {
         Ok(cons)
     }
 
-    const fn is_out_of_memory(&self) -> bool {
+    fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
@@ -247,8 +239,17 @@ impl<H: Heap> Memory<H> {
         self.heap().len()
     }
 
-    const fn space_size(&self) -> usize {
-        (self.index_mask + 1) >> 1
+    #[inline]
+    fn index_mask(&self) -> usize {
+        self.heap
+            .as_ref()
+            .len()
+            .checked_ilog2()
+            .map_or(0, |logarithm| (1 << logarithm) - 1)
+    }
+
+    fn space_size(&self) -> usize {
+        (self.index_mask() + 1) >> 1
     }
 
     /// Returns the current allocation index relative an allocation start index.
@@ -257,19 +258,19 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Returns an allocation start index.
-    pub const fn allocation_start(&self) -> usize {
+    pub fn allocation_start(&self) -> usize {
         if self.space { self.space_size() } else { 0 }
     }
 
     /// Returns an allocation end index.
-    pub const fn allocation_end(&self) -> usize {
+    pub fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
     fn get<const G: bool>(&self, index: usize) -> Value {
         assert_heap_index!(self, index, G);
 
-        let index = index & self.index_mask;
+        let index = index & self.index_mask();
 
         // SAFETY: A masked index never exceeds a heap size minus one, so it is
         // always within the bounds of a heap. A heap is addressed only up to
@@ -280,7 +281,7 @@ impl<H: Heap> Memory<H> {
     fn set<const G: bool>(&mut self, index: usize, value: Value) {
         assert_heap_index!(self, index, G);
 
-        let index = index & self.index_mask;
+        let index = index & self.index_mask();
 
         // SAFETY: A masked index never exceeds a heap size minus one, so it is
         // always within the bounds of a heap. A heap is addressed only up to
