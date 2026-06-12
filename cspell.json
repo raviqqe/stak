@@ -124,6 +124,7 @@
     "stak",
     "tokei",
     "tombi",
+    "uninit",
     "uninlined",
     "uninterned",
     "unresolve",

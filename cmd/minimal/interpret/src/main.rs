@@ -11,7 +11,7 @@
 
 extern crate alloc;
 
-use alloc::vec;
+use alloc::boxed::Box;
 use core::{ffi::CStr, slice};
 use dlmalloc::GlobalDlmalloc;
 use origin::program::exit;
@@ -21,7 +21,7 @@ use stak_libc::Mmap;
 use stak_process_context::LibcProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::LibcClock;
-use stak_vm::Vm;
+use stak_vm::{Value, Vm};
 
 const HEAP_SIZE: usize = 1 << 19;
 
@@ -40,9 +40,11 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
     let Some(&file) = unsafe { slice::from_raw_parts(argv, argc as _) }.get(1) else {
         exit(1);
     };
+    let mut heap = Box::<[Value; HEAP_SIZE]>::new_uninit();
 
     let mut vm = Vm::new(
-        vec![Default::default(); HEAP_SIZE],
+        // SAFETY: `Value`s are scalar values.
+        unsafe { heap.assume_init_mut() },
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
