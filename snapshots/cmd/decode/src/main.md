@@ -2413,7 +2413,7 @@
   - constant 4096
   - call 2 #f ||
   - call 2 #f ||
-  - get 2
+  - get 1
   - constant 2
   - call 2 #f ||
   - constant 2048
