@@ -43,6 +43,7 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
     let mut heap = Box::<[Value; HEAP_SIZE]>::new_uninit();
 
     let mut vm = Vm::new(
+        // SAFETY: `Value`s are scalar values.
         unsafe { heap.assume_init_mut() },
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
