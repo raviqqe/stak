@@ -141,7 +141,7 @@ macro_rules! libc_main {
             let mut heap = Box::<[Value; $heap_size]>::new_uninit();
 
             Vm::new(
-                unsafe { heap.assume_init() },
+                unsafe { heap.assume_init_mut() },
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
