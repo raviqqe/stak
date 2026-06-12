@@ -115,7 +115,7 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
-            alloc::vec,
+            alloc::boxed::Box,
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
@@ -124,7 +124,7 @@ macro_rules! libc_main {
             stak_process_context::LibcProcessContext,
             stak_r7rs::SmallPrimitiveSet,
             stak_time::LibcClock,
-            stak_vm::Vm,
+            stak_vm::{Value, Vm},
         };
 
         #[global_allocator]
@@ -138,8 +138,10 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
+            let mut heap = Box::<[Value; $heap_size]>::new_uninit();
+
             Vm::new(
-                vec![Default::default(); $heap_size],
+                unsafe { heap.assume_init_mut() },
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
