@@ -42,7 +42,7 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
     };
 
     let mut vm = Vm::new(
-        vec![Default::default(); HEAP_SIZE],
+        Box::<[Value; HEAP_SIZE]>::default(),
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),

@@ -139,7 +139,7 @@ macro_rules! libc_main {
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
             Vm::new(
-                vec![Default::default(); $heap_size],
+                Box::<[Value; $heap_size]>::default(),
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
