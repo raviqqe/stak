@@ -121,7 +121,7 @@
     (else
       (let* ((x (quotient integer 4))
              (m (* (if (even? x) 1 -1) (quotient x 4096)))
-             (e (- (modulo (quotient integer 2) 2048) 1023)))
+             (e (- (modulo (quotient x 2) 2048) 1023)))
         (* m (expt 2 e))))))
 
 (define (decode)

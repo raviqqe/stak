@@ -11,7 +11,7 @@ categories.workspace = true
 
 [dependencies]
 glob = "0.3.3"
-stak-compiler = { path = "../compiler", version = "0.12.14" }
+stak-compiler = { path = "../compiler", version = "0.12.15" }
 tokio = {
   version = "1.52.3",
   features = [
@@ -21,7 +21,7 @@ tokio = {
     "rt-multi-thread",
   ]
 }
-which = "8.0.2"
+which = "8.0.3"
 
 [features]
 async = ["stak-compiler/async"]

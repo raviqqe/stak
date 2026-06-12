@@ -6,8 +6,8 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
     "@raviqqe/biome-config": "^2.0.26",
-    "oxfmt": "^0.53.0",
-    "tombi": "^1.1.1"
+    "oxfmt": "^0.54.0",
+    "tombi": "^1.1.2"
   },
   "engines": {
     "node": ">=26.3.0"
