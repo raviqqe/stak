@@ -12,6 +12,10 @@
 (define tag-base 16)
 (define share-base 31)
 
+(define escape-head 0)
+(define announce-op 0)
+(define fill-op 2)
+
 (define window-size 256)
 
 ; Window
@@ -92,14 +96,8 @@
     (stack-set-values! stack (cdr (stack-values stack)))
     value))
 
-(define (stack-swap! stack index)
-  (let* ((values (stack-values stack))
-         (pair (list-tail values (- index 1)))
-         (head (cdr pair))
-         (tail (cdr head)))
-    (set-cdr! head values)
-    (set-cdr! pair tail)
-    (stack-set-values! stack head)))
+(define (stack-ref stack index)
+  (list-ref (stack-values stack) index))
 
 ; Decoding
 
@@ -111,6 +109,9 @@
       y
       (let ((x (decompressor-read decompressor)))
         (loop x (+ y (* base (quotient x 2))) (* base integer-base))))))
+
+(define (decode-integer decompressor base)
+  (decode-integer-tail decompressor (decompressor-read decompressor) base))
 
 (define (decode-number integer)
   (cond
@@ -136,18 +137,28 @@
   (do ((byte (decompressor-read decompressor) (decompressor-read decompressor)))
     ((eof-object? byte))
     (cond
+      ((= byte escape-head)
+        (let ((operation (decompressor-read decompressor)))
+          (cond
+            ((= operation announce-op)
+              (let ((placeholder (rib 0 '() (decode-integer decompressor tag-base))))
+                (stack-push! dictionary placeholder)
+                (stack-push! stack placeholder)))
+            ((= operation fill-op)
+              (let* ((d (stack-pop! stack))
+                     (a (stack-pop! stack))
+                     (placeholder (stack-pop! stack)))
+                (set-car! placeholder a)
+                (set-cdr! placeholder d)
+                (stack-push! stack placeholder)))
+            (else
+              (error "invalid sharing operation" operation)))))
       ((even? byte)
-        (let ((head (quotient byte 2)))
-          (if (zero? head)
-            (stack-push! dictionary (stack-top stack))
-            (let* ((integer (decode-integer-tail decompressor (- head 1) share-base))
-                   (index (quotient integer 2)))
-              (when (> index 0)
-                (stack-swap! dictionary index))
-              (let ((value (stack-top dictionary)))
-                (when (even? integer)
-                  (stack-pop! dictionary))
-                (stack-push! stack value))))))
+        (stack-push!
+          stack
+          (stack-ref
+            dictionary
+            (decode-integer-tail decompressor (- (quotient byte 2) 1) share-base))))
       ((even? (quotient byte 2))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
@@ -181,21 +192,26 @@
       ; 0 as a false value
       0)))
 
-(define (marshal-value! context value)
-  (when (and (rib? value) (not (memq value '(#f #t ()))))
-    (let ((a (marshal-value context (car value)))
-          (d (marshal-value context (cdr value))))
-      (if (eq? a 0)
-        (marshal-value! context (car value))
-        (set-car! value a))
-      (if (eq? d 0)
-        (marshal-value! context (cdr value))
-        (set-cdr! value d)))))
+(define (marshal! ribs)
+  (define context (make-marshal-context (car ribs) (cdar ribs) (caar ribs)))
+  (define visited '())
 
-(define (marshal! rib)
-  (marshal-value!
-    (make-marshal-context (car rib) (cdar rib) (caar rib))
-    rib))
+  (define (visit! value)
+    (when (and
+           (rib? value)
+           (not (memq value '(#f #t ())))
+           (not (memq value visited)))
+      (set! visited (cons value visited))
+      (let ((a (marshal-value context (car value)))
+            (d (marshal-value context (cdr value))))
+        (if (eq? a 0)
+          (visit! (car value))
+          (set-car! value a))
+        (if (eq? d 0)
+          (visit! (cdr value))
+          (set-cdr! value d)))))
+
+  (visit! ribs))
 
 ; Display
 

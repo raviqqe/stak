@@ -1811,12 +1811,6 @@
       context
       (cons value (encode-context-dictionary context))))
 
-    (define (encode-context-remove! context index)
-     (let* ((dictionary (cons #f (encode-context-dictionary context)))
-            (pair (list-tail dictionary index)))
-      (set-cdr! pair (cddr pair))
-      (encode-context-set-dictionary! context (cdr dictionary))))
-
     (define (encode-context-index context value)
      (memq-index value (encode-context-dictionary context)))
 
@@ -1829,6 +1823,11 @@
     (define number-base 16)
     (define tag-base 16)
     (define share-base 31)
+
+    ; A head byte that escapes into a sharing operation, followed by the operation.
+    (define escape-head 0)
+    (define announce-op 0)
+    (define fill-op 2)
 
     (define (shared-value? value)
      (and
@@ -1858,9 +1857,6 @@
        (encode-context-set-counts!
         context
         (cons (cons value 1) (encode-context-counts context))))))
-
-    (define (decrement-count! pair)
-     (set-cdr! pair (- (cdr pair) 1)))
 
     (define (count-ribs! context codes)
      (define (count-data! value)
@@ -1959,31 +1955,32 @@
       (let* ((value (strip-nop-instructions value))
              (entry (encode-context-find-count context value)))
        (cond
+        ; Reference a shared rib already announced in the dictionary.
         ((and entry (encode-context-index context value)) =>
          (lambda (index)
-          (decrement-count! entry)
-          (let ((removed (zero? (cdr entry))))
-           (encode-context-remove! context index)
-           (unless removed
-            (encode-context-push! context value))
-           (let-values (((head tail)
-                         (encode-integer-parts
-                          (+ (* 2 index) (if removed 0 1))
-                          share-base)))
-            (compressor-write compressor (* 2 (+ 1 head)))
-            (encode-integer-tail context tail)))))
+          (let-values (((head tail) (encode-integer-parts index share-base)))
+           (compressor-write compressor (* 2 (+ 1 head)))
+           (encode-integer-tail context tail))))
+        ; Announce a shared rib, encode its fields, then fill it back so that the
+        ; fields can reference the rib itself.
+        (entry
+         (compressor-write compressor escape-head)
+         (compressor-write compressor announce-op)
+         (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
+          (compressor-write compressor head)
+          (encode-integer-tail context tail))
+         (encode-context-push! context value)
+         (encode-rib context (rib-car value))
+         (encode-rib context (rib-cdr value))
+         (compressor-write compressor escape-head)
+         (compressor-write compressor fill-op))
+        ; Encode an unshared rib in place.
         (else
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
-
          (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
           (compressor-write compressor (+ 1 (* 4 head)))
-          (encode-integer-tail context tail))
-
-         (when entry
-          (encode-context-push! context value)
-          (decrement-count! entry)
-          (compressor-write compressor 0)))))
+          (encode-integer-tail context tail)))))
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
        (compressor-write compressor (+ 3 (* 4 head)))
        (encode-integer-tail context tail))))
@@ -2023,16 +2020,7 @@
         (lambda (pair) (> (cdr pair) 1))
         (encode-context-counts context)))
       (encode-rib context codes)
-      (compressor-flush (encode-context-compressor context))
-
-      (let ((size (length (encode-context-dictionary context))))
-       (unless (zero? size)
-        (error "dictionary not empty" size)))
-
-      (do ((counts (encode-context-counts context) (cdr counts)))
-       ((null? counts))
-       (unless (zero? (cdar counts))
-        (error "invalid constant count" (map cdr counts))))))
+      (compressor-flush (encode-context-compressor context))))
 
     ; Main
 

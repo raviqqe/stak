@@ -2,7 +2,7 @@
 use crate::profiler::Profiler;
 use crate::{
     Error, Exception, StackSlot,
-    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
+    code::{ANNOUNCE, ESCAPE_HEAD, FILL, INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     heap::Heap,
     instruction::Instruction,
@@ -465,35 +465,36 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
-            if head & 0b1 == 0 {
-                let head = head >> 1;
-
-                if head == 0 {
-                    let value = self.memory.top()?;
-                    let cons = self.memory.cons(value, self.memory.code())?;
-                    self.memory.set_code(cons);
-                } else {
-                    let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
-                    let index = integer >> 1;
-
-                    if index > 0 {
-                        let cons = self.memory.tail(self.memory.code(), index as usize - 1)?;
-                        let head = self.memory.cdr(cons)?.assume_cons();
-                        let tail = self.memory.cdr(head)?;
-                        self.memory.set_cdr(head, self.memory.code().into())?;
-                        self.memory.set_cdr(cons, tail)?;
-                        self.memory.set_code(head);
+            if head == ESCAPE_HEAD {
+                match input.next().ok_or(Error::BytecodeEnd)? {
+                    ANNOUNCE => {
+                        let tag = Self::decode_integer(&mut input, TAG_BASE)?;
+                        let placeholder = self.memory.allocate(
+                            Number::default().into(),
+                            self.memory.null()?.set_tag(tag as _).into(),
+                        )?;
+                        // Root the placeholder on the stack before registering it
+                        // in the dictionary so a garbage collection during the
+                        // registration cannot leave a dangling reference to it.
+                        self.memory.push(placeholder.into())?;
+                        let value = self.memory.top()?;
+                        let cons = self.memory.cons(value, self.memory.code())?;
+                        self.memory.set_code(cons);
                     }
-
-                    let value = self.memory.car(self.memory.code())?;
-
-                    if integer & 1 == 0 {
-                        self.memory
-                            .set_code(self.memory.cdr(self.memory.code())?.assume_cons());
+                    FILL => {
+                        let cdr = self.memory.pop()?;
+                        let car = self.memory.pop()?;
+                        let placeholder = self.memory.pop()?.assume_cons();
+                        self.memory.set_car(placeholder, car)?;
+                        self.memory.set_cdr(placeholder, cdr)?;
+                        self.memory.push(placeholder.into())?;
                     }
-
-                    self.memory.push(value)?;
+                    _ => return Err(Error::IllegalInstruction),
                 }
+            } else if head & 0b1 == 0 {
+                let index = Self::decode_integer_tail(&mut input, (head >> 1) - 1, SHARE_BASE)?;
+                let value = self.memory.car(self.reference(index as usize)?)?;
+                self.memory.push(value)?;
             } else if head & 0b10 == 0 {
                 let cons = self.memory.stack();
                 let cdr = self.memory.pop()?;
@@ -517,6 +518,24 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         self.memory.pop()?.to_cons().ok_or(Error::BytecodeEnd)
     }
 
+    fn reference(&self, index: usize) -> Result<Cons, Error> {
+        let mut cons = self.memory.code();
+
+        for _ in 0..index {
+            if cons == NEVER {
+                return Err(Error::BytecodeEnd);
+            }
+
+            cons = self.memory.cdr(cons)?.assume_cons();
+        }
+
+        if cons == NEVER {
+            Err(Error::BytecodeEnd)
+        } else {
+            Ok(cons)
+        }
+    }
+
     fn decode_number(integer: u128) -> Number {
         if integer & 1 == 0 {
             Number::from_i64((integer >> 1) as _)
@@ -534,6 +553,11 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 mantissa * (1u64 << exponent) as f64
             })
         }
+    }
+
+    fn decode_integer(input: &mut impl Iterator<Item = u8>, base: u128) -> Result<u128, Error> {
+        let head = input.next().ok_or(Error::BytecodeEnd)?;
+        Self::decode_integer_tail(input, head, base)
     }
 
     fn decode_integer_tail(
@@ -610,5 +634,126 @@ mod tests {
         ] {
             assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
         }
+    }
+
+    const HEAP_SIZE: usize = 1 << 9;
+
+    const fn number(value: u8) -> u8 {
+        3 + 16 * value
+    }
+
+    const fn rib(tag: u8) -> u8 {
+        1 + 8 * tag
+    }
+
+    const fn reference(index: u8) -> u8 {
+        2 + 4 * index
+    }
+
+    // Decodes a stream of decompressed bytecode bytes. Every byte is emitted as an
+    // LZSS literal so the decompressor reproduces it verbatim.
+    fn decode(
+        bytes: &[u8],
+    ) -> Result<(Vm<'static, FakePrimitiveSet, [Value; HEAP_SIZE]>, Cons), Error> {
+        let mut vm = Vm::new([Value::default(); HEAP_SIZE], FakePrimitiveSet {})?;
+        let cons = vm.decode_ribs(bytes.iter().map(|&byte| byte << 1))?;
+
+        Ok((vm, cons))
+    }
+
+    #[test]
+    fn decode_shared_node() {
+        let (vm, root) = decode(&[
+            ESCAPE_HEAD,
+            ANNOUNCE,
+            0,
+            number(1),
+            number(2),
+            ESCAPE_HEAD,
+            FILL,
+            reference(0),
+            rib(0),
+        ])
+        .unwrap();
+        let car = vm.memory.car(root).unwrap().assume_cons();
+        let cdr = vm.memory.cdr(root).unwrap().assume_cons();
+
+        assert_eq!(car, cdr);
+        assert_eq!(vm.memory.car(car).unwrap(), Number::from_i64(1).into());
+    }
+
+    #[test]
+    fn decode_self_loop() {
+        let (vm, root) = decode(&[
+            ESCAPE_HEAD,
+            ANNOUNCE,
+            2 * 3,
+            number(7),
+            reference(0),
+            ESCAPE_HEAD,
+            FILL,
+        ])
+        .unwrap();
+
+        assert_eq!(vm.memory.car(root).unwrap(), Number::from_i64(7).into());
+        assert_eq!(vm.memory.cdr(root).unwrap().assume_cons(), root);
+        assert_eq!(vm.memory.cdr(root).unwrap().tag(), 3);
+    }
+
+    #[test]
+    fn decode_cons_cycle() {
+        let (vm, root) = decode(&[
+            ESCAPE_HEAD,
+            ANNOUNCE,
+            0,
+            number(1),
+            ESCAPE_HEAD,
+            ANNOUNCE,
+            0,
+            number(2),
+            reference(1),
+            ESCAPE_HEAD,
+            FILL,
+            ESCAPE_HEAD,
+            FILL,
+        ])
+        .unwrap();
+        let other = vm.memory.cdr(root).unwrap().assume_cons();
+
+        assert_eq!(vm.memory.car(root).unwrap(), Number::from_i64(1).into());
+        assert_eq!(vm.memory.car(other).unwrap(), Number::from_i64(2).into());
+        assert_eq!(vm.memory.cdr(other).unwrap().assume_cons(), root);
+    }
+
+    #[test]
+    fn decode_shared_and_cyclic_node() {
+        let (vm, root) = decode(&[
+            ESCAPE_HEAD,
+            ANNOUNCE,
+            0,
+            reference(0),
+            number(7),
+            ESCAPE_HEAD,
+            FILL,
+            reference(0),
+            rib(0),
+        ])
+        .unwrap();
+        let car = vm.memory.car(root).unwrap().assume_cons();
+        let cdr = vm.memory.cdr(root).unwrap().assume_cons();
+
+        assert_eq!(car, cdr);
+        assert_eq!(vm.memory.car(car).unwrap().assume_cons(), car);
+        assert_eq!(vm.memory.cdr(car).unwrap(), Number::from_i64(7).into());
+    }
+
+    #[test]
+    fn fail_to_decode_dangling_reference() {
+        assert!(matches!(decode(&[reference(5)]), Err(Error::BytecodeEnd)));
+    }
+
+    #[test]
+    fn fail_to_decode_reference_without_announcement() {
+        assert!(matches!(decode(&[reference(0)]), Err(Error::BytecodeEnd)));
     }
 }

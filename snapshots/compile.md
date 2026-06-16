@@ -4205,10 +4205,12 @@
   - compressor-write-next
   - encode-context
   - encode-context?
+  - dictionary
+  - counts
   - null
   - encode-context-set-dictionary!
-  - dictionary
   - memq-index
+  - encode-context-dictionary
   - nop-instruction
   - boolean-type
   - char-type
@@ -4240,14 +4242,14 @@
   - strip-nop-instructions
   - encode-context-find-count
   - encode-context-index
-  - encode-context-remove!
   - index
-  - removed
   - share-base
-  - tag-base
-  - encode-context-push!
-  - decrement-count!
   - entry
+  - announce-op
+  - encode-context-push!
+  - escape-head
+  - fill-op
+  - tag-base
   - encode-integer-parts
   - encode-number
   - number-base
@@ -4264,14 +4266,11 @@
   - make-compressor
   - count-ribs!
   - encode-context-set-counts!
+  - encode-context-counts
   - encode-rib
   - codes
   - compressor-flush
   - encode-context-compressor
-  - encode-context-dictionary
-  - size
-  - encode-context-counts
-  - counts
   - source
   - expression1
   - expression2
@@ -19893,41 +19892,6 @@
   - list
     - define
     - list
-      - encode-context-remove!
-      - context
-      - index
-    - list
-      - let\*
-      - list
-        - list
-          - dictionary
-          - list
-            - cons
-            - #f
-            - list
-              - encode-context-dictionary
-              - context
-        - list
-          - pair
-          - list
-            - list-tail
-            - dictionary
-            - index
-      - list
-        - set-cdr!
-        - pair
-        - list
-          - cddr
-          - pair
-      - list
-        - encode-context-set-dictionary!
-        - context
-        - list
-          - cdr
-          - dictionary
-  - list
-    - define
-    - list
       - encode-context-index
       - context
       - value
@@ -19965,6 +19929,18 @@
     - define
     - share-base
     - 31
+  - list
+    - define
+    - escape-head
+    - 0
+  - list
+    - define
+    - announce-op
+    - 0
+  - list
+    - define
+    - fill-op
+    - 2
   - list
     - define
     - list
@@ -20047,20 +20023,6 @@
             - list
               - encode-context-counts
               - context
-  - list
-    - define
-    - list
-      - decrement-count!
-      - pair
-    - list
-      - set-cdr!
-      - pair
-      - list
-        - -
-        - list
-          - cdr
-          - pair
-        - 1
   - list
     - define
     - list
@@ -20478,64 +20440,85 @@
               - list
                 - index
               - list
-                - decrement-count!
-                - entry
-              - list
-                - let
+                - let-values
                 - list
-                  - list
-                    - removed
-                    - list
-                      - zero?
-                      - list
-                        - cdr
-                        - entry
-                - list
-                  - encode-context-remove!
-                  - context
-                  - index
-                - list
-                  - unless
-                  - removed
-                  - list
-                    - encode-context-push!
-                    - context
-                    - value
-                - list
-                  - let-values
                   - list
                     - list
-                      - list
-                        - head
-                        - tail
-                      - list
-                        - encode-integer-parts
-                        - list
-                          - -
-                          - list
-                            - -
-                            - 2
-                            - index
-                          - list
-                            - if
-                            - removed
-                            - 0
-                            - 1
-                        - share-base
+                      - head
+                      - tail
+                    - list
+                      - encode-integer-parts
+                      - index
+                      - share-base
+                - list
+                  - compressor-write
+                  - compressor
                   - list
-                    - compressor-write
-                    - compressor
+                    - -
+                    - 2
                     - list
                       - -
-                      - 2
-                      - list
-                        - -
-                        - 1
-                        - head
+                      - 1
+                      - head
+                - list
+                  - encode-integer-tail
+                  - context
+                  - tail
+          - list
+            - entry
+            - list
+              - compressor-write
+              - compressor
+              - escape-head
+            - list
+              - compressor-write
+              - compressor
+              - announce-op
+            - list
+              - let-values
+              - list
+                - list
                   - list
-                    - encode-integer-tail
-                    - context
+                    - head
                     - tail
+                  - list
+                    - encode-integer-parts
+                    - list
+                      - rib-tag
+                      - value
+                    - tag-base
+              - list
+                - compressor-write
+                - compressor
+                - head
+              - list
+                - encode-integer-tail
+                - context
+                - tail
+            - list
+              - encode-context-push!
+              - context
+              - value
+            - list
+              - encode-rib
+              - context
+              - list
+                - rib-car
+                - value
+            - list
+              - encode-rib
+              - context
+              - list
+                - rib-cdr
+                - value
+            - list
+              - compressor-write
+              - compressor
+              - escape-head
+            - list
+              - compressor-write
+              - compressor
+              - fill-op
           - list
             - else
             - list
@@ -20577,20 +20560,6 @@
                 - encode-integer-tail
                 - context
                 - tail
-            - list
-              - when
-              - entry
-              - list
-                - encode-context-push!
-                - context
-                - value
-              - list
-                - decrement-count!
-                - entry
-              - list
-                - compressor-write
-                - compressor
-                - 0
       - list
         - let-values
         - list
@@ -20731,54 +20700,6 @@
         - list
           - encode-context-compressor
           - context
-      - list
-        - let
-        - list
-          - list
-            - size
-            - list
-              - length
-              - list
-                - encode-context-dictionary
-                - context
-        - list
-          - unless
-          - list
-            - zero?
-            - size
-          - list
-            - error
-            - "dictionary not empty"
-            - size
-      - list
-        - do
-        - list
-          - list
-            - counts
-            - list
-              - encode-context-counts
-              - context
-            - list
-              - cdr
-              - counts
-        - list
-          - list
-            - null?
-            - counts
-        - list
-          - unless
-          - list
-            - zero?
-            - list
-              - cdar
-              - counts
-          - list
-            - error
-            - "invalid constant count"
-            - list
-              - map
-              - cdr
-              - counts
   - list
     - define
     - list
