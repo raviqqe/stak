@@ -54,6 +54,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         self.device.device_mut()
     }
 
+    // We mark this `inline(always)` so that the comparison function pointer is
+    // devirtualized and inlined at every call site.
+    #[inline(always)]
     fn operate_comparison<H: Heap>(
         memory: &mut Memory<H>,
         operate: fn(Number, Number) -> bool,
@@ -73,6 +76,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
 
     // We mark this `inline(always)` to make sure inline the `set_field` functions
     // everywhere.
+    #[inline(always)]
     fn set_field<H: Heap>(
         memory: &mut Memory<H>,
         set_field: fn(&mut Memory<H>, Value, Value) -> Result<(), stak_vm::Error>,
