@@ -1546,16 +1546,11 @@
       (cons pair (constant-set-complex constant-set))))
 
     (define-record-type marshal-context
-     (make-marshal-context symbols constants continuations procedures cyclic)
+     (make-marshal-context symbols constants continuations)
      marshal-context?
      (symbols marshal-context-symbols)
      (constants marshal-context-constants)
-     (continuations marshal-context-continuations marshal-context-set-continuations!)
-     ; A stack of procedures being marshalled mapped to their placeholder ribs to
-     ; detect cycles.
-     (procedures marshal-context-procedures marshal-context-set-procedures!)
-     ; Placeholder ribs referenced cyclically.
-     (cyclic marshal-context-cyclic marshal-context-set-cyclic!))
+     (continuations marshal-context-continuations marshal-context-set-continuations!))
 
     (define (nop-code? codes)
      (and
@@ -1665,29 +1660,9 @@
       ((or data (null? value))
        (cond
         ((target-procedure? value)
-         (cond
-          ((assq value (marshal-context-procedures context)) =>
-           (lambda (pair)
-            (unless (memq (cdr pair) (marshal-context-cyclic context))
-             (marshal-context-set-cyclic!
-              context
-              (cons (cdr pair) (marshal-context-cyclic context))))
-            (cdr pair)))
-          (else
-           (unless (null? (rib-cdr value))
-            (error "invalid environment"))
-           ; A `cdr` field holds a null so that a procedure tag, which is stored
-           ; in a `cdr` field, is not lost on a placeholder.
-           (let ((procedure (data-rib procedure-type 0 '())))
-            (marshal-context-set-procedures!
-             context
-             (cons (cons value procedure) (marshal-context-procedures context)))
-            (rib-set-car! procedure (marshal (rib-car value) #f))
-            (rib-set-cdr! procedure (marshal '() #t))
-            (marshal-context-set-procedures!
-             context
-             (cdr (marshal-context-procedures context)))
-            procedure))))
+         (unless (null? (rib-cdr value))
+          (error "invalid environment"))
+         (data-rib procedure-type (marshal (rib-car value) #f) (marshal '() #t)))
 
         ((or
           (null? value)
@@ -1722,22 +1697,19 @@
         (rib-tag value)))))
 
     (define (marshal options metadata codes)
-     (let ((context
-            (make-marshal-context
-             (and
-              (not (memq 'debug options))
-              (append
-               (metadata-symbols metadata)
-               (append-map
-                (lambda (pair) (map cdr (cdr pair)))
-                (metadata-libraries metadata))))
-             (make-constant-set '() '())
-             '()
-             '()
-             '())))
-      (values
-       (marshal-rib context codes #f)
-       (marshal-context-cyclic context))))
+     (marshal-rib
+      (make-marshal-context
+       (and
+        (not (memq 'debug options))
+        (append
+         (metadata-symbols metadata)
+         (append-map
+          (lambda (pair) (map cdr (cdr pair)))
+          (metadata-libraries metadata))))
+       (make-constant-set '() '())
+       '())
+      codes
+      #f))
 
     ; Compression
 
@@ -1827,17 +1799,12 @@
     ;; Context
 
     (define-record-type encode-context
-     (make-encode-context compressor dictionary counts null cyclic)
+     (make-encode-context compressor dictionary counts null)
      encode-context?
      (compressor encode-context-compressor)
      (dictionary encode-context-dictionary encode-context-set-dictionary!)
      (counts encode-context-counts encode-context-set-counts!)
-     (null encode-context-null)
-     ; Ribs encoded as cyclic placeholders.
-     (cyclic encode-context-cyclic))
-
-    (define (cyclic-root? context value)
-     (memq value (encode-context-cyclic context)))
+     (null encode-context-null))
 
     (define (encode-context-push! context value)
      (encode-context-set-dictionary!
@@ -1862,11 +1829,6 @@
     (define number-base 16)
     (define tag-base 16)
     (define share-base 31)
-
-    ; See the virtual machine for why we reserve the byte 126.
-    (define cycle-head 126)
-    (define cycle-create 0)
-    (define cycle-patch 2)
 
     (define (shared-value? value)
      (and
@@ -1903,21 +1865,11 @@
     (define (count-ribs! context codes)
      (define (count-data! value)
       (when (rib? value)
-       (cond
-        ((cyclic-root? context value)
-         ; Count an entry before descending so that a reference back to a cyclic
-         ; root stops the descent.
-         (let ((counted (encode-context-find-count context value)))
-          (increment-count! context value)
-          (unless counted
-           ((if (target-procedure? value) count-code! count-data!) (rib-car value))
-           (count-data! (rib-cdr value)))))
-        (else
-         (unless (and (shared-value? value) (encode-context-find-count context value))
-          ((if (target-procedure? value) count-code! count-data!) (rib-car value))
-          (count-data! (rib-cdr value)))
-         (when (shared-value? value)
-          (increment-count! context value))))))
+       (unless (and (shared-value? value) (encode-context-find-count context value))
+        ((if (target-procedure? value) count-code! count-data!) (rib-car value))
+        (count-data! (rib-cdr value)))
+       (when (shared-value? value)
+        (increment-count! context value))))
 
      (define (count-code! codes)
       (cond
@@ -1981,11 +1933,6 @@
         integer-base
         (zero? (quotient x integer-base))))))
 
-    (define (encode-integer context x)
-     (let-values (((head tail) (encode-integer-parts x integer-base)))
-      (compressor-write (encode-context-compressor context) head)
-      (encode-integer-tail context tail)))
-
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
@@ -2025,21 +1972,6 @@
                           share-base)))
             (compressor-write compressor (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
-        ((cyclic-root? context value)
-         ; Register a placeholder before encoding children so that references
-         ; back to this rib resolve to a dictionary entry, then fill its fields.
-         (compressor-write compressor cycle-head)
-         (compressor-write compressor cycle-create)
-         (encode-integer context (rib-tag value))
-         (encode-context-push! context value)
-         (encode-rib context (rib-car value))
-         (encode-rib context (rib-cdr value))
-         (let ((index (encode-context-index context value)))
-          (compressor-write compressor cycle-head)
-          (compressor-write compressor cycle-patch)
-          (encode-integer context index)
-          (decrement-count! entry)
-          (encode-context-remove! context index)))
         (else
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
@@ -2077,19 +2009,18 @@
 
     ;; Main
 
-    (define (encode codes cyclic)
+    (define (encode codes)
      (let ((context
             (make-encode-context
              (make-compressor '() '() #f 0 0)
              '()
              '()
-             (rib-car (rib-car codes))
-             cyclic)))
+             (rib-car (rib-car codes)))))
       (count-ribs! context codes)
       (encode-context-set-counts!
        context
        (filter
-        (lambda (pair) (or (> (cdr pair) 1) (memq (car pair) cyclic)))
+        (lambda (pair) (> (cdr pair) 1))
         (encode-context-counts context)))
       (encode-rib context codes)
       (compressor-flush (encode-context-compressor context))
@@ -2124,16 +2055,15 @@
        dynamic-symbols
        expression7))
 
-     (let-values (((codes cyclic)
-                   (marshal
-                    options
-                    metadata
-                    (cons-rib
-                     #f
-                     (build-primitives
-                      primitives
-                      (compile metadata expression7))))))
-      (encode codes cyclic)))
+     (encode
+      (marshal
+       options
+       metadata
+       (cons-rib
+        #f
+        (build-primitives
+         primitives
+         (compile metadata expression7))))))
 
     main))
 
@@ -2144,16 +2074,14 @@
       (define cons-rib cons)
       (define rib-car car)
       (define rib-cdr cdr)
-      (define rib-set-car! set-car!)
-      (define rib-set-cdr! set-cdr!)
       (define target-procedure? procedure?))
 
      (else
       (define-record-type *rib*
        (rib car cdr tag)
        rib?
-       (car rib-car rib-set-car!)
-       (cdr rib-cdr rib-set-cdr!)
+       (car rib-car)
+       (cdr rib-cdr)
        (tag rib-tag))
 
       (define (cons-rib car cdr)

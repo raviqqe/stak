@@ -12,10 +12,6 @@
 (define tag-base 16)
 (define share-base 31)
 
-(define cycle-head 126)
-(define cycle-create 0)
-(define cycle-patch 2)
-
 (define window-size 256)
 
 ; Window
@@ -116,9 +112,6 @@
       (let ((x (decompressor-read decompressor)))
         (loop x (+ y (* base (quotient x 2))) (* base integer-base))))))
 
-(define (decode-integer decompressor)
-  (decode-integer-tail decompressor (decompressor-read decompressor) integer-base))
-
 (define (decode-number integer)
   (cond
     ((even? integer)
@@ -143,19 +136,6 @@
   (do ((byte (decompressor-read decompressor) (decompressor-read decompressor)))
     ((eof-object? byte))
     (cond
-      ((= byte cycle-head)
-        (if (= (decompressor-read decompressor) cycle-create)
-          (stack-push! dictionary (rib 0 '() (decode-integer decompressor)))
-          (let ((index (decode-integer decompressor)))
-            (when (> index 0)
-              (stack-swap! dictionary index))
-            (let* ((placeholder (stack-top dictionary))
-                   (d (stack-pop! stack))
-                   (a (stack-pop! stack)))
-              (set-car! placeholder a)
-              (set-cdr! placeholder d)
-              (stack-pop! dictionary)
-              (stack-push! stack placeholder)))))
       ((even? byte)
         (let ((head (quotient byte 2)))
           (if (zero? head)
@@ -201,22 +181,21 @@
       ; 0 as a false value
       0)))
 
+(define (marshal-value! context value)
+  (when (and (rib? value) (not (memq value '(#f #t ()))))
+    (let ((a (marshal-value context (car value)))
+          (d (marshal-value context (cdr value))))
+      (if (eq? a 0)
+        (marshal-value! context (car value))
+        (set-car! value a))
+      (if (eq? d 0)
+        (marshal-value! context (cdr value))
+        (set-cdr! value d)))))
+
 (define (marshal! rib)
-  (let ((context (make-marshal-context (car rib) (cdar rib) (caar rib)))
-        (procedures '()))
-    (let marshal! ((value rib))
-      (when (and (rib? value) (not (memq value '(#f #t ()))))
-        (unless (and (procedure? value) (memq value procedures))
-          (when (procedure? value)
-            (set! procedures (cons value procedures)))
-          (let ((a (marshal-value context (car value)))
-                (d (marshal-value context (cdr value))))
-            (if (eq? a 0)
-              (marshal! (car value))
-              (set-car! value a))
-            (if (eq? d 0)
-              (marshal! (cdr value))
-              (set-cdr! value d))))))))
+  (marshal-value!
+    (make-marshal-context (car rib) (cdar rib) (caar rib))
+    rib))
 
 ; Display
 
@@ -257,52 +236,48 @@
             " #"
             (if (even? arity) "f" "t")))))))
 
-(define (display-procedure procedure depth ancestors)
+(define (display-procedure procedure depth)
   (let ((code (car procedure)))
-    (cond
-      ((number? code)
+    (if (number? code)
+      (begin
         (display "primitive ")
         (write code)
         (newline))
-      ((memq procedure ancestors)
-        (write-string "procedure (recursion)")
-        (newline))
-      (else
-        (let ((arity (car code)))
-          (write-string "procedure ")
-          (write (quotient arity 2))
-          (write-char #\space)
-          (write (odd? arity))
-          (newline)
-          (display-code (cdr code) '() depth (cons procedure ancestors)))))))
+      (let ((arity (car code)))
+        (write-string "procedure ")
+        (write (quotient arity 2))
+        (write-char #\space)
+        (write (odd? arity))
+        (newline)
+        (display-code (cdr code) '() depth)))))
 
-(define (display-data data depth ancestors)
+(define (display-data data depth)
   (cond
     ((number? data)
       (write data)
       (newline))
     ((procedure? data)
-      (display-procedure data depth ancestors))
+      (display-procedure data depth))
     (else
       (write data)
       (newline))))
 
-(define (display-list xs depth ancestors)
+(define (display-list xs depth)
   (do ((xs xs (cdr xs)))
     ((null? xs))
     (display-indent depth)
     (display "- ")
-    (display-top-data (car xs) (+ depth 1) ancestors)))
+    (display-top-data (car xs) (+ depth 1))))
 
-(define (display-top-data data depth ancestors)
+(define (display-top-data data depth)
   (if (and (pair? data) (list? data))
     (begin
       (write-string "list")
       (newline)
-      (display-list data depth ancestors))
-    (display-data data depth ancestors)))
+      (display-list data depth))
+    (display-data data depth)))
 
-(define (display-code code continuation depth ancestors)
+(define (display-code code continuation depth)
   (let loop ((code code))
     (unless (null? code)
       (display-indent depth)
@@ -315,14 +290,14 @@
             (if (= (rib-tag code) if-instruction)
               (begin
                 (newline)
-                (display-code operand (find-continuation operand (cdr code)) (+ depth 1) ancestors))
+                (display-code operand (find-continuation operand (cdr code)) (+ depth 1)))
               (begin
                 (write-char #\space)
-                (display-top-data operand (+ depth 1) ancestors)))
+                (display-top-data operand (+ depth 1))))
             (loop (cdr code))))))))
 
 (define (display-ribs code)
-  (display-code (cdr code) '() 0 '()))
+  (display-code (cdr code) '() 0))
 
 (define (main)
   (let ((ribs (decode)))
