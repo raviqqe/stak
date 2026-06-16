@@ -4076,7 +4076,6 @@
   - compile-raw-call
   - arguments
   - variadic
-  - procedure
   - $procedure
   - compile-unsafe-unbind
   - get-instruction
@@ -4151,6 +4150,7 @@
   - marshal-context?
   - constants
   - continuations
+  - procedures
   - vector-factor
   - marshal-context-symbols
   - symbols
@@ -4166,16 +4166,21 @@
   - constant-set-append-complex!
   - constant-set
   - marshalled
+  - marshal-context-set-cyclic!
+  - marshal-context-set-procedures!
+  - marshal-context-procedures
+  - procedure
   - marshal-unique-constant
   - marshal-constant
   - marshal-context-set-continuations!
   - marshal-context-continuations
   - data
-  - marshal-rib
   - make-marshal-context
   - metadata-symbols
   - metadata-libraries
   - make-constant-set
+  - marshal-rib
+  - marshal-context-cyclic
   - compressor?
   - buffer
   - ahead
@@ -4206,6 +4211,7 @@
   - encode-context
   - encode-context?
   - null
+  - encode-context-cyclic
   - encode-context-set-dictionary!
   - dictionary
   - memq-index
@@ -4239,11 +4245,16 @@
   - m
   - strip-nop-instructions
   - encode-context-find-count
-  - encode-context-index
-  - encode-context-remove!
-  - index
   - removed
   - share-base
+  - cyclic-root?
+  - cycle-create
+  - encode-context-index
+  - cycle-head
+  - cycle-patch
+  - encode-integer
+  - encode-context-remove!
+  - index
   - tag-base
   - encode-context-push!
   - decrement-count!
@@ -4265,7 +4276,6 @@
   - count-ribs!
   - encode-context-set-counts!
   - encode-rib
-  - codes
   - compressor-flush
   - encode-context-compressor
   - encode-context-dictionary
@@ -4288,15 +4298,19 @@
   - macros
   - optimizers
   - dynamic-symbols
-  - encode
   - marshal
   - options
   - build-primitives
   - primitives
   - metadata
   - expression7
+  - encode
+  - codes
+  - cyclic
   - main
   - _rib_
+  - rib-set-car!
+  - rib-set-cdr!
   - tag
   - pair-type
   - target-procedure?
@@ -18880,6 +18894,8 @@
       - symbols
       - constants
       - continuations
+      - procedures
+      - cyclic
     - marshal-context?
     - list
       - symbols
@@ -18891,6 +18907,14 @@
       - continuations
       - marshal-context-continuations
       - marshal-context-set-continuations!
+    - list
+      - procedures
+      - marshal-context-procedures
+      - marshal-context-set-procedures!
+    - list
+      - cyclic
+      - marshal-context-cyclic
+      - marshal-context-set-cyclic!
   - list
     - define
     - list
@@ -19295,30 +19319,106 @@
               - target-procedure?
               - value
             - list
-              - unless
+              - cond
               - list
-                - null?
                 - list
-                  - rib-cdr
+                  - assq
                   - value
-              - list
-                - error
-                - "invalid environment"
-            - list
-              - data-rib
-              - procedure-type
-              - list
-                - marshal
+                  - list
+                    - marshal-context-procedures
+                    - context
+                - =>
                 - list
-                  - rib-car
-                  - value
-                - #f
+                  - lambda
+                  - list
+                    - pair
+                  - list
+                    - unless
+                    - list
+                      - memq
+                      - list
+                        - cdr
+                        - pair
+                      - list
+                        - marshal-context-cyclic
+                        - context
+                    - list
+                      - marshal-context-set-cyclic!
+                      - context
+                      - list
+                        - cons
+                        - list
+                          - cdr
+                          - pair
+                        - list
+                          - marshal-context-cyclic
+                          - context
+                  - list
+                    - cdr
+                    - pair
               - list
-                - marshal
+                - else
                 - list
-                  - quote
-                  - ()
-                - #t
+                  - unless
+                  - list
+                    - null?
+                    - list
+                      - rib-cdr
+                      - value
+                  - list
+                    - error
+                    - "invalid environment"
+                - list
+                  - let
+                  - list
+                    - list
+                      - procedure
+                      - list
+                        - data-rib
+                        - procedure-type
+                        - 0
+                        - list
+                          - quote
+                          - ()
+                  - list
+                    - marshal-context-set-procedures!
+                    - context
+                    - list
+                      - cons
+                      - list
+                        - cons
+                        - value
+                        - procedure
+                      - list
+                        - marshal-context-procedures
+                        - context
+                  - list
+                    - rib-set-car!
+                    - procedure
+                    - list
+                      - marshal
+                      - list
+                        - rib-car
+                        - value
+                      - #f
+                  - list
+                    - rib-set-cdr!
+                    - procedure
+                    - list
+                      - marshal
+                      - list
+                        - quote
+                        - ()
+                      - #t
+                  - list
+                    - marshal-context-set-procedures!
+                    - context
+                    - list
+                      - cdr
+                      - list
+                        - marshal-context-procedures
+                        - context
+                  - procedure
           - list
             - list
               - or
@@ -19439,52 +19539,69 @@
       - metadata
       - codes
     - list
-      - marshal-rib
+      - let
       - list
-        - make-marshal-context
         - list
-          - and
+          - context
           - list
-            - not
+            - make-marshal-context
             - list
-              - memq
+              - and
+              - list
+                - not
+                - list
+                  - memq
+                  - list
+                    - quote
+                    - debug
+                  - options
+              - list
+                - append
+                - list
+                  - metadata-symbols
+                  - metadata
+                - list
+                  - append-map
+                  - list
+                    - lambda
+                    - list
+                      - pair
+                    - list
+                      - map
+                      - cdr
+                      - list
+                        - cdr
+                        - pair
+                  - list
+                    - metadata-libraries
+                    - metadata
+            - list
+              - make-constant-set
               - list
                 - quote
-                - debug
-              - options
-          - list
-            - append
-            - list
-              - metadata-symbols
-              - metadata
-            - list
-              - append-map
+                - ()
               - list
-                - lambda
-                - list
-                  - pair
-                - list
-                  - map
-                  - cdr
-                  - list
-                    - cdr
-                    - pair
-              - list
-                - metadata-libraries
-                - metadata
+                - quote
+                - ()
+            - list
+              - quote
+              - ()
+            - list
+              - quote
+              - ()
+            - list
+              - quote
+              - ()
+      - list
+        - values
         - list
-          - make-constant-set
-          - list
-            - quote
-            - ()
-          - list
-            - quote
-            - ()
+          - marshal-rib
+          - context
+          - codes
+          - #f
         - list
-          - quote
-          - ()
-      - codes
-      - #f
+          - marshal-context-cyclic
+          - context
   - list
     - define
     - window-size
@@ -19860,6 +19977,7 @@
       - dictionary
       - counts
       - null
+      - cyclic
     - encode-context?
     - list
       - compressor
@@ -19875,6 +19993,21 @@
     - list
       - null
       - encode-context-null
+    - list
+      - cyclic
+      - encode-context-cyclic
+  - list
+    - define
+    - list
+      - cyclic-root?
+      - context
+      - value
+    - list
+      - memq
+      - value
+      - list
+        - encode-context-cyclic
+        - context
   - list
     - define
     - list
@@ -19965,6 +20098,18 @@
     - define
     - share-base
     - 31
+  - list
+    - define
+    - cycle-head
+    - 126
+  - list
+    - define
+    - cycle-create
+    - 0
+  - list
+    - define
+    - cycle-patch
+    - 2
   - list
     - define
     - list
@@ -20078,41 +20223,82 @@
           - rib?
           - value
         - list
-          - unless
+          - cond
           - list
-            - and
             - list
-              - shared-value?
-              - value
-            - list
-              - encode-context-find-count
+              - cyclic-root?
               - context
               - value
-          - list
             - list
-              - if
+              - let
               - list
-                - target-procedure?
+                - list
+                  - counted
+                  - list
+                    - encode-context-find-count
+                    - context
+                    - value
+              - list
+                - increment-count!
+                - context
                 - value
-              - count-code!
-              - count-data!
+              - list
+                - unless
+                - counted
+                - list
+                  - list
+                    - if
+                    - list
+                      - target-procedure?
+                      - value
+                    - count-code!
+                    - count-data!
+                  - list
+                    - rib-car
+                    - value
+                - list
+                  - count-data!
+                  - list
+                    - rib-cdr
+                    - value
+          - list
+            - else
             - list
-              - rib-car
-              - value
-          - list
-            - count-data!
+              - unless
+              - list
+                - and
+                - list
+                  - shared-value?
+                  - value
+                - list
+                  - encode-context-find-count
+                  - context
+                  - value
+              - list
+                - list
+                  - if
+                  - list
+                    - target-procedure?
+                    - value
+                  - count-code!
+                  - count-data!
+                - list
+                  - rib-car
+                  - value
+              - list
+                - count-data!
+                - list
+                  - rib-cdr
+                  - value
             - list
-              - rib-cdr
-              - value
-        - list
-          - when
-          - list
-            - shared-value?
-            - value
-          - list
-            - increment-count!
-            - context
-            - value
+              - when
+              - list
+                - shared-value?
+                - value
+              - list
+                - increment-count!
+                - context
+                - value
     - list
       - define
       - list
@@ -20361,6 +20547,33 @@
   - list
     - define
     - list
+      - encode-integer
+      - context
+      - x
+    - list
+      - let-values
+      - list
+        - list
+          - list
+            - head
+            - tail
+          - list
+            - encode-integer-parts
+            - x
+            - integer-base
+      - list
+        - compressor-write
+        - list
+          - encode-context-compressor
+          - context
+        - head
+      - list
+        - encode-integer-tail
+        - context
+        - tail
+  - list
+    - define
+    - list
       - encode-number
       - x
     - list
@@ -20537,6 +20750,69 @@
                     - context
                     - tail
           - list
+            - list
+              - cyclic-root?
+              - context
+              - value
+            - list
+              - compressor-write
+              - compressor
+              - cycle-head
+            - list
+              - compressor-write
+              - compressor
+              - cycle-create
+            - list
+              - encode-integer
+              - context
+              - list
+                - rib-tag
+                - value
+            - list
+              - encode-context-push!
+              - context
+              - value
+            - list
+              - encode-rib
+              - context
+              - list
+                - rib-car
+                - value
+            - list
+              - encode-rib
+              - context
+              - list
+                - rib-cdr
+                - value
+            - list
+              - let
+              - list
+                - list
+                  - index
+                  - list
+                    - encode-context-index
+                    - context
+                    - value
+              - list
+                - compressor-write
+                - compressor
+                - cycle-head
+              - list
+                - compressor-write
+                - compressor
+                - cycle-patch
+              - list
+                - encode-integer
+                - context
+                - index
+              - list
+                - decrement-count!
+                - entry
+              - list
+                - encode-context-remove!
+                - context
+                - index
+          - list
             - else
             - list
               - encode-rib
@@ -20671,6 +20947,7 @@
     - list
       - encode
       - codes
+      - cyclic
     - list
       - let
       - list
@@ -20700,6 +20977,7 @@
               - list
                 - rib-car
                 - codes
+            - cyclic
       - list
         - count-ribs!
         - context
@@ -20714,11 +20992,19 @@
             - list
               - pair
             - list
-              - >
+              - or
               - list
-                - cdr
-                - pair
-              - 1
+                - >
+                - list
+                  - cdr
+                  - pair
+                - 1
+              - list
+                - memq
+                - list
+                  - car
+                  - pair
+                - cyclic
           - list
             - encode-context-counts
             - context
@@ -20856,21 +21142,30 @@
         - dynamic-symbols
         - expression7
     - list
-      - encode
+      - let-values
       - list
-        - marshal
-        - options
-        - metadata
         - list
-          - cons-rib
-          - #f
           - list
-            - build-primitives
-            - primitives
+            - codes
+            - cyclic
+          - list
+            - marshal
+            - options
+            - metadata
             - list
-              - compile
-              - metadata
-              - expression7
+              - cons-rib
+              - #f
+              - list
+                - build-primitives
+                - primitives
+                - list
+                  - compile
+                  - metadata
+                  - expression7
+      - list
+        - encode
+        - codes
+        - cyclic
   - main
 - set ||
 - constant let
@@ -20899,6 +21194,20 @@
 - call 2 #f cons
 - call 2 #f cons
 - constant define
+- constant rib-set-car!
+- constant set-car!
+- constant ()
+- call 2 #f cons
+- call 2 #f cons
+- call 2 #f cons
+- constant define
+- constant rib-set-cdr!
+- constant set-cdr!
+- constant ()
+- call 2 #f cons
+- call 2 #f cons
+- call 2 #f cons
+- constant define
 - constant target-procedure?
 - constant procedure?
 - constant ()
@@ -20906,6 +21215,8 @@
 - call 2 #f cons
 - call 2 #f cons
 - constant ()
+- call 2 #f cons
+- call 2 #f cons
 - call 2 #f cons
 - call 2 #f cons
 - call 2 #f cons
@@ -20926,12 +21237,16 @@
 - constant rib?
 - constant car
 - constant rib-car
+- constant rib-set-car!
 - constant ()
+- call 2 #f cons
 - call 2 #f cons
 - call 2 #f cons
 - constant cdr
 - constant rib-cdr
+- constant rib-set-cdr!
 - constant ()
+- call 2 #f cons
 - call 2 #f cons
 - call 2 #f cons
 - constant tag

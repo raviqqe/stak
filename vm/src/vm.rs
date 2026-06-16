@@ -2,7 +2,9 @@
 use crate::profiler::Profiler;
 use crate::{
     Error, Exception, StackSlot,
-    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
+    code::{
+        CYCLE_CREATE, CYCLE_HEAD, CYCLE_PATCH, INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE,
+    },
     cons::{Cons, NEVER},
     heap::Heap,
     instruction::Instruction,
@@ -465,6 +467,47 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
+            if head == CYCLE_HEAD {
+                match input.next().ok_or(Error::BytecodeEnd)? {
+                    CYCLE_CREATE => {
+                        // Carry the tag in the `cdr` field so a later patch
+                        // keeps it, while references back to this placeholder
+                        // resolve once it is registered in the dictionary.
+                        let tag = Self::decode_integer(&mut input)?;
+                        let placeholder = self.memory.allocate(
+                            Default::default(),
+                            self.memory.null()?.set_tag(tag as _).into(),
+                        )?;
+                        let cons = self.memory.cons(placeholder.into(), self.memory.code())?;
+                        self.memory.set_code(cons);
+                    }
+                    CYCLE_PATCH => {
+                        let index = Self::decode_integer(&mut input)? as usize;
+
+                        if index > 0 {
+                            let cons = self.memory.tail(self.memory.code(), index - 1)?;
+                            let head = self.memory.cdr(cons)?.assume_cons();
+                            let tail = self.memory.cdr(head)?;
+                            self.memory.set_cdr(head, self.memory.code().into())?;
+                            self.memory.set_cdr(cons, tail)?;
+                            self.memory.set_code(head);
+                        }
+
+                        let placeholder = self.memory.car(self.memory.code())?.assume_cons();
+                        let cdr = self.memory.pop()?;
+                        let car = self.memory.pop()?;
+                        self.memory.set_car(placeholder, car)?;
+                        self.memory.set_cdr(placeholder, cdr)?;
+                        self.memory.push(placeholder.into())?;
+                        self.memory
+                            .set_code(self.memory.cdr(self.memory.code())?.assume_cons());
+                    }
+                    _ => return Err(Error::IllegalInstruction),
+                }
+
+                continue;
+            }
+
             if head & 0b1 == 0 {
                 let head = head >> 1;
 
@@ -534,6 +577,12 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 mantissa * (1u64 << exponent) as f64
             })
         }
+    }
+
+    fn decode_integer(input: &mut impl Iterator<Item = u8>) -> Result<u128, Error> {
+        let head = input.next().ok_or(Error::BytecodeEnd)?;
+
+        Self::decode_integer_tail(input, head, INTEGER_BASE)
     }
 
     fn decode_integer_tail(
@@ -610,5 +659,81 @@ mod tests {
         ] {
             assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
         }
+    }
+
+    // Encodes a logical bytecode stream as compression literals, where a byte
+    // `x` is stored as `2 * x`.
+    fn literals<const N: usize>(bytes: [u8; N]) -> [u8; N] {
+        bytes.map(|byte| byte * 2)
+    }
+
+    fn decode<const N: usize>(bytes: [u8; N]) -> (Cons, Memory<[Value; 1 << 9]>) {
+        let mut vm = Vm::new([Default::default(); 1 << 9], FakePrimitiveSet {}).unwrap();
+        let cons = vm.decode_ribs(literals(bytes).into_iter()).unwrap();
+
+        (cons, vm.memory)
+    }
+
+    #[test]
+    fn decode_self_loop() {
+        // A pair whose `cdr` points back to itself with a `car` of zero.
+        let (rib, memory) = decode([
+            CYCLE_HEAD,
+            CYCLE_CREATE,
+            // A tag of a pair.
+            0,
+            // A constant zero.
+            0b11,
+            // A reference back to the placeholder at the dictionary front.
+            0b110,
+            CYCLE_HEAD,
+            CYCLE_PATCH,
+            // A dictionary index of the placeholder.
+            0,
+        ]);
+
+        assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(rib).unwrap(), rib.into());
+    }
+
+    #[test]
+    fn decode_cycle_through_car() {
+        // A procedure-like rib whose `car` is an instruction list that
+        // references the rib itself, the shape a self-recursive procedure
+        // produces.
+        let (rib, memory) = decode([
+            CYCLE_HEAD,
+            CYCLE_CREATE,
+            // A tag of a pair.
+            0,
+            // An inner rib referencing the placeholder: its `car` is the
+            // placeholder and its `cdr` is a constant zero.
+            0b110,
+            0b11,
+            // Build the inner rib with a tag of zero.
+            0b1,
+            // A constant zero for the placeholder's `cdr`.
+            0b11,
+            CYCLE_HEAD,
+            CYCLE_PATCH,
+            0,
+        ]);
+
+        assert_eq!(memory.cdr(rib).unwrap(), Number::from_i64(0).into());
+
+        let inner = memory.car(rib).unwrap().assume_cons();
+
+        assert_eq!(memory.car(inner).unwrap(), rib.into());
+        assert_eq!(memory.cdr(inner).unwrap(), Number::from_i64(0).into());
+    }
+
+    #[test]
+    fn reject_illegal_cyclic_operation() {
+        let mut vm = Vm::new([Default::default(); 1 << 9], FakePrimitiveSet {}).unwrap();
+
+        assert!(matches!(
+            vm.decode_ribs(literals([CYCLE_HEAD, 1]).into_iter()),
+            Err(Error::IllegalInstruction)
+        ));
     }
 }
