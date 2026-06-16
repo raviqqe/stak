@@ -2,7 +2,7 @@
 use crate::profiler::Profiler;
 use crate::{
     Error, Exception, StackSlot,
-    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE, VERSION},
+    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     heap::Heap,
     instruction::Instruction,
@@ -462,12 +462,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
     }
 
     fn decode_ribs(&mut self, input: impl Iterator<Item = u8>) -> Result<Cons, Error> {
-        let mut input = input;
-
-        if input.next() != Some(VERSION) {
-            return Err(Error::BytecodeVersion);
-        }
-
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
