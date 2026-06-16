@@ -2,7 +2,7 @@
 use crate::profiler::Profiler;
 use crate::{
     Error, Exception, StackSlot,
-    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
+    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE, VERSION},
     cons::{Cons, NEVER},
     heap::Heap,
     instruction::Instruction,
@@ -462,6 +462,12 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
     }
 
     fn decode_ribs(&mut self, input: impl Iterator<Item = u8>) -> Result<Cons, Error> {
+        let mut input = input;
+
+        if input.next() != Some(VERSION) {
+            return Err(Error::BytecodeVersion);
+        }
+
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
@@ -612,5 +618,52 @@ mod tests {
         ] {
             assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
         }
+    }
+
+    // Encodes a logical bytecode stream as compression literals, where a byte
+    // `x` is stored as `2 * x`.
+    fn literals<const N: usize>(bytes: [u8; N]) -> [u8; N] {
+        bytes.map(|byte| byte * 2)
+    }
+
+    fn decode<const N: usize>(bytes: [u8; N]) -> (Cons, Memory<[Value; 1 << 9]>) {
+        let mut vm = Vm::new([Default::default(); 1 << 9], FakePrimitiveSet {}).unwrap();
+        let cons = vm.decode_ribs(literals(bytes).into_iter()).unwrap();
+
+        (cons, vm.memory)
+    }
+
+    #[test]
+    fn decode_shared_value() {
+        // A pair whose `car` and `cdr` are the same announced rib.
+        let (rib, memory) = decode([
+            // Announce a placeholder for a pair.
+            6, // Two constant zeros for its fields.
+            3, 3, // Fill the placeholder.
+            0, // Reference the placeholder at the memo front.
+            2, // Build a pair of the original and the reference.
+            1,
+        ]);
+
+        let car = memory.car(rib).unwrap().assume_cons();
+
+        assert_eq!(memory.cdr(rib).unwrap(), car.into());
+        assert_eq!(memory.car(car).unwrap(), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(car).unwrap(), Number::from_i64(0).into());
+    }
+
+    #[test]
+    fn decode_self_loop() {
+        // A pair whose `cdr` points back to itself with a `car` of zero.
+        let (rib, memory) = decode([
+            // Announce a placeholder for a pair.
+            6, // A constant zero for its `car`.
+            3, // A reference back to the placeholder for its `cdr`.
+            2, // Fill the placeholder.
+            0,
+        ]);
+
+        assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(rib).unwrap(), rib.into());
     }
 }

@@ -13,6 +13,8 @@ pub enum Error {
     ConsExpected,
     /// An unexpected end of bytecode.
     BytecodeEnd,
+    /// An unsupported bytecode version.
+    BytecodeVersion,
     /// A format error.
     Format(fmt::Error),
     /// Invalid memory access.
@@ -38,9 +40,11 @@ impl Exception for Error {
             | Self::NumberExpected
             | Self::ConsExpected
             | Self::ProcedureExpected => false,
-            Self::BytecodeEnd | Self::Format(_) | Self::IllegalInstruction | Self::OutOfMemory => {
-                true
-            }
+            Self::BytecodeEnd
+            | Self::BytecodeVersion
+            | Self::Format(_)
+            | Self::IllegalInstruction
+            | Self::OutOfMemory => true,
         }
     }
 }
@@ -52,6 +56,7 @@ impl Display for Error {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
             Self::BytecodeEnd => write!(formatter, "unexpected end of bytecode"),
+            Self::BytecodeVersion => write!(formatter, "unsupported bytecode version"),
             Self::ConsExpected => write!(formatter, "cons expected"),
             Self::Format(error) => write!(formatter, "{error}"),
             Self::InvalidMemoryAccess => write!(formatter, "invalid memory access"),
