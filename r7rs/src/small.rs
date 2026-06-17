@@ -74,8 +74,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
-    // We mark this `inline(always)` to make sure inline the `set_field` functions
-    // everywhere.
     #[inline(always)]
     fn set_field<H: Heap>(
         memory: &mut Memory<H>,

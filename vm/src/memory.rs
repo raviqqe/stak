@@ -419,9 +419,6 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Executes a binary number operation.
-    //
-    // We mark this `inline(always)` to inline the given operation at every call
-    // site instead of calling it through a function pointer.
     #[inline(always)]
     pub fn operate_binary(&mut self, operate: fn(Number, Number) -> Number) -> Result<(), Error> {
         let [x, y] = self.pop_numbers()?;
