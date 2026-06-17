@@ -54,8 +54,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         self.device.device_mut()
     }
 
-    // We mark this `inline(always)` so that the comparison function pointer is
-    // devirtualized and inlined at every call site.
+    // We mark this `inline(always)` to inline the given comparison at every call
+    // site instead of calling it through a function pointer.
     #[inline(always)]
     fn operate_comparison<H: Heap>(
         memory: &mut Memory<H>,
