@@ -479,10 +479,27 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
 
                     if integer & 1 == 0 {
-                        // Reference a value at a distance from a memo front.
-                        let value = self
-                            .memory
-                            .car(self.memory.tail(self.memory.code(), (integer >> 1) as _)?)?;
+                        // Reference an announced value, moving it to a memo front and
+                        // dropping it on its last use to keep reference distances small.
+                        let integer = integer >> 1;
+                        let index = (integer >> 1) as usize;
+
+                        if index > 0 {
+                            let cons = self.memory.tail(self.memory.code(), index - 1)?;
+                            let head = self.memory.cdr(cons)?.assume_cons();
+                            let tail = self.memory.cdr(head)?;
+                            self.memory.set_cdr(head, self.memory.code().into())?;
+                            self.memory.set_cdr(cons, tail)?;
+                            self.memory.set_code(head);
+                        }
+
+                        let value = self.memory.car(self.memory.code())?;
+
+                        if integer & 1 == 0 {
+                            self.memory
+                                .set_code(self.memory.cdr(self.memory.code())?.assume_cons());
+                        }
+
                         self.memory.push(value)?;
                     } else {
                         // Announce a placeholder before its fields are decoded so that its

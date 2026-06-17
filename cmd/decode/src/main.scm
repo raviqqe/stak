@@ -92,6 +92,15 @@
     (stack-set-values! stack (cdr (stack-values stack)))
     value))
 
+(define (stack-swap! stack index)
+  (let* ((values (stack-values stack))
+         (pair (list-tail values (- index 1)))
+         (head (cdr pair))
+         (tail (cdr head)))
+    (set-cdr! head values)
+    (set-cdr! pair tail)
+    (stack-set-values! stack head)))
+
 ; Decoding
 
 (define (decode-integer-tail decompressor x base)
@@ -138,8 +147,16 @@
               (set-cdr! placeholder d))
             (let ((integer (decode-integer-tail decompressor (- head 1) share-base)))
               (if (even? integer)
-                ; Reference a value at a distance from a memo front.
-                (stack-push! stack (list-ref (stack-values dictionary) (quotient integer 2)))
+                ; Reference an announced value, moving it to a memo front and
+                ; dropping it on its last use.
+                (let* ((share (quotient integer 2))
+                       (index (quotient share 2)))
+                  (when (> index 0)
+                    (stack-swap! dictionary index))
+                  (let ((value (stack-top dictionary)))
+                    (when (even? share)
+                      (stack-pop! dictionary))
+                    (stack-push! stack value)))
                 ; Announce a placeholder before its fields are decoded.
                 (let ((placeholder (rib 0 '() (quotient integer 2))))
                   (stack-push! dictionary placeholder)

@@ -2330,6 +2330,30 @@
   - set 0
   - get 0
 - set ||
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f ||
+  - get 0
+  - get 2
+  - constant 1
+  - call 2 #f ||
+  - call 2 #f ||
+  - get 0
+  - call 1 #f ||
+  - get 0
+  - call 1 #f ||
+  - get 1
+  - get 4
+  - call 2 #f ||
+  - set 0
+  - get 2
+  - get 1
+  - call 2 #f ||
+  - set 0
+  - get 5
+  - get 2
+  - call 2 #f ||
+- set ||
 - constant procedure 3 #f
   - constant #f
   - constant procedure 3 #f
@@ -2463,11 +2487,35 @@
       - get 0
       - call 1 #f ||
       - if
-        - get 6
-        - get 8
+        - get 0
+        - constant 2
+        - call 2 #f ||
+        - get 0
+        - constant 2
+        - call 2 #f ||
+        - constant 0
+        - get 1
+        - call 2 #f ||
+        - if
+          - get 9
+          - get 1
+          - call 2 #f ||
+          - continue
+        - constant #f
+        - set 0
+        - get 9
         - call 1 #f ||
         - get 2
-        - constant 2
+        - call 1 #f ||
+        - if
+          - get 10
+          - call 1 #f ||
+          - continue
+        - constant #f
+        - set 0
+        - get 9
+        - get 1
+        - call 2 #f ||
         - call 2 #f ||
         - call 2 #f ||
         - call 2 #f ||

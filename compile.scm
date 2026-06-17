@@ -1811,6 +1811,12 @@
       context
       (cons value (encode-context-dictionary context))))
 
+    (define (encode-context-remove! context index)
+     (let* ((dictionary (cons #f (encode-context-dictionary context)))
+            (pair (list-tail dictionary index)))
+      (set-cdr! pair (cddr pair))
+      (encode-context-set-dictionary! context (cdr dictionary))))
+
     (define (encode-context-index context value)
      (memq-index value (encode-context-dictionary context)))
 
@@ -1852,6 +1858,9 @@
        (encode-context-set-counts!
         context
         (cons (cons value 1) (encode-context-counts context))))))
+
+    (define (decrement-count! pair)
+     (set-cdr! pair (- (cdr pair) 1)))
 
     (define (count-ribs! context codes)
      (define (count-data! value)
@@ -1947,21 +1956,32 @@
      (define compressor (encode-context-compressor context))
 
      (if (rib? value)
-      (let ((value (strip-nop-instructions value)))
+      (let* ((value (strip-nop-instructions value))
+             (entry (encode-context-find-count context value)))
        (cond
-        ((encode-context-index context value) =>
+        ((and entry (encode-context-index context value)) =>
          (lambda (index)
-          ; A reference to an already announced rib at a distance from a memo front.
-          (let-values (((head tail) (encode-integer-parts (* 2 index) share-base)))
-           (compressor-write compressor (* 2 (+ 1 head)))
-           (encode-integer-tail context tail))))
-        ((encode-context-find-count context value)
+          ; A reference to an announced rib, moved to a memo front and dropped on
+          ; its last use to keep reference distances small.
+          (decrement-count! entry)
+          (let ((removed (zero? (cdr entry))))
+           (encode-context-remove! context index)
+           (unless removed
+            (encode-context-push! context value))
+           (let-values (((head tail)
+                         (encode-integer-parts
+                          (* 2 (+ (* 2 index) (if removed 0 1)))
+                          share-base)))
+            (compressor-write compressor (* 2 (+ 1 head)))
+            (encode-integer-tail context tail)))))
+        (entry
          ; A shared rib announced before its fields so that references back to it
          ; resolve to a memo entry, then filled.
          (let-values (((head tail) (encode-integer-parts (+ 1 (* 2 (rib-tag value))) share-base)))
           (compressor-write compressor (* 2 (+ 1 head)))
           (encode-integer-tail context tail))
          (encode-context-push! context value)
+         (decrement-count! entry)
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
          (compressor-write compressor 0))
@@ -2010,7 +2030,16 @@
         (lambda (pair) (> (cdr pair) 1))
         (encode-context-counts context)))
       (encode-rib context codes)
-      (compressor-flush (encode-context-compressor context))))
+      (compressor-flush (encode-context-compressor context))
+
+      (let ((size (length (encode-context-dictionary context))))
+       (unless (zero? size)
+        (error "dictionary not empty" size)))
+
+      (do ((counts (encode-context-counts context) (cdr counts)))
+       ((null? counts))
+       (unless (zero? (cdar counts))
+        (error "invalid constant count" (map cdr counts))))))
 
     ; Main
 

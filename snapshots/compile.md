@@ -4205,12 +4205,10 @@
   - compressor-write-next
   - encode-context
   - encode-context?
-  - dictionary
-  - counts
   - null
   - encode-context-set-dictionary!
+  - dictionary
   - memq-index
-  - encode-context-dictionary
   - nop-instruction
   - boolean-type
   - char-type
@@ -4240,11 +4238,15 @@
   - e
   - m
   - strip-nop-instructions
-  - encode-context-index
-  - index
   - encode-context-find-count
+  - encode-context-index
+  - encode-context-remove!
+  - index
+  - removed
   - share-base
   - encode-context-push!
+  - decrement-count!
+  - entry
   - tag-base
   - encode-integer-parts
   - encode-number
@@ -4262,11 +4264,14 @@
   - make-compressor
   - count-ribs!
   - encode-context-set-counts!
-  - encode-context-counts
   - encode-rib
   - codes
   - compressor-flush
   - encode-context-compressor
+  - encode-context-dictionary
+  - size
+  - encode-context-counts
+  - counts
   - source
   - expression1
   - expression2
@@ -19888,6 +19893,41 @@
   - list
     - define
     - list
+      - encode-context-remove!
+      - context
+      - index
+    - list
+      - let\*
+      - list
+        - list
+          - dictionary
+          - list
+            - cons
+            - #f
+            - list
+              - encode-context-dictionary
+              - context
+        - list
+          - pair
+          - list
+            - list-tail
+            - dictionary
+            - index
+      - list
+        - set-cdr!
+        - pair
+        - list
+          - cddr
+          - pair
+      - list
+        - encode-context-set-dictionary!
+        - context
+        - list
+          - cdr
+          - dictionary
+  - list
+    - define
+    - list
       - encode-context-index
       - context
       - value
@@ -20007,6 +20047,20 @@
             - list
               - encode-context-counts
               - context
+  - list
+    - define
+    - list
+      - decrement-count!
+      - pair
+    - list
+      - set-cdr!
+      - pair
+      - list
+        - -
+        - list
+          - cdr
+          - pair
+        - 1
   - list
     - define
     - list
@@ -20395,58 +20449,98 @@
         - rib?
         - value
       - list
-        - let
+        - let\*
         - list
           - list
             - value
             - list
               - strip-nop-instructions
               - value
+          - list
+            - entry
+            - list
+              - encode-context-find-count
+              - context
+              - value
         - list
           - cond
           - list
             - list
-              - encode-context-index
-              - context
-              - value
+              - and
+              - entry
+              - list
+                - encode-context-index
+                - context
+                - value
             - =>
             - list
               - lambda
               - list
                 - index
               - list
-                - let-values
+                - decrement-count!
+                - entry
+              - list
+                - let
                 - list
                   - list
+                    - removed
                     - list
-                      - head
-                      - tail
-                    - list
-                      - encode-integer-parts
+                      - zero?
                       - list
-                        - -
-                        - 2
-                        - index
-                      - share-base
+                        - cdr
+                        - entry
                 - list
-                  - compressor-write
-                  - compressor
+                  - encode-context-remove!
+                  - context
+                  - index
+                - list
+                  - unless
+                  - removed
                   - list
-                    - -
-                    - 2
+                    - encode-context-push!
+                    - context
+                    - value
+                - list
+                  - let-values
+                  - list
+                    - list
+                      - list
+                        - head
+                        - tail
+                      - list
+                        - encode-integer-parts
+                        - list
+                          - -
+                          - 2
+                          - list
+                            - -
+                            - list
+                              - -
+                              - 2
+                              - index
+                            - list
+                              - if
+                              - removed
+                              - 0
+                              - 1
+                        - share-base
+                  - list
+                    - compressor-write
+                    - compressor
                     - list
                       - -
-                      - 1
-                      - head
-                - list
-                  - encode-integer-tail
-                  - context
-                  - tail
+                      - 2
+                      - list
+                        - -
+                        - 1
+                        - head
+                  - list
+                    - encode-integer-tail
+                    - context
+                    - tail
           - list
-            - list
-              - encode-context-find-count
-              - context
-              - value
+            - entry
             - list
               - let-values
               - list
@@ -20484,6 +20578,9 @@
               - encode-context-push!
               - context
               - value
+            - list
+              - decrement-count!
+              - entry
             - list
               - encode-rib
               - context
@@ -20681,6 +20778,54 @@
         - list
           - encode-context-compressor
           - context
+      - list
+        - let
+        - list
+          - list
+            - size
+            - list
+              - length
+              - list
+                - encode-context-dictionary
+                - context
+        - list
+          - unless
+          - list
+            - zero?
+            - size
+          - list
+            - error
+            - "dictionary not empty"
+            - size
+      - list
+        - do
+        - list
+          - list
+            - counts
+            - list
+              - encode-context-counts
+              - context
+            - list
+              - cdr
+              - counts
+        - list
+          - list
+            - null?
+            - counts
+        - list
+          - unless
+          - list
+            - zero?
+            - list
+              - cdar
+              - counts
+          - list
+            - error
+            - "invalid constant count"
+            - list
+              - map
+              - cdr
+              - counts
   - list
     - define
     - list
