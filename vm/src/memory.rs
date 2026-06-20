@@ -419,6 +419,7 @@ impl<H: Heap> Memory<H> {
     }
 
     /// Executes a binary number operation.
+    #[inline(always)]
     pub fn operate_binary(&mut self, operate: fn(Number, Number) -> Number) -> Result<(), Error> {
         let [x, y] = self.pop_numbers()?;
 
