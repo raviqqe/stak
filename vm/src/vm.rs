@@ -481,8 +481,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
 
                     if integer & 1 == 0 {
-                        // Reference an announced value, moving it to a memo front and
-                        // dropping it on its last use to keep reference distances small.
                         let integer = integer >> 1;
                         let index = (integer >> 1) as usize;
 
@@ -504,8 +502,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
                         self.memory.push(value)?;
                     } else {
-                        // Fill an announced placeholder with its decoded fields and tag,
-                        // sharing the field-decoding of a plain rib.
                         let cdr = self.memory.pop()?;
                         let car = self.memory.pop()?;
                         let placeholder = self.memory.top()?.assume_cons();
