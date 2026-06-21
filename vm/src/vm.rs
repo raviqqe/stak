@@ -509,9 +509,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                         let cdr = self.memory.pop()?;
                         let car = self.memory.pop()?;
                         let placeholder = self.memory.top()?.assume_cons();
-                        self.memory.set_car(placeholder, car)?;
-                        self.memory
-                            .set_raw_cdr(placeholder, cdr.set_tag((integer >> 1) as _))?;
+                        self.set_rib(placeholder, car, cdr, (integer >> 1) as _)?;
                     }
                 }
             } else if head & 0b10 == 0 {
@@ -519,8 +517,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let cdr = self.memory.pop()?;
                 let car = self.memory.top()?;
                 let tag = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
-                self.memory.set_car(cons, car)?;
-                self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _))?;
+                self.set_rib(cons, car, cdr, tag as _)?;
                 self.memory.set_top(cons.into())?;
             } else {
                 self.memory.push(
@@ -535,6 +532,12 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         }
 
         self.memory.pop()?.to_cons().ok_or(Error::BytecodeEnd)
+    }
+
+    fn set_rib(&mut self, cons: Cons, car: Value, cdr: Value, tag: u16) -> Result<(), Error> {
+        self.memory.set_car(cons, car)?;
+        self.memory.set_raw_cdr(cons, cdr.set_tag(tag))?;
+        Ok(())
     }
 
     fn decode_number(integer: u128) -> Number {

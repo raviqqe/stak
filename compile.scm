@@ -1978,21 +1978,20 @@
                           share-base)))
             (compressor-write compressor (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
-        (entry
-         ; A shared rib announced before its fields so that references back to it
-         ; resolve to a memo entry, then filled with its tag, sharing the
-         ; field-encoding of a plain rib.
-         (compressor-write compressor 0)
-         (encode-context-push! context value)
-         (decrement-count! entry)
-         (encode-fields value)
-         (let-values (((head tail) (encode-integer-parts (+ 1 (* 2 (rib-tag value))) share-base)))
-          (compressor-write compressor (* 2 (+ 1 head)))
-          (encode-integer-tail context tail)))
         (else
+         ; A rib encoded as its fields followed by its tag. A shared rib is
+         ; announced before its fields so that references back to it resolve to a
+         ; memo entry, then filled with its tag.
+         (when entry
+          (compressor-write compressor 0)
+          (encode-context-push! context value)
+          (decrement-count! entry))
          (encode-fields value)
-         (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
-          (compressor-write compressor (+ 1 (* 4 head)))
+         (let-values (((head tail)
+                       (if entry
+                        (encode-integer-parts (+ 1 (* 2 (rib-tag value))) share-base)
+                        (encode-integer-parts (rib-tag value) tag-base))))
+          (compressor-write compressor (if entry (* 2 (+ 1 head)) (+ 1 (* 4 head))))
           (encode-integer-tail context tail)))))
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
        (compressor-write compressor (+ 3 (* 4 head)))

@@ -4248,10 +4248,10 @@
   - removed
   - encode-context-push!
   - decrement-count!
-  - entry
-  - share-base
   - encode-fields
+  - share-base
   - tag-base
+  - entry
   - encode-integer-parts
   - encode-number
   - number-base
@@ -20563,18 +20563,21 @@
                     - context
                     - tail
           - list
-            - entry
+            - else
             - list
-              - compressor-write
-              - compressor
-              - 0
-            - list
-              - encode-context-push!
-              - context
-              - value
-            - list
-              - decrement-count!
+              - when
               - entry
+              - list
+                - compressor-write
+                - compressor
+                - 0
+              - list
+                - encode-context-push!
+                - context
+                - value
+              - list
+                - decrement-count!
+                - entry
             - list
               - encode-fields
               - value
@@ -20586,59 +20589,46 @@
                     - head
                     - tail
                   - list
-                    - encode-integer-parts
+                    - if
+                    - entry
+                    - list
+                      - encode-integer-parts
+                      - list
+                        - -
+                        - 1
+                        - list
+                          - -
+                          - 2
+                          - list
+                            - rib-tag
+                            - value
+                      - share-base
+                    - list
+                      - encode-integer-parts
+                      - list
+                        - rib-tag
+                        - value
+                      - tag-base
+              - list
+                - compressor-write
+                - compressor
+                - list
+                  - if
+                  - entry
+                  - list
+                    - -
+                    - 2
                     - list
                       - -
                       - 1
-                      - list
-                        - -
-                        - 2
-                        - list
-                          - rib-tag
-                          - value
-                    - share-base
-              - list
-                - compressor-write
-                - compressor
-                - list
-                  - -
-                  - 2
+                      - head
                   - list
                     - -
                     - 1
-                    - head
-              - list
-                - encode-integer-tail
-                - context
-                - tail
-          - list
-            - else
-            - list
-              - encode-fields
-              - value
-            - list
-              - let-values
-              - list
-                - list
-                  - list
-                    - head
-                    - tail
-                  - list
-                    - encode-integer-parts
                     - list
-                      - rib-tag
-                      - value
-                    - tag-base
-              - list
-                - compressor-write
-                - compressor
-                - list
-                  - -
-                  - 1
-                  - list
-                    - -
-                    - 4
-                    - head
+                      - -
+                      - 4
+                      - head
               - list
                 - encode-integer-tail
                 - context
