@@ -103,9 +103,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     fn set_tag<H: Heap>(memory: &mut Memory<H>) -> Result<(), Error> {
         let [rib, tag] = memory.pop_many()?;
         let cons = rib.assume_cons();
-        let cdr = memory.cdr(cons)?;
 
-        memory.set_raw_cdr(cons, cdr.set_tag(tag.assume_number().to_i64() as _))?;
+        memory.set_raw_cdr(
+            cons,
+            memory.cdr(cons)?.set_tag(tag.assume_number().to_i64() as _),
+        )?;
         memory.push(tag)?;
 
         Ok(())
