@@ -139,12 +139,10 @@
       ((even? byte)
         (let ((head (quotient byte 2)))
           (if (zero? head)
-            ; Fill a placeholder on a stack with its decoded fields.
-            (let* ((d (stack-pop! stack))
-                   (a (stack-pop! stack))
-                   (placeholder (stack-top stack)))
-              (set-car! placeholder a)
-              (set-cdr! placeholder d))
+            ; Announce a placeholder before its fields are decoded.
+            (let ((placeholder (rib 0 '() 0)))
+              (stack-push! dictionary placeholder)
+              (stack-push! stack placeholder))
             (let ((integer (decode-integer-tail decompressor (- head 1) share-base)))
               (if (even? integer)
                 ; Reference an announced value, moving it to a memo front and
@@ -157,10 +155,13 @@
                     (when (even? share)
                       (stack-pop! dictionary))
                     (stack-push! stack value)))
-                ; Announce a placeholder before its fields are decoded.
-                (let ((placeholder (rib 0 '() (quotient integer 2))))
-                  (stack-push! dictionary placeholder)
-                  (stack-push! stack placeholder)))))))
+                ; Fill a placeholder on a stack with its decoded fields and tag.
+                (let* ((d (stack-pop! stack))
+                       (a (stack-pop! stack))
+                       (placeholder (stack-top stack)))
+                  (set-car! placeholder a)
+                  (set-cdr! placeholder d)
+                  (rib-set-tag! placeholder (quotient integer 2))))))))
       ((even? (quotient byte 2))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))

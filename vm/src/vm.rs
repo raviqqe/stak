@@ -469,12 +469,14 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let head = head >> 1;
 
                 if head == 0 {
-                    // Fill a placeholder on a stack with its decoded fields.
-                    let cdr = self.memory.pop()?;
-                    let car = self.memory.pop()?;
-                    let placeholder = self.memory.top()?.assume_cons();
-                    self.memory.set_car(placeholder, car)?;
-                    self.memory.set_cdr(placeholder, cdr)?;
+                    // Announce a placeholder before its fields are decoded so that its
+                    // descendants can reference it back.
+                    let placeholder = self
+                        .memory
+                        .allocate(Default::default(), self.memory.null()?.into())?;
+                    let cons = self.memory.cons(placeholder.into(), self.memory.code())?;
+                    self.memory.set_code(cons);
+                    self.memory.push(self.memory.car(self.memory.code())?)?;
                 } else {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
 
@@ -502,15 +504,14 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
                         self.memory.push(value)?;
                     } else {
-                        // Announce a placeholder before its fields are decoded so that its
-                        // descendants can reference it back.
-                        let placeholder = self.memory.allocate(
-                            Default::default(),
-                            self.memory.null()?.set_tag((integer >> 1) as _).into(),
-                        )?;
-                        let cons = self.memory.cons(placeholder.into(), self.memory.code())?;
-                        self.memory.set_code(cons);
-                        self.memory.push(self.memory.car(self.memory.code())?)?;
+                        // Fill an announced placeholder with its decoded fields and tag,
+                        // sharing the field-decoding of a plain rib.
+                        let cdr = self.memory.pop()?;
+                        let car = self.memory.pop()?;
+                        let placeholder = self.memory.top()?.assume_cons();
+                        self.memory.set_car(placeholder, car)?;
+                        self.memory
+                            .set_raw_cdr(placeholder, cdr.set_tag((integer >> 1) as _))?;
                     }
                 }
             } else if head & 0b10 == 0 {
@@ -648,10 +649,10 @@ mod tests {
     fn decode_shared_value() {
         // A pair whose `car` and `cdr` are the same announced rib.
         let (rib, memory) = decode([
-            // Announce a placeholder for a pair.
-            6, // Two constant zeros for its fields.
-            3, 3, // Fill the placeholder.
-            0, // Reference the placeholder at the memo front.
+            // Announce a placeholder.
+            0, // Two constant zeros for its fields.
+            3, 3, // Fill the placeholder with a pair tag.
+            6, // Reference the placeholder at the memo front.
             2, // Build a pair of the original and the reference.
             1,
         ]);
@@ -667,11 +668,11 @@ mod tests {
     fn decode_self_loop() {
         // A pair whose `cdr` points back to itself with a `car` of zero.
         let (rib, memory) = decode([
-            // Announce a placeholder for a pair.
-            6, // A constant zero for its `car`.
+            // Announce a placeholder.
+            0, // A constant zero for its `car`.
             3, // A reference back to the placeholder for its `cdr`.
-            2, // Fill the placeholder.
-            0,
+            2, // Fill the placeholder with a pair tag.
+            6,
         ]);
 
         assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());

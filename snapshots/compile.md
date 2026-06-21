@@ -58,6 +58,9 @@
 - constant 6
 - call 1 #f primitive
 - set rib-tag
+- constant 17
+- call 1 #f primitive
+- set rib-set-tag!
 - constant 7
 - call 1 #f primitive
 - set set-car!
@@ -4243,10 +4246,11 @@
   - encode-context-remove!
   - index
   - removed
-  - share-base
   - encode-context-push!
   - decrement-count!
   - entry
+  - share-base
+  - encode-fields
   - tag-base
   - encode-integer-parts
   - encode-number
@@ -4657,6 +4661,7 @@
   - car
   - cdr
   - rib-tag
+  - rib-set-tag!
   - set-car!
   - set-cdr!
   - eq?
@@ -9315,6 +9320,7 @@
     - (car . car)
     - (cdr . cdr)
     - (rib-tag . rib-tag)
+    - (rib-set-tag! . rib-set-tag!)
     - (set-car! . set-car!)
     - (set-cdr! . set-cdr!)
     - (eq? . eq?)
@@ -20444,6 +20450,23 @@
         - encode-context-compressor
         - context
     - list
+      - define
+      - list
+        - encode-fields
+        - value
+      - list
+        - encode-rib
+        - context
+        - list
+          - rib-car
+          - value
+      - list
+        - encode-rib
+        - context
+        - list
+          - rib-cdr
+          - value
+    - list
       - if
       - list
         - rib?
@@ -20542,6 +20565,20 @@
           - list
             - entry
             - list
+              - compressor-write
+              - compressor
+              - 0
+            - list
+              - encode-context-push!
+              - context
+              - value
+            - list
+              - decrement-count!
+              - entry
+            - list
+              - encode-fields
+              - value
+            - list
               - let-values
               - list
                 - list
@@ -20574,43 +20611,11 @@
                 - encode-integer-tail
                 - context
                 - tail
-            - list
-              - encode-context-push!
-              - context
-              - value
-            - list
-              - decrement-count!
-              - entry
-            - list
-              - encode-rib
-              - context
-              - list
-                - rib-car
-                - value
-            - list
-              - encode-rib
-              - context
-              - list
-                - rib-cdr
-                - value
-            - list
-              - compressor-write
-              - compressor
-              - 0
           - list
             - else
             - list
-              - encode-rib
-              - context
-              - list
-                - rib-car
-                - value
-            - list
-              - encode-rib
-              - context
-              - list
-                - rib-cdr
-                - value
+              - encode-fields
+              - value
             - list
               - let-values
               - list

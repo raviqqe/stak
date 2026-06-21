@@ -1955,6 +1955,10 @@
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
 
+     (define (encode-fields value)
+      (encode-rib context (rib-car value))
+      (encode-rib context (rib-cdr value)))
+
      (if (rib? value)
       (let* ((value (strip-nop-instructions value))
              (entry (encode-context-find-count context value)))
@@ -1976,18 +1980,17 @@
             (encode-integer-tail context tail)))))
         (entry
          ; A shared rib announced before its fields so that references back to it
-         ; resolve to a memo entry, then filled.
-         (let-values (((head tail) (encode-integer-parts (+ 1 (* 2 (rib-tag value))) share-base)))
-          (compressor-write compressor (* 2 (+ 1 head)))
-          (encode-integer-tail context tail))
+         ; resolve to a memo entry, then filled with its tag, sharing the
+         ; field-encoding of a plain rib.
+         (compressor-write compressor 0)
          (encode-context-push! context value)
          (decrement-count! entry)
-         (encode-rib context (rib-car value))
-         (encode-rib context (rib-cdr value))
-         (compressor-write compressor 0))
+         (encode-fields value)
+         (let-values (((head tail) (encode-integer-parts (+ 1 (* 2 (rib-tag value))) share-base)))
+          (compressor-write compressor (* 2 (+ 1 head)))
+          (encode-integer-tail context tail)))
         (else
-         (encode-rib context (rib-car value))
-         (encode-rib context (rib-cdr value))
+         (encode-fields value)
          (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
           (compressor-write compressor (+ 1 (* 4 head)))
           (encode-integer-tail context tail)))))
