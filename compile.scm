@@ -1961,8 +1961,6 @@
        (cond
         ((and entry (encode-context-index context value)) =>
          (lambda (index)
-          ; A reference to an announced rib, moved to a memo front and dropped on
-          ; its last use to keep reference distances small.
           (decrement-count! entry)
           (let ((removed (zero? (cdr entry))))
            (encode-context-remove! context index)
@@ -1975,9 +1973,6 @@
             (compressor-write compressor (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
         (else
-         ; A rib encoded as its fields followed by its tag. A shared rib is
-         ; announced before its fields so that references back to it resolve to a
-         ; memo entry, then filled with its tag.
          (when entry
           (compressor-write compressor 0)
           (encode-context-push! context value)
