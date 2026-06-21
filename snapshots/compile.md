@@ -4248,7 +4248,6 @@
   - removed
   - encode-context-push!
   - decrement-count!
-  - encode-fields
   - share-base
   - tag-base
   - entry
@@ -20450,23 +20449,6 @@
         - encode-context-compressor
         - context
     - list
-      - define
-      - list
-        - encode-fields
-        - value
-      - list
-        - encode-rib
-        - context
-        - list
-          - rib-car
-          - value
-      - list
-        - encode-rib
-        - context
-        - list
-          - rib-cdr
-          - value
-    - list
       - if
       - list
         - rib?
@@ -20579,8 +20561,17 @@
                 - decrement-count!
                 - entry
             - list
-              - encode-fields
-              - value
+              - encode-rib
+              - context
+              - list
+                - rib-car
+                - value
+            - list
+              - encode-rib
+              - context
+              - list
+                - rib-cdr
+                - value
             - list
               - let-values
               - list

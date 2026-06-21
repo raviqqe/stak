@@ -1955,10 +1955,6 @@
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
 
-     (define (encode-fields value)
-      (encode-rib context (rib-car value))
-      (encode-rib context (rib-cdr value)))
-
      (if (rib? value)
       (let* ((value (strip-nop-instructions value))
              (entry (encode-context-find-count context value)))
@@ -1986,7 +1982,8 @@
           (compressor-write compressor 0)
           (encode-context-push! context value)
           (decrement-count! entry))
-         (encode-fields value)
+         (encode-rib context (rib-car value))
+         (encode-rib context (rib-cdr value))
          (let-values (((head tail)
                        (if entry
                         (encode-integer-parts (+ 1 (* 2 (rib-tag value))) share-base)
