@@ -469,8 +469,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let head = head >> 1;
 
                 if head == 0 {
-                    // Announce a placeholder before its fields are decoded so that its
-                    // descendants can reference it back.
                     let placeholder = self
                         .memory
                         .allocate(Default::default(), self.memory.null()?.into())?;
