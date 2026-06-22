@@ -2798,6 +2798,7 @@
     car
     cdr
     rib-tag
+    rib-set-tag!
     set-car!
     set-cdr!
     eq?
