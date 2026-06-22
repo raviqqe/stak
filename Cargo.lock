@@ -1649,6 +1649,7 @@ dependencies = [
 name = "stak-native"
 version = "0.12.16"
 dependencies = [
+ "stak-util",
  "stak-vm",
  "winter-maybe-async",
 ]

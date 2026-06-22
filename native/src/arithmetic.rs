@@ -42,9 +42,10 @@ impl<H: Heap> PrimitiveSet<H> for ArithmeticPrimitiveSet {
     }
 }
 
-#[cfg(all(test, not(feature = "async")))]
+#[cfg(test)]
 mod tests {
     use super::*;
+    use stak_util::block_on;
     use stak_vm::{Number, Value};
 
     const HEAP_SIZE: usize = 1 << 8;
@@ -55,7 +56,8 @@ mod tests {
         memory.push(Number::from_i64(x).into()).unwrap();
         memory.push(Number::from_i64(y).into()).unwrap();
 
-        ArithmeticPrimitiveSet::new().operate(&mut memory, ArithmeticPrimitive::QUOTIENT)?;
+        let mut set = ArithmeticPrimitiveSet::new();
+        block_on!(set.operate(&mut memory, ArithmeticPrimitive::QUOTIENT))?;
 
         Ok(memory.pop().unwrap().assume_number().to_i64())
     }

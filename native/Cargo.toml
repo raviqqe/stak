@@ -13,6 +13,9 @@ categories.workspace = true
 stak-vm = { path = "../vm", version = "0.12.16" }
 winter-maybe-async = "0.13.1"
 
+[dev-dependencies]
+stak-util = { path = "../util" }
+
 [features]
 async = ["stak-vm/async", "winter-maybe-async/async"]
 
