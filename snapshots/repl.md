@@ -11977,6 +11977,7 @@
     - (car . car)
     - (cdr . cdr)
     - (rib-tag . rib-tag)
+    - (rib-set-tag! . rib-set-tag!)
     - (set-car! . set-car!)
     - (set-cdr! . set-cdr!)
     - (eq? . eq?)
