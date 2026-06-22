@@ -221,20 +221,22 @@ mod tests {
         );
     }
 
-    #[cfg(not(feature = "float"))]
+    // A divisor of an exact zero is an error in the integer and 62-bit float
+    // representations, but yields an infinity or a NaN in the 64-bit float one.
+    #[cfg(any(not(feature = "float"), feature = "float62"))]
     #[test]
     fn divide_by_zero() {
         assert_eq!(
-            Number::from_i64(1).divide(Number::default()),
+            Number::from_i64(1).divide(Number::from_i64(0)),
             Err(Error::DivisionByZero)
         );
     }
 
-    #[cfg(not(feature = "float"))]
+    #[cfg(any(not(feature = "float"), feature = "float62"))]
     #[test]
     fn remainder_by_zero() {
         assert_eq!(
-            Number::from_i64(1).remainder(Number::default()),
+            Number::from_i64(1).remainder(Number::from_i64(0)),
             Err(Error::DivisionByZero)
         );
     }
