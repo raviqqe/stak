@@ -54,6 +54,7 @@
     car
     cdr
     rib-tag
+    rib-set-tag!
     set-car!
     set-cdr!
     eq?
@@ -625,6 +626,7 @@
     (define car (primitive 4))
     (define cdr (primitive 5))
     (define rib-tag (primitive 6))
+    (define rib-set-tag! (primitive 17))
     (define set-car! (primitive 7))
     (define set-cdr! (primitive 8))
     (define eq? (primitive 9))
