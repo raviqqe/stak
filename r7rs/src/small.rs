@@ -81,6 +81,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
 
         set_field(memory, x, y)?;
         memory.push(y)?;
+
         Ok(())
     }
 
