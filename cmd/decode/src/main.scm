@@ -124,6 +124,12 @@
              (e (- (modulo (quotient x 2) 2048) 1023)))
         (* m (expt 2 e))))))
 
+(define (set-rib! rib a d tag)
+  (set-car! rib a)
+  (set-cdr! rib d)
+  (rib-set-tag! rib tag)
+  rib)
+
 (define (decode)
   (define dictionary (make-stack '()))
   (define stack (make-stack '()))
@@ -153,16 +159,13 @@
                       (stack-pop! dictionary))
                     (stack-push! stack value)))
                 (let* ((d (stack-pop! stack))
-                       (a (stack-pop! stack))
-                       (placeholder (stack-top stack)))
-                  (set-car! placeholder a)
-                  (set-cdr! placeholder d)
-                  (rib-set-tag! placeholder (quotient integer 2))))))))
+                       (a (stack-pop! stack)))
+                  (set-rib! (stack-top stack) a d (quotient integer 2))))))))
       ((even? (quotient byte 2))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
                (tag (decode-integer-tail decompressor (quotient byte 4) tag-base)))
-          (stack-push! stack (rib a d tag))))
+          (stack-push! stack (set-rib! (rib 0 '() 0) a d tag))))
       (else
         (stack-push!
           stack
