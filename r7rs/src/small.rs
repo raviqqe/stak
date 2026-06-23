@@ -81,6 +81,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
 
         set_field(memory, x, y)?;
         memory.push(y)?;
+
         Ok(())
     }
 
@@ -96,6 +97,19 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             }
             .into())
         })?;
+
+        Ok(())
+    }
+
+    fn set_tag<H: Heap>(memory: &mut Memory<H>) -> Result<(), Error> {
+        let [rib, tag] = memory.pop_many()?;
+        let cons = rib.assume_cons();
+
+        memory.set_raw_cdr(
+            cons,
+            memory.cdr(cons)?.set_tag(tag.assume_number().to_i64() as _),
+        )?;
+        memory.push(tag)?;
 
         Ok(())
     }
@@ -136,6 +150,7 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::TAG => Self::tag(memory, Memory::cdr_value)?,
             Primitive::SET_CAR => Self::set_field(memory, Memory::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,
+            Primitive::SET_TAG => Self::set_tag(memory)?,
             Primitive::EQUAL => {
                 let [x, y] = memory.pop_many()?;
                 memory.push(memory.boolean(x == y)?.into())?;

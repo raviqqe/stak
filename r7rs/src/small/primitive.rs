@@ -17,6 +17,7 @@ pub(super) enum Primitive {
     Divide,
     Remainder,
     Expt,
+    SetTag,
     Halt = 40,
     Null = 50,
     Pair,
@@ -73,6 +74,7 @@ impl Primitive {
     pub const DIVIDE: usize = Self::Divide as _;
     pub const REMAINDER: usize = Self::Remainder as _;
     pub const EXPT: usize = Self::Expt as _;
+    pub const SET_TAG: usize = Self::SetTag as _;
     pub const HALT: usize = Self::Halt as _;
     pub const NULL: usize = Self::Null as _;
     pub const PAIR: usize = Self::Pair as _;

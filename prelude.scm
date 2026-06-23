@@ -56,6 +56,7 @@
     rib-tag
     set-car!
     set-cdr!
+    rib-set-tag!
     eq?
 
     apply
@@ -627,6 +628,7 @@
     (define rib-tag (primitive 6))
     (define set-car! (primitive 7))
     (define set-cdr! (primitive 8))
+    (define rib-set-tag! (primitive 17))
     (define eq? (primitive 9))
     (define $< (primitive 10))
     (define $+ (primitive 11))
