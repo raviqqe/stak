@@ -34,7 +34,7 @@ Feature: Intrinsics
   Scenario: Set a tag
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (stak base))
 
       (define x (rib 0 #f #f 7))
 

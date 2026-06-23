@@ -2800,7 +2800,6 @@
     rib-tag
     set-car!
     set-cdr!
-    rib-set-tag!
     eq?
 
     apply

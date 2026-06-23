@@ -11979,7 +11979,6 @@
     - (rib-tag . rib-tag)
     - (set-car! . set-car!)
     - (set-cdr! . set-cdr!)
-    - (rib-set-tag! . rib-set-tag!)
     - (eq? . eq?)
     - (apply . apply)
     - (data-rib . data-rib)
