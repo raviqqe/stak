@@ -50,3 +50,11 @@ pub const fn to_raw(number: NumberInner) -> u64 {
 pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
     pow(x, y)
 }
+
+pub fn checked_divide(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
+    Some(x / y)
+}
+
+pub fn checked_remainder(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
+    Some(x % y)
+}
