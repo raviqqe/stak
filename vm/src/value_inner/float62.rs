@@ -73,20 +73,10 @@ pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
 }
 
 pub fn checked_divide(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
-    // An integer division by an exact zero would dispatch to a panicking integer
-    // operator. A division by an inexact zero falls through to a float operator.
-    if y.to_integer() == Some(0) {
-        return None;
-    }
-
     Some(x / y)
 }
 
 pub fn checked_remainder(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
-    if y.to_integer() == Some(0) {
-        return None;
-    }
-
     Some(x % y)
 }
 
