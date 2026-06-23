@@ -159,8 +159,8 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::ADD => memory.operate_binary(Add::add)?,
             Primitive::SUBTRACT => memory.operate_binary(Sub::sub)?,
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
-            Primitive::DIVIDE => memory.operate_binary_result(Number::divide)?,
-            Primitive::REMAINDER => memory.operate_binary_result(Number::remainder)?,
+            Primitive::DIVIDE => memory.try_operate_binary(Number::divide)?,
+            Primitive::REMAINDER => memory.try_operate_binary(Number::remainder)?,
             Primitive::EXPT => memory.operate_binary(Number::power)?,
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => {

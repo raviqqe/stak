@@ -430,7 +430,7 @@ impl<H: Heap> Memory<H> {
 
     /// Executes a fallible binary number operation.
     #[inline(always)]
-    pub fn operate_binary_result(
+    pub fn try_operate_binary(
         &mut self,
         operate: fn(Number, Number) -> Result<Number, Error>,
     ) -> Result<(), Error> {
