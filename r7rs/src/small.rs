@@ -59,9 +59,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         memory: &mut Memory<H>,
         operate: fn(Number, Number) -> bool,
     ) -> Result<(), Error> {
-        let [x, y] = memory.pop_numbers()?;
+        let [x, y] = memory.pop_numbers();
 
-        memory.push(memory.boolean(operate(x, y))?.into())?;
+        memory.push(memory.boolean(operate(x, y)).into())?;
         Ok(())
     }
 
@@ -75,11 +75,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     #[inline(always)]
     fn set_field<H: Heap>(
         memory: &mut Memory<H>,
-        set_field: fn(&mut Memory<H>, Value, Value) -> Result<(), stak_vm::Error>,
+        set_field: fn(&mut Memory<H>, Value, Value),
     ) -> Result<(), Error> {
-        let [x, y] = memory.pop_many()?;
+        let [x, y] = memory.pop_many();
 
-        set_field(memory, x, y)?;
+        set_field(memory, x, y);
         memory.push(y)?;
 
         Ok(())
@@ -87,15 +87,15 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
 
     fn tag<H: Heap>(
         memory: &mut Memory<H>,
-        field: impl Fn(&Memory<H>, Value) -> Result<Value, stak_vm::Error>,
+        field: impl Fn(&Memory<H>, Value) -> Value,
     ) -> Result<(), Error> {
         memory.operate_top(|memory, value| {
-            Ok(if let Some(cons) = field(memory, value)?.to_cons() {
+            if let Some(cons) = field(memory, value).to_cons() {
                 Number::from_i64(cons.tag() as _)
             } else {
                 Default::default()
             }
-            .into())
+            .into()
         })?;
 
         Ok(())
@@ -124,26 +124,26 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
     fn operate(&mut self, memory: &mut Memory<H>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
-                let [car, cdr, tag] = memory.pop_many()?;
+                let [car, cdr, tag] = memory.pop_many();
 
                 Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
             }
             Primitive::CLOSE => {
-                let closure = memory.pop()?;
+                let closure = memory.pop();
 
                 Self::rib(
                     memory,
-                    memory.car_value(closure)?,
+                    memory.car_value(closure),
                     memory.stack().into(),
                     Type::Procedure as _,
                 )?;
             }
             Primitive::UNBIND => {
-                let [_, x] = memory.pop_many()?;
+                let [_, x] = memory.pop_many();
                 memory.push(x)?;
             }
             Primitive::IS_RIB => {
-                memory.operate_top(|memory, value| Ok(memory.boolean(value.is_cons())?.into()))?
+                memory.operate_top(|memory, value| memory.boolean(value.is_cons()).into())?
             }
             Primitive::CAR => memory.operate_top(Memory::car_value)?,
             Primitive::CDR => memory.operate_top(Memory::cdr_value)?,
@@ -152,8 +152,8 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,
             Primitive::SET_TAG => Self::set_tag(memory)?,
             Primitive::EQUAL => {
-                let [x, y] = memory.pop_many()?;
-                memory.push(memory.boolean(x == y)?.into())?;
+                let [x, y] = memory.pop_many();
+                memory.push(memory.boolean(x == y).into())?;
             }
             Primitive::LESS_THAN => Self::operate_comparison(memory, |x, y| x < y)?,
             Primitive::ADD => memory.operate_binary(Add::add)?,
