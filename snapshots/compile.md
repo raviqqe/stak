@@ -58,15 +58,15 @@
 - constant 6
 - call 1 #f primitive
 - set rib-tag
-- constant 17
-- call 1 #f primitive
-- set rib-set-tag!
 - constant 7
 - call 1 #f primitive
 - set set-car!
 - constant 8
 - call 1 #f primitive
 - set set-cdr!
+- constant 17
+- call 1 #f primitive
+- set rib-set-tag!
 - constant 9
 - call 1 #f primitive
 - set eq?
