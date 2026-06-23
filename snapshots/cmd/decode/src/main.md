@@ -43,13 +43,13 @@
 - constant 6
 - call 1 #f ||
 - set ||
-- constant 17
-- call 1 #f ||
-- set ||
 - constant 7
 - call 1 #f ||
 - set ||
 - constant 8
+- call 1 #f ||
+- set ||
+- constant 17
 - call 1 #f ||
 - set ||
 - constant 9
