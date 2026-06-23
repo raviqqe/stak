@@ -64,6 +64,9 @@
 - constant 8
 - call 1 #f primitive
 - set set-cdr!
+- constant 17
+- call 1 #f primitive
+- set rib-set-tag!
 - constant 9
 - call 1 #f primitive
 - set eq?
@@ -4284,6 +4287,7 @@
   - rib-tag
   - set-car!
   - set-cdr!
+  - rib-set-tag!
   - eq?
   - apply
   - data-rib
@@ -12492,6 +12496,7 @@
     - (rib-tag . rib-tag)
     - (set-car! . set-car!)
     - (set-cdr! . set-cdr!)
+    - (rib-set-tag! . rib-set-tag!)
     - (eq? . eq?)
     - (apply . apply)
     - (data-rib . data-rib)
