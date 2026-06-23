@@ -221,7 +221,7 @@ mod tests {
         );
     }
 
-    #[cfg(any(not(feature = "float"), feature = "float62"))]
+    #[cfg(not(feature = "float"))]
     #[test]
     fn divide_by_zero() {
         assert_eq!(
@@ -230,7 +230,7 @@ mod tests {
         );
     }
 
-    #[cfg(any(not(feature = "float"), feature = "float62"))]
+    #[cfg(not(feature = "float"))]
     #[test]
     fn remainder_by_zero() {
         assert_eq!(
