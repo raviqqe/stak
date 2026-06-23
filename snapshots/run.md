@@ -11,7 +11,7 @@
 - constant primitive 12
 - set $$-
 - constant primitive 13
-- set $$\*
+- set $$*
 - constant primitive 14
 - set $$/
 - constant procedure 0 #f
@@ -336,7 +336,7 @@
 - get ||
 - constant 1
 - call 2 #f ||
-- set \*
+- set *
 - get ||
 - constant 1
 - call 2 #f ||
@@ -3541,7 +3541,7 @@
 - constant 1024
 - constant 1024
 - constant 1024
-- call 4 #f \*
+- call 4 #f *
 - set ||
 - constant procedure 1 #f
   - get ||
@@ -3952,7 +3952,7 @@
   - $$<
   - $$+
   - $$-
-  - $$\*
+  - $$*
   - $$/
   - include
   - except
@@ -4247,7 +4247,7 @@
   - define-syntax
   - syntax-error
   - define-optimizer
-  - \_
+  - _
   - ...
   - define
   - lambda
@@ -4260,12 +4260,12 @@
   - quote
   - set!
   - let
-  - let\*
+  - let*
   - letrec
-  - letrec\*
+  - letrec*
   - define-values
   - let-values
-  - let\*-values
+  - let*-values
   - if
   - cond
   - case
@@ -4292,9 +4292,9 @@
   - car
   - cdr
   - rib-tag
-  - rib-set-tag!
   - set-car!
   - set-cdr!
+  - rib-set-tag!
   - eq?
   - apply
   - data-rib
@@ -4318,9 +4318,9 @@
   - negative?
   - even?
   - odd?
+  - +
   - -
-  - -
-  - -
+  - *
   - /
   - remainder
   - quotient
@@ -4350,7 +4350,7 @@
   - <
   - >
   - <=
-  - > =
+  - >=
   - comparison-operator
   - min
   - max
@@ -8858,7 +8858,7 @@
     - $$-
     - 12
   - list
-    - $$\*
+    - $$*
     - 13
   - list
     - $$/
@@ -11776,7 +11776,7 @@
     - list
       - scheme
       - r5rs
-    - (_ . _)
+    - (* . *)
     - (+ . +)
     - (- . -)
     - (... . ...)
@@ -12219,9 +12219,9 @@
     - (car . car)
     - (cdr . cdr)
     - (rib-tag . rib-tag)
-    - (rib-set-tag! . rib-set-tag!)
     - (set-car! . set-car!)
     - (set-cdr! . set-cdr!)
+    - (rib-set-tag! . rib-set-tag!)
     - (eq? . eq?)
     - (apply . apply)
     - (data-rib . data-rib)
@@ -12246,7 +12246,7 @@
     - (odd? . odd?)
     - (+ . +)
     - (- . -)
-    - (_ . _)
+    - (* . *)
     - (/ . /)
     - (remainder . remainder)
     - (quotient . quotient)
@@ -12737,9 +12737,9 @@
     - (car . car)
     - (cdr . cdr)
     - (rib-tag . rib-tag)
-    - (rib-set-tag! . rib-set-tag!)
     - (set-car! . set-car!)
     - (set-cdr! . set-cdr!)
+    - (rib-set-tag! . rib-set-tag!)
     - (eq? . eq?)
     - (apply . apply)
     - (data-rib . data-rib)
@@ -12765,7 +12765,7 @@
     - (odd? . odd?)
     - (+ . +)
     - (- . -)
-    - (_ . _)
+    - (* . *)
     - (/ . /)
     - (remainder . remainder)
     - (quotient . quotient)
@@ -13048,7 +13048,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -13064,7 +13064,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - (|| || ... . ||)
         - ||
         - ||
@@ -13080,7 +13080,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -13098,7 +13098,7 @@
       - define-values
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -13107,7 +13107,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define
@@ -13130,7 +13130,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "value"
         - ||
         - list
@@ -13169,7 +13169,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "value"
         - ||
         - list
@@ -13201,7 +13201,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "value"
         - ||
         - list
@@ -13216,7 +13216,7 @@
         - lambda
         - ||
         - list
-          - letrec\*
+          - letrec*
           - list
             - list
               - ||
@@ -13227,7 +13227,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define-syntax
@@ -13249,7 +13249,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "syntax"
         - ||
         - list
@@ -13281,7 +13281,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "syntax"
         - ||
         - list
@@ -13307,7 +13307,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define-record-type
@@ -13329,7 +13329,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define-values
@@ -13352,7 +13352,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -13664,12 +13664,12 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -13685,11 +13685,11 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #f
     - list
       - list
-        - \_
+        - _
         - ||
         - ...
       - list
@@ -13705,14 +13705,14 @@
       - unquote-splicing
     - list
       - list
-        - \_
+        - _
         - list
           - unquote
           - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - unquote-splicing
@@ -13729,7 +13729,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -13746,7 +13746,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - quote
@@ -13758,7 +13758,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - $$quote
@@ -13770,7 +13770,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -14157,7 +14157,7 @@
       - define-values
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define
@@ -14179,7 +14179,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define-record-type
@@ -14201,7 +14201,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define-syntax
@@ -14223,7 +14223,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define-values
@@ -14245,7 +14245,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ||
@@ -14257,7 +14257,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14279,7 +14279,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - list
@@ -14307,13 +14307,13 @@
           - ||
           - ...
   - list
-    - let\*
+    - let*
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ||
@@ -14326,7 +14326,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14345,7 +14345,7 @@
             - ||
             - ||
         - list
-          - let\*
+          - let*
           - list
             - list
               - ||
@@ -14361,7 +14361,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14371,7 +14371,7 @@
         - ||
         - ...
       - list
-        - letrec\*
+        - letrec*
         - list
           - list
             - ||
@@ -14381,13 +14381,13 @@
         - ||
         - ...
   - list
-    - letrec\*
+    - letrec*
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14421,7 +14421,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -14432,7 +14432,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -14449,7 +14449,7 @@
       - =>
     - list
       - list
-        - \_
+        - _
         - list
           - else
           - ||
@@ -14462,7 +14462,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - =>
@@ -14487,7 +14487,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
         - ||
@@ -14501,7 +14501,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -14523,7 +14523,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
       - #f
   - list
     - case
@@ -14534,7 +14534,7 @@
       - =>
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ...
@@ -14555,7 +14555,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - else
@@ -14566,7 +14566,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - else
@@ -14580,7 +14580,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - list
@@ -14608,7 +14608,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - list
@@ -14639,7 +14639,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
       - #f
   - list
@@ -14649,7 +14649,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -14661,7 +14661,7 @@
           - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -14681,16 +14681,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #t
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -14709,16 +14709,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #f
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -14743,16 +14743,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #f
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -14771,7 +14771,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -14791,7 +14791,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -14811,7 +14811,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14856,13 +14856,13 @@
               - ...
     - list
       - list
-        - \_
+        - _
         - "step"
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - "step"
         - ||
         - ||
@@ -14874,7 +14874,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - "initial"
         - ||
         - ||
@@ -14911,7 +14911,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - "field"
         - ||
         - list
@@ -14932,7 +14932,7 @@
           - ||
           - ...
         - list
-          - -
+          - +
           - ||
           - 1
         - ||
@@ -14952,11 +14952,11 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "field"
         - ()
         - ()
-        - \_
+        - _
         - ||
         - ...
       - list
@@ -14965,13 +14965,13 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "field"
         - list
           - ||
           - ...
         - ()
-        - \_
+        - _
         - ||
         - ...
       - list
@@ -14983,15 +14983,15 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
-          - \_
+          - _
           - ...
         - ||
         - list
-          - \_
+          - _
           - ||
           - ...
         - ...
@@ -15013,16 +15013,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - list
             - ||
-            - \_
+            - _
             - ...
           - ||
           - list
-            - \_
+            - _
             - ||
             - ...
           - ...
@@ -15048,13 +15048,13 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - list
           - ||
         - ||
@@ -15074,7 +15074,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -15132,7 +15132,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - (|| || ... . ||)
         - ||
       - list
@@ -15186,7 +15186,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15206,7 +15206,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ...
@@ -15228,7 +15228,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - "multiple"
         - ()
         - ||
@@ -15239,7 +15239,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - "multiple"
         - list
           - list
@@ -15262,7 +15262,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - "single"
         - ()
         - ||
@@ -15287,7 +15287,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - "single"
         - (|| . ||)
         - ||
@@ -15318,7 +15318,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - "single"
         - ||
         - ||
@@ -15351,13 +15351,13 @@
                 - ||
             - ||
   - list
-    - let\*-values
+    - let*-values
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ||
@@ -15370,7 +15370,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -15383,7 +15383,7 @@
         - list
           - ||
         - list
-          - let\*-values
+          - let*-values
           - list
             - ||
             - ...
@@ -15397,7 +15397,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ...
@@ -15407,7 +15407,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -15419,7 +15419,7 @@
         - ||
         - ...
       - list
-        - let\*
+        - let*
         - list
           - list
             - ||
@@ -15461,7 +15461,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -15540,7 +15540,7 @@
       - =>
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - else
@@ -15554,7 +15554,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15575,7 +15575,7 @@
           - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15604,7 +15604,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15614,7 +15614,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15639,7 +15639,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15657,7 +15657,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15688,7 +15688,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -15716,12 +15716,12 @@
                   - ()
                   - list
                     - list
-                      - \_
+                      - _
                     - list
                       - error
                       - "no matching clause"
                   - list
-                    - (\_ ((|| ||) . ||) . ||)
+                    - (_ ((|| ||) . ||) . ||)
                     - list
                       - if
                       - list
@@ -15740,11 +15740,11 @@
                         - ||
                       - (|| . ||)
                   - list
-                    - (\_ ((|| || . ||) . ||) . ||)
+                    - (_ ((|| || . ||) . ||) . ||)
                     - list
                       - if
                       - list
-                        - > =
+                        - >=
                         - ||
                         - list
                           - length
@@ -15772,7 +15772,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - let
@@ -15808,7 +15808,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - lambda
@@ -15834,7 +15834,21 @@
     - ()
     - list
       - list
-        - \_
+        - _
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - *
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - _
         - ||
         - ||
       - list
@@ -15848,21 +15862,7 @@
     - ()
     - list
       - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15871,7 +15871,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -15885,13 +15885,13 @@
         - ||
         - ...
   - list
-    - -
+    - +
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15900,13 +15900,13 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
         - ...
       - list
-        - -
+        - +
         - list
           - ||
           - ||
@@ -15920,7 +15920,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - ||
@@ -15933,7 +15933,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - ||
@@ -15946,20 +15946,20 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - eq?
         - ||
         - 0
   - list
-    - > =
+    - >=
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15976,7 +15976,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15993,7 +15993,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -16007,7 +16007,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -16021,7 +16021,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -16035,7 +16035,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - eq?
