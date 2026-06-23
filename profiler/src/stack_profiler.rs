@@ -34,48 +34,43 @@ impl<T: Write> StackProfiler<T> {
         .unwrap();
     }
 
-    fn write_procedure<H: Heap>(&mut self, memory: &Memory<H>, code: Cons) -> Result<(), Error> {
-        let operand = memory.car(code)?;
+    fn write_procedure<H: Heap>(&mut self, memory: &Memory<H>, code: Cons) {
+        let operand = memory.car(code);
 
         if let Some(symbol) = operand.to_cons() {
-            let mut string = memory.cdr_value(memory.cdr(symbol)?)?.assume_cons();
+            let mut string = memory.cdr_value(memory.cdr(symbol)).assume_cons();
 
-            while string != memory.null()? {
+            while string != memory.null() {
                 write!(
                     self.writer,
                     "{}",
-                    char::from_u32(memory.car(string)?.assume_number().to_i64() as _)
-                        .unwrap_or('�')
+                    char::from_u32(memory.car(string).assume_number().to_i64() as _).unwrap_or('�')
                 )
                 .unwrap();
-                string = memory.cdr(string)?.assume_cons();
+                string = memory.cdr(string).assume_cons();
             }
         }
-
-        Ok(())
     }
 
-    fn write_stack<H: Heap>(&mut self, memory: &Memory<H>) -> Result<(), Error> {
+    fn write_stack<H: Heap>(&mut self, memory: &Memory<H>) {
         let mut stack = memory.stack();
         let mut first = true;
 
-        while stack != memory.null()? {
-            stack = if memory.cdr(stack)?.tag() == StackSlot::Frame as _ {
+        while stack != memory.null() {
+            stack = if memory.cdr(stack).tag() == StackSlot::Frame as _ {
                 if !first {
                     self.write_frame_separator();
                 }
 
                 first = false;
 
-                self.write_procedure(memory, memory.car_value(memory.car(stack)?)?.assume_cons())?;
+                self.write_procedure(memory, memory.car_value(memory.car(stack)).assume_cons());
 
-                memory.cdr_value(memory.car(stack)?)?.assume_cons()
+                memory.cdr_value(memory.car(stack)).assume_cons()
             } else {
-                memory.cdr(stack)?.assume_cons()
+                memory.cdr(stack).assume_cons()
             };
         }
-
-        Ok(())
     }
 }
 
@@ -97,9 +92,9 @@ impl<T: Write, H: Heap> Profiler<H> for StackProfiler<T> {
         )
         .unwrap();
         self.write_column_separator();
-        self.write_procedure(memory, call_code)?;
+        self.write_procedure(memory, call_code);
         self.write_frame_separator();
-        self.write_stack(memory)?;
+        self.write_stack(memory);
         self.write_column_separator();
         self.write_time();
 
@@ -109,7 +104,7 @@ impl<T: Write, H: Heap> Profiler<H> for StackProfiler<T> {
     fn profile_return(&mut self, memory: &Memory<H>) -> Result<(), Error> {
         write!(self.writer, "{}", ProcedureOperation::Return).unwrap();
         self.write_column_separator();
-        self.write_stack(memory)?;
+        self.write_stack(memory);
         self.write_column_separator();
         self.write_time();
 

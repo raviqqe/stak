@@ -26,11 +26,7 @@ impl InexactPrimitiveSet {
         memory: &mut Memory<H>,
         calculate: fn(f64) -> bool,
     ) -> Result<(), Error> {
-        memory.operate_top(|memory, x| {
-            Ok(memory
-                .boolean(calculate(x.assume_number().to_f64()))?
-                .into())
-        })
+        memory.operate_top(|memory, x| memory.boolean(calculate(x.assume_number().to_f64())).into())
     }
 }
 
