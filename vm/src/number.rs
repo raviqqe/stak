@@ -221,8 +221,6 @@ mod tests {
         );
     }
 
-    // A divisor of an exact zero is an error in the integer and 62-bit float
-    // representations, but yields an infinity or a NaN in the 64-bit float one.
     #[cfg(any(not(feature = "float"), feature = "float62"))]
     #[test]
     fn divide_by_zero() {
