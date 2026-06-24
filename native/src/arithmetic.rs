@@ -68,4 +68,9 @@ mod tests {
         assert_eq!(quotient(6, 3), Ok(2));
         assert_eq!(quotient(-7, 2), Ok(-3));
     }
+
+    #[test]
+    fn calculate_quotient_by_zero() {
+        assert_eq!(quotient(1, 0), Err(Error::DivisionByZero));
+    }
 }
