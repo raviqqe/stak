@@ -346,3 +346,16 @@ Feature: Exception
       | (member)           | invalid argument count |
       | ((primitive 4242)) | illegal primitive      |
       | (#f)               | procedure expected     |
+
+  Scenario: Handle a division by zero
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (guard (condition (#t #f))
+        (/ 1 0))
+
+      (write-u8 65)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
