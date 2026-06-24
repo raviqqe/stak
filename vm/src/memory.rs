@@ -428,6 +428,19 @@ impl<H: Heap> Memory<H> {
         Ok(())
     }
 
+    /// Executes a fallible binary number operation.
+    #[inline(always)]
+    pub fn try_operate_binary(
+        &mut self,
+        operate: fn(Number, Number) -> Result<Number, Error>,
+    ) -> Result<(), Error> {
+        let [x, y] = self.pop_numbers()?;
+
+        self.push(operate(x, y)?.into())?;
+
+        Ok(())
+    }
+
     // Garbage collection
 
     /// Collects garbage memory blocks.

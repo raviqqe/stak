@@ -72,6 +72,14 @@ pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
     }
 }
 
+pub fn checked_divide(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
+    Some(x / y)
+}
+
+pub fn checked_remainder(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
+    Some(x % y)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

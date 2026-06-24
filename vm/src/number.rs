@@ -5,7 +5,7 @@ use crate::{
 };
 use core::{
     fmt::{self, Display, Formatter},
-    ops::{Add, Div, Mul, Rem, Sub},
+    ops::{Add, Mul, Sub},
 };
 
 /// A number.
@@ -62,6 +62,24 @@ impl Number {
             number.to_representation(),
         ))
     }
+
+    /// Divides a number by another.
+    ///
+    /// It returns an error on division by zero.
+    pub fn divide(self, other: Self) -> Result<Self, Error> {
+        value_inner::checked_divide(self.to_representation(), other.to_representation())
+            .map(Self::new)
+            .ok_or(Error::DivisionByZero)
+    }
+
+    /// Calculates a remainder of a number divided by another.
+    ///
+    /// It returns an error on division by zero.
+    pub fn remainder(self, other: Self) -> Result<Self, Error> {
+        value_inner::checked_remainder(self.to_representation(), other.to_representation())
+            .map(Self::new)
+            .ok_or(Error::DivisionByZero)
+    }
 }
 
 impl Default for Number {
@@ -91,22 +109,6 @@ impl Mul for Number {
 
     fn mul(self, other: Self) -> Self::Output {
         Self::new(self.to_representation() * other.to_representation())
-    }
-}
-
-impl Div for Number {
-    type Output = Self;
-
-    fn div(self, other: Self) -> Self::Output {
-        Self::new(self.to_representation() / other.to_representation())
-    }
-}
-
-impl Rem for Number {
-    type Output = Self;
-
-    fn rem(self, other: Self) -> Self::Output {
-        Self::new(self.to_representation() % other.to_representation())
     }
 }
 
@@ -193,23 +195,47 @@ mod tests {
 
     #[test]
     fn divide() {
-        assert_eq!(Number::default() / Number::from_i64(1), Number::default());
         assert_eq!(
-            Number::from_i64(2) / Number::from_i64(1),
-            Number::from_i64(2)
+            Number::default().divide(Number::from_i64(1)),
+            Ok(Number::default())
         );
         assert_eq!(
-            Number::from_i64(6) / Number::from_i64(2),
-            Number::from_i64(3)
+            Number::from_i64(2).divide(Number::from_i64(1)),
+            Ok(Number::from_i64(2))
+        );
+        assert_eq!(
+            Number::from_i64(6).divide(Number::from_i64(2)),
+            Ok(Number::from_i64(3))
         );
     }
 
     #[test]
     fn remainder() {
-        assert_eq!(Number::default() % Number::from_i64(1), Number::default());
         assert_eq!(
-            Number::from_i64(3) % Number::from_i64(2),
-            Number::from_i64(1)
+            Number::default().remainder(Number::from_i64(1)),
+            Ok(Number::default())
+        );
+        assert_eq!(
+            Number::from_i64(3).remainder(Number::from_i64(2)),
+            Ok(Number::from_i64(1))
+        );
+    }
+
+    #[cfg(not(feature = "float"))]
+    #[test]
+    fn divide_by_zero() {
+        assert_eq!(
+            Number::from_i64(1).divide(Number::from_i64(0)),
+            Err(Error::DivisionByZero)
+        );
+    }
+
+    #[cfg(not(feature = "float"))]
+    #[test]
+    fn remainder_by_zero() {
+        assert_eq!(
+            Number::from_i64(1).remainder(Number::from_i64(0)),
+            Err(Error::DivisionByZero)
         );
     }
 }

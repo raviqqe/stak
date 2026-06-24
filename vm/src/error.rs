@@ -11,6 +11,8 @@ pub enum Error {
     ArgumentCount,
     /// A cons expected.
     ConsExpected,
+    /// A division by zero.
+    DivisionByZero,
     /// An unexpected end of bytecode.
     BytecodeEnd,
     /// A format error.
@@ -37,6 +39,7 @@ impl Exception for Error {
             | Self::IllegalPrimitive
             | Self::NumberExpected
             | Self::ConsExpected
+            | Self::DivisionByZero
             | Self::ProcedureExpected => false,
             Self::BytecodeEnd | Self::Format(_) | Self::IllegalInstruction | Self::OutOfMemory => {
                 true
@@ -53,6 +56,7 @@ impl Display for Error {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
             Self::BytecodeEnd => write!(formatter, "unexpected end of bytecode"),
             Self::ConsExpected => write!(formatter, "cons expected"),
+            Self::DivisionByZero => write!(formatter, "division by zero"),
             Self::Format(error) => write!(formatter, "{error}"),
             Self::InvalidMemoryAccess => write!(formatter, "invalid memory access"),
             Self::IllegalInstruction => write!(formatter, "illegal instruction"),

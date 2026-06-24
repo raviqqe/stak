@@ -33,11 +33,39 @@ impl<H: Heap> PrimitiveSet<H> for ArithmeticPrimitiveSet {
                 let x = x.assume_number();
                 let y = y.assume_number();
 
-                memory.push(((x - x % y) / y).into())?;
+                memory.push((x - x.remainder(y)?).divide(y)?.into())?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
 
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use stak_util::block_on;
+    use stak_vm::{Number, Value};
+
+    const HEAP_SIZE: usize = 1 << 8;
+
+    fn quotient(x: i64, y: i64) -> Result<i64, Error> {
+        let mut memory = Memory::new([Value::default(); HEAP_SIZE]).unwrap();
+        memory.set_stack(memory.null().unwrap());
+        memory.push(Number::from_i64(x).into()).unwrap();
+        memory.push(Number::from_i64(y).into()).unwrap();
+
+        let mut set = ArithmeticPrimitiveSet::new();
+        block_on!(set.operate(&mut memory, ArithmeticPrimitive::QUOTIENT))?;
+
+        Ok(memory.pop().unwrap().assume_number().to_i64())
+    }
+
+    #[test]
+    fn calculate_quotient() {
+        assert_eq!(quotient(7, 2), Ok(3));
+        assert_eq!(quotient(6, 3), Ok(2));
+        assert_eq!(quotient(-7, 2), Ok(-3));
     }
 }

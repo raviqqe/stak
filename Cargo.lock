@@ -998,9 +998,9 @@ dependencies = [
 
 [[package]]
 name = "nonbox"
-version = "0.5.13"
+version = "0.5.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7cf75a3c261a34d979753451490dbcdd3adaa7f076c1a223d477b1a159b861ce"
+checksum = "79b801b1dcbf76e86d51e123f441bf2aff465ac761023e7a789f7a820fbabd62"
 
 [[package]]
 name = "noop-executor"
@@ -1192,9 +1192,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.45"
+version = "1.0.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41f2619966050689382d2b44f664f4bc593e129785a36d6ee376ddf37259b924"
+checksum = "dfbc457d0c7a0759a614551b11a6409e5951f6c7537be1f1b7682b9ae9230368"
 dependencies = [
  "proc-macro2",
 ]
@@ -1649,6 +1649,7 @@ dependencies = [
 name = "stak-native"
 version = "0.12.16"
 dependencies = [
+ "stak-util",
  "stak-vm",
  "winter-maybe-async",
 ]
