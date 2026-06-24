@@ -221,9 +221,6 @@ mod tests {
         );
     }
 
-    // Dividing by an exact zero is an error in the integer and 62-bit float
-    // representations. The 64-bit float representation cannot distinguish an
-    // exact zero and yields an infinity instead.
     #[cfg(any(not(feature = "float"), feature = "float62"))]
     #[test]
     fn divide_by_zero() {
