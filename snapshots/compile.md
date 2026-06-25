@@ -4246,11 +4246,11 @@
   - encode-context-remove!
   - index
   - removed
+  - share-base
   - encode-context-push!
   - decrement-count!
-  - share-base
-  - tag-base
   - entry
+  - tag-base
   - encode-integer-parts
   - encode-number
   - number-base
@@ -20517,18 +20517,15 @@
                         - encode-integer-parts
                         - list
                           - -
-                          - 2
                           - list
                             - -
-                            - list
-                              - -
-                              - 2
-                              - index
-                            - list
-                              - if
-                              - removed
-                              - 0
-                              - 1
+                            - 2
+                            - index
+                          - list
+                            - if
+                            - removed
+                            - 0
+                            - 1
                         - share-base
                   - list
                     - compressor-write
@@ -20580,46 +20577,31 @@
                     - head
                     - tail
                   - list
-                    - if
-                    - entry
+                    - encode-integer-parts
                     - list
-                      - encode-integer-parts
+                      - -
+                      - list
+                        - if
+                        - entry
+                        - 1
+                        - 0
                       - list
                         - -
-                        - 1
+                        - 2
                         - list
-                          - -
-                          - 2
-                          - list
-                            - rib-tag
-                            - value
-                      - share-base
-                    - list
-                      - encode-integer-parts
-                      - list
-                        - rib-tag
-                        - value
-                      - tag-base
+                          - rib-tag
+                          - value
+                    - tag-base
               - list
                 - compressor-write
                 - compressor
                 - list
-                  - if
-                  - entry
+                  - -
+                  - 1
                   - list
                     - -
-                    - 2
-                    - list
-                      - -
-                      - 1
-                      - head
-                  - list
-                    - -
-                    - 1
-                    - list
-                      - -
-                      - 4
-                      - head
+                    - 4
+                    - head
               - list
                 - encode-integer-tail
                 - context
