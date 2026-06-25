@@ -482,9 +482,8 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     if index > 0 {
                         let cons = self.memory.tail(self.memory.code(), index as usize - 1)?;
                         let head = self.memory.cdr(cons)?.assume_cons();
-                        let tail = self.memory.cdr(head)?;
+                        self.memory.set_cdr(cons, self.memory.cdr(head)?)?;
                         self.memory.set_cdr(head, self.memory.code().into())?;
-                        self.memory.set_cdr(cons, tail)?;
                         self.memory.set_code(head);
                     }
 
