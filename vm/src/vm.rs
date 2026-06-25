@@ -670,4 +670,27 @@ mod tests {
         assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
         assert_eq!(memory.cdr(rib).unwrap(), rib.into());
     }
+
+    #[test]
+    fn decode_swapped_reference() {
+        // Two mutually referencing pairs. Filling the second pair references the
+        // first one while it sits behind the second in the memo, exercising the
+        // move-to-front of a non-front entry.
+        let (first, memory) = decode([
+            // Announce the first placeholder.
+            0, // A constant zero for its `car`.
+            3, // Announce the second placeholder.
+            0, // A constant zero for its `car`.
+            3, // Reference the first placeholder at the memo back, keeping it.
+            14, // Fill the second placeholder with a pair tag.
+            9, // Fill the first placeholder with a pair tag.
+            9,
+        ]);
+
+        let second = memory.cdr(first).unwrap().assume_cons();
+
+        assert_eq!(memory.car(first).unwrap(), Number::from_i64(0).into());
+        assert_eq!(memory.car(second).unwrap(), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(second).unwrap(), first.into());
+    }
 }
