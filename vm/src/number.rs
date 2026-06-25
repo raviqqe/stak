@@ -221,7 +221,7 @@ mod tests {
         );
     }
 
-    #[cfg(not(feature = "float"))]
+    #[cfg(any(not(feature = "float"), feature = "float62"))]
     #[test]
     fn divide_by_zero() {
         assert_eq!(
@@ -230,12 +230,24 @@ mod tests {
         );
     }
 
-    #[cfg(not(feature = "float"))]
+    #[cfg(any(not(feature = "float"), feature = "float62"))]
     #[test]
     fn remainder_by_zero() {
         assert_eq!(
             Number::from_i64(1).remainder(Number::from_i64(0)),
             Err(Error::DivisionByZero)
+        );
+    }
+
+    #[cfg(all(feature = "float", not(feature = "float62")))]
+    #[test]
+    fn divide_by_zero_is_infinite() {
+        assert!(
+            Number::from_i64(1)
+                .divide(Number::from_i64(0))
+                .unwrap()
+                .to_f64()
+                .is_infinite()
         );
     }
 }

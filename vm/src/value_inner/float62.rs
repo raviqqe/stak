@@ -73,11 +73,11 @@ pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
 }
 
 pub fn checked_divide(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
-    Some(x / y)
+    x.checked_div(y)
 }
 
 pub fn checked_remainder(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
-    Some(x % y)
+    x.checked_rem(y)
 }
 
 #[cfg(test)]
