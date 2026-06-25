@@ -501,15 +501,15 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let tag = (integer >> 1) as _;
                 let cdr = self.memory.pop()?;
                 let car = self.memory.pop()?;
-                let cons = if integer & 1 != 0 {
-                    let cons = self.memory.pop()?.assume_cons();
+
+                if integer & 1 != 0 {
+                    let cons = self.memory.top()?.assume_cons();
                     self.memory.set_car(cons, car)?;
                     self.memory.set_raw_cdr(cons, cdr.set_tag(tag))?;
-                    cons
                 } else {
-                    self.memory.allocate(car, cdr.set_tag(tag))?
-                };
-                self.memory.push(cons.into())?;
+                    let cons = self.memory.allocate(car, cdr.set_tag(tag))?;
+                    self.memory.push(cons.into())?;
+                }
             } else {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(
