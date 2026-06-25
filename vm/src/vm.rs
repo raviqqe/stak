@@ -474,7 +474,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                         .allocate(Default::default(), self.memory.null()?.into())?;
                     let cons = self.memory.cons(placeholder.into(), self.memory.code())?;
                     self.memory.set_code(cons);
-                    self.memory.push(self.memory.car(self.memory.code())?)?;
+                    self.memory.push(self.memory.car(cons)?)?;
                 } else {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
                     let index = integer >> 1;
