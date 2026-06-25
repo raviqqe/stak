@@ -477,10 +477,10 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     self.memory.push(self.memory.car(self.memory.code())?)?;
                 } else {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
-                    let index = (integer >> 1) as usize;
+                    let index = integer >> 1;
 
                     if index > 0 {
-                        let cons = self.memory.tail(self.memory.code(), index - 1)?;
+                        let cons = self.memory.tail(self.memory.code(), index as usize - 1)?;
                         let head = self.memory.cdr(cons)?.assume_cons();
                         let tail = self.memory.cdr(head)?;
                         self.memory.set_cdr(head, self.memory.code().into())?;
