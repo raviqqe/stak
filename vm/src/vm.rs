@@ -498,16 +498,15 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 }
             } else if head & 0b10 == 0 {
                 let integer = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
-                let tag = (integer >> 1) as _;
-                let cdr = self.memory.pop()?;
+                let cdr = self.memory.pop()?.set_tag((integer >> 1) as _);
                 let car = self.memory.pop()?;
 
                 if integer & 1 != 0 {
                     let cons = self.memory.top()?.assume_cons();
                     self.memory.set_car(cons, car)?;
-                    self.memory.set_raw_cdr(cons, cdr.set_tag(tag))?;
+                    self.memory.set_raw_cdr(cons, cdr)?;
                 } else {
-                    let cons = self.memory.allocate(car, cdr.set_tag(tag))?;
+                    let cons = self.memory.allocate(car, cdr)?;
                     self.memory.push(cons.into())?;
                 }
             } else {
