@@ -477,42 +477,29 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     self.memory.push(self.memory.car(self.memory.code())?)?;
                 } else {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
+                    let index = (integer >> 1) as usize;
+
+                    if index > 0 {
+                        let cons = self.memory.tail(self.memory.code(), index - 1)?;
+                        let head = self.memory.cdr(cons)?.assume_cons();
+                        let tail = self.memory.cdr(head)?;
+                        self.memory.set_cdr(head, self.memory.code().into())?;
+                        self.memory.set_cdr(cons, tail)?;
+                        self.memory.set_code(head);
+                    }
+
+                    let value = self.memory.car(self.memory.code())?;
 
                     if integer & 1 == 0 {
-                        let integer = integer >> 1;
-                        let index = (integer >> 1) as usize;
-
-                        if index > 0 {
-                            let cons = self.memory.tail(self.memory.code(), index - 1)?;
-                            let head = self.memory.cdr(cons)?.assume_cons();
-                            let tail = self.memory.cdr(head)?;
-                            self.memory.set_cdr(head, self.memory.code().into())?;
-                            self.memory.set_cdr(cons, tail)?;
-                            self.memory.set_code(head);
-                        }
-
-                        let value = self.memory.car(self.memory.code())?;
-
-                        if integer & 1 == 0 {
-                            self.memory
-                                .set_code(self.memory.cdr(self.memory.code())?.assume_cons());
-                        }
-
-                        self.memory.push(value)?;
-                    } else {
-                        let cdr = self.memory.pop()?;
-                        let car = self.memory.pop()?;
-                        let placeholder = self.memory.top()?.assume_cons();
-                        self.set_rib(placeholder, car, cdr, (integer >> 1) as _)?;
+                        self.memory
+                            .set_code(self.memory.cdr(self.memory.code())?.assume_cons());
                     }
+
+                    self.memory.push(value)?;
                 }
             } else if head & 0b10 == 0 {
-                let cons = self.memory.stack();
-                let cdr = self.memory.pop()?;
-                let car = self.memory.top()?;
-                let tag = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
-                self.set_rib(cons, car, cdr, tag as _)?;
-                self.memory.set_top(cons.into())?;
+                let integer = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
+                self.decode_rib(integer & 1 != 0, (integer >> 1) as _)?;
             } else {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(
@@ -528,10 +515,18 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         self.memory.pop()?.to_cons().ok_or(Error::BytecodeEnd)
     }
 
-    fn set_rib(&mut self, cons: Cons, car: Value, cdr: Value, tag: u16) -> Result<(), Error> {
-        self.memory.set_car(cons, car)?;
-        self.memory.set_raw_cdr(cons, cdr.set_tag(tag))?;
-        Ok(())
+    fn decode_rib(&mut self, shared: bool, tag: u16) -> Result<(), Error> {
+        let cdr = self.memory.pop()?;
+        let car = self.memory.pop()?;
+        let cons = if shared {
+            let cons = self.memory.pop()?.assume_cons();
+            self.memory.set_car(cons, car)?;
+            self.memory.set_raw_cdr(cons, cdr.set_tag(tag))?;
+            cons
+        } else {
+            self.memory.allocate(car, cdr.set_tag(tag))?
+        };
+        self.memory.push(cons.into())
     }
 
     fn decode_number(integer: u128) -> Number {
@@ -649,7 +644,7 @@ mod tests {
             // Announce a placeholder.
             0, // Two constant zeros for its fields.
             3, 3, // Fill the placeholder with a pair tag.
-            6, // Reference the placeholder at the memo front.
+            9, // Reference the placeholder at the memo front.
             2, // Build a pair of the original and the reference.
             1,
         ]);
@@ -669,7 +664,7 @@ mod tests {
             0, // A constant zero for its `car`.
             3, // A reference back to the placeholder for its `cdr`.
             2, // Fill the placeholder with a pair tag.
-            6,
+            9,
         ]);
 
         assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
