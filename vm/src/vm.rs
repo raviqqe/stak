@@ -678,12 +678,12 @@ mod tests {
         // move-to-front of a non-front entry.
         let (first, memory) = decode([
             // Announce the first placeholder.
-            0, // A constant zero for its `car`.
-            3, // Announce the second placeholder.
-            0, // A constant zero for its `car`.
-            3, // Reference the first placeholder at the memo back, keeping it.
+            0,  // A constant zero for its `car`.
+            3,  // Announce the second placeholder.
+            0,  // A constant zero for its `car`.
+            3,  // Reference the first placeholder at the memo back, keeping it.
             14, // Fill the second placeholder with a pair tag.
-            9, // Fill the first placeholder with a pair tag.
+            9,  // Fill the first placeholder with a pair tag.
             9,
         ]);
 
