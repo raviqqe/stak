@@ -1973,17 +1973,18 @@
             (compressor-write compressor (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
         (else
+         (when entry
+          (compressor-write compressor 0)
+          (encode-context-push! context value)
+          (decrement-count! entry))
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
-
-         (let-values (((head tail) (encode-integer-parts (rib-tag value) tag-base)))
+         (let-values (((head tail)
+                       (encode-integer-parts
+                        (+ (if entry 1 0) (* 2 (rib-tag value)))
+                        tag-base)))
           (compressor-write compressor (+ 1 (* 4 head)))
-          (encode-integer-tail context tail))
-
-         (when entry
-          (encode-context-push! context value)
-          (decrement-count! entry)
-          (compressor-write compressor 0)))))
+          (encode-integer-tail context tail)))))
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
        (compressor-write compressor (+ 3 (* 4 head)))
        (encode-integer-tail context tail))))

@@ -139,7 +139,9 @@
       ((even? byte)
         (let ((head (quotient byte 2)))
           (if (zero? head)
-            (stack-push! dictionary (stack-top stack))
+            (let ((value (rib 0 0 0)))
+              (stack-push! dictionary value)
+              (stack-push! stack value))
             (let* ((integer (decode-integer-tail decompressor (- head 1) share-base))
                    (index (quotient integer 2)))
               (when (> index 0)
@@ -149,10 +151,14 @@
                   (stack-pop! dictionary))
                 (stack-push! stack value))))))
       ((even? (quotient byte 2))
-        (let* ((d (stack-pop! stack))
+        (let* ((integer (decode-integer-tail decompressor (quotient byte 4) tag-base))
+               (d (stack-pop! stack))
                (a (stack-pop! stack))
-               (tag (decode-integer-tail decompressor (quotient byte 4) tag-base)))
-          (stack-push! stack (rib a d tag))))
+               (value (if (odd? integer) (stack-pop! stack) (rib 0 0 0))))
+          (set-car! value a)
+          (set-cdr! value d)
+          (rib-set-tag! value (quotient integer 2))
+          (stack-push! stack value)))
       (else
         (stack-push!
           stack

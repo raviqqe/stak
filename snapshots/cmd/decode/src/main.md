@@ -49,6 +49,9 @@
 - constant 8
 - call 1 #f ||
 - set ||
+- constant 17
+- call 1 #f ||
+- set ||
 - constant 9
 - call 1 #f ||
 - set ||
@@ -2461,9 +2464,17 @@
       - constant 0
       - call 2 #f ||
       - if
+        - constant 0
+        - constant 0
+        - constant 0
+        - call 3 #f ||
+        - get 7
+        - get 1
+        - call 2 #f ||
+        - set 0
         - get 6
-        - get 6
-        - call 1 #f ||
+        - get 1
+        - call 2 #f ||
         - call 2 #f ||
         - continue
       - get 4
@@ -2508,21 +2519,43 @@
     - call 2 #f ||
     - call 1 #f ||
     - if
-      - get 4
-      - call 1 #f ||
-      - get 5
-      - call 1 #f ||
-      - get 5
       - get 3
+      - get 1
       - constant 4
       - call 2 #f ||
       - get ||
       - call 3 #f ||
-      - get 7
+      - get 5
+      - call 1 #f ||
+      - get 6
+      - call 1 #f ||
       - get 2
-      - get 4
-      - get 3
+      - call 1 #f ||
+      - if
+        - get 7
+        - call 1 #f ||
+        - continue
+      - constant 0
+      - constant 0
+      - constant 0
       - call 3 #f ||
+      - get 0
+      - get 2
+      - call 2 #f ||
+      - set 0
+      - get 0
+      - get 3
+      - call 2 #f ||
+      - set 0
+      - get 0
+      - get 4
+      - constant 2
+      - call 2 #f ||
+      - call 2 #f ||
+      - set 0
+      - get 8
+      - get 1
+      - call 2 #f ||
       - call 2 #f ||
       - call 2 #f ||
       - call 2 #f ||
