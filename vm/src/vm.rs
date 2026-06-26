@@ -471,7 +471,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 if head == 0 {
                     let placeholder = self
                         .memory
-                        .allocate(Default::default(), self.memory.null()?.into())?;
+                        .allocate(Default::default(), Default::default())?;
                     let cons = self.memory.cons(placeholder.into(), self.memory.code())?;
                     self.memory.set_code(cons);
                     self.memory.push(self.memory.car(cons)?)?;

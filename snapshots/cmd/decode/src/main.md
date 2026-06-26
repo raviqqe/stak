@@ -2465,7 +2465,7 @@
       - call 2 #f ||
       - if
         - constant 0
-        - constant ()
+        - constant 0
         - constant 0
         - call 3 #f ||
         - get 7
@@ -2536,7 +2536,7 @@
         - call 1 #f ||
         - continue
       - constant 0
-      - constant ()
+      - constant 0
       - constant 0
       - call 3 #f ||
       - get 0
