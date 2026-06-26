@@ -619,8 +619,6 @@ mod tests {
         }
     }
 
-    // Encodes a logical bytecode stream as compression literals, where a byte
-    // `x` is stored as `2 * x`.
     fn literals<const N: usize>(bytes: [u8; N]) -> [u8; N] {
         bytes.map(|byte| byte * 2)
     }
