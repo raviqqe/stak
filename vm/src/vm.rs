@@ -469,10 +469,10 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let head = head >> 1;
 
                 if head == 0 {
-                    let placeholder = self
+                    let value = self
                         .memory
                         .allocate(Default::default(), Default::default())?;
-                    let cons = self.memory.cons(placeholder.into(), self.memory.code())?;
+                    let cons = self.memory.cons(value.into(), self.memory.code())?;
                     self.memory.set_code(cons);
                     self.memory.push(self.memory.car(cons)?)?;
                 } else {
