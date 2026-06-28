@@ -152,11 +152,13 @@
         (let* ((head (quotient byte 4))
                (d (stack-pop! stack))
                (a (stack-pop! stack))
-               (value (if (zero? head) (stack-top stack) (rib 0 0 0))))
+               (value
+                 (if (zero? head)
+                   (stack-top stack)
+                   (rib 0 '() (decode-integer-tail decompressor (- head 1) tag-base)))))
           (set-car! value a)
           (set-cdr! value d)
           (unless (zero? head)
-            (rib-set-tag! value (decode-integer-tail decompressor (- head 1) tag-base))
             (stack-push! stack value))))
       (else
         (stack-push!

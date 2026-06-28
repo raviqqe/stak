@@ -49,9 +49,6 @@
 - constant 8
 - call 1 #f ||
 - set ||
-- constant 17
-- call 1 #f ||
-- set ||
 - constant 9
 - call 1 #f ||
 - set ||
@@ -2526,8 +2523,13 @@
         - call 1 #f ||
         - continue
       - constant 0
-      - constant 0
-      - constant 0
+      - constant ()
+      - get 8
+      - get 5
+      - constant 1
+      - call 2 #f ||
+      - get ||
+      - call 3 #f ||
       - call 3 #f ||
       - get 0
       - get 2
@@ -2543,15 +2545,6 @@
       - constant #f
       - call 2 #f ||
       - if
-        - get 0
-        - get 8
-        - get 5
-        - constant 1
-        - call 2 #f ||
-        - get ||
-        - call 3 #f ||
-        - call 2 #f ||
-        - set 0
         - get 8
         - get 1
         - call 2 #f ||
