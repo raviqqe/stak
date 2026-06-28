@@ -151,15 +151,12 @@
       ((even? (quotient byte 2))
         (let* ((head (quotient byte 4))
                (d (stack-pop! stack))
-               (a (stack-pop! stack))
-               (value
-                 (if (zero? head)
-                   (stack-top stack)
-                   (rib 0 '() (decode-integer-tail decompressor (- head 1) tag-base)))))
-          (set-car! value a)
-          (set-cdr! value d)
-          (unless (zero? head)
-            (stack-push! stack value))))
+               (a (stack-pop! stack)))
+          (if (zero? head)
+            (let ((value (stack-top stack)))
+              (set-car! value a)
+              (set-cdr! value d))
+            (stack-push! stack (rib a d (decode-integer-tail decompressor (- head 1) tag-base))))))
       (else
         (stack-push!
           stack

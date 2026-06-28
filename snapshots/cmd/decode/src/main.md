@@ -2521,35 +2521,25 @@
       - if
         - get 7
         - call 1 #f ||
+        - get 0
+        - get 2
+        - call 2 #f ||
+        - set 0
+        - get 0
+        - get 3
+        - call 2 #f ||
+        - call 2 #f ||
         - continue
-      - constant 0
-      - constant ()
-      - get 8
-      - get 5
+      - get 7
+      - get 1
+      - get 3
+      - get 9
+      - get 6
       - constant 1
       - call 2 #f ||
       - get ||
       - call 3 #f ||
       - call 3 #f ||
-      - get 0
-      - get 2
-      - call 2 #f ||
-      - set 0
-      - get 0
-      - get 3
-      - call 2 #f ||
-      - set 0
-      - get 3
-      - constant 0
-      - call 2 #f ||
-      - constant #f
-      - call 2 #f ||
-      - if
-        - get 8
-        - get 1
-        - call 2 #f ||
-        - continue
-      - constant #f
       - call 2 #f ||
       - call 2 #f ||
       - call 2 #f ||
