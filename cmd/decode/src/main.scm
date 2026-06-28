@@ -9,7 +9,7 @@
 
 (define integer-base 64)
 (define number-base 16)
-(define tag-base 16)
+(define tag-base 15)
 (define share-base 31)
 
 (define window-size 256)
@@ -139,9 +139,7 @@
       ((even? byte)
         (let ((head (quotient byte 2)))
           (if (zero? head)
-            (let ((value (rib 0 0 0)))
-              (stack-push! dictionary value)
-              (stack-push! stack value))
+            (stack-push! dictionary (stack-top stack))
             (let* ((integer (decode-integer-tail decompressor (- head 1) share-base))
                    (index (quotient integer 2)))
               (when (> index 0)
@@ -151,14 +149,16 @@
                   (stack-pop! dictionary))
                 (stack-push! stack value))))))
       ((even? (quotient byte 2))
-        (let* ((integer (decode-integer-tail decompressor (quotient byte 4) tag-base))
+        (let* ((head (quotient byte 4))
                (d (stack-pop! stack))
-               (a (stack-pop! stack))
-               (value (if (odd? integer) (stack-pop! stack) (rib 0 0 0))))
-          (set-car! value a)
-          (set-cdr! value d)
-          (rib-set-tag! value (quotient integer 2))
-          (stack-push! stack value)))
+               (a (stack-pop! stack)))
+          (if (zero? head)
+            (let ((value (stack-top stack)))
+              (set-car! value a)
+              (set-cdr! value d))
+            (stack-push!
+              stack
+              (rib a d (decode-integer-tail decompressor (- head 1) tag-base))))))
       (else
         (stack-push!
           stack
