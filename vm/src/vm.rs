@@ -469,8 +469,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let head = head >> 1;
 
                 if head == 0 {
-                    let value = self.memory.top()?;
-                    let cons = self.memory.cons(value, self.memory.code())?;
+                    let cons = self.memory.cons(self.memory.top()?, self.memory.code())?;
                     self.memory.set_code(cons);
                 } else {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
