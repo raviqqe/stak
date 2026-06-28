@@ -9,8 +9,8 @@
 
 (define integer-base 64)
 (define number-base 16)
-(define tag-base 16)
-(define share-base 15)
+(define tag-base 15)
+(define share-base 31)
 
 (define window-size 256)
 
@@ -135,35 +135,39 @@
 
   (do ((byte (decompressor-read decompressor) (decompressor-read decompressor)))
     ((eof-object? byte))
-    (let ((tag (modulo byte 4)))
-      (cond
-        ((= tag 0)
-          (let ((head (quotient byte 4)))
-            (if (zero? head)
-              (let ((value (rib 0 0 0)))
-                (stack-push! dictionary value)
-                (stack-push! stack value))
-              (let* ((integer (decode-integer-tail decompressor (- head 1) share-base))
-                     (index (quotient integer 2)))
-                (when (> index 0)
-                  (stack-swap! dictionary index))
-                (let ((value (stack-top dictionary)))
-                  (when (even? integer)
-                    (stack-pop! dictionary))
-                  (stack-push! stack value))))))
-        ((= tag 2)
-          (stack-push!
-            stack
-            (decode-number (decode-integer-tail decompressor (quotient byte 4) number-base))))
-        (else
-          (let* ((integer (decode-integer-tail decompressor (quotient byte 4) tag-base))
-                 (d (stack-pop! stack))
-                 (a (stack-pop! stack))
-                 (value (if (= tag 3) (stack-pop! stack) (rib 0 0 0))))
-            (set-car! value a)
-            (set-cdr! value d)
-            (rib-set-tag! value integer)
-            (stack-push! stack value))))))
+    (cond
+      ((even? byte)
+        (let ((head (quotient byte 2)))
+          (if (zero? head)
+            (stack-push! dictionary (stack-top stack))
+            (let* ((integer (decode-integer-tail decompressor (- head 1) share-base))
+                   (index (quotient integer 2)))
+              (when (> index 0)
+                (stack-swap! dictionary index))
+              (let ((value (stack-top dictionary)))
+                (when (even? integer)
+                  (stack-pop! dictionary))
+                (stack-push! stack value))))))
+      ((even? (quotient byte 2))
+        (let ((head (quotient byte 4)))
+          (if (zero? head)
+            (let* ((d (stack-pop! stack))
+                   (a (stack-pop! stack))
+                   (value (stack-top stack)))
+              (set-car! value a)
+              (set-cdr! value d))
+            (let* ((integer (decode-integer-tail decompressor (- head 1) tag-base))
+                   (d (stack-pop! stack))
+                   (a (stack-pop! stack))
+                   (value (rib 0 0 0)))
+              (set-car! value a)
+              (set-cdr! value d)
+              (rib-set-tag! value integer)
+              (stack-push! stack value)))))
+      (else
+        (stack-push!
+          stack
+          (decode-number (decode-integer-tail decompressor (quotient byte 4) number-base))))))
 
   (stack-pop! stack))
 

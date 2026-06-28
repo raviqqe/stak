@@ -465,16 +465,14 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
-            if head & 0b11 == 0 {
-                let head = head >> 2;
+            if head & 0b1 == 0 {
+                let head = head >> 1;
 
                 if head == 0 {
-                    let value = self
-                        .memory
-                        .allocate(Default::default(), Default::default())?;
-                    let cons = self.memory.cons(value.into(), self.memory.code())?;
+                    // Memoize the value at the top of a stack into a dictionary.
+                    let value = self.memory.top()?;
+                    let cons = self.memory.cons(value, self.memory.code())?;
                     self.memory.set_code(cons);
-                    self.memory.push(self.memory.car(cons)?)?;
                 } else {
                     let integer = Self::decode_integer_tail(&mut input, head - 1, SHARE_BASE)?;
                     let index = integer >> 1;
@@ -496,7 +494,25 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
                     self.memory.push(value)?;
                 }
-            } else if head & 0b11 == 0b10 {
+            } else if head & 0b10 == 0 {
+                let head = head >> 2;
+
+                if head == 0 {
+                    // Fill an announced placeholder, keeping its tag.
+                    let cdr = self.memory.pop()?;
+                    let car = self.memory.pop()?;
+                    let cons = self.memory.top()?.assume_cons();
+                    let cdr = cdr.set_tag(cons.tag());
+                    self.memory.set_car(cons, car)?;
+                    self.memory.set_raw_cdr(cons, cdr)?;
+                } else {
+                    let tag = Self::decode_integer_tail(&mut input, head - 1, TAG_BASE)?;
+                    let cdr = self.memory.pop()?.set_tag(tag as _);
+                    let car = self.memory.pop()?;
+                    let cons = self.memory.allocate(car, cdr)?;
+                    self.memory.push(cons.into())?;
+                }
+            } else {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(
                         &mut input,
@@ -505,20 +521,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     )?)
                     .into(),
                 )?;
-            } else {
-                let fill = head & 0b10 != 0;
-                let tag = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
-                let cdr = self.memory.pop()?.set_tag(tag as _);
-                let car = self.memory.pop()?;
-
-                if fill {
-                    let cons = self.memory.top()?.assume_cons();
-                    self.memory.set_car(cons, car)?;
-                    self.memory.set_raw_cdr(cons, cdr)?;
-                } else {
-                    let cons = self.memory.allocate(car, cdr)?;
-                    self.memory.push(cons.into())?;
-                }
             }
         }
 
@@ -633,14 +635,13 @@ mod tests {
 
     #[test]
     fn decode_shared_value() {
-        // A pair whose `car` and `cdr` are the same announced rib.
+        // A pair whose `car` and `cdr` are the same memoized rib.
         let (rib, memory) = decode([
-            // Announce a placeholder.
-            0, // Two constant zeros for its fields.
-            2, 2, // Fill the placeholder with a pair tag.
-            3, // Reference the placeholder at the memo front.
-            4, // Build a pair of the original and the reference.
-            1,
+            // Build a placeholder pair of two zeros.
+            3, 3, 5, // Memoize it into a dictionary.
+            0, // Reference it twice, keeping it the first time.
+            6, 2, // Build a pair of the two references.
+            5,
         ]);
 
         let car = memory.car(rib).unwrap().assume_cons();
@@ -654,11 +655,11 @@ mod tests {
     fn decode_self_loop() {
         // A pair whose `cdr` points back to itself with a `car` of zero.
         let (rib, memory) = decode([
-            // Announce a placeholder.
-            0, // A constant zero for its `car`.
-            2, // A reference back to the placeholder for its `cdr`.
-            4, // Fill the placeholder with a pair tag.
-            3,
+            // Build a placeholder pair of two zeros.
+            3, 3, 5, // Memoize it into a dictionary.
+            0, // A zero for its `car` and a reference to itself for its `cdr`.
+            3, 2, // Fill the placeholder, keeping its pair tag.
+            1,
         ]);
 
         assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
@@ -667,18 +668,16 @@ mod tests {
 
     #[test]
     fn decode_swapped_reference() {
-        // Two mutually referencing pairs. Filling the second pair references the
-        // first one while it sits behind the second in the memo, exercising the
+        // Two mutually referencing pairs. Filling each pair references the other
+        // one while it sits behind in the dictionary, exercising the
         // move-to-front of a non-front entry.
         let (first, memory) = decode([
-            // Announce the first placeholder.
-            0,  // A constant zero for its `car`.
-            2,  // Announce the second placeholder.
-            0,  // A constant zero for its `car`.
-            2,  // Reference the first placeholder at the memo back, keeping it.
-            28, // Fill the second placeholder with a pair tag.
-            3,  // Fill the first placeholder with a pair tag.
-            3,
+            // Build and memoize the first placeholder.
+            3, 3, 5, 0, // Build and memoize the second placeholder.
+            3, 3, 5, 0, // Fill the second pair with a zero and the first one.
+            3, 14, 1, // Bring the first pair to the front, then fill it with a
+            // zero and the second one.
+            6, 3, 10, 1,
         ]);
 
         let second = memory.cdr(first).unwrap().assume_cons();
