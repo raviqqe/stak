@@ -4249,8 +4249,8 @@
   - share-base
   - encode-context-push!
   - decrement-count!
-  - entry
   - tag-base
+  - entry
   - encode-integer-parts
   - encode-number
   - number-base
@@ -19969,7 +19969,7 @@
   - list
     - define
     - share-base
-    - 31
+    - 15
   - list
     - define
     - list
@@ -20532,7 +20532,7 @@
                     - compressor
                     - list
                       - -
-                      - 2
+                      - 4
                       - list
                         - -
                         - 1
@@ -20579,25 +20579,19 @@
                   - list
                     - encode-integer-parts
                     - list
-                      - -
-                      - list
-                        - if
-                        - entry
-                        - 1
-                        - 0
-                      - list
-                        - -
-                        - 2
-                        - list
-                          - rib-tag
-                          - value
+                      - rib-tag
+                      - value
                     - tag-base
               - list
                 - compressor-write
                 - compressor
                 - list
                   - -
-                  - 1
+                  - list
+                    - if
+                    - entry
+                    - 3
+                    - 1
                   - list
                     - -
                     - 4
@@ -20624,7 +20618,7 @@
           - compressor
           - list
             - -
-            - 3
+            - 2
             - list
               - -
               - 4
