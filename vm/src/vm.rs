@@ -502,8 +502,13 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     self.memory.set_car(cons, car)?;
                     self.memory.set_cdr(cons, cdr)?;
                 } else {
-                    let tag = Self::decode_integer_tail(&mut input, head - 1, TAG_BASE)?;
-                    let cons = self.memory.allocate(car, cdr.set_tag(tag as _))?;
+                    let cons =
+                        self.memory.allocate(
+                            car,
+                            cdr.set_tag(
+                                Self::decode_integer_tail(&mut input, head - 1, TAG_BASE)? as _
+                            ),
+                        )?;
                     self.memory.push(cons.into())?;
                 }
             } else {
