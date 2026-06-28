@@ -156,7 +156,9 @@
             (let ((value (stack-top stack)))
               (set-car! value a)
               (set-cdr! value d))
-            (stack-push! stack (rib a d (decode-integer-tail decompressor (- head 1) tag-base))))))
+            (stack-push!
+              stack
+              (rib a d (decode-integer-tail decompressor (- head 1) tag-base))))))
       (else
         (stack-push!
           stack
