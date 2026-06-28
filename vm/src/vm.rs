@@ -469,7 +469,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let head = head >> 1;
 
                 if head == 0 {
-                    // Memoize the value at the top of a stack into a dictionary.
                     let value = self.memory.top()?;
                     let cons = self.memory.cons(value, self.memory.code())?;
                     self.memory.set_code(cons);
@@ -496,20 +495,16 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 }
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
+                let cdr = self.memory.pop()?;
+                let car = self.memory.pop()?;
 
                 if head == 0 {
-                    // Fill an announced placeholder, keeping its tag.
-                    let cdr = self.memory.pop()?;
-                    let car = self.memory.pop()?;
                     let cons = self.memory.top()?.assume_cons();
-                    let cdr = cdr.set_tag(cons.tag());
                     self.memory.set_car(cons, car)?;
-                    self.memory.set_raw_cdr(cons, cdr)?;
+                    self.memory.set_raw_cdr(cons, cdr.set_tag(cons.tag()))?;
                 } else {
                     let tag = Self::decode_integer_tail(&mut input, head - 1, TAG_BASE)?;
-                    let cdr = self.memory.pop()?.set_tag(tag as _);
-                    let car = self.memory.pop()?;
-                    let cons = self.memory.allocate(car, cdr)?;
+                    let cons = self.memory.allocate(car, cdr.set_tag(tag as _))?;
                     self.memory.push(cons.into())?;
                 }
             } else {
