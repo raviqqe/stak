@@ -465,8 +465,8 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
         let mut input = input.decompress::<{ MAX_WINDOW_SIZE }>();
 
         while let Some(head) = input.next() {
-            if head & 0b1 == 0 {
-                let head = head >> 1;
+            if head & 0b11 == 0 {
+                let head = head >> 2;
 
                 if head == 0 {
                     let value = self
@@ -496,20 +496,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
                     self.memory.push(value)?;
                 }
-            } else if head & 0b10 == 0 {
-                let integer = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
-                let cdr = self.memory.pop()?.set_tag((integer >> 1) as _);
-                let car = self.memory.pop()?;
-
-                if integer & 1 != 0 {
-                    let cons = self.memory.top()?.assume_cons();
-                    self.memory.set_car(cons, car)?;
-                    self.memory.set_raw_cdr(cons, cdr)?;
-                } else {
-                    let cons = self.memory.allocate(car, cdr)?;
-                    self.memory.push(cons.into())?;
-                }
-            } else {
+            } else if head & 0b11 == 0b10 {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(
                         &mut input,
@@ -518,6 +505,20 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     )?)
                     .into(),
                 )?;
+            } else {
+                let fill = head & 0b10 != 0;
+                let tag = Self::decode_integer_tail(&mut input, head >> 2, TAG_BASE)?;
+                let cdr = self.memory.pop()?.set_tag(tag as _);
+                let car = self.memory.pop()?;
+
+                if fill {
+                    let cons = self.memory.top()?.assume_cons();
+                    self.memory.set_car(cons, car)?;
+                    self.memory.set_raw_cdr(cons, cdr)?;
+                } else {
+                    let cons = self.memory.allocate(car, cdr)?;
+                    self.memory.push(cons.into())?;
+                }
             }
         }
 
@@ -636,9 +637,9 @@ mod tests {
         let (rib, memory) = decode([
             // Announce a placeholder.
             0, // Two constant zeros for its fields.
-            3, 3, // Fill the placeholder with a pair tag.
-            9, // Reference the placeholder at the memo front.
-            2, // Build a pair of the original and the reference.
+            2, 2, // Fill the placeholder with a pair tag.
+            3, // Reference the placeholder at the memo front.
+            4, // Build a pair of the original and the reference.
             1,
         ]);
 
@@ -655,9 +656,9 @@ mod tests {
         let (rib, memory) = decode([
             // Announce a placeholder.
             0, // A constant zero for its `car`.
-            3, // A reference back to the placeholder for its `cdr`.
-            2, // Fill the placeholder with a pair tag.
-            9,
+            2, // A reference back to the placeholder for its `cdr`.
+            4, // Fill the placeholder with a pair tag.
+            3,
         ]);
 
         assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
@@ -672,12 +673,12 @@ mod tests {
         let (first, memory) = decode([
             // Announce the first placeholder.
             0,  // A constant zero for its `car`.
-            3,  // Announce the second placeholder.
+            2,  // Announce the second placeholder.
             0,  // A constant zero for its `car`.
-            3,  // Reference the first placeholder at the memo back, keeping it.
-            14, // Fill the second placeholder with a pair tag.
-            9,  // Fill the first placeholder with a pair tag.
-            9,
+            2,  // Reference the first placeholder at the memo back, keeping it.
+            28, // Fill the second placeholder with a pair tag.
+            3,  // Fill the first placeholder with a pair tag.
+            3,
         ]);
 
         let second = memory.cdr(first).unwrap().assume_cons();
