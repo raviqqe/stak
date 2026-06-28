@@ -4247,9 +4247,9 @@
   - index
   - removed
   - share-base
+  - tag-base
   - encode-context-push!
   - decrement-count!
-  - tag-base
   - entry
   - encode-integer-parts
   - encode-number
@@ -19965,11 +19965,11 @@
   - list
     - define
     - tag-base
-    - 16
+    - 15
   - list
     - define
     - share-base
-    - 15
+    - 31
   - list
     - define
     - list
@@ -20532,7 +20532,7 @@
                     - compressor
                     - list
                       - -
-                      - 4
+                      - 2
                       - list
                         - -
                         - 1
@@ -20543,20 +20543,6 @@
                     - tail
           - list
             - else
-            - list
-              - when
-              - entry
-              - list
-                - compressor-write
-                - compressor
-                - 0
-              - list
-                - encode-context-push!
-                - context
-                - value
-              - list
-                - decrement-count!
-                - entry
             - list
               - encode-rib
               - context
@@ -20587,19 +20573,32 @@
                 - compressor
                 - list
                   - -
-                  - list
-                    - if
-                    - entry
-                    - 3
-                    - 1
+                  - 1
                   - list
                     - -
                     - 4
-                    - head
+                    - list
+                      - -
+                      - 1
+                      - head
               - list
                 - encode-integer-tail
                 - context
                 - tail
+            - list
+              - when
+              - entry
+              - list
+                - encode-context-push!
+                - context
+                - value
+              - list
+                - decrement-count!
+                - entry
+              - list
+                - compressor-write
+                - compressor
+                - 0
       - list
         - let-values
         - list
@@ -20618,7 +20617,7 @@
           - compressor
           - list
             - -
-            - 2
+            - 3
             - list
               - -
               - 4
