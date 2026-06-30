@@ -1905,12 +1905,12 @@
      (define (mantissa y)
       (/ x (expt 2 y)))
 
-     (do ((y (log x 2) (- y 1)))
+     (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
-        (< (fraction (mantissa (floor y))) epsilon)
+        (< (fraction (mantissa y)) epsilon)
+        (< y -1021)
         (> (mantissa (+ y 1)) maximum-float-integer))
-       (let ((y (floor y)))
-        (values (exact (round (mantissa y))) (exact y))))))
+       (values (exact (round (mantissa y))) y))))
 
     (define (encode-integer-part integer base bit)
      (+ (if bit 0 1) (* 2 (modulo integer base))))
