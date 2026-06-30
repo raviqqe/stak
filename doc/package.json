@@ -17,7 +17,7 @@
     "@nanostores/async": "^0.1.0",
     "@nanostores/preact": "^1.1.0",
     "@preact/signals": "^2.9.2",
-    "@raviqqe/stak": "^0.12.16",
+    "@raviqqe/stak": "^0.12.17",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
     "astro": "^7.0.3",
