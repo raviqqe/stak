@@ -535,11 +535,20 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
             let integer = integer >> 2;
             let mantissa =
                 if integer.is_multiple_of(2) { 1.0 } else { -1.0 } * (integer >> 12) as f64;
-            let exponent = (integer as u64 >> 1) % (1 << 11);
+            let exponent = ((integer >> 1) % (1 << 11)) as isize - 1023;
 
-            debug_assert!(0 < exponent && exponent < (1 << 11) - 1);
+            Number::from_f64(mantissa * Self::power_of_two(exponent))
+        }
+    }
 
-            Number::from_f64(mantissa * f64::from_bits(exponent << 52))
+    // Computes a power of two as a floating-point number from its bit pattern.
+    // Building the value directly handles subnormal numbers and overflow to
+    // infinity while avoiding a shift of an integer by 64 bits or more.
+    const fn power_of_two(exponent: isize) -> f64 {
+        if exponent < -1022 {
+            f64::from_bits(1 << (exponent + 1074))
+        } else {
+            f64::from_bits(((exponent + 1023) as u64) << 52)
         }
     }
 
@@ -616,6 +625,19 @@ mod tests {
             },
         ] {
             assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
+        }
+    }
+
+    #[test]
+    fn power_of_two() {
+        for exponent in -1023isize..=1024 {
+            let expected = if exponent >= 0 {
+                (0..exponent).fold(1.0, |value, _| value * 2.0)
+            } else {
+                (0..-exponent).fold(1.0, |value, _| value / 2.0)
+            };
+
+            assert_eq!(VoidVm::power_of_two(exponent), expected);
         }
     }
 
