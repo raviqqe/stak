@@ -27,7 +27,7 @@
     "monza-editor": "^0.5.9",
     "nanostores": "^1.4.0",
     "picolight": "^0.2.8",
-    "preact": "^10.29.2",
+    "preact": "^10.29.3",
     "vite-plugin-wasm": "^3.6.0"
   },
   "devDependencies": {
