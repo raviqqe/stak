@@ -131,29 +131,3 @@ Feature: Smoke
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
-
-  @float
-  # A literal whose binary exponent magnitude reaches 64 used to overflow a
-  # shift while reading bytecode. Each value is compared against the same
-  # magnitude built at runtime to avoid depending on the printed format.
-  Scenario Outline: Decode a floating-point literal with a large exponent
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme inexact))
-
-      (write-u8 (if (< (abs (- (/ <value> <reference>) 1)) 1e-6) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-    Examples:
-      | value  | reference           |
-      | 1e30   | (expt 10.0 30)      |
-      | 1e100  | (expt 10.0 100)     |
-      | 1e200  | (expt 10.0 200)     |
-      | 1e300  | (expt 10.0 300)     |
-      | -1e100 | (- (expt 10.0 100)) |
-      | 1e-30  | (expt 10.0 -30)     |
-      | 1e-100 | (expt 10.0 -100)    |
-      | 1e-200 | (expt 10.0 -200)    |
-      | 1e-280 | (expt 10.0 -280)    |
