@@ -22,7 +22,7 @@
     "@xterm/xterm": "^6.0.0",
     "astro": "^7.0.3",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.48.1",
+    "es-toolkit": "^1.49.0",
     "lucide-preact": "^1.21.0",
     "monza-editor": "^0.5.9",
     "nanostores": "^1.4.0",
