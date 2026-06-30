@@ -4247,10 +4247,10 @@
   - index
   - removed
   - share-base
+  - tag-base
   - encode-context-push!
   - decrement-count!
   - entry
-  - tag-base
   - encode-integer-parts
   - encode-number
   - number-base
@@ -19965,7 +19965,7 @@
   - list
     - define
     - tag-base
-    - 16
+    - 15
   - list
     - define
     - share-base
@@ -20544,20 +20544,6 @@
           - list
             - else
             - list
-              - when
-              - entry
-              - list
-                - compressor-write
-                - compressor
-                - 0
-              - list
-                - encode-context-push!
-                - context
-                - value
-              - list
-                - decrement-count!
-                - entry
-            - list
               - encode-rib
               - context
               - list
@@ -20579,18 +20565,8 @@
                   - list
                     - encode-integer-parts
                     - list
-                      - -
-                      - list
-                        - if
-                        - entry
-                        - 1
-                        - 0
-                      - list
-                        - -
-                        - 2
-                        - list
-                          - rib-tag
-                          - value
+                      - rib-tag
+                      - value
                     - tag-base
               - list
                 - compressor-write
@@ -20601,11 +20577,28 @@
                   - list
                     - -
                     - 4
-                    - head
+                    - list
+                      - -
+                      - 1
+                      - head
               - list
                 - encode-integer-tail
                 - context
                 - tail
+            - list
+              - when
+              - entry
+              - list
+                - encode-context-push!
+                - context
+                - value
+              - list
+                - decrement-count!
+                - entry
+              - list
+                - compressor-write
+                - compressor
+                - 0
       - list
         - let-values
         - list

@@ -4,10 +4,10 @@
     "lint:toml": "tombi format --check && tombi lint"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.0",
+    "@biomejs/biome": "^2.5.1",
     "@raviqqe/biome-config": "^2.0.26",
-    "oxfmt": "^0.55.0",
-    "tombi": "^1.1.4"
+    "oxfmt": "^0.56.0",
+    "tombi": "^1.1.6"
   },
   "engines": {
     "node": ">=26.3.1"
