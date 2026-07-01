@@ -25,7 +25,7 @@ list_scheme_files() (
 )
 
 file_size() (
-  stat -f %z $1
+  uu-stat -c %s $1
 )
 
 build_binary() (
