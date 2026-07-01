@@ -360,3 +360,24 @@ Feature: Floating-point number
       | 1e-100 | (expt 10.0 -100)    |
       | 1e-200 | (expt 10.0 -200)    |
       | 1e-280 | (expt 10.0 -280)    |
+
+  Scenario Outline: Convert a string in scientific notation to a number
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (< (abs (- (string->number "<value>") <expected>)) 0.000001) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value | expected |
+      | 1e3   | 1000.0   |
+      | 1E3   | 1000.0   |
+      | 1e+3  | 1000.0   |
+      | 2e2   | 200.0    |
+      | -3e2  | -300.0   |
+      | 1.5e2 | 150.0    |
+      | 5e-1  | 0.5      |
+      | 1e-3  | 0.001    |

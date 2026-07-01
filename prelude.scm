@@ -1975,11 +1975,42 @@
                 (let ((x (convert-digit (car xs))))
                   (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
 
-      (let ((xs (string->list x)))
+      (define (convert-signed xs)
         (if (and (pair? xs) (eqv? (car xs) #\-))
-          (let ((x (convert (cdr xs))))
-            (and x (- x)))
-          (convert xs))))))
+          (let ((y (convert (cdr xs))))
+            (and y (- y)))
+          (convert xs)))
+
+      (define (convert-exponent xs)
+        (and
+          (pair? xs)
+          (let ((negative (eqv? (car xs) #\-)))
+            (let loop
+              ((initial #t)
+                (xs (if (or negative (eqv? (car xs) #\+)) (cdr xs) xs))
+                (y 0))
+              (cond
+                ((null? xs)
+                  (and (not initial) (if negative (- y) y)))
+                (else
+                  (let ((x (convert-digit (car xs))))
+                    (and x (loop #f (cdr xs) (+ (* radix y) x))))))))))
+
+      (define (convert-real head tail)
+        (cond
+          ((and
+              (eqv? radix 10)
+              (pair? tail)
+              (or (eqv? (car tail) #\e) (eqv? (car tail) #\E)))
+            (let ((mantissa (convert-signed (reverse head)))
+                  (exponent (convert-exponent (cdr tail))))
+              (and mantissa exponent (* mantissa (expt 10 exponent)))))
+          ((null? tail)
+            (convert-signed (reverse head)))
+          (else
+            (convert-real (cons (car tail) head) (cdr tail)))))
+
+      (convert-real '() (string->list x)))))
 
 (define-library (stak symbol)
   (export

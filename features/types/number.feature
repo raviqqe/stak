@@ -541,3 +541,8 @@ Feature: Number
       | 2x    |
       | -x    |
       | -2x   |
+      | 1e    |
+      | 1e-   |
+      | e5    |
+      | 1e2e3 |
+      | 1ex   |
