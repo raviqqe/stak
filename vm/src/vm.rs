@@ -618,6 +618,45 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "float")]
+    #[test]
+    fn decode_float() {
+        fn encode_number(value: f64) -> u128 {
+            let mut mantissa = value.abs();
+            let mut exponent = 0i64;
+
+            while mantissa != mantissa.floor() {
+                mantissa *= 2.0;
+                exponent -= 1;
+            }
+
+            3 + 4
+                * (u128::from(value < 0.0)
+                    + 2 * (exponent + 1023) as u128
+                    + 4096 * mantissa as u128)
+        }
+
+        for value in [
+            0.5,
+            -0.5,
+            0.75,
+            -0.75,
+            0.125,
+            1.5,
+            -2.25,
+            12.5,
+            -40.5,
+            // Small magnitudes with large negative exponents.
+            0.001953125,
+            -0.0009765625,
+        ] {
+            assert_eq!(
+                VoidVm::decode_number(encode_number(value)),
+                Number::from_f64(value)
+            );
+        }
+    }
+
     fn literals<const N: usize>(bytes: [u8; N]) -> [u8; N] {
         bytes.map(|byte| byte * 2)
     }
