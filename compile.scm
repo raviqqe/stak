@@ -1977,7 +1977,8 @@
          (encode-rib context (rib-cdr value))
          (let-values (((head tail)
                        (encode-integer-parts (rib-tag value) tag-base)))
-          (compressor-write compressor (+ 1 (* 4 (+ 1 head))))
+          ; Reserve the two smallest rib operations for closing and opening placeholders.
+          (compressor-write compressor (+ 1 (* 4 (+ 2 head))))
           (encode-integer-tail context tail))
          (when entry
           (encode-context-push! context value)

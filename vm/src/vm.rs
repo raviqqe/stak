@@ -494,22 +494,32 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 }
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
-                let cdr = self.memory.pop()?;
-                let car = self.memory.pop()?;
 
-                if head == 0 {
-                    let cons = self.memory.top()?.assume_cons();
-                    self.memory.set_car(cons, car)?;
-                    self.memory.set_cdr(cons, cdr)?;
+                if head == 1 {
+                    // Open a placeholder pair and memoize it for a forward reference.
+                    let cons = self
+                        .memory
+                        .cons(self.memory.null()?.into(), self.memory.null()?)?;
+                    self.memory.push(cons.into())?;
+                    let entry = self.memory.cons(self.memory.top()?, self.memory.code())?;
+                    self.memory.set_code(entry);
                 } else {
-                    let cons =
-                        self.memory.allocate(
+                    let cdr = self.memory.pop()?;
+                    let car = self.memory.pop()?;
+
+                    if head == 0 {
+                        let cons = self.memory.top()?.assume_cons();
+                        self.memory.set_car(cons, car)?;
+                        self.memory.set_cdr(cons, cdr)?;
+                    } else {
+                        let cons = self.memory.allocate(
                             car,
                             cdr.set_tag(
-                                Self::decode_integer_tail(&mut input, head - 1, TAG_BASE)? as _
+                                Self::decode_integer_tail(&mut input, head - 2, TAG_BASE)? as _
                             ),
                         )?;
-                    self.memory.push(cons.into())?;
+                        self.memory.push(cons.into())?;
+                    }
                 }
             } else {
                 self.memory.push(
@@ -636,11 +646,11 @@ mod tests {
     fn decode_shared_value() {
         // A pair whose `car` and `cdr` are the same memoized rib.
         let (rib, memory) = decode([
-            // Build a placeholder pair of two zeros.
-            3, 3, 5, // Memoize it into a dictionary.
+            // Build a pair of two zeros.
+            3, 3, 9, // Memoize it into a dictionary.
             0, // Reference it twice, keeping it the first time.
             6, 2, // Build a pair of the two references.
-            5,
+            9,
         ]);
 
         let car = memory.car(rib).unwrap().assume_cons();
@@ -654,10 +664,9 @@ mod tests {
     fn decode_self_loop() {
         // A pair whose `cdr` points back to itself with a `car` of zero.
         let (rib, memory) = decode([
-            // Build a placeholder pair of two zeros.
-            3, 3, 5, // Memoize it into a dictionary.
-            0, // A zero for its `car` and a reference to itself for its `cdr`.
-            3, 2, // Fill the placeholder, keeping its pair tag.
+            // Open and memoize a placeholder pair.
+            5, // A zero for its `car` and a reference to itself for its `cdr`.
+            3, 2, // Close the placeholder, keeping its pair tag.
             1,
         ]);
 
@@ -671,11 +680,12 @@ mod tests {
         // one while it sits behind in the dictionary, exercising the
         // move-to-front of a non-front entry.
         let (first, memory) = decode([
-            // Build and memoize the first placeholder.
-            3, 3, 5, 0, // Build and memoize the second placeholder.
-            3, 3, 5, 0, // Fill the second pair with a zero and the first one.
-            3, 14, 1, // Bring the first pair to the front, then fill it with a
-            // zero and the second one.
+            // Open and memoize the first placeholder.
+            5, // Open and memoize the second placeholder.
+            5, // Fill the second pair with a zero and the first one, brought to
+            // the front from behind.
+            3, 14, 1, // Push the first pair from the front, then fill it with a
+            // zero and the second one, brought to the front from behind.
             6, 3, 10, 1,
         ]);
 

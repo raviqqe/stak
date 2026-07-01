@@ -149,16 +149,20 @@
                   (stack-pop! dictionary))
                 (stack-push! stack value))))))
       ((even? (quotient byte 2))
-        (let* ((head (quotient byte 4))
-               (d (stack-pop! stack))
-               (a (stack-pop! stack)))
-          (if (zero? head)
-            (let ((value (stack-top stack)))
-              (set-car! value a)
-              (set-cdr! value d))
-            (stack-push!
-              stack
-              (rib a d (decode-integer-tail decompressor (- head 1) tag-base))))))
+        (let ((head (quotient byte 4)))
+          (if (= head 1)
+            (let ((value (rib 0 0 0)))
+              (stack-push! stack value)
+              (stack-push! dictionary value))
+            (let ((d (stack-pop! stack))
+                  (a (stack-pop! stack)))
+              (if (zero? head)
+                (let ((value (stack-top stack)))
+                  (set-car! value a)
+                  (set-cdr! value d))
+                (stack-push!
+                  stack
+                  (rib a d (decode-integer-tail decompressor (- head 2) tag-base))))))))
       (else
         (stack-push!
           stack
