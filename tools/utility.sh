@@ -24,6 +24,10 @@ list_scheme_files() (
   done
 )
 
+file_size() (
+  stat -f %z $1
+)
+
 build_binary() (
   cd $1
   shift 1
