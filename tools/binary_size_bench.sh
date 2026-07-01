@@ -87,13 +87,11 @@ strip $binaries
 uname -a
 
 for binary in $binaries; do
-  libraries=$(filter_existent_paths $(list_dynamic_libraries $binary))
+  echo $binary
 
-  echo $binary '=>' $libraries
-
-  if [ -n "$libraries" ]; then
-    file_size $libraries
-  fi
+  for file in $(filter_existent_paths $(list_dynamic_libraries $binary)); do
+    echo "  $file:" $(file_size $file)
+  done
 done
 
 for binary in $binaries; do
