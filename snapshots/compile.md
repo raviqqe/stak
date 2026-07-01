@@ -20579,7 +20579,7 @@
                     - 4
                     - list
                       - -
-                      - 1
+                      - 2
                       - head
               - list
                 - encode-integer-tail

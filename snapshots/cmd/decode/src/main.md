@@ -2511,6 +2511,23 @@
       - get 0
       - constant 4
       - call 2 #f ||
+      - get 0
+      - constant 1
+      - call 2 #f ||
+      - if
+        - constant 0
+        - constant 0
+        - constant 0
+        - call 3 #f ||
+        - get 6
+        - get 1
+        - call 2 #f ||
+        - set 0
+        - get 7
+        - get 1
+        - call 2 #f ||
+        - call 2 #f ||
+        - continue
       - get 5
       - call 1 #f ||
       - get 6
@@ -2535,7 +2552,7 @@
       - get 3
       - get 9
       - get 6
-      - constant 1
+      - constant 2
       - call 2 #f ||
       - get ||
       - call 3 #f ||
