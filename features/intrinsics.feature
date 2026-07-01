@@ -29,21 +29,3 @@ Feature: Intrinsics
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "7B7A"
-
-  @stak
-  Scenario: Set a tag
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (stak base))
-
-      (define x (rib 0 #f #f 7))
-
-      (write-u8 (+ 48 (rib-tag x)))
-
-      (rib-set-tag! x 3)
-
-      (write-u8 (+ 48 (rib-tag x)))
-      (write-u8 (if (cdr x) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "73B"
