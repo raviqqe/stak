@@ -92,10 +92,10 @@ for binary in $binaries; do
   echo $binary '=>' $libraries
 
   if [ -n "$libraries" ]; then
-    wc -c $libraries
+    file_size $libraries
   fi
 done
 
 for binary in $binaries; do
-  echo $(basename $binary) $(wc -c <$binary)
+  echo $(basename $binary) $(file_size $binary)
 done | tee tmp/binary_size.txt

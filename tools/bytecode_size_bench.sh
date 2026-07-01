@@ -17,5 +17,5 @@ for file in $(list_scheme_files); do
 
   mkdir -p $(dirname $bytecode_file)
   cat prelude.scm $file | stak-compile >$bytecode_file
-  echo $file $(wc -c <$bytecode_file)
+  echo $file $(file_size $bytecode_file)
 done | tee tmp/bytecode_size.txt
