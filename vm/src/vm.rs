@@ -537,7 +537,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
             Number::from_f64(
                 if integer.is_multiple_of(2) { 1.0 } else { -1.0 }
                     * (integer >> 12) as f64
-                    * f64::from_bits((integer as u64 >> 1) % (1 << 11) << 52),
+                    * f64::from_bits(((integer as u64 >> 1) % (1 << 11)) << 52),
             )
         }
     }
