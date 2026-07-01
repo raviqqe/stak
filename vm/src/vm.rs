@@ -496,7 +496,6 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 let head = head >> 2;
 
                 if head == 1 {
-                    // Open a placeholder pair and memoize it for a forward reference.
                     let cons = self
                         .memory
                         .cons(self.memory.null()?.into(), self.memory.null()?)?;
