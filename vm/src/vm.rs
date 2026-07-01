@@ -533,15 +533,12 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
             Number::from_i64(-((integer >> 2) as i64))
         } else {
             let integer = integer >> 2;
-            let mantissa =
-                if integer.is_multiple_of(2) { 1.0 } else { -1.0 } * (integer >> 12) as f64;
-            let exponent = ((integer >> 1) % (1 << 11)) as isize - 1023;
 
-            Number::from_f64(if exponent < 0 {
-                mantissa / (1u64 << exponent.abs()) as f64
-            } else {
-                mantissa * (1u64 << exponent) as f64
-            })
+            Number::from_f64(
+                if integer.is_multiple_of(2) { 1.0 } else { -1.0 }
+                    * (integer >> 12) as f64
+                    * f64::from_bits(((integer as u64 >> 1) % (1 << 11)) << 52),
+            )
         }
     }
 
@@ -618,6 +615,45 @@ mod tests {
             },
         ] {
             assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
+        }
+    }
+
+    #[cfg(feature = "float")]
+    #[test]
+    fn decode_float() {
+        fn encode_number(value: f64) -> u128 {
+            let mut mantissa = value.abs();
+            let mut exponent = 0i64;
+
+            while mantissa != mantissa.floor() {
+                mantissa *= 2.0;
+                exponent -= 1;
+            }
+
+            3 + 4
+                * (u128::from(value < 0.0)
+                    + 2 * (exponent + 1023) as u128
+                    + 4096 * mantissa as u128)
+        }
+
+        for value in [
+            0.5,
+            -0.5,
+            0.75,
+            -0.75,
+            0.125,
+            1.5,
+            -2.25,
+            12.5,
+            -40.5,
+            // Small magnitudes with large negative exponents.
+            0.001953125,
+            -0.0009765625,
+        ] {
+            assert_eq!(
+                VoidVm::decode_number(encode_number(value)),
+                Number::from_f64(value)
+            );
         }
     }
 
