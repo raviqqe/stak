@@ -951,10 +951,14 @@
       ((pair? expression)
        (case (car expression)
         (($$lambda)
-         (filter
-          (lambda (name)
-           (memq name bound-variables))
-          (cadr expression)))
+         (let ((variables (cadr expression)))
+          (if (symbol? variables)
+           ; Self-recursive lambdas capture no variables.
+           '()
+           (filter
+            (lambda (name)
+             (memq name bound-variables))
+            variables))))
         (($$quote)
          '())
         (else
@@ -969,6 +973,56 @@
       (else
        '())))
 
+    (define (count-assignments name expression)
+     (cond
+      ((not (pair? expression))
+       0)
+
+      ((eq? (car expression) '$$quote)
+       0)
+
+      ((eq? (car expression) '$$lambda)
+       (if (memq name (parameter-names (caddr expression)))
+        0
+        (count-assignments name (cdddr expression))))
+
+      ((eq? (car expression) '$$set!)
+       (+
+        (if (eq? (cadr expression) name) 1 0)
+        (count-assignments name (caddr expression))))
+
+      (else
+       (+
+        (count-assignments name (car expression))
+        (count-assignments name (cdr expression))))))
+
+    ; Marks lambdas assigned once to their own free variables replacing their
+    ; free variable lists with the variable names.
+    (define (mark-self-recursion parameters body)
+     (define (mark expressions)
+      (map
+       (lambda (expression)
+        (case (maybe-car expression)
+         (($$begin)
+          (cons '$$begin (mark (cdr expression))))
+
+         (($$set!)
+          (let ((name (cadr expression))
+                (value (caddr expression)))
+           (if (and
+                (memq name parameters)
+                (eq? (maybe-car value) '$$lambda)
+                (equal? (cadr value) (list name))
+                (= (count-assignments name body) 1))
+            (list '$$set! name (cons '$$lambda (cons name (cddr value))))
+            expression)))
+
+         (else
+          expression)))
+       expressions))
+
+     (mark body))
+
     (define (analyze-expressions bound-variables expressions)
      (map
       (lambda (expression)
@@ -982,9 +1036,11 @@
         (($$lambda)
          (let* ((parameters (cadr expression))
                 (body
-                 (analyze-expressions
-                  (unique (append (parameter-names parameters) bound-variables))
-                  (cddr expression))))
+                 (mark-self-recursion
+                  (parameter-names parameters)
+                  (analyze-expressions
+                   (unique (append (parameter-names parameters) bound-variables))
+                   (cddr expression)))))
           (cons
            '$$lambda
            (cons
@@ -1025,8 +1081,23 @@
      (compilation-context-append-locals context (list variable)))
 
     ; If a variable is not in environment, it is considered to be global.
+    ; Variables paired with procedures in environment resolve to the procedures
+    ; as constants.
     (define (compilation-context-resolve context variable)
-     (or (memq-index variable (compilation-context-environment context)) variable))
+     (let loop ((environment (compilation-context-environment context))
+                (index 0))
+      (cond
+       ((null? environment)
+        variable)
+
+       ((eq? (car environment) variable)
+        index)
+
+       ((and (pair? (car environment)) (eq? (caar environment) variable))
+        (cdar environment))
+
+       (else
+        (loop (cdr environment) (+ index 1))))))
 
     ;; Procedures
 
@@ -1092,7 +1163,11 @@
      (if (null? arguments)
       (call-rib
        arity
-       (compilation-context-resolve context procedure)
+       (let ((operand (compilation-context-resolve context procedure)))
+        ; Wrap a procedure constant in a cell for a direct call.
+        (if (target-procedure? operand)
+         (cons operand 0)
+         operand))
        continuation)
       (compile-expression
        context
@@ -1130,10 +1205,10 @@
     (define (compile-expression context expression continuation)
      (cond
       ((symbol? expression)
-       (code-rib
-        get-instruction
-        (compilation-context-resolve context expression)
-        continuation))
+       (let ((operand (compilation-context-resolve context expression)))
+        (if (target-procedure? operand)
+         (constant-rib operand continuation)
+         (code-rib get-instruction operand continuation))))
 
       ((let ((predicate (maybe-car expression)))
         (and
@@ -1171,22 +1246,32 @@
             (compile-expression context (cadddr expression) continuation)))))
 
         (($$lambda)
-         (let ((parameters (caddr expression)))
+         (let* ((free-variables (cadr expression))
+                (parameters (caddr expression))
+                (procedure
+                 (make-procedure
+                  (compile-arity
+                   (count-parameters parameters)
+                   (symbol? (last-cdr parameters)))
+                  0
+                  '())))
+          ; Tie the knot for self-recursive lambdas referencing themselves.
+          (rib-set-cdr!
+           (rib-car procedure)
+           (compile-sequence
+            (compilation-context-append-locals
+             (if (symbol? free-variables)
+              (compilation-context-push-local
+               context
+               (cons free-variables procedure))
+              context)
+             ; #f is for a frame.
+             (reverse (cons #f (parameter-names parameters))))
+            (cdddr expression)
+            '()))
           (constant-rib
-           (make-procedure
-            (compile-arity
-             (count-parameters parameters)
-             (symbol? (last-cdr parameters)))
-            (compile-sequence
-             (compilation-context-append-locals
-              context
-              ; #f is for a frame.
-              (reverse (cons #f (parameter-names parameters))))
-             (cdddr expression)
-             '())
-            '())
-           ; TODO Eliminate closures for self-recursive lambdas.
-           (if (null? (cadr expression))
+           procedure
+           (if (or (symbol? free-variables) (null? free-variables))
             continuation
             (call-rib (compile-arity 1 #f) '$$close continuation)))))
 
@@ -1546,11 +1631,12 @@
       (cons pair (constant-set-complex constant-set))))
 
     (define-record-type marshal-context
-     (make-marshal-context symbols constants continuations)
+     (make-marshal-context symbols constants continuations procedures)
      marshal-context?
      (symbols marshal-context-symbols)
      (constants marshal-context-constants)
-     (continuations marshal-context-continuations marshal-context-set-continuations!))
+     (continuations marshal-context-continuations marshal-context-set-continuations!)
+     (procedures marshal-context-procedures marshal-context-set-procedures!))
 
     (define (nop-code? codes)
      (and
@@ -1660,9 +1746,27 @@
       ((or data (null? value))
        (cond
         ((target-procedure? value)
-         (unless (null? (rib-cdr value))
-          (error "invalid environment"))
-         (data-rib procedure-type (marshal (rib-car value) #f) (marshal '() #t)))
+         (cond
+          ((assq value (marshal-context-procedures context)) =>
+           cdr)
+
+          (else
+           (unless (null? (rib-cdr value))
+            (error "invalid environment"))
+           ; Marshal a code placeholder first for procedures referencing
+           ; themselves.
+           (let* ((code (rib-car value))
+                  (marshalled
+                   (data-rib
+                    procedure-type
+                    (if (number? code) code (cons-rib (rib-car code) 0))
+                    (marshal '() #t))))
+            (marshal-context-set-procedures!
+             context
+             (cons (cons value marshalled) (marshal-context-procedures context)))
+            (unless (number? code)
+             (rib-set-cdr! (rib-car marshalled) (marshal (rib-cdr code) #f)))
+            marshalled))))
 
         ((or
           (null? value)
@@ -1707,6 +1811,7 @@
           (lambda (pair) (map cdr (cdr pair)))
           (metadata-libraries metadata))))
        (make-constant-set '() '())
+       '()
        '())
       codes
       #f))
@@ -1864,12 +1969,25 @@
 
     (define (count-ribs! context codes)
      (define (count-data! value)
-      (when (rib? value)
-       (unless (and (shared-value? value) (encode-context-find-count context value))
-        ((if (target-procedure? value) count-code! count-data!) (rib-car value))
-        (count-data! (rib-cdr value)))
-       (when (shared-value? value)
-        (increment-count! context value))))
+      (cond
+       ((not (rib? value))
+        #f)
+
+       ; Count procedures before their contents to terminate on
+       ; self-recursive ones.
+       ((target-procedure? value)
+        (let ((counted (encode-context-find-count context value)))
+         (increment-count! context value)
+         (unless counted
+          (count-code! (rib-car value))
+          (count-data! (rib-cdr value)))))
+
+       (else
+        (unless (and (shared-value? value) (encode-context-find-count context value))
+         (count-data! (rib-car value))
+         (count-data! (rib-cdr value)))
+        (when (shared-value? value)
+         (increment-count! context value)))))
 
      (define (count-code! codes)
       (cond
@@ -1952,6 +2070,11 @@
            (* 2 (+ e 1023))
            (* 4096 m))))))))
 
+    (define (encode-tag context tag)
+     (let-values (((head tail) (encode-integer-parts tag tag-base)))
+      (compressor-write (encode-context-compressor context) (+ 1 (* 4 (+ 1 head))))
+      (encode-integer-tail context tail)))
+
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
 
@@ -1972,13 +2095,24 @@
                           share-base)))
             (compressor-write compressor (* 2 (+ 1 head)))
             (encode-integer-tail context tail)))))
+        ; Announce a placeholder with its final environment and tag first, then
+        ; fill its code last for procedures referencing themselves. The
+        ; environment must be encoded first because tags live only on cons cells
+        ; and thus cannot be restored on a fill.
+        ((and entry (target-procedure? value))
+         (encode-rib context 0)
+         (encode-rib context (rib-cdr value))
+         (encode-tag context (rib-tag value))
+         (compressor-write compressor 0)
+         (encode-context-push! context value)
+         (decrement-count! entry)
+         (encode-rib context (rib-car value))
+         (compressor-write compressor 1))
+
         (else
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
-         (let-values (((head tail)
-                       (encode-integer-parts (rib-tag value) tag-base)))
-          (compressor-write compressor (+ 1 (* 4 (+ 1 head))))
-          (encode-integer-tail context tail))
+         (encode-tag context (rib-tag value))
          (when entry
           (encode-context-push! context value)
           (decrement-count! entry)
@@ -2073,6 +2207,7 @@
       (define cons-rib cons)
       (define rib-car car)
       (define rib-cdr cdr)
+      (define rib-set-cdr! set-cdr!)
       (define target-procedure? procedure?))
 
      (else
@@ -2080,7 +2215,7 @@
        (rib car cdr tag)
        rib?
        (car rib-car)
-       (cdr rib-cdr)
+       (cdr rib-cdr rib-set-cdr!)
        (tag rib-tag))
 
       (define (cons-rib car cdr)
@@ -2140,6 +2275,8 @@
              (define cons-rib cons)
              (define rib-car car)
              (define rib-cdr cdr)
+             (define rib-set-cdr! set-cdr!)
+             (define target-procedure? procedure?)
 
              ,@frontend
 

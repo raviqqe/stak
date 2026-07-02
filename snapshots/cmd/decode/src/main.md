@@ -124,9 +124,8 @@
     - call 1 #f ||
     - get 2
     - call 1 #f ||
-    - call 2 #f 6
+    - call 2 #f recursive procedure 0
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - get 2
   - get 2
@@ -689,8 +688,7 @@
     - get 1
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f recursive procedure 0
   - set 1
   - get 1
   - call 1 #f ||
@@ -711,8 +709,7 @@
     - get ||
     - get 2
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f recursive procedure 0
   - set 1
   - get 1
   - call 1 #f ||
@@ -2511,25 +2508,22 @@
       - get 0
       - constant 4
       - call 2 #f ||
+      - get 0
+      - constant 0
+      - call 2 #f ||
+      - if
+        - get 5
+        - call 1 #f ||
+        - get 6
+        - call 1 #f ||
+        - get 1
+        - call 2 #f ||
+        - call 2 #f ||
+        - continue
       - get 5
       - call 1 #f ||
       - get 6
       - call 1 #f ||
-      - get 2
-      - constant 0
-      - call 2 #f ||
-      - if
-        - get 7
-        - call 1 #f ||
-        - get 0
-        - get 2
-        - call 2 #f ||
-        - set 0
-        - get 0
-        - get 3
-        - call 2 #f ||
-        - call 2 #f ||
-        - continue
       - get 7
       - get 1
       - get 3
@@ -2593,6 +2587,24 @@
 - call 2 #f ||
 - call 1 #f ||
 - set ||
+- constant 0
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set ||
+- constant 0
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- constant 1
+- call 2 #f ||
+- call 1 #f ||
+- set ||
 - constant procedure 2 #f
   - get 0
   - get 2
@@ -2626,9 +2638,30 @@
     - call 2 #f ||
     - constant #f
     - call 2 #f ||
+    - if
+      - get 0
+      - get 2
+      - call 1 #f ||
+      - call 2 #f ||
+      - constant #f
+      - call 2 #f ||
+      - continue
+    - constant #f
     - continue
   - constant #f
   - if
+    - get 0
+    - call 1 #f ||
+    - if
+      - get 1
+      - get 1
+      - get 3
+      - call 1 #f ||
+      - call 2 #f ||
+      - call 2 #f ||
+      - continue
+    - constant #f
+    - set 0
     - get 1
     - get 1
     - call 1 #f ||
@@ -2670,7 +2703,8 @@
   - call 1 #f ||
   - get 2
   - call 1 #f ||
-  - call 3 #f ||
+  - constant ()
+  - call 4 #f ||
   - get 1
   - call 2 #f ||
 - set ||
@@ -2773,7 +2807,32 @@
   - call 1 #f ||
 - set ||
 - constant procedure 2 #f
+  - constant #f
+  - constant procedure 2 #f
+    - get 1
+    - call 1 #f ||
+    - if
+      - constant #f
+    - get 5
+    - get 2
+    - call 1 #f ||
+    - call 2 #f ||
+    - if
+      - get 0
+    - get 1
+    - call 1 #f ||
+    - get 1
+    - constant 1
+    - call 2 #f ||
+    - call 2 #f 5
+  - call 1 #f ||
+  - set 1
   - get 1
+  - constant 0
+  - call 2 #f 2
+- set ||
+- constant procedure 3 #f
+  - get 2
   - call 1 #f ||
   - get 0
   - call 1 #f ||
@@ -2785,7 +2844,20 @@
     - call 1 #f ||
     - set 0
     - call 0 #f ||
+  - get 3
+  - get 3
+  - call 2 #f ||
   - get 0
+  - if
+    - get 0
+    - constant "recursive procedure "
+    - call 1 #f ||
+    - set 0
+    - get 0
+    - call 1 #f ||
+    - set 0
+    - call 0 #f ||
+  - get 1
   - call 1 #f ||
   - constant "procedure "
   - call 1 #f ||
@@ -2804,32 +2876,50 @@
   - set 0
   - call 0 #f ||
   - set 0
-  - get 1
+  - get 2
   - call 1 #f ||
   - constant ()
-  - get 4
-  - call 3 #f ||
+  - get 7
+  - get 7
+  - call 2 #f ||
+  - get 6
+  - call 4 #f ||
 - set ||
-- constant procedure 2 #f
-  - get 1
+- constant procedure 3 #f
+  - get 2
   - call 1 #f ||
   - if
-    - get 1
+    - get 2
     - call 1 #f ||
     - set 0
     - call 0 #f ||
-  - get 1
+  - get 2
   - call 1 #f ||
   - if
-    - get 1
-    - get 1
-    - call 2 #f ||
-  - get 1
+    - get 2
+    - get 2
+    - get 2
+    - call 3 #f ||
+  - get 2
+  - call 1 #f ||
+  - if
+    - get 2
+    - call 1 #f ||
+    - call 1 #f ||
+    - continue
+  - constant #f
+  - if
+    - get 2
+    - call 1 #f ||
+    - get 2
+    - get 2
+    - call 3 #f ||
+  - get 2
   - call 1 #f ||
   - set 0
   - call 0 #f ||
 - set ||
-- constant procedure 2 #f
+- constant procedure 3 #f
   - constant #f
   - constant procedure 1 #f
     - get 0
@@ -2844,24 +2934,25 @@
     - set 0
     - get 0
     - call 1 #f ||
-    - get 4
+    - get 5
+    - get 5
     - constant 1
     - call 2 #f ||
-    - call 2 #f ||
+    - call 3 #f ||
     - set 0
     - get 0
     - call 1 #f ||
     - call 1 #f 3
   - call 1 #f ||
   - set 1
-  - get 2
+  - get 3
   - call 1 #f 1
 - set ||
-- constant procedure 2 #f
-  - get 1
+- constant procedure 3 #f
+  - get 2
   - call 1 #f ||
   - if
-    - get 1
+    - get 2
     - call 1 #f ||
     - continue
   - constant #f
@@ -2871,14 +2962,16 @@
     - set 0
     - call 0 #f ||
     - set 0
-    - get 1
-    - get 1
-    - call 2 #f ||
-  - get 1
-  - get 1
-  - call 2 #f ||
+    - get 2
+    - get 2
+    - get 2
+    - call 3 #f ||
+  - get 2
+  - get 2
+  - get 2
+  - call 3 #f ||
 - set ||
-- constant procedure 3 #f
+- constant procedure 4 #f
   - constant #f
   - constant procedure 1 #f
     - get 0
@@ -2893,7 +2986,7 @@
       - call 1 #f ||
       - set 0
       - get 0
-      - get 5
+      - get 6
       - call 2 #f ||
       - if
         - constant "continue\n"
@@ -2916,19 +3009,21 @@
         - get 3
         - call 1 #f ||
         - call 2 #f ||
-        - get 6
+        - get 7
+        - get 7
         - constant 1
         - call 2 #f ||
-        - call 3 #f ||
+        - call 4 #f ||
         - continue
       - constant #\space
       - call 1 #f ||
       - set 0
       - get 0
-      - get 5
+      - get 6
+      - get 6
       - constant 1
       - call 2 #f ||
-      - call 2 #f ||
+      - call 3 #f ||
       - set 0
       - get 1
       - call 1 #f ||
@@ -2936,15 +3031,16 @@
     - constant #f
   - call 1 #f ||
   - set 1
-  - get 3
+  - get 4
   - call 1 #f 1
 - set ||
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
   - constant ()
+  - constant ()
   - constant 0
-  - call 3 #f ||
+  - call 4 #f ||
 - set ||
 - constant procedure 0 #f
   - call 0 #f ||

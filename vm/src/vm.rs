@@ -494,14 +494,18 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                 }
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
-                let cdr = self.memory.pop()?;
-                let car = self.memory.pop()?;
 
                 if head == 0 {
+                    // Fill a `car` field of a memoized rib to close a cycle,
+                    // preserving its `cdr` field and tag. A tag cannot be
+                    // restored on a fill as tags live only on cons cells, so a
+                    // memoized rib is built with its final `cdr` and tag.
+                    let car = self.memory.pop()?;
                     let cons = self.memory.top()?.assume_cons();
                     self.memory.set_car(cons, car)?;
-                    self.memory.set_cdr(cons, cdr)?;
                 } else {
+                    let cdr = self.memory.pop()?;
+                    let car = self.memory.pop()?;
                     let cons =
                         self.memory.allocate(
                             car,
@@ -688,37 +692,45 @@ mod tests {
 
     #[test]
     fn decode_self_loop() {
-        // A pair whose `cdr` points back to itself with a `car` of zero.
+        // A procedure-tagged rib whose `car` points back to itself while its
+        // `cdr` and tag are kept from its construction.
         let (rib, memory) = decode([
-            // Build a placeholder pair of two zeros.
-            3, 3, 5, // Memoize it into a dictionary.
-            0, // A zero for its `car` and a reference to itself for its `cdr`.
-            3, 2, // Fill the placeholder, keeping its pair tag.
+            // Build a pair of two zeros for a `cdr`.
+            3, 3, 3, 5, // Build a placeholder with a dummy `car`, the pair as
+            // its `cdr`, and a procedure tag.
+            29, // Memoize it into a dictionary.
+            0,  // Reference it, removing it.
+            2,  // Fill its `car` with itself.
             1,
         ]);
 
-        assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
-        assert_eq!(memory.cdr(rib).unwrap(), rib.into());
+        assert_eq!(memory.car(rib).unwrap(), rib.into());
+        assert_eq!(memory.cdr(rib).unwrap().tag(), Type::Procedure as _);
+
+        let cdr = memory.cdr(rib).unwrap().assume_cons();
+
+        assert_eq!(memory.car(cdr).unwrap(), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(cdr).unwrap(), Number::from_i64(0).into());
     }
 
     #[test]
     fn decode_swapped_reference() {
-        // Two mutually referencing pairs. Filling each pair references the other
-        // one while it sits behind in the dictionary, exercising the
-        // move-to-front of a non-front entry.
-        let (first, memory) = decode([
-            // Build and memoize the first placeholder.
-            3, 3, 5, 0, // Build and memoize the second placeholder.
-            3, 3, 5, 0, // Fill the second pair with a zero and the first one.
-            3, 14, 1, // Bring the first pair to the front, then fill it with a
-            // zero and the second one.
-            6, 3, 10, 1,
+        // Two mutually referencing pairs through their `car` fields. Filling the
+        // second pair references the first one while it sits behind in the
+        // dictionary, exercising the move-to-front of a non-front entry.
+        let (second, memory) = decode([
+            // Build and memoize the first pair.
+            3, 3, 5, 0, // Build and memoize the second pair.
+            3, 3, 5, 0, // Reference the first pair from behind, then fill the
+            // second pair's `car` with it.
+            10, 1, // Reference the second pair, then fill the first pair's `car`
+            // with it.
+            2, 1,
         ]);
 
-        let second = memory.cdr(first).unwrap().assume_cons();
+        let first = memory.car(second).unwrap().assume_cons();
 
-        assert_eq!(memory.car(first).unwrap(), Number::from_i64(0).into());
-        assert_eq!(memory.car(second).unwrap(), Number::from_i64(0).into());
-        assert_eq!(memory.cdr(second).unwrap(), first.into());
+        assert_eq!(memory.car(first).unwrap(), second.into());
+        assert_eq!(memory.car(second).unwrap(), first.into());
     }
 }

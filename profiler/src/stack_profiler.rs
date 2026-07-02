@@ -1,5 +1,5 @@
 use crate::{COLUMN_SEPARATOR, FRAME_SEPARATOR, ProcedureOperation};
-use stak_vm::{Cons, Error, Heap, Memory, Profiler, StackSlot};
+use stak_vm::{Cons, Error, Heap, Memory, Profiler, StackSlot, Type};
 use std::{io::Write, time::Instant};
 
 /// A stack profiler.
@@ -37,7 +37,11 @@ impl<T: Write> StackProfiler<T> {
     fn write_procedure<H: Heap>(&mut self, memory: &Memory<H>, code: Cons) -> Result<(), Error> {
         let operand = memory.car(code)?;
 
-        if let Some(symbol) = operand.to_cons() {
+        // Operands of calls can also be cells of procedure constants, which
+        // stay anonymous.
+        if let Some(symbol) = operand.to_cons()
+            && memory.cdr(symbol)?.tag() == Type::Symbol as _
+        {
             let mut string = memory.cdr_value(memory.cdr(symbol)?)?.assume_cons();
 
             while string != memory.null()? {

@@ -205,8 +205,7 @@
     - get 1
     - constant 1
     - call 2 #f ||
-    - call 2 #f 5
-  - call 1 #f ||
+    - call 2 #f recursive procedure 0
   - set 1
   - get 1
   - call 1 #f ||
@@ -233,8 +232,7 @@
     - get 6
     - call 2 #f ||
     - call 2 #f ||
-    - call 3 #f 7
-  - call 1 #f ||
+    - call 3 #f recursive procedure 0
   - set 1
   - get ||
   - get 3
@@ -466,8 +464,7 @@
   - get 0
   - constant 1
   - call 2 #f ||
-  - call 1 #f 3
-- call 1 #f ||
+  - call 1 #f recursive procedure 0
 - set 1
 - constant 0
 - call 1 #f 1
@@ -487,8 +484,7 @@
   - get 0
   - constant 1
   - call 2 #f ||
-  - call 1 #f 3
-- call 1 #f ||
+  - call 1 #f recursive procedure 0
 - set 1
 - constant 0
 - call 1 #f 1

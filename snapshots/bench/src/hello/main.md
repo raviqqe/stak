@@ -109,9 +109,8 @@
     - call 1 #f ||
     - get 2
     - call 1 #f ||
-    - call 2 #f 6
+    - call 2 #f recursive procedure 0
     - call 2 #f ||
-  - call 1 #f ||
   - set 1
   - get 2
   - get 2

@@ -149,16 +149,16 @@
                   (stack-pop! dictionary))
                 (stack-push! stack value))))))
       ((even? (quotient byte 2))
-        (let* ((head (quotient byte 4))
-               (d (stack-pop! stack))
-               (a (stack-pop! stack)))
+        (let ((head (quotient byte 4)))
           (if (zero? head)
-            (let ((value (stack-top stack)))
-              (set-car! value a)
-              (set-cdr! value d))
-            (stack-push!
-              stack
-              (rib a d (decode-integer-tail decompressor (- head 1) tag-base))))))
+            ; Fill a `car` field of a memoized rib, keeping its `cdr` and tag.
+            (let ((a (stack-pop! stack)))
+              (set-car! (stack-top stack) a))
+            (let* ((d (stack-pop! stack))
+                   (a (stack-pop! stack)))
+              (stack-push!
+                stack
+                (rib a d (decode-integer-tail decompressor (- head 1) tag-base)))))))
       (else
         (stack-push!
           stack
@@ -169,11 +169,12 @@
 ; Marshalling
 
 (define-record-type marshal-context
-  (make-marshal-context false true null)
+  (make-marshal-context false true null procedures)
   marshal-context?
   (false marshal-context-false)
   (true marshal-context-true)
-  (null marshal-context-null))
+  (null marshal-context-null)
+  (procedures marshal-context-procedures marshal-context-set-procedures!))
 
 (define (marshal-value context value)
   (cond
@@ -188,7 +189,14 @@
       0)))
 
 (define (marshal-value! context value)
-  (when (and (rib? value) (not (memq value '(#f #t ()))))
+  (when (and
+         (rib? value)
+         (not (memq value '(#f #t ())))
+         (not (memq value (marshal-context-procedures context))))
+    (when (procedure? value)
+      (marshal-context-set-procedures!
+        context
+        (cons value (marshal-context-procedures context))))
     (let ((a (marshal-value context (car value)))
           (d (marshal-value context (cdr value))))
       (if (eq? a 0)
@@ -200,7 +208,7 @@
 
 (define (marshal! rib)
   (marshal-value!
-    (make-marshal-context (car rib) (cdar rib) (caar rib))
+    (make-marshal-context (car rib) (cdar rib) (caar rib) '())
     rib))
 
 ; Display
@@ -242,48 +250,67 @@
             " #"
             (if (even? arity) "f" "t")))))))
 
-(define (display-procedure procedure depth)
+(define (procedure-index procedure procedures)
+  (let loop ((procedures procedures) (index 0))
+    (cond
+      ((null? procedures)
+        #f)
+      ((eq? procedure (car procedures))
+        index)
+      (else
+        (loop (cdr procedures) (+ index 1))))))
+
+(define (display-procedure procedure procedures depth)
   (let ((code (car procedure)))
-    (if (number? code)
-      (begin
+    (cond
+      ((number? code)
         (display "primitive ")
         (write code)
         (newline))
-      (let ((arity (car code)))
-        (write-string "procedure ")
-        (write (quotient arity 2))
-        (write-char #\space)
-        (write (odd? arity))
-        (newline)
-        (display-code (cdr code) '() depth)))))
+      ((procedure-index procedure procedures) =>
+        (lambda (index)
+          (write-string "recursive procedure ")
+          (write index)
+          (newline)))
+      (else
+        (let ((arity (car code)))
+          (write-string "procedure ")
+          (write (quotient arity 2))
+          (write-char #\space)
+          (write (odd? arity))
+          (newline)
+          (display-code (cdr code) '() (cons procedure procedures) depth))))))
 
-(define (display-data data depth)
+(define (display-data data procedures depth)
   (cond
     ((number? data)
       (write data)
       (newline))
     ((procedure? data)
-      (display-procedure data depth))
+      (display-procedure data procedures depth))
+    ((and (pair? data) (procedure? (car data)))
+      ; A cell of a procedure constant for a direct call
+      (display-procedure (car data) procedures depth))
     (else
       (write data)
       (newline))))
 
-(define (display-list xs depth)
+(define (display-list xs procedures depth)
   (do ((xs xs (cdr xs)))
     ((null? xs))
     (display-indent depth)
     (display "- ")
-    (display-top-data (car xs) (+ depth 1))))
+    (display-top-data (car xs) procedures (+ depth 1))))
 
-(define (display-top-data data depth)
+(define (display-top-data data procedures depth)
   (if (and (pair? data) (list? data))
     (begin
       (write-string "list")
       (newline)
-      (display-list data depth))
-    (display-data data depth)))
+      (display-list data procedures depth))
+    (display-data data procedures depth)))
 
-(define (display-code code continuation depth)
+(define (display-code code continuation procedures depth)
   (let loop ((code code))
     (unless (null? code)
       (display-indent depth)
@@ -296,14 +323,18 @@
             (if (= (rib-tag code) if-instruction)
               (begin
                 (newline)
-                (display-code operand (find-continuation operand (cdr code)) (+ depth 1)))
+                (display-code
+                  operand
+                  (find-continuation operand (cdr code))
+                  procedures
+                  (+ depth 1)))
               (begin
                 (write-char #\space)
-                (display-top-data operand (+ depth 1))))
+                (display-top-data operand procedures (+ depth 1))))
             (loop (cdr code))))))))
 
 (define (display-ribs code)
-  (display-code (cdr code) '() 0))
+  (display-code (cdr code) '() '() 0))
 
 (define (main)
   (let ((ribs (decode)))
