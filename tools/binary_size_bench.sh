@@ -91,11 +91,9 @@ for binary in $binaries; do
 
   echo $binary '=>' $libraries
 
-  libraries=$(filter_existent_paths $libraries)
-
-  if [ -n "$libraries" ]; then
-    wc -c $libraries
-  fi
+  for file in $(filter_existent_paths $libraries); do
+    wc -c $file
+  done
 done
 
 for binary in $binaries; do
