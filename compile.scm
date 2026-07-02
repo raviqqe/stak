@@ -1909,8 +1909,8 @@
      (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
         (< (remainder (mantissa y) 1) epsilon)
-        (= y -1023)
-        (> (mantissa y) maximum-float-integer))
+        (> (mantissa y) maximum-float-integer)
+        (= y -1023))
        (values (round (mantissa y)) y))))
 
     (define (encode-integer-part integer base bit)
