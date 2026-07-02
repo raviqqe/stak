@@ -20383,8 +20383,10 @@
             - -
             - 4
             - list
-              - abs
-              - x
+              - exact
+              - list
+                - abs
+                - x
       - list
         - list
           - integer?
@@ -20392,7 +20394,9 @@
         - list
           - -
           - 2
-          - x
+          - list
+            - exact
+            - x
       - list
         - else
         - list

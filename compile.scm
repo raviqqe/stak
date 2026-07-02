@@ -1940,11 +1940,9 @@
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
-       (+ 1 (* 4 (abs x))))
-
+       (+ 1 (* 4 (exact (abs x)))))
       ((integer? x)
-       (* 2 x))
-
+       (* 2 (exact x)))
       (else
        (let-values (((m e) (decompose-float (abs x))))
         (+
