@@ -13,6 +13,7 @@ filter_existent_paths() (
 list_dynamic_libraries() (
   case $(uname) in
   Darwin)
+    # cspell: disable-next-line
     if otool -hv $1 | grep -q DYLDLINK; then
       otool -L $1 | tail -n +2 | grep -o '.*\.dylib'
     fi
