@@ -1900,6 +1900,9 @@
     ; one bit of headroom for the doubling: 37 = 52 - 2 - 1 - 11 - 1.
     (define maximum-float-integer (expt 2 37))
 
+    (define (fraction x)
+     (- x (floor x)))
+
     ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
     ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
@@ -1908,10 +1911,10 @@
 
      (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
-        (< (remainder (mantissa y) 1) epsilon)
-        (> (mantissa y) maximum-float-integer)
-        (= y -1023))
-       (values (round (mantissa y)) y))))
+        (< (fraction (mantissa y)) epsilon)
+        (> (mantissa y) maximum-float-integer))
+       (let ((y (max y -1022)))
+        (values (exact (round (mantissa y))) y)))))
 
     (define (encode-integer-part integer base bit)
      (+ (if bit 0 1) (* 2 (modulo integer base))))
