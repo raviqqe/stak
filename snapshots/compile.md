@@ -20204,7 +20204,7 @@
     - list
       - expt
       - 2
-      - 30
+      - 37
   - list
     - define
     - list
@@ -20253,9 +20253,8 @@
             - list
               - mantissa
               - list
-                - -
+                - floor
                 - y
-                - 1
             - maximum-float-integer
         - list
           - let
@@ -20263,8 +20262,11 @@
             - list
               - y
               - list
-                - floor
-                - y
+                - max
+                - list
+                  - floor
+                  - y
+                - -1022
           - list
             - values
             - list

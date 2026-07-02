@@ -1896,11 +1896,15 @@
     (define (fraction x)
      (- x (floor x)))
 
-    ; We need to fit 64-bit floating-point numbers' sign, mantissa, and exponent into its mantissa...
-    ; TODO Shouldn't this exponent be a higher number like 37 = 52 - 12 - 3?
-    (define maximum-float-integer (expt 2 30))
+    ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, 11-bit biased exponents,
+    ; and mantissas into single integers. Those integers need to fit in 52-bit mantissas of 64-bit
+    ; floating-point numbers so that virtual machines representing all numbers as such compute them
+    ; exactly. As decomposed mantissas may reach up to twice this threshold, its exponent is
+    ; 37 = 52 - 2 - 1 - 11 - 1.
+    (define maximum-float-integer (expt 2 37))
 
-    ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent.
+    ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
+    ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
      (define (mantissa y)
       (/ x (expt 2 y)))
@@ -1908,8 +1912,8 @@
      (do ((y (log x 2) (- y 1)))
       ((or
         (< (fraction (mantissa (floor y))) epsilon)
-        (> (mantissa (+ y 1)) maximum-float-integer))
-       (let ((y (floor y)))
+        (> (mantissa (floor y)) maximum-float-integer))
+       (let ((y (max (floor y) -1022)))
         (values (exact (round (mantissa y))) (exact y))))))
 
     (define (encode-integer-part integer base bit)
