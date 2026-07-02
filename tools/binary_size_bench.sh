@@ -87,9 +87,11 @@ strip $binaries
 uname -a
 
 for binary in $binaries; do
-  libraries=$(filter_existent_paths $(list_dynamic_libraries $binary))
+  libraries=$(list_dynamic_libraries $binary)
 
   echo $binary '=>' $libraries
+
+  libraries=$(filter_existent_paths $libraries)
 
   if [ -n "$libraries" ]; then
     wc -c $libraries
