@@ -13,10 +13,15 @@ filter_existent_paths() (
 list_dynamic_libraries() (
   case $(uname) in
   Darwin)
-    otool -L "$@" | tail -n +2 | grep -o '.*\.dylib'
+    # cspell: disable-next-line
+    if otool -hv $1 | grep -q DYLDLINK; then
+      otool -L $1 | tail -n +2 | grep -o '.*\.dylib'
+    fi
     ;;
   *)
-    ldd "$@" | grep -o '/lib/[^ ]*'
+    if file $1 | grep -q 'dynamically linked'; then
+      ldd $1 | grep -o '/lib/[^ ]*'
+    fi
     ;;
   esac
 )
@@ -87,13 +92,13 @@ strip $binaries
 uname -a
 
 for binary in $binaries; do
-  libraries=$(filter_existent_paths $(list_dynamic_libraries $binary))
+  libraries=$(list_dynamic_libraries $binary)
 
   echo $binary '=>' $libraries
 
-  if [ -n "$libraries" ]; then
-    wc -c $libraries
-  fi
+  for file in $(filter_existent_paths $libraries); do
+    wc -c $file
+  done
 done
 
 for binary in $binaries; do
