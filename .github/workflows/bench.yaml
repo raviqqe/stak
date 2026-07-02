@@ -89,6 +89,7 @@ jobs:
       - run: echo type=${{ matrix.type }}_size >> ${{ github.env }}
       - run: tools/${{ env.type }}_bench.sh
       - run: >
+          # TODO Use `stak`.
           gosh tools/format-metrics.scm
           ${{ env.type }} "$(echo ${{ env.type }} | tr _ ' ')"
           <tmp/${{ env.type }}.txt >tmp/${{ env.type }}.json
