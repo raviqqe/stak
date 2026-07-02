@@ -13,10 +13,14 @@ filter_existent_paths() (
 list_dynamic_libraries() (
   case $(uname) in
   Darwin)
-    otool -L "$@" | tail -n +2 | grep -o '.*\.dylib'
+    if otool -hv $1 | grep -q DYLDLINK; then
+      otool -L $1 | tail -n +2 | grep -o '.*\.dylib'
+    fi
     ;;
   *)
-    ldd "$@" | grep -o '/lib/[^ ]*'
+    if file $1 | grep -q 'dynamically linked'; then
+      ldd $1 | grep -o '/lib/[^ ]*'
+    fi
     ;;
   esac
 )
