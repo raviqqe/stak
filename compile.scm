@@ -217,11 +217,6 @@
       ys
       xs))
 
-    ; TODO Set a true machine epsilon.
-    (define epsilon
-     (let ((x (/ 1 10000000 100000000)))
-      (if (zero? x) 1 x)))
-
     (define (maybe-car expression)
      (and (pair? expression) (car expression)))
 
@@ -1899,9 +1894,6 @@
     ; exactly.
     (define maximum-mantissa (expt 2 38)) ; 38 = 52 - 2 - 1 - 11
 
-    (define (fraction x)
-     (- x (floor x)))
-
     ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
     ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
@@ -1910,7 +1902,7 @@
 
      (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
-        (< (fraction (mantissa y)) epsilon)
+        (integer? (mantissa y))
         (> (mantissa (- y 1)) maximum-mantissa))
        (let ((y (max y -1022)))
         (values (exact (round (mantissa y))) y)))))
