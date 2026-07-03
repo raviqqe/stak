@@ -217,11 +217,6 @@
       ys
       xs))
 
-    ; TODO Set a true machine epsilon.
-    (define epsilon
-     (let ((x (/ 1 10000000 100000000)))
-      (if (zero? x) 1 x)))
-
     (define (maybe-car expression)
      (and (pair? expression) (car expression)))
 
@@ -1910,7 +1905,7 @@
 
      (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
-        (< (fraction (mantissa y)) epsilon)
+        (zero? (fraction (mantissa y)))
         (> (mantissa (- y 1)) maximum-mantissa))
        (let ((y (max y -1022)))
         (values (exact (round (mantissa y))) y)))))
