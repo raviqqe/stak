@@ -4225,7 +4225,7 @@
   - count-code!
   - fraction
   - epsilon
-  - maximum-float-integer
+  - maximum-mantissa
   - mantissa
   - y
   - bit
@@ -20189,6 +20189,13 @@
       - codes
   - list
     - define
+    - maximum-mantissa
+    - list
+      - expt
+      - 2
+      - 38
+  - list
+    - define
     - list
       - fraction
       - x
@@ -20198,13 +20205,6 @@
       - list
         - floor
         - x
-  - list
-    - define
-    - maximum-float-integer
-    - list
-      - expt
-      - 2
-      - 30
   - list
     - define
     - list
@@ -20228,9 +20228,13 @@
         - list
           - y
           - list
-            - log
-            - x
-            - 2
+            - exact
+            - list
+              - floor
+              - list
+                - log
+                - x
+                - 2
           - list
             - -
             - y
@@ -20244,9 +20248,7 @@
               - fraction
               - list
                 - mantissa
-                - list
-                  - floor
-                  - y
+                - y
             - epsilon
           - list
             - >
@@ -20256,15 +20258,16 @@
                 - -
                 - y
                 - 1
-            - maximum-float-integer
+            - maximum-mantissa
         - list
           - let
           - list
             - list
               - y
               - list
-                - floor
+                - max
                 - y
+                - -1022
           - list
             - values
             - list
@@ -20274,9 +20277,7 @@
                 - list
                   - mantissa
                   - y
-            - list
-              - exact
-              - y
+            - y
   - list
     - define
     - list
@@ -20381,8 +20382,10 @@
             - -
             - 4
             - list
-              - abs
-              - x
+              - exact
+              - list
+                - abs
+                - x
       - list
         - list
           - integer?
@@ -20390,7 +20393,9 @@
         - list
           - -
           - 2
-          - x
+          - list
+            - exact
+            - x
       - list
         - else
         - list

@@ -10,3 +10,7 @@ This page describes the limitations on the current implementation of Stak Scheme
 Number representation in Stak Scheme is either [a 64-bit floating point number (IEEE 754)](https://en.wikipedia.org/wiki/IEEE_754) or a 63-bit integer.
 
 The other "full" implementations of [the R7RS-small standard](https://small.r7rs.org/), such as [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/), often come with [the full numeric tower](https://en.wikipedia.org/wiki/Numerical_tower).
+
+### Floating-point number literals
+
+Bytecode files compress floating-point number literals in source code. Literals keep 38-bit mantissas, or precision of about 11 significant decimal digits. Literals of magnitudes below 2<sup>-984</sup> lose their precision progressively, and ones below 2<sup>-1023</sup> become zeros.

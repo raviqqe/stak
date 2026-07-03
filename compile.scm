@@ -1893,24 +1893,27 @@
 
      (count-code! codes))
 
+    ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, 11-bit biased exponents,
+    ; and mantissas into single integers. Those integers need to fit in 52-bit mantissas of 64-bit
+    ; floating-point numbers so that virtual machines representing all numbers as such compute them
+    ; exactly.
+    (define maximum-mantissa (expt 2 38)) ; 38 = 52 - 2 - 1 - 11
+
     (define (fraction x)
      (- x (floor x)))
 
-    ; We need to fit 64-bit floating-point numbers' sign, mantissa, and exponent into its mantissa...
-    ; TODO Shouldn't this exponent be a higher number like 37 = 52 - 12 - 3?
-    (define maximum-float-integer (expt 2 30))
-
-    ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent.
+    ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
+    ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
      (define (mantissa y)
       (/ x (expt 2 y)))
 
-     (do ((y (log x 2) (- y 1)))
+     (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
-        (< (fraction (mantissa (floor y))) epsilon)
-        (> (mantissa (+ y 1)) maximum-float-integer))
-       (let ((y (floor y)))
-        (values (exact (round (mantissa y))) (exact y))))))
+        (< (fraction (mantissa y)) epsilon)
+        (> (mantissa (- y 1)) maximum-mantissa))
+       (let ((y (max y -1022)))
+        (values (exact (round (mantissa y))) y)))))
 
     (define (encode-integer-part integer base bit)
      (+ (if bit 0 1) (* 2 (modulo integer base))))
@@ -1936,11 +1939,9 @@
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
-       (+ 1 (* 4 (abs x))))
-
+       (+ 1 (* 4 (exact (abs x)))))
       ((integer? x)
-       (* 2 x))
-
+       (* 2 (exact x)))
       (else
        (let-values (((m e) (decompose-float (abs x))))
         (+

@@ -649,6 +649,11 @@ mod tests {
             // Small magnitudes with large negative exponents.
             0.001953125,
             -0.0009765625,
+            // Mantissas up to the compiler's 38-bit threshold.
+            137438953471.5,
+            -137438953471.5,
+            // The minimum normal magnitude.
+            f64::MIN_POSITIVE,
         ] {
             assert_eq!(
                 VoidVm::decode_number(encode_number(value)),
