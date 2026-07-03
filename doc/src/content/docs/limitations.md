@@ -13,4 +13,4 @@ The other "full" implementations of [the R7RS-small standard](https://small.r7rs
 
 ### Floating-point number literals
 
-Bytecode files compress floating-point number literals in source codes. Literals keep 38-bit mantissas, or precision of about 11 significant decimal digits. Literals of magnitudes below 2<sup>-985</sup> lose their precision progressively, and ones below 2<sup>-1023</sup> become zeros.
+Bytecode files compress floating-point number literals in source code. Literals keep 38-bit mantissas, or precision of about 11 significant decimal digits. Literals of magnitudes below 2<sup>-985</sup> lose their precision progressively, and ones below 2<sup>-1023</sup> become zeros.
