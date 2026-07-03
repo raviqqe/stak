@@ -844,17 +844,11 @@
     (define (round x)
       (if (integer? x)
         x
-        (let* ((y (floor x))
-               (z (* 2 (- x y))))
-          (cond
-            ((< z 1)
-              y)
-            ((< 1 z)
-              (+ y 1))
-            ((even? y)
-              y)
-            (else
-              (+ y 1))))))
+        (let* ((half (/ 1 2))
+               (y (floor (+ x half))))
+          (if (and (= (+ x half) y) (odd? y))
+            (- y 1)
+            y))))
 
     (define exact round)
     (define (inexact x)
@@ -1740,13 +1734,6 @@
 
     (define string-type 5)
 
-    (define epsilon
-      (let loop ((x 1))
-        (let ((y (/ x 2)))
-          (if (= (+ 1 y) 1)
-            x
-            (loop y)))))
-
     ; String
 
     (define string? (instance? string-type))
@@ -1870,6 +1857,10 @@
 
     ;; Number
 
+    ; A number of fraction digits of floating-point numbers, which is limited by precision of
+    ; floating-point number literals compressed in bytecodes.
+    (define fraction-digit-count 11)
+
     (define (number->string x . rest)
       (define radix (if (null? rest) 10 (car rest)))
 
@@ -1879,27 +1870,33 @@
             (+ (char->integer #\a) (- x 10))
             (+ (char->integer #\0) x))))
 
+      (define (format-integer x)
+        (let loop ((x x) (ys '()))
+          (let* ((q (quotient x radix))
+                 (ys (cons (format-digit (remainder x radix)) ys)))
+            (if (positive? q)
+              (loop q ys)
+              ys))))
+
+      ; It formats a fraction scaled to an integer of the maximum digit count skipping
+      ; trailing zeros.
       (define (format-point x)
-        ; `d` is a half ulp.
-        (let ((d (let loop ((x x) (d epsilon))
-                  (if (< x 4)
-                    d
-                    (loop (/ x 2) (* 2 d)))))
-              (x (remainder x 1)))
-          (if (< x d)
-            '()
-            (cons
-              #\.
-              (let loop ((x x) (d d))
-                (let* ((x (* x radix))
-                       (d (* d radix))
-                       (r (remainder x 1))
-                       (q (quotient x 1)))
-                  (if (or (< r d) (< (- 1 r) d))
-                    (list (format-digit (+ q (if (< (- 1 r) r) 1 0))))
-                    (cons
-                      (format-digit q)
-                      (loop r d)))))))))
+        (let loop ((x x) (count fraction-digit-count))
+          (cond
+            ((zero? count)
+              '())
+            ((zero? (remainder x radix))
+              (loop (quotient x radix) (- count 1)))
+            (else
+              (cons
+                #\.
+                (let loop ((x x) (count count) (ys '()))
+                  (if (zero? count)
+                    ys
+                    (loop
+                      (quotient x radix)
+                      (- count 1)
+                      (cons (format-digit (remainder x radix)) ys)))))))))
 
       (cond
         ((infinite? x)
@@ -1909,18 +1906,17 @@
         ((nan? x)
           "nan")
         (else
-          (list->string
-            (append
-              (if (negative? x)
-                (list #\-)
-                '())
-              (let loop ((x (quotient (abs x) 1)) (ys '()))
-                (let ((q (quotient x radix))
-                      (ys (cons (format-digit (remainder x radix)) ys)))
-                  (if (positive? q)
-                    (loop q ys)
-                    ys)))
-              (format-point (abs x)))))))
+          (let* ((v (abs x))
+                 (scale (expt radix fraction-digit-count))
+                 (fraction (exact (round (* (remainder v 1) scale))))
+                 (carry (if (< fraction scale) 0 1)))
+            (list->string
+              (append
+                (if (negative? x)
+                  (list #\-)
+                  '())
+                (format-integer (exact (+ (quotient v 1) carry)))
+                (format-point (if (zero? carry) fraction 0))))))))
 
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
