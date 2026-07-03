@@ -1896,9 +1896,8 @@
     ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, 11-bit biased exponents,
     ; and mantissas into single integers. Those integers need to fit in 52-bit mantissas of 64-bit
     ; floating-point numbers so that virtual machines representing all numbers as such compute them
-    ; exactly. As decomposed mantissas may reach up to twice this threshold, its exponent leaves
-    ; one bit of headroom for the doubling: 37 = 52 - 2 - 1 - 11 - 1.
-    (define maximum-float-integer (expt 2 37))
+    ; exactly.
+    (define maximum-mantissa (expt 2 38)) ; 38 = 52 - 2 - 1 - 11
 
     (define (fraction x)
      (- x (floor x)))
@@ -1912,7 +1911,7 @@
      (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
         (< (fraction (mantissa y)) epsilon)
-        (> (mantissa y) maximum-float-integer))
+        (> (mantissa (- y 1)) maximum-mantissa))
        (let ((y (max y -1022)))
         (values (exact (round (mantissa y))) y)))))
 
