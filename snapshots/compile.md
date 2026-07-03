@@ -4225,7 +4225,7 @@
   - count-code!
   - fraction
   - epsilon
-  - maximum-float-integer
+  - maximum-mantissa
   - mantissa
   - y
   - bit
@@ -20189,11 +20189,11 @@
       - codes
   - list
     - define
-    - maximum-float-integer
+    - maximum-mantissa
     - list
       - expt
       - 2
-      - 37
+      - 38
   - list
     - define
     - list
@@ -20254,8 +20254,11 @@
             - >
             - list
               - mantissa
-              - y
-            - maximum-float-integer
+              - list
+                - -
+                - y
+                - 1
+            - maximum-mantissa
         - list
           - let
           - list
