@@ -421,24 +421,29 @@
 - set ceiling
 - constant procedure 1 #f
   - get 0
-  - constant 2
-  - call 2 #f ||
-  - get 0
+  - call 1 #f integer?
+  - if
+    - get 0
   - constant 1
-  - call 2 #f ||
   - constant 2
+  - call 2 #f ||
+  - get 1
+  - get 1
   - call 2 #f ||
   - call 1 #f floor
+  - get 2
+  - get 2
+  - call 2 #f ||
   - get 1
-  - constant 2
-  - call 2 #f modulo
-  - constant 1
   - call 2 #f eq?
   - if
     - get 0
-    - get 1
-    - constant 2
-    - call 2 #f modulo
+    - call 1 #f odd?
+    - continue
+  - constant #f
+  - if
+    - get 0
+    - constant 1
     - call 2 #f ||
   - get 0
 - set round
@@ -1917,17 +1922,6 @@
 - set ||
 - constant 5
 - set ||
-- constant 1000000000
-- call 1 #f /
-- get 0
-- constant 0
-- call 2 #f eq?
-- if
-  - constant 1
-  - continue
-- get 0
-- call 2 #f $$unbind
-- set ||
 - get ||
 - call 1 #f instance?
 - set string?
@@ -2245,18 +2239,21 @@
   - call 1 #f vector->list
   - call 1 #f list->string
 - set vector->string
+- constant 11
+- set ||
 - constant procedure 1 #t
   - constant #f
   - constant #f
   - constant #f
-  - get 3
+  - constant #f
+  - get 4
   - call 1 #f null?
   - if
     - constant 10
     - continue
-  - get 3
+  - get 4
   - call 1 #f car
-  - set 3
+  - set 4
   - constant procedure 1 #f
     - constant 9
     - get 1
@@ -2274,66 +2271,95 @@
     - get 1
     - call 2 #f ||
     - call 1 #f integer->char
-  - set 2
+  - set 3
   - constant procedure 1 #f
-    - get 0
-    - get ||
-    - call 2 #f ||
-    - if
-      - constant ()
-    - constant #\.
     - constant #f
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - if
-        - constant ()
+    - constant procedure 2 #f
+      - get 1
+      - get 10
+      - call 2 #f quotient
       - get 2
       - get 11
-      - call 2 #f ||
-      - get 0
-      - constant 1
       - call 2 #f remainder
-      - get 1
-      - constant 1
-      - call 2 #f quotient
-      - get 4
-      - get 14
-      - call 2 #f ||
-      - constant 1
-      - get 3
-      - call 2 #f ||
-      - get 1
+      - call 1 #f 10
+      - get 2
+      - call 2 #f cons
+      - constant 0
+      - get 2
       - call 2 #f ||
       - if
         - get 1
+        - get 1
+        - call 2 #f 7
+      - get 0
+    - call 1 #f $$close
+    - set 1
+    - get 1
+    - constant ()
+    - call 2 #f 2
+  - call 1 #f $$close
+  - set 2
+  - constant procedure 1 #f
+    - constant #f
+    - constant procedure 2 #f
+      - get 0
+      - constant 0
+      - call 2 #f eq?
+      - if
+        - constant ()
+      - get 1
+      - get 10
+      - call 2 #f remainder
+      - constant 0
+      - call 2 #f eq?
+      - if
+        - get 1
+        - get 10
+        - call 2 #f quotient
+        - get 1
         - constant 1
         - call 2 #f ||
-        - call 1 #f 14
-        - constant ()
+        - call 2 #f 5
+      - constant #\.
+      - constant #f
+      - constant procedure 3 #f
+        - get 1
+        - constant 0
+        - call 2 #f eq?
+        - if
+          - get 0
+        - get 2
+        - get 16
+        - call 2 #f quotient
+        - get 2
+        - constant 1
+        - call 2 #f ||
+        - get 4
+        - get 18
+        - call 2 #f remainder
+        - call 1 #f 17
+        - get 3
         - call 2 #f cons
-      - get 1
-      - call 1 #f 14
+        - call 3 #f 7
+      - call 1 #f $$close
+      - set 1
       - get 3
-      - get 2
-      - get 7
-      - call 3 #f 12
+      - get 3
+      - constant ()
+      - call 3 #f 3
+      - call 2 #f $$unbind
       - call 2 #f cons
     - call 1 #f $$close
     - set 1
-    - get 2
+    - get 1
     - get ||
-    - constant ()
-    - call 3 #f 3
-    - call 2 #f $$unbind
-    - call 2 #f cons
+    - call 2 #f 2
   - call 1 #f $$close
   - set 1
-  - get 4
+  - get 5
   - call 1 #f ||
   - if
-    - get 4
+    - get 5
     - constant 0
     - call 2 #f ||
     - if
@@ -2342,11 +2368,30 @@
     - constant ""
     - constant "infinity"
     - call 2 #f string-append
-  - get 4
+  - get 5
   - call 1 #f ||
   - if
     - constant "nan"
+  - get 5
+  - call 1 #f abs
   - get 4
+  - get ||
+  - call 2 #f expt
+  - get 1
+  - constant 1
+  - call 2 #f remainder
+  - get 1
+  - call 2 #f ||
+  - call 1 #f round
+  - call 1 #f exact
+  - get 0
+  - get 2
+  - call 2 #f ||
+  - if
+    - constant 0
+    - continue
+  - constant 1
+  - get 9
   - constant 0
   - call 2 #f ||
   - if
@@ -2354,39 +2399,21 @@
     - call 1 #f list
     - continue
   - constant ()
-  - constant #f
-  - constant procedure 2 #f
-    - get 1
-    - get 8
-    - call 2 #f quotient
-    - get 2
-    - get 9
-    - call 2 #f remainder
-    - constant 1
-    - call 2 #f quotient
-    - call 1 #f 8
-    - get 2
-    - call 2 #f cons
-    - constant 0
-    - get 2
-    - call 2 #f ||
-    - if
-      - get 1
-      - get 1
-      - call 2 #f 7
-    - get 0
-  - call 1 #f $$close
-  - set 1
-  - get 6
-  - call 1 #f abs
-  - constant ()
-  - call 2 #f 2
-  - call 2 #f $$unbind
-  - get 6
-  - call 1 #f abs
+  - get 4
   - constant 1
-  - call 2 #f remainder
-  - call 1 #f 3
+  - call 2 #f quotient
+  - get 2
+  - call 2 #f ||
+  - call 1 #f exact
+  - call 1 #f 7
+  - get 2
+  - constant 0
+  - call 2 #f eq?
+  - if
+    - get 3
+    - continue
+  - constant 0
+  - call 1 #f 7
   - call 3 #f append
   - call 1 #f list->string
 - set number->string
@@ -9274,17 +9301,26 @@
   - call 3 #f 17
 - call 1 #f $$close
 - set 8
-- constant 1
-- constant 10000000
-- constant 100000000
-- call 3 #f /
-- get 0
-- constant 0
-- call 2 #f eq?
-- if
+- constant #f
+- constant procedure 1 #f
   - constant 1
-  - continue
-- get 0
+  - get 1
+  - constant 2
+  - call 2 #f ||
+  - call 2 #f ||
+  - constant 1
+  - call 2 #f eq?
+  - if
+    - get 0
+  - get 0
+  - constant 2
+  - call 2 #f ||
+  - call 1 #f 3
+- call 1 #f $$close
+- set 1
+- constant 1
+- call 1 #f inexact
+- call 1 #f 1
 - call 2 #f $$unbind
 - set 7
 - constant procedure 1 #f

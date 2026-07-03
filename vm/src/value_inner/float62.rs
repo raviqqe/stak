@@ -73,7 +73,15 @@ pub fn power(x: NumberInner, y: NumberInner) -> NumberInner {
 }
 
 pub fn checked_divide(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
-    x.checked_div(y)
+    let (Some(dividend), Some(divisor)) = (x.to_integer(), y.to_integer()) else {
+        return x.checked_div(y);
+    };
+
+    if divisor != 0 && dividend % divisor != 0 {
+        Some(Float62::from_float(dividend as f64 / divisor as f64))
+    } else {
+        x.checked_div(y)
+    }
 }
 
 pub fn checked_remainder(x: NumberInner, y: NumberInner) -> Option<NumberInner> {
@@ -97,5 +105,43 @@ mod tests {
         assert_eq!(to_f64(power(from_f64(2.0), from_f64(3.0))), 8.0);
         assert_eq!(to_f64(power(from_f64(3.0), from_f64(5.0))), 243.0);
         assert_eq!(to_f64(power(from_i64(2), from_i64(-1))), 0.5);
+    }
+
+    #[test]
+    fn divide_integer_exactly() {
+        assert_eq!(checked_divide(from_i64(6), from_i64(2)), Some(from_i64(3)));
+        assert_eq!(
+            checked_divide(from_i64(-6), from_i64(3)),
+            Some(from_i64(-2))
+        );
+        assert_eq!(checked_divide(from_i64(1), from_i64(0)), None);
+    }
+
+    #[test]
+    fn divide_integer_inexactly() {
+        assert_eq!(
+            checked_divide(from_i64(1), from_i64(2)),
+            Some(from_f64(0.5))
+        );
+        assert_eq!(
+            checked_divide(from_i64(-7), from_i64(2)),
+            Some(from_f64(-3.5))
+        );
+        assert_eq!(
+            checked_divide(from_i64(1), from_i64(1000000000)),
+            Some(from_f64(1e-9))
+        );
+    }
+
+    #[test]
+    fn divide_float() {
+        assert_eq!(
+            checked_divide(from_f64(1.0), from_f64(2.0)),
+            Some(from_f64(0.5))
+        );
+        assert_eq!(
+            checked_divide(from_f64(3.0), from_i64(2)),
+            Some(from_f64(1.5))
+        );
     }
 }

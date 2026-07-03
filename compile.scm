@@ -217,10 +217,11 @@
       ys
       xs))
 
-    ; TODO Set a true machine epsilon.
+    ; A machine epsilon, or 1 in integer-only arithmetic.
     (define epsilon
-     (let ((x (/ 1 10000000 100000000)))
-      (if (zero? x) 1 x)))
+     (do ((x (inexact 1) (/ x 2)))
+      ((not (< 1 (+ 1 (/ x 2))))
+       x)))
 
     (define (maybe-car expression)
      (and (pair? expression) (car expression)))

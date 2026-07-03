@@ -842,11 +842,13 @@
       (- (floor (- x))))
 
     (define (round x)
-      (let* ((x (* x 2))
-             (y (floor (/ (+ x 1) 2))))
-        (if (= (modulo x 2) 1)
-          (- y (modulo y 2))
-          y)))
+      (if (integer? x)
+        x
+        (let* ((half (/ 1 2))
+               (y (floor (+ x half))))
+          (if (and (= (+ x half) y) (odd? y))
+            (- y 1)
+            y))))
 
     (define exact round)
     (define (inexact x)
@@ -1732,14 +1734,6 @@
 
     (define string-type 5)
 
-    ; TODO Set a true machine epsilon.
-    ;
-    ; Currently, we have a precision limitation due to compression of floating point number in a compiler.
-    (define epsilon
-      ; Variadic arguments to arithmetic operators are not available at this point.
-      (let ((x (/ 1000000000)))
-        (if (zero? x) 1 x)))
-
     ; String
 
     (define string? (instance? string-type))
@@ -1863,6 +1857,10 @@
 
     ;; Number
 
+    ; A number of fraction digits of floating-point numbers, which is limited by precision of
+    ; floating-point number literals compressed in bytecodes.
+    (define fraction-digit-count 11)
+
     (define (number->string x . rest)
       (define radix (if (null? rest) 10 (car rest)))
 
@@ -1872,25 +1870,33 @@
             (+ (char->integer #\a) (- x 10))
             (+ (char->integer #\0) x))))
 
+      (define (format-integer x)
+        (let loop ((x x) (ys '()))
+          (let* ((q (quotient x radix))
+                 (ys (cons (format-digit (remainder x radix)) ys)))
+            (if (positive? q)
+              (loop q ys)
+              ys))))
+
+      ; It formats a fraction scaled to an integer of the maximum digit count skipping
+      ; trailing zeros.
       (define (format-point x)
-        (if (< x epsilon)
-          '()
-          (cons
-            #\.
-            (let loop ((x x) (d epsilon) (ys '()))
-              (if (< x d)
-                '()
-                (let* ((x (* x radix))
-                       (r (remainder x 1))
-                       (q (quotient x 1))
-                       (d (* d radix)))
-                  (if (< (- 1 r) d)
-                    (cons
-                      (format-digit (+ q 1))
-                      '())
-                    (cons
-                      (format-digit q)
-                      (loop r d ys)))))))))
+        (let loop ((x x) (count fraction-digit-count))
+          (cond
+            ((zero? count)
+              '())
+            ((zero? (remainder x radix))
+              (loop (quotient x radix) (- count 1)))
+            (else
+              (cons
+                #\.
+                (let loop ((x x) (count count) (ys '()))
+                  (if (zero? count)
+                    ys
+                    (loop
+                      (quotient x radix)
+                      (- count 1)
+                      (cons (format-digit (remainder x radix)) ys)))))))))
 
       (cond
         ((infinite? x)
@@ -1900,21 +1906,17 @@
         ((nan? x)
           "nan")
         (else
-          (list->string
-            (append
-              (if (negative? x)
-                (list #\-)
-                '())
-              (let loop ((x (abs x)) (ys '()))
-                (let* ((q (quotient x radix))
-                       (ys
-                         (cons
-                           (format-digit (quotient (remainder x radix) 1))
-                           ys)))
-                  (if (positive? q)
-                    (loop q ys)
-                    ys)))
-              (format-point (remainder (abs x) 1)))))))
+          (let* ((v (abs x))
+                 (scale (expt radix fraction-digit-count))
+                 (fraction (exact (round (* (remainder v 1) scale))))
+                 (carry (if (< fraction scale) 0 1)))
+            (list->string
+              (append
+                (if (negative? x)
+                  (list #\-)
+                  '())
+                (format-integer (exact (+ (quotient v 1) carry)))
+                (format-point (if (zero? carry) fraction 0))))))))
 
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
