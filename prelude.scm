@@ -1858,7 +1858,7 @@
     ;; Number
 
     ; A number of fraction digits of floating-point numbers, which is limited by precision of
-    ; floating-point number literals compressed in bytecodes.
+    ; floating-point number literals compressed in bytecode.
     (define fraction-digit-count 11)
 
     (define (number->string x . rest)
