@@ -217,12 +217,6 @@
       ys
       xs))
 
-    ; A machine epsilon, or 1 in integer-only arithmetic.
-    (define epsilon
-     (do ((x (inexact 1) (/ x 2)))
-      ((not (< 1 (+ 1 (/ x 2))))
-       x)))
-
     (define (maybe-car expression)
      (and (pair? expression) (car expression)))
 
@@ -1900,9 +1894,6 @@
     ; exactly.
     (define maximum-mantissa (expt 2 38)) ; 38 = 52 - 2 - 1 - 11
 
-    (define (fraction x)
-     (- x (floor x)))
-
     ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
     ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
@@ -1911,7 +1902,7 @@
 
      (do ((y (exact (floor (log x 2))) (- y 1)))
       ((or
-        (< (fraction (mantissa y)) epsilon)
+        (integer? (mantissa y))
         (> (mantissa (- y 1)) maximum-mantissa))
        (let ((y (max y -1022)))
         (values (exact (round (mantissa y))) y)))))
