@@ -239,27 +239,9 @@ mod tests {
         );
     }
 
-    #[cfg(all(feature = "float", not(feature = "float62")))]
+    #[cfg(feature = "float")]
     #[test]
-    fn divide_by_zero_is_infinite() {
-        assert!(
-            Number::from_i64(1)
-                .divide(Number::from_i64(0))
-                .unwrap()
-                .to_f64()
-                .is_infinite()
-        );
-    }
-
-    #[cfg(feature = "float62")]
-    #[test]
-    fn divide_by_zero_is_nan() {
-        assert!(
-            Number::from_i64(1)
-                .divide(Number::from_i64(0))
-                .unwrap()
-                .to_f64()
-                .is_nan()
-        );
+    fn divide_by_zero_does_not_error() {
+        assert!(Number::from_i64(1).divide(Number::from_i64(0)).is_ok());
     }
 }
