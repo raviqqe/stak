@@ -248,9 +248,7 @@ mod tests {
         );
     }
 
-    // A 62-bit floating-point number cannot represent infinity or a
-    // not-a-number value, so a division by zero decodes to a finite value.
-    // Only its encoding matches a not-a-number value.
+    // TODO Fix this.
     #[cfg(feature = "float62")]
     #[test]
     fn divide_by_zero_is_nan() {
