@@ -102,6 +102,24 @@ Feature: Floating-point number
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario Outline: Keep an exact literal
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= <literal> <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | literal     | value         |
+      | 0.5         | (/ 1.0 2.0)   |
+      | 1.5         | (/ 3.0 2.0)   |
+      | 0.125       | (/ 1.0 8.0)   |
+      | 12.5        | (/ 25.0 2.0)  |
+      | 0.001953125 | (/ 1.0 512.0) |
+
   Scenario: Underflow a tiny literal gradually
     Given a file named "main.scm" with:
       """scheme
