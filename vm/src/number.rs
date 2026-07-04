@@ -221,7 +221,7 @@ mod tests {
         );
     }
 
-    #[cfg(any(not(feature = "float"), feature = "float62"))]
+    #[cfg(not(feature = "float"))]
     #[test]
     fn divide_by_zero() {
         assert_eq!(
@@ -248,6 +248,18 @@ mod tests {
                 .unwrap()
                 .to_f64()
                 .is_infinite()
+        );
+    }
+
+    #[cfg(feature = "float62")]
+    #[test]
+    fn divide_by_zero_is_nan() {
+        assert!(
+            Number::from_i64(1)
+                .divide(Number::from_i64(0))
+                .unwrap()
+                .to_f64()
+                .is_nan()
         );
     }
 }
