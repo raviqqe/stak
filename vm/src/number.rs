@@ -239,9 +239,24 @@ mod tests {
         );
     }
 
-    #[cfg(feature = "float")]
+    #[cfg(all(feature = "float", not(feature = "float62")))]
     #[test]
-    fn divide_by_zero_does_not_error() {
-        assert!(Number::from_i64(1).divide(Number::from_i64(0)).is_ok());
+    fn divide_by_zero_is_infinite() {
+        assert_eq!(
+            Number::from_i64(1).divide(Number::from_i64(0)),
+            Ok(Number::from_f64(f64::INFINITY))
+        );
+    }
+
+    // A 62-bit floating-point number cannot represent infinity or a
+    // not-a-number value, so a division by zero decodes to a finite value.
+    // Only its encoding matches a not-a-number value.
+    #[cfg(feature = "float62")]
+    #[test]
+    fn divide_by_zero_is_nan() {
+        assert_eq!(
+            Number::from_i64(1).divide(Number::from_i64(0)),
+            Ok(Number::from_f64(f64::NAN))
+        );
     }
 }
