@@ -237,7 +237,7 @@ mod tests {
                     Ok(Number::from_f64(f64::INFINITY))
                 );
             },
-            not(feature = "float") => {
+            _ => {
                 assert_eq!(
                     Number::from_i64(1).divide(Number::from_i64(0)),
                     Err(Error::DivisionByZero)
