@@ -102,6 +102,16 @@ Feature: Floating-point number
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Keep a mantissa wider than a single encoded integer
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= 4503599627370495.5 (- (* 67108864.0 67108864.0) 0.5)) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario Outline: Keep an exact literal
     Given a file named "main.scm" with:
       """scheme

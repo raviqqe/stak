@@ -4224,13 +4224,11 @@
   - count-data!
   - count-code!
   - maximum-mantissa
-  - mantissa
   - y
   - bit
   - integer
   - rest
   - encode-integer-part
-  - integer-base
   - decompose-float
   - x
   - e
@@ -4246,9 +4244,12 @@
   - encode-context-push!
   - decrement-count!
   - entry
-  - encode-integer-parts
   - encode-number
+  - number
   - number-base
+  - encode-integer-parts
+  - mantissa
+  - integer-base
   - compressor-write
   - compressor
   - head
@@ -20156,7 +20157,7 @@
     - list
       - expt
       - 2
-      - 38
+      - 53
   - list
     - define
     - list
@@ -20325,26 +20326,32 @@
             - negative?
             - x
         - list
-          - -
-          - 1
+          - values
           - list
             - -
-            - 4
+            - 1
             - list
-              - exact
+              - -
+              - 4
               - list
-                - abs
-                - x
+                - exact
+                - list
+                  - abs
+                  - x
+          - #f
       - list
         - list
           - integer?
           - x
         - list
-          - -
-          - 2
+          - values
           - list
-            - exact
-            - x
+            - -
+            - 2
+            - list
+              - exact
+              - x
+          - #f
       - list
         - else
         - list
@@ -20360,31 +20367,30 @@
                   - abs
                   - x
           - list
-            - -
-            - 3
+            - values
             - list
               - -
-              - 4
+              - 3
               - list
                 - -
-                - list
-                  - if
-                  - list
-                    - negative?
-                    - x
-                  - 1
-                  - 0
+                - 4
                 - list
                   - -
-                  - 2
+                  - list
+                    - if
+                    - list
+                      - negative?
+                      - x
+                    - 1
+                    - 0
                   - list
                     - -
-                    - e
-                    - 1023
-                - list
-                  - -
-                  - 4096
-                  - m
+                    - 2
+                    - list
+                      - -
+                      - e
+                      - 1023
+            - m
   - list
     - define
     - list
@@ -20553,28 +20559,58 @@
         - list
           - list
             - list
-              - head
-              - tail
+              - number
+              - mantissa
             - list
-              - encode-integer-parts
-              - list
-                - encode-number
-                - value
-              - number-base
+              - encode-number
+              - value
         - list
-          - compressor-write
-          - compressor
+          - let-values
           - list
-            - -
-            - 3
+            - list
+              - list
+                - head
+                - tail
+              - list
+                - encode-integer-parts
+                - number
+                - number-base
+          - list
+            - compressor-write
+            - compressor
             - list
               - -
-              - 4
-              - head
+              - 3
+              - list
+                - -
+                - 4
+                - head
+          - list
+            - encode-integer-tail
+            - context
+            - tail
         - list
-          - encode-integer-tail
-          - context
-          - tail
+          - when
+          - mantissa
+          - list
+            - let-values
+            - list
+              - list
+                - list
+                  - head
+                  - tail
+                - list
+                  - encode-integer-parts
+                  - mantissa
+                  - integer-base
+            - list
+              - compressor-write
+              - compressor
+              - head
+            - list
+              - encode-integer-tail
+              - context
+              - tail
   - list
     - define
     - list

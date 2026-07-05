@@ -1888,11 +1888,12 @@
 
      (count-code! codes))
 
-    ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, 11-bit biased exponents,
-    ; and mantissas into single integers. Those integers need to fit in 52-bit mantissas of 64-bit
-    ; floating-point numbers so that virtual machines representing all numbers as such compute them
-    ; exactly.
-    (define maximum-mantissa (expt 2 38)) ; 38 = 52 - 2 - 1 - 11
+    ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, and 11-bit biased
+    ; exponents into leading integers and encode their mantissas as following integers. Those
+    ; mantissas need to stay representable as exact integers by 64-bit floating-point numbers, whose
+    ; 52-bit mantissas hold integers up to two to the power of 53, so that virtual machines
+    ; representing all numbers as such compute them exactly.
+    (define maximum-mantissa (expt 2 53))
 
     ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
     ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
@@ -1928,22 +1929,20 @@
         integer-base
         (zero? (quotient x integer-base))))))
 
+    ; The first values are leading integers encoding type tags along with signs and biased exponents
+    ; of floating-point numbers. The second values are mantissas of floating-point numbers or false
+    ; for integers.
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
-       (+ 1 (* 4 (exact (abs x)))))
+       (values (+ 1 (* 4 (exact (abs x)))) #f))
       ((integer? x)
-       (* 2 (exact x)))
+       (values (* 2 (exact x)) #f))
       (else
        (let-values (((m e) (decompose-float (abs x))))
-        (+
-         3
-         (*
-          4
-          (+
-           (if (negative? x) 1 0)
-           (* 2 (+ e 1023))
-           (* 4096 m))))))))
+        (values
+         (+ 3 (* 4 (+ (if (negative? x) 1 0) (* 2 (+ e 1023)))))
+         m)))))
 
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
@@ -1976,9 +1975,14 @@
           (encode-context-push! context value)
           (decrement-count! entry)
           (compressor-write compressor 0)))))
-      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-       (compressor-write compressor (+ 3 (* 4 head)))
-       (encode-integer-tail context tail))))
+      (let-values (((number mantissa) (encode-number value)))
+       (let-values (((head tail) (encode-integer-parts number number-base)))
+        (compressor-write compressor (+ 3 (* 4 head)))
+        (encode-integer-tail context tail))
+       (when mantissa
+        (let-values (((head tail) (encode-integer-parts mantissa integer-base)))
+         (compressor-write compressor head)
+         (encode-integer-tail context tail))))))
 
     ;; Primitives
 

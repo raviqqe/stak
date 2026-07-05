@@ -512,34 +512,31 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     self.memory.push(cons.into())?;
                 }
             } else {
-                self.memory.push(
-                    Self::decode_number(Self::decode_integer_tail(
-                        &mut input,
-                        head >> 2,
-                        NUMBER_BASE,
-                    )?)
-                    .into(),
-                )?;
+                let integer = Self::decode_integer_tail(&mut input, head >> 2, NUMBER_BASE)?;
+                self.memory
+                    .push(Self::decode_number(&mut input, integer)?.into())?;
             }
         }
 
         self.memory.pop()?.to_cons().ok_or(Error::BytecodeEnd)
     }
 
-    fn decode_number(integer: u128) -> Number {
-        if integer & 1 == 0 {
+    fn decode_number(input: &mut impl Iterator<Item = u8>, integer: u128) -> Result<Number, Error> {
+        Ok(if integer & 1 == 0 {
             Number::from_i64((integer >> 1) as _)
         } else if integer & 0b10 == 0 {
             Number::from_i64(-((integer >> 2) as i64))
         } else {
             let integer = integer >> 2;
+            let head = input.next().ok_or(Error::BytecodeEnd)?;
+            let mantissa = Self::decode_integer_tail(input, head, INTEGER_BASE)?;
 
             Number::from_f64(
                 if integer.is_multiple_of(2) { 1.0 } else { -1.0 }
-                    * (integer >> 12) as f64
+                    * mantissa as f64
                     * f64::from_bits(((integer as u64 >> 1) % (1 << 11)) << 52),
             )
-        }
+        })
     }
 
     fn decode_integer_tail(
@@ -621,7 +618,7 @@ mod tests {
     #[cfg(feature = "float")]
     #[test]
     fn decode_float() {
-        fn encode_number(value: f64) -> u128 {
+        fn decode(value: f64) -> Number {
             let mut mantissa = value.abs();
             let mut exponent = 0i64;
 
@@ -630,10 +627,24 @@ mod tests {
                 exponent -= 1;
             }
 
-            3 + 4
-                * (u128::from(value < 0.0)
-                    + 2 * (exponent + 1023) as u128
-                    + 4096 * mantissa as u128)
+            let mut mantissa = mantissa as u128;
+            let mut bytes = alloc::vec::Vec::new();
+
+            loop {
+                let digit = (mantissa % INTEGER_BASE) as u8;
+                mantissa /= INTEGER_BASE;
+                bytes.push(2 * digit + u8::from(mantissa != 0));
+
+                if mantissa == 0 {
+                    break;
+                }
+            }
+
+            VoidVm::decode_number(
+                &mut bytes.into_iter(),
+                3 + 4 * (u128::from(value < 0.0) + 2 * (exponent + 1023) as u128),
+            )
+            .unwrap()
         }
 
         for value in [
@@ -649,16 +660,14 @@ mod tests {
             // Small magnitudes with large negative exponents.
             0.001953125,
             -0.0009765625,
-            // Mantissas up to the compiler's 38-bit threshold.
+            // Mantissas beyond the former 38-bit threshold.
             137438953471.5,
             -137438953471.5,
+            4503599627370495.5,
             // The minimum normal magnitude.
             f64::MIN_POSITIVE,
         ] {
-            assert_eq!(
-                VoidVm::decode_number(encode_number(value)),
-                Number::from_f64(value)
-            );
+            assert_eq!(decode(value), Number::from_f64(value));
         }
     }
 
