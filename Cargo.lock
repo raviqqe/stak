@@ -998,9 +998,9 @@ dependencies = [
 
 [[package]]
 name = "nonbox"
-version = "0.5.14"
+version = "0.5.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79b801b1dcbf76e86d51e123f441bf2aff465ac761023e7a789f7a820fbabd62"
+checksum = "fb621cefc649801b82648d803063c254bcf6aa7fa85bd772e2da1916d6ee4a37"
 
 [[package]]
 name = "noop-executor"
