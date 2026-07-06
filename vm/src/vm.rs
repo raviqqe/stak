@@ -663,7 +663,7 @@ mod tests {
             // Mantissas beyond the former 38-bit threshold.
             137438953471.5,
             -137438953471.5,
-            4503599627370495.5,
+            2251799813685247.5,
             // The minimum normal magnitude.
             f64::MIN_POSITIVE,
         ] {

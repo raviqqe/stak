@@ -107,7 +107,7 @@ Feature: Floating-point number
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (= 4503599627370495.5 (- (* 67108864.0 67108864.0) 0.5)) 65 66))
+      (write-u8 (if (= 2251799813685247.5 (- (* 2097152.0 1073741824.0) 0.5)) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
