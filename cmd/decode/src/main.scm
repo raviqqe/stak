@@ -121,10 +121,10 @@
     (else
       (let* ((x (quotient integer 4))
              (m (* (if (even? x) 1 -1)
-                   (decode-integer-tail
-                     decompressor
-                     (decompressor-read decompressor)
-                     integer-base)))
+                 (decode-integer-tail
+                   decompressor
+                   (decompressor-read decompressor)
+                   integer-base)))
              (e (- (modulo (quotient x 2) 2048) 1023)))
         (* m (expt 2 e))))))
 
