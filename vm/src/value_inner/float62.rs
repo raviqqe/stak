@@ -31,7 +31,6 @@ pub const fn to_i64(number: NumberInner) -> i64 {
     if let Some(integer) = number.to_integer() {
         integer
     } else if let Some(float) = number.to_float() {
-        // Unlikely
         float as _
     } else {
         0
@@ -46,7 +45,6 @@ pub const fn to_f64(number: NumberInner) -> f64 {
     if let Some(integer) = number.to_integer() {
         integer as _
     } else if let Some(float) = number.to_float() {
-        // Unlikely
         float
     } else {
         f64::NAN
@@ -93,7 +91,10 @@ mod tests {
         assert_eq!(to_f64(from_f64(f64::INFINITY)), f64::INFINITY);
         assert_eq!(to_f64(from_f64(f64::NEG_INFINITY)), f64::NEG_INFINITY);
         assert_eq!(to_i64(from_f64(f64::INFINITY)), f64::INFINITY as i64);
-        assert_eq!(to_i64(from_f64(f64::NEG_INFINITY)), f64::NEG_INFINITY as i64);
+        assert_eq!(
+            to_i64(from_f64(f64::NEG_INFINITY)),
+            f64::NEG_INFINITY as i64
+        );
     }
 
     #[test]
