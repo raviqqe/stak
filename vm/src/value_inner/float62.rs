@@ -28,12 +28,13 @@ pub const fn from_i64(number: i64) -> NumberInner {
 }
 
 pub const fn to_i64(number: NumberInner) -> i64 {
-    let Some(integer) = number.to_integer() else {
-        // Unlikely
-        return number.to_float_unchecked() as _;
-    };
-
-    integer
+    if let Some(integer) = number.to_integer() {
+        integer
+    } else if let Some(float) = number.to_float() {
+        float as _
+    } else {
+        0
+    }
 }
 
 pub const fn from_f64(number: f64) -> NumberInner {
@@ -41,12 +42,13 @@ pub const fn from_f64(number: f64) -> NumberInner {
 }
 
 pub const fn to_f64(number: NumberInner) -> f64 {
-    let Some(integer) = number.to_integer() else {
-        // Unlikely
-        return number.to_float_unchecked();
-    };
-
-    integer as _
+    if let Some(integer) = number.to_integer() {
+        integer as _
+    } else if let Some(float) = number.to_float() {
+        float
+    } else {
+        f64::NAN
+    }
 }
 
 pub const fn from_raw(raw: u64) -> NumberInner {
@@ -83,6 +85,23 @@ pub fn checked_remainder(x: NumberInner, y: NumberInner) -> Option<NumberInner> 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn convert_infinity() {
+        assert_eq!(to_f64(from_f64(f64::INFINITY)), f64::INFINITY);
+        assert_eq!(to_f64(from_f64(f64::NEG_INFINITY)), f64::NEG_INFINITY);
+        assert_eq!(to_i64(from_f64(f64::INFINITY)), f64::INFINITY as i64);
+        assert_eq!(
+            to_i64(from_f64(f64::NEG_INFINITY)),
+            f64::NEG_INFINITY as i64
+        );
+    }
+
+    #[test]
+    fn convert_nan() {
+        assert!(to_f64(from_f64(f64::NAN)).is_nan());
+        assert_eq!(to_i64(from_f64(f64::NAN)), 0);
+    }
 
     #[test]
     fn zero_power() {
