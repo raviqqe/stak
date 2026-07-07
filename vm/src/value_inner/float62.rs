@@ -100,7 +100,7 @@ mod tests {
     #[test]
     fn convert_nan() {
         assert!(to_f64(from_f64(f64::NAN)).is_nan());
-        assert_eq!(to_i64(from_f64(f64::NAN)), f64::NAN as i64);
+        assert_eq!(to_i64(from_f64(f64::NAN)), 0);
     }
 
     #[test]
