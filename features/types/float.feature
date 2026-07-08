@@ -82,70 +82,6 @@ Feature: Floating-point number
       | 3.14  | B      |
       | 42    | A      |
 
-  Scenario: Keep the precision of a literal
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (< 3.1415926534 3.1415926535 3.1415926536) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-  Scenario Outline: Keep a wide mantissa of a literal
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (= <literal> <value>) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-    Examples:
-      | literal            | value                              |
-      | 137438953471.5     | (- (* 65536.0 2097152.0) 0.5)      |
-      | 2251799813685247.5 | (- (* 2097152.0 1073741824.0) 0.5) |
-
-  Scenario Outline: Keep an exact literal
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (= <literal> <value>) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-    Examples:
-      | literal     | value         |
-      | 0.5         | (/ 1.0 2.0)   |
-      | 1.5         | (/ 3.0 2.0)   |
-      | 0.125       | (/ 1.0 8.0)   |
-      | 12.5        | (/ 25.0 2.0)  |
-      | 0.001953125 | (/ 1.0 512.0) |
-
-  Scenario: Underflow a tiny literal gradually
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (< (* 0.9 (expt 10.0 -300)) 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001 (* 1.1 (expt 10.0 -300))) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-  @stak
-  Scenario: Flush a subnormal literal to zero
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (= 0.0 0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001) 65 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
   Scenario: Calculate an exponentiation
     Given a file named "main.scm" with:
       """scheme
@@ -402,3 +338,69 @@ Feature: Floating-point number
       | cos    | acos    |
       | sin    | asin    |
       | tan    | atan    |
+
+  Rule: IEEE 754
+
+    Scenario: Keep the precision of a literal
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-u8 (if (< 3.1415926534 3.1415926535 3.1415926536) 65 66))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
+
+    Scenario Outline: Keep a wide mantissa of a literal
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-u8 (if (= <literal> <value>) 65 66))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
+
+      Examples:
+        | literal            | value                              |
+        | 137438953471.5     | (- (* 65536.0 2097152.0) 0.5)      |
+        | 2251799813685247.5 | (- (* 2097152.0 1073741824.0) 0.5) |
+
+    Scenario Outline: Keep an exact literal
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-u8 (if (= <literal> <value>) 65 66))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
+
+      Examples:
+        | literal     | value         |
+        | 0.5         | (/ 1.0 2.0)   |
+        | 1.5         | (/ 3.0 2.0)   |
+        | 0.125       | (/ 1.0 8.0)   |
+        | 12.5        | (/ 25.0 2.0)  |
+        | 0.001953125 | (/ 1.0 512.0) |
+
+    Scenario: Underflow a tiny literal gradually
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-u8 (if (< (* 0.9 (expt 10.0 -300)) 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001 (* 1.1 (expt 10.0 -300))) 65 66))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
+
+    @stak
+    Scenario: Flush a subnormal literal to zero
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-u8 (if (= 0.0 0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001) 65 66))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
