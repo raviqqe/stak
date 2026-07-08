@@ -208,6 +208,25 @@ Feature: Floating-point number
       | -1.51 | -2     |
       | -1.9  | -2     |
 
+  Scenario Outline: Round a wide number
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (= (round <input>) <output>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input                              | output                             |
+      | (+ (* 67108864.0 67108864.0) 1.0)  | (+ (* 67108864.0 67108864.0) 1.0)  |
+      | (- (* 134217728.0 67108864.0) 1.0) | (- (* 134217728.0 67108864.0) 1.0) |
+      | (- 1.0 (* 134217728.0 67108864.0)) | (- 1.0 (* 134217728.0 67108864.0)) |
+      | (- (* 67108864.0 67108864.0) 0.5)  | (* 67108864.0 67108864.0)          |
+      | (- (* 67108864.0 67108864.0) 1.5)  | (- (* 67108864.0 67108864.0) 2.0)  |
+      | (- 0.5 (* 67108864.0 67108864.0))  | (- 0.0 (* 67108864.0 67108864.0))  |
+
   Scenario Outline: Rationalize a number
     Given a file named "main.scm" with:
       """scheme

@@ -841,12 +841,22 @@
     (define (ceiling x)
       (- (floor (- x))))
 
+    ; Note that rounding must not add any offsets to original numbers because such addition is
+    ; inexact for integers wider than mantissas of 64-bit floating-point numbers.
     (define (round x)
-      (let* ((x (* x 2))
-             (y (floor (/ (+ x 1) 2))))
-        (if (= (modulo x 2) 1)
-          (- y (modulo y 2))
-          y)))
+      (if (integer? x)
+        x
+        (let* ((y (floor x))
+               (z (* 2 (- x y))))
+          (cond
+            ((< z 1)
+              y)
+            ((< 1 z)
+              (+ y 1))
+            ((integer? (/ y 2))
+              y)
+            (else
+              (+ y 1))))))
 
     (define exact round)
     (define (inexact x)
