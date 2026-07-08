@@ -618,7 +618,7 @@ mod tests {
     #[cfg(feature = "float")]
     #[test]
     fn decode_float() {
-        fn decode(value: f64) -> Number {
+        fn encode_number(value: f64) -> (u128, alloc::vec::Vec<u8>) {
             let mut mantissa = value.abs();
             let mut exponent = 0i64;
 
@@ -640,11 +640,10 @@ mod tests {
                 }
             }
 
-            VoidVm::decode_number(
-                &mut bytes.into_iter(),
+            (
                 3 + 4 * (u128::from(value < 0.0) + 2 * (exponent + 1023) as u128),
+                bytes,
             )
-            .unwrap()
         }
 
         for value in [
@@ -667,7 +666,12 @@ mod tests {
             // The minimum normal magnitude.
             f64::MIN_POSITIVE,
         ] {
-            assert_eq!(decode(value), Number::from_f64(value));
+            let (integer, mantissa) = encode_number(value);
+
+            assert_eq!(
+                VoidVm::decode_number(&mut mantissa.into_iter(), integer).unwrap(),
+                Number::from_f64(value)
+            );
         }
     }
 
