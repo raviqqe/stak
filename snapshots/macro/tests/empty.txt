@@ -1,17 +1,17 @@
-- constant primitive 0
-- set ||
-- constant primitive 1
-- set ||
-- constant primitive 2
-- set ||
-- constant primitive 10
-- set ||
-- constant primitive 11
-- set ||
-- constant primitive 12
-- set ||
-- constant primitive 13
-- set ||
-- constant primitive 14
-- set ||
-- constant #f
+constant primitive 0
+set ||
+constant primitive 1
+set ||
+constant primitive 2
+set ||
+constant primitive 10
+set ||
+constant primitive 11
+set ||
+constant primitive 12
+set ||
+constant primitive 13
+set ||
+constant primitive 14
+set ||
+constant #f
