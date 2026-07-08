@@ -565,6 +565,8 @@ impl<T: PrimitiveSet<H>, H: Heap> Display for Vm<'_, T, H> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "float")]
+    use alloc::{vec, vec::Vec};
 
     struct FakePrimitiveSet {}
 
@@ -618,7 +620,7 @@ mod tests {
     #[cfg(feature = "float")]
     #[test]
     fn decode_float() {
-        fn encode_number(value: f64) -> (u128, alloc::vec::Vec<u8>) {
+        fn encode_number(value: f64) -> (u128, Vec<u8>) {
             let mut mantissa = value.abs();
             let mut exponent = 0i64;
 
@@ -628,7 +630,7 @@ mod tests {
             }
 
             let mut mantissa = mantissa as u128;
-            let mut bytes = alloc::vec::Vec::new();
+            let mut bytes = vec![];
 
             loop {
                 let digit = (mantissa % INTEGER_BASE) as u8;
