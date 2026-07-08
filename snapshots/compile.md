@@ -4226,9 +4226,13 @@
   - maximum-mantissa
   - y
   - bit
-  - integer
   - rest
   - encode-integer-part
+  - encode-integer-parts
+  - integer
+  - head->byte
+  - encode-integer-tail
+  - tail
   - decompose-float
   - x
   - e
@@ -4244,17 +4248,15 @@
   - encode-context-push!
   - decrement-count!
   - entry
+  - compressor-write
+  - compressor
   - encode-number
   - number
   - number-base
-  - encode-integer-parts
+  - encode-integer
   - mantissa
   - integer-base
-  - compressor-write
-  - compressor
   - head
-  - encode-integer-tail
-  - tail
   - constant-instruction
   - code-rib
   - set-instruction
@@ -20312,6 +20314,37 @@
   - list
     - define
     - list
+      - encode-integer
+      - context
+      - integer
+      - base
+      - head->byte
+    - list
+      - let-values
+      - list
+        - list
+          - list
+            - head
+            - tail
+          - list
+            - encode-integer-parts
+            - integer
+            - base
+      - list
+        - compressor-write
+        - list
+          - encode-context-compressor
+          - context
+        - list
+          - head->byte
+          - head
+      - list
+        - encode-integer-tail
+        - context
+        - tail
+  - list
+    - define
+    - list
       - encode-number
       - x
     - list
@@ -20462,29 +20495,24 @@
                     - context
                     - value
                 - list
-                  - let-values
+                  - encode-integer
+                  - context
                   - list
+                    - -
                     - list
-                      - list
-                        - head
-                        - tail
-                      - list
-                        - encode-integer-parts
-                        - list
-                          - -
-                          - list
-                            - -
-                            - 2
-                            - index
-                          - list
-                            - if
-                            - removed
-                            - 0
-                            - 1
-                        - share-base
+                      - -
+                      - 2
+                      - index
+                    - list
+                      - if
+                      - removed
+                      - 0
+                      - 1
+                  - share-base
                   - list
-                    - compressor-write
-                    - compressor
+                    - lambda
+                    - list
+                      - head
                     - list
                       - -
                       - 2
@@ -20492,10 +20520,6 @@
                         - -
                         - 1
                         - head
-                  - list
-                    - encode-integer-tail
-                    - context
-                    - tail
           - list
             - else
             - list
@@ -20511,21 +20535,16 @@
                 - rib-cdr
                 - value
             - list
-              - let-values
+              - encode-integer
+              - context
               - list
+                - rib-tag
+                - value
+              - tag-base
+              - list
+                - lambda
                 - list
-                  - list
-                    - head
-                    - tail
-                  - list
-                    - encode-integer-parts
-                    - list
-                      - rib-tag
-                      - value
-                    - tag-base
-              - list
-                - compressor-write
-                - compressor
+                  - head
                 - list
                   - -
                   - 1
@@ -20536,10 +20555,6 @@
                       - -
                       - 1
                       - head
-              - list
-                - encode-integer-tail
-                - context
-                - tail
             - list
               - when
               - entry
@@ -20565,19 +20580,14 @@
               - encode-number
               - value
         - list
-          - let-values
+          - encode-integer
+          - context
+          - number
+          - number-base
           - list
+            - lambda
             - list
-              - list
-                - head
-                - tail
-              - list
-                - encode-integer-parts
-                - number
-                - number-base
-          - list
-            - compressor-write
-            - compressor
+              - head
             - list
               - -
               - 3
@@ -20585,32 +20595,19 @@
                 - -
                 - 4
                 - head
-          - list
-            - encode-integer-tail
-            - context
-            - tail
         - list
           - when
           - mantissa
           - list
-            - let-values
+            - encode-integer
+            - context
+            - mantissa
+            - integer-base
             - list
+              - lambda
               - list
-                - list
-                  - head
-                  - tail
-                - list
-                  - encode-integer-parts
-                  - mantissa
-                  - integer-base
-            - list
-              - compressor-write
-              - compressor
+                - head
               - head
-            - list
-              - encode-integer-tail
-              - context
-              - tail
   - list
     - define
     - list
