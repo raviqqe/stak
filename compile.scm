@@ -1888,11 +1888,12 @@
 
      (count-code! codes))
 
-    ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, 11-bit biased exponents,
-    ; and mantissas into single integers. Those integers need to fit in 52-bit mantissas of 64-bit
-    ; floating-point numbers so that virtual machines representing all numbers as such compute them
-    ; exactly.
-    (define maximum-mantissa (expt 2 38)) ; 38 = 52 - 2 - 1 - 11
+    ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, and 11-bit biased
+    ; exponents into leading integers and encode their mantissas as following integers. Rounding a
+    ; mantissa here doubles it, and virtual machines representing all numbers as 64-bit floating-point
+    ; numbers compute them as such. So mantissas are limited to two to the power of 52 to keep their
+    ; doubles within the integers up to two to the power of 53 that those numbers represent exactly.
+    (define maximum-mantissa (expt 2 52))
 
     ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
     ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
@@ -1916,8 +1917,7 @@
        (encode-integer-part integer base (zero? rest))
        rest)))
 
-    ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
-    ; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
+    ; We adopt little endianness like the `varint` in Protocol Buffer.
     (define (encode-integer-tail context x)
      (do ((x x (quotient x integer-base)))
       ((zero? x))
@@ -1928,22 +1928,22 @@
         integer-base
         (zero? (quotient x integer-base))))))
 
+    (define (encode-integer context integer base head->byte)
+     (let-values (((head tail) (encode-integer-parts integer base)))
+      (compressor-write (encode-context-compressor context) (head->byte head))
+      (encode-integer-tail context tail)))
+
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
-       (+ 1 (* 4 (exact (abs x)))))
+       (values (+ 1 (* 4 (exact (abs x)))) #f))
       ((integer? x)
-       (* 2 (exact x)))
+       (values (* 2 (exact x)) #f))
       (else
        (let-values (((m e) (decompose-float (abs x))))
-        (+
-         3
-         (*
-          4
-          (+
-           (if (negative? x) 1 0)
-           (* 2 (+ e 1023))
-           (* 4096 m))))))))
+        (values
+         (+ 3 (* 4 (+ (if (negative? x) 1 0) (* 2 (+ e 1023)))))
+         m)))))
 
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
@@ -1959,26 +1959,27 @@
            (encode-context-remove! context index)
            (unless removed
             (encode-context-push! context value))
-           (let-values (((head tail)
-                         (encode-integer-parts
-                          (+ (* 2 index) (if removed 0 1))
-                          share-base)))
-            (compressor-write compressor (* 2 (+ 1 head)))
-            (encode-integer-tail context tail)))))
+           (encode-integer
+            context
+            (+ (* 2 index) (if removed 0 1))
+            share-base
+            (lambda (head) (* 2 (+ 1 head)))))))
         (else
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
-         (let-values (((head tail)
-                       (encode-integer-parts (rib-tag value) tag-base)))
-          (compressor-write compressor (+ 1 (* 4 (+ 1 head))))
-          (encode-integer-tail context tail))
+         (encode-integer
+          context
+          (rib-tag value)
+          tag-base
+          (lambda (head) (+ 1 (* 4 (+ 1 head)))))
          (when entry
           (encode-context-push! context value)
           (decrement-count! entry)
           (compressor-write compressor 0)))))
-      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-       (compressor-write compressor (+ 3 (* 4 head)))
-       (encode-integer-tail context tail))))
+      (let-values (((number mantissa) (encode-number value)))
+       (encode-integer context number number-base (lambda (head) (+ 3 (* 4 head))))
+       (when mantissa
+        (encode-integer context mantissa integer-base (lambda (head) head))))))
 
     ;; Primitives
 

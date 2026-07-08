@@ -2384,7 +2384,7 @@
   - get 3
   - call 3 #f 3
 - set ||
-- constant procedure 1 #f
+- constant procedure 2 #f
   - get 0
   - call 1 #f ||
   - if
@@ -2409,9 +2409,11 @@
     - constant 1
     - continue
   - constant -1
-  - get 1
-  - constant 4096
-  - call 2 #f ||
+  - get 3
+  - get 4
+  - call 1 #f ||
+  - get ||
+  - call 3 #f ||
   - call 2 #f ||
   - get 1
   - constant 2
@@ -2547,12 +2549,13 @@
       - continue
     - get 4
     - get 4
-    - get 2
+    - get 5
+    - get 3
     - constant 4
     - call 2 #f ||
     - get ||
     - call 3 #f ||
-    - call 1 #f ||
+    - call 2 #f ||
     - call 2 #f ||
     - set 0
     - get 3

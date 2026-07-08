@@ -512,34 +512,32 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     self.memory.push(cons.into())?;
                 }
             } else {
-                self.memory.push(
-                    Self::decode_number(Self::decode_integer_tail(
-                        &mut input,
-                        head >> 2,
-                        NUMBER_BASE,
-                    )?)
-                    .into(),
-                )?;
+                self.memory
+                    .push(Self::decode_number(&mut input, head)?.into())?;
             }
         }
 
         self.memory.pop()?.to_cons().ok_or(Error::BytecodeEnd)
     }
 
-    fn decode_number(integer: u128) -> Number {
-        if integer & 1 == 0 {
+    fn decode_number(input: &mut impl Iterator<Item = u8>, head: u8) -> Result<Number, Error> {
+        let integer = Self::decode_integer_tail(input, head >> 2, NUMBER_BASE)?;
+
+        Ok(if integer & 1 == 0 {
             Number::from_i64((integer >> 1) as _)
         } else if integer & 0b10 == 0 {
             Number::from_i64(-((integer >> 2) as i64))
         } else {
             let integer = integer >> 2;
+            let head = input.next().ok_or(Error::BytecodeEnd)?;
+            let mantissa = Self::decode_integer_tail(input, head, INTEGER_BASE)?;
 
             Number::from_f64(
                 if integer.is_multiple_of(2) { 1.0 } else { -1.0 }
-                    * (integer >> 12) as f64
+                    * mantissa as f64
                     * f64::from_bits(((integer as u64 >> 1) % (1 << 11)) << 52),
             )
-        }
+        })
     }
 
     fn decode_integer_tail(
@@ -568,6 +566,8 @@ impl<T: PrimitiveSet<H>, H: Heap> Display for Vm<'_, T, H> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "float")]
+    use alloc::{vec, vec::Vec};
 
     struct FakePrimitiveSet {}
 
@@ -621,7 +621,19 @@ mod tests {
     #[cfg(feature = "float")]
     #[test]
     fn decode_float() {
-        fn encode_number(value: f64) -> u128 {
+        fn encode_number(value: f64) -> Vec<u8> {
+            fn encode_integer(bytes: &mut Vec<u8>, mut integer: u128, base: u128) {
+                let digit = (integer % base) as u8;
+                integer /= base;
+                bytes.push(2 * digit + u8::from(integer != 0));
+
+                while integer != 0 {
+                    let digit = (integer % INTEGER_BASE) as u8;
+                    integer /= INTEGER_BASE;
+                    bytes.push(2 * digit + u8::from(integer != 0));
+                }
+            }
+
             let mut mantissa = value.abs();
             let mut exponent = 0i64;
 
@@ -630,10 +642,17 @@ mod tests {
                 exponent -= 1;
             }
 
-            3 + 4
-                * (u128::from(value < 0.0)
-                    + 2 * (exponent + 1023) as u128
-                    + 4096 * mantissa as u128)
+            let mut bytes = vec![];
+
+            encode_integer(
+                &mut bytes,
+                3 + 4 * (u128::from(value < 0.0) + 2 * (exponent + 1023) as u128),
+                NUMBER_BASE,
+            );
+            encode_integer(&mut bytes, mantissa as u128, INTEGER_BASE);
+            bytes[0] = 3 + 4 * bytes[0];
+
+            bytes
         }
 
         for value in [
@@ -649,15 +668,19 @@ mod tests {
             // Small magnitudes with large negative exponents.
             0.001953125,
             -0.0009765625,
-            // Mantissas up to the compiler's 38-bit threshold.
+            // Mantissas beyond the former 38-bit threshold.
             137438953471.5,
             -137438953471.5,
+            2251799813685247.5,
             // The minimum normal magnitude.
             f64::MIN_POSITIVE,
         ] {
+            let mut input = encode_number(value).into_iter();
+            let head = input.next().unwrap();
+
             assert_eq!(
-                VoidVm::decode_number(encode_number(value)),
-                Number::from_f64(value)
+                VoidVm::decode_number(&mut input, head).unwrap(),
+                Number::from_f64(value),
             );
         }
     }

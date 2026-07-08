@@ -112,7 +112,7 @@
       (let ((x (decompressor-read decompressor)))
         (loop x (+ y (* base (quotient x 2))) (* base integer-base))))))
 
-(define (decode-number integer)
+(define (decode-number decompressor integer)
   (cond
     ((even? integer)
       (quotient integer 2))
@@ -120,7 +120,11 @@
       (- (quotient integer 4)))
     (else
       (let* ((x (quotient integer 4))
-             (m (* (if (even? x) 1 -1) (quotient x 4096)))
+             (m (* (if (even? x) 1 -1)
+                 (decode-integer-tail
+                   decompressor
+                   (decompressor-read decompressor)
+                   integer-base)))
              (e (- (modulo (quotient x 2) 2048) 1023)))
         (* m (expt 2 e))))))
 
@@ -162,7 +166,9 @@
       (else
         (stack-push!
           stack
-          (decode-number (decode-integer-tail decompressor (quotient byte 4) number-base))))))
+          (decode-number
+            decompressor
+            (decode-integer-tail decompressor (quotient byte 4) number-base))))))
 
   (stack-pop! stack))
 
