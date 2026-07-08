@@ -18,14 +18,14 @@ importers:
         specifier: ^0.57.0
         version: 0.57.0
       tombi:
-        specifier: ^1.1.7
-        version: 1.1.7
+        specifier: ^1.2.0
+        version: 1.2.0
 
   doc:
     dependencies:
       '@astrojs/preact':
         specifier: ^6.0.1
-        version: 6.0.1(@babel/core@7.29.7)(@types/node@26.1.0)(esbuild@0.28.1)(preact@10.29.3)(rollup@4.62.2)(yaml@2.9.0)
+        version: 6.0.1(@babel/core@7.29.7)(@types/node@26.1.0)(esbuild@0.28.1)(preact@10.29.4)(rollup@4.62.2)(yaml@2.9.0)
       '@astrojs/sitemap':
         specifier: ^3.7.3
         version: 3.7.3
@@ -40,10 +40,10 @@ importers:
         version: 0.1.0(nanostores@1.4.0)
       '@nanostores/preact':
         specifier: ^1.1.0
-        version: 1.1.0(nanostores@1.4.0)(preact@10.29.3)
+        version: 1.1.0(nanostores@1.4.0)(preact@10.29.4)
       '@preact/signals':
         specifier: ^2.9.2
-        version: 2.9.2(preact@10.29.3)
+        version: 2.9.2(preact@10.29.4)
       '@raviqqe/stak':
         specifier: ^0.12.18
         version: 0.12.18
@@ -64,7 +64,7 @@ importers:
         version: 1.49.0
       lucide-preact:
         specifier: ^1.23.0
-        version: 1.23.0(preact@10.29.3)
+        version: 1.23.0(preact@10.29.4)
       monza-editor:
         specifier: ^0.5.9
         version: 0.5.9
@@ -75,8 +75,8 @@ importers:
         specifier: ^0.2.8
         version: 0.2.8
       preact:
-        specifier: ^10.29.3
-        version: 10.29.3
+        specifier: ^10.29.4
+        version: 10.29.4
       vite-plugin-wasm:
         specifier: ^3.6.0
         version: 3.6.0(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))
@@ -1332,54 +1332,54 @@ packages:
   '@shikijs/vscode-textmate@10.0.2':
     resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
 
-  '@tombi-toml/cli-darwin-arm64@1.1.7':
-    resolution: {integrity: sha512-b83p1unr0z/dhdC+oMEPhjoZB9Tdi77dV+2Ruxok13MfnAsrp60P6BjUi97h7N3900vYwaYG4G+Jxa0KEWUFJw==}
+  '@tombi-toml/cli-darwin-arm64@1.2.0':
+    resolution: {integrity: sha512-Fh9GhaVVkgEbMvzxSg8it7hvbLg8SWkGzbOZsiDqsghqZ5NPIkrOvNYqzpsNAFYHX6lL4dxolU5a7T6xk03cOg==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@tombi-toml/cli-darwin-x64@1.1.7':
-    resolution: {integrity: sha512-nE+QsbU3eti92EWLXF4F1QAfObnSLDzZo2V9pdm4SbDTdMVOcWsnmz8ZK+DFwoCFijLxX8OWqCh0b9SzNo4HTA==}
+  '@tombi-toml/cli-darwin-x64@1.2.0':
+    resolution: {integrity: sha512-nVCFayskU3fvUVafOx+QUdgRqJieWNgtklKs4QlOPt7hVzAEh7Q/j7jHV5JZ2eTyH7F89JfpPkl85+yIwxk4oQ==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@tombi-toml/cli-linux-arm64-musl@1.1.7':
-    resolution: {integrity: sha512-2jpeUS/ltzGSVgdqZQWROh/vAPWu6HDh+DhfL2A+4VwlKRefnlevx+F9YZI4QmOmmff00M+EvJDflukXXNDd4g==}
+  '@tombi-toml/cli-linux-arm64-musl@1.2.0':
+    resolution: {integrity: sha512-6qZGsPEBnTX8TxklLknO/gIt1fPR9QQfWLLdevuynU4IxmvVRFnhjVvot1rRG1soa/EriAtBeAfgnFwZOSq0bQ==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@tombi-toml/cli-linux-arm64@1.1.7':
-    resolution: {integrity: sha512-HtTN0fB05OFsxJa0+DBtI/OG6uF982Jt1krsghG0ybMVQyN29nDbW6WA8fLDj8x8NgKPx8ymESsGW2RN/nmHlg==}
+  '@tombi-toml/cli-linux-arm64@1.2.0':
+    resolution: {integrity: sha512-TANUHh8JfIMMrQcOVja568KBpu1hqsJBxzRv+tLoBMqURdw+3ic8J9ySsvFUte2ZktykC87DeRdTmbhEYUk/eQ==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@tombi-toml/cli-linux-x64-musl@1.1.7':
-    resolution: {integrity: sha512-nN5GTYtTgius3gpmE4akyL5uwhQy3iDAZfNirYzx9OsOKcYp56P0A8olvVz5M9ESLM+kpSFA8g0y0l7LRKgGNQ==}
+  '@tombi-toml/cli-linux-x64-musl@1.2.0':
+    resolution: {integrity: sha512-A/ncnTpkmAekREjPFUVRFXUPWhkZM2DbrU1i2L/i2LxnxpW14Q4m3eVY74EFwJPeHzneblTCl+j7LDFtOdmdgg==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@tombi-toml/cli-linux-x64@1.1.7':
-    resolution: {integrity: sha512-ymcx+m7FNu2AISJ8dpHtkGU2ZzggkEQOFxSSTfWYtZwIzReJQ/gwNXp9VB7hXUiQTYfwwX1OcCBY+iu8hHVc7A==}
+  '@tombi-toml/cli-linux-x64@1.2.0':
+    resolution: {integrity: sha512-ga/4LMCMi49u4Xf6jS+9Q+zv4Zqg05efLM5qNLXujiQOeDkEzitDELC+Clv/QiDeNeDYnaa0oKOdeolAXar0SA==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@tombi-toml/cli-win32-arm64@1.1.7':
-    resolution: {integrity: sha512-5fxYtflOCVaOTBYJGBKRdIL9OoCHWkKd+lp36Bfj6tlfFnDyNq9iz2O8JUZigKWC61EjeFrRhJKFQnpEukjh3g==}
+  '@tombi-toml/cli-win32-arm64@1.2.0':
+    resolution: {integrity: sha512-uP6iKVk4rD8fZJdX1wd9PnPrL8GWJewYXZiCnnISx0jSS2YcvgGaI9ri3mQUnlfbpyU5ds+w+ZyDdwFeeRow1g==}
     engines: {node: '>=14.0.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@tombi-toml/cli-win32-x64@1.1.7':
-    resolution: {integrity: sha512-rsXK6moBFOcN8vncWZrEe9ZTKilLkNBhycAiN6wz3ZnHZ9PnKY9Ys6/q08eo8u2PJTSMMrUDJT426Zy3CbwzBw==}
+  '@tombi-toml/cli-win32-x64@1.2.0':
+    resolution: {integrity: sha512-eBGixCcDqBmgKp412ns1ppf6bAn4+mV+a3GXy9yJMbEa0RYOfK8s3IsOGR0EV/0ZkpYmVg7HvGCsU3/fH93G3A==}
     engines: {node: '>=14.0.0'}
     cpu: [x64]
     os: [win32]
@@ -2440,8 +2440,8 @@ packages:
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
 
-  preact@10.29.3:
-    resolution: {integrity: sha512-D9NL1GAnJZhc3RndVs4gDdxEeU9TcHgywMrhhOsnpdlvFjdbx0gAsLUnH6JEhlJH5giL7Tx5biWPUSEXE/HPzw==}
+  preact@10.29.4:
+    resolution: {integrity: sha512-GMpwh9+NJ8tSmqwIaVyFRQkiKfBEzQ+k7r7tle4W+kaJ+7wJiB9hFz9BixAomMtenPPSBfM4bZhXozGxhf0uFQ==}
 
   prettier@3.8.3:
     resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
@@ -2678,8 +2678,8 @@ packages:
     resolution: {integrity: sha512-Pugqs6M0m7Lv1I7FtxN4aoyToKg1C4tu+/381vH35y8oENM/Ai7f7C4StcoK4/+BSw9ebcS8jRiVrORFKCALLw==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
-  tombi@1.1.7:
-    resolution: {integrity: sha512-jMhYxR1xj7qqH5Rl843jOZiUqKeya4lgsmGzRpKXZwW9lQ80Nd31VISOSaZ9gibuDL4WKM75XmtNhMP41mICEQ==}
+  tombi@1.2.0:
+    resolution: {integrity: sha512-R0r1fafxCeCn7jMjsdN4k0OBn9yP+iJjx/uQI7Mq0JM0lLFRsX5f6tOvK3BqLDA3NHdPn9AHkBhkmZL30S8Lug==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -3207,14 +3207,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/preact@6.0.1(@babel/core@7.29.7)(@types/node@26.1.0)(esbuild@0.28.1)(preact@10.29.3)(rollup@4.62.2)(yaml@2.9.0)':
+  '@astrojs/preact@6.0.1(@babel/core@7.29.7)(@types/node@26.1.0)(esbuild@0.28.1)(preact@10.29.4)(rollup@4.62.2)(yaml@2.9.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.10.1
-      '@preact/preset-vite': 2.10.5(@babel/core@7.29.7)(preact@10.29.3)(rollup@4.62.2)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))
-      '@preact/signals': 2.9.2(preact@10.29.3)
+      '@preact/preset-vite': 2.10.5(@babel/core@7.29.7)(preact@10.29.4)(rollup@4.62.2)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))
+      '@preact/signals': 2.9.2(preact@10.29.4)
       devalue: 5.8.1
-      preact: 10.29.3
-      preact-render-to-string: 6.7.0(preact@10.29.3)
+      preact: 10.29.4
+      preact-render-to-string: 6.7.0(preact@10.29.4)
       vite: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@babel/core'
@@ -3806,16 +3806,16 @@ snapshots:
   '@monza-editor/preact@0.1.9':
     dependencies:
       monza-editor: 0.5.5
-      preact: 10.29.3
+      preact: 10.29.4
 
   '@nanostores/async@0.1.0(nanostores@1.4.0)':
     dependencies:
       nanostores: 1.4.0
 
-  '@nanostores/preact@1.1.0(nanostores@1.4.0)(preact@10.29.3)':
+  '@nanostores/preact@1.1.0(nanostores@1.4.0)(preact@10.29.4)':
     dependencies:
       nanostores: 1.4.0
-      preact: 10.29.3
+      preact: 10.29.4
 
   '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
     dependencies:
@@ -3908,12 +3908,12 @@ snapshots:
   '@pagefind/windows-x64@1.5.2':
     optional: true
 
-  '@preact/preset-vite@2.10.5(@babel/core@7.29.7)(preact@10.29.3)(rollup@4.62.2)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))':
+  '@preact/preset-vite@2.10.5(@babel/core@7.29.7)(preact@10.29.4)(rollup@4.62.2)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-transform-react-jsx': 7.29.7(@babel/core@7.29.7)
       '@babel/plugin-transform-react-jsx-development': 7.29.7(@babel/core@7.29.7)
-      '@prefresh/vite': 2.4.12(preact@10.29.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))
+      '@prefresh/vite': 2.4.12(preact@10.29.4)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))
       '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.29.7)
       debug: 4.4.3
@@ -3929,27 +3929,27 @@ snapshots:
 
   '@preact/signals-core@1.14.3': {}
 
-  '@preact/signals@2.9.2(preact@10.29.3)':
+  '@preact/signals@2.9.2(preact@10.29.4)':
     dependencies:
       '@preact/signals-core': 1.14.3
-      preact: 10.29.3
+      preact: 10.29.4
 
   '@prefresh/babel-plugin@0.5.3': {}
 
-  '@prefresh/core@1.5.10(preact@10.29.3)':
+  '@prefresh/core@1.5.10(preact@10.29.4)':
     dependencies:
-      preact: 10.29.3
+      preact: 10.29.4
 
   '@prefresh/utils@1.2.1': {}
 
-  '@prefresh/vite@2.4.12(preact@10.29.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))':
+  '@prefresh/vite@2.4.12(preact@10.29.4)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@prefresh/babel-plugin': 0.5.3
-      '@prefresh/core': 1.5.10(preact@10.29.3)
+      '@prefresh/core': 1.5.10(preact@10.29.4)
       '@prefresh/utils': 1.2.1
       '@rollup/pluginutils': 4.2.1
-      preact: 10.29.3
+      preact: 10.29.4
       vite: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
@@ -4139,28 +4139,28 @@ snapshots:
 
   '@shikijs/vscode-textmate@10.0.2': {}
 
-  '@tombi-toml/cli-darwin-arm64@1.1.7':
+  '@tombi-toml/cli-darwin-arm64@1.2.0':
     optional: true
 
-  '@tombi-toml/cli-darwin-x64@1.1.7':
+  '@tombi-toml/cli-darwin-x64@1.2.0':
     optional: true
 
-  '@tombi-toml/cli-linux-arm64-musl@1.1.7':
+  '@tombi-toml/cli-linux-arm64-musl@1.2.0':
     optional: true
 
-  '@tombi-toml/cli-linux-arm64@1.1.7':
+  '@tombi-toml/cli-linux-arm64@1.2.0':
     optional: true
 
-  '@tombi-toml/cli-linux-x64-musl@1.1.7':
+  '@tombi-toml/cli-linux-x64-musl@1.2.0':
     optional: true
 
-  '@tombi-toml/cli-linux-x64@1.1.7':
+  '@tombi-toml/cli-linux-x64@1.2.0':
     optional: true
 
-  '@tombi-toml/cli-win32-arm64@1.1.7':
+  '@tombi-toml/cli-win32-arm64@1.2.0':
     optional: true
 
-  '@tombi-toml/cli-win32-x64@1.1.7':
+  '@tombi-toml/cli-win32-x64@1.2.0':
     optional: true
 
   '@tybys/wasm-util@0.10.3':
@@ -5043,9 +5043,9 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-preact@1.23.0(preact@10.29.3):
+  lucide-preact@1.23.0(preact@10.29.4):
     dependencies:
-      preact: 10.29.3
+      preact: 10.29.4
 
   magic-string@0.30.21:
     dependencies:
@@ -5675,11 +5675,11 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  preact-render-to-string@6.7.0(preact@10.29.3):
+  preact-render-to-string@6.7.0(preact@10.29.4):
     dependencies:
-      preact: 10.29.3
+      preact: 10.29.4
 
-  preact@10.29.3: {}
+  preact@10.29.4: {}
 
   prettier@3.8.3: {}
 
@@ -6059,16 +6059,16 @@ snapshots:
 
   tinypool@2.1.0: {}
 
-  tombi@1.1.7:
+  tombi@1.2.0:
     optionalDependencies:
-      '@tombi-toml/cli-darwin-arm64': 1.1.7
-      '@tombi-toml/cli-darwin-x64': 1.1.7
-      '@tombi-toml/cli-linux-arm64': 1.1.7
-      '@tombi-toml/cli-linux-arm64-musl': 1.1.7
-      '@tombi-toml/cli-linux-x64': 1.1.7
-      '@tombi-toml/cli-linux-x64-musl': 1.1.7
-      '@tombi-toml/cli-win32-arm64': 1.1.7
-      '@tombi-toml/cli-win32-x64': 1.1.7
+      '@tombi-toml/cli-darwin-arm64': 1.2.0
+      '@tombi-toml/cli-darwin-x64': 1.2.0
+      '@tombi-toml/cli-linux-arm64': 1.2.0
+      '@tombi-toml/cli-linux-arm64-musl': 1.2.0
+      '@tombi-toml/cli-linux-x64': 1.2.0
+      '@tombi-toml/cli-linux-x64-musl': 1.2.0
+      '@tombi-toml/cli-win32-arm64': 1.2.0
+      '@tombi-toml/cli-win32-x64': 1.2.0
 
   trim-lines@3.0.1: {}
 
