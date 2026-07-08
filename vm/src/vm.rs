@@ -649,9 +649,8 @@ mod tests {
                 3 + 4 * (u128::from(value < 0.0) + 2 * (exponent + 1023) as u128),
                 NUMBER_BASE,
             );
-            // Tag the leading byte as a number.
-            bytes[0] = 3 + 4 * bytes[0];
             encode_integer(&mut bytes, mantissa as u128, INTEGER_BASE);
+            bytes[0] = 3 + 4 * bytes[0];
 
             bytes
         }
