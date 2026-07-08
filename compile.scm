@@ -1929,6 +1929,13 @@
         integer-base
         (zero? (quotient x integer-base))))))
 
+    ; Write an integer to the output, deriving its leading byte from the head part with the given
+    ; procedure and appending its tail.
+    (define (encode-integer context integer base head->byte)
+     (let-values (((head tail) (encode-integer-parts integer base)))
+      (compressor-write (encode-context-compressor context) (head->byte head))
+      (encode-integer-tail context tail)))
+
     ; The first values are leading integers encoding type tags along with signs and biased exponents
     ; of floating-point numbers. The second values are mantissas of floating-point numbers or false
     ; for integers.
@@ -1958,31 +1965,27 @@
            (encode-context-remove! context index)
            (unless removed
             (encode-context-push! context value))
-           (let-values (((head tail)
-                         (encode-integer-parts
-                          (+ (* 2 index) (if removed 0 1))
-                          share-base)))
-            (compressor-write compressor (* 2 (+ 1 head)))
-            (encode-integer-tail context tail)))))
+           (encode-integer
+            context
+            (+ (* 2 index) (if removed 0 1))
+            share-base
+            (lambda (head) (* 2 (+ 1 head)))))))
         (else
          (encode-rib context (rib-car value))
          (encode-rib context (rib-cdr value))
-         (let-values (((head tail)
-                       (encode-integer-parts (rib-tag value) tag-base)))
-          (compressor-write compressor (+ 1 (* 4 (+ 1 head))))
-          (encode-integer-tail context tail))
+         (encode-integer
+          context
+          (rib-tag value)
+          tag-base
+          (lambda (head) (+ 1 (* 4 (+ 1 head)))))
          (when entry
           (encode-context-push! context value)
           (decrement-count! entry)
           (compressor-write compressor 0)))))
       (let-values (((number mantissa) (encode-number value)))
-       (let-values (((head tail) (encode-integer-parts number number-base)))
-        (compressor-write compressor (+ 3 (* 4 head)))
-        (encode-integer-tail context tail))
+       (encode-integer context number number-base (lambda (head) (+ 3 (* 4 head))))
        (when mantissa
-        (let-values (((head tail) (encode-integer-parts mantissa integer-base)))
-         (compressor-write compressor head)
-         (encode-integer-tail context tail))))))
+        (encode-integer context mantissa integer-base (lambda (head) head))))))
 
     ;; Primitives
 
