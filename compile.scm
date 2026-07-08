@@ -1936,9 +1936,6 @@
       (compressor-write (encode-context-compressor context) (head->byte head))
       (encode-integer-tail context tail)))
 
-    ; The first values are leading integers encoding type tags along with signs and biased exponents
-    ; of floating-point numbers. The second values are mantissas of floating-point numbers or false
-    ; for integers.
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
