@@ -512,16 +512,17 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
                     self.memory.push(cons.into())?;
                 }
             } else {
-                let integer = Self::decode_integer_tail(&mut input, head >> 2, NUMBER_BASE)?;
                 self.memory
-                    .push(Self::decode_number(&mut input, integer)?.into())?;
+                    .push(Self::decode_number(&mut input, head)?.into())?;
             }
         }
 
         self.memory.pop()?.to_cons().ok_or(Error::BytecodeEnd)
     }
 
-    fn decode_number(input: &mut impl Iterator<Item = u8>, integer: u128) -> Result<Number, Error> {
+    fn decode_number(input: &mut impl Iterator<Item = u8>, head: u8) -> Result<Number, Error> {
+        let integer = Self::decode_integer_tail(input, head >> 2, NUMBER_BASE)?;
+
         Ok(if integer & 1 == 0 {
             Number::from_i64((integer >> 1) as _)
         } else if integer & 0b10 == 0 {
@@ -620,7 +621,19 @@ mod tests {
     #[cfg(feature = "float")]
     #[test]
     fn decode_float() {
-        fn encode_number(value: f64) -> (u128, Vec<u8>) {
+        fn encode_number(value: f64) -> Vec<u8> {
+            fn encode_integer(bytes: &mut Vec<u8>, mut integer: u128, base: u128) {
+                let digit = (integer % base) as u8;
+                integer /= base;
+                bytes.push(2 * digit + u8::from(integer != 0));
+
+                while integer != 0 {
+                    let digit = (integer % INTEGER_BASE) as u8;
+                    integer /= INTEGER_BASE;
+                    bytes.push(2 * digit + u8::from(integer != 0));
+                }
+            }
+
             let mut mantissa = value.abs();
             let mut exponent = 0i64;
 
@@ -629,23 +642,18 @@ mod tests {
                 exponent -= 1;
             }
 
-            let mut mantissa = mantissa as u128;
             let mut bytes = vec![];
 
-            loop {
-                let digit = (mantissa % INTEGER_BASE) as u8;
-                mantissa /= INTEGER_BASE;
-                bytes.push(2 * digit + u8::from(mantissa != 0));
-
-                if mantissa == 0 {
-                    break;
-                }
-            }
-
-            (
+            encode_integer(
+                &mut bytes,
                 3 + 4 * (u128::from(value < 0.0) + 2 * (exponent + 1023) as u128),
-                bytes,
-            )
+                NUMBER_BASE,
+            );
+            // Tag the leading byte as a number.
+            bytes[0] = 3 + 4 * bytes[0];
+            encode_integer(&mut bytes, mantissa as u128, INTEGER_BASE);
+
+            bytes
         }
 
         for value in [
@@ -668,11 +676,12 @@ mod tests {
             // The minimum normal magnitude.
             f64::MIN_POSITIVE,
         ] {
-            let (integer, mantissa) = encode_number(value);
+            let mut input = encode_number(value).into_iter();
+            let head = input.next().unwrap();
 
             assert_eq!(
-                VoidVm::decode_number(&mut mantissa.into_iter(), integer).unwrap(),
-                Number::from_f64(value)
+                VoidVm::decode_number(&mut input, head).unwrap(),
+                Number::from_f64(value),
             );
         }
     }
