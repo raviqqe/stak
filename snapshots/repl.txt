@@ -11,7 +11,7 @@
 - constant primitive 12
 - set $$-
 - constant primitive 13
-- set $$\*
+- set $$*
 - constant primitive 14
 - set $$/
 - constant procedure 0 #f
@@ -333,7 +333,7 @@
 - get ||
 - constant 1
 - call 2 #f ||
-- set \*
+- set *
 - get ||
 - constant 1
 - call 2 #f ||
@@ -3538,7 +3538,7 @@
 - constant 1024
 - constant 1024
 - constant 1024
-- call 4 #f \*
+- call 4 #f *
 - set ||
 - constant procedure 1 #f
   - get ||
@@ -3949,7 +3949,7 @@
   - $$<
   - $$+
   - $$-
-  - $$\*
+  - $$*
   - $$/
   - include
   - except
@@ -3975,12 +3975,6 @@
   - mapping-insert!
   - mapping->list
   - list->mapping
-  - r5rs
-  - exact->inexact
-  - inexact->exact
-  - null-environment
-  - scheme-report-environment
-  - load
   - repl
   - interaction-environment
   - environment
@@ -4052,7 +4046,6 @@
   - force
   - promise?
   - make-promise
-  - case-lambda
   - complex
   - make-rectangular
   - make-polar
@@ -4244,7 +4237,7 @@
   - define-syntax
   - syntax-error
   - define-optimizer
-  - \_
+  - _
   - ...
   - define
   - lambda
@@ -4257,12 +4250,12 @@
   - quote
   - set!
   - let
-  - let\*
+  - let*
   - letrec
-  - letrec\*
+  - letrec*
   - define-values
   - let-values
-  - let\*-values
+  - let*-values
   - if
   - cond
   - case
@@ -4314,9 +4307,9 @@
   - negative?
   - even?
   - odd?
+  - +
   - -
-  - -
-  - -
+  - *
   - /
   - remainder
   - quotient
@@ -4346,7 +4339,7 @@
   - <
   - >
   - <=
-  - > =
+  - >=
   - comparison-operator
   - min
   - max
@@ -8853,7 +8846,7 @@
     - $$-
     - 12
   - list
-    - $$\*
+    - $$*
     - 13
   - list
     - $$/
@@ -11757,236 +11750,6 @@
   - list
     - list
       - scheme
-      - r5rs
-    - (_ . _)
-    - (+ . +)
-    - (- . -)
-    - (... . ...)
-    - (/ . /)
-    - (< . <)
-    - (<= . <=)
-    - (= . =)
-    - (=> . =>)
-    - (> . >)
-    - (>= . >=)
-    - (abs . abs)
-    - (acos . acos)
-    - (and . and)
-    - (angle . angle)
-    - (append . append)
-    - (apply . apply)
-    - (asin . asin)
-    - (assoc . assoc)
-    - (assq . assq)
-    - (assv . assv)
-    - (atan . atan)
-    - (begin . begin)
-    - (boolean? . boolean?)
-    - (caaaar . caaaar)
-    - (caaadr . caaadr)
-    - (caaar . caaar)
-    - (caadar . caadar)
-    - (caaddr . caaddr)
-    - (caadr . caadr)
-    - (caar . caar)
-    - (cadaar . cadaar)
-    - (cadadr . cadadr)
-    - (cadar . cadar)
-    - (caddar . caddar)
-    - (cadddr . cadddr)
-    - (caddr . caddr)
-    - (cadr . cadr)
-    - (call-with-current-continuation . call-with-current-continuation)
-    - (call-with-input-file . call-with-input-file)
-    - (call-with-output-file . call-with-output-file)
-    - (call-with-values . call-with-values)
-    - (car . car)
-    - (case . case)
-    - (cdaaar . cdaaar)
-    - (cdaadr . cdaadr)
-    - (cdaar . cdaar)
-    - (cdadar . cdadar)
-    - (cdaddr . cdaddr)
-    - (cdadr . cdadr)
-    - (cdar . cdar)
-    - (cddaar . cddaar)
-    - (cddadr . cddadr)
-    - (cddar . cddar)
-    - (cdddar . cdddar)
-    - (cddddr . cddddr)
-    - (cdddr . cdddr)
-    - (cddr . cddr)
-    - (cdr . cdr)
-    - (ceiling . ceiling)
-    - (char->integer . char->integer)
-    - (char-alphabetic? . char-alphabetic?)
-    - (char-ci<=? . char-ci<=?)
-    - (char-ci<? . char-ci<?)
-    - (char-ci=? . char-ci=?)
-    - (char-ci>=? . char-ci>=?)
-    - (char-ci>? . char-ci>?)
-    - (char-downcase . char-downcase)
-    - (char-lower-case? . char-lower-case?)
-    - (char-numeric? . char-numeric?)
-    - (char-ready? . char-ready?)
-    - (char-upcase . char-upcase)
-    - (char-upper-case? . char-upper-case?)
-    - (char-whitespace? . char-whitespace?)
-    - (char<=? . char<=?)
-    - (char<? . char<?)
-    - (char=? . char=?)
-    - (char>=? . char>=?)
-    - (char>? . char>?)
-    - (char? . char?)
-    - (close-input-port . close-input-port)
-    - (close-output-port . close-output-port)
-    - (complex? . complex?)
-    - (cond . cond)
-    - (cons . cons)
-    - (cos . cos)
-    - (current-input-port . current-input-port)
-    - (current-output-port . current-output-port)
-    - (define . define)
-    - (define-syntax . define-syntax)
-    - (delay . delay)
-    - (denominator . denominator)
-    - (display . display)
-    - (do . do)
-    - (dynamic-wind . dynamic-wind)
-    - (else . else)
-    - (eof-object? . eof-object?)
-    - (eq? . eq?)
-    - (equal? . equal?)
-    - (eqv? . eqv?)
-    - (eval . eval)
-    - (even? . even?)
-    - (exact->inexact . exact->inexact)
-    - (exact? . exact?)
-    - (exp . exp)
-    - (expt . expt)
-    - (floor . floor)
-    - (for-each . for-each)
-    - (force . force)
-    - (gcd . gcd)
-    - (if . if)
-    - (imag-part . imag-part)
-    - (inexact->exact . inexact->exact)
-    - (inexact? . inexact?)
-    - (input-port? . input-port?)
-    - (integer->char . integer->char)
-    - (integer? . integer?)
-    - (interaction-environment . interaction-environment)
-    - (lambda . lambda)
-    - (lcm . lcm)
-    - (length . length)
-    - (let . let)
-    - (let* . let*)
-    - (let-syntax . let-syntax)
-    - (letrec . letrec)
-    - (letrec-syntax . letrec-syntax)
-    - (list . list)
-    - (list->string . list->string)
-    - (list->vector . list->vector)
-    - (list-ref . list-ref)
-    - (list-tail . list-tail)
-    - (list? . list?)
-    - (load . load)
-    - (log . log)
-    - (magnitude . magnitude)
-    - (make-polar . make-polar)
-    - (make-rectangular . make-rectangular)
-    - (make-string . make-string)
-    - (make-vector . make-vector)
-    - (map . map)
-    - (max . max)
-    - (member . member)
-    - (memq . memq)
-    - (memv . memv)
-    - (min . min)
-    - (modulo . modulo)
-    - (negative? . negative?)
-    - (newline . newline)
-    - (not . not)
-    - (null-environment . null-environment)
-    - (null? . null?)
-    - (number->string . number->string)
-    - (number? . number?)
-    - (numerator . numerator)
-    - (odd? . odd?)
-    - (open-input-file . open-input-file)
-    - (open-output-file . open-output-file)
-    - (or . or)
-    - (output-port? . output-port?)
-    - (pair? . pair?)
-    - (peek-char . peek-char)
-    - (positive? . positive?)
-    - (procedure? . procedure?)
-    - (quasiquote . quasiquote)
-    - (quote . quote)
-    - (quotient . quotient)
-    - (rational? . rational?)
-    - (rationalize . rationalize)
-    - (read . read)
-    - (read-char . read-char)
-    - (real-part . real-part)
-    - (real? . real?)
-    - (remainder . remainder)
-    - (reverse . reverse)
-    - (round . round)
-    - (scheme-report-environment . scheme-report-environment)
-    - (set! . set!)
-    - (set-car! . set-car!)
-    - (set-cdr! . set-cdr!)
-    - (sin . sin)
-    - (sqrt . sqrt)
-    - (string . string)
-    - (string->list . string->list)
-    - (string->number . string->number)
-    - (string->symbol . string->symbol)
-    - (string-append . string-append)
-    - (string-ci<=? . string-ci<=?)
-    - (string-ci<? . string-ci<?)
-    - (string-ci=? . string-ci=?)
-    - (string-ci>=? . string-ci>=?)
-    - (string-ci>? . string-ci>?)
-    - (string-copy . string-copy)
-    - (string-fill! . string-fill!)
-    - (string-length . string-length)
-    - (string-ref . string-ref)
-    - (string-set! . string-set!)
-    - (string<=? . string<=?)
-    - (string<? . string<?)
-    - (string=? . string=?)
-    - (string>=? . string>=?)
-    - (string>? . string>?)
-    - (string? . string?)
-    - (substring . substring)
-    - (symbol->string . symbol->string)
-    - (symbol? . symbol?)
-    - (syntax-rules . syntax-rules)
-    - (tan . tan)
-    - (truncate . truncate)
-    - (values . values)
-    - (vector . vector)
-    - (vector->list . vector->list)
-    - (vector-fill! . vector-fill!)
-    - (vector-length . vector-length)
-    - (vector-ref . vector-ref)
-    - (vector-set! . vector-set!)
-    - (vector? . vector?)
-    - (with-input-from-file . with-input-from-file)
-    - (with-output-to-file . with-output-to-file)
-    - (write . write)
-    - (write-char . write-char)
-    - (zero? . zero?)
-  - list
-    - list
-      - scheme
-      - load
-    - (load . load)
-  - list
-    - list
-      - scheme
       - repl
     - (interaction-environment . interaction-environment)
   - list
@@ -12123,11 +11886,6 @@
   - list
     - list
       - scheme
-      - case-lambda
-    - (case-lambda . case-lambda)
-  - list
-    - list
-      - scheme
       - complex
     - (make-rectangular . make-rectangular)
     - (make-polar . make-polar)
@@ -12227,7 +11985,7 @@
     - (odd? . odd?)
     - (+ . +)
     - (- . -)
-    - (_ . _)
+    - (* . *)
     - (/ . /)
     - (remainder . remainder)
     - (quotient . quotient)
@@ -12745,7 +12503,7 @@
     - (odd? . odd?)
     - (+ . +)
     - (- . -)
-    - (_ . _)
+    - (* . *)
     - (/ . /)
     - (remainder . remainder)
     - (quotient . quotient)
@@ -13028,7 +12786,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -13044,7 +12802,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - (|| || ... . ||)
         - ||
         - ||
@@ -13060,7 +12818,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -13078,7 +12836,7 @@
       - define-values
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -13087,7 +12845,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define
@@ -13110,7 +12868,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "value"
         - ||
         - list
@@ -13149,7 +12907,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "value"
         - ||
         - list
@@ -13181,7 +12939,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "value"
         - ||
         - list
@@ -13196,7 +12954,7 @@
         - lambda
         - ||
         - list
-          - letrec\*
+          - letrec*
           - list
             - list
               - ||
@@ -13207,7 +12965,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define-syntax
@@ -13229,7 +12987,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "syntax"
         - ||
         - list
@@ -13261,7 +13019,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "syntax"
         - ||
         - list
@@ -13287,7 +13045,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define-record-type
@@ -13309,7 +13067,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - define-values
@@ -13332,7 +13090,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -13644,12 +13402,12 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -13665,11 +13423,11 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #f
     - list
       - list
-        - \_
+        - _
         - ||
         - ...
       - list
@@ -13685,14 +13443,14 @@
       - unquote-splicing
     - list
       - list
-        - \_
+        - _
         - list
           - unquote
           - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - unquote-splicing
@@ -13709,7 +13467,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -13726,7 +13484,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - quote
@@ -13738,7 +13496,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - $$quote
@@ -13750,7 +13508,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -14137,7 +13895,7 @@
       - define-values
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define
@@ -14159,7 +13917,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define-record-type
@@ -14181,7 +13939,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define-syntax
@@ -14203,7 +13961,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - list
           - define-values
@@ -14225,7 +13983,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ||
@@ -14237,7 +13995,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14259,7 +14017,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - list
@@ -14287,13 +14045,13 @@
           - ||
           - ...
   - list
-    - let\*
+    - let*
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ||
@@ -14306,7 +14064,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14325,7 +14083,7 @@
             - ||
             - ||
         - list
-          - let\*
+          - let*
           - list
             - list
               - ||
@@ -14341,7 +14099,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14351,7 +14109,7 @@
         - ||
         - ...
       - list
-        - letrec\*
+        - letrec*
         - list
           - list
             - ||
@@ -14361,13 +14119,13 @@
         - ||
         - ...
   - list
-    - letrec\*
+    - letrec*
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14401,7 +14159,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -14412,7 +14170,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -14429,7 +14187,7 @@
       - =>
     - list
       - list
-        - \_
+        - _
         - list
           - else
           - ||
@@ -14442,7 +14200,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - =>
@@ -14467,7 +14225,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
         - ||
@@ -14481,7 +14239,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -14503,7 +14261,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
       - #f
   - list
     - case
@@ -14514,7 +14272,7 @@
       - =>
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ...
@@ -14535,7 +14293,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - else
@@ -14546,7 +14304,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - else
@@ -14560,7 +14318,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - list
@@ -14588,7 +14346,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - list
@@ -14619,7 +14377,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - ||
       - #f
   - list
@@ -14629,7 +14387,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -14641,7 +14399,7 @@
           - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -14661,16 +14419,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #t
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -14689,16 +14447,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #f
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -14723,16 +14481,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
       - #f
     - list
       - list
-        - \_
+        - _
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ...
@@ -14751,7 +14509,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -14771,7 +14529,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -14791,7 +14549,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -14836,13 +14594,13 @@
               - ...
     - list
       - list
-        - \_
+        - _
         - "step"
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - "step"
         - ||
         - ||
@@ -14854,7 +14612,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - "initial"
         - ||
         - ||
@@ -14891,7 +14649,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - "field"
         - ||
         - list
@@ -14912,7 +14670,7 @@
           - ||
           - ...
         - list
-          - -
+          - +
           - ||
           - 1
         - ||
@@ -14932,11 +14690,11 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "field"
         - ()
         - ()
-        - \_
+        - _
         - ||
         - ...
       - list
@@ -14945,13 +14703,13 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - "field"
         - list
           - ||
           - ...
         - ()
-        - \_
+        - _
         - ||
         - ...
       - list
@@ -14963,15 +14721,15 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
-          - \_
+          - _
           - ...
         - ||
         - list
-          - \_
+          - _
           - ||
           - ...
         - ...
@@ -14993,16 +14751,16 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - list
             - ||
-            - \_
+            - _
             - ...
           - ||
           - list
-            - \_
+            - _
             - ||
             - ...
           - ...
@@ -15028,13 +14786,13 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
       - ||
     - list
       - list
-        - \_
+        - _
         - list
           - ||
         - ||
@@ -15054,7 +14812,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -15112,7 +14870,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - (|| || ... . ||)
         - ||
       - list
@@ -15166,7 +14924,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15186,7 +14944,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ...
@@ -15208,7 +14966,7 @@
           - ...
     - list
       - list
-        - \_
+        - _
         - "multiple"
         - ()
         - ||
@@ -15219,7 +14977,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - "multiple"
         - list
           - list
@@ -15242,7 +15000,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - "single"
         - ()
         - ||
@@ -15267,7 +15025,7 @@
             - ||
     - list
       - list
-        - \_
+        - _
         - "single"
         - (|| . ||)
         - ||
@@ -15298,7 +15056,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - "single"
         - ||
         - ||
@@ -15331,13 +15089,13 @@
                 - ||
             - ||
   - list
-    - let\*-values
+    - let*-values
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ||
@@ -15350,7 +15108,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -15363,7 +15121,7 @@
         - list
           - ||
         - list
-          - let\*-values
+          - let*-values
           - list
             - ||
             - ...
@@ -15377,7 +15135,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ()
         - ||
         - ...
@@ -15387,7 +15145,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - list
           - list
             - ||
@@ -15399,7 +15157,7 @@
         - ||
         - ...
       - list
-        - let\*
+        - let*
         - list
           - list
             - ||
@@ -15441,7 +15199,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - list
           - ||
           - ||
@@ -15520,7 +15278,7 @@
       - =>
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - else
@@ -15534,7 +15292,7 @@
         - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15555,7 +15313,7 @@
           - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15584,7 +15342,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15594,7 +15352,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15619,7 +15377,7 @@
             - ...
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15637,7 +15395,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - list
           - ||
@@ -15661,90 +15419,6 @@
           - ||
           - ||
           - ...
-  - list
-    - case-lambda
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
-        - list
-          - ||
-          - ||
-          - ...
-        - ...
-      - list
-        - lambda
-        - ||
-        - list
-          - let
-          - list
-            - list
-              - ||
-              - list
-                - length
-                - ||
-          - list
-            - letrec-syntax
-            - list
-              - list
-                - ||
-                - list
-                  - syntax-rules
-                  - ||
-                  - ()
-                  - list
-                    - list
-                      - \_
-                    - list
-                      - error
-                      - "no matching clause"
-                  - list
-                    - (\_ ((|| ||) . ||) . ||)
-                    - list
-                      - if
-                      - list
-                        - =
-                        - ||
-                        - list
-                          - length
-                          - list
-                            - quote
-                            - list
-                              - ||
-                              - ||
-                      - list
-                        - apply
-                        - (lambda (|| ||) . ||)
-                        - ||
-                      - (|| . ||)
-                  - list
-                    - (\_ ((|| || . ||) . ||) . ||)
-                    - list
-                      - if
-                      - list
-                        - > =
-                        - ||
-                        - list
-                          - length
-                          - list
-                            - quote
-                            - list
-                              - ||
-                              - ||
-                      - list
-                        - apply
-                        - (lambda (|| || . ||) . ||)
-                        - ||
-                      - (|| . ||)
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ...
-              - ...
   - list
     - delay
     - $$syntax-rules
@@ -15752,7 +15426,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - let
@@ -15788,7 +15462,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - lambda
@@ -15814,7 +15488,21 @@
     - ()
     - list
       - list
-        - \_
+        - _
+        - ||
+        - ||
+      - list
+        - ||
+        - ||
+        - ||
+  - list
+    - *
+    - $$syntax-rules
+    - ...
+    - ()
+    - list
+      - list
+        - _
         - ||
         - ||
       - list
@@ -15828,21 +15516,7 @@
     - ()
     - list
       - list
-        - \_
-        - ||
-        - ||
-      - list
-        - ||
-        - ||
-        - ||
-  - list
-    - -
-    - $$syntax-rules
-    - ...
-    - ()
-    - list
-      - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15851,7 +15525,7 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
@@ -15865,13 +15539,13 @@
         - ||
         - ...
   - list
-    - -
+    - +
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15880,13 +15554,13 @@
         - ||
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
         - ||
         - ...
       - list
-        - -
+        - +
         - list
           - ||
           - ||
@@ -15900,7 +15574,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - ||
@@ -15913,7 +15587,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - ||
@@ -15926,20 +15600,20 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - eq?
         - ||
         - 0
   - list
-    - > =
+    - >=
     - $$syntax-rules
     - ...
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15956,7 +15630,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15973,7 +15647,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -15987,7 +15661,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -16001,7 +15675,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
         - ||
       - list
@@ -16015,7 +15689,7 @@
     - ()
     - list
       - list
-        - \_
+        - _
         - ||
       - list
         - eq?
@@ -16284,43 +15958,6 @@
   - call 1 #f $$close
   - call 2 #f call-with-values
 - set eval
-- constant ()
-- call 1 #f make-symbol-table
-- constant ()
-- call 2 #f make-environment
-- constant procedure 0 #f
-  - get 1
-- call 1 #f $$close
-- call 2 #f $$unbind
-- set interaction-environment
-- constant procedure 1 #t
-  - constant begin
-  - get 2
-  - constant procedure 0 #f
-    - constant #f
-    - constant procedure 0 #f
-      - call 0 #f read
-      - get 0
-      - call 1 #f eof-object?
-      - if
-        - constant ()
-      - get 0
-      - call 0 #f 3
-      - call 2 #f cons
-    - call 1 #f $$close
-    - set 1
-    - call 0 #f 0
-  - call 2 #f with-input-from-file
-  - call 2 #f cons
-  - get 1
-  - call 1 #f null?
-  - if
-    - call 0 #f interaction-environment
-    - continue
-  - get 1
-  - call 1 #f car
-  - call 2 #f eval
-- set load
 - constant 40
 - call 1 #f primitive
 - set ||
@@ -16414,6 +16051,26 @@
   - call 1 #f $$close
   - call 1 #f unwind
 - set exit
+- constant ()
+- call 1 #f make-symbol-table
+- constant ()
+- call 2 #f make-environment
+- constant procedure 0 #f
+  - get 1
+- call 1 #f $$close
+- call 2 #f $$unbind
+- set interaction-environment
+- constant 400
+- call 1 #f primitive
+- set current-jiffy
+- constant 401
+- call 1 #f primitive
+- set jiffies-per-second
+- constant procedure 0 #f
+  - call 0 #f current-jiffy
+  - call 0 #f jiffies-per-second
+  - call 2 #f ||
+- set current-second
 - constant procedure 1 #f
   - get 0
   - call 1 #f null?
@@ -16912,35 +16569,6 @@
 - set display
 - get write
 - set write-irritant
-- constant procedure 1 #f
-  - get 0
-  - constant 5
-  - call 2 #f eq?
-  - constant #f
-  - call 2 #f eq?
-  - if
-    - constant "unsupported version for scheme report environment"
-    - get 1
-    - call 2 #f error
-    - continue
-  - constant #f
-  - set 0
-  - constant list
-    - scheme
-    - r5rs
-  - call 1 #f environment
-- set scheme-report-environment
-- constant 400
-- call 1 #f primitive
-- set current-jiffy
-- constant 401
-- call 1 #f primitive
-- set jiffies-per-second
-- constant procedure 0 #f
-  - call 0 #f current-jiffy
-  - call 0 #f jiffies-per-second
-  - call 2 #f ||
-- set current-second
 - constant 1
 - set ||
 - constant procedure 0 #f
@@ -17266,72 +16894,106 @@
     - get 1
   - get 2
 - set ||
-- constant procedure 2 #f
-  - constant #f
-  - get 1
-  - call 1 #f open-input-file
-  - set 1
-  - constant #f
-  - constant procedure 0 #f
-    - get 2
-    - call 1 #f peek-char
-    - call 1 #f eof-object?
-    - if
-      - get 2
-      - call 1 #f close-port
-    - get 2
-    - call 1 #f peek-char
-    - call 1 #f char-whitespace?
-    - if
-      - get 2
-      - call 1 #f read-char
-      - continue
-    - get 2
-    - call 1 #f read
-    - get 5
-    - call 2 #f eval
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f error-object?
+  - if
+    - constant "ERROR: "
+    - call 1 #f display
     - set 0
-    - call 0 #f 1
-  - call 1 #f $$close
-  - set 1
+    - get 0
+    - call 1 #f error-object-message
+    - call 1 #f display
+    - set 0
+    - constant procedure 1 #f
+      - constant #\space
+      - call 1 #f write-char
+      - set 0
+      - get 0
+      - call 1 #f write
+    - get 1
+    - call 1 #f error-object-irritants
+    - call 2 #f for-each
+  - get 0
+  - call 1 #f write
+- set ||
+- constant procedure 0 #f
+  - constant "> "
+  - call 0 #f current-error-port
+  - call 2 #f display
+  - set 0
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 0 #f
+          - get 3
+          - call 0 #f read-line
+          - set 0
+          - get 0
+        - call 1 #f $$close
+        - call 1 #f 5
+      - call 1 #f $$close
+      - call 1 #f call/cc
+      - call 0 #f 0
+    - call 1 #f $$close
+    - constant procedure 0 #f
+      - call 0 #f read
+      - constant procedure 0 #f
+        - get 1
+      - call 1 #f $$close
+      - call 1 #f 4
+    - call 1 #f $$close
+    - call 2 #f with-exception-handler
+  - call 1 #f call/cc
   - call 0 #f 0
 - set ||
 - constant procedure 0 #f
   - constant #f
-  - call 0 #f interaction-environment
-  - set 1
-  - constant #f
   - constant procedure 1 #f
     - get 0
-    - call 1 #f null?
+    - call 1 #f eof-object?
     - if
-      - constant "script file missing"
-      - call 1 #f error
+      - constant #f
     - get 0
-    - call 1 #f car
-    - constant "-l"
-    - call 2 #f equal?
+    - call 1 #f error-object?
     - if
-      - get 3
-      - get 1
-      - call 1 #f cadr
-      - call 2 #f ||
-      - set 0
       - get 0
-      - call 1 #f cddr
-      - call 1 #f 3
-    - constant procedure 0 #f
-      - get 1
+      - continue
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - constant procedure 0 #f
+            - get 3
+            - get 0
+          - call 1 #f $$close
+          - call 1 #f 5
+        - call 1 #f $$close
+        - call 1 #f call/cc
+        - call 0 #f 0
+      - call 1 #f $$close
+      - constant procedure 0 #f
+        - get 4
+        - call 0 #f interaction-environment
+        - call 2 #f eval
+        - constant procedure 0 #f
+          - get 1
+        - call 1 #f $$close
+        - call 1 #f 4
+      - call 1 #f $$close
+      - call 2 #f with-exception-handler
     - call 1 #f $$close
-    - set command-line
-    - get 3
-    - get 1
-    - call 1 #f car
-    - call 2 #f ||
+    - call 1 #f call/cc
+    - call 0 #f 0
+    - set 1
+    - call 1 #f ||
+    - set 0
+    - call 0 #f newline
+    - set 0
+    - call 0 #f ||
+    - call 1 #f 3
   - call 1 #f $$close
   - set 1
-  - call 0 #f command-line
-  - call 1 #f cdr
+  - call 0 #f ||
   - call 1 #f 1
 - set ||
 - call 0 #f command-line
@@ -17347,10 +17009,10 @@
 - call 2 #f member
 - call 2 #f $$unbind
 - if
-  - constant "The Stak Scheme interpreter.\n\n"
+  - constant "The Stak Scheme REPL interpreter.\n\n"
   - call 1 #f write-string
   - set 0
-  - constant "Usage: stak [-l LIBRARY_FILE] SCRIPT_FILE ARGUMENT...\n"
+  - constant "Usage: stak-repl\n"
   - call 1 #f write-string
   - set 0
   - call 0 #f exit
