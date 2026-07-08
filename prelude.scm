@@ -841,8 +841,6 @@
     (define (ceiling x)
       (- (floor (- x))))
 
-    ; Note that rounding must not add any offsets to original numbers because such addition is
-    ; inexact for integers wider than mantissas of 64-bit floating-point numbers.
     (define (round x)
       (if (integer? x)
         x
