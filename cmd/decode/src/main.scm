@@ -278,7 +278,6 @@
   (do ((xs xs (cdr xs)))
     ((null? xs))
     (display-indent depth)
-    (display "- ")
     (display-top-data (car xs) (+ depth 1))))
 
 (define (display-top-data data depth)
@@ -293,7 +292,6 @@
   (let loop ((code code))
     (unless (null? code)
       (display-indent depth)
-      (display "- ")
       (if (eq? code continuation)
         (write-string "continue\n")
         (begin
