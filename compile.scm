@@ -1889,14 +1889,23 @@
      (count-code! codes))
 
     ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, and 11-bit biased
-    ; exponents into leading integers and encode their mantissas as following integers. Rounding a
-    ; mantissa here doubles it, and virtual machines representing all numbers as 64-bit floating-point
-    ; numbers compute them as such. So mantissas are limited to two to the power of 52 to keep their
-    ; doubles within the integers up to two to the power of 53 that those numbers represent exactly.
-    (define maximum-mantissa (expt 2 52))
+    ; exponents into leading integers and encode their mantissas as following integers. Virtual
+    ; machines representing all numbers as 64-bit floating-point numbers compute mantissas as such.
+    ; So mantissas are limited to two to the power of 53 up to which those numbers represent all
+    ; integers exactly.
+    (define maximum-mantissa (expt 2 53))
 
-    ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
-    ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
+    ; Convert a non-negative integer-valued floating-point number to an exact integer. Values reaching
+    ; 52-bit mantissas of 64-bit floating-point numbers are shifted below them first because converting
+    ; them directly doubles them on some virtual machines, losing their exactness beyond such mantissas.
+    (define (float->integer x)
+     (if (< x (expt 2 52))
+      (exact x)
+      (+ (expt 2 52) (exact (- x (expt 2 52))))))
+
+    ; Decomposition of floating-point numbers into a signed mantissa and an exponent. It is exact
+    ; for 64-bit floating-point numbers except that exponents are clamped at the minimum one of
+    ; normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
      (define (mantissa y)
       (/ x (expt 2 y)))
@@ -1906,7 +1915,13 @@
         (integer? (mantissa y))
         (> (mantissa (- y 1)) maximum-mantissa))
        (let ((y (max y -1022)))
-        (values (exact (round (mantissa y))) y)))))
+        (values
+         (float->integer
+          (let ((mantissa (mantissa y)))
+           (if (integer? mantissa)
+            mantissa
+            (round mantissa))))
+         y)))))
 
     (define (encode-integer-part integer base bit)
      (+ (if bit 0 1) (* 2 (modulo integer base))))
@@ -1933,17 +1948,19 @@
       (compressor-write (encode-context-compressor context) (head->byte head))
       (encode-integer-tail context tail)))
 
+    ; Numbers split into payloads, their multipliers, type tags, and optional mantissas. Packing
+    ; the payloads and type tags into single integers would lose precision of payloads wider than
+    ; mantissas of 64-bit floating-point numbers on virtual machines representing all numbers as
+    ; such.
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
-       (values (+ 1 (* 4 (exact (abs x)))) #f))
+       (values (float->integer (abs x)) 4 1 #f))
       ((integer? x)
-       (values (* 2 (exact x)) #f))
+       (values (float->integer x) 2 0 #f))
       (else
        (let-values (((m e) (decompose-float (abs x))))
-        (values
-         (+ 3 (* 4 (+ (if (negative? x) 1 0) (* 2 (+ e 1023)))))
-         m)))))
+        (values (+ (if (negative? x) 1 0) (* 2 (+ e 1023))) 4 3 m)))))
 
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
@@ -1976,8 +1993,15 @@
           (encode-context-push! context value)
           (decrement-count! entry)
           (compressor-write compressor 0)))))
-      (let-values (((number mantissa) (encode-number value)))
-       (encode-integer context number number-base (lambda (head) (+ 3 (* 4 head))))
+      (let*-values (((integer multiplier tag mantissa) (encode-number value))
+                    ((base) (quotient number-base multiplier))
+                    ((rest) (quotient integer base)))
+       (compressor-write
+        compressor
+        (+
+         3
+         (* 4 (+ (if (zero? rest) 0 1) (* 2 (+ tag (* multiplier (modulo integer base))))))))
+       (encode-integer-tail context rest)
        (when mantissa
         (encode-integer context mantissa integer-base (lambda (head) head))))))
 
