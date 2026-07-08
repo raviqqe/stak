@@ -1917,8 +1917,7 @@
        (encode-integer-part integer base (zero? rest))
        rest)))
 
-    ; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
-    ; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
+    ; We adopt little endianness like the `varint` in Protocol Buffer.
     (define (encode-integer-tail context x)
      (do ((x x (quotient x integer-base)))
       ((zero? x))
@@ -1929,8 +1928,6 @@
         integer-base
         (zero? (quotient x integer-base))))))
 
-    ; Write an integer to the output, deriving its leading byte from the head part with the given
-    ; procedure and appending its tail.
     (define (encode-integer context integer base head->byte)
      (let-values (((head tail) (encode-integer-parts integer base)))
       (compressor-write (encode-context-compressor context) (head->byte head))
