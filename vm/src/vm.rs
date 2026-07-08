@@ -623,14 +623,12 @@ mod tests {
     fn decode_float() {
         fn encode_number(value: f64) -> Vec<u8> {
             fn encode_integer(bytes: &mut Vec<u8>, mut integer: u128, base: u128) {
-                let digit = (integer % base) as u8;
                 integer /= base;
-                bytes.push(2 * digit + u8::from(integer != 0));
+                bytes.push(2 * (integer % base) as u8 + u8::from(integer != 0));
 
                 while integer != 0 {
-                    let digit = (integer % INTEGER_BASE) as u8;
                     integer /= INTEGER_BASE;
-                    bytes.push(2 * digit + u8::from(integer != 0));
+                    bytes.push(2 * (integer % INTEGER_BASE) as u8 + u8::from(integer != 0));
                 }
             }
 
