@@ -208,7 +208,7 @@ Feature: Floating-point number
       | -1.51 | -2     |
       | -1.9  | -2     |
 
-  Scenario Outline: Round a wide number
+  Scenario Outline: Round a large number
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -370,7 +370,7 @@ Feature: Floating-point number
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario Outline: Keep a wide mantissa of a literal
+    Scenario Outline: Keep a large mantissa of a literal
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base))
