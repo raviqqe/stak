@@ -19,10 +19,9 @@ decode() (
 
   mkdir -p $(dirname $base)
   cat prelude.scm $file | stak-compile >$base.bc
-  stak-decode <$base.bc >$base.md
+  stak-decode <$base.bc >$base.txt
 )
 
 list_scheme_files | parallel decode
 
-pnpm oxfmt snapshots
 git diff --exit-code
