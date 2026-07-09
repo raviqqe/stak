@@ -4235,13 +4235,11 @@ constant list
   maximum-mantissa
   y
   bit
-  rest
   encode-integer-part
   encode-integer-parts
-  integer
   head->byte
-  encode-integer-tail
   tail
+  float->integer
   decompose-float
   x
   e
@@ -4257,11 +4255,14 @@ constant list
   encode-context-push!
   decrement-count!
   entry
+  encode-number
+  number-base
   compressor-write
   compressor
-  encode-number
-  number
-  number-base
+  multiplier
+  integer
+  encode-integer-tail
+  rest
   encode-integer
   mantissa
   integer-base
@@ -20168,7 +20169,39 @@ constant list
     list
       expt
       2
-      52
+      53
+  list
+    define
+    list
+      float->integer
+      x
+    list
+      if
+      list
+        <
+        x
+        list
+          expt
+          2
+          52
+      list
+        exact
+        x
+      list
+        +
+        list
+          expt
+          2
+          52
+        list
+          exact
+          list
+            -
+            x
+            list
+              expt
+              2
+              52
   list
     define
     list
@@ -20232,12 +20265,24 @@ constant list
           list
             values
             list
-              exact
+              float->integer
               list
-                round
+                let
                 list
+                  list
+                    mantissa
+                    list
+                      mantissa
+                      y
+                list
+                  if
+                  list
+                    integer?
+                    mantissa
                   mantissa
-                  y
+                  list
+                    round
+                    mantissa
             y
   list
     define
@@ -20370,16 +20415,12 @@ constant list
         list
           values
           list
-            +
-            1
+            float->integer
             list
-              *
-              4
-              list
-                exact
-                list
-                  abs
-                  x
+              abs
+              x
+          4
+          1
           #f
       list
         list
@@ -20388,11 +20429,10 @@ constant list
         list
           values
           list
-            *
-            2
-            list
-              exact
-              x
+            float->integer
+            x
+          2
+          0
           #f
       list
         else
@@ -20412,26 +20452,22 @@ constant list
             values
             list
               +
-              3
+              list
+                if
+                list
+                  negative?
+                  x
+                1
+                0
               list
                 *
-                4
+                2
                 list
                   +
-                  list
-                    if
-                    list
-                      negative?
-                      x
-                    1
-                    0
-                  list
-                    *
-                    2
-                    list
-                      +
-                      e
-                      1023
+                  e
+                  1023
+            4
+            3
             m
   list
     define
@@ -20579,31 +20615,66 @@ constant list
                 compressor
                 0
       list
-        let-values
+        let*-values
         list
           list
             list
-              number
+              integer
+              multiplier
+              tag
               mantissa
             list
               encode-number
               value
-        list
-          encode-integer
-          context
-          number
-          number-base
           list
-            lambda
             list
-              head
+              base
             list
-              +
-              3
+              quotient
+              number-base
+              multiplier
+          list
+            list
+              rest
+            list
+              quotient
+              integer
+              base
+        list
+          compressor-write
+          compressor
+          list
+            +
+            3
+            list
+              *
+              4
               list
-                *
-                4
-                head
+                +
+                list
+                  if
+                  list
+                    zero?
+                    rest
+                  0
+                  1
+                list
+                  *
+                  2
+                  list
+                    +
+                    tag
+                    list
+                      *
+                      multiplier
+                      list
+                        modulo
+                        integer
+                        base
+        list
+          encode-integer-tail
+          context
+          rest
         list
           when
           mantissa
