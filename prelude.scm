@@ -842,11 +842,19 @@
       (- (floor (- x))))
 
     (define (round x)
-      (let* ((x (* x 2))
-             (y (floor (/ (+ x 1) 2))))
-        (if (= (modulo x 2) 1)
-          (- y (modulo y 2))
-          y)))
+      (if (integer? x)
+        x
+        (let* ((y (floor x))
+               (z (* 2 (- x y))))
+          (cond
+            ((< z 1)
+              y)
+            ((< 1 z)
+              (+ y 1))
+            ((even? y)
+              y)
+            (else
+              (+ y 1))))))
 
     (define exact round)
     (define (inexact x)
