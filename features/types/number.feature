@@ -141,7 +141,7 @@ Feature: Number
       | 128   | D      |
       | 129   | E      |
 
-  Scenario Outline: Use a wide integer
+  Scenario Outline: Use a large integer
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
