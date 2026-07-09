@@ -69,7 +69,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: cargo install --features vendored-openssl cargo-codspeed
       - run: cargo codspeed build
-      - uses: codspeedhq/action@4e969336ab9acd4f6f8d025fdd793292b0835df0 # v4.18.2
+      - uses: codspeedhq/action@9f3a37ece7abc84992501a7fcd54d1704f3458fa # v4.18.4
         with:
           mode: simulation
           run: cargo codspeed run
