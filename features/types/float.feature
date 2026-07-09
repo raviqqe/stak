@@ -202,11 +202,14 @@ Feature: Floating-point number
       | 2     | 2      |
       | 2.5   | 2      |
       | 3.5   | 4      |
+      | -0.5  | 0      |
       | -1    | -1     |
       | -0.9  | -1     |
       | -1.5  | -2     |
       | -1.51 | -2     |
       | -1.9  | -2     |
+      | -2.5  | -2     |
+      | -3.5  | -4     |
 
   Scenario Outline: Rationalize a number
     Given a file named "main.scm" with:
