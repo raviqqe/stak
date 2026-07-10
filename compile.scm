@@ -1948,19 +1948,27 @@
       (compressor-write (encode-context-compressor context) (head->byte head))
       (encode-integer-tail context tail)))
 
-    ; Numbers split into payloads, their multipliers, type tags, and optional mantissas. Packing
-    ; the payloads and type tags into single integers would lose precision of payloads wider than
-    ; mantissas of 64-bit floating-point numbers on virtual machines representing all numbers as
-    ; such.
+    ; Numbers split into head digits of their encoded integers, the remaining parts, and optional
+    ; mantissas. Packing payloads and type tags into single integers instead would lose precision
+    ; of payloads wider than mantissas of 64-bit floating-point numbers on virtual machines
+    ; representing all numbers as such.
     (define (encode-number x)
+     (define (encode-parts integer multiplier tag mantissa)
+      (let* ((base (quotient number-base multiplier))
+             (rest (quotient integer base)))
+       (values
+        (+ (if (zero? rest) 0 1) (* 2 (+ tag (* multiplier (modulo integer base)))))
+        rest
+        mantissa)))
+
      (cond
       ((and (integer? x) (negative? x))
-       (values (float->integer (abs x)) 4 1 #f))
+       (encode-parts (float->integer (abs x)) 4 1 #f))
       ((integer? x)
-       (values (float->integer x) 2 0 #f))
+       (encode-parts (float->integer x) 2 0 #f))
       (else
        (let-values (((m e) (decompose-float (abs x))))
-        (values (+ (if (negative? x) 1 0) (* 2 (+ e 1023))) 4 3 m)))))
+        (encode-parts (+ (if (negative? x) 1 0) (* 2 (+ e 1023))) 4 3 m)))))
 
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
@@ -1993,14 +2001,8 @@
           (encode-context-push! context value)
           (decrement-count! entry)
           (compressor-write compressor 0)))))
-      (let*-values (((integer multiplier tag mantissa) (encode-number value))
-                    ((base) (quotient number-base multiplier))
-                    ((rest) (quotient integer base)))
-       (compressor-write
-        compressor
-        (+
-         3
-         (* 4 (+ (if (zero? rest) 0 1) (* 2 (+ tag (* multiplier (modulo integer base))))))))
+      (let-values (((head rest mantissa) (encode-number value)))
+       (compressor-write compressor (+ 3 (* 4 head)))
        (encode-integer-tail context rest)
        (when mantissa
         (encode-integer context mantissa integer-base (lambda (head) head))))))
