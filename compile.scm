@@ -2001,9 +2001,9 @@
           (encode-context-push! context value)
           (decrement-count! entry)
           (compressor-write compressor 0)))))
-      (let-values (((head rest mantissa) (encode-number value)))
+      (let-values (((head tail mantissa) (encode-number value)))
        (compressor-write compressor (+ 3 (* 4 head)))
-       (encode-integer-tail context rest)
+       (encode-integer-tail context tail)
        (when mantissa
         (encode-integer context mantissa integer-base (lambda (head) head))))))
 
