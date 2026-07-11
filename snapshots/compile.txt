@@ -4238,6 +4238,7 @@ constant list
   rest
   encode-integer-part
   encode-integer-parts
+  integer
   head->byte
   encode-integer-tail
   tail
@@ -4259,9 +4260,8 @@ constant list
   compressor-write
   compressor
   encode-number
-  integer
+  number
   number-base
-  multiplier
   encode-integer
   mantissa
   integer-base
@@ -20370,12 +20370,16 @@ constant list
         list
           values
           list
-            exact
+            +
+            1
             list
-              abs
-              x
-          4
-          1
+              *
+              4
+              list
+                exact
+                list
+                  abs
+                  x
           #f
       list
         list
@@ -20384,10 +20388,11 @@ constant list
         list
           values
           list
-            exact
-            x
-          2
-          0
+            *
+            2
+            list
+              exact
+              x
           #f
       list
         else
@@ -20407,22 +20412,26 @@ constant list
             values
             list
               +
-              list
-                if
-                list
-                  negative?
-                  x
-                1
-                0
+              3
               list
                 *
-                2
+                4
                 list
                   +
-                  e
-                  1023
-            4
-            3
+                  list
+                    if
+                    list
+                      negative?
+                      x
+                    1
+                    0
+                  list
+                    *
+                    2
+                    list
+                      +
+                      e
+                      1023
             m
   list
     define
@@ -20574,9 +20583,7 @@ constant list
         list
           list
             list
-              integer
-              multiplier
-              tag
+              number
               mantissa
             list
               encode-number
@@ -20584,11 +20591,8 @@ constant list
         list
           encode-integer
           context
-          integer
-          list
-            quotient
-            number-base
-            multiplier
+          number
+          number-base
           list
             lambda
             list
@@ -20599,25 +20603,7 @@ constant list
               list
                 *
                 4
-                list
-                  +
-                  list
-                    modulo
-                    head
-                    2
-                  list
-                    *
-                    2
-                    list
-                      +
-                      tag
-                      list
-                        *
-                        multiplier
-                        list
-                          quotient
-                          head
-                          2
+                head
         list
           when
           mantissa
