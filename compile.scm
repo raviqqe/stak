@@ -1934,27 +1934,19 @@
       (compressor-write (encode-context-compressor context) (head->byte head))
       (encode-integer-tail context tail)))
 
-    ; Numbers split into head digits of their encoded integers, the remaining parts, and optional
-    ; mantissas. Packing payloads and type tags into single integers instead would lose precision
-    ; of payloads wider than mantissas of 64-bit floating-point numbers on virtual machines
-    ; representing all numbers as such.
+    ; Numbers pack their payloads and type tags into leading integers and encode mantissas of
+    ; floating-point numbers as following integers. Note that packed negative integers wider than
+    ; 51 bits lose their precision on virtual machines representing all numbers as 64-bit
+    ; floating-point numbers until big integers are supported.
     (define (encode-number x)
-     (define (encode-parts integer multiplier tag mantissa)
-      (let* ((base (quotient number-base multiplier))
-             (rest (quotient integer base)))
-       (values
-        (+ (if (zero? rest) 0 1) (* 2 (+ tag (* multiplier (modulo integer base)))))
-        rest
-        mantissa)))
-
      (cond
       ((and (integer? x) (negative? x))
-       (encode-parts (exact (abs x)) 4 1 #f))
+       (values (+ 1 (* 4 (exact (abs x)))) #f))
       ((integer? x)
-       (encode-parts (exact x) 2 0 #f))
+       (values (* 2 (exact x)) #f))
       (else
        (let-values (((m e) (decompose-float (abs x))))
-        (encode-parts (+ (if (negative? x) 1 0) (* 2 (+ e 1023))) 4 3 m)))))
+        (values (+ 3 (* 4 (+ (if (negative? x) 1 0) (* 2 (+ e 1023))))) m)))))
 
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
@@ -1987,9 +1979,8 @@
           (encode-context-push! context value)
           (decrement-count! entry)
           (compressor-write compressor 0)))))
-      (let-values (((head tail mantissa) (encode-number value)))
-       (compressor-write compressor (+ 3 (* 4 head)))
-       (encode-integer-tail context tail)
+      (let-values (((number mantissa) (encode-number value)))
+       (encode-integer context number number-base (lambda (head) (+ 3 (* 4 head))))
        (when mantissa
         (encode-integer context mantissa integer-base (lambda (head) head))))))
 

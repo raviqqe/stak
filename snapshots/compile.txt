@@ -4235,15 +4235,13 @@ constant list
   maximum-mantissa
   y
   bit
+  rest
   encode-integer-part
   encode-integer-parts
   head->byte
-  number-base
-  multiplier
-  integer
-  rest
+  encode-integer-tail
+  tail
   decompose-float
-  encode-parts
   x
   e
   m
@@ -4258,11 +4256,12 @@ constant list
   encode-context-push!
   decrement-count!
   entry
-  encode-number
   compressor-write
   compressor
-  encode-integer-tail
-  tail
+  encode-number
+  integer
+  number-base
+  multiplier
   encode-integer
   mantissa
   integer-base
@@ -20358,55 +20357,6 @@ constant list
       encode-number
       x
     list
-      define
-      list
-        encode-parts
-        integer
-        multiplier
-        tag
-        mantissa
-      list
-        let*
-        list
-          list
-            base
-            list
-              quotient
-              number-base
-              multiplier
-          list
-            rest
-            list
-              quotient
-              integer
-              base
-        list
-          values
-          list
-            +
-            list
-              if
-              list
-                zero?
-                rest
-              0
-              1
-            list
-              *
-              2
-              list
-                +
-                tag
-                list
-                  *
-                  multiplier
-                  list
-                    modulo
-                    integer
-                    base
-          rest
-          mantissa
-    list
       cond
       list
         list
@@ -20418,7 +20368,7 @@ constant list
             negative?
             x
         list
-          encode-parts
+          values
           list
             exact
             list
@@ -20432,7 +20382,7 @@ constant list
           integer?
           x
         list
-          encode-parts
+          values
           list
             exact
             x
@@ -20454,7 +20404,7 @@ constant list
                   abs
                   x
           list
-            encode-parts
+            values
             list
               +
               list
@@ -20624,26 +20574,50 @@ constant list
         list
           list
             list
-              head
-              tail
+              integer
+              multiplier
+              tag
               mantissa
             list
               encode-number
               value
         list
-          compressor-write
-          compressor
-          list
-            +
-            3
-            list
-              *
-              4
-              head
-        list
-          encode-integer-tail
+          encode-integer
           context
-          tail
+          integer
+          list
+            quotient
+            number-base
+            multiplier
+          list
+            lambda
+            list
+              head
+            list
+              +
+              3
+              list
+                *
+                4
+                list
+                  +
+                  list
+                    modulo
+                    head
+                    2
+                  list
+                    *
+                    2
+                    list
+                      +
+                      tag
+                      list
+                        *
+                        multiplier
+                        list
+                          quotient
+                          head
+                          2
         list
           when
           mantissa
