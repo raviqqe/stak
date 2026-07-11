@@ -1,5 +1,6 @@
 #![allow(missing_docs)]
 
+use core::io::Sink;
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use stak::{
     device::FixedBufferDevice,
@@ -12,7 +13,7 @@ use stak::{
     vm::Vm,
 };
 use stak_compiler::compile_r7rs;
-use std::{fs::read, io::Sink, path::Path};
+use std::{fs::read, path::Path};
 
 const HEAP_SIZE: usize = 1 << 18;
 const DEVICE_BUFFER_SIZE: usize = 1 << 8;
