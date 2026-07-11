@@ -20,19 +20,19 @@
     "@raviqqe/stak": "^0.12.19",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
-    "astro": "^7.0.6",
+    "astro": "^7.0.7",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.49.0",
     "lucide-preact": "^1.23.0",
     "monza-editor": "^0.5.9",
     "nanostores": "^1.4.0",
     "picolight": "^0.2.8",
-    "preact": "^10.29.4",
+    "preact": "^10.29.7",
     "vite-plugin-wasm": "^3.6.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@types/node": "^26.1.0",
+    "@types/node": "^26.1.1",
     "sharp": "^0.35.3",
     "typescript": "^6.0.3"
   }
