@@ -672,6 +672,9 @@ mod tests {
             137438953471.5,
             -137438953471.5,
             2251799813685247.5,
+            // Full 53-bit mantissas.
+            4503599627370495.5,
+            -4503599627370495.5,
             // The minimum normal magnitude.
             f64::MIN_POSITIVE,
         ] {

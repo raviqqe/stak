@@ -368,6 +368,8 @@ Feature: Floating-point number
         | literal            | value                              |
         | 137438953471.5     | (- (* 65536.0 2097152.0) 0.5)      |
         | 2251799813685247.5 | (- (* 2097152.0 1073741824.0) 0.5) |
+        | 4503599627370495.5 | (- (* 67108864.0 67108864.0) 0.5)  |
+        | 9007199254740991.0 | (- (* 134217728.0 67108864.0) 1.0) |
 
     Scenario Outline: Keep an exact literal
       Given a file named "main.scm" with:
@@ -386,6 +388,8 @@ Feature: Floating-point number
         | 0.125       | (/ 1.0 8.0)   |
         | 12.5        | (/ 25.0 2.0)  |
         | 0.001953125 | (/ 1.0 512.0) |
+        | 0.1         | (/ 1.0 10.0)  |
+        | 0.6         | (/ 6.0 10.0)  |
 
     Scenario Outline: Round a large number
       Given a file named "main.scm" with:

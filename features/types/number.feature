@@ -141,6 +141,22 @@ Feature: Number
       | 128   | D      |
       | 129   | E      |
 
+  Scenario Outline: Use a large integer
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= <value> <expression>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value             | expression                   |
+      | 9007199254740991  | (- (* 134217728 67108864) 1) |
+      | -2251799813685247 | (- 1 (* 33554432 67108864))  |
+      | -1125899906842624 | (- 0 (* 33554432 33554432))  |
+
   Scenario Outline: Use arithmetic operators
     Given a file named "main.scm" with:
       """scheme

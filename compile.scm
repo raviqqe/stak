@@ -1889,14 +1889,12 @@
      (count-code! codes))
 
     ; Encoded floating-point numbers pack their 2-bit type tags, sign bits, and 11-bit biased
-    ; exponents into leading integers and encode their mantissas as following integers. Rounding a
-    ; mantissa here doubles it, and virtual machines representing all numbers as 64-bit floating-point
-    ; numbers compute them as such. So mantissas are limited to two to the power of 52 to keep their
-    ; doubles within the integers up to two to the power of 53 that those numbers represent exactly.
-    (define maximum-mantissa (expt 2 52))
+    ; exponents into leading integers and encode their mantissas as following integers. Virtual
+    ; machines representing all numbers as 64-bit floating-point numbers compute mantissas as such.
+    ; So mantissas are limited to two to the power of 53 up to which those numbers represent all
+    ; integers exactly.
+    (define maximum-mantissa (expt 2 53))
 
-    ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent. Exponents
-    ; are clamped at the minimum one of normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
      (define (mantissa y)
       (/ x (expt 2 y)))
