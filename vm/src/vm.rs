@@ -559,7 +559,7 @@ impl<'a, T: PrimitiveSet<H>, H: Heap> Vm<'a, T, H> {
 
 impl<T: PrimitiveSet<H>, H: Heap> Display for Vm<'_, T, H> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!(formatter, "{}", &self.memory)
+        write!(formatter, "{}", self.memory)
     }
 }
 
