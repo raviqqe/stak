@@ -1895,9 +1895,6 @@
     ; integers exactly.
     (define maximum-mantissa (expt 2 53))
 
-    ; Decomposition of floating-point numbers into a signed mantissa and an exponent. It is exact
-    ; for 64-bit floating-point numbers except that exponents are clamped at the minimum one of
-    ; normal numbers so that small numbers underflow gradually.
     (define (decompose-float x)
      (define (mantissa y)
       (/ x (expt 2 y)))
@@ -1934,10 +1931,6 @@
       (compressor-write (encode-context-compressor context) (head->byte head))
       (encode-integer-tail context tail)))
 
-    ; Numbers pack their payloads and type tags into leading integers and encode mantissas of
-    ; floating-point numbers as following integers. Note that packed negative integers wider than
-    ; 51 bits lose their precision on virtual machines representing all numbers as 64-bit
-    ; floating-point numbers until big integers are supported.
     (define (encode-number x)
      (cond
       ((and (integer? x) (negative? x))
@@ -1946,7 +1939,9 @@
        (values (* 2 (exact x)) #f))
       (else
        (let-values (((m e) (decompose-float (abs x))))
-        (values (+ 3 (* 4 (+ (if (negative? x) 1 0) (* 2 (+ e 1023))))) m)))))
+        (values
+         (+ 3 (* 4 (+ (if (negative? x) 1 0) (* 2 (+ e 1023)))))
+         m)))))
 
     (define (encode-rib context value)
      (define compressor (encode-context-compressor context))
