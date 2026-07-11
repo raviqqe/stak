@@ -1895,14 +1895,6 @@
     ; integers exactly.
     (define maximum-mantissa (expt 2 53))
 
-    ; Convert a non-negative integer-valued floating-point number to an exact integer. Values reaching
-    ; 52-bit mantissas of 64-bit floating-point numbers are shifted below them first because converting
-    ; them directly doubles them on some virtual machines, losing their exactness beyond such mantissas.
-    (define (float->integer x)
-     (if (< x (expt 2 52))
-      (exact x)
-      (+ (expt 2 52) (exact (- x (expt 2 52))))))
-
     ; Decomposition of floating-point numbers into a signed mantissa and an exponent. It is exact
     ; for 64-bit floating-point numbers except that exponents are clamped at the minimum one of
     ; normal numbers so that small numbers underflow gradually.
@@ -1915,13 +1907,7 @@
         (integer? (mantissa y))
         (> (mantissa (- y 1)) maximum-mantissa))
        (let ((y (max y -1022)))
-        (values
-         (float->integer
-          (let ((mantissa (mantissa y)))
-           (if (integer? mantissa)
-            mantissa
-            (round mantissa))))
-         y)))))
+        (values (exact (round (mantissa y))) y)))))
 
     (define (encode-integer-part integer base bit)
      (+ (if bit 0 1) (* 2 (modulo integer base))))
@@ -1963,9 +1949,9 @@
 
      (cond
       ((and (integer? x) (negative? x))
-       (encode-parts (float->integer (abs x)) 4 1 #f))
+       (encode-parts (exact (abs x)) 4 1 #f))
       ((integer? x)
-       (encode-parts (float->integer x) 2 0 #f))
+       (encode-parts (exact x) 2 0 #f))
       (else
        (let-values (((m e) (decompose-float (abs x))))
         (encode-parts (+ (if (negative? x) 1 0) (* 2 (+ e 1023))) 4 3 m)))))

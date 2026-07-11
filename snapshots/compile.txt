@@ -4238,11 +4238,10 @@ constant list
   encode-integer-part
   encode-integer-parts
   head->byte
-  tail
   number-base
   multiplier
   integer
-  float->integer
+  rest
   decompose-float
   encode-parts
   x
@@ -4263,7 +4262,7 @@ constant list
   compressor-write
   compressor
   encode-integer-tail
-  rest
+  tail
   encode-integer
   mantissa
   integer-base
@@ -20174,38 +20173,6 @@ constant list
   list
     define
     list
-      float->integer
-      x
-    list
-      if
-      list
-        <
-        x
-        list
-          expt
-          2
-          52
-      list
-        exact
-        x
-      list
-        +
-        list
-          expt
-          2
-          52
-        list
-          exact
-          list
-            -
-            x
-            list
-              expt
-              2
-              52
-  list
-    define
-    list
       decompose-float
       x
     list
@@ -20266,24 +20233,12 @@ constant list
           list
             values
             list
-              float->integer
+              exact
               list
-                let
+                round
                 list
-                  list
-                    mantissa
-                    list
-                      mantissa
-                      y
-                list
-                  if
-                  list
-                    integer?
-                    mantissa
                   mantissa
-                  list
-                    round
-                    mantissa
+                  y
             y
   list
     define
@@ -20465,7 +20420,7 @@ constant list
         list
           encode-parts
           list
-            float->integer
+            exact
             list
               abs
               x
@@ -20479,7 +20434,7 @@ constant list
         list
           encode-parts
           list
-            float->integer
+            exact
             x
           2
           0
@@ -20670,7 +20625,7 @@ constant list
           list
             list
               head
-              rest
+              tail
               mantissa
             list
               encode-number
@@ -20688,7 +20643,7 @@ constant list
         list
           encode-integer-tail
           context
-          rest
+          tail
         list
           when
           mantissa
