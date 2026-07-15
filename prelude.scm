@@ -1740,8 +1740,6 @@
 
     (define string-type 5)
 
-    ; The machine epsilon of numbers on a virtual machine, or 1 on virtual machines
-    ; that support only integers.
     (define epsilon
       (let loop ((x 1))
         (let ((y (/ x 2)))
