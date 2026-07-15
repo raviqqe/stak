@@ -18,7 +18,7 @@ rustix = {
   ],
   optional = true
 }
-stak-vm = { path = "../vm", version = "0.12.20" }
+stak-vm = { path = "../vm", version = "0.12.21" }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
