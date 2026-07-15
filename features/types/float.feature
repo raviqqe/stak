@@ -236,8 +236,7 @@ Feature: Floating-point number
       (write-string (number->string <value>))
       """
     When I successfully run `stak main.scm`
-    # TODO Use an `exactly` adverb.
-    Then the stdout should contain "<value>"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
       | value              |
