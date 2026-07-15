@@ -240,12 +240,15 @@ Feature: Floating-point number
     Then the stdout should contain "<value>"
 
     Examples:
-      | value |
-      | 0.5   |
-      | 0.125 |
-      | 1.2   |
-      | 3.14  |
-      | -3.14 |
+      | value             |
+      | 0.5               |
+      | 0.125             |
+      | 1.2               |
+      | 3.14              |
+      | -3.14             |
+      | 3.141592653589793 |
+      | 2.718281828459045 |
+      | 0.999999999999    |
 
   @stak
   Scenario Outline: Convert a non-finite floating point number to a string
@@ -275,12 +278,15 @@ Feature: Floating-point number
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value |
-      | 0.5   |
-      | 0.125 |
-      | 1.2   |
-      | 3.14  |
-      | -3.14 |
+      | value             |
+      | 0.5               |
+      | 0.125             |
+      | 1.2               |
+      | 3.14              |
+      | -3.14             |
+      | 3.141592653589793 |
+      | 2.718281828459045 |
+      | 0.999999999999    |
 
   Scenario Outline: Calculate a square root
     Given a file named "main.scm" with:

@@ -1740,13 +1740,14 @@
 
     (define string-type 5)
 
-    ; TODO Set a true machine epsilon.
-    ;
-    ; Currently, we have a precision limitation due to compression of floating point number in a compiler.
+    ; The machine epsilon of numbers on a virtual machine, or 1 on virtual machines
+    ; that support only integers.
     (define epsilon
-      ; Variadic arguments to arithmetic operators are not available at this point.
-      (let ((x (/ 1000000000)))
-        (if (zero? x) 1 x)))
+      (let loop ((x 1))
+        (let ((y (/ x 2)))
+          (if (= (+ 1 y) 1)
+            x
+            (loop y)))))
 
     ; String
 
