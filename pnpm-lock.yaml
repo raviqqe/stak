@@ -34,10 +34,10 @@ importers:
         version: 0.1.9(preact-render-to-string@6.7.0)
       '@nanostores/async':
         specifier: ^0.1.0
-        version: 0.1.0(nanostores@1.4.0)
+        version: 0.1.0(nanostores@1.4.1)
       '@nanostores/preact':
         specifier: ^1.1.0
-        version: 1.1.0(nanostores@1.4.0)(preact@10.29.7)
+        version: 1.1.0(nanostores@1.4.1)(preact@10.29.7)
       '@preact/signals':
         specifier: ^2.9.4
         version: 2.9.4(preact@10.29.7)
@@ -66,8 +66,8 @@ importers:
         specifier: ^0.5.9
         version: 0.5.9
       nanostores:
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: ^1.4.1
+        version: 1.4.1
       picolight:
         specifier: ^0.2.8
         version: 0.2.8
@@ -2243,8 +2243,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanostores@1.4.0:
-    resolution: {integrity: sha512-i0tloweeudshAEuddpDxcg9Ik6pkPfVsHIgKyf143JrgG7/MOh0+q7BypdLXZPoOP7fOYt1eTcwGkyiVmhJFkA==}
+  nanostores@1.4.1:
+    resolution: {integrity: sha512-PGd3uPojJB9Z07d5NX3Db/SOSBbyy3wLMUGq0GpnEEJfVzY9mq7daPMAZ3jObV5D3Jn+YKND636eI5ULg7F80Q==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   neotraverse@1.0.1:
@@ -3815,13 +3815,13 @@ snapshots:
     transitivePeerDependencies:
       - preact-render-to-string
 
-  '@nanostores/async@0.1.0(nanostores@1.4.0)':
+  '@nanostores/async@0.1.0(nanostores@1.4.1)':
     dependencies:
-      nanostores: 1.4.0
+      nanostores: 1.4.1
 
-  '@nanostores/preact@1.1.0(nanostores@1.4.0)(preact@10.29.7)':
+  '@nanostores/preact@1.1.0(nanostores@1.4.1)(preact@10.29.7)':
     dependencies:
-      nanostores: 1.4.0
+      nanostores: 1.4.1
       preact: 10.29.7(preact-render-to-string@6.7.0)
 
   '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
@@ -5485,7 +5485,7 @@ snapshots:
 
   nanoid@3.3.16: {}
 
-  nanostores@1.4.0: {}
+  nanostores@1.4.1: {}
 
   neotraverse@1.0.1: {}
 
