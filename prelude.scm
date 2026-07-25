@@ -1921,11 +1921,11 @@
                 (list #\-)
                 '())
               (let loop ((x (abs x)) (ys '()))
-                (let* ((q (quotient x radix))
-                       (ys
-                         (cons
-                           (format-digit (quotient (remainder x radix) 1))
-                           ys)))
+                (let ((q (quotient x radix))
+                      (ys
+                        (cons
+                          (format-digit (quotient (remainder x radix) 1))
+                          ys)))
                   (if (positive? q)
                     (loop q ys)
                     ys)))
