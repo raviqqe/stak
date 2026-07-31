@@ -10,5 +10,7 @@ runs:
       with:
         go-version: stable
     - uses: raviqqe/enable-homebrew@0cd19e7c245801a3494a29415862f79b874536aa # v1.0.4
+    - run: brew update
+      shell: bash
     - run: tools/ci/setup.sh
       shell: bash
