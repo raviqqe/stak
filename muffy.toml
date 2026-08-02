@@ -23,7 +23,8 @@ user-agent = "Muffy/0.2.0"
 extend = "default"
 
 [sites.external.cache]
-max_age = "1h"
+max_age = "1w"
+stale_while_revalidate = "1w"
 
 [sites.main]
 extend = "default"
