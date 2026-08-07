@@ -40,8 +40,6 @@ ignored_elements = [
   "site-search",
   "sl-.*",
   "starlight-.*",
-  # TODO Move island styles emitted by Astro into head elements.
-  "style",
 ]
 
 [sites.main.validation.svg]
