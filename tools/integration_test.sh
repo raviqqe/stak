@@ -34,5 +34,7 @@ cargo build --profile release_test --features $features
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-# A comma binds looser than a conjunction in tag expressions.
-go tool agoa -t "$(echo "$tags" | sed 's/,/ \&\& ~@extra, /g') && ~@extra" "$@"
+# A comma binds looser than a conjunction in tag expressions. So the exclusion
+# guards only the first clause, but extra scenarios never have the interpreter
+# tags in the other clauses.
+go tool agoa -t "~@extra && $tags" "$@"
