@@ -84,7 +84,7 @@ Feature: Port
       | (open-output-file "foo.txt") |
       | (open-output-string)         |
 
-  @stak
+  @gauche @guile @stak
   Scenario Outline: Preserve pending input order after peeking
     Given a file named "main.scm" with:
       """scheme
@@ -116,7 +116,9 @@ Feature: Port
           #f
           (lambda () #f)
           '(195 169 120)))
+
       (peek-char port)
+
       (for-each
         (lambda (expected)
           (write-u8 (if (= (read-u8 port) expected) 65 66)))
