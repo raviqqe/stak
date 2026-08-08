@@ -1128,9 +1128,8 @@ constant procedure 0 #t
   get 0
   call 1 #f ||
   get 1
-  get 2
-  call 1 #f ||
-  get 2
+  get 1
+  get 3
   call 1 #f ||
   call 2 #f ||
   call 2 #f ||
