@@ -3265,24 +3265,27 @@ constant procedure 1 #t
   get 2
   call 1 #f 1
 set write-u8
-constant procedure 2 #f
-  get 1
+constant procedure 3 #f
+  get 2
   constant 64
   call 2 #f quotient
-  get 0
-  constant 0
+  get 2
+  constant 64
   call 2 #f eq?
   constant #f
   call 2 #f eq?
   if
     get 0
-    get 2
+    get 3
+    constant 64
     call 2 #f ||
+    get 3
+    call 3 #f ||
     continue
   constant #f
   set 0
   constant 128
-  get 3
+  get 4
   constant 64
   call 2 #f remainder
   call 2 #f ||
@@ -3324,8 +3327,9 @@ constant procedure 1 #t
       get 5
       get 2
       call 2 #f remainder
-      get 7
-      call 2 #f ||
+      get 2
+      get 8
+      call 3 #f ||
     get 2
     constant 2
     call 2 #f ||

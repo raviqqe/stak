@@ -149,6 +149,7 @@ Feature: Port
       | ABC    |
       | あ      |
       | 😄      |
+      | —      |
 
   @gauche @guile @stak
   Scenario Outline: Write to a string port
