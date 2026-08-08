@@ -9,12 +9,10 @@ tool (
 )
 
 require (
-	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/gherkin/go/v27 v27.0.0 // indirect
 	github.com/cucumber/gherkin/go/v28 v28.0.0 // indirect
 	github.com/cucumber/gherkin/go/v42 v42.0.0 // indirect
 	github.com/cucumber/godog v0.16.0 // indirect
-	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/cucumber/messages/go/v22 v22.0.0 // indirect
 	github.com/cucumber/messages/go/v24 v24.1.0 // indirect
 	github.com/cucumber/messages/go/v34 v34.2.0 // indirect
