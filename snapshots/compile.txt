@@ -2867,11 +2867,10 @@ constant procedure 0 #t
   get 0
   call 1 #f read-u8
   get 1
-  get 2
+  get 1
+  get 3
   call 1 #f ||
-  get 2
-  call 1 #f list
-  call 2 #f append
+  call 2 #f cons
   call 2 #f ||
   set 0
   get 0
@@ -3016,9 +3015,9 @@ constant procedure 0 #t
   if
     call 0 #f eof-object
   get 1
-  get 2
+  get 1
+  get 3
   call 1 #f ||
-  get 2
   call 2 #f append
   call 2 #f ||
   set 0
