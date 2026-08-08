@@ -34,4 +34,5 @@ cargo build --profile release_test --features $features
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-go tool agoa -t "$tags && ~@extra" "$@"
+# A comma binds looser than a conjunction in tag expressions.
+go tool agoa -t "$(echo "$tags" | sed 's/,/ \&\& ~@extra, /g') && ~@extra" "$@"
