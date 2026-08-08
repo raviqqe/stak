@@ -116,7 +116,9 @@ Feature: Port
           #f
           (lambda () #f)
           '(195 169 120)))
+
       (peek-char port)
+
       (for-each
         (lambda (expected)
           (write-u8 (if (= (read-u8 port) expected) 65 66)))
