@@ -2190,7 +2190,7 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (port-set-data! port (append (port-data port) (list x)))
+        (port-set-data! port (cons x (port-data port)))
         x))
 
     (define (u8-ready? . rest)
@@ -2255,7 +2255,7 @@
         (if (null? bytes)
           (eof-object)
           (begin
-            (port-set-data! port (append (port-data port) bytes))
+            (port-set-data! port (append bytes (port-data port)))
             (parse-char-bytes bytes)))))
 
     (define (char-ready? . rest)
