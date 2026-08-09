@@ -94,7 +94,6 @@ fn bench_memory_ports(criterion: &mut Criterion) {
 
         for &size in SIZES {
             for (name, operation) in [
-                ("make-bytevector", "(make-bytevector size 65)"),
                 (
                     "read-bytevector",
                     indoc!(
