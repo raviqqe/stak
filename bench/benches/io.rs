@@ -1,6 +1,7 @@
 #![allow(missing_docs)]
 
 use criterion::{BenchmarkId, Criterion, Throughput, black_box, criterion_group, criterion_main};
+use indoc::{formatdoc, indoc};
 use stak::{
     device::VoidDevice,
     file::{FileSystem, OsFileSystem, VoidFileSystem},
@@ -49,27 +50,27 @@ fn scheme_string(path: &Path) -> String {
 }
 
 fn memory_source(operation: &str, size: usize) -> Vec<u8> {
-    compile(&format!(
-        r#"
-(import (scheme base))
+    compile(&formatdoc!(
+        "
+        (import (scheme base))
 
-(define size {size})
+        (define size {size})
 
-{operation}
-"#
+        {operation}
+        "
     ))
 }
 
 fn file_source(operation: &str, size: usize, path: &Path) -> Vec<u8> {
-    compile(&format!(
+    compile(&formatdoc!(
         r#"
-(import (scheme base) (scheme file))
+        (import (scheme base) (scheme file))
 
-(define size {size})
-(define path "{}")
+        (define size {size})
+        (define path "{}")
 
-{operation}
-"#,
+        {operation}
+        "#,
         scheme_string(path)
     ))
 }
@@ -83,19 +84,39 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ("make-bytevector", "(make-bytevector size 65)"),
                 (
                     "prepare/input-bytevector",
-                    "(define source (make-bytevector size 65))\n(define port (open-input-bytevector source))",
+                    indoc!(
+                        "
+                        (define source (make-bytevector size 65))
+                        (define port (open-input-bytevector source))
+                        "
+                    ),
                 ),
                 (
                     "prepare/output-bytevector",
-                    "(define source (make-bytevector size 65))\n(define port (open-output-bytevector))",
+                    indoc!(
+                        "
+                        (define source (make-bytevector size 65))
+                        (define port (open-output-bytevector))
+                        "
+                    ),
                 ),
                 (
                     "prepare/input-string",
-                    "(define source (make-string size #\\a))\n(define port (open-input-string source))",
+                    indoc!(
+                        r"
+                        (define source (make-string size #\a))
+                        (define port (open-input-string source))
+                        "
+                    ),
                 ),
                 (
                     "prepare/output-string",
-                    "(define source (make-string size #\\a))\n(define port (open-output-string))",
+                    indoc!(
+                        r"
+                        (define source (make-string size #\a))
+                        (define port (open-output-string))
+                        "
+                    ),
                 ),
             ] {
                 let bytecode = memory_source(operation, size);
@@ -117,19 +138,45 @@ fn bench_memory_ports(criterion: &mut Criterion) {
         for (name, operation) in [
             (
                 "read/input-bytevector",
-                "(define source (make-bytevector size 65))\n(define port (open-input-bytevector source))\n(read-bytevector size port)",
+                indoc!(
+                    "
+                    (define source (make-bytevector size 65))
+                    (define port (open-input-bytevector source))
+                    (read-bytevector size port)
+                    "
+                ),
             ),
             (
                 "write/output-bytevector",
-                "(define source (make-bytevector size 65))\n(define port (open-output-bytevector))\n(write-bytevector source port)\n(get-output-bytevector port)",
+                indoc!(
+                    "
+                    (define source (make-bytevector size 65))
+                    (define port (open-output-bytevector))
+                    (write-bytevector source port)
+                    (get-output-bytevector port)
+                    "
+                ),
             ),
             (
                 "read/input-string",
-                "(define source (make-string size #\\a))\n(define port (open-input-string source))\n(read-string size port)",
+                indoc!(
+                    r"
+                    (define source (make-string size #\a))
+                    (define port (open-input-string source))
+                    (read-string size port)
+                    "
+                ),
             ),
             (
                 "write/output-string",
-                "(define source (make-string size #\\a))\n(define port (open-output-string))\n(write-string source port)\n(get-output-string port)",
+                indoc!(
+                    r"
+                    (define source (make-string size #\a))
+                    (define port (open-output-string))
+                    (write-string source port)
+                    (get-output-string port)
+                    "
+                ),
             ),
         ] {
             let bytecode = memory_source(operation, size);
@@ -151,11 +198,21 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
             for (name, operation) in [
                 (
                     "prepare/input-string",
-                    "(define source (make-string size #\\é))\n(define port (open-input-string source))",
+                    indoc!(
+                        r"
+                        (define source (make-string size #\é))
+                        (define port (open-input-string source))
+                        "
+                    ),
                 ),
                 (
                     "prepare/output-string",
-                    "(define source (make-string size #\\é))\n(define port (open-output-string))",
+                    indoc!(
+                        r"
+                        (define source (make-string size #\é))
+                        (define port (open-output-string))
+                        "
+                    ),
                 ),
             ] {
                 let bytecode = memory_source(operation, size);
@@ -177,11 +234,24 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
         for (name, operation) in [
             (
                 "read/input-string",
-                "(define source (make-string size #\\é))\n(define port (open-input-string source))\n(read-string size port)",
+                indoc!(
+                    r"
+                    (define source (make-string size #\é))
+                    (define port (open-input-string source))
+                    (read-string size port)
+                    "
+                ),
             ),
             (
                 "write/output-string",
-                "(define source (make-string size #\\é))\n(define port (open-output-string))\n(write-string source port)\n(get-output-string port)",
+                indoc!(
+                    r"
+                    (define source (make-string size #\é))
+                    (define port (open-output-string))
+                    (write-string source port)
+                    (get-output-string port)
+                    "
+                ),
             ),
         ] {
             let bytecode = memory_source(operation, size);
@@ -209,11 +279,21 @@ fn bench_os_files(criterion: &mut Criterion) {
             for (name, operation) in [
                 (
                     "prepare/input-bytevector",
-                    "(define port (open-input-file path))\n(close-input-port port)",
+                    indoc!(
+                        "
+                        (define port (open-input-file path))
+                        (close-input-port port)
+                        "
+                    ),
                 ),
                 (
                     "prepare/input-string",
-                    "(define port (open-input-file path))\n(close-input-port port)",
+                    indoc!(
+                        "
+                        (define port (open-input-file path))
+                        (close-input-port port)
+                        "
+                    ),
                 ),
             ] {
                 let bytecode = file_source(operation, size, &input_path);
@@ -228,11 +308,23 @@ fn bench_os_files(criterion: &mut Criterion) {
             for (name, operation) in [
                 (
                     "prepare/output-bytevector",
-                    "(define source (make-bytevector size 65))\n(define port (open-output-file path))\n(close-output-port port)",
+                    indoc!(
+                        "
+                        (define source (make-bytevector size 65))
+                        (define port (open-output-file path))
+                        (close-output-port port)
+                        "
+                    ),
                 ),
                 (
                     "prepare/output-string",
-                    "(define source (make-string size #\\a))\n(define port (open-output-file path))\n(close-output-port port)",
+                    indoc!(
+                        r"
+                        (define source (make-string size #\a))
+                        (define port (open-output-file path))
+                        (close-output-port port)
+                        "
+                    ),
                 ),
             ] {
                 let bytecode = file_source(operation, size, &output_path);
@@ -257,11 +349,23 @@ fn bench_os_files(criterion: &mut Criterion) {
         for (name, operation) in [
             (
                 "read/input-bytevector",
-                "(define port (open-input-file path))\n(read-bytevector size port)\n(close-input-port port)",
+                indoc!(
+                    "
+                    (define port (open-input-file path))
+                    (read-bytevector size port)
+                    (close-input-port port)
+                    "
+                ),
             ),
             (
                 "read/input-string",
-                "(define port (open-input-file path))\n(read-string size port)\n(close-input-port port)",
+                indoc!(
+                    "
+                    (define port (open-input-file path))
+                    (read-string size port)
+                    (close-input-port port)
+                    "
+                ),
             ),
         ] {
             let bytecode = file_source(operation, size, &input_path);
@@ -276,11 +380,25 @@ fn bench_os_files(criterion: &mut Criterion) {
         for (name, operation) in [
             (
                 "write/output-bytevector",
-                "(define source (make-bytevector size 65))\n(define port (open-output-file path))\n(write-bytevector source port)\n(close-output-port port)",
+                indoc!(
+                    "
+                    (define source (make-bytevector size 65))
+                    (define port (open-output-file path))
+                    (write-bytevector source port)
+                    (close-output-port port)
+                    "
+                ),
             ),
             (
                 "write/output-string",
-                "(define source (make-string size #\\a))\n(define port (open-output-file path))\n(write-string source port)\n(close-output-port port)",
+                indoc!(
+                    r"
+                    (define source (make-string size #\a))
+                    (define port (open-output-file path))
+                    (write-string source port)
+                    (close-output-port port)
+                    "
+                ),
             ),
         ] {
             let bytecode = file_source(operation, size, &output_path);
@@ -306,7 +424,12 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             fs::write(&input_path, "é".as_bytes().repeat(size)).unwrap();
 
             let bytecode = file_source(
-                "(define port (open-input-file path))\n(close-input-port port)",
+                indoc!(
+                    "
+                    (define port (open-input-file path))
+                    (close-input-port port)
+                    "
+                ),
                 size,
                 &input_path,
             );
@@ -318,7 +441,13 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             });
 
             let bytecode = file_source(
-                "(define source (make-string size #\\é))\n(define port (open-output-file path))\n(close-output-port port)",
+                indoc!(
+                    r"
+                    (define source (make-string size #\é))
+                    (define port (open-output-file path))
+                    (close-output-port port)
+                    "
+                ),
                 size,
                 &output_path,
             );
@@ -340,7 +469,13 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
         group.throughput(Throughput::Bytes((size * 2) as u64));
 
         let bytecode = file_source(
-            "(define port (open-input-file path))\n(read-string size port)\n(close-input-port port)",
+            indoc!(
+                "
+                (define port (open-input-file path))
+                (read-string size port)
+                (close-input-port port)
+                "
+            ),
             size,
             &input_path,
         );
@@ -352,7 +487,14 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
         });
 
         let bytecode = file_source(
-            "(define source (make-string size #\\é))\n(define port (open-output-file path))\n(write-string source port)\n(close-output-port port)",
+            indoc!(
+                r"
+                (define source (make-string size #\é))
+                (define port (open-output-file path))
+                (write-string source port)
+                (close-output-port port)
+                "
+            ),
             size,
             &output_path,
         );
