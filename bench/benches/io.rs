@@ -77,7 +77,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
             for (name, operation) in [
                 ("make-bytevector", "(make-bytevector size 65)"),
                 (
-                    "prepare/input-bytevector",
+                    "prepare/bytevector",
                     indoc!(
                         "
                         (define source (make-bytevector size 65))
@@ -86,7 +86,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "prepare/output-bytevector",
+                    "prepare/bytevector",
                     indoc!(
                         "
                         (define source (make-bytevector size 65))
@@ -95,7 +95,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "prepare/input-string",
+                    "prepare/string",
                     indoc!(
                         r"
                         (define source (make-string size #\a))
@@ -104,7 +104,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "prepare/output-string",
+                    "prepare/string",
                     indoc!(
                         r"
                         (define source (make-string size #\a))
@@ -127,11 +127,11 @@ fn bench_memory_ports(criterion: &mut Criterion) {
     let mut group = criterion.benchmark_group("io/in-memory-port");
 
     for &size in SIZES {
-        group.throughput(Throughput::Bytes(size as u64));
+        group.throughput(Throughput::Bytes(size as _));
 
         for (name, operation) in [
             (
-                "read/input-bytevector",
+                "read/bytevector",
                 indoc!(
                     "
                     (define source (make-bytevector size 65))
@@ -141,7 +141,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/output-bytevector",
+                "write/bytevector",
                 indoc!(
                     "
                     (define source (make-bytevector size 65))
@@ -152,7 +152,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "read/input-string",
+                "read/string",
                 indoc!(
                     r"
                     (define source (make-string size #\a))
@@ -162,7 +162,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/output-string",
+                "write/string",
                 indoc!(
                     r"
                     (define source (make-string size #\a))
@@ -191,7 +191,7 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
         for &size in SIZES {
             for (name, operation) in [
                 (
-                    "prepare/input-string",
+                    "prepare/string",
                     indoc!(
                         r"
                         (define source (make-string size #\é))
@@ -200,7 +200,7 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "prepare/output-string",
+                    "prepare/string",
                     indoc!(
                         r"
                         (define source (make-string size #\é))
@@ -223,11 +223,11 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
     let mut group = criterion.benchmark_group("io/in-memory-port/utf8");
 
     for &size in SIZES {
-        group.throughput(Throughput::Bytes((size * 2) as u64));
+        group.throughput(Throughput::Bytes((size * 2) as _));
 
         for (name, operation) in [
             (
-                "read/input-string",
+                "read/string",
                 indoc!(
                     r"
                     (define source (make-string size #\é))
@@ -237,7 +237,7 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/output-string",
+                "write/string",
                 indoc!(
                     r"
                     (define source (make-string size #\é))
@@ -272,7 +272,7 @@ fn bench_os_files(criterion: &mut Criterion) {
 
             for (name, operation) in [
                 (
-                    "prepare/input-bytevector",
+                    "prepare/bytevector",
                     indoc!(
                         "
                         (define port (open-input-file path))
@@ -281,7 +281,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "prepare/input-string",
+                    "prepare/string",
                     indoc!(
                         "
                         (define port (open-input-file path))
@@ -301,7 +301,7 @@ fn bench_os_files(criterion: &mut Criterion) {
 
             for (name, operation) in [
                 (
-                    "prepare/output-bytevector",
+                    "prepare/bytevector",
                     indoc!(
                         "
                         (define source (make-bytevector size 65))
@@ -311,7 +311,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "prepare/output-string",
+                    "prepare/string",
                     indoc!(
                         r"
                         (define source (make-string size #\a))
@@ -338,11 +338,11 @@ fn bench_os_files(criterion: &mut Criterion) {
         let input_path = directory.path().join(format!("input-{size}.bin"));
         let output_path = directory.path().join(format!("output-{size}.bin"));
         assert_eq!(fs::metadata(&input_path).unwrap().len(), size as u64);
-        group.throughput(Throughput::Bytes(size as u64));
+        group.throughput(Throughput::Bytes(size as _));
 
         for (name, operation) in [
             (
-                "read/input-bytevector",
+                "read/bytevector",
                 indoc!(
                     "
                     (define port (open-input-file path))
@@ -352,7 +352,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "read/input-string",
+                "read/string",
                 indoc!(
                     "
                     (define port (open-input-file path))
@@ -373,7 +373,7 @@ fn bench_os_files(criterion: &mut Criterion) {
 
         for (name, operation) in [
             (
-                "write/output-bytevector",
+                "write/bytevector",
                 indoc!(
                     "
                     (define source (make-bytevector size 65))
@@ -384,7 +384,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/output-string",
+                "write/string",
                 indoc!(
                     r"
                     (define source (make-string size #\a))
@@ -428,7 +428,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
                 &input_path,
             );
 
-            group.bench_function(BenchmarkId::new("prepare/input-string", size), |bencher| {
+            group.bench_function(BenchmarkId::new("prepare/string", size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -446,7 +446,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
                 &output_path,
             );
 
-            group.bench_function(BenchmarkId::new("prepare/output-string", size), |bencher| {
+            group.bench_function(BenchmarkId::new("prepare/string", size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -460,7 +460,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
         let input_path = directory.path().join(format!("input-{size}.bin"));
         let output_path = directory.path().join(format!("output-{size}.bin"));
         assert_eq!(fs::metadata(&input_path).unwrap().len(), (size * 2) as u64);
-        group.throughput(Throughput::Bytes((size * 2) as u64));
+        group.throughput(Throughput::Bytes((size * 2) as _));
 
         let bytecode = file_source(
             indoc!(
@@ -474,7 +474,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             &input_path,
         );
 
-        group.bench_function(BenchmarkId::new("read/input-string", size), |bencher| {
+        group.bench_function(BenchmarkId::new("read/string", size), |bencher| {
             bencher.iter(|| {
                 run(black_box(&bytecode), OsFileSystem::new()).unwrap();
             })
@@ -493,7 +493,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             &output_path,
         );
 
-        group.bench_function(BenchmarkId::new("write/output-string", size), |bencher| {
+        group.bench_function(BenchmarkId::new("write/string", size), |bencher| {
             bencher.iter(|| {
                 run(black_box(&bytecode), OsFileSystem::new()).unwrap();
             })
