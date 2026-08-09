@@ -43,12 +43,6 @@ fn run(bytecode: &[u8], file_system: impl FileSystem) -> Result<(), SmallError> 
     vm.run(bytecode.iter().copied())
 }
 
-fn scheme_string(path: &Path) -> String {
-    path.to_string_lossy()
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-}
-
 fn memory_source(operation: &str, size: usize) -> Vec<u8> {
     compile(&formatdoc!(
         "
@@ -71,7 +65,7 @@ fn file_source(operation: &str, size: usize, path: &Path) -> Vec<u8> {
 
         {operation}
         "#,
-        scheme_string(path)
+        path.display()
     ))
 }
 
