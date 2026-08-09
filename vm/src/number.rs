@@ -236,7 +236,7 @@ mod tests {
                         .to_f64()
                         .is_infinite()
                 );
-            },
+            }
             _ => {
                 assert_eq!(
                     Number::from_i64(1).divide(Number::from_i64(0)),
