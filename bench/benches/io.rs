@@ -142,8 +142,6 @@ fn bench_memory_ports(criterion: &mut Criterion) {
             });
         }
     }
-
-    group.finish();
 }
 
 fn bench_memory_utf8_ports(criterion: &mut Criterion) {
@@ -198,8 +196,6 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
             });
         }
     }
-
-    group.finish();
 }
 
 fn bench_os_files(criterion: &mut Criterion) {
@@ -303,10 +299,6 @@ fn bench_os_files(criterion: &mut Criterion) {
             });
         }
     }
-
-    group.finish();
-
-    directory.close().unwrap();
 }
 
 fn bench_os_utf8_files(criterion: &mut Criterion) {
@@ -384,8 +376,6 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
     }
 
     group.finish();
-
-    directory.close().unwrap();
 }
 
 criterion_group!(
