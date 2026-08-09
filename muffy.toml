@@ -58,11 +58,7 @@ concurrency = 64
 supply = 10
 window = "1s"
 
-[sites.forbidden]
+[sites.rate_limited]
 extend = "default"
 roots = ["https://en.wikipedia.org/wiki/"]
-statuses = [200, 403]
-
-[sites.ignored]
-roots = ["https://www.gnu.org/software/guile/"]
-ignore = true
+statuses = [200, 429]

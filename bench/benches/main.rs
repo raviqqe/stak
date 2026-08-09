@@ -58,7 +58,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     vm.run(module.bytecode().iter().copied())
 }
 
-static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
+const BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
     ("add", "add", &ADD_MODULE),
     ("empty", "empty", &EMPTY_MODULE),
     ("eval", "eval_sum_10000000", &EVAL_MODULE),
@@ -70,8 +70,8 @@ static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
 ];
 
 fn stak_run(criterion: &mut Criterion) {
-    for (_, name, module) in BENCHMARKS {
-        criterion.bench_function(name, |bencher| {
+    for (_, id, module) in BENCHMARKS {
+        criterion.bench_function(id, |bencher| {
             bencher.iter(|| {
                 run(black_box(module)).unwrap();
             })
