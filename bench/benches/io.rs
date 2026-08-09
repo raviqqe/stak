@@ -374,8 +374,6 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             })
         });
     }
-
-    group.finish();
 }
 
 criterion_group!(
