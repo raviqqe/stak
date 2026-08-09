@@ -23,6 +23,7 @@ stak-compiler = { path = "../compiler", version = "0.12.21" }
 
 [dev-dependencies]
 criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
+indoc = "2.0.7"
 tempfile = "3.27.0"
 
 [build-dependencies]

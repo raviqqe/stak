@@ -16,8 +16,9 @@ use tempfile::tempdir;
 const HEAP_SIZE: usize = 1 << 22;
 const SIZES: &[usize] = &[10_000, 100_000];
 
-// Preparation groups intentionally omit throughput because they transfer no payload.
-// Operation throughput is end-to-end VM/setup plus IO throughput, not a prep-subtracted rate.
+// Preparation groups intentionally omit throughput because they transfer no
+// payload. Operation throughput is end-to-end VM/setup plus IO throughput, not
+// a prep-subtracted rate.
 
 fn compile(source: &str) -> Vec<u8> {
     let mut bytecode = vec![];
@@ -98,9 +99,8 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ),
             ] {
                 let bytecode = memory_source(operation, size);
-                let id = BenchmarkId::new(name, size);
 
-                group.bench_function(id, |bencher| {
+                group.bench_function(BenchmarkId::new(name, size), |bencher| {
                     bencher.iter(|| {
                         run(black_box(&bytecode), VoidFileSystem::new()).unwrap();
                     })
@@ -133,9 +133,8 @@ fn bench_memory_ports(criterion: &mut Criterion) {
             ),
         ] {
             let bytecode = memory_source(operation, size);
-            let id = BenchmarkId::new(name, size);
 
-            group.bench_function(id, |bencher| {
+            group.bench_function(BenchmarkId::new(name, size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), VoidFileSystem::new()).unwrap();
                 })
@@ -160,9 +159,8 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
                 ),
             ] {
                 let bytecode = memory_source(operation, size);
-                let id = BenchmarkId::new(name, size);
 
-                group.bench_function(id, |bencher| {
+                group.bench_function(BenchmarkId::new(name, size), |bencher| {
                     bencher.iter(|| {
                         run(black_box(&bytecode), VoidFileSystem::new()).unwrap();
                     })
@@ -187,9 +185,8 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
             ),
         ] {
             let bytecode = memory_source(operation, size);
-            let id = BenchmarkId::new(name, size);
 
-            group.bench_function(id, |bencher| {
+            group.bench_function(BenchmarkId::new(name, size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), VoidFileSystem::new()).unwrap();
                 })
@@ -220,9 +217,8 @@ fn bench_os_files(criterion: &mut Criterion) {
                 ),
             ] {
                 let bytecode = file_source(operation, size, &input_path);
-                let id = BenchmarkId::new(name, size);
 
-                group.bench_function(id, |bencher| {
+                group.bench_function(BenchmarkId::new(name, size), |bencher| {
                     bencher.iter(|| {
                         run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                     })
@@ -240,9 +236,8 @@ fn bench_os_files(criterion: &mut Criterion) {
                 ),
             ] {
                 let bytecode = file_source(operation, size, &output_path);
-                let id = BenchmarkId::new(name, size);
 
-                group.bench_function(id, |bencher| {
+                group.bench_function(BenchmarkId::new(name, size), |bencher| {
                     bencher.iter(|| {
                         run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                     })
@@ -270,9 +265,8 @@ fn bench_os_files(criterion: &mut Criterion) {
             ),
         ] {
             let bytecode = file_source(operation, size, &input_path);
-            let id = BenchmarkId::new(name, size);
 
-            group.bench_function(id, |bencher| {
+            group.bench_function(BenchmarkId::new(name, size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -290,9 +284,8 @@ fn bench_os_files(criterion: &mut Criterion) {
             ),
         ] {
             let bytecode = file_source(operation, size, &output_path);
-            let id = BenchmarkId::new(name, size);
 
-            group.bench_function(id, |bencher| {
+            group.bench_function(BenchmarkId::new(name, size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -317,9 +310,8 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
                 size,
                 &input_path,
             );
-            let id = BenchmarkId::new("prepare/input-string", size);
 
-            group.bench_function(id, |bencher| {
+            group.bench_function(BenchmarkId::new("prepare/input-string", size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -330,9 +322,8 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
                 size,
                 &output_path,
             );
-            let id = BenchmarkId::new("prepare/output-string", size);
 
-            group.bench_function(id, |bencher| {
+            group.bench_function(BenchmarkId::new("prepare/output-string", size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -353,9 +344,8 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             size,
             &input_path,
         );
-        let id = BenchmarkId::new("read/input-string", size);
 
-        group.bench_function(id, |bencher| {
+        group.bench_function(BenchmarkId::new("read/input-string", size), |bencher| {
             bencher.iter(|| {
                 run(black_box(&bytecode), OsFileSystem::new()).unwrap();
             })
@@ -366,9 +356,8 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             size,
             &output_path,
         );
-        let id = BenchmarkId::new("write/output-string", size);
 
-        group.bench_function(id, |bencher| {
+        group.bench_function(BenchmarkId::new("write/output-string", size), |bencher| {
             bencher.iter(|| {
                 run(black_box(&bytecode), OsFileSystem::new()).unwrap();
             })

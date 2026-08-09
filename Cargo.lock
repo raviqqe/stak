@@ -1469,6 +1469,7 @@ name = "stak-bench"
 version = "0.12.21"
 dependencies = [
  "codspeed-criterion-compat",
+ "indoc",
  "mlua",
  "stak",
  "stak-build",
