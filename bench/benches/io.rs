@@ -3,14 +3,15 @@
 use criterion::{BenchmarkId, Criterion, Throughput, black_box, criterion_group, criterion_main};
 use stak::{
     device::VoidDevice,
-    file::{OsFileSystem, VoidFileSystem},
+    file::{FileSystem, OsFileSystem, VoidFileSystem},
     process_context::VoidProcessContext,
-    r7rs::SmallPrimitiveSet,
+    r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
 };
 use stak_compiler::compile_r7rs;
 use std::{fs, path::Path};
+use tempfile::tempdir;
 
 const HEAP_SIZE: usize = 1 << 22;
 const SIZES: &[usize] = &[10_000, 100_000];
@@ -26,10 +27,7 @@ fn compile(source: &str) -> Vec<u8> {
     bytecode
 }
 
-fn run<F>(bytecode: &[u8], file_system: F) -> Result<(), stak::r7rs::SmallError>
-where
-    F: stak::file::FileSystem,
-{
+fn run(bytecode: &[u8], file_system: impl FileSystem) -> Result<(), SmallError> {
     let mut vm = Vm::new(
         vec![Default::default(); HEAP_SIZE],
         SmallPrimitiveSet::new(
@@ -205,15 +203,14 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
 }
 
 fn bench_os_files(criterion: &mut Criterion) {
-    let directory = std::env::temp_dir().join(format!("stak-io-bench-{}", std::process::id()));
-    fs::create_dir_all(&directory).unwrap();
+    let directory = tempdir().unwrap();
 
     {
         let mut group = criterion.benchmark_group("io/os-file/preparation");
 
         for &size in SIZES {
-            let input_path = directory.join(format!("input-{size}.bin"));
-            let output_path = directory.join(format!("output-{size}.bin"));
+            let input_path = directory.path().join(format!("input-{size}.bin"));
+            let output_path = directory.path().join(format!("output-{size}.bin"));
             fs::write(&input_path, vec![65; size]).unwrap();
 
             for (name, operation) in [
@@ -261,8 +258,8 @@ fn bench_os_files(criterion: &mut Criterion) {
     let mut group = criterion.benchmark_group("io/os-file");
 
     for &size in SIZES {
-        let input_path = directory.join(format!("input-{size}.bin"));
-        let output_path = directory.join(format!("output-{size}.bin"));
+        let input_path = directory.path().join(format!("input-{size}.bin"));
+        let output_path = directory.path().join(format!("output-{size}.bin"));
         assert_eq!(fs::metadata(&input_path).unwrap().len(), size as u64);
         group.throughput(Throughput::Bytes(size as u64));
 
@@ -309,19 +306,18 @@ fn bench_os_files(criterion: &mut Criterion) {
 
     group.finish();
 
-    let _ = fs::remove_dir_all(directory);
+    directory.close().unwrap();
 }
 
 fn bench_os_utf8_files(criterion: &mut Criterion) {
-    let directory = std::env::temp_dir().join(format!("stak-io-utf8-bench-{}", std::process::id()));
-    fs::create_dir_all(&directory).unwrap();
+    let directory = tempdir().unwrap();
 
     {
         let mut group = criterion.benchmark_group("io/os-file/utf8/preparation");
 
         for &size in SIZES {
-            let input_path = directory.join(format!("input-{size}.bin"));
-            let output_path = directory.join(format!("output-{size}.bin"));
+            let input_path = directory.path().join(format!("input-{size}.bin"));
+            let output_path = directory.path().join(format!("output-{size}.bin"));
             fs::write(&input_path, "é".as_bytes().repeat(size)).unwrap();
 
             let bytecode = file_source(
@@ -355,8 +351,8 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
     let mut group = criterion.benchmark_group("io/os-file/utf8");
 
     for &size in SIZES {
-        let input_path = directory.join(format!("input-{size}.bin"));
-        let output_path = directory.join(format!("output-{size}.bin"));
+        let input_path = directory.path().join(format!("input-{size}.bin"));
+        let output_path = directory.path().join(format!("output-{size}.bin"));
         assert_eq!(fs::metadata(&input_path).unwrap().len(), (size * 2) as u64);
         group.throughput(Throughput::Bytes((size * 2) as u64));
 
@@ -389,7 +385,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
 
     group.finish();
 
-    let _ = fs::remove_dir_all(directory);
+    directory.close().unwrap();
 }
 
 criterion_group!(
