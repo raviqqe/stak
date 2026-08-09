@@ -96,7 +96,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
             for (name, operation) in [
                 ("make-bytevector", "(make-bytevector size 65)"),
                 (
-                    "read/bytevector",
+                    "read-bytevector",
                     indoc!(
                         "
                         (define source (make-bytevector size 65))
@@ -105,7 +105,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "write/bytevector",
+                    "write-bytevector",
                     indoc!(
                         "
                         (define source (make-bytevector size 65))
@@ -114,7 +114,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "read/string",
+                    "read-string",
                     indoc!(
                         r"
                         (define source (make-string size #\a))
@@ -123,7 +123,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "write/string",
+                    "write-string",
                     indoc!(
                         r"
                         (define source (make-string size #\a))
@@ -150,7 +150,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
 
         for (name, operation) in [
             (
-                "read/bytevector",
+                "read-bytevector",
                 indoc!(
                     "
                     (define source (make-bytevector size 65))
@@ -160,7 +160,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/bytevector",
+                "write-bytevector",
                 indoc!(
                     "
                     (define source (make-bytevector size 65))
@@ -171,7 +171,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "read/string",
+                "read-string",
                 indoc!(
                     r"
                     (define source (make-string size #\a))
@@ -181,7 +181,7 @@ fn bench_memory_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/string",
+                "write-string",
                 indoc!(
                     r"
                     (define source (make-string size #\a))
@@ -212,7 +212,7 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
         for &size in SIZES {
             for (name, operation) in [
                 (
-                    "read/string",
+                    "read-string",
                     indoc!(
                         r"
                         (define source (make-string size #\é))
@@ -221,7 +221,7 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "write/string",
+                    "write-string",
                     indoc!(
                         r"
                         (define source (make-string size #\é))
@@ -248,7 +248,7 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
 
         for (name, operation) in [
             (
-                "read/string",
+                "read-string",
                 indoc!(
                     r"
                     (define source (make-string size #\é))
@@ -258,7 +258,7 @@ fn bench_memory_utf8_ports(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/string",
+                "write-string",
                 indoc!(
                     r"
                     (define source (make-string size #\é))
@@ -291,7 +291,7 @@ fn bench_os_files(criterion: &mut Criterion) {
         for &size in SIZES {
             for (name, operation) in [
                 (
-                    "read/bytevector",
+                    "read-bytevector",
                     indoc!(
                         "
                         (define port (open-input-file path))
@@ -300,7 +300,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "read/string",
+                    "read-string",
                     indoc!(
                         "
                         (define port (open-input-file path))
@@ -321,7 +321,7 @@ fn bench_os_files(criterion: &mut Criterion) {
 
             for (name, operation) in [
                 (
-                    "write/bytevector",
+                    "write-bytevector",
                     indoc!(
                         "
                         (define source (make-bytevector size 65))
@@ -331,7 +331,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                     ),
                 ),
                 (
-                    "write/string",
+                    "write-string",
                     indoc!(
                         r"
                         (define source (make-string size #\a))
@@ -359,7 +359,7 @@ fn bench_os_files(criterion: &mut Criterion) {
 
         for (name, operation) in [
             (
-                "read/bytevector",
+                "read-bytevector",
                 indoc!(
                     "
                     (define port (open-input-file path))
@@ -369,7 +369,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "read/string",
+                "read-string",
                 indoc!(
                     "
                     (define port (open-input-file path))
@@ -391,7 +391,7 @@ fn bench_os_files(criterion: &mut Criterion) {
 
         for (name, operation) in [
             (
-                "write/bytevector",
+                "write-bytevector",
                 indoc!(
                     "
                     (define source (make-bytevector size 65))
@@ -402,7 +402,7 @@ fn bench_os_files(criterion: &mut Criterion) {
                 ),
             ),
             (
-                "write/string",
+                "write-string",
                 indoc!(
                     r"
                     (define source (make-string size #\a))
@@ -444,7 +444,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
                 &create_utf8_input_file(&directory, size),
             );
 
-            group.bench_function(BenchmarkId::new("read/string", size), |bencher| {
+            group.bench_function(BenchmarkId::new("read-string", size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -462,7 +462,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
                 &directory.path().join("output"),
             );
 
-            group.bench_function(BenchmarkId::new("write/string", size), |bencher| {
+            group.bench_function(BenchmarkId::new("write-string", size), |bencher| {
                 bencher.iter(|| {
                     run(black_box(&bytecode), OsFileSystem::new()).unwrap();
                 })
@@ -487,7 +487,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             &create_utf8_input_file(&directory, size),
         );
 
-        group.bench_function(BenchmarkId::new("read/string", size), |bencher| {
+        group.bench_function(BenchmarkId::new("read-string", size), |bencher| {
             bencher.iter(|| {
                 run(black_box(&bytecode), OsFileSystem::new()).unwrap();
             })
@@ -506,7 +506,7 @@ fn bench_os_utf8_files(criterion: &mut Criterion) {
             &directory.path().join("output"),
         );
 
-        group.bench_function(BenchmarkId::new("write/string", size), |bencher| {
+        group.bench_function(BenchmarkId::new("write-string", size), |bencher| {
             bencher.iter(|| {
                 run(black_box(&bytecode), OsFileSystem::new()).unwrap();
             })
