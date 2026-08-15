@@ -2209,7 +2209,7 @@
           (else
             (let loop ((head 64) (mask 128) (offset 1) (y 0))
               (if (< x (+ mask head))
-                (integer->char (* (- x mask) offset) y)
+                (integer->char (+ (* (- x mask) offset) y))
                 (let ((z (read-u8 port)))
                   (if (eof-object? z)
                     z
