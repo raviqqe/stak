@@ -2211,12 +2211,12 @@
             (integer->char
               (if (< x 128)
                 x
-                (let ((count
-                        (do ((count 1 (+ count 1))
-                             (head 32 (/ head 2))
-                             (mask 192 (+ mask head)))
-                          ((< x (+ mask head))
-                            count))))
+                (let-values (((count mask)
+                               (do ((count 1 (+ count 1))
+                                    (head 32 (/ head 2))
+                                    (mask 192 (+ mask head)))
+                                 ((< x (+ mask head))
+                                   (values count mask)))))
                   (let loop ((count count))
                     (if (zero? count)
                       '()
