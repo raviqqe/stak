@@ -61,3 +61,11 @@ window = "1s"
 extend = "default"
 roots = ["https://en.wikipedia.org/wiki/"]
 statuses = [200, 429]
+
+[sites.flaky]
+extend = "default"
+roots = ["https://www.gnu.org/software/guile/"]
+timeout = "1m"
+
+[sites.flaky.retry]
+count = 10
