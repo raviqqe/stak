@@ -6656,13 +6656,14 @@
 
     (define (open-file output)
       (lambda (path)
-        (let ((descriptor ($open-file (string->code-points path) output)))
-          (make-port
-            (lambda () ($read-file descriptor))
-            (lambda (byte) ($write-file descriptor byte))
-            (lambda () ($flush-file descriptor))
-            (lambda () ($close-file descriptor))
-            '()))))
+        (let* ((descriptor ($open-file (string->code-points path) output))
+               (close (lambda () ($close-file descriptor))))
+          (if output
+            (make-input-port (lambda () ($read-file descriptor)) close)
+            (make-output-port
+              (lambda (byte) ($write-file descriptor byte))
+              (lambda () ($flush-file descriptor))
+              close)))))
 
     (define open-input-file (open-file #f))
     (define open-output-file (open-file #t))
