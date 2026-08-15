@@ -2222,7 +2222,7 @@
                         (- count 1)
                         (+
                           (* y 64)
-                          (quotient (read-u8 port) 64))))))))))))
+                          (remainder (read-u8 port) 64))))))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
