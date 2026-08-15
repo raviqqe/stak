@@ -2112,12 +2112,7 @@
     (define binary-port? port?)
 
     (define (make-input-port read close)
-      (let ((port (make-port read #f #f close '())))
-        (port-set-write!
-          port
-          (lambda (x)
-            (port-set-data! port (append (port-data port) (list x)))))
-        port))
+      (make-port read #f #f close '()))
 
     (define (make-output-port write flush close . rest)
       (make-port
