@@ -2346,9 +2346,9 @@
           (let loop ((integer integer) (head 32) (offset 64) (mask 192))
             (if (zero? (quotient integer 64))
               (write-u8 (+ mask (quotient integer offset)) port)
-              (begin
-                (loop (/ head 2) (* offset 64) (+ mask head))
-                (write-u8 (+ 128 (remainder integer 64)) port)))))))
+              (let ((q (quotient integer 64)))
+                (loop q (integer) (/ head 2) (* offset 64) (+ mask head))
+                (write-u8 (+ 128 (- integer q)) port)))))))
 
     (define (write-string x . rest)
       (let ((port (get-output-port rest)))
