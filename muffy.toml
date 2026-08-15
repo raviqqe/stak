@@ -2,7 +2,6 @@
 persistent = true
 
 [sites.default]
-roots = []
 max_redirects = 8
 schemes = ["https"]
 statuses = [200]
