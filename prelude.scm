@@ -2211,20 +2211,18 @@
             (integer->char
               (if (< x 128)
                 x
-                (let-values (((count mask)
-                               (do ((count 1 (+ count 1))
-                                    (head 32 (/ head 2))
-                                    (mask 192 (+ mask head)))
-                                 ((< x (+ mask head))
-                                   (values count mask)))))
-                  (let loop ((count count))
-                    (if (zero? count)
-                      '()
-                      (let ((x (read-u8 port)))
-                        (and
-                          (number? x)
-                          (let ((xs (loop (- count 1))))
-                            (and xs (cons x xs))))))))))))))
+                (do ((count 1 (+ count 1))
+                     (head 32 (/ head 2))
+                     (mask 192 (+ mask head)))
+                  ((< x (+ mask head))
+                    (let loop ((count count))
+                      (if (zero? count)
+                        '()
+                        (let ((x (read-u8 port)))
+                          (and
+                            (number? x)
+                            (let ((xs (loop (- count 1))))
+                              (and xs (cons x xs)))))))))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
