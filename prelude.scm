@@ -2215,12 +2215,14 @@
                      (head 32 (/ head 2))
                      (mask 192 (+ mask head)))
                   ((< x (+ mask head))
-                    (let loop ((count count) (y (+ mask x)))
+                    (let loop ((count count) (y (- x mask)))
                       (if (zero? count)
                         y
-                        (+
-                          (* y 64)
-                          (quotient (read-u8 port) 64))))))))))))
+                        (loop
+                          (- count 1)
+                          (+
+                            (* y 64)
+                            (quotient (read-u8 port) 64)))))))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
