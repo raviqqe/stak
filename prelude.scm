@@ -2227,7 +2227,8 @@
         (if (eof-object? x)
           x
           (let ((xs '()))
-            (write-char x
+            (write-char
+              x
               (make-output-port
                 (lambda (x) (set! xs (cons x xs)))
                 (lambda () #f)
