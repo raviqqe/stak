@@ -66,7 +66,11 @@ const BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
     ("eval", "eval_sum_10000000", &EVAL_MODULE),
     ("fibonacci", "fibonacci_32", &FIBONACCI_MODULE),
     ("hello", "hello", &HELLO_MODULE),
-    ("make_bytevector", "make_bytevector_10000", &MAKE_BYTEVECTOR_MODULE),
+    (
+        "make_bytevector",
+        "make_bytevector_10000",
+        &MAKE_BYTEVECTOR_MODULE,
+    ),
     ("make_string", "make_string_10000", &MAKE_STRING_MODULE),
     ("sum", "sum_10000000", &SUM_MODULE),
     ("tak", "tak_16_8_0", &TAK_MODULE),
