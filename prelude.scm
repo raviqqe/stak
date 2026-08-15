@@ -6661,7 +6661,7 @@
           (if output
             (make-input-port (lambda () ($read-file descriptor)) close)
             (make-output-port
-              (lambda (byte) ($write-file descriptor byte))
+              (lambda (x) ($write-file descriptor x))
               (lambda () ($flush-file descriptor))
               close)))))
 
