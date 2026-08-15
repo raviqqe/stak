@@ -2198,65 +2198,43 @@
       (apply peek-u8 rest)
       #t)
 
-    (define (read-char-bytes port)
-      (let ((byte (read-u8 port)))
-        (cond
-          ((eof-object? byte)
-            '())
-          ((zero? (quotient byte 128))
-            (list byte))
-          (else
-            (let* ((count
-                     (cond
-                       ((= (quotient byte 32) 6)
-                         1)
-                       ((= (quotient byte 16) 14)
-                         2)
-                       (else
-                         3)))
-                   (bytes
-                     (let loop ((count count))
-                       (if (zero? count)
-                         '()
-                         (let ((x (read-u8 port)))
-                           (and
-                             (number? x)
-                             (let ((xs (loop (- count 1))))
-                               (and xs (cons x xs)))))))))
-              (if bytes
-                (cons byte bytes)
-                '()))))))
-
-    (define (parse-char-bytes bytes)
-      (cond
-        ((null? bytes)
-          (eof-object))
-        ((null? (cdr bytes))
-          (integer->char (car bytes)))
-        (else
-          (integer->char
-            (let loop ((bytes (cdr bytes)) (code (car bytes)) (size 64))
-              (if (null? bytes)
-                (remainder code size)
-                (loop
-                  (cdr bytes)
-                  (+ (* 64 code) (- (car bytes) 128))
-                  (* size 32))))))))
-
     (define (read-char . rest)
-      (let ((xs (read-char-bytes (get-input-port rest))))
-        (if (null? xs)
-          (eof-object)
-          (parse-char-bytes xs))))
+      (let* ((port (get-input-port rest))
+             (x (read-u8 port)))
+        (cond
+          ((eof-object? x)
+            x)
+          ((< x 128)
+            (integer->char x))
+          (else
+            (do ((count 1 (+ count 1))
+                 (head 32 (/ head 2))
+                 (mask 192 (+ mask head)))
+              ((< x (+ mask head))
+                (let loop ((count count) (y (- x mask)))
+                  (if (zero? count)
+                    (integer->char y)
+                    (let ((x (read-u8 port)))
+                      (if (eof-object? x)
+                        x
+                        (loop
+                          (- count 1)
+                          (+ (* y 64) (remainder x 64)))))))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
-             (bytes (read-char-bytes port)))
-        (if (null? bytes)
-          (eof-object)
-          (begin
-            (port-set-data! port (append bytes (port-data port)))
-            (parse-char-bytes bytes)))))
+             (x (read-char port)))
+        (if (eof-object? x)
+          x
+          (let ((xs '()))
+            (write-char
+              x
+              (make-output-port
+                (lambda (x) (set! xs (cons x xs)))
+                (lambda () #f)
+                (lambda () #f)))
+            (port-set-data! port (append (reverse xs) (port-data port)))
+            x))))
 
     (define (char-ready? . rest)
       (let ((port (get-input-port rest)))
