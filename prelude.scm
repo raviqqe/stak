@@ -2229,10 +2229,10 @@
           (let ((xs '()))
             (write-char x
               (make-output-port
-                (lambda (x) (set! xs (append xs (list x))))
+                (lambda (x) (set! xs (cons x xs)))
                 (lambda () #f)
                 (lambda () #f)))
-            (port-set-data! port (append xs (port-data port)))
+            (port-set-data! port (append (reverse xs) (port-data port)))
             x))))
 
     (define (char-ready? . rest)
