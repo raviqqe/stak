@@ -2226,12 +2226,12 @@
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
-             (char (read-char port)))
-        (if (eof-object? char)
+             (x (read-char port)))
+        (if (eof-object? x)
           (eof-object)
           (begin
-            (write-char char port)
-            char))))
+            (write-char x port)
+            x))))
 
     (define (char-ready? . rest)
       (let ((port (get-input-port rest)))
