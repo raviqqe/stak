@@ -6666,7 +6666,7 @@
         (let ((descriptor ($open-file (string->code-points path) output)))
           (make-port
             (lambda () ($read-file descriptor))
-            (lambda (x) ($write-file descriptor x))
+            (lambda (byte) ($write-file descriptor byte))
             (lambda () ($flush-file descriptor))
             (lambda () ($close-file descriptor))
             '()))))
