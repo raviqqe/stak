@@ -106,7 +106,7 @@ Feature: Character
       | ý     | A      |
       | α     | A      |
 
-  Scenario Outline: Check a upper case character
+  Scenario Outline: Check an upper case character
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme char))
