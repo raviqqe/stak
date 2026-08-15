@@ -2228,7 +2228,7 @@
       (let* ((port (get-input-port rest))
              (x (read-char port)))
         (if (eof-object? x)
-          (eof-object)
+          x
           (begin
             (write-char x port)
             x))))
