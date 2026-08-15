@@ -1,5 +1,3 @@
 (import (scheme base))
 
-(define count 10000)
-
-(make-string count #\a)
+(make-string 10000 #\a)

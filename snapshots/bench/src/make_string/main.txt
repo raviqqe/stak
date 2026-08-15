@@ -258,7 +258,5 @@ call 0 #f 0
 set 1
 set 0
 constant 10000
-set ||
-get ||
 constant #\a
 call 2 #f ||
