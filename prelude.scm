@@ -2231,8 +2231,13 @@
              (x (read-char port)))
         (if (eof-object? x)
           x
-          (begin
-            (write-char x port)
+          (let ((xs '()))
+            (write-char x
+              (make-output-port
+                (lambda (x) (set! xs (append xs (list x))))
+                (lambda () #f)
+                (lambda () #f)))
+            (port-set-data! port (append xs (port-data port)))
             x))))
 
     (define (char-ready? . rest)
