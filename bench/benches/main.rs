@@ -22,6 +22,8 @@ static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
 static EVAL_MODULE: UniversalModule = include_module!("eval/main.scm");
 static FIBONACCI_MODULE: UniversalModule = include_module!("fibonacci/main.scm");
 static HELLO_MODULE: UniversalModule = include_module!("hello/main.scm");
+static MAKE_BYTEVECTOR_MODULE: UniversalModule = include_module!("make_bytevector/main.scm");
+static MAKE_STRING_MODULE: UniversalModule = include_module!("make_string/main.scm");
 static SUM_MODULE: UniversalModule = include_module!("sum/main.scm");
 static TAK_MODULE: UniversalModule = include_module!("tak/main.scm");
 static VECTOR_REF_MODULE: UniversalModule = include_module!("vector_ref/main.scm");
@@ -64,6 +66,12 @@ const BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
     ("eval", "eval_sum_10000000", &EVAL_MODULE),
     ("fibonacci", "fibonacci_32", &FIBONACCI_MODULE),
     ("hello", "hello", &HELLO_MODULE),
+    (
+        "make_bytevector",
+        "make_bytevector_10000",
+        &MAKE_BYTEVECTOR_MODULE,
+    ),
+    ("make_string", "make_string_10000", &MAKE_STRING_MODULE),
     ("sum", "sum_10000000", &SUM_MODULE),
     ("tak", "tak_16_8_0", &TAK_MODULE),
     ("vector_ref", "vector_ref_2048", &VECTOR_REF_MODULE),
