@@ -2195,7 +2195,7 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (write-u8 x port)
+        (port-set-data! port (cons x (port-data port)))
         x))
 
     (define (u8-ready? . rest)
