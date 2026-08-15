@@ -2348,7 +2348,7 @@
               (write-u8 (+ mask (quotient integer offset)) port)
               (begin
                 (loop (/ head 2) (* offset 64) (+ mask head))
-                (write-u8 port)))))))
+                (write-u8 (+ 128 (remainder integer 64)) port)))))))
 
     (define (write-string x . rest)
       (let ((port (get-output-port rest)))
