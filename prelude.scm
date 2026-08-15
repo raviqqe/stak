@@ -2112,7 +2112,12 @@
     (define binary-port? port?)
 
     (define (make-input-port read close)
-      (make-port read #f #f close '()))
+      (let ((port (make-port read #f #f close '())))
+        (port-set-write!
+          port
+          (lambda (x)
+            (port-set-data! port (append (port-data port) (list x)))))
+        port))
 
     (define (make-output-port write flush close . rest)
       (make-port
@@ -2190,7 +2195,7 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (port-set-data! port (cons x (port-data port)))
+        (write-u8 x port)
         x))
 
     (define (u8-ready? . rest)
@@ -2198,65 +2203,37 @@
       (apply peek-u8 rest)
       #t)
 
-    (define (read-char-bytes port)
-      (let ((byte (read-u8 port)))
-        (cond
-          ((eof-object? byte)
-            '())
-          ((zero? (quotient byte 128))
-            (list byte))
-          (else
-            (let* ((count
-                     (cond
-                       ((= (quotient byte 32) 6)
-                         1)
-                       ((= (quotient byte 16) 14)
-                         2)
-                       (else
-                         3)))
-                   (bytes
-                     (let loop ((count count))
-                       (if (zero? count)
-                         '()
-                         (let ((x (read-u8 port)))
-                           (and
-                             (number? x)
-                             (let ((xs (loop (- count 1))))
-                               (and xs (cons x xs)))))))))
-              (if bytes
-                (cons byte bytes)
-                '()))))))
-
-    (define (parse-char-bytes bytes)
-      (cond
-        ((null? bytes)
-          (eof-object))
-        ((null? (cdr bytes))
-          (integer->char (car bytes)))
-        (else
-          (integer->char
-            (let loop ((bytes (cdr bytes)) (code (car bytes)) (size 64))
-              (if (null? bytes)
-                (remainder code size)
-                (loop
-                  (cdr bytes)
-                  (+ (* 64 code) (- (car bytes) 128))
-                  (* size 32))))))))
-
     (define (read-char . rest)
-      (let ((xs (read-char-bytes (get-input-port rest))))
-        (if (null? xs)
-          (eof-object)
-          (parse-char-bytes xs))))
+      (let ((port (get-input-port rest)))
+        (let ((x (read-u8 port)))
+          (if (eof-object? x)
+            x
+            (integer->char
+              (if (< x 128)
+                x
+                (let ((count
+                        (do ((count 1 (+ count 1))
+                             (head 32 (/ head 2))
+                             (mask 192 (+ mask head)))
+                          ((< x (+ mask head))
+                            count))))
+                  (let loop ((count count))
+                    (if (zero? count)
+                      '()
+                      (let ((x (read-u8 port)))
+                        (and
+                          (number? x)
+                          (let ((xs (loop (- count 1))))
+                            (and xs (cons x xs))))))))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
-             (bytes (read-char-bytes port)))
-        (if (null? bytes)
+             (char (read-char port)))
+        (if (eof-object? char)
           (eof-object)
           (begin
-            (port-set-data! port (append bytes (port-data port)))
-            (parse-char-bytes bytes)))))
+            (write-char char port)
+            char))))
 
     (define (char-ready? . rest)
       (let ((port (get-input-port rest)))
