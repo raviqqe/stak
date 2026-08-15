@@ -2337,7 +2337,7 @@
             (x (char->integer x)))
         (if (zero? (quotient integer 128))
           (write-u8 x port)
-          (let loop ((x x) (head 32) (mask 192))
+          (let loop ((x x) (head 64) (mask 128))
             (if (zero? (quotient x 64))
               (write-u8 (+ mask x) port)
               (begin
