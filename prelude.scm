@@ -2313,10 +2313,10 @@
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
             (x (char->integer x)))
-        (if (zero? (quotient x 128))
+        (if (< x 128)
           (write-u8 x port)
           (let loop ((x x) (head 64) (mask 128))
-            (if (zero? (quotient x head))
+            (if (< x head)
               (write-u8 (+ mask x) port)
               (begin
                 (loop (quotient x 64) (/ head 2) (+ mask head))
