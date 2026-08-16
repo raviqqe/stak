@@ -2209,7 +2209,7 @@
           (else
             (let loop ((mask 64) (y x))
               (let ((x (read-u8 port)))
-                (if (or (eof-object? x) (< y 128) (> x 192))
+                (if (or (eof-object? x) (< x 128) (> x 192))
                   (integer->char (remainder y mask))
                   (loop
                     (* mask 32)
