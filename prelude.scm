@@ -2370,23 +2370,24 @@
           (lambda () #f))))
 
     (define (open-output-string)
-      (let* ((xs (string))
-             (tail xs)
-             (port (open-output-bytevector)))
+      (let ((port (open-output-bytevector)))
         (make-output-port
-          (lambda (x)
-            (write-u8 x port)
-            (let ((x (read-char (open-input-bytevector (get-output-bytevector port)))))
-              (when (char? x)
-                (set! port (open-output-bytevector))
-                (set-car! xs (+ 1 (string-length xs)))
-                (set-cdr! tail (list (char->integer x)))
-                (set! tail (cdr tail)))))
+          (lambda (x) (write-u8 x port))
           (lambda () #f)
           (lambda () #f)
-          xs)))
+          port)))
 
-    (define get-output-string port-data)
+    (define (get-output-string port)
+      (let ((port
+              (open-input-bytevector
+                (get-output-bytevector (port-data port)))))
+        (code-points->string
+          (let loop ((x (read-char port)))
+            (if (eof-object? x)
+              '()
+              (cons
+                (char->integer x)
+                (loop (read-char port))))))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
