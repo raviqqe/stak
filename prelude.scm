@@ -2207,12 +2207,12 @@
           ((< x 128)
             (integer->char x))
           (else
-            (let loop ((head 32) (y x))
+            (let loop ((mask 64) (y x))
               (let ((z (read-u8 port)))
                 (if (or (eof-object? z) (< x 128) (> x 192))
-                  (integer->char (remainder y (* head 64)))
+                  (integer->char (remainder y mask))
                   (loop
-                    (/ mask 2)
+                    (* mask 32)
                     (+ mask head)))))))))
 
     (define (peek-char . rest)
