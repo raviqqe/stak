@@ -2373,7 +2373,9 @@
           port)))
 
     (define (get-output-string port)
-      (utf8->string (get-output-bytevector (port-data port))))
+      (read-string
+        1099511627776
+        (open-input-bytevector (get-output-bytevector (port-data port)))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
