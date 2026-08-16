@@ -2899,43 +2899,27 @@ constant procedure 0 #t
     call 1 #f integer->char
   constant #f
   constant procedure 2 #f
-    get 5
-    call 1 #f peek-u8
     get 0
-    call 1 #f eof-object?
-    get 0
+    get 2
+    call 2 #f quotient
+    call 1 #f even?
     if
       get 0
-      continue
-    get 1
-    constant 128
-    call 2 #f ||
-    get 0
-    if
-      get 0
-      continue
-    constant 192
-    get 3
-    call 2 #f ||
-    call 2 #f $$unbind
-    call 2 #f $$unbind
-    if
-      get 1
-      get 3
+      get 2
       call 2 #f remainder
       call 1 #f integer->char
-    get 2
+    get 1
     constant 32
     call 2 #f ||
-    get 2
+    get 1
     constant 64
     call 2 #f ||
-    get 8
+    get 7
     call 1 #f read-u8
     constant 64
     call 2 #f remainder
     call 2 #f ||
-    call 2 #f 6
+    call 2 #f 5
   call 1 #f $$close
   set 1
   constant 64
