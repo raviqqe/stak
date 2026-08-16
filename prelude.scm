@@ -2210,6 +2210,7 @@
             (let loop ((head 64) (mask 128) (offset 1) (y 0))
               (if (< x (+ mask head))
                 (integer->char (+ (* (- x mask) offset) y))
+                ; TODO Assume valid bytes in UTF-8.
                 (let ((z (read-u8 port)))
                   (if (eof-object? z)
                     z
@@ -2401,18 +2402,18 @@
           (lambda () #f))))
 
     (define (open-output-bytevector)
-      (let* ((xs (bytevector))
+      (let* ((xs '(#f))
              (tail xs))
         (make-output-port
           (lambda (x)
-            (set-car! xs (+ (bytevector-length xs) 1))
             (set-cdr! tail (list x))
             (set! tail (cdr tail)))
           (lambda () #f)
           (lambda () #f)
           xs)))
 
-    (define get-output-bytevector port-data)))
+    (define (get-output-bytevector port)
+      (list->bytevector (cdr (port-data port))))))
 
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
