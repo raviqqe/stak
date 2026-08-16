@@ -3378,29 +3378,12 @@ constant procedure 0 #f
   call 4 #f make-output-port
 set open-output-string
 constant procedure 1 #f
-  get 0
+  constant 1099511627776
+  get 1
   call 1 #f ||
   call 1 #f get-output-bytevector
   call 1 #f open-input-bytevector
-  constant #f
-  constant procedure 1 #f
-    get 0
-    call 1 #f eof-object?
-    if
-      constant ()
-    get 0
-    call 1 #f char->integer
-    get 4
-    call 1 #f read-char
-    call 1 #f 4
-    call 2 #f cons
-  call 1 #f $$close
-  set 1
-  get 1
-  call 1 #f read-char
-  call 1 #f 1
-  call 2 #f $$unbind
-  call 1 #f code-points->string
+  call 2 #f read-string
 set get-output-string
 constant procedure 1 #f
   get 0
@@ -3449,11 +3432,7 @@ constant procedure 1 #f
   call 1 #f cdr
   call 1 #f list->bytevector
 set get-output-bytevector
-constant 1024
-constant 1024
-constant 1024
-constant 1024
-call 4 #f *
+constant 1099511627776
 set ||
 constant procedure 1 #f
   get ||
