@@ -2210,6 +2210,7 @@
             (let loop ((head 64) (mask 128) (offset 1) (y 0))
               (if (< x (+ mask head))
                 (integer->char (+ (* (- x mask) offset) y))
+                ; TODO Assume valid bytes in UTF-8.
                 (let ((z (read-u8 port)))
                   (if (eof-object? z)
                     z
@@ -2370,23 +2371,24 @@
           (lambda () #f))))
 
     (define (open-output-string)
-      (let* ((xs (string))
-             (tail xs)
-             (port (open-output-bytevector)))
+      (let ((port (open-output-bytevector)))
         (make-output-port
-          (lambda (x)
-            (write-u8 x port)
-            (let ((x (read-char (open-input-bytevector (get-output-bytevector port)))))
-              (when (char? x)
-                (set! port (open-output-bytevector))
-                (set-car! xs (+ 1 (string-length xs)))
-                (set-cdr! tail (list (char->integer x)))
-                (set! tail (cdr tail)))))
+          (lambda (x) (write-u8 x port))
           (lambda () #f)
           (lambda () #f)
-          xs)))
+          port)))
 
-    (define get-output-string port-data)
+    (define (get-output-string port)
+      (let ((port
+              (open-input-bytevector
+                (get-output-bytevector (port-data port)))))
+        (code-points->string
+          (let loop ((x (read-char port)))
+            (if (eof-object? x)
+              '()
+              (cons
+                (char->integer x)
+                (loop (read-char port))))))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
@@ -2400,18 +2402,18 @@
           (lambda () #f))))
 
     (define (open-output-bytevector)
-      (let* ((xs (bytevector))
+      (let* ((xs '(#f))
              (tail xs))
         (make-output-port
           (lambda (x)
-            (set-car! xs (+ (bytevector-length xs) 1))
             (set-cdr! tail (list x))
             (set! tail (cdr tail)))
           (lambda () #f)
           (lambda () #f)
           xs)))
 
-    (define get-output-bytevector port-data)))
+    (define (get-output-bytevector port)
+      (list->bytevector (cdr (port-data port))))))
 
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
