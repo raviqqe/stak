@@ -2207,18 +2207,12 @@
           ((< x 128)
             (integer->char x))
           (else
-            (let loop ((head 64) (mask 128) (offset 1) (y 0))
-              (if (< x (+ mask head))
-                (integer->char (+ (* (- x mask) offset) y))
-                ; TODO Assume valid bytes in UTF-8.
-                (let ((z (read-u8 port)))
-                  (if (eof-object? z)
-                    z
-                    (loop
-                      (/ head 2)
-                      (+ mask head)
-                      (* offset 64)
-                      (+ (* y 64) (remainder z 64)))))))))))
+            (let loop ((mask 64) (x x))
+              (if (even? (quotient x mask))
+                (integer->char (remainder x mask))
+                (loop
+                  (* mask 32)
+                  (+ (* x 64) (remainder (read-u8 port) 64)))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
