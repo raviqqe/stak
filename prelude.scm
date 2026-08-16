@@ -2373,16 +2373,7 @@
           port)))
 
     (define (get-output-string port)
-      (let ((port
-              (open-input-bytevector
-                (get-output-bytevector (port-data port)))))
-        (code-points->string
-          (let loop ((x (read-char port)))
-            (if (eof-object? x)
-              '()
-              (cons
-                (char->integer x)
-                (loop (read-char port))))))))
+      (utf8->string (get-output-bytevector (port-data port))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
