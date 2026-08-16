@@ -3440,16 +3440,10 @@ constant procedure 1 #f
   call 2 #f make-input-port
 set open-input-bytevector
 constant procedure 0 #f
-  call 0 #f bytevector
+  constant list
+    #f
   get 0
   constant procedure 1 #f
-    get 3
-    get 4
-    call 1 #f bytevector-length
-    constant 1
-    call 2 #f ||
-    call 2 #f set-car!
-    set 0
     get 2
     get 1
     call 1 #f list
@@ -3467,7 +3461,11 @@ constant procedure 0 #f
   get 4
   call 4 #f make-output-port
 set open-output-bytevector
-get ||
+constant procedure 1 #f
+  get 0
+  call 1 #f ||
+  call 1 #f cdr
+  call 1 #f list->bytevector
 set get-output-bytevector
 constant 1024
 constant 1024
