@@ -2213,7 +2213,7 @@
                   (integer->char (remainder y mask))
                   (loop
                     (* mask 32)
-                    (+ mask head)))))))))
+                    (+ (* x 64) (remainder z 64))))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
