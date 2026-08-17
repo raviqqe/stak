@@ -2238,12 +2238,12 @@
     (define (read-delimited-string end? port)
       (if (eof-object? (peek-char port))
         (eof-object)
-        (let ((xs (string)))
-          (do ((ys xs (cdr ys)))
-            ((or (eof-object? (peek-char port)) (end? port))
-              xs)
-            (set-car! xs (+ (string-length xs) 1))
-            (set-cdr! ys (list (char->integer (read-char port))))))))
+        (code-points->string
+          (let ((xs (list 0)))
+            (do ((ys xs (cdr ys)))
+              ((or (eof-object? (peek-char port)) (end? port))
+                (cdr xs))
+              (set-cdr! ys (list (char->integer (read-char port)))))))))
 
     (define (read-string count . rest)
       (read-delimited-string
