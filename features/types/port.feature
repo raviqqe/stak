@@ -172,6 +172,7 @@ Feature: Port
 
     Examples:
       | bytes           | output | length |
+      |                 |        | 0      |
       | 65 66 67        | ABC    | 3      |
       | 227 129 130     | あ      | 1      |
       | 240 159 152 132 | 😄      | 1      |

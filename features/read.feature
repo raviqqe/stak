@@ -227,6 +227,36 @@ Feature: Read
       | ABC      | 4     | ABC      |
       | A😄あ      | 3     | A😄あ      |
 
+  Scenario Outline: Read a string without consuming extra characters
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define port (open-input-string "ABC"))
+
+      (write-string (read-string <count> port))
+      (write-char (read-char port))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | count | output |
+      | 0     | A      |
+      | 1     | AB     |
+      | 2     | ABC    |
+
+  Scenario: Read a string at the end of a file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (if (eof-object? (read-string 1 (open-input-string ""))) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Read lines
     Given a file named "main.scm" with:
       """scheme

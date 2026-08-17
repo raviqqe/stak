@@ -2375,9 +2375,11 @@
           port)))
 
     (define (get-output-string port)
-      (read-string
-        1099511627776
-        (open-input-bytevector (get-output-bytevector (port-data port)))))
+      (let ((xs (get-output-bytevector (port-data port))))
+        ; TODO Use `utf8->string`.
+        (if (zero? (bytevector-length xs))
+          ""
+          (read-string #f (open-input-bytevector xs)))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
@@ -2407,7 +2409,7 @@
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
 
-  (import (stak base) (stak io))
+  (import (stak base) (stak vector) (stak io))
 
   (begin
     (define limit 1099511627776)
@@ -2416,7 +2418,9 @@
       (read-bytevector limit (open-input-string xs)))
 
     (define (utf8->string xs)
-      (read-string limit (open-input-bytevector xs)))))
+      (if (zero? (bytevector-length xs))
+        ""
+        (read-string #f (open-input-bytevector xs))))))
 
 (define-library (stak continue)
   (export
