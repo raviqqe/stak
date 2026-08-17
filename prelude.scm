@@ -2235,28 +2235,32 @@
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
-    (define (read-constrained-string count predicate port)
+    (define (read-delimited-string end? port)
       (if (eof-object? (peek-char port))
         (eof-object)
         (let ((xs (string)))
-          (let loop ((ys xs))
-            (if (and count (= (string-length xs) count))
-              xs
-              (let ((x (read-char port)))
-                (if (or (eof-object? x) (and predicate (predicate x)))
-                  xs
-                  (begin
-                    (set-car! xs (+ (string-length xs) 1))
-                    (set-cdr! ys (list (char->integer x)))
-                    (loop (cdr ys))))))))))
+          (do ((ys xs (cdr ys)))
+            ((or (eof-object? (peek-char port)) (end? port))
+              xs)
+            (set-car! xs (+ (string-length xs) 1))
+            (set-cdr! ys (list (char->integer (read-char port))))))))
 
     (define (read-string count . rest)
-      (read-constrained-string count #f (get-input-port rest)))
+      (read-delimited-string
+        (lambda (port)
+          (and
+            count
+            (begin
+              (set! count (- count 1))
+              (zero? (+ count 1)))))
+        (get-input-port rest)))
 
     (define (read-line . rest)
-      (read-constrained-string
-        #f
-        (lambda (x) (eqv? x #\newline))
+      (read-delimited-string
+        (lambda (port)
+          (and
+            (eqv? (peek-char port) #\newline)
+            (read-char port)))
         (get-input-port rest)))
 
     (define (read-bytevector count . rest)
