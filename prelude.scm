@@ -2239,7 +2239,7 @@
       (if (eof-object? (peek-char port))
         (eof-object)
         (code-points->string
-          (let ((xs '(0)))
+          (let ((xs (list 0)))
             (do ((ys xs (cdr ys)))
               ((or (eof-object? (peek-char port)) (end? port))
                 (cdr xs))
@@ -2397,7 +2397,7 @@
           (lambda () #f))))
 
     (define (open-output-bytevector)
-      (let* ((xs '(0))
+      (let* ((xs (list 0))
              (tail xs))
         (make-output-port
           (lambda (x)
