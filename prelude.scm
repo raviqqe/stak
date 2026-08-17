@@ -2238,24 +2238,24 @@
     (define (read-string count . rest)
       (define port (get-input-port rest))
 
-      (list->string
+      (code-points->string
         (let loop ((count count))
           (let ((x (read-char port)))
             (if (or (eof-object? x) (zero? count))
               '()
-              (cons x (loop (- count 1))))))))
+              (cons (char->integer x) (loop (- count 1))))))))
 
     (define (read-line . rest)
       (define port (get-input-port rest))
 
       (if (eof-object? (peek-char port))
         (eof-object)
-        (list->string
+        (code-points->string
           (let loop ()
             (let ((x (read-char port)))
               (if (or (eof-object? x) (eqv? x #\newline))
                 '()
-                (cons x (loop))))))))
+                (cons (char->integer x) (loop))))))))
 
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))

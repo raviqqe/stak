@@ -2998,6 +2998,7 @@ constant procedure 1 #t
     if
       constant ()
     get 0
+    call 1 #f char->integer
     get 2
     constant 1
     call 2 #f ||
@@ -3008,7 +3009,7 @@ constant procedure 1 #t
   get 3
   call 1 #f 1
   call 2 #f $$unbind
-  call 1 #f list->string
+  call 1 #f code-points->string
 set read-string
 constant procedure 0 #t
   constant #f
@@ -3037,13 +3038,14 @@ constant procedure 0 #t
     if
       constant ()
     get 0
+    call 1 #f char->integer
     call 0 #f 3
     call 2 #f cons
   call 1 #f $$close
   set 1
   call 0 #f 0
   call 2 #f $$unbind
-  call 1 #f list->string
+  call 1 #f code-points->string
 set read-line
 constant procedure 1 #t
   constant #f
