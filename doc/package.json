@@ -20,7 +20,7 @@
     "@raviqqe/stak": "^0.12.21",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
-    "astro": "^7.2.0",
+    "astro": "^7.2.2",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.50.0",
     "lucide-preact": "^1.31.0",
