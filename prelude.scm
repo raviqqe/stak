@@ -2235,27 +2235,29 @@
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
-    (define (read-string count . rest)
-      (define port (get-input-port rest))
-
-      (code-points->string
-        (let loop ((count count))
-          (let ((x (read-char port)))
-            (if (or (eof-object? x) (zero? count))
-              '()
-              (cons (char->integer x) (loop (- count 1))))))))
-
-    (define (read-line . rest)
-      (define port (get-input-port rest))
-
+    (define (read-constrained-string count predicate port)
       (if (eof-object? (peek-char port))
         (eof-object)
-        (code-points->string
-          (let loop ()
-            (let ((x (read-char port)))
-              (if (or (eof-object? x) (eqv? x #\newline))
-                '()
-                (cons (char->integer x) (loop))))))))
+        (let ((xs (string)))
+          (let loop ((ys xs))
+            (if (and count (= (string-length xs) count))
+              xs
+              (let ((x (read-char port)))
+                (if (or (eof-object? x) (and predicate (predicate x)))
+                  xs
+                  (begin
+                    (set-car! xs (+ (string-length xs) 1))
+                    (set-cdr! ys (list (char->integer x)))
+                    (loop (cdr ys))))))))))
+
+    (define (read-string count . rest)
+      (read-constrained-string count #f (get-input-port rest)))
+
+    (define (read-line . rest)
+      (read-constrained-string
+        #f
+        (lambda (x) (eqv? x #\newline))
+        (get-input-port rest)))
 
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
