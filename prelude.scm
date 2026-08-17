@@ -2235,27 +2235,33 @@
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
-    (define (read-string count . rest)
-      (define port (get-input-port rest))
-
-      (list->string
-        (let loop ((count count))
-          (let ((x (read-char port)))
-            (if (or (eof-object? x) (zero? count))
-              '()
-              (cons x (loop (- count 1))))))))
-
-    (define (read-line . rest)
-      (define port (get-input-port rest))
-
+    (define (read-delimited-string end? port)
       (if (eof-object? (peek-char port))
         (eof-object)
-        (list->string
-          (let loop ()
-            (let ((x (read-char port)))
-              (if (or (eof-object? x) (eqv? x #\newline))
-                '()
-                (cons x (loop))))))))
+        (code-points->string
+          (let ((xs (list 0)))
+            (do ((ys xs (cdr ys)))
+              ((or (eof-object? (peek-char port)) (end? port))
+                (cdr xs))
+              (set-cdr! ys (list (char->integer (read-char port)))))))))
+
+    (define (read-string count . rest)
+      (read-delimited-string
+        (lambda (port)
+          (and
+            count
+            (begin
+              (set! count (- count 1))
+              (zero? (+ count 1)))))
+        (get-input-port rest)))
+
+    (define (read-line . rest)
+      (read-delimited-string
+        (lambda (port)
+          (and
+            (eqv? (peek-char port) #\newline)
+            (read-char port)))
+        (get-input-port rest)))
 
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
@@ -2373,16 +2379,11 @@
           port)))
 
     (define (get-output-string port)
-      (let ((port
-              (open-input-bytevector
-                (get-output-bytevector (port-data port)))))
-        (code-points->string
-          (let loop ((x (read-char port)))
-            (if (eof-object? x)
-              '()
-              (cons
-                (char->integer x)
-                (loop (read-char port))))))))
+      (let ((xs (get-output-bytevector (port-data port))))
+        ; TODO Use `utf8->string`.
+        (if (zero? (bytevector-length xs))
+          ""
+          (read-string #f (open-input-bytevector xs)))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
@@ -2396,7 +2397,7 @@
           (lambda () #f))))
 
     (define (open-output-bytevector)
-      (let* ((xs '(#f))
+      (let* ((xs (list 0))
              (tail xs))
         (make-output-port
           (lambda (x)
@@ -2412,17 +2413,18 @@
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
 
-  (import (stak base) (stak io))
+  (import (stak base) (stak vector) (stak io))
 
   (begin
-    ; TODO Use the `expt` procedure.
-    (define limit (* 1024 1024 1024 1024))
+    (define limit 1099511627776)
 
     (define (string->utf8 xs)
       (read-bytevector limit (open-input-string xs)))
 
     (define (utf8->string xs)
-      (read-string limit (open-input-bytevector xs)))))
+      (if (zero? (bytevector-length xs))
+        ""
+        (read-string #f (open-input-bytevector xs))))))
 
 (define-library (stak continue)
   (export

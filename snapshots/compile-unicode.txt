@@ -1657,40 +1657,60 @@ constant procedure 0 #t
   set 0
   get 1
 set ||
-constant procedure 0 #t
-  constant #f
-  get 1
-  call 1 #f ||
-  set 1
+constant procedure 2 #f
   get 0
   call 1 #f ||
   call 1 #f ||
   if
     call 0 #f ||
+  constant 0
+  call 1 #f ||
   constant #f
-  constant procedure 0 #f
-    get 2
+  constant procedure 1 #f
+    get 4
     call 1 #f ||
-    get 0
     call 1 #f ||
     get 0
     if
       get 0
       continue
-    get 1
-    constant #\newline
-    call 2 #f ||
+    get 5
+    call 1 #f 7
     call 2 #f ||
     if
-      constant ()
+      get 3
+      call 1 #f ||
     get 0
-    call 0 #f 3
+    get 5
+    call 1 #f ||
+    call 1 #f ||
+    call 1 #f ||
     call 2 #f ||
+    set 0
+    get 0
+    call 1 #f ||
+    call 1 #f 3
   call 1 #f ||
   set 1
-  call 0 #f 0
+  get 1
+  call 1 #f 1
+  call 2 #f ||
   call 2 #f ||
   call 1 #f ||
+set ||
+constant procedure 0 #t
+  constant procedure 1 #f
+    get 0
+    call 1 #f ||
+    constant #\newline
+    call 2 #f ||
+    if
+      get 0
+      call 1 #f ||
+    constant #f
+  get 1
+  call 1 #f ||
+  call 2 #f ||
 set ||
 constant procedure 1 #f
   get 0
@@ -1837,8 +1857,8 @@ constant procedure 1 #f
   call 2 #f ||
 set ||
 constant procedure 0 #f
-  constant list
-    #f
+  constant 0
+  call 1 #f ||
   get 0
   constant procedure 1 #f
     get 2

@@ -2976,74 +2976,79 @@ constant procedure 0 #t
   call 1 #f peek-u8
   call 1 #f eof-object?
 set char-ready?
-constant procedure 1 #t
-  constant #f
-  get 1
-  call 1 #f ||
-  set 1
-  constant #f
-  constant procedure 1 #f
-    get 3
-    call 1 #f read-char
-    get 0
-    call 1 #f eof-object?
-    get 0
-    if
-      get 0
-      continue
-    get 2
-    constant 0
-    call 2 #f eq?
-    call 2 #f $$unbind
-    if
-      constant ()
-    get 0
-    get 2
-    constant 1
-    call 2 #f ||
-    call 1 #f 5
-    call 2 #f cons
-  call 1 #f $$close
-  set 1
-  get 3
-  call 1 #f 1
-  call 2 #f $$unbind
-  call 1 #f list->string
-set read-string
-constant procedure 0 #t
-  constant #f
-  get 1
-  call 1 #f ||
-  set 1
+constant procedure 2 #f
   get 0
   call 1 #f peek-char
   call 1 #f eof-object?
   if
     call 0 #f eof-object
+  constant 0
+  call 1 #f list
   constant #f
-  constant procedure 0 #f
-    get 2
-    call 1 #f read-char
-    get 0
+  constant procedure 1 #f
+    get 4
+    call 1 #f peek-char
     call 1 #f eof-object?
     get 0
     if
       get 0
       continue
-    get 1
-    constant #\newline
-    call 2 #f eqv?
+    get 5
+    call 1 #f 7
     call 2 #f $$unbind
     if
-      constant ()
+      get 3
+      call 1 #f cdr
     get 0
-    call 0 #f 3
-    call 2 #f cons
+    get 5
+    call 1 #f read-char
+    call 1 #f char->integer
+    call 1 #f list
+    call 2 #f set-cdr!
+    set 0
+    get 0
+    call 1 #f cdr
+    call 1 #f 3
   call 1 #f $$close
   set 1
-  call 0 #f 0
+  get 1
+  call 1 #f 1
   call 2 #f $$unbind
-  call 1 #f list->string
+  call 2 #f $$unbind
+  call 1 #f code-points->string
+set ||
+constant procedure 1 #t
+  constant procedure 1 #f
+    get 3
+    if
+      get 3
+      constant 1
+      call 2 #f ||
+      set 4
+      get 3
+      constant 1
+      call 2 #f ||
+      constant 0
+      call 2 #f eq?
+    constant #f
+  call 1 #f $$close
+  get 1
+  call 1 #f ||
+  call 2 #f ||
+set read-string
+constant procedure 0 #t
+  constant procedure 1 #f
+    get 0
+    call 1 #f peek-char
+    constant #\newline
+    call 2 #f eqv?
+    if
+      get 0
+      call 1 #f read-char
+    constant #f
+  get 1
+  call 1 #f ||
+  call 2 #f ||
 set read-line
 constant procedure 1 #t
   constant #f
@@ -3381,26 +3386,16 @@ constant procedure 1 #f
   get 0
   call 1 #f ||
   call 1 #f get-output-bytevector
-  call 1 #f open-input-bytevector
+  get 0
+  call 1 #f bytevector-length
+  constant 0
+  call 2 #f eq?
+  if
+    constant ""
   constant #f
-  constant procedure 1 #f
-    get 0
-    call 1 #f eof-object?
-    if
-      constant ()
-    get 0
-    call 1 #f char->integer
-    get 4
-    call 1 #f read-char
-    call 1 #f 4
-    call 2 #f cons
-  call 1 #f $$close
-  set 1
   get 1
-  call 1 #f read-char
-  call 1 #f 1
-  call 2 #f $$unbind
-  call 1 #f code-points->string
+  call 1 #f open-input-bytevector
+  call 2 #f read-string
 set get-output-string
 constant procedure 1 #f
   get 0
@@ -3422,8 +3417,8 @@ constant procedure 1 #f
   call 2 #f make-input-port
 set open-input-bytevector
 constant procedure 0 #f
-  constant list
-    #f
+  constant 0
+  call 1 #f list
   get 0
   constant procedure 1 #f
     get 2
@@ -3449,11 +3444,7 @@ constant procedure 1 #f
   call 1 #f cdr
   call 1 #f list->bytevector
 set get-output-bytevector
-constant 1024
-constant 1024
-constant 1024
-constant 1024
-call 4 #f *
+constant 1099511627776
 set ||
 constant procedure 1 #f
   get ||
@@ -3462,7 +3453,13 @@ constant procedure 1 #f
   call 2 #f read-bytevector
 set string->utf8
 constant procedure 1 #f
-  get ||
+  get 0
+  call 1 #f bytevector-length
+  constant 0
+  call 2 #f eq?
+  if
+    constant ""
+  constant #f
   get 1
   call 1 #f open-input-bytevector
   call 2 #f read-string
