@@ -179,7 +179,7 @@ Feature: Character
       B
       """
 
-  @long @stak
+  @chibi @gauche @long @stak
   Scenario Outline: Write and read back characters in a Unicode plane
     Given a file named "main.scm" with:
       """scheme
@@ -188,16 +188,20 @@ Feature: Character
       (define size 65536)
       (define start (* size <plane>))
 
+      (define (surrogate? x)
+        (<= 55296 x 57343))
+
       (define (round-trip x)
-        (let ((port (open-output-bytevector)))
+        (let ((port (open-output-string)))
           (write-char x port)
-          (read-char (open-input-bytevector (get-output-bytevector port)))))
+          (read-char (open-input-string (get-output-string port)))))
 
       (do ((x start (+ x 1)))
         ((= x (+ start size)))
-        (let ((x (integer->char x)))
-          (unless (eqv? (round-trip x) x)
-            (error "invalid character"))))
+        (unless (surrogate? x)
+          (let ((x (integer->char x)))
+            (unless (eqv? (round-trip x) x)
+              (error "invalid character")))))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly ""
