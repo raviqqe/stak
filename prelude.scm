@@ -2318,7 +2318,7 @@
           (write-u8 x port)
           (let loop ((x x) (head 64))
             (if (< x head)
-              (write-u8 (+ (- 255 head (- head 1)) x) port)
+              (write-u8 (+ x 256 (* -2 head)) port)
               (begin
                 (loop (quotient x 64) (/ head 2))
                 (write-u8 (+ 128 (remainder x 64)) port)))))))
