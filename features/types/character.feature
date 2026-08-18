@@ -179,6 +179,53 @@ Feature: Character
       B
       """
 
+  @chibi @gauche @long @stak
+  Scenario Outline: Write and read back characters
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define size 65536)
+      (define start (* size <plane>))
+
+      (define (surrogate? x)
+        (<= 55296 x 57343))
+
+      (define (round-trip x)
+        (let ((port (open-output-string)))
+          (write-char x port)
+          (read-char (open-input-string (get-output-string port)))))
+
+      (do ((x start (+ x 1)))
+        ((= x (+ start size)))
+        (unless (surrogate? x)
+          (let ((x (integer->char x)))
+            (unless (eqv? (round-trip x) x)
+              (error "invalid character")))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly ""
+
+    Examples:
+      | plane |
+      | 0     |
+      | 1     |
+      | 2     |
+      | 3     |
+      | 4     |
+      | 5     |
+      | 6     |
+      | 7     |
+      | 8     |
+      | 9     |
+      | 10    |
+      | 11    |
+      | 12    |
+      | 13    |
+      | 14    |
+      | 15    |
+      | 16    |
+
   Scenario Outline: Compare characters
     Given a file named "main.scm" with:
       """scheme
