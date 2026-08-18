@@ -85,6 +85,49 @@ Feature: Port
       | (open-output-string)         |
 
   @gauche @guile @stak
+  Scenario Outline: Preserve pending input order after peeking
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define port (open-input-string "<input>"))
+      (peek-char port)
+      (peek-u8 port)
+      (write-u8 (if (= (read-u8 port) <first-byte>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | first-byte |
+      | éx    | 195        |
+      | 😄x    | 240        |
+
+  @stak
+  Scenario: Preserve pending input order when peeking a character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak io))
+
+      (define port
+        (make-port
+          (lambda () #f)
+          #f
+          #f
+          (lambda () #f)
+          '(195 169 120)))
+
+      (peek-char port)
+
+      (for-each
+        (lambda (expected)
+          (write-u8 (if (= (read-u8 port) expected) 65 66)))
+        '(195 169 120))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AAA"
+
+  @gauche @guile @stak
   Scenario Outline: Read from a string port
     Given a file named "main.scm" with:
       """scheme
@@ -106,6 +149,7 @@ Feature: Port
       | ABC    |
       | あ      |
       | 😄      |
+      | —      |
 
   @gauche @guile @stak
   Scenario Outline: Write to a string port
@@ -128,6 +172,7 @@ Feature: Port
 
     Examples:
       | bytes           | output | length |
+      |                 |        | 0      |
       | 65 66 67        | ABC    | 3      |
       | 227 129 130     | あ      | 1      |
       | 240 159 152 132 | 😄      | 1      |

@@ -2198,7 +2198,7 @@
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
-        (port-set-data! port (append (port-data port) (list x)))
+        (port-set-data! port (cons x (port-data port)))
         x))
 
     (define (u8-ready? . rest)
@@ -2206,65 +2206,35 @@
       (apply peek-u8 rest)
       #t)
 
-    (define (read-char-bytes port)
-      (let ((byte (read-u8 port)))
-        (cond
-          ((eof-object? byte)
-            '())
-          ((zero? (quotient byte 128))
-            (list byte))
-          (else
-            (let* ((count
-                     (cond
-                       ((= (quotient byte 32) 6)
-                         1)
-                       ((= (quotient byte 16) 14)
-                         2)
-                       (else
-                         3)))
-                   (bytes
-                     (let loop ((count count))
-                       (if (zero? count)
-                         '()
-                         (let ((x (read-u8 port)))
-                           (and
-                             (number? x)
-                             (let ((xs (loop (- count 1))))
-                               (and xs (cons x xs)))))))))
-              (if bytes
-                (cons byte bytes)
-                '()))))))
-
-    (define (parse-char-bytes bytes)
-      (cond
-        ((null? bytes)
-          (eof-object))
-        ((null? (cdr bytes))
-          (integer->char (car bytes)))
-        (else
-          (integer->char
-            (let loop ((bytes (cdr bytes)) (code (car bytes)) (size 64))
-              (if (null? bytes)
-                (remainder code size)
-                (loop
-                  (cdr bytes)
-                  (+ (* 64 code) (- (car bytes) 128))
-                  (* size 32))))))))
-
     (define (read-char . rest)
-      (let ((xs (read-char-bytes (get-input-port rest))))
-        (if (null? xs)
-          (eof-object)
-          (parse-char-bytes xs))))
+      (let* ((port (get-input-port rest))
+             (x (read-u8 port)))
+        (if (eof-object? x)
+          x
+          (integer->char
+            (if (< x 128)
+              x
+              (let loop ((mask 64) (x x))
+                (if (even? (quotient x mask))
+                  (remainder x mask)
+                  (loop
+                    (* mask 32)
+                    (+ (* x 64) (remainder (read-u8 port) 64))))))))))
 
     (define (peek-char . rest)
       (let* ((port (get-input-port rest))
-             (bytes (read-char-bytes port)))
-        (if (null? bytes)
-          (eof-object)
-          (begin
-            (port-set-data! port (append (port-data port) bytes))
-            (parse-char-bytes bytes)))))
+             (x (read-char port)))
+        (if (eof-object? x)
+          x
+          (let ((xs '()))
+            (write-char
+              x
+              (make-output-port
+                (lambda (x) (set! xs (cons x xs)))
+                (lambda () #f)
+                (lambda () #f)))
+            (port-set-data! port (append (reverse xs) (port-data port)))
+            x))))
 
     (define (char-ready? . rest)
       (let ((port (get-input-port rest)))
@@ -2272,37 +2242,46 @@
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
-    (define (read-string count . rest)
-      (define port (get-input-port rest))
-
-      (list->string
-        (let loop ((count count))
-          (let ((x (read-char port)))
-            (if (or (eof-object? x) (zero? count))
-              '()
-              (cons x (loop (- count 1))))))))
-
-    (define (read-line . rest)
-      (define port (get-input-port rest))
-
+    (define (read-delimited-string end? port)
       (if (eof-object? (peek-char port))
         (eof-object)
-        (list->string
-          (let loop ()
-            (let ((x (read-char port)))
-              (if (or (eof-object? x) (eqv? x #\newline))
-                '()
-                (cons x (loop))))))))
+        (code-points->string
+          (let ((xs (list 0)))
+            (do ((ys xs (cdr ys)))
+              ((or (eof-object? (peek-char port)) (end? port))
+                (cdr xs))
+              (set-cdr! ys (list (char->integer (read-char port)))))))))
+
+    (define (read-string count . rest)
+      (if (zero? count)
+        ""
+        (read-delimited-string
+          (lambda (port)
+            (set! count (- count 1))
+            (negative? count))
+          (get-input-port rest))))
+
+    (define (read-line . rest)
+      (read-delimited-string
+        (lambda (port)
+          (and
+            (eqv? (peek-char port) #\newline)
+            (read-char port)))
+        (get-input-port rest)))
 
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
 
-      (list->bytevector
-        (let loop ((count count))
-          (let ((x (read-u8 port)))
-            (if (or (eof-object? x) (zero? count))
+      (if (and (positive? count) (eof-object? (peek-u8 port)))
+        (eof-object)
+        (list->bytevector
+          (let loop ((count count))
+            (if (zero? count)
               '()
-              (cons x (loop (- count 1))))))))
+              (let ((x (read-u8 port)))
+                (if (eof-object? x)
+                  '()
+                  (cons x (loop (- count 1))))))))))
 
     (define (read-bytevector! xs . rest)
       (define port (get-input-port rest))
@@ -2340,24 +2319,17 @@
           (error "cannot write to port"))
         (write byte)))
 
-    (define (write-trailing-bytes integer port)
-      (let ((upper (quotient integer 64)))
-        (unless (zero? upper)
-          (write-trailing-bytes upper port))
-        (write-u8 (+ 128 (remainder integer 64)) port)))
-
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
-            (integer (char->integer x)))
-        (if (zero? (quotient integer 128))
-          (write-u8 integer port)
-          (let loop ((head 32) (offset 64) (mask 192))
-            (if (zero? (quotient integer (* head offset)))
+            (x (char->integer x)))
+        (if (< x 128)
+          (write-u8 x port)
+          (let loop ((x x) (head 64))
+            (if (< x head)
+              (write-u8 (+ x 256 (* -2 head)) port)
               (begin
-                ; TODO Use `floor/`?
-                (write-u8 (+ mask (quotient integer offset)) port)
-                (write-trailing-bytes (remainder integer offset) port))
-              (loop (/ head 2) (* offset 64) (+ mask head)))))))
+                (loop (quotient x 64) (/ head 2))
+                (write-u8 (+ 128 (remainder x 64)) port)))))))
 
     (define (write-string x . rest)
       (let ((port (get-output-port rest)))
@@ -2409,23 +2381,16 @@
           (lambda () #f))))
 
     (define (open-output-string)
-      (let* ((xs (string))
-             (tail xs)
-             (port (open-output-bytevector)))
+      (let ((port (open-output-bytevector)))
         (make-output-port
-          (lambda (x)
-            (write-u8 x port)
-            (let ((x (read-char (open-input-bytevector (get-output-bytevector port)))))
-              (when (char? x)
-                (set! port (open-output-bytevector))
-                (set-car! xs (+ 1 (string-length xs)))
-                (set-cdr! tail (list (char->integer x)))
-                (set! tail (cdr tail)))))
+          (lambda (x) (write-u8 x port))
           (lambda () #f)
           (lambda () #f)
-          xs)))
+          port)))
 
-    (define get-output-string port-data)
+    (define (get-output-string port)
+      (let ((xs (get-output-bytevector (port-data port))))
+        (read-string (bytevector-length xs) (open-input-bytevector xs))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
@@ -2439,33 +2404,30 @@
           (lambda () #f))))
 
     (define (open-output-bytevector)
-      (let* ((xs (bytevector))
+      (let* ((xs (list 0))
              (tail xs))
         (make-output-port
           (lambda (x)
-            (set-car! xs (+ (bytevector-length xs) 1))
             (set-cdr! tail (list x))
             (set! tail (cdr tail)))
           (lambda () #f)
           (lambda () #f)
           xs)))
 
-    (define get-output-bytevector port-data)))
+    (define (get-output-bytevector port)
+      (list->bytevector (cdr (port-data port))))))
 
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
 
-  (import (stak base) (stak io))
+  (import (stak base) (stak string) (stak vector) (stak io))
 
   (begin
-    ; TODO Use the `expt` procedure.
-    (define limit (* 1024 1024 1024 1024))
-
     (define (string->utf8 xs)
-      (read-bytevector limit (open-input-string xs)))
+      (read-bytevector (* 4 (string-length xs)) (open-input-string xs)))
 
     (define (utf8->string xs)
-      (read-string limit (open-input-bytevector xs)))))
+      (read-string (bytevector-length xs) (open-input-bytevector xs)))))
 
 (define-library (stak continue)
   (export

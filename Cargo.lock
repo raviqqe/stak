@@ -249,9 +249,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.6.4"
+version = "4.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d91e0c145792ef73a6ad36d27c75ac09f1832222a3c209689d90f534685ee5b7"
+checksum = "473c7e07f409a8d772161724aa8db6a765a2532a70f9667eeb7b49d3d02fbdca"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -259,9 +259,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.6.2"
+version = "4.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f09628afdcc538b57f3c6341e9c8e9970f18e4a481690a64974d7023bd33548b"
+checksum = "7b48fea5a88e9ae728a2dcbedbfc0e730f7d60da42e1cb049a83c9fb8b789889"
 dependencies = [
  "anstream",
  "anstyle",
@@ -414,7 +414,7 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
 name = "custom-vm"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak",
  "stak-build",
@@ -445,7 +445,7 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "embedded-script"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "any-fn",
  "rand",
@@ -657,7 +657,7 @@ dependencies = [
 
 [[package]]
 name = "hot-reload"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "axum",
  "stak",
@@ -839,9 +839,9 @@ checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
 
 [[package]]
 name = "js-sys"
-version = "0.3.77"
+version = "0.3.82"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1cfaf33c695fc6e08064efbc1f72ec937429614f25eef83af942d0e227c3a28f"
+checksum = "b011eec8cc36da2aab2d5cff675ec18454fad408585853910a202391cf9f8e65"
 dependencies = [
  "once_cell",
  "wasm-bindgen",
@@ -988,7 +988,7 @@ dependencies = [
 
 [[package]]
 name = "no-std-no-alloc"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "heapless",
  "stak",
@@ -1446,7 +1446,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "any-fn",
  "rand",
@@ -1466,18 +1466,20 @@ dependencies = [
 
 [[package]]
 name = "stak-bench"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "codspeed-criterion-compat",
+ "indoc",
  "mlua",
  "stak",
  "stak-build",
  "stak-compiler",
+ "tempfile",
 ]
 
 [[package]]
 name = "stak-build"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -1487,14 +1489,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -1508,18 +1510,18 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.12.21"
+version = "0.12.22"
 
 [[package]]
 name = "stak-decode"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-device"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "rustix",
  "stak-util",
@@ -1529,7 +1531,7 @@ dependencies = [
 
 [[package]]
 name = "stak-dynamic"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "any-fn",
  "bitvec",
@@ -1541,7 +1543,7 @@ dependencies = [
 
 [[package]]
 name = "stak-engine"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "any-fn",
  "rand",
@@ -1561,7 +1563,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "heapless",
  "rustix",
@@ -1572,7 +1574,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "libm",
  "stak-vm",
@@ -1581,7 +1583,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "clap",
  "main_error",
@@ -1596,14 +1598,14 @@ dependencies = [
 
 [[package]]
 name = "stak-libc"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "rustix",
 ]
 
 [[package]]
 name = "stak-lzss"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "clap",
  "pretty_assertions",
@@ -1613,7 +1615,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1630,7 +1632,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1639,14 +1641,14 @@ dependencies = [
 
 [[package]]
 name = "stak-module"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "hmr",
 ]
 
 [[package]]
 name = "stak-native"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak-util",
  "stak-vm",
@@ -1655,7 +1657,7 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -1663,7 +1665,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profile"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "clap",
  "main_error",
@@ -1679,7 +1681,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -1688,7 +1690,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -1702,14 +1704,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "clap",
  "dlmalloc",
@@ -1728,7 +1730,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -1737,14 +1739,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "noop-executor",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "insta",
  "libm",
@@ -1762,7 +1764,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.12.21"
+version = "0.12.22"
 dependencies = [
  "stak-build",
  "stak-compiler",
@@ -1973,35 +1975,22 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.100"
+version = "0.2.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1edc8929d7499fc4e8f0be2262a241556cfc54a0bea223790e71446f2aab1ef5"
+checksum = "da95793dfc411fbbd93f5be7715b0578ec61fe87cb1a42b12eb625caa5c5ea60"
 dependencies = [
  "cfg-if",
  "once_cell",
  "rustversion",
  "wasm-bindgen-macro",
-]
-
-[[package]]
-name = "wasm-bindgen-backend"
-version = "0.2.100"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f0a0651a5c2bc21487bde11ee802ccaf4c51935d0d3d42a6101f98161700bc6"
-dependencies = [
- "bumpalo",
- "log",
- "proc-macro2",
- "quote",
- "syn 2.0.119",
  "wasm-bindgen-shared",
 ]
 
 [[package]]
 name = "wasm-bindgen-futures"
-version = "0.4.50"
+version = "0.4.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "555d470ec0bc3bb57890405e5d4322cc9ea83cebb085523ced7be4144dac1e61"
+checksum = "551f88106c6d5e7ccc7cd9a16f312dd3b5d36ea8b4954304657d5dfba115d4a0"
 dependencies = [
  "cfg-if",
  "js-sys",
@@ -2012,9 +2001,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.100"
+version = "0.2.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fe63fc6d09ed3792bd0897b314f53de8e16568c2b3f7982f468c0bf9bd0b407"
+checksum = "04264334509e04a7bf8690f2384ef5265f05143a4bff3889ab7a3269adab59c2"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -2022,31 +2011,31 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.100"
+version = "0.2.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ae87ea40c9f689fc23f209965b6fb8a99ad69aeeb0231408be24920604395de"
+checksum = "420bc339d9f322e562942d52e115d57e950d12d88983a14c79b86859ee6c7ebc"
 dependencies = [
+ "bumpalo",
  "proc-macro2",
  "quote",
  "syn 2.0.119",
- "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.100"
+version = "0.2.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a05d73b933a847d6cccdda8f838a22ff101ad9bf93e33684f39c1f5f0eece3d"
+checksum = "76f218a38c84bcb33c25ec7059b07847d465ce0e0a76b995e134a45adcb6af76"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "wasm-bindgen-test"
-version = "0.3.50"
+version = "0.3.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66c8d5e33ca3b6d9fa3b4676d774c5778031d27a578c2b007f905acf816152c3"
+checksum = "bfc379bfb624eb59050b509c13e77b4eb53150c350db69628141abce842f2373"
 dependencies = [
  "js-sys",
  "minicov",
@@ -2057,9 +2046,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-test-macro"
-version = "0.3.50"
+version = "0.3.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17d5042cc5fa009658f9a7333ef24291b1291a25b6382dd68862a7f3b969f69b"
+checksum = "085b2df989e1e6f9620c1311df6c996e83fe16f57792b272ce1e024ac16a90f1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2102,9 +2091,9 @@ dependencies = [
 
 [[package]]
 name = "web-sys"
-version = "0.3.77"
+version = "0.3.82"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33b6dd2ef9186f1f2072e409e99cd22a975331a6b3591b12c764e0e55c60d5d2"
+checksum = "3a1f95c0d03a47f4ae1f7a64643a6bb97465d9b740f0fa8f90ea33915c99a9a1"
 dependencies = [
  "js-sys",
  "wasm-bindgen",

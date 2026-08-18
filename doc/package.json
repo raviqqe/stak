@@ -10,29 +10,29 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@astrojs/preact": "^6.0.1",
+    "@astrojs/preact": "^6.0.2",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/starlight": "^0.41.5",
+    "@astrojs/starlight": "^0.41.7",
     "@monza-editor/preact": "^0.1.9",
     "@nanostores/async": "^0.1.0",
     "@nanostores/preact": "^1.1.0",
-    "@preact/signals": "^2.10.0",
+    "@preact/signals": "^2.11.1",
     "@raviqqe/stak": "^0.12.21",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
-    "astro": "^7.1.4",
+    "astro": "^7.2.2",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.50.0",
-    "lucide-preact": "^1.27.0",
+    "lucide-preact": "^1.31.0",
     "monza-editor": "^0.5.9",
     "nanostores": "^1.4.1",
     "picolight": "^0.2.8",
-    "preact": "^10.29.7",
+    "preact": "^10.29.8",
     "vite-plugin-wasm": "^3.6.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.2.0",
     "sharp": "^0.35.3",
     "typescript": "^6.0.3"
   }

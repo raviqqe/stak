@@ -13,12 +13,8 @@ pub mod __private {
 macro_rules! block_on {
     ($value:expr) => {
         ::core::cfg_select! {
-            feature = "async" => {
-                $crate::__private::noop_executor::block_on($value)
-            }
-            _ => {
-                $value
-            }
+            feature = "async" => $crate::__private::noop_executor::block_on($value),
+            _ => $value,
         }
     };
 }

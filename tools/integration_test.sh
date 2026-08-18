@@ -34,4 +34,4 @@ cargo build --profile release_test --features $features
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-go tool agoa -t "$tags && ~@extra" "$@"
+go tool agoa -t "~@extra && $tags" "$@"

@@ -219,6 +219,7 @@ Feature: Read
 
     Examples:
       | value    | count | output   |
+      |          | 0     |          |
       | A        | 0     |          |
       | A        | 1     | A        |
       | A        | 2     | A        |
@@ -226,6 +227,36 @@ Feature: Read
       | ABC      | 3     | ABC      |
       | ABC      | 4     | ABC      |
       | A😄あ      | 3     | A😄あ      |
+
+  Scenario Outline: Read a string without consuming extra characters
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define port (open-input-string "ABC"))
+
+      (write-string (read-string <count> port))
+      (write-char (read-char port))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | count | output |
+      | 0     | A      |
+      | 1     | AB     |
+      | 2     | ABC    |
+
+  Scenario: Read a string at the end of a file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (if (eof-object? (read-string 1 (open-input-string ""))) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
 
   Scenario: Read lines
     Given a file named "main.scm" with:
@@ -270,6 +301,36 @@ Feature: Read
       | 1 2   | 2     |
       | 1 2 3 | 3     |
       | 1 2 3 | 4     |
+
+  Scenario Outline: Read a byte vector without consuming extra bytes
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define port (open-input-bytevector #u8(65 66 67)))
+
+      (write-bytevector (read-bytevector <count> port))
+      (write-u8 (read-u8 port))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | count | output |
+      | 0     | A      |
+      | 1     | AB     |
+      | 2     | ABC    |
+
+  Scenario: Read a byte vector at the end of a file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (if (eof-object? (read-bytevector 1 (open-input-bytevector #u8()))) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
 
   Scenario Outline: Read a byte vector in place
     Given a file named "main.scm" with:
