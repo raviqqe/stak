@@ -3019,19 +3019,19 @@ constant procedure 2 #f
   call 1 #f code-points->string
 set ||
 constant procedure 1 #t
+  get 1
+  constant 0
+  call 2 #f eq?
+  if
+    constant ""
   constant procedure 1 #f
     get 3
-    if
-      get 3
-      constant 1
-      call 2 #f ||
-      set 4
-      get 3
-      constant 1
-      call 2 #f ||
-      constant 0
-      call 2 #f eq?
-    constant #f
+    constant 1
+    call 2 #f ||
+    set 4
+    get 3
+    constant 0
+    call 2 #f ||
   call 1 #f $$close
   get 1
   call 1 #f ||
@@ -3056,20 +3056,28 @@ constant procedure 1 #t
   get 1
   call 1 #f ||
   set 1
+  constant 0
+  get 3
+  call 2 #f ||
+  if
+    get 0
+    call 1 #f peek-u8
+    call 1 #f eof-object?
+    continue
+  constant #f
+  if
+    call 0 #f eof-object
   constant #f
   constant procedure 1 #f
+    get 0
+    constant 0
+    call 2 #f eq?
+    if
+      constant ()
     get 3
     call 1 #f read-u8
     get 0
     call 1 #f eof-object?
-    get 0
-    if
-      get 0
-      continue
-    get 2
-    constant 0
-    call 2 #f eq?
-    call 2 #f $$unbind
     if
       constant ()
     get 0
@@ -3389,11 +3397,6 @@ constant procedure 1 #f
   call 1 #f get-output-bytevector
   get 0
   call 1 #f bytevector-length
-  constant 0
-  call 2 #f eq?
-  if
-    constant ""
-  constant #f
   get 1
   call 1 #f open-input-bytevector
   call 2 #f read-string
@@ -3445,10 +3448,11 @@ constant procedure 1 #f
   call 1 #f cdr
   call 1 #f list->bytevector
 set get-output-bytevector
-constant 1099511627776
-set ||
 constant procedure 1 #f
-  get ||
+  constant 4
+  get 1
+  call 1 #f string-length
+  call 2 #f ||
   get 1
   call 1 #f open-input-string
   call 2 #f read-bytevector
@@ -3456,11 +3460,6 @@ set string->utf8
 constant procedure 1 #f
   get 0
   call 1 #f bytevector-length
-  constant 0
-  call 2 #f eq?
-  if
-    constant ""
-  constant #f
   get 1
   call 1 #f open-input-bytevector
   call 2 #f read-string
