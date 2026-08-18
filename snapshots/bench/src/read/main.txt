@@ -1104,7 +1104,7 @@ constant procedure 0 #t
   call 2 #f ||
   if
     get 0
-    call 1 #f ||
+    continue
   constant #f
   constant procedure 2 #f
     get 0
@@ -1115,7 +1115,6 @@ constant procedure 0 #t
       get 0
       get 2
       call 2 #f ||
-      call 1 #f ||
     get 1
     constant 32
     call 2 #f ||
@@ -1133,6 +1132,8 @@ constant procedure 0 #t
   constant 64
   get 2
   call 2 #f 2
+  call 2 #f ||
+  call 1 #f ||
 set ||
 constant procedure 0 #t
   get 0
