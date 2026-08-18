@@ -2266,12 +2266,16 @@
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
 
-      (list->bytevector
-        (let loop ((count count))
-          (let ((x (read-u8 port)))
-            (if (or (eof-object? x) (zero? count))
+      (if (and (positive? count) (eof-object? (peek-u8 port)))
+        (eof-object)
+        (list->bytevector
+          (let loop ((count count))
+            (if (zero? count)
               '()
-              (cons x (loop (- count 1))))))))
+              (let ((x (read-u8 port)))
+                (if (eof-object? x)
+                  '()
+                  (cons x (loop (- count 1))))))))))
 
     (define (read-bytevector! xs . rest)
       (define port (get-input-port rest))
@@ -2413,13 +2417,15 @@
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
 
-  (import (stak base) (stak vector) (stak io))
+  (import (stak base) (stak string) (stak vector) (stak io))
 
   (begin
     (define limit 1099511627776)
 
     (define (string->utf8 xs)
-      (read-bytevector limit (open-input-string xs)))
+      (if (zero? (string-length xs))
+        #u8()
+        (read-bytevector limit (open-input-string xs))))
 
     (define (utf8->string xs)
       (if (zero? (bytevector-length xs))

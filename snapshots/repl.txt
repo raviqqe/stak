@@ -3055,20 +3055,28 @@ constant procedure 1 #t
   get 1
   call 1 #f ||
   set 1
+  constant 0
+  get 3
+  call 2 #f ||
+  if
+    get 0
+    call 1 #f peek-u8
+    call 1 #f eof-object?
+    continue
+  constant #f
+  if
+    call 0 #f eof-object
   constant #f
   constant procedure 1 #f
+    get 0
+    constant 0
+    call 2 #f eq?
+    if
+      constant ()
     get 3
     call 1 #f read-u8
     get 0
     call 1 #f eof-object?
-    get 0
-    if
-      get 0
-      continue
-    get 2
-    constant 0
-    call 2 #f eq?
-    call 2 #f $$unbind
     if
       constant ()
     get 0
@@ -3447,6 +3455,12 @@ set get-output-bytevector
 constant 1099511627776
 set ||
 constant procedure 1 #f
+  get 0
+  call 1 #f string-length
+  constant 0
+  call 2 #f eq?
+  if
+    constant #u8()
   get ||
   get 1
   call 1 #f open-input-string

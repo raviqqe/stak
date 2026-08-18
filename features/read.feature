@@ -301,6 +301,36 @@ Feature: Read
       | 1 2 3 | 3     |
       | 1 2 3 | 4     |
 
+  Scenario Outline: Read a byte vector without consuming extra bytes
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define port (open-input-bytevector #u8(65 66 67)))
+
+      (write-bytevector (read-bytevector <count> port))
+      (write-u8 (read-u8 port))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | count | output |
+      | 0     | A      |
+      | 1     | AB     |
+      | 2     | ABC    |
+
+  Scenario: Read a byte vector at the end of a file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (if (eof-object? (read-bytevector 1 (open-input-bytevector #u8()))) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario Outline: Read a byte vector in place
     Given a file named "main.scm" with:
       """scheme
