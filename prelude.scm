@@ -2245,14 +2245,13 @@
               (set-cdr! ys (list (char->integer (read-char port)))))))))
 
     (define (read-string count . rest)
-      (read-delimited-string
-        (lambda (port)
-          (and
-            count
-            (begin
-              (set! count (- count 1))
-              (zero? (+ count 1)))))
-        (get-input-port rest)))
+      (if (zero? count)
+        ""
+        (read-delimited-string
+          (lambda (port)
+            (set! count (- count 1))
+            (negative? count))
+          (get-input-port rest))))
 
     (define (read-line . rest)
       (read-delimited-string
@@ -2265,12 +2264,16 @@
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
 
-      (list->bytevector
-        (let loop ((count count))
-          (let ((x (read-u8 port)))
-            (if (or (eof-object? x) (zero? count))
+      (if (and (positive? count) (eof-object? (peek-u8 port)))
+        (eof-object)
+        (list->bytevector
+          (let loop ((count count))
+            (if (zero? count)
               '()
-              (cons x (loop (- count 1))))))))
+              (let ((x (read-u8 port)))
+                (if (eof-object? x)
+                  '()
+                  (cons x (loop (- count 1))))))))))
 
     (define (read-bytevector! xs . rest)
       (define port (get-input-port rest))
@@ -2379,10 +2382,7 @@
 
     (define (get-output-string port)
       (let ((xs (get-output-bytevector (port-data port))))
-        ; TODO Use `utf8->string`.
-        (if (zero? (bytevector-length xs))
-          ""
-          (read-string #f (open-input-bytevector xs)))))
+        (read-string (bytevector-length xs) (open-input-bytevector xs))))
 
     (define (open-input-bytevector xs)
       (let ((xs (bytevector->list xs)))
@@ -2412,18 +2412,14 @@
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
 
-  (import (stak base) (stak vector) (stak io))
+  (import (stak base) (stak string) (stak vector) (stak io))
 
   (begin
-    (define limit 1099511627776)
-
     (define (string->utf8 xs)
-      (read-bytevector limit (open-input-string xs)))
+      (read-bytevector (* 4 (string-length xs)) (open-input-string xs)))
 
     (define (utf8->string xs)
-      (if (zero? (bytevector-length xs))
-        ""
-        (read-string #f (open-input-bytevector xs))))))
+      (read-string (bytevector-length xs) (open-input-bytevector xs)))))
 
 (define-library (stak continue)
   (export
