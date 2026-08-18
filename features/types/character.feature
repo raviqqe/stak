@@ -180,7 +180,7 @@ Feature: Character
       """
 
   @chibi @gauche @long @stak
-  Scenario Outline: Write and read back characters in a Unicode plane
+  Scenario Outline: Write and read back characters
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
