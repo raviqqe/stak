@@ -185,18 +185,18 @@ Feature: Character
       """scheme
       (import (scheme base))
 
-      (define plane-size 65536)
-      (define plane-start (* plane-size <plane>))
+      (define size 65536)
+      (define start (* size <plane>))
 
-      (define (round-trip char)
+      (define (round-trip x)
         (let ((port (open-output-bytevector)))
-          (write-char char port)
+          (write-char x port)
           (read-char (open-input-bytevector (get-output-bytevector port)))))
 
-      (do ((code plane-start (+ code 1)))
-        ((= code (+ plane-start plane-size)))
-        (let ((char (integer->char code)))
-          (unless (eqv? (round-trip char) char)
+      (do ((x start (+ x 1)))
+        ((= x (+ start size)))
+        (let ((x (integer->char x)))
+          (unless (eqv? (round-trip x) x)
             (error "invalid character"))))
       """
     When I successfully run `stak main.scm`
