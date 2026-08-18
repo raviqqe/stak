@@ -219,6 +219,7 @@ Feature: Read
 
     Examples:
       | value    | count | output   |
+      |          | 0     |          |
       | A        | 0     |          |
       | A        | 1     | A        |
       | A        | 2     | A        |

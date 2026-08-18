@@ -2246,14 +2246,16 @@
               (set-cdr! ys (list (char->integer (read-char port)))))))))
 
     (define (read-string count . rest)
-      (read-delimited-string
-        (lambda (port)
-          (and
-            count
-            (begin
-              (set! count (- count 1))
-              (zero? (+ count 1)))))
-        (get-input-port rest)))
+      (if (zero? count)
+        ""
+        (read-delimited-string
+          (lambda (port)
+            (and
+              count
+              (begin
+                (set! count (- count 1))
+                (zero? (+ count 1)))))
+          (get-input-port rest))))
 
     (define (read-line . rest)
       (read-delimited-string
