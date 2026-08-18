@@ -3448,8 +3448,6 @@ constant procedure 1 #f
   call 1 #f cdr
   call 1 #f list->bytevector
 set get-output-bytevector
-constant 1099511627776
-set ||
 constant procedure 1 #f
   constant 4
   get 1

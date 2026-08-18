@@ -2415,8 +2415,6 @@
   (import (stak base) (stak string) (stak vector) (stak io))
 
   (begin
-    (define limit 1099511627776)
-
     (define (string->utf8 xs)
       (read-bytevector (* 4 (string-length xs)) (open-input-string xs)))
 
