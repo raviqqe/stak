@@ -179,6 +179,49 @@ Feature: Character
       B
       """
 
+  @long @stak
+  Scenario Outline: Write and read back characters in a Unicode plane
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define plane-size 65536)
+      (define plane-start (* plane-size <plane>))
+
+      (define (round-trip char)
+        (let ((port (open-output-bytevector)))
+          (write-char char port)
+          (read-char (open-input-bytevector (get-output-bytevector port)))))
+
+      (do ((code plane-start (+ code 1)))
+        ((= code (+ plane-start plane-size)))
+        (let ((char (integer->char code)))
+          (unless (eqv? (round-trip char) char)
+            (error "invalid character"))))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly ""
+
+    Examples:
+      | plane |
+      | 0     |
+      | 1     |
+      | 2     |
+      | 3     |
+      | 4     |
+      | 5     |
+      | 6     |
+      | 7     |
+      | 8     |
+      | 9     |
+      | 10    |
+      | 11    |
+      | 12    |
+      | 13    |
+      | 14    |
+      | 15    |
+      | 16    |
+
   Scenario Outline: Compare characters
     Given a file named "main.scm" with:
       """scheme
