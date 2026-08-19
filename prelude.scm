@@ -947,8 +947,8 @@
         ((_ x)
           (cons x '()))
 
-        ((_ x1 x2 ...)
-          (cons x1 (list x2 ...)))))
+        ((_ x y ...)
+          (cons x (list y ...)))))
 
     (define (make-list length . rest)
       (define fill (if (null? rest) #f (car rest)))
