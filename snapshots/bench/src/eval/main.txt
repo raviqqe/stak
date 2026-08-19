@@ -1588,9 +1588,7 @@ constant procedure 2 #f
   if
     get 1
     get 1
-    constant ()
-    call 2 #f cons
-    call 2 #f cons
+    call 2 #f list
     continue
   get 1
   call 2 #f $$unbind
@@ -2808,12 +2806,7 @@ constant procedure 1 #f
   get ||
   get ||
   get ||
-  constant ()
-  call 2 #f cons
-  call 2 #f cons
-  call 2 #f cons
-  call 2 #f cons
-  call 2 #f cons
+  call 5 #f list
   call 2 #f for-each
 set close-port
 get close-port
@@ -4904,9 +4897,7 @@ constant procedure 0 #t
       set 0
       constant quote
       call 0 #f 9
-      constant ()
-      call 2 #f cons
-      call 2 #f cons
+      call 2 #f list
     get 0
     constant #\`
     call 2 #f eqv?
@@ -4915,9 +4906,7 @@ constant procedure 0 #t
       set 0
       constant quasiquote
       call 0 #f 9
-      constant ()
-      call 2 #f cons
-      call 2 #f cons
+      call 2 #f list
     get 0
     constant #\,
     call 2 #f eqv?
@@ -4932,14 +4921,10 @@ constant procedure 0 #t
         set 0
         constant unquote-splicing
         call 0 #f 9
-        constant ()
-        call 2 #f cons
-        call 2 #f cons
+        call 2 #f list
       constant unquote
       call 0 #f 9
-      constant ()
-      call 2 #f cons
-      call 2 #f cons
+      call 2 #f list
     get 0
     constant #\"
     call 2 #f eqv?
@@ -7143,10 +7128,7 @@ constant procedure 2 #f
       get 9
       call 1 #f caddr
       call 2 #f 13
-      constant ()
-      call 2 #f cons
-      call 2 #f cons
-      call 2 #f cons
+      call 3 #f list
     get 0
     constant $$let-syntax
     call 2 #f eqv?
@@ -11844,19 +11826,6 @@ constant list
         list
           $$quote
           ()
-    list
-      list
-        _
-        ||
-        ||
-        ...
-      list
-        cons
-        ||
-        list
-          list
-          ||
-          ...
   list
     /
     $$syntax-rules

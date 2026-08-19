@@ -945,10 +945,7 @@
     (define-optimizer list
       (syntax-rules ()
         ((_ x)
-          (cons x '()))
-
-        ((_ x y ...)
-          (cons x (list y ...)))))
+          (cons x '()))))
 
     (define (make-list length . rest)
       (define fill (if (null? rest) #f (car rest)))

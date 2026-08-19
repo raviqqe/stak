@@ -863,8 +863,6 @@ constant procedure 2 #f
   if
     get 1
     get 1
-    constant ()
-    call 2 #f ||
     call 2 #f ||
     continue
   get 1
@@ -1541,12 +1539,7 @@ constant procedure 1 #f
   get ||
   get ||
   get ||
-  constant ()
-  call 2 #f ||
-  call 2 #f ||
-  call 2 #f ||
-  call 2 #f ||
-  call 2 #f ||
+  call 5 #f ||
   call 2 #f ||
 set ||
 constant procedure 1 #f
@@ -6599,8 +6592,6 @@ constant procedure 1 #f
     get 4
     call 1 #f ||
     call 2 #f ||
-    constant ()
-    call 2 #f ||
     call 2 #f ||
     get 0
     call 1 #f ||
@@ -6753,8 +6744,6 @@ constant procedure 1 #f
       get 1
       call 1 #f ||
       get 1
-      constant ()
-      call 2 #f ||
       call 2 #f ||
     constant #f
   call 1 #f ||
