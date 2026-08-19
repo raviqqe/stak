@@ -7827,8 +7827,10 @@ constant procedure 2 #f
     continue
   get 1
   call 1 #f car
-  constant $$quote
-  call 2 #f eq?
+  constant list
+    $$quote
+    $$syntax-rules
+  call 2 #f memq
   call 2 #f $$unbind
   if
     get 0
@@ -12387,7 +12389,7 @@ constant list
         _
         ||
       list
-        ||
+        <
         ||
         0
   list
@@ -12400,9 +12402,9 @@ constant list
         _
         ||
       list
+        >
         ||
         0
-        ||
   list
     zero?
     $$syntax-rules
@@ -12427,12 +12429,11 @@ constant list
         ||
         ||
       list
-        eq?
+        not
         list
           ||
           ||
           ||
-        #f
   list
     <=
     $$syntax-rules
@@ -12444,12 +12445,11 @@ constant list
         ||
         ||
       list
-        eq?
+        not
         list
           ||
           ||
           ||
-        #f
   list
     >
     $$syntax-rules
@@ -16554,13 +16554,15 @@ constant list
             pair?
             expression
         list
-          eq?
+          memq
           list
             car
             expression
           list
             quote
-            $$quote
+            list
+              $$quote
+              $$syntax-rules
       expression
       list
         optimize
