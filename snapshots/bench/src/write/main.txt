@@ -285,9 +285,6 @@ constant procedure 1 #f
   call 1 #f ||
   call 1 #f ||
 set ||
-constant procedure 0 #t
-  get 0
-set ||
 constant procedure 2 #f
   get 0
   call 1 #f ||
@@ -718,7 +715,8 @@ constant procedure 2 #f
   call 1 #f ||
   if
     get 2
-    call 1 #f ||
+    constant ()
+    call 2 #f ||
     continue
   constant #f
   constant procedure 2 #f
@@ -752,6 +750,8 @@ constant procedure 2 #f
   if
     get 1
     get 1
+    constant ()
+    call 2 #f ||
     call 2 #f ||
     continue
   get 1
@@ -779,12 +779,14 @@ constant procedure 2 #f
     call 2 #f ||
     call 2 #f ||
     get 2
-    call 1 #f ||
+    constant ()
+    call 2 #f ||
     call 2 #f ||
     set 0
     constant #f
   get 1
-  call 1 #f ||
+  constant ()
+  call 2 #f ||
 set ||
 constant procedure 1 #f
   call 0 #f ||
@@ -1012,7 +1014,8 @@ constant procedure 1 #t
   call 2 #f ||
   if
     constant #\-
-    call 1 #f ||
+    constant ()
+    call 2 #f ||
     continue
   constant ()
   constant #f
@@ -2078,6 +2081,8 @@ constant procedure 0 #t
       set 0
       constant quote
       call 0 #f 9
+      constant ()
+      call 2 #f ||
       call 2 #f ||
     get 0
     constant #\`
@@ -2087,6 +2092,8 @@ constant procedure 0 #t
       set 0
       constant quasiquote
       call 0 #f 9
+      constant ()
+      call 2 #f ||
       call 2 #f ||
     get 0
     constant #\,
@@ -2102,9 +2109,13 @@ constant procedure 0 #t
         set 0
         constant unquote-splicing
         call 0 #f 9
+        constant ()
+        call 2 #f ||
         call 2 #f ||
       constant unquote
       call 0 #f 9
+      constant ()
+      call 2 #f ||
       call 2 #f ||
     get 0
     constant #\"
@@ -2728,7 +2739,8 @@ constant procedure 1 #f
       call 2 #f ||
       if
         get 1
-        call 1 #f ||
+        constant ()
+        call 2 #f ||
       get 1
       call 1 #f ||
       if
@@ -2765,7 +2777,8 @@ constant procedure 1 #f
     set 1
     get 1
     constant ()
-    call 1 #f ||
+    constant ()
+    call 2 #f ||
     call 2 #f 2
   call 1 #f ||
 set ||
@@ -2774,7 +2787,8 @@ constant procedure 2 #f
   get 1
   call 1 #f ||
   call 2 #f ||
-  call 1 #f ||
+  constant ()
+  call 2 #f ||
 call 1 #f ||
 set ||
 constant procedure 2 #f
