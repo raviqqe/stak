@@ -2213,20 +2213,21 @@
                     (* mask 32)
                     (+ (* x 64) (remainder (read-u8 port) 64))))))))))
 
-    (define (peek-char . rest)
-      (let* ((port (get-input-port rest))
-             (x (read-char port)))
-        (if (eof-object? x)
-          x
-          (let ((xs '()))
-            (write-char
-              x
+    (define peek-char
+      (let ((peek-port
               (make-output-port
                 (lambda (x) (set! xs (cons x xs)))
                 (lambda () #f)
-                (lambda () #f)))
-            (port-set-data! port (append (reverse xs) (port-data port)))
-            x))))
+                (lambda () #f))))
+        (lambda rest
+          (let* ((port (get-input-port rest))
+                 (x (read-char port)))
+            (if (eof-object? x)
+              x
+              (let ((xs '()))
+                (write-char x peek-port)
+                (port-set-data! port (append (reverse xs) (port-data port)))
+                x))))))
 
     (define (char-ready? . rest)
       (let ((port (get-input-port rest)))
