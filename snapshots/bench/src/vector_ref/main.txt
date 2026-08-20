@@ -268,8 +268,7 @@ constant procedure 2 #f
   call 1 #f ||
   if
     get 2
-    constant ()
-    call 2 #f ||
+    call 1 #f ||
     continue
   constant #f
   constant procedure 2 #f
@@ -330,14 +329,12 @@ constant procedure 2 #f
     call 2 #f ||
     call 2 #f ||
     get 2
-    constant ()
-    call 2 #f ||
+    call 1 #f ||
     call 2 #f ||
     set 0
     constant #f
   get 1
-  constant ()
-  call 2 #f ||
+  call 1 #f ||
 set ||
 constant procedure 0 #f
   constant #f

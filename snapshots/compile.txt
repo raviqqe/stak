@@ -1553,8 +1553,7 @@ constant procedure 2 #f
   call 1 #f null?
   if
     get 2
-    constant ()
-    call 2 #f cons
+    call 1 #f list
     continue
   constant #f
   constant procedure 2 #f
@@ -1615,14 +1614,12 @@ constant procedure 2 #f
     call 2 #f ||
     call 2 #f list-tail
     get 2
-    constant ()
-    call 2 #f cons
+    call 1 #f list
     call 2 #f set-cdr!
     set 0
     constant #f
   get 1
-  constant ()
-  call 2 #f cons
+  call 1 #f list
 set ||
 constant procedure 2 #f
   get 0
@@ -2372,8 +2369,7 @@ constant procedure 1 #t
   call 2 #f ||
   if
     constant #\-
-    constant ()
-    call 2 #f cons
+    call 1 #f list
     continue
   constant ()
   constant #f
@@ -2994,8 +2990,7 @@ constant procedure 2 #f
   if
     call 0 #f eof-object
   constant 0
-  constant ()
-  call 2 #f cons
+  call 1 #f list
   constant #f
   constant procedure 1 #f
     get 4
@@ -3015,8 +3010,7 @@ constant procedure 2 #f
     get 5
     call 1 #f read-char
     call 1 #f char->integer
-    constant ()
-    call 2 #f cons
+    call 1 #f list
     call 2 #f set-cdr!
     set 0
     get 0
@@ -3434,14 +3428,12 @@ constant procedure 1 #f
 set open-input-bytevector
 constant procedure 0 #f
   constant 0
-  constant ()
-  call 2 #f cons
+  call 1 #f list
   get 0
   constant procedure 1 #f
     get 2
     get 1
-    constant ()
-    call 2 #f cons
+    call 1 #f list
     call 2 #f set-cdr!
     set 0
     get 2
@@ -4694,9 +4686,9 @@ constant list
   $$let-syntax
   $$letrec-syntax
   $$begin
+  $$quote
   $$set!
   $$if
-  $$quote
   $$syntax-rules
 call 1 #f make-symbol-table
 constant procedure 1 #t
@@ -6008,8 +6000,7 @@ constant procedure 1 #f
   call 1 #f symbol?
   if
     get 0
-    constant ()
-    call 2 #f cons
+    call 1 #f list
   constant ()
 call 1 #f $$close
 set 12
@@ -6127,8 +6118,7 @@ constant procedure 1 #f
   call 1 #f symbol?
   if
     get 0
-    constant ()
-    call 2 #f cons
+    call 1 #f list
   get 0
   call 1 #f null?
   if
@@ -6480,8 +6470,7 @@ constant procedure 2 #f
         get 2
         call 1 #f cdr
         call 2 #f cons
-        constant ()
-        call 2 #f cons
+        call 1 #f list
       constant ()
     call 1 #f $$close
     get 4
@@ -7046,8 +7035,7 @@ constant procedure 3 #f
     get 2
     get 2
     call 2 #f cons
-    constant ()
-    call 2 #f cons
+    call 1 #f list
   get 2
   call 1 #f pair?
   if
@@ -7198,8 +7186,7 @@ constant procedure 3 #f
     get 0
     get 0
     call 1 #f cdr
-    constant ()
-    call 2 #f cons
+    call 1 #f list
   get 2
   call 1 #f pair?
   if
@@ -7211,15 +7198,13 @@ constant procedure 3 #f
     call 1 #f cdr
     call 1 #f 4
     call 3 #f apply
-    constant ()
-    call 2 #f cons
+    call 1 #f list
   get 2
   call 1 #f 24
   if
     get 2
     call 1 #f 23
-    constant ()
-    call 2 #f cons
+    call 1 #f list
   get 2
   call 1 #f 29
   if
@@ -7228,8 +7213,7 @@ constant procedure 3 #f
     get 4
     call 3 #f 13
   get 2
-  constant ()
-  call 2 #f cons
+  call 1 #f list
 call 1 #f $$close
 set 4
 constant procedure 3 #f
@@ -7895,8 +7879,7 @@ constant procedure 1 #f
         call 1 #f null?
         if
           get 1
-          constant ()
-          call 2 #f cons
+          call 1 #f list
         get 1
         call 1 #f pair?
         constant #f
@@ -7976,8 +7959,7 @@ constant procedure 2 #f
     call 2 #f memq
     if
       get 1
-      constant ()
-      call 2 #f cons
+      call 1 #f list
     constant ()
   constant ()
 call 1 #f $$close
@@ -8105,8 +8087,7 @@ set 20
 constant procedure 2 #f
   get 1
   get 1
-  constant ()
-  call 2 #f cons
+  call 1 #f list
   call 2 #f 24
 call 1 #f $$close
 set 19
@@ -9377,8 +9358,7 @@ constant procedure 3 #f
     call 2 #f map
     call 2 #f 101
     constant #f
-    constant ()
-    call 2 #f cons
+    call 1 #f list
     call 2 #f append
     call 2 #f cons
     get 1
@@ -12248,21 +12228,6 @@ set 3
 get 32
 constant list
   list
-    list
-    $$syntax-rules
-    ...
-    ()
-    list
-      list
-        _
-        ||
-      list
-        cons
-        ||
-        list
-          $$quote
-          ()
-  list
     /
     $$syntax-rules
     ...
@@ -13271,8 +13236,7 @@ constant procedure 1 #f
       call 2 #f memq
       if
         get 1
-        constant ()
-        call 2 #f cons
+        call 1 #f list
       get 1
       call 1 #f pair?
       if
@@ -13309,8 +13273,7 @@ constant procedure 1 #f
     set 1
     get 1
     constant ()
-    constant ()
-    call 2 #f cons
+    call 1 #f list
     call 2 #f 2
   call 1 #f $$close
 set ||
@@ -13319,8 +13282,7 @@ constant procedure 2 #f
   get 1
   call 1 #f car
   call 2 #f cons
-  constant ()
-  call 2 #f cons
+  call 1 #f list
 call 1 #f ||
 set ||
 constant procedure 2 #f
@@ -21897,8 +21859,7 @@ constant procedure 0 #f
     constant debug
     continue
   constant #f
-  constant ()
-  call 2 #f cons
+  call 1 #f list
   call 0 #f ||
   call 1 #f ||
   call 2 #f 3

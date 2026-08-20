@@ -296,6 +296,9 @@ constant procedure 1 #f
   call 1 #f ||
   call 1 #f ||
 set ||
+constant procedure 0 #t
+  get 0
+set ||
 constant procedure 1 #t
   constant #f
   get 1
@@ -901,8 +904,7 @@ constant procedure 1 #t
   call 2 #f ||
   if
     constant #\-
-    constant ()
-    call 2 #f ||
+    call 1 #f ||
     continue
   constant ()
   constant #f
@@ -1987,8 +1989,7 @@ constant procedure 1 #f
       call 2 #f ||
       if
         get 1
-        constant ()
-        call 2 #f ||
+        call 1 #f ||
       get 1
       call 1 #f ||
       if
@@ -2025,8 +2026,7 @@ constant procedure 1 #f
     set 1
     get 1
     constant ()
-    constant ()
-    call 2 #f ||
+    call 1 #f ||
     call 2 #f 2
   call 1 #f ||
 set ||
@@ -2035,8 +2035,7 @@ constant procedure 2 #f
   get 1
   call 1 #f ||
   call 2 #f ||
-  constant ()
-  call 2 #f ||
+  call 1 #f ||
 call 1 #f ||
 set ||
 constant procedure 2 #f
