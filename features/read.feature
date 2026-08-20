@@ -195,8 +195,8 @@ Feature: Read
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
-    # TODO Add false cases.
 
+    # TODO Add false cases.
     Examples:
       | bytes           | output |
       |                 | A      |
