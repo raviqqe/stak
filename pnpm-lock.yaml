@@ -34,16 +34,16 @@ importers:
         version: 0.1.9(preact-render-to-string@6.7.0)
       '@nanostores/async':
         specifier: ^0.1.0
-        version: 0.1.0(nanostores@1.4.1)
+        version: 0.1.0(nanostores@1.5.0)
       '@nanostores/preact':
         specifier: ^1.1.0
-        version: 1.1.0(nanostores@1.4.1)(preact@10.29.8)
+        version: 1.1.0(nanostores@1.5.0)(preact@10.29.8)
       '@preact/signals':
         specifier: ^2.11.1
         version: 2.11.1(preact@10.29.8)
       '@raviqqe/stak':
-        specifier: ^0.12.21
-        version: 0.12.21
+        specifier: ^0.12.22
+        version: 0.12.22
       '@xterm/addon-fit':
         specifier: ^0.11.0
         version: 0.11.0
@@ -66,8 +66,8 @@ importers:
         specifier: ^0.5.9
         version: 0.5.9
       nanostores:
-        specifier: ^1.4.1
-        version: 1.4.1
+        specifier: ^1.5.0
+        version: 1.5.0
       picolight:
         specifier: ^0.2.8
         version: 0.2.8
@@ -941,8 +941,8 @@ packages:
     peerDependencies:
       '@biomejs/biome': ^2.1.4
 
-  '@raviqqe/stak@0.12.21':
-    resolution: {integrity: sha512-I4pY5ytpmKp449dVdmS+rAUhnSA45u9OIBBzwaX1R7WLVCyu7BrM4yKQx3WAsZXmpC+kMc1BgRzHCzoZL0ZveQ==}
+  '@raviqqe/stak@0.12.22':
+    resolution: {integrity: sha512-DphI3tNaMdJgWSGUVu5iDLK5/xylL78dqRU5KqyARJURCf/XMj7iKrOPe+UNgohwW2MaKQQRq0XwhmDRoiFG3Q==}
 
   '@rolldown/binding-android-arm64@1.2.1':
     resolution: {integrity: sha512-02hOeOSryYxVrOIphmLAsqnCJWxwlzFk+pEt/N/i6OgT3lShHO7xGCU5cpgchRDHboAEbSjzgGh+O/u1GswQmA==}
@@ -2256,8 +2256,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanostores@1.4.1:
-    resolution: {integrity: sha512-PGd3uPojJB9Z07d5NX3Db/SOSBbyy3wLMUGq0GpnEEJfVzY9mq7daPMAZ3jObV5D3Jn+YKND636eI5ULg7F80Q==}
+  nanostores@1.5.0:
+    resolution: {integrity: sha512-E0SrU7uLV/k4E6YbBIpQNDnRj00vgE5wlutM1sYVSAXDtHQosiRCGS9eKMKyiGg4ChXfDiJmTB+NCR3yXr6UAw==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   neotraverse@1.0.1:
@@ -3818,13 +3818,13 @@ snapshots:
     transitivePeerDependencies:
       - preact-render-to-string
 
-  '@nanostores/async@0.1.0(nanostores@1.4.1)':
+  '@nanostores/async@0.1.0(nanostores@1.5.0)':
     dependencies:
-      nanostores: 1.4.1
+      nanostores: 1.5.0
 
-  '@nanostores/preact@1.1.0(nanostores@1.4.1)(preact@10.29.8)':
+  '@nanostores/preact@1.1.0(nanostores@1.5.0)(preact@10.29.8)':
     dependencies:
-      nanostores: 1.4.1
+      nanostores: 1.5.0
       preact: 10.29.8(preact-render-to-string@6.7.0)
 
   '@napi-rs/wasm-runtime@1.2.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
@@ -3925,7 +3925,7 @@ snapshots:
     dependencies:
       '@biomejs/biome': 2.5.8
 
-  '@raviqqe/stak@0.12.21': {}
+  '@raviqqe/stak@0.12.22': {}
 
   '@rolldown/binding-android-arm64@1.2.1':
     optional: true
@@ -5560,7 +5560,7 @@ snapshots:
 
   nanoid@3.3.18: {}
 
-  nanostores@1.4.1: {}
+  nanostores@1.5.0: {}
 
   neotraverse@1.0.1: {}
 

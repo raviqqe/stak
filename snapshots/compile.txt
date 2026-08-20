@@ -2958,6 +2958,19 @@ constant procedure 0 #t
   call 2 #f $$unbind
   call 1 #f integer->char
 set read-char
+constant ()
+constant procedure 1 #f
+  get 0
+  get 3
+  call 2 #f cons
+  set 3
+  constant #f
+call 1 #f $$close
+constant procedure 0 #f
+  constant #f
+constant procedure 0 #f
+  constant #f
+call 3 #f make-output-port
 constant procedure 0 #t
   get 0
   call 1 #f ||
@@ -2967,31 +2980,24 @@ constant procedure 0 #t
   call 1 #f eof-object?
   if
     get 0
-  constant ()
-  get 1
-  constant procedure 1 #f
-    get 0
-    get 4
-    call 2 #f cons
-    set 4
-    constant #f
-  call 1 #f $$close
-  constant procedure 0 #f
-    constant #f
-  constant procedure 0 #f
-    constant #f
-  call 3 #f make-output-port
+  get 0
+  get 5
   call 2 #f write-char
   set 0
-  get 2
   get 1
+  get 6
   call 1 #f reverse
-  get 4
+  get 3
   call 1 #f ||
   call 2 #f append
   call 2 #f ||
   set 0
-  get 1
+  constant ()
+  set 6
+  get 0
+call 1 #f $$close
+call 2 #f $$unbind
+call 2 #f $$unbind
 set peek-char
 constant procedure 0 #t
   get 0
@@ -7818,8 +7824,10 @@ constant procedure 2 #f
     continue
   get 1
   call 1 #f car
-  constant $$quote
-  call 2 #f eq?
+  constant list
+    $$quote
+    $$syntax-rules
+  call 2 #f memq
   call 2 #f $$unbind
   if
     get 0
@@ -12346,7 +12354,7 @@ constant list
         _
         ||
       list
-        ||
+        <
         ||
         0
   list
@@ -12359,9 +12367,9 @@ constant list
         _
         ||
       list
+        >
         ||
         0
-        ||
   list
     zero?
     $$syntax-rules
@@ -12386,12 +12394,11 @@ constant list
         ||
         ||
       list
-        eq?
+        not
         list
           ||
           ||
           ||
-        #f
   list
     <=
     $$syntax-rules
@@ -12403,12 +12410,11 @@ constant list
         ||
         ||
       list
-        eq?
+        not
         list
           ||
           ||
           ||
-        #f
   list
     >
     $$syntax-rules
@@ -16510,13 +16516,15 @@ constant list
             pair?
             expression
         list
-          eq?
+          memq
           list
             car
             expression
           list
             quote
-            $$quote
+            list
+              $$quote
+              $$syntax-rules
       expression
       list
         optimize
