@@ -1879,25 +1879,33 @@
             (+ (char->integer #\a) (- x 10))
             (+ (char->integer #\0) x))))
 
+      (define (point-epsilon x)
+        (let loop ((x x) (d epsilon))
+          (if (< x 4)
+            d
+            (loop (/ x 2) (* 2 d)))))
+
       (define (format-point x)
-        (if (< x epsilon)
-          '()
-          (cons
-            #\.
-            (let loop ((x x) (d epsilon) (ys '()))
-              (if (< x d)
-                '()
-                (let* ((x (* x radix))
-                       (r (remainder x 1))
-                       (q (quotient x 1))
-                       (d (* d radix)))
-                  (if (< (- 1 r) d)
-                    (cons
-                      (format-digit (+ q 1))
-                      '())
-                    (cons
-                      (format-digit q)
-                      (loop r d ys)))))))))
+        (let ((d (point-epsilon x))
+              (x (remainder x 1)))
+          (if (< x d)
+            '()
+            (cons
+              #\.
+              (let loop ((x x) (d d))
+                (if (< x d)
+                  '()
+                  (let* ((x (* x radix))
+                         (r (remainder x 1))
+                         (q (quotient x 1))
+                         (d (* d radix)))
+                    (if (and (< (- 1 r) d) (< (- 1 r) r))
+                      (cons
+                        (format-digit (+ q 1))
+                        '())
+                      (cons
+                        (format-digit q)
+                        (loop r d))))))))))
 
       (cond
         ((infinite? x)
@@ -1921,7 +1929,7 @@
                   (if (positive? q)
                     (loop q ys)
                     ys)))
-              (format-point (remainder (abs x) 1)))))))
+              (format-point (abs x)))))))
 
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
