@@ -125,5 +125,55 @@ mod tests {
         fn compile_write_library() {
             compile_r7rs(b"(import (scheme write))".as_slice(), &mut vec![]).unwrap();
         }
+
+        #[test]
+        fn compile_optimizer() {
+            compile_r7rs(
+                indoc!(
+                    r#"
+                    (import (scheme base) (stak base))
+
+                    (define-optimizer foo
+                        (syntax-rules ()
+                            ((_ x)
+                                (write-u8 x))))
+
+                    (foo 65)
+                    "#
+                )
+                .as_bytes(),
+                &mut vec![],
+            )
+            .unwrap();
+        }
+
+        #[test]
+        fn compile_chained_optimizers() {
+            compile_r7rs(
+                indoc!(
+                    r#"
+                    (import (scheme base) (stak base))
+
+                    (define-optimizer foo
+                        (syntax-rules ()
+                            ((_ x)
+                                (write-u8 x))
+
+                            ((_ x y ...)
+                                (begin (write-u8 x) (foo y ...)))))
+
+                    (define-optimizer bar
+                        (syntax-rules ()
+                            ((_ x ...)
+                                (foo x ...))))
+
+                    (bar 65 66 67)
+                    "#
+                )
+                .as_bytes(),
+                &mut vec![],
+            )
+            .unwrap();
+        }
     }
 }
