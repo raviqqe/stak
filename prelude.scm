@@ -2248,13 +2248,20 @@
               (set-cdr! ys (list (char->integer (read-char port)))))))))
 
     (define (read-string count . rest)
-      (if (zero? count)
-        ""
-        (read-delimited-string
-          (lambda (port)
-            (set! count (- count 1))
-            (negative? count))
-          (get-input-port rest))))
+      (cond
+        ((zero? count)
+          "")
+        ((eof-object? (peek-char port))
+          (eof-object))
+        (else
+          (let ((xs (list 0)))
+            (let loop ((count count) (ys xs))
+              (unless (zero? count)
+                (let ((x (read-char port)))
+                  (unless (eof-object? x)
+                    (set-cdr! ys (list (char->integer x)))
+                    (loop (- count 1) (cdr ys))))))
+            (code-points->string (cdr xs))))))
 
     (define (read-line . rest)
       (read-delimited-string
