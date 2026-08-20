@@ -888,7 +888,9 @@
          (error "unsupported optimizer" optimizer))))))
 
     (define (optimize-expression optimize expression)
-     (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
+     (if (or
+          (not (pair? expression))
+          (memq (car expression) '($$quote $$syntax-rules)))
       expression
       (optimize
        (relaxed-map

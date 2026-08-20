@@ -38,15 +38,45 @@ Feature: List
     When I successfully run `stak main.scm`
     Then the exit status should be 0
 
-  Scenario: Create a list
+  Scenario: Create an empty list
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (list 1 2 3)
+      (write-u8 (if (null? (list)) 65 66))
       """
     When I successfully run `stak main.scm`
-    Then the exit status should be 0
+    Then the stdout should contain exactly "A"
+
+  Scenario: Create a list with an element
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (car (list 65)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Create a list with elements
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each write-u8 (list 65 66 67))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
+
+  Scenario: Apply a `list` procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each write-u8 (apply list '(65 66 67)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "ABC"
 
   Scenario: Use a `for-each` procedure
     Given a file named "main.scm" with:
