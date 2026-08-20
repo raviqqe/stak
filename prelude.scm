@@ -2248,6 +2248,8 @@
               (set-cdr! ys (list (char->integer (read-char port)))))))))
 
     (define (read-string count . rest)
+      (define port (get-input-port rest))
+
       (cond
         ((zero? count)
           "")
