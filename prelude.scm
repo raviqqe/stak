@@ -942,11 +942,6 @@
 
     (define (list . xs) xs)
 
-    (define-optimizer list
-      (syntax-rules ()
-        ((_ x)
-          (cons x '()))))
-
     (define (make-list length . rest)
       (define fill (if (null? rest) #f (car rest)))
 
