@@ -26,6 +26,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+#[expect(clippy::result_large_err)]
 async fn calculate(input: String) -> response::Result<(StatusCode, String)> {
     let mut output = vec![];
     let mut error = vec![];
