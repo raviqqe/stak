@@ -39,9 +39,9 @@ impl FromStr for DurationRecord {
 
 impl Display for DurationRecord {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
-        write!(formatter, "{}", &self.stack)?;
+        write!(formatter, "{}", self.stack)?;
         write!(formatter, "{COLUMN_SEPARATOR}")?;
-        write!(formatter, "{}", &self.time)?;
+        write!(formatter, "{}", self.time)?;
 
         Ok(())
     }
