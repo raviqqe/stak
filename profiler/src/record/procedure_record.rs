@@ -55,9 +55,9 @@ impl Display for ProcedureRecord {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
         write!(formatter, "{}", self.operation)?;
         write!(formatter, "{COLUMN_SEPARATOR}")?;
-        write!(formatter, "{}", &self.stack)?;
+        write!(formatter, "{}", self.stack)?;
         write!(formatter, "{COLUMN_SEPARATOR}")?;
-        write!(formatter, "{}", &self.time)?;
+        write!(formatter, "{}", self.time)?;
 
         Ok(())
     }
