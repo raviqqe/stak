@@ -101,7 +101,7 @@ Feature: Port
     Examples:
       | input | first-byte |
       | éx    | 195        |
-      | 😄x    | 240        |
+      | 😄x   | 240        |
 
   @stak
   Scenario: Preserve pending input order when peeking a character
@@ -147,8 +147,8 @@ Feature: Port
     Examples:
       | string |
       | ABC    |
-      | あ      |
-      | 😄      |
+      | あ     |
+      | 😄     |
       | —      |
 
   @gauche @guile @stak
@@ -174,8 +174,8 @@ Feature: Port
       | bytes           | output | length |
       |                 |        | 0      |
       | 65 66 67        | ABC    | 3      |
-      | 227 129 130     | あ      | 1      |
-      | 240 159 152 132 | 😄      | 1      |
+      | 227 129 130     | あ     | 1      |
+      | 240 159 152 132 | 😄     | 1      |
 
   Scenario: Read from a bytevector port
     Given a file named "main.scm" with:
