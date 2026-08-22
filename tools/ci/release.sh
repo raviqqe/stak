@@ -46,6 +46,6 @@ cargo install --locked cargo-workspaces
 for directory in . cmd/minimal; do
   (
     cd $directory
-    cargo workspaces publish -y --from-git "$@"
+    cargo workspaces publish -y --publish-as-is "$@"
   )
 done
