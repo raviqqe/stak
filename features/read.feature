@@ -124,7 +124,7 @@ Feature: Read
       | ~     |
       | д     |
       | ∰     |
-      | 😄     |
+      | 😄    |
 
   Scenario Outline: Peek a character
     Given a file named "main.scm" with:
@@ -149,7 +149,7 @@ Feature: Read
       | ~     |
       | д     |
       | ∰     |
-      | 😄     |
+      | 😄    |
 
   Scenario: Peek a character multiple times
     Given a file named "main.scm" with:
@@ -218,15 +218,15 @@ Feature: Read
     And the stdout should contain exactly "<output>"
 
     Examples:
-      | value    | count | output   |
-      |          | 0     |          |
-      | A        | 0     |          |
-      | A        | 1     | A        |
-      | A        | 2     | A        |
-      | ABC      | 2     | AB       |
-      | ABC      | 3     | ABC      |
-      | ABC      | 4     | ABC      |
-      | A😄あ      | 3     | A😄あ      |
+      | value | count | output |
+      |       | 0     |        |
+      | A     | 0     |        |
+      | A     | 1     | A      |
+      | A     | 2     | A      |
+      | ABC   | 2     | AB     |
+      | ABC   | 3     | ABC    |
+      | ABC   | 4     | ABC    |
+      | A😄あ | 3     | A😄あ  |
 
   Scenario Outline: Read a string without consuming extra characters
     Given a file named "main.scm" with:
