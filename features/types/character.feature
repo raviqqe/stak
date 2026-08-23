@@ -40,8 +40,8 @@ Feature: Character
       | ý     | A      |
       | Α     | A      |
       | α     | A      |
-      | あ     | A      |
-      | を     | A      |
+      | あ    | A      |
+      | を    | A      |
       | @     | B      |
       | 0     | B      |
 
@@ -280,16 +280,16 @@ Feature: Character
     Then the stdout should contain exactly "A"
 
     Examples:
-      | input  | output |
-      | #\\@   | #\\@   |
-      | #\\A   | #\\a   |
-      | #\\a   | #\\a   |
-      | #\\Z   | #\\z   |
-      | #\\z   | #\\z   |
-      | #\\ẞ   | #\\ß   |
-      | #\\µ   | #\\µ   |
-      | #\\Α   | #\\α   |
-      | #\\ﬅ   | #\\ﬅ   |
+      | input | output |
+      | #\\@  | #\\@   |
+      | #\\A  | #\\a   |
+      | #\\a  | #\\a   |
+      | #\\Z  | #\\z   |
+      | #\\z  | #\\z   |
+      | #\\ẞ  | #\\ß   |
+      | #\\µ  | #\\µ   |
+      | #\\Α  | #\\α   |
+      | #\\ﬅ  | #\\ﬅ   |
 
   Scenario Outline: Convert a character to its upper case
     Given a file named "main.scm" with:
@@ -326,32 +326,32 @@ Feature: Character
     Then the stdout should contain exactly "A"
 
     Examples:
-      | input  | output |
-      | #\\@   | #\\@   |
-      | #\\[   | #\\[   |
-      | #\\`   | #\\`   |
-      | #\\A   | #\\a   |
-      | #\\a   | #\\a   |
-      | #\\Z   | #\\z   |
-      | #\\z   | #\\z   |
-      | #\\{   | #\\{   |
-      | #\\µ   | #\\μ   |
-      | #\\À   | #\\à   |
-      | #\\Ý   | #\\ý   |
-      | #\\ß   | #\\ß   |
-      | #\\Ꟶ   | #\\ꟶ   |
-      | #\\Α   | #\\α   |
+      | input | output |
+      | #\\@  | #\\@   |
+      | #\\[  | #\\[   |
+      | #\\`  | #\\`   |
+      | #\\A  | #\\a   |
+      | #\\a  | #\\a   |
+      | #\\Z  | #\\z   |
+      | #\\z  | #\\z   |
+      | #\\{  | #\\{   |
+      | #\\µ  | #\\μ   |
+      | #\\À  | #\\à   |
+      | #\\Ý  | #\\ý   |
+      | #\\ß  | #\\ß   |
+      | #\\Ꟶ  | #\\ꟶ   |
+      | #\\Α  | #\\α   |
 
     @chibi @stak
     Examples:
-      | input  | output |
-      | #\\ﬅ   | #\\ﬆ   |
+      | input | output |
+      | #\\ﬅ  | #\\ﬆ   |
 
     @guile @stak
     Examples:
-      | input   | output  |
-      | #\\𞤀    | #\\𞤢    |
-      | #\\𞤡    | #\\𞥃    |
+      | input | output |
+      | #\\𞤀  | #\\𞤢   |
+      | #\\𞤡  | #\\𞥃   |
 
   Scenario Outline: Extract a digit value
     Given a file named "main.scm" with:

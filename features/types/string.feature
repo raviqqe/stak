@@ -101,7 +101,7 @@ Feature: String
     @gauche @guile @stak
     Examples:
       | index | character | output |
-      | 1     | 😄         | a😄a    |
+      | 1     | 😄        | a😄a   |
 
   Scenario Outline: Get a length of a string
     Given a file named "main.scm" with:
@@ -424,11 +424,11 @@ Feature: String
     Then the stdout should contain exactly "A"
 
     Examples:
-      | string   |
-      |          |
-      | A        |
-      | ABC      |
-      | Aあ😄      |
+      | string |
+      |        |
+      | A      |
+      | ABC    |
+      | Aあ😄  |
 
   Scenario Outline: Convert a string case
     Given a file named "main.scm" with:

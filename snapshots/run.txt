@@ -3014,7 +3014,12 @@ constant procedure 0 #t
   call 1 #f peek-u8
   call 1 #f eof-object?
 set char-ready?
-constant procedure 2 #f
+constant procedure 3 #f
+  get 2
+  constant 0
+  call 2 #f eq?
+  if
+    constant ""
   get 0
   call 1 #f peek-char
   call 1 #f eof-object?
@@ -3023,70 +3028,66 @@ constant procedure 2 #f
   constant 0
   call 1 #f list
   constant #f
-  constant procedure 1 #f
-    get 4
-    call 1 #f peek-char
-    call 1 #f eof-object?
-    get 0
+  constant procedure 2 #f
+    get 1
+    constant 0
+    call 2 #f eq?
+    constant #f
+    call 2 #f eq?
     if
+      get 5
+      call 1 #f read-char
       get 0
-      continue
-    get 5
-    call 1 #f 7
-    call 2 #f $$unbind
-    if
-      get 3
-      call 1 #f cdr
-    get 0
-    get 5
-    call 1 #f read-char
-    call 1 #f char->integer
-    call 1 #f list
-    call 2 #f set-cdr!
-    set 0
-    get 0
-    call 1 #f cdr
-    call 1 #f 3
+      call 1 #f 8
+      constant #f
+      call 2 #f eq?
+      if
+        get 1
+        get 1
+        call 1 #f char->integer
+        call 1 #f list
+        call 2 #f set-cdr!
+        set 0
+        get 2
+        constant 1
+        call 2 #f ||
+        get 2
+        call 1 #f cdr
+        call 2 #f 6
+      constant #f
+    constant #f
   call 1 #f $$close
   set 1
-  get 1
-  call 1 #f 1
+  get 4
+  get 2
+  call 2 #f 2
   call 2 #f $$unbind
-  call 2 #f $$unbind
+  set 0
+  get 0
+  call 1 #f cdr
   call 1 #f code-points->string
 set ||
 constant procedure 1 #t
   get 1
-  constant 0
-  call 2 #f eq?
-  if
-    constant ""
-  constant procedure 1 #f
-    get 3
-    constant 1
-    call 2 #f ||
-    set 4
-    get 3
-    constant 0
-    call 2 #f ||
-  call 1 #f $$close
-  get 1
+  get eof-object?
+  get 2
   call 1 #f ||
-  call 2 #f ||
+  call 3 #f ||
 set read-string
 constant procedure 0 #t
+  constant -1
   constant procedure 1 #f
     get 0
-    call 1 #f peek-char
     constant #\newline
     call 2 #f eqv?
+    get 0
     if
       get 0
-      call 1 #f read-char
-    constant #f
-  get 1
+    get 1
+    call 1 #f eof-object?
+  get 2
   call 1 #f ||
-  call 2 #f ||
+  call 3 #f ||
 set read-line
 constant procedure 1 #t
   constant #f

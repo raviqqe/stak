@@ -2245,31 +2245,30 @@
           (not (eof-object? (peek-char port)))
           (eof-object? (peek-u8 port)))))
 
-    (define (read-delimited-string end? port)
-      (if (eof-object? (peek-char port))
-        (eof-object)
-        (code-points->string
+    (define (read-substring count end? port)
+      (cond
+        ((zero? count)
+          "")
+        ((eof-object? (peek-char port))
+          (eof-object))
+        (else
           (let ((xs (list 0)))
-            (do ((ys xs (cdr ys)))
-              ((or (eof-object? (peek-char port)) (end? port))
-                (cdr xs))
-              (set-cdr! ys (list (char->integer (read-char port)))))))))
+            (let loop ((count count) (ys xs))
+              (unless (zero? count)
+                (let ((x (read-char port)))
+                  (unless (end? x)
+                    (set-cdr! ys (list (char->integer x)))
+                    (loop (- count 1) (cdr ys))))))
+            (code-points->string (cdr xs))))))
 
     (define (read-string count . rest)
-      (if (zero? count)
-        ""
-        (read-delimited-string
-          (lambda (port)
-            (set! count (- count 1))
-            (negative? count))
-          (get-input-port rest))))
+      (read-substring count eof-object? (get-input-port rest)))
 
     (define (read-line . rest)
-      (read-delimited-string
-        (lambda (port)
-          (and
-            (eqv? (peek-char port) #\newline)
-            (read-char port)))
+      (read-substring
+        -1
+        (lambda (x)
+          (or (eqv? x #\newline) (eof-object? x)))
         (get-input-port rest)))
 
     (define (read-bytevector count . rest)

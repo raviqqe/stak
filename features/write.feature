@@ -41,7 +41,7 @@ Feature: Write
       | value |
       | д     |
       | ∰     |
-      | 😄     |
+      | 😄    |
 
   Scenario Outline: Write an escaped character
     Given a file named "main.scm" with:
