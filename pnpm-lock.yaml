@@ -30,8 +30,8 @@ importers:
         specifier: ^0.41.7
         version: 0.41.7(astro@7.2.4(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@26.2.0)(yaml@2.9.0))(supports-color@7.2.0)(typescript@6.0.3)
       '@monza-editor/preact':
-        specifier: ^0.1.9
-        version: 0.1.9(preact-render-to-string@6.7.0)
+        specifier: ^0.1.10
+        version: 0.1.10(preact-render-to-string@6.7.0)
       '@nanostores/async':
         specifier: ^0.1.0
         version: 0.1.0(nanostores@1.5.1)
@@ -876,8 +876,8 @@ packages:
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
 
-  '@monza-editor/preact@0.1.9':
-    resolution: {integrity: sha512-q15llzdgN60cb4YNY/swKKgxx0iKwi4q0mFpKLEpyaSjUXCnpEJpyTJJXCmIq0u1QOZzpKHyL4vgSe6BvQNLpA==}
+  '@monza-editor/preact@0.1.10':
+    resolution: {integrity: sha512-bWCGkFFy81sL5Xn1RQerDM/Zvi4OTp1Lazwx+V4XOL0fWRecd1IwurZ4IlWRG+bVSk9ScflqFJUmOjO4vxf+dw==}
 
   '@nanostores/async@0.1.0':
     resolution: {integrity: sha512-sFz5p7L+O7EXkAah65wAIxFs8UW/fHCnqmA5IMXW+ocGqiBY+GvTXyUvGu48qjEaqI886sQSImctmu9L2m5jzw==}
@@ -2260,9 +2260,6 @@ packages:
 
   monza-editor@0.5.10:
     resolution: {integrity: sha512-16XWz7uqRoE1aovfmlDQxnzPlhpFU0LXYNkNQsZaViqHSZYi4p1i4quziLJ4v97Pak4m5jEY3Mr3mW9b+J4iTQ==}
-
-  monza-editor@0.5.5:
-    resolution: {integrity: sha512-VsJuvlfQrDzfe47VMFKMAhIobajW4Ht8X1YWaYdL7wvSvgGyin/zql6khbriQMQ76SoJCim8x99BlgbCSSR86A==}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -3821,9 +3818,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@monza-editor/preact@0.1.9(preact-render-to-string@6.7.0)':
+  '@monza-editor/preact@0.1.10(preact-render-to-string@6.7.0)':
     dependencies:
-      monza-editor: 0.5.5
+      monza-editor: 0.5.10
       preact: 10.29.8(preact-render-to-string@6.7.0)
     transitivePeerDependencies:
       - preact-render-to-string
@@ -5511,8 +5508,6 @@ snapshots:
       - supports-color
 
   monza-editor@0.5.10: {}
-
-  monza-editor@0.5.5: {}
 
   mrmime@2.0.1: {}
 
