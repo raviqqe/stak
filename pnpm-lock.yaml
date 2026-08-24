@@ -69,8 +69,8 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
       picolight:
-        specifier: ^0.2.8
-        version: 0.2.8
+        specifier: ^0.2.9
+        version: 0.2.9
       preact:
         specifier: ^10.29.8
         version: 10.29.8(preact-render-to-string@6.7.0)
@@ -2363,8 +2363,8 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
-  picolight@0.2.8:
-    resolution: {integrity: sha512-fx6MZd5H3y5Lk3bKRuGhQ1NiQ/ImOgl67MoHQscEv0tDpVQ6/7V1ucdS7+7Zn2emieta5BRcr9XB5BPh8CIvkw==}
+  picolight@0.2.9:
+    resolution: {integrity: sha512-KnDv4FjJGd19ApseNp8AGQDHBmTL/PchNs+J8KuKv0w3C0lTbJAndaWDNwHJVjN6hUk2RtvMc/Cb7ExLunOilg==}
 
   picomatch@2.3.2:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
@@ -5617,7 +5617,7 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picolight@0.2.8: {}
+  picolight@0.2.9: {}
 
   picomatch@2.3.2: {}
 
