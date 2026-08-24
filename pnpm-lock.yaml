@@ -63,8 +63,8 @@ importers:
         specifier: ^1.31.0
         version: 1.31.0(preact@10.29.8)
       monza-editor:
-        specifier: ^0.5.9
-        version: 0.5.9
+        specifier: ^0.5.10
+        version: 0.5.10
       nanostores:
         specifier: ^1.5.1
         version: 1.5.1
@@ -2258,11 +2258,11 @@ packages:
   micromark@4.0.2:
     resolution: {integrity: sha512-zpe98Q6kvavpCr1NPVSCMebCKfD7CA2NqZ+rykeNhONIJBpc1tFKt9hucLGwha3jNTNI8lHpctWJWoimVF4PfA==}
 
+  monza-editor@0.5.10:
+    resolution: {integrity: sha512-16XWz7uqRoE1aovfmlDQxnzPlhpFU0LXYNkNQsZaViqHSZYi4p1i4quziLJ4v97Pak4m5jEY3Mr3mW9b+J4iTQ==}
+
   monza-editor@0.5.5:
     resolution: {integrity: sha512-VsJuvlfQrDzfe47VMFKMAhIobajW4Ht8X1YWaYdL7wvSvgGyin/zql6khbriQMQ76SoJCim8x99BlgbCSSR86A==}
-
-  monza-editor@0.5.9:
-    resolution: {integrity: sha512-hxMv2AU/EpZNcYdTRs54MnOHIU6QoUUNgIIEQycKAR1z7QVuYXu8BnDuBfr/+XZF1G1cgoWjSSCmsTrpAsi1xg==}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -5510,9 +5510,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  monza-editor@0.5.5: {}
+  monza-editor@0.5.10: {}
 
-  monza-editor@0.5.9: {}
+  monza-editor@0.5.5: {}
 
   mrmime@2.0.1: {}
 
