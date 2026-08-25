@@ -50,3 +50,22 @@ Feature: Inclusion
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "bar"
+
+  @gauche @guile @stak
+  Scenario: Include a file in a directory in an included file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (include "./foo/bar.scm")
+      """
+    And a file named "foo/bar.scm" with:
+      """scheme
+      (include "baz.scm")
+      """
+    And a file named "foo/baz.scm" with:
+      """scheme
+      (write-string "baz")
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "baz"

@@ -244,9 +244,43 @@
 
     (define symbol-name-separator #\#)
 
+    ; File
+
+    (define path-separator #\/)
+
+    (define (path-directory path)
+     (let ((index (memv-index path-separator (reverse (string->list path)))))
+      (if index
+       ; A root directory consists of its separator only.
+       (string-copy path 0 (max 1 (- (string-length path) index 1)))
+       "")))
+
+    (define (append-path directory path)
+     (if (or
+          (equal? directory "")
+          (eqv? (string-ref path 0) path-separator))
+      path
+      (string-append
+       directory
+       (if (eqv?
+            (string-ref directory (- (string-length directory) 1))
+            path-separator)
+        ""
+        (string path-separator))
+       path)))
+
+    (define (read-file path)
+     (with-input-from-file path
+      (lambda ()
+       (let loop ()
+        (let ((value (read)))
+         (if (eof-object? value)
+          '()
+          (cons value (loop))))))))
+
     ; Inclusion
 
-    (define (include-files expression)
+    (define (include-files directory expression)
      (deep-map
       (lambda (expression)
        (if (and
@@ -256,13 +290,11 @@
          'begin
          (append-map
           (lambda (name)
-           (with-input-from-file name
-            (lambda ()
-             (let loop ()
-              (let ((value (read)))
-               (if (eof-object? value)
-                '()
-                (cons value (loop))))))))
+           (let ((path (append-path directory name)))
+            (map
+             (lambda (expression)
+              (include-files (path-directory path) expression))
+             (read-file path))))
           (cdr expression)))
         expression))
       expression))
@@ -279,17 +311,69 @@
      (body library-body))
 
     (define-record-type library-context
-     (make-library-context libraries imported)
+     (make-library-context libraries imported loading)
      library-context?
      (libraries library-context-libraries library-context-set-libraries!)
-     (imported library-context-imported library-context-set-imported!))
+     (imported library-context-imported library-context-set-imported!)
+     (loading library-context-loading library-context-set-loading!))
 
-    (define (library-context-find context name)
+    (define library-file-extension ".sld")
+
+    (define (library-name->path name)
+     (string-append
+      (fold-left
+       (lambda (component path)
+        (append-path
+         path
+         (if (symbol? component)
+          (symbol->string component)
+          (number->string component))))
+       ""
+       name)
+      library-file-extension))
+
+    (define (find-library-file name)
+     (let ((path (library-name->path name)))
+      (let loop ((directories (library-load-path)))
+       (and
+        (pair? directories)
+        (let ((path (append-path (car directories) path)))
+         (if (file-exists? path)
+          path
+          (loop (cdr directories))))))))
+
+    (define (library-context-load! context name path)
+     (when (member name (library-context-loading context))
+      (error "circular library import" name))
+     (library-context-set-loading!
+      context
+      (cons name (library-context-loading context)))
+     (for-each
+      (lambda (expression)
+       (when (eq? (maybe-car expression) 'define-library)
+        (add-library-definition!
+         context
+         (include-files (path-directory path) expression))))
+      (read-file path))
+     (library-context-set-loading!
+      context
+      (cdr (library-context-loading context))))
+
+    (define (library-context-search context name)
      (cond
       ((assoc name (library-context-libraries context)) =>
        cdr)
       (else
-       (error "unknown library" name))))
+       #f)))
+
+    (define (library-context-find context name)
+     (or
+      (library-context-search context name)
+      (let ((path (find-library-file name)))
+       (when path
+        (library-context-load! context name path))
+       (library-context-search context name))
+      (error "unknown library" name)))
 
     (define (library-context-add! context name library)
      (library-context-set-libraries!
@@ -1232,7 +1316,7 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '()))
+     (let* ((context (make-library-context '() '() '()))
             (expressions (cdr expression))
             (sets
              (map
@@ -2029,8 +2113,12 @@
 
     ; Main
 
-    (define (main options source)
-     (define expression1 (include-files source))
+    (define (main options load-path source)
+     (library-load-path load-path)
+     (compile-program options source))
+
+    (define (compile-program options source)
+     (define expression1 (include-files "" source))
      (define-values (expression2 libraries) (expand-libraries expression1))
      (define-values (expression3 macros dynamic-symbols) (expand-macros expression2))
      (define-values (expression4 optimizers) (optimize-custom expression3))
@@ -2089,6 +2177,8 @@
        (set! symbol-id (+ symbol-id 1))
        (string->symbol (string-append (number->string symbol-id 32) name)))))
 
+    (define library-load-path (make-parameter '()))
+
     ,@frontend
     ,@backend))
 
@@ -2118,7 +2208,7 @@
         (eq? (caar expression) '$$compiler))
       (cons
         `(define-library (stak compile)
-          (export compile)
+          (export compile library-load-path)
 
           (import
            (scheme base)
@@ -2129,6 +2219,8 @@
            (only (stak base) rib string->uninterned-symbol))
 
           (begin
+           (define library-load-path (make-parameter '()))
+
            (define compile
             (let ()
              (define cons-rib cons)
@@ -2161,6 +2253,7 @@
               (let ((context
                      (make-library-context
                       (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
+                      '()
                       '())))
                (lambda (imports symbol-table expression)
                 (case (maybe-car expression)
@@ -2230,7 +2323,7 @@
                             (expand-libraries
                              imports
                              symbol-table
-                             (include-files expression))))
+                             (include-files "" expression))))
                (values
                 (make-procedure
                  (compile-arity 0 #f)
@@ -2245,6 +2338,20 @@
       (cons
         (incept (car expression))
         (incept (cdr expression))))))
+
+; Options
+
+(define (parse-load-path arguments)
+  (let loop ((arguments arguments) (directories '()))
+    (cond
+      ((or (null? arguments) (null? (cdr arguments)))
+        directories)
+      ((equal? (car arguments) "-A")
+        (loop (cddr arguments) (append directories (list (cadr arguments)))))
+      ((equal? (car arguments) "-I")
+        (loop (cddr arguments) (cons (cadr arguments) directories)))
+      (else
+        (loop (cdr arguments) directories)))))
 
 ; Main
 
@@ -2267,11 +2374,13 @@
          (member "-h" arguments)
          (member "--help" arguments))
     (write-string "The Stak Scheme bytecode compiler.\n\n")
-    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+    (write-string
+      "Usage: stak-compile [-A DIRECTORY] [-I DIRECTORY] < SOURCE_FILE > BYTECODE_FILE\n")
     (exit))
 
   (compile
     (list (and (member "--debug" arguments) 'debug))
+    (parse-load-path arguments)
     (incept (read-source))))
 
 (main)

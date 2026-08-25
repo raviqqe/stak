@@ -2,8 +2,14 @@
 
 set -e
 
-while getopts l: option; do
+while getopts A:I:l: option; do
   case $option in
+  A)
+    options="$options -A $OPTARG"
+    ;;
+  I)
+    options="$options -I $OPTARG"
+    ;;
   l)
     libraries="$libraries $OPTARG"
     ;;
@@ -17,4 +23,4 @@ shift 1
 
 cat $libraries $main_file >gosh.scm
 
-gosh gosh.scm "$@"
+gosh $options gosh.scm "$@"

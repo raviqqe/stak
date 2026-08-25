@@ -2,8 +2,14 @@
 
 set -e
 
-while getopts l: option; do
+while getopts A:I:l: option; do
   case $option in
+  A)
+    options="$options -A $OPTARG"
+    ;;
+  I)
+    options="$options -I $OPTARG"
+    ;;
   l)
     cp $OPTARG ${OPTARG%.scm}.sld
     ;;
@@ -12,4 +18,4 @@ done
 
 shift $(expr $OPTIND - 1)
 
-chibi-scheme "$@"
+chibi-scheme $options "$@"
