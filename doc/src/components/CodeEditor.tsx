@@ -28,6 +28,10 @@ export const CodeEditor: FunctionComponent<Props> = ({ onInput, ...props }) => (
           : githubLight,
       ).outerHTML
     }
-    onInput={(event) => onInput(event.target.value)}
+    onInput={(event) => {
+      if (event.target instanceof HTMLTextAreaElement) {
+        onInput(event.target.value);
+      }
+    }}
   />
 );
