@@ -1742,10 +1742,9 @@
 
     (define epsilon
       (let loop ((x 1))
-        (let ((y (/ x 2)))
-          (if (= (+ 1 y) 1)
-            x
-            (loop y)))))
+        (if (= (+ 2 x) 2)
+          x
+          (loop (/ x 2)))))
 
     ; String
 
