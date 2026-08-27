@@ -1169,8 +1169,6 @@ constant procedure 1 #t
     get 2
     get 9
     call 2 #f ||
-    constant 1
-    call 2 #f ||
     call 1 #f 8
     get 2
     call 2 #f ||
@@ -1186,6 +1184,8 @@ constant procedure 1 #t
   set 1
   get 6
   call 1 #f ||
+  constant 1
+  call 2 #f ||
   constant ()
   call 2 #f 2
   call 2 #f ||

@@ -1917,12 +1917,9 @@
               (if (negative? x)
                 (list #\-)
                 '())
-              (let loop ((x (abs x)) (ys '()))
+              (let loop ((x (quotient (abs x) 1)) (ys '()))
                 (let ((q (quotient x radix))
-                      (ys
-                        (cons
-                          (format-digit (quotient (remainder x radix) 1))
-                          ys)))
+                      (ys (cons (format-digit (remainder x radix)) ys)))
                   (if (positive? q)
                     (loop q ys)
                     ys)))
