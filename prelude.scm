@@ -1879,14 +1879,11 @@
             (+ (char->integer #\a) (- x 10))
             (+ (char->integer #\0) x))))
 
-      (define (point-epsilon x)
-        (let loop ((x x) (d epsilon))
-          (if (< x 4)
-            d
-            (loop (/ x 2) (* 2 d)))))
-
       (define (format-point x)
-        (let ((d (point-epsilon x))
+        (let ((d (let loop ((x x) (d epsilon))
+                  (if (< x 4)
+                    d
+                    (loop (/ x 2) (* 2 d)))))
               (x (remainder x 1)))
           (if (< x d)
             '()
