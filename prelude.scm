@@ -1880,6 +1880,7 @@
             (+ (char->integer #\0) x))))
 
       (define (format-point x)
+        ; `d` is a half ulp.
         (let ((d (let loop ((x x) (d epsilon))
                   (if (< x 4)
                     d
@@ -1893,9 +1894,9 @@
                 (if (< x d)
                   '()
                   (let* ((x (* x radix))
+                         (d (* d radix))
                          (r (remainder x 1))
-                         (q (quotient x 1))
-                         (d (* d radix)))
+                         (q (quotient x 1)))
                     (if (and (< (- 1 r) d) (< (- 1 r) r))
                       (cons
                         (format-digit (+ q 1))
