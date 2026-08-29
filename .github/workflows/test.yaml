@@ -73,6 +73,7 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
+            tags: ~@chibi-host
           # TODO Test gosh
           # - name: stak-tools
           #   host: gosh
