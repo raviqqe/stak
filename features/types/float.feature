@@ -401,8 +401,12 @@ Feature: Floating-point number
         | 0.125       | (/ 1.0 8.0)   |
         | 12.5        | (/ 25.0 2.0)  |
         | 0.001953125 | (/ 1.0 512.0) |
-        | 0.1         | (/ 1.0 10.0)  |
         | 0.6         | (/ 6.0 10.0)  |
+
+      @chibi-bug
+      Examples:
+        | literal | value        |
+        | 0.1     | (/ 1.0 10.0) |
 
     Scenario Outline: Round a large number
       Given a file named "main.scm" with:
