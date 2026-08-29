@@ -1891,19 +1891,15 @@
             (cons
               #\.
               (let loop ((x x) (d d))
-                (if (< x d)
-                  '()
-                  (let* ((x (* x radix))
-                         (d (* d radix))
-                         (r (remainder x 1))
-                         (q (quotient x 1)))
-                    (if (and (< (- 1 r) d) (< (- 1 r) r))
-                      (cons
-                        (format-digit (+ q 1))
-                        '())
-                      (cons
-                        (format-digit q)
-                        (loop r d))))))))))
+                (let* ((x (* x radix))
+                       (d (* d radix))
+                       (r (remainder x 1))
+                       (q (quotient x 1)))
+                  (if (or (< r d) (< (- 1 r) d))
+                    (list (format-digit (+ q (if (< (- 1 r) r) 1 0))))
+                    (cons
+                      (format-digit q)
+                      (loop r d)))))))))
 
       (cond
         ((infinite? x)
