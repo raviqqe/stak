@@ -1880,24 +1880,26 @@
             (+ (char->integer #\0) x))))
 
       (define (format-point x)
-        (if (< x epsilon)
-          '()
-          (cons
-            #\.
-            (let loop ((x x) (d epsilon) (ys '()))
-              (if (< x d)
-                '()
+        ; `d` is a half ulp.
+        (let ((d (let loop ((x x) (d epsilon))
+                  (if (< x 4)
+                    d
+                    (loop (/ x 2) (* 2 d)))))
+              (x (remainder x 1)))
+          (if (< x d)
+            '()
+            (cons
+              #\.
+              (let loop ((x x) (d d))
                 (let* ((x (* x radix))
+                       (d (* d radix))
                        (r (remainder x 1))
-                       (q (quotient x 1))
-                       (d (* d radix)))
-                  (if (< (- 1 r) d)
-                    (cons
-                      (format-digit (+ q 1))
-                      '())
+                       (q (quotient x 1)))
+                  (if (or (< r d) (< (- 1 r) d))
+                    (list (format-digit (+ q (if (< (- 1 r) r) 1 0))))
                     (cons
                       (format-digit q)
-                      (loop r d ys)))))))))
+                      (loop r d)))))))))
 
       (cond
         ((infinite? x)
@@ -1912,16 +1914,13 @@
               (if (negative? x)
                 (list #\-)
                 '())
-              (let loop ((x (abs x)) (ys '()))
+              (let loop ((x (quotient (abs x) 1)) (ys '()))
                 (let ((q (quotient x radix))
-                      (ys
-                        (cons
-                          (format-digit (quotient (remainder x radix) 1))
-                          ys)))
+                      (ys (cons (format-digit (remainder x radix)) ys)))
                   (if (positive? q)
                     (loop q ys)
                     ys)))
-              (format-point (remainder (abs x) 1)))))))
+              (format-point (abs x)))))))
 
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
