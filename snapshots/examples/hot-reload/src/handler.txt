@@ -981,11 +981,6 @@ constant procedure 1 #t
     constant #f
     constant procedure 2 #f
       get 1
-      get 1
-      call 2 #f ||
-      if
-        constant ()
-      get 1
       get 12
       call 2 #f ||
       get 1
@@ -997,26 +992,33 @@ constant procedure 1 #t
       get 2
       constant 1
       call 2 #f ||
-      constant 1
-      get 2
-      call 2 #f ||
+      get 1
       get 3
       call 2 #f ||
+      get 0
       if
-        constant 1
-        get 2
-        call 2 #f ||
-        get 2
-        call 2 #f ||
+        get 0
         continue
-      constant #f
+      constant 1
+      get 3
+      call 2 #f ||
+      get 4
+      call 2 #f ||
+      call 2 #f ||
       if
         get 0
         constant 1
+        get 3
+        call 2 #f ||
+        get 3
+        call 2 #f ||
+        if
+          constant 1
+          continue
+        constant 0
         call 2 #f ||
         call 1 #f 15
-        constant ()
-        call 2 #f ||
+        call 1 #f ||
       get 0
       call 1 #f 15
       get 2
