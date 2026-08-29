@@ -1316,11 +1316,15 @@ constant procedure 1 #t
           continue
         constant #f
         if
-          get 0
-          get 2
+          get 1
           call 1 #f ||
-          call 1 #f 10
-          call 2 #f ||
+          call 1 #f 9
+          get 0
+          if
+            get 1
+            get 1
+            call 2 #f ||
+          constant #f
         get 1
         call 1 #f ||
         call 1 #f 10

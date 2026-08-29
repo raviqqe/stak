@@ -1973,7 +1973,8 @@
               ((and
                   (not initial)
                   (eqv? (car xs) #\.))
-                (+ y (convert-point (cdr xs))))
+                (let ((x (convert-point (cdr xs))))
+                  (and x (+ y x))))
 
               (else
                 (let ((x (convert-digit (car xs))))
