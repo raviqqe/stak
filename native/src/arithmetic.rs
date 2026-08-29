@@ -52,14 +52,14 @@ mod tests {
 
     fn quotient(x: i64, y: i64) -> Result<i64, Error> {
         let mut memory = Memory::new([Value::default(); HEAP_SIZE]).unwrap();
-        memory.set_stack(memory.null().unwrap());
+        memory.set_stack(memory.null());
         memory.push(Number::from_i64(x).into()).unwrap();
         memory.push(Number::from_i64(y).into()).unwrap();
 
         let mut set = ArithmeticPrimitiveSet::new();
         block_on!(set.operate(&mut memory, ArithmeticPrimitive::QUOTIENT))?;
 
-        Ok(memory.pop().unwrap().assume_number().to_i64())
+        Ok(memory.pop().assume_number().to_i64())
     }
 
     #[test]

@@ -703,11 +703,11 @@ mod tests {
             5,
         ]);
 
-        let car = memory.car(rib).unwrap().assume_cons();
+        let car = memory.car(rib).assume_cons();
 
-        assert_eq!(memory.cdr(rib).unwrap(), car.into());
-        assert_eq!(memory.car(car).unwrap(), Number::from_i64(0).into());
-        assert_eq!(memory.cdr(car).unwrap(), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(rib), car.into());
+        assert_eq!(memory.car(car), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(car), Number::from_i64(0).into());
     }
 
     #[test]
@@ -721,8 +721,8 @@ mod tests {
             1,
         ]);
 
-        assert_eq!(memory.car(rib).unwrap(), Number::from_i64(0).into());
-        assert_eq!(memory.cdr(rib).unwrap(), rib.into());
+        assert_eq!(memory.car(rib), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(rib), rib.into());
     }
 
     #[test]
@@ -739,10 +739,10 @@ mod tests {
             6, 3, 10, 1,
         ]);
 
-        let second = memory.cdr(first).unwrap().assume_cons();
+        let second = memory.cdr(first).assume_cons();
 
-        assert_eq!(memory.car(first).unwrap(), Number::from_i64(0).into());
-        assert_eq!(memory.car(second).unwrap(), Number::from_i64(0).into());
-        assert_eq!(memory.cdr(second).unwrap(), first.into());
+        assert_eq!(memory.car(first), Number::from_i64(0).into());
+        assert_eq!(memory.car(second), Number::from_i64(0).into());
+        assert_eq!(memory.cdr(second), first.into());
     }
 }

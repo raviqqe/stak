@@ -434,7 +434,7 @@ impl<H: Heap> Memory<H> {
         &mut self,
         operate: fn(Number, Number) -> Result<Number, Error>,
     ) -> Result<(), Error> {
-        let [x, y] = self.pop_numbers()?;
+        let [x, y] = self.pop_numbers();
 
         self.push(operate(x, y)?.into())?;
 
