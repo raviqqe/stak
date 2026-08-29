@@ -403,7 +403,7 @@ Feature: Floating-point number
         | 0.001953125 | (/ 1.0 512.0) |
         | 0.6         | (/ 6.0 10.0)  |
 
-      @chibi-host
+      @chibi-bug
       Examples:
         | literal | value        |
         | 0.1     | (/ 1.0 10.0) |
