@@ -351,20 +351,20 @@
       context
       (cdr (library-context-loading context))))
 
-    (define (library-context-search context name)
-     (cond
-      ((assoc name (library-context-libraries context)) =>
-       cdr)
-      (else
-       #f)))
-
     (define (library-context-find context name)
+     (define (find)
+      (cond
+       ((assoc name (library-context-libraries context)) =>
+        cdr)
+       (else
+        #f)))
+
      (or
-      (library-context-search context name)
+      (find)
       (let ((path (find-library-file name)))
        (when path
         (library-context-load! context name path))
-       (library-context-search context name))
+       (find))
       (error "unknown library" name)))
 
     (define (library-context-add! context name library)
