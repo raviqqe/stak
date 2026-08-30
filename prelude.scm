@@ -1881,10 +1881,8 @@
 
       (define (format-point x)
         ; `d` is a half ulp.
-        (let ((d (let loop ((x x) (d epsilon))
-                  (if (< x 4)
-                    d
-                    (loop (/ x 2) (* 2 d)))))
+        (let ((d (do ((x x (/ x 2)) (d epsilon (* 2 d)))
+                  ((< x 4) d)))
               (x (remainder x 1)))
           (if (< x d)
             '()
@@ -1973,7 +1971,8 @@
               ((and
                   (not initial)
                   (eqv? (car xs) #\.))
-                (+ y (convert-point (cdr xs))))
+                (let ((x (convert-point (cdr xs))))
+                  (and x (+ y x))))
 
               (else
                 (let ((x (convert-digit (car xs))))
