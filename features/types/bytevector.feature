@@ -185,7 +185,7 @@ Feature: Bytevector
         """scheme
         (import (scheme base))
 
-        (define xs (include "./value.scm"))
+        (define xs (include "value.scm"))
 
         (write-u8 (if (= (bytevector-u8-ref xs <index>) <index>) 65 66))
         """

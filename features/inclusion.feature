@@ -24,8 +24,8 @@ Feature: Inclusion
       """scheme
       (import (scheme base))
 
-      (include "./foo.scm")
-      (include "./bar.scm")
+      (include "foo.scm")
+      (include "bar.scm")
       """
     And a file named "foo.scm" with:
       """scheme
@@ -43,11 +43,11 @@ Feature: Inclusion
       """scheme
       (import (scheme base))
 
-      (include "./foo.scm")
+      (include "foo.scm")
       """
     And a file named "foo.scm" with:
       """scheme
-      (include "./bar.scm")
+      (include "bar.scm")
       """
     And a file named "bar.scm" with:
       """scheme
@@ -62,7 +62,7 @@ Feature: Inclusion
       """scheme
       (import (scheme base))
 
-      (include "./foo/bar.scm")
+      (include "foo/bar.scm")
       """
     And a file named "foo/bar.scm" with:
       """scheme

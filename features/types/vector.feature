@@ -300,7 +300,7 @@ Feature: Vector
         """scheme
         (import (scheme base))
 
-        (define xs (include "./value.scm"))
+        (define xs (include "value.scm"))
 
         (write-u8 (if (= (vector-ref xs <index>) <index>) 65 66))
         """
