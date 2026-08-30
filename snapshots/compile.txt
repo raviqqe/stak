@@ -4241,7 +4241,7 @@ constant list
   size
   encode-context-counts
   counts
-  load-path
+  paths
   compile-program
   source
   expression1
@@ -14626,7 +14626,7 @@ constant list
               list
                 lambda
                 list
-                  name
+                  path
                 list
                   let
                   list
@@ -14635,7 +14635,7 @@ constant list
                       list
                         append-path
                         directory
-                        name
+                        path
                   list
                     map
                     list
@@ -21258,11 +21258,11 @@ constant list
     list
       main
       options
-      load-path
+      paths
       source
     list
       library-paths
-      load-path
+      paths
     list
       compile-program
       options

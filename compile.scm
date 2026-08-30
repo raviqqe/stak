@@ -281,8 +281,8 @@
         (cons
          'begin
          (append-map
-          (lambda (name)
-           (let ((path (append-path directory name)))
+          (lambda (path)
+           (let ((path (append-path directory path)))
             (map
              (lambda (expression)
               (include-files (path-directory path) expression))
