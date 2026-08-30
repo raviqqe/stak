@@ -2339,7 +2339,7 @@
         (incept (car expression))
         (incept (cdr expression))))))
 
-; Options
+; Main
 
 (define (parse-library-paths arguments)
   (let loop ((arguments arguments) (directories '()))
@@ -2352,8 +2352,6 @@
         (loop (cddr arguments) (cons (cadr arguments) directories)))
       (else
         (loop (cdr arguments) directories)))))
-
-; Main
 
 (define (main)
   (define compile
