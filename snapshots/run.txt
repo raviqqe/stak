@@ -17497,42 +17497,51 @@ constant procedure 0 #f
       call 1 #f error
     get 0
     call 1 #f car
-    constant "-A"
-    call 2 #f equal?
-    if
-      call 0 #f library-paths
-      get 1
-      call 1 #f cadr
-      call 1 #f list
-      call 2 #f append
-      call 1 #f library-paths
-      set 0
-      get 0
-      call 1 #f cddr
-      call 1 #f 3
-    get 0
-    call 1 #f car
-    constant "-I"
+    constant 0
+    constant 1
+    call 3 #f substring
+    constant "-"
     call 2 #f equal?
     if
       get 0
-      call 1 #f cadr
-      call 0 #f library-paths
-      call 2 #f cons
-      call 1 #f library-paths
-      set 0
+      call 1 #f car
+      constant 1
+      call 2 #f substring
       get 0
-      call 1 #f cddr
-      call 1 #f 3
-    get 0
-    call 1 #f car
-    constant "-l"
-    call 2 #f equal?
-    if
-      get 3
-      get 1
-      call 1 #f cadr
-      call 2 #f ||
+      constant "A"
+      call 2 #f equal?
+      if
+        call 0 #f library-paths
+        get 2
+        call 1 #f cadr
+        call 1 #f list
+        call 2 #f append
+        call 1 #f library-paths
+        continue
+      get 0
+      constant "I"
+      call 2 #f equal?
+      if
+        get 1
+        call 1 #f cadr
+        call 0 #f library-paths
+        call 2 #f cons
+        call 1 #f library-paths
+        continue
+      get 0
+      constant "l"
+      call 2 #f equal?
+      if
+        get 4
+        get 2
+        call 1 #f cadr
+        call 2 #f ||
+        continue
+      constant "unknown option"
+      get 2
+      call 1 #f car
+      call 2 #f error
+      call 2 #f $$unbind
       set 0
       get 0
       call 1 #f cddr
