@@ -57,8 +57,7 @@
          (member "-h" arguments)
          (member "--help" arguments))
     (write-string "The Stak Scheme interpreter.\n\n")
-    (write-string
-      "Usage: stak [-A DIRECTORY] [-I DIRECTORY] [-l LIBRARY_FILE] SCRIPT_FILE ARGUMENT...\n")
+    (write-string "Usage: stak [-A DIRECTORY] [-I DIRECTORY] [-l LIBRARY_FILE] SCRIPT_FILE ARGUMENT...\n")
     (exit)))
 
 (main)
