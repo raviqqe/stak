@@ -48,7 +48,7 @@
             ((equal? option "l")
               (run environment (cadr arguments)))
             (else
-              (error "unknown option"))))
+              (error "unknown option" (car arguments)))))
         (loop (cddr arguments)))
       (else
         (set! command-line (lambda () arguments))
