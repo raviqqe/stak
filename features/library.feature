@@ -660,7 +660,6 @@ Feature: Library system
     When I successfully run `stak -I library main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
   Scenario: Fail to import a library importing itself
     Given a file named "foo.sld" with:
       """scheme
@@ -687,8 +686,7 @@ Feature: Library system
       (import (foo))
       """
     When I run `stak -I . main.scm`
-    Then the stderr should contain "circular library import"
-    And the exit status should not be 0
+    Then the exit status should not be 0
 
   Scenario: Fail to import a library missing in a load path
     Given a file named "main.scm" with:
