@@ -2341,7 +2341,7 @@
 
 ; Options
 
-(define (parse-load-path arguments)
+(define (parse-library-paths arguments)
   (let loop ((arguments arguments) (directories '()))
     (cond
       ((or (null? arguments) (null? (cdr arguments)))
@@ -2379,7 +2379,7 @@
 
   (compile
     (list (and (member "--debug" arguments) 'debug))
-    (parse-load-path arguments)
+    (parse-library-paths arguments)
     (incept (read-source))))
 
 (main)
