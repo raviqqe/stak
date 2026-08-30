@@ -6,11 +6,8 @@ directory=$(dirname $0)/../../..
 
 while getopts A:I:l: option; do
   case $option in
-  A)
-    load_path_options="$load_path_options -A $OPTARG"
-    ;;
-  I)
-    load_path_options="$load_path_options -I $OPTARG"
+  A | I)
+    load_path_options="$load_path_options -$option $OPTARG"
     ;;
   l)
     libraries="$libraries $OPTARG"
