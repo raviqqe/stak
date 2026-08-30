@@ -57,7 +57,7 @@ Feature: Inclusion
     Then the stdout should contain exactly "bar"
 
   @gauche @guile @stak
-  Scenario: Include a file in a directory in an included file
+  Scenario Outline: Include a file in a directory in an included file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -66,7 +66,7 @@ Feature: Inclusion
       """
     And a file named "foo/bar.scm" with:
       """scheme
-      (include "baz.scm")
+      (include "<path>")
       """
     And a file named "foo/baz.scm" with:
       """scheme
@@ -74,3 +74,8 @@ Feature: Inclusion
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "baz"
+
+    Examples:
+      | path      |
+      | baz.scm   |
+      | ./baz.scm |
