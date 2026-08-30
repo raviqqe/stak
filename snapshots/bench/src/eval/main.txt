@@ -3927,7 +3927,7 @@ constant list
   eval
   make-environment
   compile
-  library-load-path
+  library-paths
   file
   call-with-input-file
   call-with-output-file
@@ -5191,7 +5191,7 @@ constant procedure 0 #t
 set read
 constant ()
 call 1 #f make-parameter
-set library-load-path
+set library-paths
 constant #f
 constant #f
 constant #f
@@ -6022,7 +6022,7 @@ constant procedure 1 #f
     constant #f
   call 1 #f $$close
   set 1
-  call 0 #f library-load-path
+  call 0 #f library-paths
   call 1 #f 1
 call 1 #f $$close
 set 14
@@ -8407,7 +8407,7 @@ constant list
       stak
       compile
     (compile . compile)
-    (library-load-path . library-load-path)
+    (library-paths . library-paths)
   list
     list
       scheme

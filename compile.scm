@@ -334,7 +334,7 @@
 
     (define (find-library-file name)
      (let ((path (library-name->path name)))
-      (let loop ((directories (library-load-path)))
+      (let loop ((directories (library-paths)))
        (and
         (pair? directories)
         (let ((path (append-path (car directories) path)))
@@ -2114,7 +2114,7 @@
     ; Main
 
     (define (main options load-path source)
-     (library-load-path load-path)
+     (library-paths load-path)
      (compile-program options source))
 
     (define (compile-program options source)
@@ -2177,7 +2177,7 @@
        (set! symbol-id (+ symbol-id 1))
        (string->symbol (string-append (number->string symbol-id 32) name)))))
 
-    (define library-load-path (make-parameter '()))
+    (define library-paths (make-parameter '()))
 
     ,@frontend
     ,@backend))
@@ -2208,7 +2208,7 @@
         (eq? (caar expression) '$$compiler))
       (cons
         `(define-library (stak compile)
-          (export compile library-load-path)
+          (export compile library-paths)
 
           (import
            (scheme base)
@@ -2219,7 +2219,7 @@
            (only (stak base) rib string->uninterned-symbol))
 
           (begin
-           (define library-load-path (make-parameter '()))
+           (define library-paths (make-parameter '()))
 
            (define compile
             (let ()

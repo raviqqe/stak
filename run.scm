@@ -18,7 +18,7 @@
   (only (scheme write))
   (only (srfi 1))
   (only (stak backtrace))
-  (only (stak compile) library-load-path)
+  (only (stak compile) library-paths)
   (only (stak mapping)))
 
 (define (run environment path)
@@ -39,11 +39,11 @@
       ((null? arguments)
         (error "script file missing"))
       ((equal? (car arguments) "-A")
-        (library-load-path
-          (append (library-load-path) (list (cadr arguments))))
+        (library-paths
+          (append (library-paths) (list (cadr arguments))))
         (loop (cddr arguments)))
       ((equal? (car arguments) "-I")
-        (library-load-path (cons (cadr arguments) (library-load-path)))
+        (library-paths (cons (cadr arguments) (library-paths)))
         (loop (cddr arguments)))
       ((equal? (car arguments) "-l")
         (run environment (cadr arguments))

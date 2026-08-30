@@ -3939,7 +3939,7 @@ constant list
   eval
   make-environment
   compile
-  library-load-path
+  library-paths
   time
   current-jiffy
   current-second
@@ -8716,7 +8716,7 @@ constant procedure 0 #t
 set read
 constant ()
 call 1 #f make-parameter
-set library-load-path
+set library-paths
 constant #f
 constant #f
 constant #f
@@ -9547,7 +9547,7 @@ constant procedure 1 #f
     constant #f
   call 1 #f $$close
   set 1
-  call 0 #f library-load-path
+  call 0 #f library-paths
   call 1 #f 1
 call 1 #f $$close
 set 14
@@ -12177,7 +12177,7 @@ constant list
       stak
       compile
     (compile . compile)
-    (library-load-path . library-load-path)
+    (library-paths . library-paths)
   list
     list
       scheme
@@ -17500,12 +17500,12 @@ constant procedure 0 #f
     constant "-A"
     call 2 #f equal?
     if
-      call 0 #f library-load-path
+      call 0 #f library-paths
       get 1
       call 1 #f cadr
       call 1 #f list
       call 2 #f append
-      call 1 #f library-load-path
+      call 1 #f library-paths
       set 0
       get 0
       call 1 #f cddr
@@ -17517,9 +17517,9 @@ constant procedure 0 #f
     if
       get 0
       call 1 #f cadr
-      call 0 #f library-load-path
+      call 0 #f library-paths
       call 2 #f cons
-      call 1 #f library-load-path
+      call 1 #f library-paths
       set 0
       get 0
       call 1 #f cddr
