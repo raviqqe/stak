@@ -635,7 +635,6 @@ Feature: Library system
     When I successfully run `stak -I library main.scm`
     Then the stdout should contain exactly "B"
 
-  @chibi @gauche @stak
   Scenario: Include a file in a library in a load path
     Given a file named "library/foo/bar.sld" with:
       """scheme
