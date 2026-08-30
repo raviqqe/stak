@@ -4,11 +4,8 @@ set -e
 
 while getopts A:I:l: option; do
   case $option in
-  A)
-    options="$options -A $OPTARG"
-    ;;
-  I)
-    options="$options -I $OPTARG"
+  A | I)
+    options="$options -$option $OPTARG"
     ;;
   l)
     libraries="$libraries $OPTARG"
