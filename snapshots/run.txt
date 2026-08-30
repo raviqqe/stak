@@ -9335,17 +9335,6 @@ constant procedure 2 #f
   if
     get 0
   get 1
-  get 2
-  get 3
-  call 1 #f string-length
-  constant 1
-  call 2 #f ||
-  call 2 #f string-ref
-  get 9
-  call 2 #f eqv?
-  if
-    constant ""
-    continue
   get 8
   call 1 #f string
   get 2

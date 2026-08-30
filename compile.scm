@@ -259,14 +259,7 @@
           (equal? directory "")
           (eqv? (string-ref path 0) path-separator))
       path
-      (string-append
-       directory
-       (if (eqv?
-            (string-ref directory (- (string-length directory) 1))
-            path-separator)
-        ""
-        (string path-separator))
-       path)))
+      (string-append directory (string path-separator) path)))
 
     (define (read-file path)
      (with-input-from-file path
