@@ -38,15 +38,17 @@
     (cond
       ((null? arguments)
         (error "script file missing"))
-      ((equal? (car arguments) "-A")
-        (library-paths
-          (append (library-paths) (list (cadr arguments))))
-        (loop (cddr arguments)))
-      ((equal? (car arguments) "-I")
-        (library-paths (cons (cadr arguments) (library-paths)))
-        (loop (cddr arguments)))
-      ((equal? (car arguments) "-l")
-        (run environment (cadr arguments))
+      ((equal? (substring (car arguments) 0 1) "-")
+        (let ((option (substring (car arguments) 1)))
+          (cond
+            ((equal? option "A")
+              (library-paths (append (library-paths) (list (cadr arguments)))))
+            ((equal? option "I")
+              (library-paths (cons (cadr arguments) (library-paths))))
+            ((equal? option "l")
+              (run environment (cadr arguments)))
+            (else
+              (error "unknown option"))))
         (loop (cddr arguments)))
       (else
         (set! command-line (lambda () arguments))
