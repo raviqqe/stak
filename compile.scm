@@ -2105,8 +2105,8 @@
 
     ; Main
 
-    (define (main options load-path source)
-     (library-paths load-path)
+    (define (main options paths source)
+     (library-paths paths)
      (compile-program options source))
 
     (define (compile-program options source)
