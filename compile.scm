@@ -2105,10 +2105,6 @@
 
     ; Main
 
-    (define (main options paths source)
-     (library-paths paths)
-     (compile-program options source))
-
     (define (compile-program options source)
      (define expression1 (include-files "" source))
      (define-values (expression2 libraries) (expand-libraries expression1))
@@ -2137,6 +2133,10 @@
         (build-primitives
          primitives
          (compile metadata expression7))))))
+
+    (define (main options paths source)
+     (library-paths paths)
+     (compile-program options source))
 
     main))
 

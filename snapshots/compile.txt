@@ -4241,9 +4241,6 @@ constant list
   size
   encode-context-counts
   counts
-  paths
-  compile-program
-  source
   expression1
   expression2
   optimize-custom
@@ -4261,11 +4258,14 @@ constant list
   dynamic-symbols
   encode
   marshal
-  options
   build-primitives
   primitives
   metadata
   expression7
+  paths
+  compile-program
+  options
+  source
   main
   *rib*
   tag
@@ -21256,20 +21256,6 @@ constant list
   list
     define
     list
-      main
-      options
-      paths
-      source
-    list
-      library-paths
-      paths
-    list
-      compile-program
-      options
-      source
-  list
-    define
-    list
       compile-program
       options
       source
@@ -21360,6 +21346,20 @@ constant list
               compile
               metadata
               expression7
+  list
+    define
+    list
+      main
+      options
+      paths
+      source
+    list
+      library-paths
+      paths
+    list
+      compile-program
+      options
+      source
   main
 set ||
 constant let
