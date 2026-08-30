@@ -2,7 +2,6 @@
 
 set -e
 
-# Guile has no option to append a directory to a load path.
 while getopts A:I:l: option; do
   case $option in
   A | I)
