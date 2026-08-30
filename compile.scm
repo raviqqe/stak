@@ -251,7 +251,6 @@
     (define (path-directory path)
      (let ((index (memv-index path-separator (reverse (string->list path)))))
       (if index
-       ; A root directory consists of its separator only.
        (string-copy path 0 (max 1 (- (string-length path) index 1)))
        "")))
 
