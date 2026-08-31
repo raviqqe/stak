@@ -9563,14 +9563,21 @@ constant procedure 3 #f
     call 1 #f 46
     constant define-library
     call 2 #f eq?
-    if
-      get 4
-      get 3
-      call 1 #f 41
-      get 2
-      call 2 #f 39
-      call 2 #f 8
     constant #f
+    call 2 #f eq?
+    if
+      constant "invalid library file"
+      get 3
+      call 2 #f error
+      continue
+    constant #f
+    set 0
+    get 4
+    get 3
+    call 1 #f 41
+    get 2
+    call 2 #f 39
+    call 2 #f 8
   call 1 #f $$close
   get 1
   call 1 #f 37
