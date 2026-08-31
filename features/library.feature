@@ -694,3 +694,27 @@ Feature: Library system
       """
     When I run `stak -I . main.scm`
     Then the exit status should not be 0
+
+  @stak
+  Scenario: Fail to import a library in an invalid library file
+    Given a file named "library/foo.sld" with:
+      """scheme
+      (define invalid 42)
+
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define foo 65)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (foo))
+
+      (write-u8 foo)
+      """
+    When I run `stak -I library main.scm`
+    Then the stderr should contain "invalid library file"
+    And the exit status should not be 0
