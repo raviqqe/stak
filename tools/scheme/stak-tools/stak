@@ -3,9 +3,13 @@
 set -e
 
 directory=$(dirname $0)/../../..
+options=$STAK_COMPILE_OPTIONS
 
-while getopts l: option; do
+while getopts A:I:l: option; do
   case $option in
+  A | I)
+    options="$options -$option $OPTARG"
+    ;;
   l)
     libraries="$libraries $OPTARG"
     ;;
@@ -18,8 +22,6 @@ script=$1
 shift 1
 
 compile() (
-  options=$STAK_COMPILE_OPTIONS
-
   if [ -n "$STAK_HOST" ]; then
     $STAK_HOST $directory/compile.scm $options
   else

@@ -2,8 +2,11 @@
 
 set -e
 
-while getopts l: option; do
+while getopts A:I:l: option; do
   case $option in
+  A | I)
+    options="$options -L $OPTARG"
+    ;;
   l)
     cp $OPTARG ${OPTARG%.scm}.sld
     ;;
@@ -12,4 +15,4 @@ done
 
 shift $(expr $OPTIND - 1)
 
-LC_ALL=en_US.UTF-8 guile --r7rs -L . "$@"
+LC_ALL=en_US.UTF-8 guile --r7rs -L . $options "$@"

@@ -1,11 +1,11 @@
 Feature: Inclusion
 
-  Scenario: Include a file
+  Scenario Outline: Include a file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (include "./foo.scm")
+      (include "<path>")
       """
     And a file named "foo.scm" with:
       """scheme
@@ -14,13 +14,18 @@ Feature: Inclusion
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "foo"
 
+    Examples:
+      | path      |
+      | foo.scm   |
+      | ./foo.scm |
+
   Scenario: Include two files
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (include "./foo.scm")
-      (include "./bar.scm")
+      (include "foo.scm")
+      (include "bar.scm")
       """
     And a file named "foo.scm" with:
       """scheme
@@ -38,11 +43,11 @@ Feature: Inclusion
       """scheme
       (import (scheme base))
 
-      (include "./foo.scm")
+      (include "foo.scm")
       """
     And a file named "foo.scm" with:
       """scheme
-      (include "./bar.scm")
+      (include "bar.scm")
       """
     And a file named "bar.scm" with:
       """scheme
@@ -50,3 +55,27 @@ Feature: Inclusion
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "bar"
+
+  @gauche @guile @stak
+  Scenario Outline: Include a file in a directory in an included file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (include "foo/bar.scm")
+      """
+    And a file named "foo/bar.scm" with:
+      """scheme
+      (include "<path>")
+      """
+    And a file named "foo/baz.scm" with:
+      """scheme
+      (write-string "baz")
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "baz"
+
+    Examples:
+      | path      |
+      | baz.scm   |
+      | ./baz.scm |

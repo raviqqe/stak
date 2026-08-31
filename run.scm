@@ -18,6 +18,7 @@
   (only (scheme write))
   (only (srfi 1))
   (only (stak backtrace))
+  (only (stak compile) library-paths)
   (only (stak mapping)))
 
 (define (run environment path)
@@ -37,8 +38,17 @@
     (cond
       ((null? arguments)
         (error "script file missing"))
-      ((equal? (car arguments) "-l")
-        (run environment (cadr arguments))
+      ((equal? (substring (car arguments) 0 1) "-")
+        (let ((option (substring (car arguments) 1)))
+          (cond
+            ((equal? option "A")
+              (library-paths (append (library-paths) (list (cadr arguments)))))
+            ((equal? option "I")
+              (library-paths (cons (cadr arguments) (library-paths))))
+            ((equal? option "l")
+              (run environment (cadr arguments)))
+            (else
+              (error "unknown option" (car arguments)))))
         (loop (cddr arguments)))
       (else
         (set! command-line (lambda () arguments))
@@ -49,7 +59,7 @@
          (member "-h" arguments)
          (member "--help" arguments))
     (write-string "The Stak Scheme interpreter.\n\n")
-    (write-string "Usage: stak [-l LIBRARY_FILE] SCRIPT_FILE ARGUMENT...\n")
+    (write-string "Usage: stak [-A DIRECTORY] [-I DIRECTORY] [-l LIBRARY_FILE] SCRIPT_FILE ARGUMENT...\n")
     (exit)))
 
 (main)

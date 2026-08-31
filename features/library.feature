@@ -539,3 +539,182 @@ Feature: Library system
       """
     When I successfully run `stak -l foo.scm main.scm`
     Then the stdout should contain exactly "foo"
+
+  Scenario: Import a library in a load path
+    Given a file named "foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    When I successfully run `stak -I . main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Import a library in a directory in a load path
+    Given a file named "library/foo/bar.sld" with:
+      """scheme
+      (define-library (foo bar)
+        (export bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (bar x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo bar))
+
+      (bar 65)
+      """
+    When I successfully run `stak -I library main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Append a directory to a load path
+    Given a file named "library/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    When I successfully run `stak -A library main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Import a library importing another library in a load path
+    Given a file named "library/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base) (bar))
+
+        (begin
+          (define (foo x)
+            (bar (+ x 1)))))
+      """
+    And a file named "library/bar.sld" with:
+      """scheme
+      (define-library (bar)
+        (export bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (bar x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    When I successfully run `stak -I library main.scm`
+    Then the stdout should contain exactly "B"
+
+  Scenario: Include a file in a library in a load path
+    Given a file named "library/foo/bar.sld" with:
+      """scheme
+      (define-library (foo bar)
+        (export bar)
+
+        (import (scheme base))
+
+        (include "bar.scm"))
+      """
+    And a file named "library/foo/bar.scm" with:
+      """scheme
+      (define (bar x)
+        (write-u8 x))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo bar))
+
+      (bar 65)
+      """
+    When I successfully run `stak -I library main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Fail to import a library importing itself
+    Given a file named "foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base) (bar))
+
+        (begin
+          (define foo bar)))
+      """
+    And a file named "bar.sld" with:
+      """scheme
+      (define-library (bar)
+        (export bar)
+
+        (import (scheme base) (foo))
+
+        (begin
+          (define bar foo)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+      """
+    When I run `stak -I . main.scm`
+    Then the exit status should not be 0
+
+  Scenario: Fail to import a library missing in a load path
+    Given a file named "main.scm" with:
+      """scheme
+      (import (foo))
+      """
+    When I run `stak -I . main.scm`
+    Then the exit status should not be 0
+
+  @stak
+  Scenario: Fail to import a library in an invalid library file
+    Given a file named "library/foo.sld" with:
+      """scheme
+      (define invalid 42)
+
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define foo 65)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (foo))
+
+      (write-u8 foo)
+      """
+    When I run `stak -I library main.scm`
+    Then the stderr should contain "invalid library file"
+    And the exit status should not be 0
