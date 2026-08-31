@@ -342,10 +342,11 @@
       (cons name (library-context-loading context)))
      (for-each
       (lambda (expression)
-       (when (eq? (maybe-car expression) 'define-library)
-        (add-library-definition!
-         context
-         (include-files (path-directory path) expression))))
+       (unless (eq? (maybe-car expression) 'define-library)
+        (error "invalid library file" path))
+       (add-library-definition!
+        context
+        (include-files (path-directory path) expression)))
       (read-file path))
      (library-context-set-loading!
       context
