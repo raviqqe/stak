@@ -424,7 +424,6 @@
             (cond
              ((assq name (cddr set)) =>
               cadr)
-
              (else
               name))))))
         (else
