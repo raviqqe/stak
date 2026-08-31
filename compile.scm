@@ -406,7 +406,6 @@
             (if (memq name names)
              #f
              (qualify name))))))
-
         ((only)
          (loop
           (let ((names (cddr set)))
@@ -414,12 +413,10 @@
             (if (memq name names)
              (qualify name)
              #f)))))
-
         ((prefix)
          (loop
           (lambda (name)
            (qualify (symbol-append (caddr set) name)))))
-
         ((rename)
          (loop
           (lambda (name)
@@ -430,7 +427,6 @@
 
              (else
               name))))))
-
         (else
          (cons set qualify))))))
 
