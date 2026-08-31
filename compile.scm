@@ -303,11 +303,10 @@
      (body library-body))
 
     (define-record-type library-context
-     (make-library-context libraries imported loading)
+     (make-library-context libraries imported)
      library-context?
      (libraries library-context-libraries library-context-set-libraries!)
-     (imported library-context-imported library-context-set-imported!)
-     (loading library-context-loading library-context-set-loading!))
+     (imported library-context-imported library-context-set-imported!))
 
     (define library-file-extension ".sld")
 
@@ -334,23 +333,20 @@
           path
           (loop (cdr directories))))))))
 
+    (define loading-libraries (make-parameter '()))
+
     (define (library-context-load! context name path)
-     (when (member name (library-context-loading context))
+     (when (member name (loading-libraries))
       (error "circular library import" name))
-     (library-context-set-loading!
-      context
-      (cons name (library-context-loading context)))
-     (for-each
-      (lambda (expression)
-       (unless (eq? (maybe-car expression) 'define-library)
-        (error "invalid library file" path))
-       (add-library-definition!
-        context
-        (include-files (path-directory path) expression)))
-      (read-file path))
-     (library-context-set-loading!
-      context
-      (cdr (library-context-loading context))))
+     (parameterize ((loading-libraries (cons name (loading-libraries))))
+      (for-each
+       (lambda (expression)
+        (unless (eq? (maybe-car expression) 'define-library)
+         (error "invalid library file" path))
+        (add-library-definition!
+         context
+         (include-files (path-directory path) expression)))
+       (read-file path))))
 
     (define (library-context-find context name)
      (define (find)
@@ -1304,7 +1300,7 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '() '()))
+     (let* ((context (make-library-context '() '()))
             (expressions (cdr expression))
             (sets
              (map
@@ -2241,7 +2237,6 @@
               (let ((context
                      (make-library-context
                       (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
-                      '()
                       '())))
                (lambda (imports symbol-table expression)
                 (case (maybe-car expression)
