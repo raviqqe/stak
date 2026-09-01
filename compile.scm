@@ -308,61 +308,12 @@
      (libraries library-context-libraries library-context-set-libraries!)
      (imported library-context-imported library-context-set-imported!))
 
-    (define library-file-extension ".sld")
-
-    (define (library-name->path name)
-     (string-append
-      (fold-left
-       (lambda (component path)
-        (append-path
-         path
-         (if (symbol? component)
-          (symbol->string component)
-          (number->string component))))
-       ""
-       name)
-      library-file-extension))
-
-    (define (find-library-file name)
-     (let ((path (library-name->path name)))
-      (let loop ((directories (library-paths)))
-       (and
-        (pair? directories)
-        (let ((path (append-path (car directories) path)))
-         (if (file-exists? path)
-          path
-          (loop (cdr directories))))))))
-
-    (define loading-libraries (make-parameter '()))
-
-    (define (library-context-load! context name path)
-     (when (member name (loading-libraries))
-      (error "circular library import" name))
-     (parameterize ((loading-libraries (cons name (loading-libraries))))
-      (for-each
-       (lambda (expression)
-        (unless (eq? (maybe-car expression) 'define-library)
-         (error "invalid library file" path))
-        (add-library-definition!
-         context
-         (include-files (path-directory path) expression)))
-       (read-file path))))
-
     (define (library-context-find context name)
-     (define (find)
-      (cond
-       ((assoc name (library-context-libraries context)) =>
-        cdr)
-       (else
-        #f)))
-
-     (or
-      (find)
-      (let ((path (find-library-file name)))
-       (when path
-        (library-context-load! context name path))
-       (find))
-      (error "unknown library" name)))
+     (cond
+      ((assoc name (library-context-libraries context)) =>
+       cdr)
+      (else
+       #f)))
 
     (define (library-context-add! context name library)
      (library-context-set-libraries!
@@ -433,11 +384,57 @@
         value))
       expression))
 
+    (define library-file-extension ".sld")
+
+    (define loading-libraries (make-parameter '()))
+
+    (define (library-name->path name)
+     (string-append
+      (fold-left
+       (lambda (component path)
+        (append-path
+         path
+         (if (symbol? component)
+          (symbol->string component)
+          (number->string component))))
+       ""
+       name)
+      library-file-extension))
+
+    (define (find-library-file name)
+     (let ((path (library-name->path name)))
+      (let loop ((directories (library-paths)))
+       (when (null? directories)
+        (error "library not found in path" name))
+       (let ((path (append-path (car directories) path)))
+        (if (file-exists? path)
+         path
+         (loop (cdr directories)))))))
+
+    (define (load-library context name)
+     (or
+      (library-context-find context name)
+      (begin
+       (when (member name (loading-libraries))
+        (error "circular library import" name))
+       (parameterize ((loading-libraries (cons name (loading-libraries))))
+        (let ((path (find-library-file name)))
+         (for-each
+          (lambda (expression)
+           (unless (eq? (maybe-car expression) 'define-library)
+            (error "invalid library file" path))
+           (add-library-definition!
+            context
+            (include-files (path-directory path) expression)))
+          (read-file path))))
+       (library-context-find context name))
+      (error "unknown library" name)))
+
     (define (expand-library-bodies context names)
      (append-map
       (lambda (name)
        (if (library-context-import! context name)
-        (let ((library (library-context-find context name)))
+        (let ((library (load-library context name)))
          (append
           (expand-library-bodies context (library-imports library))
           (library-body library)))
@@ -453,7 +450,7 @@
           (if name
            (list (cons name (cdr names)))
            '())))
-        (library-exports (library-context-find context (car pair)))))
+        (library-exports (load-library context (car pair)))))
       sets))
 
     (define (add-library-definition! context expression)

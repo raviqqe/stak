@@ -9476,148 +9476,18 @@ constant 1
 call 2 #f ||
 call 1 #f ||
 set 17
-constant ".sld"
-set 16
-constant procedure 1 #f
-  constant procedure 2 #f
-    get 0
-    get 2
-    call 1 #f symbol?
-    if
-      get 2
-      call 1 #f symbol->string
-      continue
-    get 2
-    call 1 #f number->string
-    call 2 #f 38
-  call 1 #f $$close
-  constant ""
-  get 2
-  call 3 #f 48
-  get 18
-  call 2 #f string-append
-call 1 #f $$close
-set 15
-constant procedure 1 #f
-  get 0
-  call 1 #f 17
-  constant #f
-  constant procedure 1 #f
-    get 0
-    call 1 #f pair?
-    if
-      get 0
-      call 1 #f car
-      get 4
-      call 2 #f 39
-      get 0
-      call 1 #f file-exists?
-      if
-        get 0
-      get 1
-      call 1 #f cdr
-      call 1 #f 4
-    constant #f
-  call 1 #f $$close
-  set 1
-  call 0 #f library-paths
-  call 1 #f 1
-call 1 #f $$close
-set 14
-constant ()
-call 1 #f make-parameter
-set 13
-constant procedure 3 #f
-  get 1
-  call 0 #f 17
-  call 2 #f member
-  if
-    constant "circular library import"
-    get 2
-    call 2 #f error
-    continue
-  constant #f
-  set 0
-  get 16
-  call 0 #f 0
-  constant procedure 0 #f
-    get 4
-    call 0 #f 20
-    call 2 #f cons
-    call 1 #f 3
-  call 1 #f $$close
-  constant procedure 0 #f
-    constant procedure 1 #f
-      get 0
-      call 1 #f 49
-      constant define-library
-      call 2 #f eq?
-      constant #f
-      call 2 #f eq?
-      if
-        constant "invalid library file"
-        get 7
-        call 2 #f error
-        continue
-      constant #f
-      set 0
-      get 8
-      get 7
-      call 1 #f 44
-      get 2
-      call 2 #f 42
-      call 2 #f 12
-    call 1 #f $$close
-    get 5
-    call 1 #f 40
-    call 2 #f for-each
-  call 1 #f $$close
-  constant procedure 0 #f
-    get 3
-    call 1 #f 5
-  call 1 #f $$close
-  call 3 #f dynamic-wind
-call 1 #f $$close
-set 12
 constant procedure 2 #f
-  constant #f
-  constant procedure 0 #f
-    get 2
-    get 4
-    call 1 #f 26
-    call 2 #f assoc
-    get 0
-    if
-      get 0
-      call 1 #f cdr
-    constant #f
-  call 1 #f $$close
-  set 1
-  call 0 #f 0
   get 0
-  if
-    get 0
   get 2
-  call 1 #f 19
-  get 0
-  if
-    get 4
-    get 4
-    get 2
-    call 3 #f 20
-    continue
-  constant #f
-  set 0
-  call 0 #f 2
-  call 2 #f $$unbind
+  call 1 #f 24
+  call 2 #f assoc
   get 0
   if
     get 0
-  constant "unknown library"
-  get 4
-  call 2 #f error
+    call 1 #f cdr
+  constant #f
 call 1 #f $$close
-set 11
+set 16
 constant procedure 3 #f
   get 2
   get 2
@@ -9628,7 +9498,7 @@ constant procedure 3 #f
   call 2 #f cons
   call 2 #f 24
 call 1 #f $$close
-set 10
+set 15
 constant procedure 2 #f
   get 1
   call 1 #f 21
@@ -9651,9 +9521,9 @@ constant procedure 2 #f
   constant #f
   call 2 #f eq?
 call 1 #f $$close
-set 9
+set 14
 constant #\%
-set 8
+set 13
 constant procedure 1 #f
   get 0
   call 1 #f symbol->string
@@ -9670,7 +9540,7 @@ constant procedure 1 #f
     call 2 #f string-copy
   get 1
 call 1 #f $$close
-set 7
+set 12
 constant procedure 1 #f
   get 0
   call 1 #f symbol->string
@@ -9683,7 +9553,7 @@ constant procedure 1 #f
   call 3 #f substring
   constant "$$"
   call 2 #f equal?
-set 6
+set 11
 constant procedure 1 #f
   constant #f
   constant procedure 2 #f
@@ -9770,7 +9640,7 @@ constant procedure 1 #f
     get 0
   call 2 #f 2
 call 1 #f $$close
-set 5
+set 10
 constant procedure 2 #f
   constant procedure 1 #f
     get 0
@@ -9783,16 +9653,144 @@ constant procedure 2 #f
   get 1
   call 2 #f 52
 call 1 #f $$close
+set 9
+constant ".sld"
+set 8
+constant ()
+call 1 #f make-parameter
+set 7
+constant procedure 1 #f
+  constant procedure 2 #f
+    get 0
+    get 2
+    call 1 #f symbol?
+    if
+      get 2
+      call 1 #f symbol->string
+      continue
+    get 2
+    call 1 #f number->string
+    call 2 #f 38
+  call 1 #f $$close
+  constant ""
+  get 2
+  call 3 #f 48
+  get 10
+  call 2 #f string-append
+call 1 #f $$close
+set 6
+constant procedure 1 #f
+  get 0
+  call 1 #f 8
+  constant #f
+  constant procedure 1 #f
+    get 0
+    call 1 #f null?
+    if
+      constant "library not found in path"
+      get 5
+      call 2 #f error
+      continue
+    constant #f
+    set 0
+    get 0
+    call 1 #f car
+    get 4
+    call 2 #f 39
+    get 0
+    call 1 #f file-exists?
+    if
+      get 0
+    get 1
+    call 1 #f cdr
+    call 1 #f 4
+  call 1 #f $$close
+  set 1
+  call 0 #f library-paths
+  call 1 #f 1
+call 1 #f $$close
+set 5
+constant procedure 2 #f
+  get 1
+  get 1
+  call 2 #f 20
+  get 0
+  if
+    get 0
+  get 1
+  call 0 #f 11
+  call 2 #f member
+  if
+    constant "circular library import"
+    get 2
+    call 2 #f error
+    continue
+  constant #f
+  set 0
+  get 10
+  call 0 #f 0
+  constant procedure 0 #f
+    get 4
+    call 0 #f 14
+    call 2 #f cons
+    call 1 #f 3
+  call 1 #f $$close
+  constant procedure 0 #f
+    get 5
+    call 1 #f 13
+    constant procedure 1 #f
+      get 0
+      call 1 #f 50
+      constant define-library
+      call 2 #f eq?
+      constant #f
+      call 2 #f eq?
+      if
+        constant "invalid library file"
+        get 3
+        call 2 #f error
+        continue
+      constant #f
+      set 0
+      get 9
+      get 3
+      call 1 #f 45
+      get 2
+      call 2 #f 43
+      call 2 #f 13
+    call 1 #f $$close
+    get 1
+    call 1 #f 41
+    call 2 #f for-each
+  call 1 #f $$close
+  constant procedure 0 #f
+    get 3
+    call 1 #f 5
+  call 1 #f $$close
+  call 3 #f dynamic-wind
+  call 2 #f $$unbind
+  call 2 #f $$unbind
+  set 0
+  get 2
+  get 2
+  call 2 #f 21
+  get 0
+  if
+    get 0
+  constant "unknown library"
+  get 3
+  call 2 #f error
+call 1 #f $$close
 set 4
 constant procedure 2 #f
   constant procedure 1 #f
     get 3
     get 1
-    call 2 #f 15
+    call 2 #f 20
     if
       get 3
       get 1
-      call 2 #f 17
+      call 2 #f 10
       get 4
       get 1
       call 1 #f 32
@@ -9827,7 +9825,7 @@ constant procedure 2 #f
     get 4
     get 2
     call 1 #f car
-    call 2 #f 18
+    call 2 #f 11
     call 1 #f 32
     call 2 #f 58
   call 1 #f $$close
@@ -9854,7 +9852,7 @@ constant procedure 2 #f
     call 2 #f 62
   call 1 #f $$close
   set 4
-  get 11
+  get 16
   constant import
   call 1 #f 5
   call 2 #f map
@@ -9865,7 +9863,7 @@ constant procedure 2 #f
   set 2
   constant procedure 1 #f
     get 0
-    call 1 #f 15
+    call 1 #f 20
     if
       get 0
     get 0
@@ -9875,7 +9873,7 @@ constant procedure 2 #f
     if
       get 0
       call 1 #f cdr
-    get 17
+    get 22
     get 45
     call 2 #f string
     get 2
@@ -9920,9 +9918,9 @@ constant procedure 2 #f
   get 4
   constant begin
   call 1 #f 9
-  call 2 #f 16
+  call 2 #f 21
   call 3 #f 39
-  call 3 #f 19
+  call 3 #f 24
 call 1 #f $$close
 set 1
 constant #f
@@ -10229,7 +10227,7 @@ constant procedure 1 #f
   get 83
   call 1 #f string
   get 1
-  call 1 #f 57
+  call 1 #f 62
   call 2 #f string-append
   call 1 #f string->uninterned-symbol
 call 1 #f $$close
@@ -10932,7 +10930,7 @@ constant procedure 2 #f
         call 1 #f symbol?
         if
           get 0
-          call 1 #f 63
+          call 1 #f 68
           call 1 #f string->symbol
         get 0
       call 1 #f $$close
@@ -13006,7 +13004,7 @@ constant procedure 3 #f
     constant $$begin
     get 7
     get car
-    get 103
+    get 108
     get 4
     call 2 #f map
     call 2 #f map
@@ -13018,7 +13016,7 @@ constant procedure 3 #f
     get 1
     call 2 #f values
   get 5
-  get 100
+  get 105
   get 5
   call 2 #f map
   call 2 #f 98
@@ -13037,7 +13035,7 @@ constant procedure 3 #f
   call 1 #f $$close
   call 2 #f $$unbind
   get 2
-  call 2 #f 100
+  call 2 #f 105
   get 4
   call 2 #f values
 call 1 #f $$close
