@@ -308,31 +308,6 @@
      (libraries library-context-libraries library-context-set-libraries!)
      (imported library-context-imported library-context-set-imported!))
 
-    (define library-file-extension ".sld")
-
-    (define (library-name->path name)
-     (string-append
-      (fold-left
-       (lambda (component path)
-        (append-path
-         path
-         (if (symbol? component)
-          (symbol->string component)
-          (number->string component))))
-       ""
-       name)
-      library-file-extension))
-
-    (define (find-library-file name)
-     (let ((path (library-name->path name)))
-      (let loop ((directories (library-paths)))
-       (and
-        (pair? directories)
-        (let ((path (append-path (car directories) path)))
-         (if (file-exists? path)
-          path
-          (loop (cdr directories))))))))
-
     (define (library-context-find context name)
      (cond
       ((assoc name (library-context-libraries context)) =>
@@ -432,7 +407,32 @@
         (library-exports (library-context-find context (car pair)))))
       sets))
 
+    (define library-file-extension ".sld")
+
     (define loading-libraries (make-parameter '()))
+
+    (define (library-name->path name)
+     (string-append
+      (fold-left
+       (lambda (component path)
+        (append-path
+         path
+         (if (symbol? component)
+          (symbol->string component)
+          (number->string component))))
+       ""
+       name)
+      library-file-extension))
+
+    (define (find-library-file name)
+     (let ((path (library-name->path name)))
+      (let loop ((directories (library-paths)))
+       (and
+        (pair? directories)
+        (let ((path (append-path (car directories) path)))
+         (if (file-exists? path)
+          path
+          (loop (cdr directories))))))))
 
     (define (load-library! context name)
      (unless (assoc name (library-context-libraries context))
