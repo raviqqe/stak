@@ -9774,6 +9774,12 @@ constant procedure 2 #f
   get 2
   get 2
   call 2 #f 21
+  get 0
+  if
+    get 0
+  constant "unknown library"
+  get 3
+  call 2 #f error
 call 1 #f $$close
 set 4
 constant procedure 2 #f

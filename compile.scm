@@ -427,7 +427,8 @@
             context
             (include-files (path-directory path) expression)))
           (read-file path))))
-       (library-context-find context name))))
+       (library-context-find context name))
+      (error "unknown library" name)))
 
     (define (expand-library-bodies context names)
      (append-map
