@@ -333,30 +333,6 @@
           path
           (loop (cdr directories))))))))
 
-    (define loading-libraries (make-parameter '()))
-
-    (define (load-library! context name)
-     (unless (assoc name (library-context-libraries context))
-      (let ((path (find-library-file name)))
-       (when path
-        (when (member name (loading-libraries))
-         (error "circular library import" name))
-        (parameterize ((loading-libraries (cons name (loading-libraries))))
-         (for-each
-          (lambda (expression)
-           (unless (eq? (maybe-car expression) 'define-library)
-            (error "invalid library file" path))
-           (add-library-definition!
-            context
-            (include-files (path-directory path) expression)))
-          (read-file path)))))))
-
-    (define (load-libraries! context sets)
-     (for-each
-      (lambda (set)
-       (load-library! context (car set)))
-      sets))
-
     (define (library-context-find context name)
      (cond
       ((assoc name (library-context-libraries context)) =>
@@ -454,6 +430,30 @@
            (list (cons name (cdr names)))
            '())))
         (library-exports (library-context-find context (car pair)))))
+      sets))
+
+    (define loading-libraries (make-parameter '()))
+
+    (define (load-library! context name)
+     (unless (assoc name (library-context-libraries context))
+      (let ((path (find-library-file name)))
+       (when path
+        (when (member name (loading-libraries))
+         (error "circular library import" name))
+        (parameterize ((loading-libraries (cons name (loading-libraries))))
+         (for-each
+          (lambda (expression)
+           (unless (eq? (maybe-car expression) 'define-library)
+            (error "invalid library file" path))
+           (add-library-definition!
+            context
+            (include-files (path-directory path) expression)))
+          (read-file path)))))))
+
+    (define (load-libraries! context sets)
+     (for-each
+      (lambda (set)
+       (load-library! context (car set)))
       sets))
 
     (define (add-library-definition! context expression)
