@@ -336,7 +336,7 @@
     (define loading-libraries (make-parameter '()))
 
     (define (load-library! context name)
-     (unless (library-context-search context name)
+     (unless (assoc name (library-context-libraries context))
       (let ((path (find-library-file name)))
        (when path
         (when (member name (loading-libraries))
@@ -357,17 +357,12 @@
        (load-library! context (car set)))
       sets))
 
-    (define (library-context-search context name)
+    (define (library-context-find context name)
      (cond
       ((assoc name (library-context-libraries context)) =>
        cdr)
       (else
-       #f)))
-
-    (define (library-context-find context name)
-     (or
-      (library-context-search context name)
-      (error "unknown library" name)))
+       (error "unknown library" name))))
 
     (define (library-context-add! context name library)
      (library-context-set-libraries!
