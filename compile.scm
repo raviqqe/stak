@@ -427,28 +427,27 @@
     (define (find-library-file name)
      (let ((path (library-name->path name)))
       (let loop ((directories (library-paths)))
-       (and
-        (pair? directories)
-        (let ((path (append-path (car directories) path)))
-         (if (file-exists? path)
-          path
-          (loop (cdr directories))))))))
+       (when (null? directories)
+        (error "library not found in path" name))
+       (let ((path (append-path (car directories) path)))
+        (if (file-exists? path)
+         path
+         (loop (cdr directories)))))))
 
     (define (load-library! context name)
      (unless (assoc name (library-context-libraries context))
-      (let ((path (find-library-file name)))
-       (when path
-        (when (member name (loading-libraries))
-         (error "circular library import" name))
-        (parameterize ((loading-libraries (cons name (loading-libraries))))
-         (for-each
-          (lambda (expression)
-           (unless (eq? (maybe-car expression) 'define-library)
-            (error "invalid library file" path))
-           (add-library-definition!
-            context
-            (include-files (path-directory path) expression)))
-          (read-file path)))))))
+      (when (member name (loading-libraries))
+       (error "circular library import" name))
+      (parameterize ((loading-libraries (cons name (loading-libraries))))
+       (let ((path (find-library-file name)))
+        (for-each
+         (lambda (expression)
+          (unless (eq? (maybe-car expression) 'define-library)
+           (error "invalid library file" path))
+          (add-library-definition!
+           context
+           (include-files (path-directory path) expression)))
+         (read-file path))))))
 
     (define (load-libraries! context sets)
      (for-each

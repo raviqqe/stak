@@ -3938,8 +3938,8 @@ constant list
   library-name->path
   append-path
   directories
-  find-library-file
   loading-libraries
+  find-library-file
   path-directory
   read-file
   path
@@ -6641,20 +6641,25 @@ constant procedure 1 #f
   constant #f
   constant procedure 1 #f
     get 0
-    call 1 #f pair?
+    call 1 #f null?
+    if
+      constant "library not found in path"
+      get 5
+      call 2 #f error
+      continue
+    constant #f
+    set 0
+    get 0
+    call 1 #f car
+    get 4
+    call 2 #f 40
+    get 0
+    call 1 #f file-exists?
     if
       get 0
-      call 1 #f car
-      get 4
-      call 2 #f 40
-      get 0
-      call 1 #f file-exists?
-      if
-        get 0
-      get 1
-      call 1 #f cdr
-      call 1 #f 4
-    constant #f
+    get 1
+    call 1 #f cdr
+    call 1 #f 4
   call 1 #f $$close
   set 1
   call 0 #f library-paths
@@ -6670,59 +6675,56 @@ constant procedure 2 #f
   call 2 #f eq?
   if
     get 0
-    call 1 #f 7
-    get 0
+    call 0 #f 9
+    call 2 #f member
     if
+      constant "circular library import"
       get 1
-      call 0 #f 10
-      call 2 #f member
-      if
-        constant "circular library import"
-        get 2
-        call 2 #f error
-        continue
-      constant #f
-      set 0
-      get 9
-      call 0 #f 0
-      constant procedure 0 #f
-        get 4
-        call 0 #f 13
-        call 2 #f cons
-        call 1 #f 3
-      call 1 #f $$close
-      constant procedure 0 #f
-        constant procedure 1 #f
-          get 0
-          call 1 #f 50
-          constant define-library
-          call 2 #f eq?
-          constant #f
-          call 2 #f eq?
-          if
-            constant "invalid library file"
-            get 7
-            call 2 #f error
-            continue
-          constant #f
-          set 0
-          get 8
-          get 7
-          call 1 #f 45
-          get 2
-          call 2 #f 43
-          call 2 #f 12
-        call 1 #f $$close
-        get 5
-        call 1 #f 41
-        call 2 #f for-each
-      call 1 #f $$close
-      constant procedure 0 #f
-        get 3
-        call 1 #f 5
-      call 1 #f $$close
-      call 3 #f dynamic-wind
+      call 2 #f error
+      continue
     constant #f
+    set 0
+    get 8
+    call 0 #f 0
+    constant procedure 0 #f
+      get 3
+      call 0 #f 12
+      call 2 #f cons
+      call 1 #f 3
+    call 1 #f $$close
+    constant procedure 0 #f
+      get 4
+      call 1 #f 11
+      constant procedure 1 #f
+        get 0
+        call 1 #f 50
+        constant define-library
+        call 2 #f eq?
+        constant #f
+        call 2 #f eq?
+        if
+          constant "invalid library file"
+          get 3
+          call 2 #f error
+          continue
+        constant #f
+        set 0
+        get 8
+        get 3
+        call 1 #f 45
+        get 2
+        call 2 #f 43
+        call 2 #f 12
+      call 1 #f $$close
+      get 1
+      call 1 #f 41
+      call 2 #f for-each
+    call 1 #f $$close
+    constant procedure 0 #f
+      get 3
+      call 1 #f 5
+    call 1 #f $$close
+    call 3 #f dynamic-wind
   constant #f
 call 1 #f $$close
 set 3
@@ -15145,32 +15147,36 @@ constant list
             list
               library-paths
         list
-          and
+          when
           list
-            pair?
+            null?
             directories
           list
-            let
+            error
+            "library not found in path"
+            name
+        list
+          let
+          list
             list
-              list
-                path
-                list
-                  append-path
-                  list
-                    car
-                    directories
-                  path
-            list
-              if
-              list
-                file-exists?
-                path
               path
               list
-                loop
+                append-path
                 list
-                  cdr
+                  car
                   directories
+                path
+          list
+            if
+            list
+              file-exists?
+              path
+            path
+            list
+              loop
+              list
+                cdr
+                directories
   list
     define
     list
@@ -15186,69 +15192,66 @@ constant list
           library-context-libraries
           context
       list
-        let
+        when
+        list
+          member
+          name
+          list
+            loading-libraries
+        list
+          error
+          "circular library import"
+          name
+      list
+        parameterize
         list
           list
-            path
+            loading-libraries
             list
-              find-library-file
-              name
-        list
-          when
-          path
-          list
-            when
-            list
-              member
+              cons
               name
               list
                 loading-libraries
-            list
-              error
-              "circular library import"
-              name
+        list
+          let
           list
-            parameterize
             list
+              path
               list
-                loading-libraries
-                list
-                  cons
-                  name
-                  list
-                    loading-libraries
+                find-library-file
+                name
+          list
+            for-each
             list
-              for-each
+              lambda
               list
-                lambda
+                expression
+              list
+                unless
                 list
-                  expression
-                list
-                  unless
+                  eq?
                   list
-                    eq?
-                    list
-                      maybe-car
-                      expression
-                    list
-                      quote
-                      define-library
-                  list
-                    error
-                    "invalid library file"
-                    path
-                list
-                  add-library-definition!
-                  context
-                  list
-                    include-files
-                    list
-                      path-directory
-                      path
+                    maybe-car
                     expression
+                  list
+                    quote
+                    define-library
+                list
+                  error
+                  "invalid library file"
+                  path
               list
-                read-file
-                path
+                add-library-definition!
+                context
+                list
+                  include-files
+                  list
+                    path-directory
+                    path
+                  expression
+            list
+              read-file
+              path
   list
     define
     list
