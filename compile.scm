@@ -313,7 +313,7 @@
       ((assoc name (library-context-libraries context)) =>
        cdr)
       (else
-       (error "unknown library" name))))
+       #f)))
 
     (define (library-context-add! context name library)
      (library-context-set-libraries!
@@ -411,32 +411,29 @@
          path
          (loop (cdr directories)))))))
 
-    (define (load-library! context name)
-     (unless (assoc name (library-context-libraries context))
-      (when (member name (loading-libraries))
-       (error "circular library import" name))
-      (parameterize ((loading-libraries (cons name (loading-libraries))))
-       (let ((path (find-library-file name)))
-        (for-each
-         (lambda (expression)
-          (unless (eq? (maybe-car expression) 'define-library)
-           (error "invalid library file" path))
-          (add-library-definition!
-           context
-           (include-files (path-directory path) expression)))
-         (read-file path))))))
-
-    (define (load-libraries! context sets)
-     (for-each
-      (lambda (set)
-       (load-library! context (car set)))
-      sets))
+    (define (load-library context name)
+     (or
+      (library-context-find context name)
+      (begin
+       (when (member name (loading-libraries))
+        (error "circular library import" name))
+       (parameterize ((loading-libraries (cons name (loading-libraries))))
+        (let ((path (find-library-file name)))
+         (for-each
+          (lambda (expression)
+           (unless (eq? (maybe-car expression) 'define-library)
+            (error "invalid library file" path))
+           (add-library-definition!
+            context
+            (include-files (path-directory path) expression)))
+          (read-file path))))
+       (library-context-find context name))))
 
     (define (expand-library-bodies context names)
      (append-map
       (lambda (name)
        (if (library-context-import! context name)
-        (let ((library (library-context-find context name)))
+        (let ((library (load-library context name)))
          (append
           (expand-library-bodies context (library-imports library))
           (library-body library)))
@@ -452,7 +449,7 @@
           (if name
            (list (cons name (cdr names)))
            '())))
-        (library-exports (library-context-find context (car pair)))))
+        (library-exports (load-library context (car pair)))))
       sets))
 
     (define (add-library-definition! context expression)
@@ -464,38 +461,36 @@
         (cddr expression))))
 
      (define sets (map parse-import-set (collect-bodies 'import)))
+     (define names (collect-imported-names context sets))
 
-     (load-libraries! context sets)
+     (define (resolve-symbol name)
+      (cond
+       ((built-in-symbol? name)
+        name)
+       ((assq name names) =>
+        cdr)
+       (else
+        (let ((renamed (string->uninterned-symbol
+                        (string-append
+                         (string library-symbol-indicator symbol-name-separator)
+                         (symbol->string name)))))
+         (set! names (cons (cons name renamed) names))
+         renamed))))
 
-     (let* ((names (collect-imported-names context sets))
-            (resolve-symbol
-             (lambda (name)
-              (cond
-               ((built-in-symbol? name)
-                name)
-               ((assq name names) =>
-                cdr)
-               (else
-                (let ((renamed (string->uninterned-symbol
-                                (string-append
-                                 (string library-symbol-indicator symbol-name-separator)
-                                 (symbol->string name)))))
-                 (set! names (cons (cons name renamed) names))
-                 renamed))))))
-      (library-context-add!
-       context
-       (cadr expression)
-       (make-library
-        (map-values
-         resolve-symbol
-         (map
-          (lambda (name)
-           (if (eq? (maybe-car name) 'rename)
-            (cons (caddr name) (cadr name))
-            (cons name name)))
-          (collect-bodies 'export)))
-        (map car sets)
-        (resolve-environment-symbols resolve-symbol (collect-bodies 'begin))))))
+     (library-context-add!
+      context
+      (cadr expression)
+      (make-library
+       (map-values
+        resolve-symbol
+        (map
+         (lambda (name)
+          (if (eq? (maybe-car name) 'rename)
+           (cons (caddr name) (cadr name))
+           (cons name name)))
+         (collect-bodies 'export)))
+       (map car sets)
+       (resolve-environment-symbols resolve-symbol (collect-bodies 'begin)))))
 
     ; Macro system
 
@@ -1317,7 +1312,6 @@
         (when (eq? (maybe-car expression) 'define-library)
          (add-library-definition! context expression)))
        expressions)
-      (load-libraries! context sets)
       (let ((expression
              (cons
               (car expression)
@@ -2246,14 +2240,14 @@
                   (add-library-definition! context expression)
                   (values #f imports))
                  ((import)
-                  (let* ((imports (append-imports imports (cdr expression)))
-                         (sets (map parse-import-set imports)))
-                   (load-libraries! context sets)
+                  (let ((imports (append-imports imports (cdr expression))))
                    (values
                     (cons
                      '$$begin
                      (append
-                      (expand-library-bodies context (map car sets))
+                      (expand-library-bodies
+                       context
+                       (map car (map parse-import-set imports)))
                       (list #f)))
                     imports)))
                  (else
