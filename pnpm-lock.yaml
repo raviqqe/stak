@@ -63,8 +63,8 @@ importers:
         specifier: ^1.37.0
         version: 1.37.0(preact@10.29.8)
       monza-editor:
-        specifier: ^0.5.12
-        version: 0.5.12
+        specifier: ^0.5.14
+        version: 0.5.14
       nanostores:
         specifier: ^1.5.2
         version: 1.5.2
@@ -2234,9 +2234,6 @@ packages:
 
   micromark@4.0.2:
     resolution: {integrity: sha512-zpe98Q6kvavpCr1NPVSCMebCKfD7CA2NqZ+rykeNhONIJBpc1tFKt9hucLGwha3jNTNI8lHpctWJWoimVF4PfA==}
-
-  monza-editor@0.5.12:
-    resolution: {integrity: sha512-Fa7ZAy6vCvcsvGNzz0C2YjuVr2KwfZhuwy3oOAnt9qLZ+jy5719ineNSma8Ea5FMGEOCKXKUQiNImc1j6f/0cg==}
 
   monza-editor@0.5.14:
     resolution: {integrity: sha512-WQSOfWPDpkZWnpp9S/Vq9x77Kdh9dvMtvCvuKnWp0oPt2MyzCDZlclhJ4v6ddvoROZZNg4wKTsiL9dZT8IeQAA==}
@@ -5465,8 +5462,6 @@ snapshots:
       micromark-util-types: 2.0.2
     transitivePeerDependencies:
       - supports-color
-
-  monza-editor@0.5.12: {}
 
   monza-editor@0.5.14: {}
 
