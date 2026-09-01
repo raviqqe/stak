@@ -384,29 +384,6 @@
         value))
       expression))
 
-    (define (expand-library-bodies context names)
-     (append-map
-      (lambda (name)
-       (if (library-context-import! context name)
-        (let ((library (library-context-find context name)))
-         (append
-          (expand-library-bodies context (library-imports library))
-          (library-body library)))
-        '()))
-      names))
-
-    (define (collect-imported-names context sets)
-     (append-map
-      (lambda (pair)
-       (append-map
-        (lambda (names)
-         (let ((name ((cdr pair) (car names))))
-          (if name
-           (list (cons name (cdr names)))
-           '())))
-        (library-exports (library-context-find context (car pair)))))
-      sets))
-
     (define library-file-extension ".sld")
 
     (define loading-libraries (make-parameter '()))
@@ -455,6 +432,29 @@
        (load-library! context (car set)))
       sets))
 
+    (define (expand-library-bodies context names)
+     (append-map
+      (lambda (name)
+       (if (library-context-import! context name)
+        (let ((library (library-context-find context name)))
+         (append
+          (expand-library-bodies context (library-imports library))
+          (library-body library)))
+        '()))
+      names))
+
+    (define (collect-imported-names context sets)
+     (append-map
+      (lambda (pair)
+       (append-map
+        (lambda (names)
+         (let ((name ((cdr pair) (car names))))
+          (if name
+           (list (cons name (cdr names)))
+           '())))
+        (library-exports (library-context-find context (car pair)))))
+      sets))
+
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
       (append-map
@@ -467,21 +467,21 @@
 
      (load-libraries! context sets)
 
-     (let ((names (collect-imported-names context sets)))
-      (define (resolve-symbol name)
-       (cond
-        ((built-in-symbol? name)
-         name)
-        ((assq name names) =>
-         cdr)
-        (else
-         (let ((renamed (string->uninterned-symbol
-                         (string-append
-                          (string library-symbol-indicator symbol-name-separator)
-                          (symbol->string name)))))
-          (set! names (cons (cons name renamed) names))
-          renamed))))
-
+     (let* ((names (collect-imported-names context sets))
+            (resolve-symbol
+             (lambda (name)
+              (cond
+               ((built-in-symbol? name)
+                name)
+               ((assq name names) =>
+                cdr)
+               (else
+                (let ((renamed (string->uninterned-symbol
+                                (string-append
+                                 (string library-symbol-indicator symbol-name-separator)
+                                 (symbol->string name)))))
+                 (set! names (cons (cons name renamed) names))
+                 renamed))))))
       (library-context-add!
        context
        (cadr expression)
