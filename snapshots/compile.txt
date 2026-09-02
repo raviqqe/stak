@@ -6187,8 +6187,6 @@ constant procedure 1 #f
   call 2 #f error
 call 1 #f $$close
 set 10
-constant #\#
-set 9
 constant procedure 0 #t
   get string-append
   get symbol->string
@@ -6196,11 +6194,13 @@ constant procedure 0 #t
   call 2 #f map
   call 2 #f apply
   call 1 #f string->symbol
+set 9
+constant #\#
 set 8
 constant procedure 1 #f
   get 0
   call 1 #f symbol->string
-  get 11
+  get 10
   get 1
   call 1 #f string->list
   call 2 #f 31
@@ -6508,7 +6508,7 @@ constant procedure 1 #f
         get 5
         call 1 #f caddr
         get 1
-        call 2 #f 46
+        call 2 #f 47
         call 1 #f 5
       call 1 #f $$close
       call 1 #f 2
@@ -6775,7 +6775,7 @@ constant procedure 2 #f
       get 0
       call 1 #f cdr
     get 20
-    get 46
+    get 45
     call 2 #f string
     get 2
     call 1 #f symbol->string
@@ -7125,7 +7125,7 @@ constant procedure 2 #f
 call 1 #f $$close
 set 11
 constant procedure 1 #f
-  get 84
+  get 83
   call 1 #f string
   get 1
   call 1 #f 84
@@ -14455,10 +14455,6 @@ constant list
           parameters
   list
     define
-    symbol-name-separator
-    #\#
-  list
-    define
     (symbol-append . xs)
     list
       string->symbol
@@ -14471,6 +14467,10 @@ constant list
           xs
   list
     define
+    symbol-name-separator
+    #\#
+  list
+    define
     list
       resolve-symbol-string
       name
@@ -14478,7 +14478,7 @@ constant list
       let*
       list
         list
-          string
+          name
           list
             symbol->string
             name
@@ -14489,18 +14489,18 @@ constant list
             symbol-name-separator
             list
               string->list
-              string
+              name
       list
         if
         index
         list
           string-copy
-          string
+          name
           list
             +
             index
             1
-        string
+        name
   list
     define
     list
