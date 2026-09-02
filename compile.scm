@@ -241,17 +241,17 @@
 
     ;; Symbol
 
-    (define symbol-name-separator #\#)
-
     (define (symbol-append . xs)
      (string->symbol (apply string-append (map symbol->string xs))))
 
+    (define symbol-name-separator #\#)
+
     (define (resolve-symbol-string name)
-     (let* ((string (symbol->string name))
-            (index (memv-index symbol-name-separator (string->list string))))
+     (let* ((name (symbol->string name))
+            (index (memv-index symbol-name-separator (string->list name))))
       (if index
-       (string-copy string (+ index 1))
-       string)))
+       (string-copy name (+ index 1))
+       name)))
 
     (define (built-in-symbol? name)
      (let ((name (symbol->string name)))
