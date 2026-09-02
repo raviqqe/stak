@@ -4295,7 +4295,7 @@ constant list
   $$libraries
   maybe-car
   define-library
-  load-library!
+  register-library!
   import
   append-imports
   expand-library-bodies
@@ -15130,7 +15130,7 @@ constant list
                     "invalid library file"
                     path
                 list
-                  load-library!
+                  register-library!
                   context
                   list
                     include-files
@@ -15247,7 +15247,7 @@ constant list
   list
     define
     list
-      load-library!
+      register-library!
       context
       expression
     list
@@ -18213,7 +18213,7 @@ constant list
                 quote
                 define-library
             list
-              load-library!
+              register-library!
               context
               expression
         expressions
@@ -21877,7 +21877,7 @@ constant procedure 1 #f
     constant define-library
     constant ()
     call 2 #f cons
-    constant load-library!
+    constant register-library!
     constant context
     constant expression
     constant ()
