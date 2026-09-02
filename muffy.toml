@@ -57,15 +57,13 @@ concurrency = 64
 supply = 10
 window = "1s"
 
-[sites.rate_limited]
+[sites.wikipedia]
 extend = "default"
 roots = ["https://en.wikipedia.org/wiki/"]
 statuses = [200, 429]
+ignored_fragments = [".*"]
 
-[sites.flaky]
+[sites.ignored]
 extend = "default"
 roots = ["https://www.gnu.org/software/guile/"]
-timeout = "1m"
-
-[sites.flaky.retry]
-count = 10
+ignore = true
