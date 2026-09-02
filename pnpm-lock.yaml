@@ -42,8 +42,8 @@ importers:
         specifier: ^2.11.1
         version: 2.11.1(preact@10.29.8)
       '@raviqqe/stak':
-        specifier: ^0.12.24
-        version: 0.12.24
+        specifier: ^0.12.25
+        version: 0.12.25
       '@xterm/addon-fit':
         specifier: ^0.11.0
         version: 0.11.0
@@ -980,8 +980,8 @@ packages:
     peerDependencies:
       '@biomejs/biome': ^2.1.4
 
-  '@raviqqe/stak@0.12.24':
-    resolution: {integrity: sha512-ZeJfNPuiCHmskubHNTRxtV93Zrv9dK+f/+Ax8IPaSjze3rNdYDF5LNqb0HtznP41ET4t1yxUhQidAU6Z6RyInQ==}
+  '@raviqqe/stak@0.12.25':
+    resolution: {integrity: sha512-BQLozqQCDpGIfRWyI6PLiuo3kkSFo2TsIwVwDyUA+Ls5oDY7B9AkKEzhPd9+VzoCuGw/iEDA6cPYcvnZ8/sPaQ==}
 
   '@rolldown/binding-android-arm-eabi@1.2.5':
     resolution: {integrity: sha512-DLe/i+l8ynIBY7XEQ191TeZvCoowIGa18R+dIV30GW7DiOtp74i/xX8hs8GUjW5ARV7VZuie3d6AumSmCwbeRA==}
@@ -3892,7 +3892,7 @@ snapshots:
     dependencies:
       '@biomejs/biome': 2.5.11
 
-  '@raviqqe/stak@0.12.24': {}
+  '@raviqqe/stak@0.12.25': {}
 
   '@rolldown/binding-android-arm-eabi@1.2.5':
     optional: true
