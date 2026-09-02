@@ -423,7 +423,7 @@
           (lambda (expression)
            (unless (eq? (maybe-car expression) 'define-library)
             (error "invalid library file" path))
-           (add-library-definition!
+           (load-library!
             context
             (include-files (path-directory path) expression)))
           (read-file path))))
@@ -453,7 +453,7 @@
         (library-exports (load-library context (car pair)))))
       sets))
 
-    (define (add-library-definition! context expression)
+    (define (load-library! context expression)
      (define (collect-bodies predicate)
       (append-map
        cdr
@@ -1311,7 +1311,7 @@
       (for-each
        (lambda (expression)
         (when (eq? (maybe-car expression) 'define-library)
-         (add-library-definition! context expression)))
+         (load-library! context expression)))
        expressions)
       (let ((expression
              (cons
@@ -2238,7 +2238,7 @@
                (lambda (imports symbol-table expression)
                 (case (maybe-car expression)
                  ((define-library)
-                  (add-library-definition! context expression)
+                  (load-library! context expression)
                   (values #f imports))
                  ((import)
                   (let ((imports (append-imports imports (cdr expression))))
