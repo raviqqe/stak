@@ -21,14 +21,14 @@ origin = {
   ],
   optional = true
 }
-stak-configuration = { path = "../configuration", version = "0.12.25" }
-stak-device = { path = "../device", version = "0.12.25" }
-stak-file = { path = "../file", version = "0.12.25" }
-stak-macro = { path = "../macro", version = "0.12.25" }
-stak-process-context = { path = "../process-context", version = "0.12.25" }
-stak-r7rs = { path = "../r7rs", version = "0.12.25" }
-stak-time = { path = "../time", version = "0.12.25" }
-stak-vm = { path = "../vm", version = "0.12.25" }
+stak-configuration = { path = "../configuration", version = "0.12.26" }
+stak-device = { path = "../device", version = "0.12.26" }
+stak-file = { path = "../file", version = "0.12.26" }
+stak-macro = { path = "../macro", version = "0.12.26" }
+stak-process-context = { path = "../process-context", version = "0.12.26" }
+stak-r7rs = { path = "../r7rs", version = "0.12.26" }
+stak-time = { path = "../time", version = "0.12.26" }
+stak-vm = { path = "../vm", version = "0.12.26" }
 
 [dev-dependencies]
 stak = { path = "../root" }
