@@ -63,7 +63,7 @@ roots = ["https://en.wikipedia.org/wiki/"]
 statuses = [200, 429]
 ignored_fragments = [".*"]
 
-[sites.flaky]
+[sites.ignored]
 extend = "default"
 roots = ["https://www.gnu.org/software/guile/"]
 ignore = true
