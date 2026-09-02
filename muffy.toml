@@ -66,4 +66,4 @@ ignored_fragments = [".*"]
 [sites.flaky]
 extend = "default"
 roots = ["https://www.gnu.org/software/guile/"]
-ignored = true
+ignore = true
