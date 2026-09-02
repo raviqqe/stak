@@ -239,12 +239,25 @@
       (else
        (error "invalid variadic parameter" parameters))))
 
-    (define (symbol-append . xs)
-     (string->symbol (apply string-append (map symbol->string xs))))
+    ;; Symbol
 
     (define symbol-name-separator #\#)
 
-    ; File
+    (define (symbol-append . xs)
+     (string->symbol (apply string-append (map symbol->string xs))))
+
+    (define (resolve-symbol-string name)
+     (let* ((string (symbol->string name))
+            (index (memv-index symbol-name-separator (string->list string))))
+      (if index
+       (string-copy string (+ index 1))
+       string)))
+
+    (define (built-in-symbol? name)
+     (let ((name (symbol->string name)))
+      (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+
+    ;; File
 
     (define path-separator #\/)
 
@@ -330,17 +343,6 @@
     ;; Procedures
 
     (define library-symbol-indicator #\%)
-
-    (define (resolve-symbol-string name)
-     (let* ((string (symbol->string name))
-            (index (memv-index symbol-name-separator (string->list string))))
-      (if index
-       (string-copy string (+ index 1))
-       string)))
-
-    (define (built-in-symbol? name)
-     (let ((name (symbol->string name)))
-      (equal? (substring name 0 (min 2 (string-length name))) "$$")))
 
     (define (parse-import-set set)
      (let loop ((set set) (qualify (lambda (name) name)))

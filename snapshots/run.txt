@@ -8775,24 +8775,26 @@ constant #f
 constant #f
 constant #f
 constant #f
+constant #f
+constant #f
 get cons
-set 58
+set 60
 get car
-set 57
+set 59
 get cdr
-set 56
+set 58
 constant 0
-set 55
+set 57
 constant 1
-set 54
+set 56
 constant 2
-set 53
+set 55
 constant 3
-set 52
+set 54
 constant 4
-set 51
+set 53
 constant 65535
-set 50
+set 52
 constant list
   list
     $$rib
@@ -8818,25 +8820,25 @@ constant list
   list
     $$/
     14
-set 49
+set 51
 constant 0
-set 48
+set 50
 constant 1
-set 47
+set 49
 constant 2
-set 46
+set 48
 constant 3
-set 45
+set 47
 constant 4
-set 44
+set 46
 constant 5
-set 43
+set 45
 constant 6
-set 42
+set 44
 constant 7
-set 41
+set 43
 constant 8
-set 40
+set 42
 constant procedure 0 #t
   get 0
   call 0 #f current-error-port
@@ -8844,51 +8846,51 @@ constant procedure 0 #t
   set 0
   call 0 #f current-error-port
   call 1 #f newline
-set 39
+set 41
 constant procedure 3 #f
   get 1
   get 1
   get 4
   call 3 #f rib
-set 38
+set 40
 constant procedure 3 #f
-  get 54
+  get 56
   get 3
   call 2 #f ||
   get 2
   get 2
+  call 3 #f 46
+call 1 #f $$close
+set 39
+constant procedure 2 #f
+  get 59
+  get 2
+  get 2
+  call 3 #f 45
+call 1 #f $$close
+set 38
+constant procedure 1 #f
+  get 53
+  constant 0
+  get 2
   call 3 #f 44
 call 1 #f $$close
 set 37
-constant procedure 2 #f
-  get 57
-  get 2
-  get 2
-  call 3 #f 43
-call 1 #f $$close
-set 36
-constant procedure 1 #f
-  get 51
-  constant 0
-  get 2
-  call 3 #f 42
-call 1 #f $$close
-set 35
 constant procedure 3 #f
   get 1
   get 1
   get 4
   call 3 #f rib
-set 34
+set 36
 constant procedure 3 #f
-  get 48
+  get 50
   get 3
   get 3
-  call 2 #f 64
+  call 2 #f 66
   get 2
-  call 3 #f 40
+  call 3 #f 42
 call 1 #f $$close
-set 33
+set 35
 constant procedure 1 #f
   constant #f
   constant procedure 1 #f
@@ -8910,17 +8912,17 @@ constant procedure 1 #f
   set 1
   constant 0
   call 1 #f 1
-set 32
+set 34
 constant procedure 1 #f
   get 0
   call 1 #f pair?
   if
     get 0
     call 1 #f cdr
-    call 1 #f 33
+    call 1 #f 35
   get 0
 call 1 #f $$close
-set 31
+set 33
 constant procedure 2 #f
   get 1
   call 1 #f cdr
@@ -8929,12 +8931,12 @@ constant procedure 2 #f
     get 1
     call 1 #f cdr
     get 1
-    call 2 #f 34
+    call 2 #f 36
   get 1
   get 1
   call 2 #f set-cdr!
 call 1 #f $$close
-set 30
+set 32
 constant procedure 2 #f
   get 0
   call 1 #f null?
@@ -8945,7 +8947,7 @@ constant procedure 2 #f
   get 2
   get 2
   call 1 #f cdr
-  call 2 #f 34
+  call 2 #f 36
   get 1
   call 1 #f 4
   if
@@ -8954,7 +8956,7 @@ constant procedure 2 #f
     call 2 #f cons
   get 0
 call 1 #f $$close
-set 29
+set 31
 constant procedure 2 #f
   get 0
   constant 0
@@ -8968,10 +8970,10 @@ constant procedure 2 #f
   get 2
   constant 1
   call 2 #f ||
-  call 2 #f 33
+  call 2 #f 35
   call 2 #f cons
 call 1 #f $$close
-set 28
+set 30
 constant procedure 2 #f
   constant #f
   constant procedure 2 #f
@@ -8995,7 +8997,7 @@ constant procedure 2 #f
   get 1
   constant 0
   call 2 #f 2
-set 27
+set 29
 constant procedure 1 #f
   constant procedure 2 #f
     constant procedure 1 #f
@@ -9004,16 +9006,16 @@ constant procedure 1 #f
       call 2 #f 7
     call 1 #f $$close
     get 1
-    call 2 #f 33
+    call 2 #f 35
   call 1 #f $$close
 call 1 #f $$close
-set 26
+set 28
 get eqv?
-call 1 #f 26
-set 25
+call 1 #f 28
+set 27
 get eq?
-call 1 #f 26
-set 24
+call 1 #f 28
+set 26
 constant procedure 1 #t
   get append
   get map
@@ -9021,7 +9023,7 @@ constant procedure 1 #t
   get 3
   call 3 #f apply
   call 2 #f apply
-set 23
+set 25
 constant procedure 1 #f
   constant #f
   constant procedure 2 #f
@@ -9042,7 +9044,7 @@ constant procedure 1 #f
   get 1
   constant 0
   call 2 #f 2
-set 22
+set 24
 constant procedure 2 #f
   get 0
   call 1 #f pair?
@@ -9054,12 +9056,12 @@ constant procedure 2 #f
     get 3
     get 3
     call 1 #f cdr
-    call 2 #f 27
+    call 2 #f 29
     call 2 #f cons
   get 0
   call 1 #f 2
 call 1 #f $$close
-set 21
+set 23
 constant procedure 2 #f
   get 0
   call 1 #f 2
@@ -9069,13 +9071,13 @@ constant procedure 2 #f
     constant procedure 1 #f
       get 4
       get 1
-      call 2 #f 27
+      call 2 #f 29
     call 1 #f $$close
     get 1
     call 2 #f map
   get 0
 call 1 #f $$close
-set 20
+set 22
 constant procedure 2 #f
   get 0
   call 1 #f pair?
@@ -9083,16 +9085,16 @@ constant procedure 2 #f
     get 1
     get 1
     call 1 #f car
-    call 2 #f 23
+    call 2 #f 25
     get 2
     get 2
     call 1 #f cdr
-    call 2 #f 24
+    call 2 #f 26
     call 2 #f cons
   get 0
   call 1 #f 2
 call 1 #f $$close
-set 19
+set 21
 constant procedure 2 #f
   get 1
   if
@@ -9103,7 +9105,7 @@ constant procedure 2 #f
       call 2 #f append
     constant #f
   constant #f
-set 18
+set 20
 constant procedure 1 #f
   get 0
   call 1 #f null?
@@ -9111,7 +9113,7 @@ constant procedure 1 #f
     constant ()
   get 0
   call 1 #f cdr
-  call 1 #f 19
+  call 1 #f 21
   get 1
   call 1 #f car
   get 1
@@ -9123,7 +9125,7 @@ constant procedure 1 #f
   get 1
   call 2 #f cons
 call 1 #f $$close
-set 17
+set 19
 constant procedure 1 #f
   get 0
   call 1 #f pair?
@@ -9138,20 +9140,20 @@ constant procedure 1 #f
     call 1 #f car
     get 1
     call 1 #f cdr
-    call 1 #f 19
+    call 1 #f 21
     call 2 #f cons
-    call 1 #f 19
+    call 1 #f 21
   get 0
   call 1 #f pair?
   if
     get 0
     call 1 #f car
-    call 1 #f 18
+    call 1 #f 20
     get 1
     call 1 #f cdr
-    call 1 #f 19
+    call 1 #f 21
     call 2 #f append
-    call 1 #f 18
+    call 1 #f 20
   get 0
   call 1 #f symbol?
   if
@@ -9159,7 +9161,7 @@ constant procedure 1 #f
     call 1 #f list
   constant ()
 call 1 #f $$close
-set 16
+set 18
 constant procedure 3 #f
   get 0
   call 1 #f null?
@@ -9172,9 +9174,9 @@ constant procedure 3 #f
   call 2 #f 5
   get 2
   call 1 #f cdr
-  call 3 #f 21
+  call 3 #f 23
 call 1 #f $$close
-set 15
+set 17
 constant procedure 2 #f
   constant procedure 1 #f
     get 0
@@ -9186,7 +9188,7 @@ constant procedure 2 #f
   call 1 #f $$close
   get 1
   call 2 #f map
-set 14
+set 16
 constant procedure 2 #f
   constant procedure 1 #f
     get 0
@@ -9194,9 +9196,9 @@ constant procedure 2 #f
     call 1 #f 4
   call 1 #f $$close
   get 1
-  call 2 #f 33
+  call 2 #f 35
 call 1 #f $$close
-set 13
+set 15
 constant procedure 3 #f
   get 2
   get 2
@@ -9211,7 +9213,7 @@ constant procedure 3 #f
   constant ()
   call 2 #f $$unbind
   call 2 #f append
-  call 1 #f 22
+  call 1 #f 24
   call 2 #f cons
   constant procedure 1 #f
     get 0
@@ -9222,10 +9224,10 @@ constant procedure 3 #f
     call 2 #f eq?
   call 1 #f $$close
   get 2
-  call 2 #f 35
+  call 2 #f 37
   call 2 #f cons
 call 1 #f $$close
-set 12
+set 14
 constant procedure 2 #f
   constant procedure 2 #f
     get 1
@@ -9233,11 +9235,31 @@ constant procedure 2 #f
     get 2
     call 1 #f cdr
     get 2
-    call 3 #f 20
+    call 3 #f 22
   call 1 #f $$close
   get 1
   get 3
-  call 3 #f 20
+  call 3 #f 22
+call 1 #f $$close
+set 13
+constant procedure 1 #f
+  get 0
+  call 1 #f pair?
+  if
+    get 0
+    call 1 #f car
+  constant #f
+set 12
+constant procedure 1 #f
+  get 0
+  call 1 #f pair?
+  if
+    constant 1
+    get 1
+    call 1 #f cdr
+    call 1 #f 14
+    call 2 #f ||
+  constant 0
 call 1 #f $$close
 set 11
 constant procedure 1 #f
@@ -9246,29 +9268,9 @@ constant procedure 1 #f
   if
     get 0
     call 1 #f car
-  constant #f
-set 10
-constant procedure 1 #f
-  get 0
-  call 1 #f pair?
-  if
-    constant 1
     get 1
     call 1 #f cdr
-    call 1 #f 12
-    call 2 #f ||
-  constant 0
-call 1 #f $$close
-set 9
-constant procedure 1 #f
-  get 0
-  call 1 #f pair?
-  if
-    get 0
-    call 1 #f car
-    get 1
-    call 1 #f cdr
-    call 1 #f 11
+    call 1 #f 13
     call 2 #f cons
   get 0
   call 1 #f symbol?
@@ -9283,7 +9285,9 @@ constant procedure 1 #f
   get 1
   call 2 #f error
 call 1 #f $$close
-set 8
+set 10
+constant #\#
+set 9
 constant procedure 0 #t
   get string-append
   get symbol->string
@@ -9291,8 +9295,36 @@ constant procedure 0 #t
   call 2 #f map
   call 2 #f apply
   call 1 #f string->symbol
+set 8
+constant procedure 1 #f
+  get 0
+  call 1 #f symbol->string
+  get 11
+  get 1
+  call 1 #f string->list
+  call 2 #f 31
+  get 0
+  if
+    get 1
+    get 1
+    constant 1
+    call 2 #f ||
+    call 2 #f string-copy
+  get 1
+call 1 #f $$close
 set 7
-constant #\#
+constant procedure 1 #f
+  get 0
+  call 1 #f symbol->string
+  get 0
+  constant 0
+  constant 2
+  get 3
+  call 1 #f string-length
+  call 2 #f min
+  call 3 #f substring
+  constant "$$"
+  call 2 #f equal?
 set 6
 constant #\/
 set 5
@@ -9301,7 +9333,7 @@ constant procedure 1 #f
   get 1
   call 1 #f string->list
   call 1 #f reverse
-  call 2 #f 28
+  call 2 #f 30
   get 0
   if
     get 1
@@ -9388,12 +9420,12 @@ constant procedure 2 #f
       call 1 #f $$close
       get 2
       call 1 #f cdr
-      call 2 #f 30
+      call 2 #f 32
       call 2 #f cons
     get 0
   call 1 #f $$close
   get 1
-  call 2 #f 24
+  call 2 #f 26
 call 1 #f $$close
 set 1
 constant #f
@@ -9448,38 +9480,36 @@ constant #f
 constant #f
 constant #f
 constant #f
-constant #f
-constant #f
 constant 0
 constant 0
 call 2 #f cons
-set 23
-get 22
-call 1 #f ||
-set 22
-get 22
-call 1 #f ||
 set 21
-constant 0
+get 20
 call 1 #f ||
 set 20
-constant 0
+get 20
 call 1 #f ||
 set 19
 constant 0
-constant 1
-call 2 #f ||
 call 1 #f ||
 set 18
+constant 0
+call 1 #f ||
+set 17
 constant 0
 constant 1
 call 2 #f ||
 call 1 #f ||
-set 17
+set 16
+constant 0
+constant 1
+call 2 #f ||
+call 1 #f ||
+set 15
 constant procedure 2 #f
   get 0
   get 2
-  call 1 #f 24
+  call 1 #f 22
   call 2 #f assoc
   get 0
   if
@@ -9487,21 +9517,21 @@ constant procedure 2 #f
     call 1 #f cdr
   constant #f
 call 1 #f $$close
-set 16
+set 14
 constant procedure 3 #f
   get 2
   get 2
   get 2
   call 2 #f cons
   get 4
-  call 1 #f 26
+  call 1 #f 24
   call 2 #f cons
-  call 2 #f 24
+  call 2 #f 22
 call 1 #f $$close
-set 15
+set 13
 constant procedure 2 #f
   get 1
-  call 1 #f 21
+  call 1 #f 19
   get 1
   get 1
   call 2 #f member
@@ -9513,7 +9543,7 @@ constant procedure 2 #f
     get 3
     get 3
     call 2 #f cons
-    call 2 #f 23
+    call 2 #f 21
     continue
   constant #f
   set 0
@@ -9521,38 +9551,8 @@ constant procedure 2 #f
   constant #f
   call 2 #f eq?
 call 1 #f $$close
-set 14
-constant #\%
-set 13
-constant procedure 1 #f
-  get 0
-  call 1 #f symbol->string
-  get 37
-  get 1
-  call 1 #f string->list
-  call 2 #f 58
-  get 0
-  if
-    get 1
-    get 1
-    constant 1
-    call 2 #f ||
-    call 2 #f string-copy
-  get 1
-call 1 #f $$close
 set 12
-constant procedure 1 #f
-  get 0
-  call 1 #f symbol->string
-  get 0
-  constant 0
-  constant 2
-  get 3
-  call 1 #f string-length
-  call 2 #f min
-  call 3 #f substring
-  constant "$$"
-  call 2 #f equal?
+constant #\%
 set 11
 constant procedure 1 #f
   constant #f
@@ -9607,7 +9607,7 @@ constant procedure 1 #f
         get 5
         call 1 #f caddr
         get 1
-        call 2 #f 47
+        call 2 #f 46
         call 1 #f 5
       call 1 #f $$close
       call 1 #f 2
@@ -9670,7 +9670,7 @@ constant procedure 1 #f
       continue
     get 2
     call 1 #f number->string
-    call 2 #f 38
+    call 2 #f 36
   call 1 #f $$close
   constant ""
   get 2
@@ -9696,7 +9696,7 @@ constant procedure 1 #f
     get 0
     call 1 #f car
     get 4
-    call 2 #f 39
+    call 2 #f 37
     get 0
     call 1 #f file-exists?
     if
@@ -9713,7 +9713,7 @@ set 5
 constant procedure 2 #f
   get 1
   get 1
-  call 2 #f 20
+  call 2 #f 18
   get 0
   if
     get 0
@@ -9754,13 +9754,13 @@ constant procedure 2 #f
       set 0
       get 9
       get 3
-      call 1 #f 45
+      call 1 #f 43
       get 2
-      call 2 #f 43
+      call 2 #f 41
       call 2 #f 13
     call 1 #f $$close
     get 1
-    call 1 #f 41
+    call 1 #f 39
     call 2 #f for-each
   call 1 #f $$close
   constant procedure 0 #f
@@ -9773,7 +9773,7 @@ constant procedure 2 #f
   set 0
   get 2
   get 2
-  call 2 #f 21
+  call 2 #f 19
   get 0
   if
     get 0
@@ -9786,17 +9786,17 @@ constant procedure 2 #f
   constant procedure 1 #f
     get 3
     get 1
-    call 2 #f 20
+    call 2 #f 18
     if
       get 3
       get 1
       call 2 #f 10
       get 4
       get 1
-      call 1 #f 32
+      call 1 #f 30
       call 2 #f 10
       get 1
-      call 1 #f 31
+      call 1 #f 29
       call 2 #f append
     constant ()
   call 1 #f $$close
@@ -9826,7 +9826,7 @@ constant procedure 2 #f
     get 2
     call 1 #f car
     call 2 #f 11
-    call 1 #f 32
+    call 1 #f 30
     call 2 #f 58
   call 1 #f $$close
   get 1
@@ -9863,7 +9863,7 @@ constant procedure 2 #f
   set 2
   constant procedure 1 #f
     get 0
-    call 1 #f 20
+    call 1 #f 42
     if
       get 0
     get 0
@@ -9873,8 +9873,8 @@ constant procedure 2 #f
     if
       get 0
       call 1 #f cdr
-    get 22
-    get 45
+    get 20
+    get 46
     call 2 #f string
     get 2
     call 1 #f symbol->string
@@ -9919,8 +9919,8 @@ constant procedure 2 #f
   constant begin
   call 1 #f 9
   call 2 #f 21
-  call 3 #f 39
-  call 3 #f 24
+  call 3 #f 37
+  call 3 #f 22
 call 1 #f $$close
 set 1
 constant #f
@@ -10224,10 +10224,10 @@ constant procedure 2 #f
 call 1 #f $$close
 set 11
 constant procedure 1 #f
-  get 83
+  get 84
   call 1 #f string
   get 1
-  call 1 #f 62
+  call 1 #f 84
   call 2 #f string-append
   call 1 #f string->uninterned-symbol
 call 1 #f $$close
@@ -10930,7 +10930,7 @@ constant procedure 2 #f
         call 1 #f symbol?
         if
           get 0
-          call 1 #f 68
+          call 1 #f 90
           call 1 #f string->symbol
         get 0
       call 1 #f $$close
@@ -11896,7 +11896,7 @@ constant procedure 1 #f
   get 0
   constant ()
   constant ()
-  call 3 #f 121
+  call 3 #f 119
 call 1 #f $$close
 constant list
   list
@@ -12978,7 +12978,7 @@ constant list
     (write-message . write-message)
 call 2 #f 133
 constant ()
-call 2 #f 112
+call 2 #f 110
 constant procedure 3 #f
   get 0
   call 1 #f 133
@@ -16201,7 +16201,7 @@ constant procedure 3 #f
     get 3
     constant ""
     get 4
-    call 2 #f 127
+    call 2 #f 125
     call 3 #f 11
   call 1 #f $$close
   constant procedure 2 #f
