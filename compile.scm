@@ -239,12 +239,25 @@
       (else
        (error "invalid variadic parameter" parameters))))
 
+    ;; Symbol
+
     (define (symbol-append . xs)
      (string->symbol (apply string-append (map symbol->string xs))))
 
     (define symbol-name-separator #\#)
 
-    ; File
+    (define (resolve-symbol-string name)
+     (let* ((name (symbol->string name))
+            (index (memv-index symbol-name-separator (string->list name))))
+      (if index
+       (string-copy name (+ index 1))
+       name)))
+
+    (define (built-in-symbol? name)
+     (let ((name (symbol->string name)))
+      (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+
+    ;; File
 
     (define path-separator #\/)
 
@@ -331,17 +344,6 @@
 
     (define library-symbol-indicator #\%)
 
-    (define (resolve-symbol-string name)
-     (let* ((string (symbol->string name))
-            (index (memv-index symbol-name-separator (string->list string))))
-      (if index
-       (string-copy string (+ index 1))
-       string)))
-
-    (define (built-in-symbol? name)
-     (let ((name (symbol->string name)))
-      (equal? (substring name 0 (min 2 (string-length name))) "$$")))
-
     (define (parse-import-set set)
      (let loop ((set set) (qualify (lambda (name) name)))
       (let ((loop (lambda (qualify) (loop (cadr set) qualify))))
@@ -423,7 +425,7 @@
           (lambda (expression)
            (unless (eq? (maybe-car expression) 'define-library)
             (error "invalid library file" path))
-           (add-library-definition!
+           (register-library!
             context
             (include-files (path-directory path) expression)))
           (read-file path))))
@@ -453,7 +455,7 @@
         (library-exports (load-library context (car pair)))))
       sets))
 
-    (define (add-library-definition! context expression)
+    (define (register-library! context expression)
      (define (collect-bodies predicate)
       (append-map
        cdr
@@ -1311,7 +1313,7 @@
       (for-each
        (lambda (expression)
         (when (eq? (maybe-car expression) 'define-library)
-         (add-library-definition! context expression)))
+         (register-library! context expression)))
        expressions)
       (let ((expression
              (cons
@@ -2238,7 +2240,7 @@
                (lambda (imports symbol-table expression)
                 (case (maybe-car expression)
                  ((define-library)
-                  (add-library-definition! context expression)
+                  (register-library! context expression)
                   (values #f imports))
                  ((import)
                   (let ((imports (append-imports imports (cdr expression))))
