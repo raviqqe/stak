@@ -607,8 +607,6 @@
 
     ; Type IDs
 
-    (define pair-type 0)
-    (define null-type 1)
     (define boolean-type 2)
     (define procedure-type 3)
     (define char-type 6)
@@ -1751,9 +1749,6 @@
 
     (define string? (instance? string-type))
 
-    (define (string-rib codes length)
-      (data-rib string-type length codes))
-
     (define (string . xs)
       (list->string xs))
 
@@ -1991,7 +1986,7 @@
     symbol->string
     string->uninterned-symbol)
 
-  (import (stak base) (stak string))
+  (import (stak base))
 
   (begin
     (define symbol-type 4)
@@ -2428,7 +2423,7 @@
     dynamic-wind
     parameterize)
 
-  (import (stak base) (stak parameter) (stak io))
+  (import (stak base))
 
   (begin
     ; Continuation
@@ -6255,8 +6250,7 @@
             (cons (read-char) (read-symbol-chars)))))
 
       (define (read-string)
-        (unless (eqv? (read-char) #\")
-          (error "opening \" expected"))
+        (read-char)
         (let loop ((xs '()))
           (let ((char (read-char)))
             (cond
@@ -6553,7 +6547,7 @@
         #f
         (collect-cycles
           (lambda (x xs)
-            (set-car! xs (delete-duplicates (cons x (car xs))))
+            (set-car! xs (cons x (car xs)))
             xs))))
 
     (define write-simple (write-root #f (lambda (x) '())))
@@ -7031,7 +7025,7 @@
       (make-mapping root less)
       mapping?
       (root mapping-root mapping-set-root!)
-      (less mapping-less mapping-set-less!))
+      (less mapping-less))
 
     (define-record-type node
       (make-node value level left right)
@@ -7110,7 +7104,7 @@
       (node-split! (node-skew! node)))
 
     (define (node-skew! node)
-      (let ((left (and node (node-left node))))
+      (let ((left (node-left node)))
         (if (and
              left
              (= (node-level node) (node-level left)))
@@ -7121,7 +7115,7 @@
           node)))
 
     (define (node-split! node)
-      (let* ((right (and node (node-right node)))
+      (let* ((right (node-right node))
              (right-right (and right (node-right right))))
         (if (and
              right-right
