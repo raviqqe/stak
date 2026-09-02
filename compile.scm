@@ -10,8 +10,7 @@
   (only (scheme file))
   (only (scheme inexact))
   (scheme process-context)
-  (scheme read)
-  (only (scheme write)))
+  (scheme read))
 
 (define frontend
   '(
@@ -50,10 +49,6 @@
 
     ; Utility
 
-    (define (debug . xs)
-     (write xs (current-error-port))
-     (newline (current-error-port)))
-
     (define (code-rib tag car cdr)
      (rib car cdr tag))
 
@@ -86,11 +81,6 @@
      (if (pair? xs)
       (last-cdr (cdr xs))
       xs))
-
-    (define (set-last-cdr! xs x)
-     (if (pair? (cdr xs))
-      (set-last-cdr! (cdr xs) x)
-      (set-cdr! xs x)))
 
     (define (filter f xs)
      (if (null? xs)
@@ -152,9 +142,6 @@
        (relaxed-deep-map f (cdr xs)))
       (f xs)))
 
-    (define (maybe-append xs ys)
-     (and xs ys (append xs ys)))
-
     (define (unique xs)
      (if (null? xs)
       '()
@@ -162,23 +149,6 @@
        (if (memq (car xs) ys)
         ys
         (cons (car xs) ys)))))
-
-    (define (deep-unique x)
-     (cond
-      ((and (pair? x) (symbol? (car x)))
-       (unique (cons (car x) (deep-unique (cdr x)))))
-
-      ((pair? x)
-       (deep-unique
-        (append
-         (deep-unique (car x))
-         (deep-unique (cdr x)))))
-
-      ((symbol? x)
-       (list x))
-
-      (else
-       '())))
 
     (define (fold-left f y xs)
      (if (null? xs)
@@ -520,8 +490,7 @@
 
     (define (macro-context-set-local! context name denotation)
      (let ((pair (assq name (macro-context-locals context))))
-      (when pair (set-cdr! pair denotation))
-      pair))
+      (when pair (set-cdr! pair denotation))))
 
     (define (macro-context-set-global! context name denotation)
      (let ((state (macro-context-state context)))
@@ -1113,9 +1082,7 @@
       (constant-rib #f continuation)))
 
     (define (compile-drop continuation)
-     (if (null? continuation)
-      continuation
-      (code-rib set-instruction 0 continuation)))
+     (code-rib set-instruction 0 continuation))
 
     (define (compile-sequence context expressions continuation)
      (compile-expression
@@ -1498,8 +1465,7 @@
      '(($$dynamic-symbols . dynamic-symbols)
        ($$libraries . libraries)
        ($$macros . macros)
-       ($$optimizers . optimizers)
-       ($$symbols . symbols)))
+       ($$optimizers . optimizers)))
 
     (define (detect-features expression)
      (cond
@@ -1908,7 +1874,7 @@
         symbol-type))))
 
     (define (strip-nop-instructions codes)
-     (if (and (nop-code? codes))
+     (if (nop-code? codes)
       (strip-nop-instructions (rib-cdr codes))
       codes))
 
@@ -2345,8 +2311,7 @@
         '(scheme lazy)
         '(scheme file)
         '(scheme inexact)
-        '(scheme read)
-        '(scheme write))))
+        '(scheme read))))
 
   (define arguments (command-line))
 
