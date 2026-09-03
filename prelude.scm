@@ -6873,7 +6873,6 @@
     list-ref
     list-tail
     list?
-    ; TODO Import this procedure from the (scheme load) library.
     load
     log
     magnitude
@@ -6974,6 +6973,7 @@
     (scheme file)
     (scheme inexact)
     (scheme lazy)
+    (scheme load)
     (scheme read)
     (scheme repl)
     (scheme write))
