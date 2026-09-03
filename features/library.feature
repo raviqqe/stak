@@ -695,6 +695,15 @@ Feature: Library system
     When I run `stak -I . main.scm`
     Then the exit status should not be 0
 
+  Scenario: Show a name of a missing library in an error
+    Given a file named "main.scm" with:
+      """scheme
+      (import (foo))
+      """
+    When I run `stak -I . main.scm`
+    Then the stderr should contain "(foo)"
+    And the exit status should not be 0
+
   @stak
   Scenario: Fail to import a library in an invalid library file
     Given a file named "library/foo.sld" with:

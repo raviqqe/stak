@@ -4340,6 +4340,10 @@ constant list
   exit
   get-environment-variable
   get-environment-variables
+  display
+  write
+  write-shared
+  write-simple
   read
   char
   char-ci<=?
@@ -8733,6 +8737,14 @@ constant list
   list
     list
       scheme
+      write
+    (display . display)
+    (write . write)
+    (write-shared . write-shared)
+    (write-simple . write-simple)
+  list
+    list
+      scheme
       read
     (read . read)
   list
@@ -12991,6 +13003,503 @@ constant procedure 0 #t
   call 1 #f $$close
   call 1 #f unwind
 set exit
+constant procedure 1 #f
+  get 0
+  call 1 #f null?
+  if
+    call 0 #f current-output-port
+  get 0
+  call 1 #f car
+set ||
+constant 0
+constant 0
+call 2 #f cons
+set ||
+get ||
+call 1 #f ||
+set ||
+get ||
+call 1 #f ||
+set ||
+constant 0
+call 1 #f ||
+set ||
+constant 0
+constant 1
+call 2 #f ||
+call 1 #f ||
+set ||
+constant 0
+constant 1
+call 2 #f ||
+constant 1
+call 2 #f ||
+call 1 #f ||
+set ||
+constant 0
+constant 1
+call 2 #f ||
+constant 1
+call 2 #f ||
+call 1 #f ||
+set ||
+constant procedure 2 #f
+  get 0
+  get 2
+  call 1 #f ||
+  call 2 #f assq
+  get 0
+  if
+    get 0
+    call 1 #f cdr
+  constant #f
+set ||
+constant procedure 2 #f
+  get 1
+  get 1
+  get 3
+  call 1 #f ||
+  call 2 #f cons
+  call 2 #f ||
+set ||
+constant procedure 2 #f
+  constant #f
+  constant #f
+  constant #f
+  constant list
+    (#\newline . #\n)
+    (#\tab . #\t)
+    (#\return . #\r)
+    (#\" . #\")
+    (#\\ . #\\)
+  set 3
+  constant procedure 1 #f
+    get 0
+    call 1 #f cdr
+    get 1
+    call 1 #f car
+    call 2 #f cons
+  get special-chars
+  call 2 #f map
+  set 2
+  constant procedure 1 #f
+    get 0
+    get 5
+    call 2 #f assoc
+    get 0
+    if
+      constant #\\
+      call 1 #f write-char
+      set 0
+      get 0
+      call 1 #f cdr
+      call 1 #f write-char
+    get 1
+    call 1 #f write-char
+  call 1 #f $$close
+  set 1
+  get 3
+  constant #f
+  call 2 #f eq?
+  if
+    constant "#f"
+    call 1 #f write-string
+  get 3
+  constant #t
+  call 2 #f eq?
+  if
+    constant "#t"
+    call 1 #f write-string
+  get 3
+  call 1 #f bytevector?
+  if
+    constant "#u8"
+    call 1 #f write-string
+    set 0
+    get 4
+    get 4
+    call 1 #f bytevector->list
+    call 2 #f ||
+  get 3
+  call 1 #f char?
+  if
+    get 4
+    call 1 #f ||
+    if
+      get 3
+      call 1 #f write-char
+    constant #\#
+    call 1 #f write-char
+    set 0
+    constant #\\
+    call 1 #f write-char
+    set 0
+    get 3
+    get 2
+    call 2 #f assoc
+    get 0
+    if
+      get 0
+      call 1 #f cdr
+      call 1 #f write-string
+    get 4
+    call 1 #f write-char
+  get 3
+  call 1 #f null?
+  if
+    constant "()"
+    call 1 #f write-string
+  get 3
+  call 1 #f number?
+  if
+    get 3
+    call 1 #f number->string
+    call 1 #f write-string
+  get 3
+  call 1 #f pair?
+  if
+    get 4
+    get ||
+    get 5
+    call 3 #f ||
+  get 3
+  call 1 #f procedure?
+  if
+    constant "#procedure"
+    call 1 #f write-string
+  get 3
+  call 1 #f record?
+  if
+    constant "#record"
+    call 1 #f write-string
+  get 3
+  call 1 #f string?
+  if
+    get 4
+    call 1 #f ||
+    if
+      get 3
+      call 1 #f write-string
+    constant #\"
+    call 1 #f write-char
+    set 0
+    get 0
+    get 4
+    call 1 #f string->list
+    call 2 #f for-each
+    set 0
+    constant #\"
+    call 1 #f write-char
+  get 3
+  call 1 #f symbol?
+  if
+    get 3
+    call 1 #f symbol->string
+    get 0
+    call 1 #f string-length
+    constant 0
+    call 2 #f eq?
+    if
+      constant "||"
+      continue
+    get 0
+    call 1 #f write-string
+  get 3
+  call 1 #f vector?
+  if
+    get 4
+    get ||
+    get 5
+    call 3 #f ||
+  constant "unknown type to write"
+  call 1 #f error
+set ||
+constant procedure 3 #f
+  get 2
+  get 1
+  call 2 #f ||
+  get 0
+  if
+    get 0
+    constant #\#
+    call 1 #f write-char
+    set 0
+    get 0
+    call 1 #f number->string
+    call 1 #f write-string
+    set 0
+    get 2
+    get 5
+    call 1 #f ||
+    call 2 #f memq
+    if
+      constant #\#
+      call 1 #f write-char
+    get 4
+    get 3
+    call 2 #f ||
+    set 0
+    constant #\=
+    call 1 #f write-char
+    set 0
+    get 4
+    get 3
+    call 2 #f 5
+  get 3
+  get 2
+  call 2 #f 4
+set ||
+constant procedure 2 #f
+  constant #f
+  constant #f
+  constant list
+    (quote . #\')
+    (quasiquote . #\`)
+    (unquote . #\,)
+  set 2
+  constant procedure 2 #f
+    get 1
+    call 1 #f write-char
+    set 0
+    get 6
+    get 1
+    call 2 #f ||
+  call 1 #f $$close
+  set 1
+  get 2
+  call 1 #f null?
+  get 0
+  if
+    get 0
+    continue
+  get 3
+  call 1 #f cdr
+  call 1 #f null?
+  call 2 #f $$unbind
+  if
+    get 3
+    get 3
+    call 2 #f ||
+  get 2
+  call 1 #f cdr
+  call 1 #f pair?
+  if
+    get 2
+    call 1 #f cddr
+    call 1 #f null?
+    if
+      get 2
+      call 1 #f car
+      get 2
+      call 2 #f assq
+      continue
+    constant #f
+    continue
+  constant #f
+  get 0
+  if
+    get 0
+    get 0
+    call 1 #f cdr
+    get 5
+    call 1 #f cadr
+    call 2 #f 4
+  get 4
+  get 4
+  call 2 #f ||
+set ||
+constant procedure 2 #f
+  constant #\(
+  call 1 #f write-char
+  set 0
+  get 0
+  call 1 #f pair?
+  if
+    get 1
+    get 1
+    call 1 #f car
+    call 2 #f ||
+    set 0
+    constant #f
+    constant procedure 1 #f
+      get 0
+      call 1 #f null?
+      if
+        constant #f
+      get 0
+      call 1 #f pair?
+      if
+        get 4
+        get 1
+        call 2 #f ||
+        constant #f
+        call 2 #f eq?
+        continue
+      constant #f
+      if
+        constant #\space
+        call 1 #f write-char
+        set 0
+        get 4
+        get 1
+        call 1 #f car
+        call 2 #f ||
+        set 0
+        get 0
+        call 1 #f cdr
+        call 1 #f 3
+      constant #\space
+      call 1 #f write-char
+      set 0
+      constant #\.
+      call 1 #f write-char
+      set 0
+      constant #\space
+      call 1 #f write-char
+      set 0
+      get 4
+      get 1
+      call 2 #f ||
+    call 1 #f $$close
+    set 1
+    get 1
+    call 1 #f cdr
+    call 1 #f 1
+    call 2 #f $$unbind
+    continue
+  constant #f
+  set 0
+  constant #\)
+  call 1 #f write-char
+set ||
+constant procedure 2 #f
+  constant #\#
+  call 1 #f write-char
+  set 0
+  get 1
+  get 1
+  call 1 #f vector->list
+  call 2 #f ||
+set ||
+constant procedure 1 #f
+  constant procedure 1 #f
+    constant #f
+    constant procedure 2 #f
+      get 1
+      get 1
+      call 1 #f car
+      call 2 #f memq
+      if
+        get 1
+        call 1 #f list
+      get 1
+      call 1 #f pair?
+      if
+        get 1
+        get 1
+        call 2 #f 8
+        get 2
+        call 1 #f car
+        get 1
+        call 2 #f 6
+        get 3
+        call 1 #f cdr
+        get 2
+        call 2 #f 7
+        call 2 #f append
+        call 1 #f delete-duplicates
+      get 1
+      call 1 #f vector?
+      if
+        get 1
+        get 1
+        call 2 #f 8
+        constant procedure 1 #f
+          get 0
+          get 3
+          call 2 #f 8
+        call 1 #f $$close
+        get 3
+        call 1 #f vector->list
+        call 2 #f append-map
+        call 1 #f delete-duplicates
+      constant ()
+    call 1 #f $$close
+    set 1
+    get 1
+    constant ()
+    call 1 #f list
+    call 2 #f 2
+  call 1 #f $$close
+set ||
+constant procedure 2 #f
+  get 1
+  get 1
+  call 1 #f car
+  call 2 #f cons
+  call 1 #f list
+call 1 #f ||
+set ||
+constant procedure 2 #f
+  constant procedure 1 #t
+    get current-output-port
+    call 0 #f 0
+    constant procedure 0 #f
+      get 3
+      call 1 #f ||
+      call 1 #f 3
+    call 1 #f $$close
+    constant procedure 0 #f
+      get 8
+      get 6
+      call 1 #f 9
+      get cons
+      get 1
+      get 2
+      call 1 #f length
+      call 1 #f iota
+      call 3 #f map
+      call 2 #f $$unbind
+      constant ()
+      call 3 #f ||
+      get 6
+      call 2 #f ||
+    call 1 #f $$close
+    constant procedure 0 #f
+      get 3
+      call 1 #f 5
+    call 1 #f $$close
+    call 3 #f dynamic-wind
+  call 1 #f $$close
+set ||
+constant #f
+get ||
+call 2 #f ||
+set write
+constant #f
+constant procedure 2 #f
+  get 0
+  get 2
+  get 2
+  call 1 #f car
+  call 2 #f cons
+  call 2 #f set-car!
+  set 0
+  get 0
+call 1 #f ||
+call 2 #f ||
+set write-shared
+constant #f
+constant procedure 1 #f
+  constant ()
+call 2 #f ||
+set write-simple
+constant #t
+get ||
+call 2 #f ||
+set display
+get write
+set write-irritant
 constant list
   list
     define
