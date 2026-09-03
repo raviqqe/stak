@@ -12863,6 +12863,12 @@ set exp
 constant 501
 call 1 #f primitive
 set ||
+constant 502
+call 1 #f primitive
+set infinite?
+constant 503
+call 1 #f primitive
+set nan?
 constant 504
 call 1 #f primitive
 set sqrt

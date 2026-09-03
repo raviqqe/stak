@@ -3053,16 +3053,13 @@
     asin
     atan)
 
-  (import
-    (scheme base)
-    (only (stak base)
-      primitive
-      infinite?
-      nan?))
+  (import (scheme base) (only (stak base) primitive))
 
   (begin
     (define exp (primitive 500))
     (define $log (primitive 501))
+    (define infinite? (primitive 502))
+    (define nan? (primitive 503))
     (define sqrt (primitive 504))
     (define cos (primitive 505))
     (define sin (primitive 506))
