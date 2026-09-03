@@ -10,7 +10,8 @@
   (only (scheme file))
   (only (scheme inexact))
   (scheme process-context)
-  (scheme read))
+  (scheme read)
+  (only (scheme write)))
 
 (define frontend
   '(
