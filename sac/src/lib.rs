@@ -6,9 +6,6 @@
 #[cfg(feature = "libc")]
 #[doc(hidden)]
 pub extern crate alloc;
-#[cfg(feature = "std")]
-#[doc(hidden)]
-pub extern crate std;
 
 #[doc(hidden)]
 pub mod __private {
@@ -30,8 +27,6 @@ pub mod __private {
     pub use stak_r7rs;
     pub use stak_time;
     pub use stak_vm;
-    #[cfg(feature = "std")]
-    pub use std;
 }
 
 /// Defines a `main` function that runs a given source file.

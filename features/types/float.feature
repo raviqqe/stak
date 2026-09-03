@@ -28,6 +28,49 @@ Feature: Floating-point number
       | integer?  | 3.14     | B      |
       | integer?  | -42.2045 | B      |
 
+  Scenario Outline: Check if a number is finite
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (<predicate> <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | value    | output |
+      | finite?   | 0        | A      |
+      | finite?   | 42       | A      |
+      | finite?   | 3.14     | A      |
+      | finite?   | -42.2045 | A      |
+      | infinite? | 0        | B      |
+      | infinite? | 3.14     | B      |
+      | nan?      | 0        | B      |
+      | nan?      | 3.14     | B      |
+
+  @stak
+  Scenario Outline: Check if a non-finite number is finite
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (<predicate> <value>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | value    | output |
+      | finite?   | (/ 1 0)  | B      |
+      | finite?   | (/ -1 0) | B      |
+      | finite?   | (/ 0 0)  | B      |
+      | infinite? | (/ 1 0)  | A      |
+      | infinite? | (/ -1 0) | A      |
+      | infinite? | (/ 0 0)  | B      |
+      | nan?      | (/ 0 0)  | A      |
+      | nan?      | (/ 1 0)  | B      |
+
   Scenario Outline: Check if a number is exact
     Given a file named "main.scm" with:
       """scheme

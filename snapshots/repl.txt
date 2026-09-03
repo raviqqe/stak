@@ -757,9 +757,9 @@ constant procedure 2 #f
   get 2
   constant 1
   call 2 #f ||
-  call 2 #f list-head
+  call 2 #f ||
   call 2 #f cons
-set list-head
+set ||
 constant procedure 2 #t
   constant #f
   get 1
@@ -947,7 +947,7 @@ constant procedure 1 #t
     get 2
     get 4
     call 2 #f ||
-    call 2 #f list-head
+    call 2 #f ||
   get 0
 set list-copy
 get ||
@@ -2764,7 +2764,7 @@ constant procedure 2 #f
   get 3
   constant ()
   call 5 #f make-port
-set make-input-port
+set ||
 constant procedure 3 #t
   constant #f
   get 4
@@ -2778,11 +2778,11 @@ constant procedure 3 #t
   get 4
   call 1 #f car
   call 5 #f make-port
-set make-output-port
+set ||
 get ||
 constant procedure 0 #f
   constant #f
-call 2 #f make-input-port
+call 2 #f ||
 call 1 #f make-parameter
 set current-input-port
 get ||
@@ -2790,7 +2790,7 @@ constant procedure 0 #f
   constant #f
 constant procedure 0 #f
   constant #f
-call 3 #f make-output-port
+call 3 #f ||
 call 1 #f make-parameter
 set current-output-port
 get ||
@@ -2798,7 +2798,7 @@ constant procedure 0 #f
   constant #f
 constant procedure 0 #f
   constant #f
-call 3 #f make-output-port
+call 3 #f ||
 call 1 #f make-parameter
 set current-error-port
 constant procedure 1 #f
@@ -2962,7 +2962,7 @@ constant procedure 0 #f
   constant #f
 constant procedure 0 #f
   constant #f
-call 3 #f make-output-port
+call 3 #f ||
 constant procedure 0 #t
   get 0
   call 1 #f ||
@@ -3405,7 +3405,7 @@ constant procedure 1 #f
   call 1 #f $$close
   constant procedure 0 #f
     constant #f
-  call 2 #f make-input-port
+  call 2 #f ||
 set open-input-string
 constant procedure 0 #f
   call 0 #f open-output-bytevector
@@ -3419,7 +3419,7 @@ constant procedure 0 #f
   constant procedure 0 #f
     constant #f
   get 3
-  call 4 #f make-output-port
+  call 4 #f ||
 set open-output-string
 constant procedure 1 #f
   get 0
@@ -3448,7 +3448,7 @@ constant procedure 1 #f
   call 1 #f $$close
   constant procedure 0 #f
     constant #f
-  call 2 #f make-input-port
+  call 2 #f ||
 set open-input-bytevector
 constant procedure 0 #f
   constant 0
@@ -3470,7 +3470,7 @@ constant procedure 0 #f
   constant procedure 0 #f
     constant #f
   get 4
-  call 4 #f make-output-port
+  call 4 #f ||
 set open-output-bytevector
 constant procedure 1 #f
   get 0
@@ -4037,8 +4037,6 @@ constant list
   eof-object
   eof-object?
   make-port
-  make-input-port
-  make-output-port
   port?
   input-port?
   output-port?
@@ -4308,7 +4306,6 @@ constant list
   for-each
   list-ref
   list-set!
-  list-head
   list-tail
   member
   memq
@@ -8127,6 +8124,12 @@ set exp
 constant 501
 call 1 #f primitive
 set ||
+constant 502
+call 1 #f primitive
+set infinite?
+constant 503
+call 1 #f primitive
+set nan?
 constant 504
 call 1 #f primitive
 set sqrt
@@ -12189,8 +12192,6 @@ constant list
     (eof-object . eof-object)
     (eof-object? . eof-object?)
     (make-port . make-port)
-    (make-input-port . make-input-port)
-    (make-output-port . make-output-port)
     (port? . port?)
     (input-port? . input-port?)
     (output-port? . output-port?)
@@ -12271,8 +12272,6 @@ constant list
     (eof-object . eof-object)
     (eof-object? . eof-object?)
     (make-port . make-port)
-    (make-input-port . make-input-port)
-    (make-output-port . make-output-port)
     (port? . port?)
     (input-port? . input-port?)
     (output-port? . output-port?)
@@ -12616,7 +12615,6 @@ constant list
     (for-each . for-each)
     (list-ref . list-ref)
     (list-set! . list-set!)
-    (list-head . list-head)
     (list-tail . list-tail)
     (member . member)
     (memq . memq)
