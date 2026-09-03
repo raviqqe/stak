@@ -695,14 +695,13 @@ Feature: Library system
     When I run `stak -I . main.scm`
     Then the exit status should not be 0
 
-  @stak
   Scenario: Show a name of a missing library in an error
     Given a file named "main.scm" with:
       """scheme
       (import (foo))
       """
     When I run `stak -I . main.scm`
-    Then the stderr should contain "library not found in path (foo)"
+    Then the stderr should contain "(foo)"
     And the exit status should not be 0
 
   @stak
