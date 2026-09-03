@@ -74,8 +74,7 @@ fn run_vm(
         ),
     )?;
 
-    vm.initialize(bytecode.iter().copied())?;
-    vm.run()
+    vm.run(bytecode.iter().copied())
 }
 ```
 
