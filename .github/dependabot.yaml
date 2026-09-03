@@ -20,11 +20,6 @@ updates:
     schedule:
       interval: daily
       time: "08:00"
-  - package-ecosystem: gitsubmodule
-    directory: /
-    schedule:
-      interval: daily
-      time: "08:00"
   - package-ecosystem: gomod
     directory: /
     schedule:

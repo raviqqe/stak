@@ -137,7 +137,6 @@ jobs:
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
-          -f ${{ join(matrix.interpreter.features, ',') }},
           -t '${{ matrix.interpreter.tags || '~@none' }}'
   self_host_test:
     runs-on: ubuntu-latest
