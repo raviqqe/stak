@@ -76,7 +76,7 @@ Feature: The R5RS library
       """scheme
       (import (scheme r5rs))
 
-      (load "./foo.scm" (scheme-report-environment 5))
+      (load "./foo.scm")
       """
     And a file named "foo.scm" with:
       """scheme

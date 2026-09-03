@@ -113,7 +113,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-scheme
       - run: tools/extra_integration_test.sh
   self_host_integration_test:
     strategy:
@@ -178,7 +177,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-node
       - run: tools/decode_test.sh
   r7rs_compatible_compiler:
     runs-on: ubuntu-latest

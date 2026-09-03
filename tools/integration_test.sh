@@ -2,8 +2,6 @@
 
 set -ex
 
-alias epoch='date +%s'
-
 features=,
 interpreter=stak
 tags=~@extra

@@ -2,8 +2,6 @@
 
 set -ex
 
-[ $# -eq 0 ]
-
 cd $(dirname $0)/..
 
 cargo build --profile release_test

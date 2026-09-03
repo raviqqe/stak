@@ -6,13 +6,8 @@ set -e
 
 lua_version=5.5
 
-brew install lua@$lua_version pkgconf uutils-coreutils uutils-findutils
+brew install lua@$lua_version pkgconf
 cargo install --locked stak
-
-for name in core find; do
-  # spell-checker: disable-next-line
-  export PATH=$(brew --prefix uutils-${name}utils)/libexec/uubin:$PATH
-done
 
 # Download Go commands by running it.
 # https://github.com/actions/setup-go/issues/358
