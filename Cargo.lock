@@ -1448,8 +1448,6 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 name = "stak"
 version = "0.12.26"
 dependencies = [
- "any-fn",
- "rand",
  "stak-build",
  "stak-device",
  "stak-dynamic",
@@ -1546,9 +1544,6 @@ name = "stak-engine"
 version = "0.12.26"
 dependencies = [
  "any-fn",
- "rand",
- "stak",
- "stak-build",
  "stak-device",
  "stak-dynamic",
  "stak-file",

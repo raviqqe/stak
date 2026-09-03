@@ -22,13 +22,6 @@ stak-util = { path = "../util", version = "0.12.26" }
 stak-vm = { path = "../vm", version = "0.12.26" }
 winter-maybe-async = "0.13.1"
 
-[dev-dependencies]
-rand = "0.10.1"
-stak = { path = "../root" }
-
-[build-dependencies]
-stak-build = { path = "../build", version = "0.12.26" }
-
 [features]
 async = [
   "stak-device/async",

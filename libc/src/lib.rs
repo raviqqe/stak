@@ -2,8 +2,6 @@
 
 #![no_std]
 
-extern crate alloc;
-
 mod mmap;
 
 pub use mmap::Mmap;

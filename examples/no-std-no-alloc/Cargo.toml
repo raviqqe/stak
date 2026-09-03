@@ -2,10 +2,6 @@
 name = "no-std-no-alloc"
 version.workspace = true
 edition.workspace = true
-readme.workspace = true
-repository.workspace = true
-license.workspace = true
-keywords.workspace = true
 publish = false
 
 [dependencies]

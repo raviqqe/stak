@@ -145,7 +145,6 @@
     for-each
     list-ref
     list-set!
-    list-head
     list-tail
     member
     memq
@@ -2021,8 +2020,6 @@
     eof-object?
 
     make-port
-    make-input-port
-    make-output-port
     port?
     input-port?
     output-port?
@@ -2953,8 +2950,6 @@
     eof-object?
 
     make-port
-    make-input-port
-    make-output-port
     port?
     input-port?
     output-port?
@@ -6846,6 +6841,7 @@
     eqv?
     eval
     even?
+    ; TODO Define this procedure.
     exact->inexact
     exact?
     exp
@@ -6856,6 +6852,7 @@
     gcd
     if
     imag-part
+    ; TODO Define this procedure.
     inexact->exact
     inexact?
     input-port?
@@ -6876,6 +6873,7 @@
     list-ref
     list-tail
     list?
+    ; TODO Import this procedure from the (scheme load) library.
     load
     log
     magnitude
@@ -6893,6 +6891,7 @@
     negative?
     newline
     not
+    ; TODO Define this procedure.
     null-environment
     null?
     number->string
