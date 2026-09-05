@@ -24,20 +24,29 @@ list_scheme_files() (
   done
 )
 
-build_tr7() (
-  directory=$(mktemp -d)
+git_clone() (
+  url=$1
+  directory=$2
 
-  git clone https://gitlab.com/jobol/tr7 $directory
+  if [ -d $directory ]; then
+    cd $directory
+    git pull
+  else
+    mkdir -p $(dirname $directory)
+    git clone $url $directory
+  fi
+)
+
+build_tr7() (
+  git_clone https://gitlab.com/jobol/tr7 tmp/tr7
 
   (
-    cd $directory
+    cd tmp/tr7
     make tr7i
   )
 
   mkdir -p target/release
-  cp $directory/tr7i target/release
-
-  rm -r $directory
+  cp tmp/tr7/tr7i target/release
 )
 
 build_binary() (

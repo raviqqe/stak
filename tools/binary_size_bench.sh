@@ -28,21 +28,10 @@ list_dynamic_libraries() (
   esac
 )
 
-git_clone() (
-  directory=$(basename $1)
-
-  if [ -d $directory ]; then
-    cd $directory
-    git pull
-  else
-    git clone $1
-  fi
-)
-
 build_chibi() (
-  cd tmp
-  git_clone https://github.com/ashinn/chibi-scheme
-  cd chibi-scheme
+  git_clone https://github.com/ashinn/chibi-scheme tmp/chibi-scheme
+
+  cd tmp/chibi-scheme
 
   # spell-checker: disable-next-line
   make CFLAGS='-Os -DSEXP_USE_FLONUMS=1 -DSEXP_USE_NO_FEATURES=1' chibi-scheme-static
