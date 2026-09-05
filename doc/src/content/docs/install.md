@@ -26,7 +26,7 @@ stak hello.scm
 
 The content of the `hello.scm` would look like:
 
-```sh
+```scheme
 (import (scheme base))
 
 (write-string "Hello, world!\n")

@@ -4,16 +4,6 @@ constant primitive 1
 set $$close
 constant primitive 2
 set $$unbind
-constant primitive 10
-set $$<
-constant primitive 11
-set $$+
-constant primitive 12
-set $$-
-constant primitive 13
-set $$*
-constant primitive 14
-set $$/
 constant procedure 0 #f
   constant list
     full-unicode
@@ -3888,11 +3878,6 @@ constant list
   little-endian
   runtime
   $$rib
-  $$<
-  $$+
-  $$-
-  $$*
-  $$/
   include
   except
   only
@@ -8785,21 +8770,6 @@ constant list
   list
     $$unbind
     2
-  list
-    $$<
-    10
-  list
-    $$+
-    11
-  list
-    $$-
-    12
-  list
-    $$*
-    13
-  list
-    $$/
-    14
 set 47
 constant 0
 set 46

@@ -14,6 +14,8 @@ cfg_select! {
     feature = "std" => {
         type Device = stak_device::StdioDevice;
     }
+    // TODO Replace this device with `libc::ReadWriteDevice`, which needs a
+    // `Default` implementation, as `stak_device::LibcDevice` does not exist.
     feature = "libc" => {
         type Device = stak_device::LibcDevice;
     }
