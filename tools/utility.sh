@@ -34,6 +34,7 @@ build_tr7() (
     make tr7i
   )
 
+  mkdir -p target/release
   cp $directory/tr7i target/release
 
   rm -r $directory
