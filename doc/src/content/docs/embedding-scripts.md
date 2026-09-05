@@ -136,7 +136,7 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 
-fn run_scheme(module: &'static UniversalModule) -> Result<(), EngineError> {
+fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
     // Define Rust functions to pass to the engine.
     let mut functions = [
         ("make-person", r#fn(Person::new)),
@@ -158,10 +158,7 @@ Finally, call the `run_scheme` function in the `main` function.
 
 ```rust
 use core::error::Error;
-use stak::{
-    include_module,
-    module::UniversalModule,
-};
+use stak::include_module;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Include and run the Scheme module.

@@ -5,8 +5,3 @@
   align-items: stretch;
   overflow: hidden;
 }
-
-.repl {
-  flex: 1;
-  min-height: 20rem;
-}
