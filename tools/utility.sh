@@ -36,7 +36,7 @@ build_tr7() (
 
   cp $directory/tr7i target/release
 
-  rm -rf $directory
+  rm -r $directory
 )
 
 build_binary() (
