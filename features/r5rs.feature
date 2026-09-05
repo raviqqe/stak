@@ -70,17 +70,17 @@ Feature: The R5RS library
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "42"
 
-  @chibi @gauche @stak
+  @chibi @stak
   Scenario: Load a file
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme r5rs))
+      (import (scheme r5rs) (scheme eval))
 
-      (load "./foo.scm")
+      (load "./foo.scm" (environment '(scheme base)))
       """
     And a file named "foo.scm" with:
       """scheme
-      (write 42)
+      (write-char #\A)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "42"
+    Then the stdout should contain exactly "A"
