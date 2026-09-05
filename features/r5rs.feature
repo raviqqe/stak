@@ -80,7 +80,7 @@ Feature: The R5RS library
       """
     And a file named "foo.scm" with:
       """scheme
-      (write-char #\A)
+      (write-u8 65)
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
