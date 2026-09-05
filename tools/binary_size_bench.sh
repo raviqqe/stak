@@ -42,8 +42,6 @@ build_chibi() (
   git_clone https://github.com/ashinn/chibi-scheme
   cd chibi-scheme
 
-  flags=
-
   # spell-checker: disable-next-line
   make CFLAGS='-Os -DSEXP_USE_FLONUMS=1 -DSEXP_USE_NO_FEATURES=1' chibi-scheme-static
 )
@@ -71,8 +69,6 @@ build_tr7() (
   cd tr7
   make tr7i
 )
-
-. $(dirname $0)/utility.sh
 
 cd $(dirname $0)/..
 mkdir -p tmp
