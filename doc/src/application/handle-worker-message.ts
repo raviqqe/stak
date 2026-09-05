@@ -12,7 +12,11 @@ export const handleWorkerMessage = <T, S>(
     try {
       result = handle(event.data);
     } catch (error) {
-      result = error instanceof Error ? error : new TypeError("Not error");
+      if (!(error instanceof Error)) {
+        throw error;
+      }
+
+      result = error;
     }
 
     postMessage(result);
