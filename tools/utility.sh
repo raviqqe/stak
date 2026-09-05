@@ -24,6 +24,21 @@ list_scheme_files() (
   done
 )
 
+build_tr7() (
+  directory=$(mktemp -d)
+
+  git clone https://gitlab.com/jobol/tr7 $directory
+
+  (
+    cd $directory
+    make tr7i
+  )
+
+  cp $directory/tr7i target/release
+
+  rm -rf $directory
+)
+
 build_binary() (
   cd $1
   shift 1
@@ -55,6 +70,7 @@ setup_bench() (
   feature=$1
 
   brew install chibi-scheme gambit-scheme gauche guile lua micropython mruby ruby
+  build_tr7
   cargo install --locked hyperfine
 
   case $feature in
@@ -68,15 +84,6 @@ setup_bench() (
 
   build_binary . -p stak -p stak-interpret $build_options
   build_binary cmd/minimal -p mstak -p mstak-interpret
-
-  # TR7 has no Homebrew formula, so it is built from source into the directory
-  # the benchmarks already put on their PATH.
-  [ -d /tmp/tr7 ] || git clone https://gitlab.com/jobol/tr7 /tmp/tr7
-  (
-    cd /tmp/tr7
-    make tr7i
-  )
-  cp /tmp/tr7/tr7i target/release
 
   export PATH=$PWD/target/release:$PATH
 

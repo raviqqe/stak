@@ -2,6 +2,8 @@
 
 set -e
 
+. $(dirname $0)/utility.sh
+
 filter_existent_paths() (
   for path in "$@"; do
     if [ -r $path ]; then
@@ -63,13 +65,6 @@ build_stak() (
   build cmd/minimal mstak
 )
 
-build_tr7() (
-  cd tmp
-  git_clone https://gitlab.com/jobol/tr7
-  cd tr7
-  make tr7i
-)
-
 cd $(dirname $0)/..
 mkdir -p tmp
 
@@ -78,10 +73,10 @@ if [ $(uname) = Linux ]; then
 fi
 
 build_chibi
-build_stak $target
 build_tr7
+build_stak $target
 
-binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i"
+binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static target/release/tr7i"
 
 strip $binaries
 
