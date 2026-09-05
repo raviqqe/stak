@@ -23,7 +23,7 @@
     "astro": "^7.2.10",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.52.0",
-    "lucide-preact": "^1.38.0",
+    "lucide-preact": "^1.39.0",
     "monza-editor": "^0.5.14",
     "nanostores": "^1.5.2",
     "picolight": "^0.2.10",
