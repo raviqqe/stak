@@ -1,13 +1,11 @@
-import type { Result } from "./result";
-
 export const runWorker = async <T, S>(
   createWorker: () => Worker,
   input: T,
 ): Promise<S> => {
   const worker = createWorker();
 
-  const promise = new Promise<Result<S>>((resolve) =>
-    worker.addEventListener("message", (event: MessageEvent<Result<S>>) =>
+  const promise = new Promise<S | Error>((resolve) =>
+    worker.addEventListener("message", (event: MessageEvent<S | Error>) =>
       resolve(event.data),
     ),
   );
@@ -16,11 +14,11 @@ export const runWorker = async <T, S>(
   const result = await promise;
   worker.terminate();
 
-  if (typeof result.error === "string") {
-    throw new Error(result.error);
+  if (result instanceof Error) {
+    throw result;
   }
 
-  return result.value;
+  return result;
 };
 
 export const runStreamWorker = <T, S>(
