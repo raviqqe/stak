@@ -1,10 +1,5 @@
 coverage:
   if: false
-codeToTestRatio:
-  code: []
-  test: []
-testExecutionTime:
-  if: true
 diff:
   datastores:
     - artifact://${GITHUB_REPOSITORY}
