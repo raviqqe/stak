@@ -60,6 +60,7 @@ mkdir -p tmp
 if [ $(uname) = Linux ]; then
   target=$(uname -m)-unknown-linux-musl
   export CC=musl-gcc
+  export CFLAGS=-static
 fi
 
 build_chibi
