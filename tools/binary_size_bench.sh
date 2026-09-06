@@ -57,17 +57,12 @@ build_stak() (
 cd $(dirname $0)/..
 mkdir -p tmp
 
-compiler=cc
-
 if [ $(uname) = Linux ]; then
   target=$(uname -m)-unknown-linux-musl
-  # Chibi Scheme links a C standard library statically only on Linux. So build
-  # it against musl to measure its size on the same footing as the Rust
-  # binaries.
-  compiler=musl-gcc
+  export CC=musl-gcc
 fi
 
-CC=$compiler build_chibi
+build_chibi
 build_tr7
 build_stak $target
 
