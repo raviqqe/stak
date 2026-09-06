@@ -6841,8 +6841,7 @@
     eqv?
     eval
     even?
-    ; TODO Define this procedure.
-    exact->inexact
+    (rename inexact exact->inexact)
     exact?
     exp
     expt
@@ -6852,8 +6851,7 @@
     gcd
     if
     imag-part
-    ; TODO Define this procedure.
-    inexact->exact
+    (rename exact inexact->exact)
     inexact?
     input-port?
     integer->char
@@ -6890,7 +6888,6 @@
     negative?
     newline
     not
-    ; TODO Define this procedure.
     null-environment
     null?
     number->string
@@ -6979,6 +6976,11 @@
     (scheme write))
 
   (begin
+    (define (null-environment version)
+      (unless (= version 5)
+        (error "unsupported version for null environment" version))
+      (environment))
+
     (define (scheme-report-environment version)
       (unless (= version 5)
         (error "unsupported version for scheme report environment" version))

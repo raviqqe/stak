@@ -11889,7 +11889,7 @@ constant list
     (eqv? . eqv?)
     (eval . eval)
     (even? . even?)
-    (exact->inexact . exact->inexact)
+    (exact->inexact . inexact)
     (exact? . exact?)
     (exp . exp)
     (expt . expt)
@@ -11899,7 +11899,7 @@ constant list
     (gcd . gcd)
     (if . if)
     (imag-part . imag-part)
-    (inexact->exact . inexact->exact)
+    (inexact->exact . exact)
     (inexact? . inexact?)
     (input-port? . input-port?)
     (integer->char . integer->char)
@@ -16940,6 +16940,21 @@ call 2 #f ||
 set display
 get write
 set write-irritant
+constant procedure 1 #f
+  get 0
+  constant 5
+  call 2 #f eq?
+  constant #f
+  call 2 #f eq?
+  if
+    constant "unsupported version for null environment"
+    get 1
+    call 2 #f error
+    continue
+  constant #f
+  set 0
+  call 0 #f environment
+set null-environment
 constant procedure 1 #f
   get 0
   constant 5
