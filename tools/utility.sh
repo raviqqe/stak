@@ -24,6 +24,28 @@ list_scheme_files() (
   done
 )
 
+git_clone() (
+  url=$1
+  directory=$2
+
+  if [ -d $directory ]; then
+    cd $directory
+    git pull
+  else
+    mkdir -p $(dirname $directory)
+    git clone $url $directory
+  fi
+)
+
+build_tr7() (
+  git_clone https://gitlab.com/jobol/tr7 tmp/tr7
+
+  make -C tmp/tr7 tr7i
+
+  mkdir -p target/release
+  cp tmp/tr7/tr7i target/release
+)
+
 build_binary() (
   cd $1
   shift 1
@@ -55,6 +77,7 @@ setup_bench() (
   feature=$1
 
   brew install chibi-scheme gambit-scheme gauche guile lua micropython mruby ruby
+  build_tr7
   cargo install --locked hyperfine
 
   case $feature in

@@ -2,6 +2,8 @@
 
 set -e
 
+. $(dirname $0)/utility.sh
+
 filter_existent_paths() (
   for path in "$@"; do
     if [ -r $path ]; then
@@ -26,21 +28,10 @@ list_dynamic_libraries() (
   esac
 )
 
-git_clone() (
-  directory=$(basename $1)
-
-  if [ -d $directory ]; then
-    cd $directory
-    git pull
-  else
-    git clone $1
-  fi
-)
-
 build_chibi() (
-  cd tmp
-  git_clone https://github.com/ashinn/chibi-scheme
-  cd chibi-scheme
+  git_clone https://github.com/ashinn/chibi-scheme tmp/chibi-scheme
+
+  cd tmp/chibi-scheme
 
   # spell-checker: disable-next-line
   make CFLAGS='-Os -DSEXP_USE_FLONUMS=1 -DSEXP_USE_NO_FEATURES=1' chibi-scheme-static
@@ -63,13 +54,6 @@ build_stak() (
   build cmd/minimal mstak
 )
 
-build_tr7() (
-  cd tmp
-  git_clone https://gitlab.com/jobol/tr7
-  cd tr7
-  make tr7i
-)
-
 cd $(dirname $0)/..
 mkdir -p tmp
 
@@ -78,8 +62,8 @@ if [ $(uname) = Linux ]; then
 fi
 
 build_chibi
-build_stak $target
 build_tr7
+build_stak $target
 
 binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i"
 
