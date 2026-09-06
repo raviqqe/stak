@@ -1,5 +1,3 @@
-import type { Result } from "./result";
-
 export const handleWorkerMessage = <T, S>(
   init: () => Promise<unknown>,
   handle: (input: T) => S,
@@ -9,12 +7,16 @@ export const handleWorkerMessage = <T, S>(
   addEventListener("message", async (event: MessageEvent<T>) => {
     await promise;
 
-    let result: Result<S>;
+    let result: S | Error;
 
     try {
-      result = { value: handle(event.data) };
+      result = handle(event.data);
     } catch (error) {
-      result = { error: (error as Error).message };
+      if (!(error instanceof Error)) {
+        throw error;
+      }
+
+      result = error;
     }
 
     postMessage(result);
