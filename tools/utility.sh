@@ -40,10 +40,7 @@ git_clone() (
 build_tr7() (
   git_clone https://gitlab.com/jobol/tr7 tmp/tr7
 
-  (
-    cd tmp/tr7
-    make tr7i
-  )
+  make -C tmp/tr7 tr7i
 
   mkdir -p target/release
   cp tmp/tr7/tr7i target/release
