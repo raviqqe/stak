@@ -1,7 +1,10 @@
 .root {
-  > * {
-    padding: 1rem;
-    border-radius: 0.5rem;
-    overflow: hidden;
-  }
+  composes: textArea from "../system.module.css";
+
+  --me-padding: var(--padding);
+
+  flex: 1;
+  min-height: 20rem;
+  padding: 0;
+  tab-size: 2;
 }

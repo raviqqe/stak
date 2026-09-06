@@ -1,17 +1,14 @@
-import "@xterm/xterm/css/xterm.css";
+import "monza-editor/style.css";
 import { useSignalEffect } from "@preact/signals";
 import { useSignalRef } from "@preact/signals/utils";
-import { FitAddon } from "@xterm/addon-fit";
-import * as xterm from "@xterm/xterm";
+import classNames from "classnames";
 import { delay } from "es-toolkit";
+import { styles as editorStyles, initialize } from "monza-editor";
 import type { FunctionComponent } from "preact";
+import { highlightScheme } from "../application/highlight.js";
 import styles from "./Terminal.module.css";
 
 const inputDelay = 20;
-const terminalOptions: xterm.ITerminalOptions = {
-  lineHeight: 1.1,
-  tabStopWidth: 2,
-};
 
 interface Props {
   id?: string;
@@ -22,66 +19,96 @@ interface Props {
 
 export const Terminal: FunctionComponent<Props> = ({
   id,
+  initialInput,
   input,
   output,
-  initialInput,
 }) => {
-  const terminal = new xterm.Terminal(terminalOptions);
-  const outputs = output.tee();
-
-  const ref = useSignalRef<HTMLDivElement | null>(null);
+  const codeRef = useSignalRef<HTMLElement | null>(null);
+  const preRef = useSignalRef<HTMLPreElement | null>(null);
+  const textareaRef = useSignalRef<HTMLTextAreaElement | null>(null);
 
   useSignalEffect(() => {
-    if (!ref.value) {
+    const code = codeRef.value;
+    const pre = preRef.value;
+    const textarea = textareaRef.value;
+
+    if (!code || !pre || !textarea) {
       return;
     }
 
-    const fitAddon = new FitAddon();
+    initialize({ code, highlight: highlightScheme, pre, textarea });
 
-    terminal.loadAddon(fitAddon);
-    terminal.open(ref.value);
-    fitAddon.fit();
+    // Text written by the program and lines sent to it already. The rest is the
+    // line being edited.
+    let committed = "";
 
-    ref.value.addEventListener("resize", () => fitAddon.fit());
+    const update = (text: string) => {
+      textarea.value = text;
+      // Notify the editor of the change to highlight the text again.
+      textarea.dispatchEvent(new InputEvent("input"));
+      textarea.scrollTop = textarea.scrollHeight;
+    };
+
+    const writer = input.getWriter();
+
+    const submit = async (line: string) => {
+      const text = `${line}\n`;
+
+      committed += text;
+      update(committed);
+
+      await writer.write(text);
+    };
+
+    // Protect the committed text from edits.
+    textarea.addEventListener("beforeinput", (event) => {
+      const { selectionEnd, selectionStart } = textarea;
+
+      if (
+        selectionStart < committed.length ||
+        (selectionStart === committed.length &&
+          selectionStart === selectionEnd &&
+          event.inputType.endsWith("Backward"))
+      ) {
+        event.preventDefault();
+      }
+    });
+
+    textarea.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+
+        void submit(textarea.value.slice(committed.length));
+      }
+    });
+
+    const outputs = output.tee();
+
+    void (async () => {
+      for await (const text of outputs[0]) {
+        const line = textarea.value.slice(committed.length);
+
+        committed += text;
+        update(committed + line);
+      }
+    })();
+
+    void (async () => {
+      await outputs[1].values().next();
+
+      for (const line of initialInput ?? []) {
+        await delay(inputDelay);
+        await submit(line);
+      }
+    })();
   });
 
-  const line: string[] = [];
-  const writer = input.getWriter();
-
-  terminal.onData(async (data) => {
-    if (data === "\r") {
-      await writer.write([...line.splice(0), "\n"].join(""));
-      terminal.write("\r\n");
-    } else if (data === "\x7f") {
-      if (line.length) {
-        line.pop();
-        terminal.write("\b \b");
-      }
-    } else {
-      line.push(...data);
-      terminal.write(data);
-    }
-  });
-
-  void (async () => {
-    for await (const data of outputs[0]) {
-      terminal.write(data === "\n" ? "\r\n" : data);
-    }
-  })();
-
-  void (async () => {
-    await outputs[1].values().next();
-
-    for (const line of initialInput ?? []) {
-      await delay(inputDelay);
-
-      for (const character of line) {
-        terminal.input(character);
-      }
-
-      terminal.input("\r");
-    }
-  })();
-
-  return <div class={styles.root} id={id} ref={ref} />;
+  return (
+    <div class={classNames(styles.root, editorStyles.main)}>
+      <textarea class={editorStyles.textarea} id={id} ref={textareaRef} />
+      <pre class={editorStyles.pre} ref={preRef}>
+        <code class={editorStyles.code} ref={codeRef} />
+      </pre>
+    </div>
+  );
 };
