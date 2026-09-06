@@ -91,10 +91,10 @@
     /
     remainder
     quotient
-    modulo
+    (rename floor-remainder modulo)
     truncate
-    truncate-quotient
-    truncate-remainder
+    (rename quotient truncate-quotient)
+    (rename remainder truncate-remainder)
     truncate/
     floor
     floor-quotient
@@ -802,13 +802,8 @@
     (define (square x)
       (* x x))
 
-    (define truncate-quotient quotient)
-    (define truncate-remainder remainder)
-
     (define (truncate/ x y)
-      (values
-        (truncate-quotient x y)
-        (truncate-remainder x y)))
+      (values (quotient x y) (remainder x y)))
 
     (define (truncate x)
       (quotient x 1))
@@ -832,8 +827,6 @@
       (values
         (floor-quotient x y)
         (floor-remainder x y)))
-
-    (define modulo floor-remainder)
 
     (define (ceiling x)
       (- (floor (- x))))
@@ -1316,10 +1309,10 @@
   (export
     iota
 
-    first
-    second
-    third
-    fourth
+    (rename car first)
+    (rename cadr second)
+    (rename caddr third)
+    (rename cadddr fourth)
     last
     last-pair
 
@@ -1401,11 +1394,6 @@
         (if (> count 0)
           (cons x (loop (- count 1) (+ x step)))
           '())))
-
-    (define first car)
-    (define second cadr)
-    (define third caddr)
-    (define fourth cadddr)
 
     (define (last-pair xs)
       (if (pair? (cdr xs))
@@ -1713,7 +1701,7 @@
     string-set!
     string-copy
     string-copy!
-    substring
+    (rename string-copy substring)
     make-string
     string-for-each
     string-map
@@ -1762,8 +1750,6 @@
 
     (define (string-copy xs . rest)
       (code-points->string (apply list-copy (string->code-points xs) rest)))
-
-    (define substring string-copy)
 
     (define (string-copy! to at from . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -2031,8 +2017,8 @@
     current-error-port
 
     close-port
-    close-input-port
-    close-output-port
+    (rename close-port close-input-port)
+    (rename close-port close-output-port)
     call-with-port
 
     input-port-open?
@@ -2148,9 +2134,6 @@
             port-set-flush!
             port-set-close!
             port-set-data!))))
-
-    (define close-input-port close-port)
-    (define close-output-port close-port)
 
     (define (call-with-port port f)
       (let ((x (f port)))
@@ -6601,8 +6584,8 @@
     call-with-output-file
     delete-file
     file-exists?
-    open-binary-input-file
-    open-binary-output-file
+    (rename open-input-file open-binary-input-file)
+    (rename open-output-file open-binary-output-file)
     open-input-file
     open-output-file
     with-input-from-file
@@ -6646,8 +6629,6 @@
 
     (define open-input-file (open-file #f))
     (define open-output-file (open-file #t))
-    (define open-binary-input-file open-input-file)
-    (define open-binary-output-file open-output-file)
 
     (define (with-port-from-file open-file current-port)
       (lambda (path thunk)
