@@ -1,3 +1,4 @@
 .root {
+  color: var(--sl-color-text-accent);
   text-decoration: underline;
 }
