@@ -16940,6 +16940,25 @@ call 2 #f ||
 set display
 get write
 set write-irritant
+get inexact
+set exact->inexact
+get exact
+set inexact->exact
+constant procedure 1 #f
+  get 0
+  constant 5
+  call 2 #f eq?
+  constant #f
+  call 2 #f eq?
+  if
+    constant "unsupported version for null environment"
+    get 1
+    call 2 #f error
+    continue
+  constant #f
+  set 0
+  call 0 #f environment
+set null-environment
 constant procedure 1 #f
   get 0
   constant 5

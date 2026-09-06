@@ -70,6 +70,33 @@ Feature: The R5RS library
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "42"
 
+  Scenario Outline: Convert between exact and inexact numbers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme r5rs))
+
+      (write-char (if (= <expression> 2) #\A #\B))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | expression                          |
+      | (exact->inexact 2)                  |
+      | (inexact->exact 2)                  |
+      | (inexact->exact (exact->inexact 2)) |
+
+  Scenario: Build a null environment
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme r5rs))
+
+      (null-environment 5)
+      (write-char #\A)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   @chibi @stak
   Scenario: Load a file
     Given a file named "main.scm" with:
