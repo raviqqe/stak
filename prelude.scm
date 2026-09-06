@@ -6841,7 +6841,7 @@
     eqv?
     eval
     even?
-    exact->inexact
+    (rename inexact exact->inexact)
     exact?
     exp
     expt
@@ -6851,7 +6851,7 @@
     gcd
     if
     imag-part
-    inexact->exact
+    (rename exact inexact->exact)
     inexact?
     input-port?
     integer->char
@@ -6976,9 +6976,6 @@
     (scheme write))
 
   (begin
-    (define exact->inexact inexact)
-    (define inexact->exact exact)
-
     (define (null-environment version)
       (unless (= version 5)
         (error "unsupported version for null environment" version))
