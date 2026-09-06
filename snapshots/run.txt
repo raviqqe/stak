@@ -3903,6 +3903,8 @@ constant list
   mapping->list
   list->mapping
   r5rs
+  exact->inexact
+  inexact->exact
   null-environment
   scheme-report-environment
   load
@@ -11887,7 +11889,7 @@ constant list
     (eqv? . eqv?)
     (eval . eval)
     (even? . even?)
-    (inexact . exact->inexact)
+    (exact->inexact . inexact)
     (exact? . exact?)
     (exp . exp)
     (expt . expt)
@@ -11897,7 +11899,7 @@ constant list
     (gcd . gcd)
     (if . if)
     (imag-part . imag-part)
-    (exact . inexact->exact)
+    (inexact->exact . exact)
     (inexact? . inexact?)
     (input-port? . input-port?)
     (integer->char . integer->char)
