@@ -65,7 +65,7 @@ build_chibi
 build_tr7
 build_stak $target
 
-binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static target/release/tr7i"
+binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i"
 
 strip $binaries
 
