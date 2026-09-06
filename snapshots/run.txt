@@ -329,17 +329,13 @@ constant procedure 1 #f
   get 1
   call 2 #f ||
 set square
-get quotient
-set truncate-quotient
-get remainder
-set truncate-remainder
 constant procedure 2 #f
   get 1
   get 1
-  call 2 #f truncate-quotient
+  call 2 #f quotient
   get 2
   get 2
-  call 2 #f truncate-remainder
+  call 2 #f remainder
   call 2 #f values
 set truncate/
 constant procedure 1 #f
@@ -397,8 +393,6 @@ constant procedure 2 #f
   call 2 #f floor-remainder
   call 2 #f values
 set floor/
-get floor-remainder
-set modulo
 constant procedure 1 #f
   get 0
   call 1 #f -
@@ -1198,14 +1192,6 @@ constant procedure 1 #t
   get 3
   call 2 #f 2
 set iota
-get car
-set first
-get cadr
-set second
-get caddr
-set third
-get cadddr
-set fourth
 constant procedure 1 #f
   get 0
   call 1 #f cdr
@@ -1966,8 +1952,6 @@ constant procedure 1 #t
   call 3 #f apply
   call 1 #f code-points->string
 set string-copy
-get string-copy
-set substring
 constant procedure 3 #t
   constant #f
   constant #f
@@ -2818,10 +2802,6 @@ constant procedure 1 #f
   call 5 #f list
   call 2 #f for-each
 set close-port
-get close-port
-set close-input-port
-get close-port
-set close-output-port
 constant procedure 2 #f
   get 1
   call 1 #f 1
@@ -8285,10 +8265,6 @@ set open-input-file
 constant #t
 call 1 #f ||
 set open-output-file
-get open-input-file
-set open-binary-input-file
-get open-output-file
-set open-binary-output-file
 constant procedure 2 #f
   constant procedure 2 #f
     constant #f
@@ -9203,7 +9179,7 @@ constant procedure 1 #f
   get 3
   call 1 #f string-length
   call 2 #f min
-  call 3 #f substring
+  call 3 #f string-copy
   constant "$$"
   call 2 #f equal?
 set 6
@@ -11867,8 +11843,8 @@ constant list
     (char>=? . char>=?)
     (char>? . char>?)
     (char? . char?)
-    (close-input-port . close-input-port)
-    (close-output-port . close-output-port)
+    (close-input-port . close-port)
+    (close-output-port . close-port)
     (complex? . complex?)
     (cond . cond)
     (cons . cons)
@@ -11932,7 +11908,7 @@ constant list
     (memq . memq)
     (memv . memv)
     (min . min)
-    (modulo . modulo)
+    (modulo . floor-remainder)
     (negative? . negative?)
     (newline . newline)
     (not . not)
@@ -11989,7 +11965,7 @@ constant list
     (string>=? . string>=?)
     (string>? . string>?)
     (string? . string?)
-    (substring . substring)
+    (substring . string-copy)
     (symbol->string . symbol->string)
     (symbol? . symbol?)
     (syntax-rules . syntax-rules)
@@ -12046,8 +12022,8 @@ constant list
     (call-with-output-file . call-with-output-file)
     (delete-file . delete-file)
     (file-exists? . file-exists?)
-    (open-binary-input-file . open-binary-input-file)
-    (open-binary-output-file . open-binary-output-file)
+    (open-binary-input-file . open-input-file)
+    (open-binary-output-file . open-output-file)
     (open-input-file . open-input-file)
     (open-output-file . open-output-file)
     (with-input-from-file . with-input-from-file)
@@ -12261,10 +12237,10 @@ constant list
     (/ . /)
     (remainder . remainder)
     (quotient . quotient)
-    (modulo . modulo)
+    (modulo . floor-remainder)
     (truncate . truncate)
-    (truncate-quotient . truncate-quotient)
-    (truncate-remainder . truncate-remainder)
+    (truncate-quotient . quotient)
+    (truncate-remainder . remainder)
     (truncate/ . truncate/)
     (floor . floor)
     (floor-quotient . floor-quotient)
@@ -12364,7 +12340,7 @@ constant list
     (string->number . string->number)
     (string-copy . string-copy)
     (string-copy! . string-copy!)
-    (substring . substring)
+    (substring . string-copy)
     (make-string . make-string)
     (string-for-each . string-for-each)
     (string-map . string-map)
@@ -12413,8 +12389,8 @@ constant list
     (current-output-port . current-output-port)
     (current-error-port . current-error-port)
     (close-port . close-port)
-    (close-input-port . close-input-port)
-    (close-output-port . close-output-port)
+    (close-input-port . close-port)
+    (close-output-port . close-port)
     (call-with-port . call-with-port)
     (input-port-open? . input-port-open?)
     (output-port-open? . output-port-open?)
@@ -12493,8 +12469,8 @@ constant list
     (current-output-port . current-output-port)
     (current-error-port . current-error-port)
     (close-port . close-port)
-    (close-input-port . close-input-port)
-    (close-output-port . close-output-port)
+    (close-input-port . close-port)
+    (close-output-port . close-port)
     (call-with-port . call-with-port)
     (input-port-open? . input-port-open?)
     (output-port-open? . output-port-open?)
@@ -12550,7 +12526,7 @@ constant list
     (string-set! . string-set!)
     (string-copy . string-copy)
     (string-copy! . string-copy!)
-    (substring . substring)
+    (substring . string-copy)
     (make-string . make-string)
     (string-for-each . string-for-each)
     (string-map . string-map)
@@ -12597,10 +12573,10 @@ constant list
       srfi
       1
     (iota . iota)
-    (first . first)
-    (second . second)
-    (third . third)
-    (fourth . fourth)
+    (first . car)
+    (second . cadr)
+    (third . caddr)
+    (fourth . cadddr)
     (last . last)
     (last-pair . last-pair)
     (append-map . append-map)
@@ -12775,10 +12751,10 @@ constant list
     (/ . /)
     (remainder . remainder)
     (quotient . quotient)
-    (modulo . modulo)
+    (modulo . floor-remainder)
     (truncate . truncate)
-    (truncate-quotient . truncate-quotient)
-    (truncate-remainder . truncate-remainder)
+    (truncate-quotient . quotient)
+    (truncate-remainder . remainder)
     (truncate/ . truncate/)
     (floor . floor)
     (floor-quotient . floor-quotient)
@@ -17341,14 +17317,14 @@ constant procedure 0 #f
     call 1 #f car
     constant 0
     constant 1
-    call 3 #f substring
+    call 3 #f string-copy
     constant "-"
     call 2 #f equal?
     if
       get 0
       call 1 #f car
       constant 1
-      call 2 #f substring
+      call 2 #f string-copy
       get 0
       constant "A"
       call 2 #f equal?
