@@ -38,7 +38,7 @@ export const Terminal: FunctionComponent<Props> = ({
 
     initialize({ code, highlight: highlightScheme, pre, textarea });
 
-    let committed = "";
+    let committedLength = 0;
 
     const update = (text: string) => {
       textarea.value = text;
@@ -51,8 +51,8 @@ export const Terminal: FunctionComponent<Props> = ({
     const submit = async (line: string) => {
       const text = `${line}\n`;
 
-      committed += text;
-      update(committed);
+      update(textarea.value.slice(0, committedLength) + text);
+      committedLength += text.length;
 
       await writer.write(text);
     };
@@ -61,8 +61,8 @@ export const Terminal: FunctionComponent<Props> = ({
       const { selectionEnd, selectionStart } = textarea;
 
       if (
-        selectionStart < committed.length ||
-        (selectionStart === committed.length &&
+        selectionStart < committedLength ||
+        (selectionStart === committedLength &&
           selectionStart === selectionEnd &&
           event.inputType.endsWith("Backward"))
       ) {
@@ -74,7 +74,7 @@ export const Terminal: FunctionComponent<Props> = ({
       if (event.key === "Enter") {
         event.preventDefault();
 
-        void submit(textarea.value.slice(committed.length));
+        void submit(textarea.value.slice(committedLength));
       }
     });
 
@@ -82,10 +82,12 @@ export const Terminal: FunctionComponent<Props> = ({
 
     void (async () => {
       for await (const text of outputs[0]) {
-        const line = textarea.value.slice(committed.length);
+        const { value } = textarea;
 
-        committed += text;
-        update(committed + line);
+        update(
+          value.slice(0, committedLength) + text + value.slice(committedLength),
+        );
+        committedLength += text.length;
       }
     })();
 
