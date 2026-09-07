@@ -582,8 +582,6 @@ set ||
 get ||
 call 1 #f ||
 set ||
-get ||
-set ||
 constant 502
 call 1 #f ||
 set ||
