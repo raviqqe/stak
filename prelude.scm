@@ -1488,12 +1488,12 @@
     make-bytevector
     bytevector-append
     bytevector-copy
-    bytevector-copy!
-    bytevector-length
-    bytevector-u8-ref
-    bytevector-u8-set!
+    (rename vector-copy! bytevector-copy!)
+    (rename vector-length bytevector-length)
+    (rename vector-ref bytevector-u8-ref)
+    (rename vector-set! bytevector-u8-set!)
     list->bytevector
-    bytevector->list)
+    (rename vector->list bytevector->list))
 
   (import (stak base) (only (srfi 1) last))
 
@@ -1676,13 +1676,8 @@
     (define (bytevector . xs)
       (list->bytevector xs))
 
-    (define bytevector->list vector->list)
     (define bytevector-append (construct-bytevector vector-append))
     (define bytevector-copy (construct-bytevector vector-copy))
-    (define bytevector-copy! vector-copy!)
-    (define bytevector-length vector-length)
-    (define bytevector-u8-ref vector-ref)
-    (define bytevector-u8-set! vector-set!)
     (define list->bytevector (construct-bytevector list->vector))
     (define make-bytevector (construct-bytevector make-vector))))
 
