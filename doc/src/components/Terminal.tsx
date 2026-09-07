@@ -42,9 +42,9 @@ export const Terminal: FunctionComponent<Props> = ({
 
     const update = (text: string) => {
       textarea.value = textarea.value.slice(0, frozen) + text;
+      frozen += text.length;
       textarea.dispatchEvent(new InputEvent("input"));
       textarea.scrollTop = textarea.scrollHeight;
-      frozen += text.length;
     };
 
     const writer = input.getWriter();
