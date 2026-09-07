@@ -38,13 +38,10 @@ export const Terminal: FunctionComponent<Props> = ({
 
     initialize({ code, highlight: highlightScheme, pre, textarea });
 
-    // Text written by the program and lines sent to it already. The rest is the
-    // line being edited.
     let committed = "";
 
     const update = (text: string) => {
       textarea.value = text;
-      // Notify the editor of the change to highlight the text again.
       textarea.dispatchEvent(new InputEvent("input"));
       textarea.scrollTop = textarea.scrollHeight;
     };
