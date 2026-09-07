@@ -940,8 +940,6 @@ constant procedure 1 #f
   call 1 #f ||
 set ||
 get ||
-set ||
-get ||
 call 1 #f ||
 set ||
 constant 502

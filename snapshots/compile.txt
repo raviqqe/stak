@@ -1868,22 +1868,12 @@ constant procedure 0 #t
   get 0
   call 1 #f list->bytevector
 set bytevector
-get vector->list
-set bytevector->list
 get vector-append
 call 1 #f ||
 set bytevector-append
 get vector-copy
 call 1 #f ||
 set bytevector-copy
-get vector-copy!
-set bytevector-copy!
-get vector-length
-set bytevector-length
-get vector-ref
-set bytevector-u8-ref
-get vector-set!
-set bytevector-u8-set!
 get list->vector
 call 1 #f ||
 set list->bytevector
@@ -3185,7 +3175,7 @@ constant procedure 1 #t
   set 1
   get 2
   get 6
-  call 1 #f bytevector->list
+  call 1 #f vector->list
   get 4
   call 2 #f list-tail
   get 5
@@ -3283,13 +3273,13 @@ constant procedure 1 #t
   constant procedure 1 #f
     get 0
     get 6
-    call 1 #f bytevector-length
+    call 1 #f vector-length
     call 2 #f eq?
     if
       constant #f
     get 5
     get 1
-    call 2 #f bytevector-u8-ref
+    call 2 #f vector-ref
     get 4
     call 2 #f write-u8
     set 0
@@ -3355,7 +3345,7 @@ constant procedure 1 #f
       set 4
       get 0
       call 1 #f get-output-bytevector
-      call 1 #f bytevector->list
+      call 1 #f vector->list
       set 3
       constant #f
       call 2 #f $$unbind
@@ -3396,14 +3386,14 @@ constant procedure 1 #f
   call 1 #f ||
   call 1 #f get-output-bytevector
   get 0
-  call 1 #f bytevector-length
+  call 1 #f vector-length
   get 1
   call 1 #f open-input-bytevector
   call 2 #f read-string
 set get-output-string
 constant procedure 1 #f
   get 0
-  call 1 #f bytevector->list
+  call 1 #f vector->list
   constant procedure 0 #f
     get 1
     call 1 #f pair?
@@ -3459,7 +3449,7 @@ constant procedure 1 #f
 set string->utf8
 constant procedure 1 #f
   get 0
-  call 1 #f bytevector-length
+  call 1 #f vector-length
   get 1
   call 1 #f open-input-bytevector
   call 2 #f read-string
@@ -5707,12 +5697,12 @@ constant procedure 1 #f
   constant procedure 1 #f
     get 0
     get 4
-    call 1 #f bytevector-length
+    call 1 #f vector-length
     call 2 #f ||
     if
       get 3
       get 1
-      call 2 #f bytevector-u8-ref
+      call 2 #f vector-ref
       constant 1
       get 2
       call 2 #f ||
@@ -8916,12 +8906,12 @@ constant list
     (make-bytevector . make-bytevector)
     (bytevector-append . bytevector-append)
     (bytevector-copy . bytevector-copy)
-    (bytevector-copy! . bytevector-copy!)
-    (bytevector-length . bytevector-length)
-    (bytevector-u8-ref . bytevector-u8-ref)
-    (bytevector-u8-set! . bytevector-u8-set!)
+    (bytevector-copy! . vector-copy!)
+    (bytevector-length . vector-length)
+    (bytevector-u8-ref . vector-ref)
+    (bytevector-u8-set! . vector-set!)
     (list->bytevector . list->bytevector)
-    (bytevector->list . bytevector->list)
+    (bytevector->list . vector->list)
     (string? . string?)
     (string . string)
     (list->string . list->string)
@@ -9153,12 +9143,12 @@ constant list
     (make-bytevector . make-bytevector)
     (bytevector-append . bytevector-append)
     (bytevector-copy . bytevector-copy)
-    (bytevector-copy! . bytevector-copy!)
-    (bytevector-length . bytevector-length)
-    (bytevector-u8-ref . bytevector-u8-ref)
-    (bytevector-u8-set! . bytevector-u8-set!)
+    (bytevector-copy! . vector-copy!)
+    (bytevector-length . vector-length)
+    (bytevector-u8-ref . vector-ref)
+    (bytevector-u8-set! . vector-set!)
     (list->bytevector . list->bytevector)
-    (bytevector->list . bytevector->list)
+    (bytevector->list . vector->list)
   list
     list
       srfi
@@ -13063,7 +13053,7 @@ constant procedure 2 #f
     set 0
     get 4
     get 4
-    call 1 #f bytevector->list
+    call 1 #f vector->list
     call 2 #f ||
   get 3
   call 1 #f char?
@@ -13614,12 +13604,12 @@ constant list
           <
           index
           list
-            bytevector-length
+            vector-length
             xs
         list
           cons
           list
-            bytevector-u8-ref
+            vector-ref
             xs
             index
           list
@@ -19305,7 +19295,7 @@ constant list
           data-rib
           bytevector-type
           list
-            bytevector-length
+            vector-length
             value
           list
             marshal
