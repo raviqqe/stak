@@ -41,9 +41,10 @@ export const Terminal: FunctionComponent<Props> = ({
     let frozen = 0;
 
     const update = (text: string) => {
-      textarea.value = text;
+      textarea.value = textarea.value.slice(0, frozen) + text;
       textarea.dispatchEvent(new InputEvent("input"));
       textarea.scrollTop = textarea.scrollHeight;
+      frozen += text.length;
     };
 
     const writer = input.getWriter();
@@ -51,9 +52,7 @@ export const Terminal: FunctionComponent<Props> = ({
     const submit = async (line: string) => {
       const text = `${line}\n`;
 
-      update(textarea.value.slice(0, frozen) + text);
-      frozen += text.length;
-
+      update(text);
       await writer.write(text);
     };
 
@@ -82,10 +81,7 @@ export const Terminal: FunctionComponent<Props> = ({
 
     void (async () => {
       for await (const text of outputs[0]) {
-        const { value } = textarea;
-
-        update(value.slice(0, frozen) + text + value.slice(frozen));
-        frozen += text.length;
+        update(text);
       }
     })();
 
