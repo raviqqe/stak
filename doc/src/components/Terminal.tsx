@@ -57,7 +57,6 @@ export const Terminal: FunctionComponent<Props> = ({
       await writer.write(text);
     };
 
-    // Protect the committed text from edits.
     textarea.addEventListener("beforeinput", (event) => {
       const { selectionEnd, selectionStart } = textarea;
 
