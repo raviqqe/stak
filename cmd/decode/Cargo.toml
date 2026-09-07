@@ -12,7 +12,7 @@ categories.workspace = true
 [dependencies]
 stak-sac = {
   path = "../../sac",
-  version = "0.12.27",
+  version = "0.12.28",
   features = [
     "float",
     "std",
