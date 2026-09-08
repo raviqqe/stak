@@ -2281,24 +2281,6 @@
           (error "cannot write to port"))
         (write byte)))
 
-    (define (write-char x . rest)
-      (let ((port (get-output-port rest))
-            (x (char->integer x)))
-        (if (< x 128)
-          (write-u8 x port)
-          (let loop ((x x) (head 64))
-            (if (< x head)
-              (write-u8 (+ x 256 (* -2 head)) port)
-              (begin
-                (loop (quotient x 64) (/ head 2))
-                (write-u8 (+ 128 (remainder x 64)) port)))))))
-
-    (define (write-string x . rest)
-      (let ((port (get-output-port rest)))
-        (for-each
-          (lambda (x) (write-char x port))
-          (string->list x))))
-
     (define (write-bytevector xs . rest)
       (let ((port (get-output-port rest)))
         (do ((index 0 (+ index 1)))
@@ -2378,6 +2360,32 @@
 
     (define (get-output-bytevector port)
       (list->bytevector (cdr (port-data port))))))
+
+(define-library (stak io utf8)
+  (export
+    write-char
+    write-string)
+
+  (import (stak base) (stak io))
+
+  (begin
+    (define (write-char x . rest)
+      (let ((port (get-output-port rest))
+            (x (char->integer x)))
+        (if (< x 128)
+          (write-u8 x port)
+          (let loop ((x x) (head 64))
+            (if (< x head)
+              (write-u8 (+ x 256 (* -2 head)) port)
+              (begin
+                (loop (quotient x 64) (/ head 2))
+                (write-u8 (+ 128 (remainder x 64)) port)))))))
+
+    (define (write-string x . rest)
+      (let ((port (get-output-port rest)))
+        (for-each
+          (lambda (x) (write-char x port))
+          (string->list x))))))
 
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
