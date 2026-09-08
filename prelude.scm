@@ -2002,8 +2002,8 @@
 
     make-port
     port?
-    input-port?
-    output-port?
+    (rename port-read input-port?)
+    (rename port-write output-port?)
     (rename port? textual-port?)
     (rename port? binary-port?)
 
@@ -2072,9 +2072,6 @@
       (flush port-flush port-set-flush!)
       (close port-close port-set-close!)
       (data port-data port-set-data!))
-
-    (define input-port? port-read)
-    (define output-port? port-write)
 
     (define (make-input-port read close)
       (make-port read #f #f close '()))

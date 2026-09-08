@@ -2645,7 +2645,7 @@ call 1 #f ||
 set port?
 constant 0
 call 1 #f ||
-set ||
+set port-read
 constant 0
 call 1 #f ||
 set ||
@@ -2653,7 +2653,7 @@ constant 0
 constant 1
 call 2 #f ||
 call 1 #f ||
-set ||
+set port-write
 constant 0
 constant 1
 call 2 #f ||
@@ -2713,10 +2713,6 @@ constant 1
 call 2 #f ||
 call 1 #f ||
 set port-set-data!
-get ||
-set input-port?
-get ||
-set output-port?
 constant procedure 2 #f
   get 1
   constant #f
@@ -2820,7 +2816,7 @@ constant procedure 0 #t
     get 0
     call 1 #f car
   get 1
-  call 1 #f ||
+  call 1 #f port-read
   get 0
   constant #f
   call 2 #f eq?
@@ -3009,7 +3005,7 @@ set get-output-port
 constant procedure 1 #t
   get 0
   call 1 #f get-output-port
-  call 1 #f ||
+  call 1 #f port-write
   get 0
   constant #f
   call 2 #f eq?
@@ -11866,7 +11862,7 @@ constant list
     (imag-part . imag-part)
     (inexact->exact . exact)
     (inexact? . inexact?)
-    (input-port? . input-port?)
+    (input-port? . port-read)
     (integer->char . integer->char)
     (integer? . integer?)
     (interaction-environment . interaction-environment)
@@ -11910,7 +11906,7 @@ constant list
     (open-input-file . open-input-file)
     (open-output-file . open-output-file)
     (or . or)
-    (output-port? . output-port?)
+    (output-port? . port-write)
     (pair? . pair?)
     (peek-char . peek-char)
     (positive? . positive?)
@@ -12370,8 +12366,8 @@ constant list
     (eof-object? . eof-object?)
     (make-port . make-port)
     (port? . port?)
-    (input-port? . input-port?)
-    (output-port? . output-port?)
+    (input-port? . port-read)
+    (output-port? . port-write)
     (textual-port? . port?)
     (binary-port? . port?)
     (current-input-port . current-input-port)
@@ -12466,8 +12462,8 @@ constant list
     (eof-object? . eof-object?)
     (make-port . make-port)
     (port? . port?)
-    (input-port? . input-port?)
-    (output-port? . output-port?)
+    (input-port? . port-read)
+    (output-port? . port-write)
     (textual-port? . port?)
     (binary-port? . port?)
     (current-input-port . current-input-port)
