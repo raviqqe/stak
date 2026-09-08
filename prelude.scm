@@ -2037,9 +2037,7 @@
     make-input-port
     make-output-port
     port-data
-    port-set-data!
-    get-input-port
-    get-output-port)
+    port-set-data!)
 
   (import
     (stak base)
@@ -2265,6 +2263,11 @@
   (import (stak base) (stak string) (stak vector) (stak io))
 
   (begin
+    ; Read
+
+    (define (get-input-port rest)
+      (if (null? rest) (current-input-port) (car rest)))
+
     (define (read-char . rest)
       (let* ((port (get-input-port rest))
              (x (read-u8 port)))
@@ -2330,6 +2333,11 @@
           (or (eqv? x #\newline) (eof-object? x)))
         (get-input-port rest)))
 
+    ; Write
+
+    (define (get-output-port rest)
+      (if (null? rest) (current-output-port) (car rest)))
+
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
             (x (char->integer x)))
@@ -2354,6 +2362,8 @@
     (set! write-message
       (lambda (x)
         (write-string x (current-error-port))))
+
+    ; Ports
 
     (define (open-input-string xs)
       (let ((xs (string->code-points xs))
