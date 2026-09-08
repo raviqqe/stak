@@ -2022,25 +2022,14 @@
     read-u8
     peek-u8
     u8-ready?
-    read-char
-    peek-char
-    char-ready?
-    read-string
-    read-line
     read-bytevector
     read-bytevector!
 
     write-u8
-    write-char
-    write-string
     write-bytevector
-    newline
 
     flush-output-port
 
-    open-input-string
-    open-output-string
-    get-output-string
     open-input-bytevector
     open-output-bytevector
     get-output-bytevector)
@@ -2283,13 +2272,6 @@
             #f)
           (write-u8 (bytevector-u8-ref xs index) port))))
 
-    (define (newline . rest)
-      (write-char #\newline (get-output-port rest)))
-
-    (set! write-message
-      (lambda (x)
-        (write-string x (current-error-port))))
-
     ; Flush
 
     (define (flush-output-port . rest)
@@ -2299,6 +2281,75 @@
         (flush)))
 
     ; In-memory ports
+
+    (define (open-input-bytevector xs)
+      (let ((xs (bytevector->list xs)))
+        (make-input-port
+          (lambda ()
+            (and
+              (pair? xs)
+              (let ((x (car xs)))
+                (set! xs (cdr xs))
+                x)))
+          (lambda () #f))))
+
+    (define (open-output-bytevector)
+      (let* ((xs (list 0))
+             (tail xs))
+        (make-output-port
+          (lambda (x)
+            (set-cdr! tail (list x))
+            (set! tail (cdr tail)))
+          (lambda () #f)
+          (lambda () #f)
+          xs)))
+
+    (define (get-output-bytevector port)
+      (list->bytevector (cdr (port-data port))))))
+
+(define-library (stak io utf8)
+  (export
+    read-char
+    peek-char
+    char-ready?
+    read-string
+    read-line
+
+    write-char
+    write-string
+    newline
+
+    open-input-string
+    open-output-string
+    get-output-string)
+
+  (import (stak base) (stak string) (stak io))
+
+  (begin
+    (define (write-char x . rest)
+      (let ((port (get-output-port rest))
+            (x (char->integer x)))
+        (if (< x 128)
+          (write-u8 x port)
+          (let loop ((x x) (head 64))
+            (if (< x head)
+              (write-u8 (+ x 256 (* -2 head)) port)
+              (begin
+                (loop (quotient x 64) (/ head 2))
+                (write-u8 (+ 128 (remainder x 64)) port)))))))
+
+    (define (write-string x . rest)
+      (let ((port (get-output-port rest)))
+        (for-each
+          (lambda (x) (write-char x port))
+          (string->list x))))
+
+    (define (newline . rest)
+      (write-char #\newline (get-output-port rest)))
+
+    (set! write-message
+      (lambda (x)
+        (write-string x (current-error-port))))
 
     (define (open-input-string xs)
       (let ((xs (string->code-points xs))
@@ -2329,58 +2380,7 @@
 
     (define (get-output-string port)
       (let ((xs (get-output-bytevector (port-data port))))
-        (read-string (bytevector-length xs) (open-input-bytevector xs))))
-
-    (define (open-input-bytevector xs)
-      (let ((xs (bytevector->list xs)))
-        (make-input-port
-          (lambda ()
-            (and
-              (pair? xs)
-              (let ((x (car xs)))
-                (set! xs (cdr xs))
-                x)))
-          (lambda () #f))))
-
-    (define (open-output-bytevector)
-      (let* ((xs (list 0))
-             (tail xs))
-        (make-output-port
-          (lambda (x)
-            (set-cdr! tail (list x))
-            (set! tail (cdr tail)))
-          (lambda () #f)
-          (lambda () #f)
-          xs)))
-
-    (define (get-output-bytevector port)
-      (list->bytevector (cdr (port-data port))))))
-
-(define-library (stak io utf8)
-  (export
-    write-char
-    write-string)
-
-  (import (stak base) (stak io))
-
-  (begin
-    (define (write-char x . rest)
-      (let ((port (get-output-port rest))
-            (x (char->integer x)))
-        (if (< x 128)
-          (write-u8 x port)
-          (let loop ((x x) (head 64))
-            (if (< x head)
-              (write-u8 (+ x 256 (* -2 head)) port)
-              (begin
-                (loop (quotient x 64) (/ head 2))
-                (write-u8 (+ 128 (remainder x 64)) port)))))))
-
-    (define (write-string x . rest)
-      (let ((port (get-output-port rest)))
-        (for-each
-          (lambda (x) (write-char x port))
-          (string->list x))))))
+        (read-string (bytevector-length xs) (open-input-bytevector xs))))))
 
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
