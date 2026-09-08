@@ -15,7 +15,7 @@ Feature: Stak base library
   Scenario: Raise an error with an I/O library
     Given a file named "main.scm" with:
       """scheme
-      (import (stak base) (stak io))
+      (import (stak base) (stak io utf8))
 
       (when (procedure? error)
         (error "foo"))
