@@ -2150,71 +2150,6 @@
       (apply peek-u8 rest)
       #t)
 
-    (define (read-char . rest)
-      (let* ((port (get-input-port rest))
-             (x (read-u8 port)))
-        (if (eof-object? x)
-          x
-          (integer->char
-            (if (< x 128)
-              x
-              (let loop ((mask 64) (x x))
-                (if (even? (quotient x mask))
-                  (remainder x mask)
-                  (loop
-                    (* mask 32)
-                    (+ (* x 64) (remainder (read-u8 port) 64))))))))))
-
-    (define peek-char
-      (let* ((xs '())
-             (peek-port
-               (make-output-port
-                 (lambda (x) (set! xs (cons x xs)))
-                 (lambda () #f)
-                 (lambda () #f))))
-        (lambda rest
-          (let* ((port (get-input-port rest))
-                 (x (read-char port)))
-            (if (eof-object? x)
-              x
-              (begin
-                (write-char x peek-port)
-                (port-set-data! port (append (reverse xs) (port-data port)))
-                (set! xs '())
-                x))))))
-
-    (define (char-ready? . rest)
-      (let ((port (get-input-port rest)))
-        (or
-          (not (eof-object? (peek-char port)))
-          (eof-object? (peek-u8 port)))))
-
-    (define (read-substring count end? port)
-      (cond
-        ((zero? count)
-          "")
-        ((eof-object? (peek-char port))
-          (eof-object))
-        (else
-          (let ((xs (list 0)))
-            (let loop ((count count) (ys xs))
-              (unless (zero? count)
-                (let ((x (read-char port)))
-                  (unless (end? x)
-                    (set-cdr! ys (list (char->integer x)))
-                    (loop (- count 1) (cdr ys))))))
-            (code-points->string (cdr xs))))))
-
-    (define (read-string count . rest)
-      (read-substring count eof-object? (get-input-port rest)))
-
-    (define (read-line . rest)
-      (read-substring
-        -1
-        (lambda (x)
-          (or (eqv? x #\newline) (eof-object? x)))
-        (get-input-port rest)))
-
     (define (read-bytevector count . rest)
       (define port (get-input-port rest))
 
@@ -2326,6 +2261,71 @@
   (import (stak base) (stak string) (stak io))
 
   (begin
+    (define (read-char . rest)
+      (let* ((port (get-input-port rest))
+             (x (read-u8 port)))
+        (if (eof-object? x)
+          x
+          (integer->char
+            (if (< x 128)
+              x
+              (let loop ((mask 64) (x x))
+                (if (even? (quotient x mask))
+                  (remainder x mask)
+                  (loop
+                    (* mask 32)
+                    (+ (* x 64) (remainder (read-u8 port) 64))))))))))
+
+    (define peek-char
+      (let* ((xs '())
+             (peek-port
+               (make-output-port
+                 (lambda (x) (set! xs (cons x xs)))
+                 (lambda () #f)
+                 (lambda () #f))))
+        (lambda rest
+          (let* ((port (get-input-port rest))
+                 (x (read-char port)))
+            (if (eof-object? x)
+              x
+              (begin
+                (write-char x peek-port)
+                (port-set-data! port (append (reverse xs) (port-data port)))
+                (set! xs '())
+                x))))))
+
+    (define (char-ready? . rest)
+      (let ((port (get-input-port rest)))
+        (or
+          (not (eof-object? (peek-char port)))
+          (eof-object? (peek-u8 port)))))
+
+    (define (read-substring count end? port)
+      (cond
+        ((zero? count)
+          "")
+        ((eof-object? (peek-char port))
+          (eof-object))
+        (else
+          (let ((xs (list 0)))
+            (let loop ((count count) (ys xs))
+              (unless (zero? count)
+                (let ((x (read-char port)))
+                  (unless (end? x)
+                    (set-cdr! ys (list (char->integer x)))
+                    (loop (- count 1) (cdr ys))))))
+            (code-points->string (cdr xs))))))
+
+    (define (read-string count . rest)
+      (read-substring count eof-object? (get-input-port rest)))
+
+    (define (read-line . rest)
+      (read-substring
+        -1
+        (lambda (x)
+          (or (eqv? x #\newline) (eof-object? x)))
+        (get-input-port rest)))
+
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
             (x (char->integer x)))
