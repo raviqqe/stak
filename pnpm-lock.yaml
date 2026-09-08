@@ -39,8 +39,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(nanostores@1.5.3)(preact@10.29.8)
       '@preact/signals':
-        specifier: ^2.11.1
-        version: 2.11.1(preact@10.29.8)
+        specifier: ^2.11.2
+        version: 2.11.2(preact@10.29.8)
       '@raviqqe/stak':
         specifier: ^0.12.25
         version: 0.12.25
@@ -892,8 +892,8 @@ packages:
   '@preact/signals-core@1.14.4':
     resolution: {integrity: sha512-HNB6HYeYKhQbJ1aKl+YRjrS4+QWHLKX6qKoUsfS/m0vqzsVaEBiZiaKbG/e+NKk2ch5ALQr/ihWaMHxiCuuWHA==}
 
-  '@preact/signals@2.11.1':
-    resolution: {integrity: sha512-uYoD+USkacTNU02kfCBkJEV7xabKTmA78W5pnT2GymsuGEC9n/ZO+UT4S96l0dIL6KLDk77VJyUFuOMBvftVHg==}
+  '@preact/signals@2.11.2':
+    resolution: {integrity: sha512-rVTRTt/T0HIRgbugwS5FigbfF/kfdEFYFtiqxa+lbpqTajepqnR0firuAS2iNdHyejWB7Yc9p9QePkVNBtTAwg==}
     peerDependencies:
       preact: '>= 10.25.0 || >=11.0.0-0'
 
@@ -2807,7 +2807,7 @@ snapshots:
     dependencies:
       '@astrojs/internal-helpers': 0.11.0
       '@preact/preset-vite': 2.10.6(@babel/core@7.29.7(supports-color@7.2.0))(preact@10.29.8)(rollup@4.62.2)(supports-color@7.2.0)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(yaml@2.9.0))
-      '@preact/signals': 2.11.1(preact@10.29.8)
+      '@preact/signals': 2.11.2(preact@10.29.8)
       devalue: 5.9.2
       preact: 10.29.8(preact-render-to-string@6.7.0)
       preact-render-to-string: 6.7.0(preact@10.29.8)
@@ -3449,7 +3449,7 @@ snapshots:
 
   '@preact/signals-core@1.14.4': {}
 
-  '@preact/signals@2.11.1(preact@10.29.8)':
+  '@preact/signals@2.11.2(preact@10.29.8)':
     dependencies:
       '@preact/signals-core': 1.14.4
       preact: 10.29.8(preact-render-to-string@6.7.0)
