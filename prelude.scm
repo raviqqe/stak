@@ -2004,8 +2004,8 @@
     port?
     input-port?
     output-port?
-    textual-port?
-    binary-port?
+    (rename port? textual-port?)
+    (rename port? binary-port?)
 
     current-input-port
     current-output-port
@@ -2079,8 +2079,6 @@
 
     (define input-port? port-read)
     (define output-port? port-write)
-    (define textual-port? port?)
-    (define binary-port? port?)
 
     (define (make-input-port read close)
       (make-port read #f #f close '()))
