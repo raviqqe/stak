@@ -2390,7 +2390,7 @@
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
 
-  (import (stak base) (stak string) (stak vector) (stak io))
+  (import (stak base) (stak string) (stak vector) (stak io) (stak io utf8))
 
   (begin
     (define (string->utf8 xs)
@@ -2503,6 +2503,7 @@
     (stak string)
     (stak parameter)
     (stak io)
+    (stak io utf8)
     (stak continue))
 
   (begin
@@ -2989,6 +2990,7 @@
     (stak vector)
     (stak parameter)
     (stak io)
+    (stak io utf8)
     (stak unicode)
     (stak continue)
     (stak exception))
