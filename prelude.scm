@@ -2016,8 +2016,8 @@
     (rename close-port close-output-port)
     call-with-port
 
-    input-port-open?
-    output-port-open?
+    (rename port-close input-port-open?)
+    (rename port-close output-port-open?)
 
     read-u8
     peek-u8
@@ -2132,9 +2132,6 @@
       (let ((x (f port)))
         (close-port port)
         x))
-
-    (define input-port-open? port-close)
-    (define output-port-open? port-close)
 
     ; Read
 
