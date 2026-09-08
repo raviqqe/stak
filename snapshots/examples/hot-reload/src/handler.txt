@@ -1440,6 +1440,30 @@ constant procedure 0 #t
     get 0
   call 0 #f ||
 set ||
+constant procedure 1 #f
+  get 0
+  call 1 #f ||
+  if
+    call 0 #f ||
+  get 0
+  call 1 #f ||
+set ||
+constant procedure 1 #t
+  get 0
+  call 1 #f ||
+  call 1 #f ||
+  get 0
+  constant #f
+  call 2 #f ||
+  if
+    constant "cannot write to port"
+    call 1 #f ||
+    continue
+  constant #f
+  set 0
+  get 2
+  call 1 #f 1
+set ||
 constant procedure 0 #t
   get 0
   call 1 #f ||
@@ -1525,30 +1549,6 @@ constant procedure 0 #t
 call 1 #f ||
 call 2 #f ||
 call 2 #f ||
-set ||
-constant procedure 1 #f
-  get 0
-  call 1 #f ||
-  if
-    call 0 #f ||
-  get 0
-  call 1 #f ||
-set ||
-constant procedure 1 #t
-  get 0
-  call 1 #f ||
-  call 1 #f ||
-  get 0
-  constant #f
-  call 2 #f ||
-  if
-    constant "cannot write to port"
-    call 1 #f ||
-    continue
-  constant #f
-  set 0
-  get 2
-  call 1 #f 1
 set ||
 constant procedure 1 #t
   get 0
