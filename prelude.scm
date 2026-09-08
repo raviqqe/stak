@@ -2032,7 +2032,14 @@
 
     open-input-bytevector
     open-output-bytevector
-    get-output-bytevector)
+    get-output-bytevector
+
+    make-input-port
+    make-output-port
+    port-data
+    port-set-data!
+    get-input-port
+    get-output-port)
 
   (import
     (stak base)
@@ -2258,7 +2265,7 @@
     open-output-string
     get-output-string)
 
-  (import (stak base) (stak string) (stak io))
+  (import (stak base) (stak string) (stak vector) (stak io))
 
   (begin
     (define (read-char . rest)
