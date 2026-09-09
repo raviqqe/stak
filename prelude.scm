@@ -1748,7 +1748,7 @@
       (code-points->string (apply list-copy (string->code-points xs) rest)))
 
     (define (string-copy! to at from . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define end
         (if (or (null? rest) (null? (cdr rest)))
           (string-length from)
@@ -1780,7 +1780,7 @@
       (list-set! (string->code-points xs) index (char->integer y)))
 
     (define (string-fill! xs fill . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define end
         (if (or (null? rest) (null? (cdr rest)))
           (string-length xs)
@@ -1847,7 +1847,7 @@
     ;; Number
 
     (define (number->string x . rest)
-      (define radix (if (null? rest) 10 (car rest)))
+      (define radix (get-option 10 rest))
 
       (define (format-digit x)
         (integer->char
