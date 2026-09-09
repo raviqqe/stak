@@ -2002,10 +2002,10 @@
 
     make-port
     port?
-    input-port?
-    output-port?
-    textual-port?
-    binary-port?
+    (rename port-read input-port?)
+    (rename port-write output-port?)
+    (rename port? textual-port?)
+    (rename port? binary-port?)
 
     current-input-port
     current-output-port
@@ -2016,34 +2016,28 @@
     (rename close-port close-output-port)
     call-with-port
 
-    input-port-open?
-    output-port-open?
+    (rename port-close input-port-open?)
+    (rename port-close output-port-open?)
 
     read-u8
     peek-u8
     u8-ready?
-    read-char
-    peek-char
-    char-ready?
-    read-string
-    read-line
     read-bytevector
     read-bytevector!
 
     write-u8
-    write-char
-    write-string
     write-bytevector
-    newline
 
     flush-output-port
 
-    open-input-string
-    open-output-string
-    get-output-string
     open-input-bytevector
     open-output-bytevector
-    get-output-bytevector)
+    get-output-bytevector
+
+    make-input-port
+    make-output-port
+    port-data
+    port-set-data!)
 
   (import
     (stak base)
@@ -2076,11 +2070,6 @@
       (flush port-flush port-set-flush!)
       (close port-close port-set-close!)
       (data port-data port-set-data!))
-
-    (define input-port? port-read)
-    (define output-port? port-write)
-    (define textual-port? port?)
-    (define binary-port? port?)
 
     (define (make-input-port read close)
       (make-port read #f #f close '()))
@@ -2135,9 +2124,6 @@
         (close-port port)
         x))
 
-    (define input-port-open? port-close)
-    (define output-port-open? port-close)
-
     ; Read
 
     (define (get-input-port rest)
@@ -2165,6 +2151,122 @@
       ; TODO Fix this cheating!
       (apply peek-u8 rest)
       #t)
+
+    (define (read-bytevector count . rest)
+      (define port (get-input-port rest))
+
+      (if (and (positive? count) (eof-object? (peek-u8 port)))
+        (eof-object)
+        (list->bytevector
+          (let loop ((count count))
+            (if (zero? count)
+              '()
+              (let ((x (read-u8 port)))
+                (if (eof-object? x)
+                  '()
+                  (cons x (loop (- count 1))))))))))
+
+    (define (read-bytevector! xs . rest)
+      (define port (get-input-port rest))
+      (define start
+        (if (or
+             (null? rest)
+             (null? (cdr rest)))
+          0
+          (cadr rest)))
+      (define end
+        (if (or
+             (null? rest)
+             (null? (cdr rest))
+             (null? (cddr rest)))
+          #f
+          (car (cddr rest))))
+
+      (do ((start start (+ start 1))
+           (xs (list-tail (bytevector->list xs) start) (cdr xs))
+           (x (peek-u8 port) (peek-u8 port)))
+        ((or
+            (null? xs)
+            (eof-object? x)
+            (and end (>= start end))))
+        (set-car! xs (read-u8 port))))
+
+    ; Write
+
+    (define (get-output-port rest)
+      (if (null? rest) (current-output-port) (car rest)))
+
+    (define (write-u8 byte . rest)
+      (let ((write (port-write (get-output-port rest))))
+        (unless write
+          (error "cannot write to port"))
+        (write byte)))
+
+    (define (write-bytevector xs . rest)
+      (let ((port (get-output-port rest)))
+        (do ((index 0 (+ index 1)))
+          ((= index (bytevector-length xs))
+            #f)
+          (write-u8 (bytevector-u8-ref xs index) port))))
+
+    ; Flush
+
+    (define (flush-output-port . rest)
+      (let ((flush (port-flush (get-output-port rest))))
+        (unless flush
+          (error "cannot flush port"))
+        (flush)))
+
+    ; In-memory ports
+
+    (define (open-input-bytevector xs)
+      (let ((xs (bytevector->list xs)))
+        (make-input-port
+          (lambda ()
+            (and
+              (pair? xs)
+              (let ((x (car xs)))
+                (set! xs (cdr xs))
+                x)))
+          (lambda () #f))))
+
+    (define (open-output-bytevector)
+      (let* ((xs (list 0))
+             (tail xs))
+        (make-output-port
+          (lambda (x)
+            (set-cdr! tail (list x))
+            (set! tail (cdr tail)))
+          (lambda () #f)
+          (lambda () #f)
+          xs)))
+
+    (define (get-output-bytevector port)
+      (list->bytevector (cdr (port-data port))))))
+
+(define-library (stak io utf8)
+  (export
+    read-char
+    peek-char
+    char-ready?
+    read-string
+    read-line
+
+    write-char
+    write-string
+    newline
+
+    open-input-string
+    open-output-string
+    get-output-string)
+
+  (import (stak base) (stak string) (stak vector) (stak io))
+
+  (begin
+    ; Read
+
+    (define (get-input-port rest)
+      (if (null? rest) (current-input-port) (car rest)))
 
     (define (read-char . rest)
       (let* ((port (get-input-port rest))
@@ -2231,55 +2333,10 @@
           (or (eqv? x #\newline) (eof-object? x)))
         (get-input-port rest)))
 
-    (define (read-bytevector count . rest)
-      (define port (get-input-port rest))
-
-      (if (and (positive? count) (eof-object? (peek-u8 port)))
-        (eof-object)
-        (list->bytevector
-          (let loop ((count count))
-            (if (zero? count)
-              '()
-              (let ((x (read-u8 port)))
-                (if (eof-object? x)
-                  '()
-                  (cons x (loop (- count 1))))))))))
-
-    (define (read-bytevector! xs . rest)
-      (define port (get-input-port rest))
-      (define start
-        (if (or
-             (null? rest)
-             (null? (cdr rest)))
-          0
-          (cadr rest)))
-      (define end
-        (if (or
-             (null? rest)
-             (null? (cdr rest))
-             (null? (cddr rest)))
-          #f
-          (car (cddr rest))))
-
-      (do ((start start (+ start 1))
-           (xs (list-tail (bytevector->list xs) start) (cdr xs))
-           (x (peek-u8 port) (peek-u8 port)))
-        ((or
-            (null? xs)
-            (eof-object? x)
-            (and end (>= start end))))
-        (set-car! xs (read-u8 port))))
-
     ; Write
 
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
-
-    (define (write-u8 byte . rest)
-      (let ((write (port-write (get-output-port rest))))
-        (unless write
-          (error "cannot write to port"))
-        (write byte)))
 
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
@@ -2299,13 +2356,6 @@
           (lambda (x) (write-char x port))
           (string->list x))))
 
-    (define (write-bytevector xs . rest)
-      (let ((port (get-output-port rest)))
-        (do ((index 0 (+ index 1)))
-          ((= index (bytevector-length xs))
-            #f)
-          (write-u8 (bytevector-u8-ref xs index) port))))
-
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
 
@@ -2313,15 +2363,7 @@
       (lambda (x)
         (write-string x (current-error-port))))
 
-    ; Flush
-
-    (define (flush-output-port . rest)
-      (let ((flush (port-flush (get-output-port rest))))
-        (unless flush
-          (error "cannot flush port"))
-        (flush)))
-
-    ; In-memory ports
+    ; Ports
 
     (define (open-input-string xs)
       (let ((xs (string->code-points xs))
@@ -2352,37 +2394,12 @@
 
     (define (get-output-string port)
       (let ((xs (get-output-bytevector (port-data port))))
-        (read-string (bytevector-length xs) (open-input-bytevector xs))))
-
-    (define (open-input-bytevector xs)
-      (let ((xs (bytevector->list xs)))
-        (make-input-port
-          (lambda ()
-            (and
-              (pair? xs)
-              (let ((x (car xs)))
-                (set! xs (cdr xs))
-                x)))
-          (lambda () #f))))
-
-    (define (open-output-bytevector)
-      (let* ((xs (list 0))
-             (tail xs))
-        (make-output-port
-          (lambda (x)
-            (set-cdr! tail (list x))
-            (set! tail (cdr tail)))
-          (lambda () #f)
-          (lambda () #f)
-          xs)))
-
-    (define (get-output-bytevector port)
-      (list->bytevector (cdr (port-data port))))))
+        (read-string (bytevector-length xs) (open-input-bytevector xs))))))
 
 (define-library (stak unicode)
   (export string->utf8 utf8->string)
 
-  (import (stak base) (stak string) (stak vector) (stak io))
+  (import (stak base) (stak string) (stak vector) (stak io) (stak io utf8))
 
   (begin
     (define (string->utf8 xs)
@@ -2495,6 +2512,7 @@
     (stak string)
     (stak parameter)
     (stak io)
+    (stak io utf8)
     (stak continue))
 
   (begin
@@ -2981,6 +2999,7 @@
     (stak vector)
     (stak parameter)
     (stak io)
+    (stak io utf8)
     (stak unicode)
     (stak continue)
     (stak exception))
