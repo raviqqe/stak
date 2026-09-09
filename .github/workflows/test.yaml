@@ -162,15 +162,26 @@ jobs:
       - run: cargo test
         working-directory: cmd/minimal
   no_std:
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - riscv32imac-unknown-none-elf
+          - thumbv6m-none-eabi
+          - thumbv7em-none-eabihf
+        directory:
+          - examples/no-std-no-alloc
+          - root
+        include:
+          - directory: root
+            options: --no-default-features --features alloc,float
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - run: rustup target add thumbv7em-none-eabihf
-      - run: cargo build --locked --target thumbv7em-none-eabihf --no-default-features --features alloc,float
-        working-directory: root
-      - run: cargo build --locked --target thumbv7em-none-eabihf
-        working-directory: examples/no-std-no-alloc
+      - run: rustup target add ${{ matrix.target }}
+      - run: cargo build --locked --target ${{ matrix.target }} ${{ matrix.options }}
+        working-directory: ${{ matrix.directory }}
   wasm:
     runs-on: ubuntu-latest
     steps:
