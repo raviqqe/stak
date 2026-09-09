@@ -25,8 +25,7 @@ impl LibcProcessContext {
 impl ProcessContext for LibcProcessContext {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
         self.arguments.iter().rev().map(|&argument| {
-            // SAFETY: Operating systems guarantee elements in `argv` to be C
-            // strings.
+            // SAFETY: Operating systems guarantee elements in `argv` to be C strings.
             unsafe { CStr::from_ptr(argument as _) }.to_str().unwrap()
         })
     }

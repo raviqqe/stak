@@ -56,8 +56,7 @@ impl<H: Heap> PrimitiveSet<H> for EqualPrimitiveSet {
                     memory
                         .boolean(if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
                             // - Optimize checks for unique values.
-                            // - Optimize checks for strings and vectors where
-                            //   `car`s are integers.
+                            // - Optimize checks for strings and vectors where `car`s are integers.
                             memory.cdr(x)?.tag() == memory.cdr(y)?.tag()
                                 && ![Type::Boolean as _, Type::Null as _, Type::Symbol as _]
                                     .contains(&memory.cdr(x)?.tag())
