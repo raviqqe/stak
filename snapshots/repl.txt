@@ -209,6 +209,14 @@ set equal?
 get ||
 call 1 #f instance?
 set procedure?
+constant procedure 2 #f
+  get 0
+  call 1 #f null?
+  if
+    get 1
+  get 0
+  call 1 #f car
+set get-option
 get ||
 call 1 #f instance?
 set boolean?
@@ -618,13 +626,9 @@ constant procedure 0 #t
 set list
 constant procedure 1 #t
   constant #f
-  get 1
-  call 1 #f null?
-  if
-    constant #f
-    continue
-  get 1
-  call 1 #f car
+  constant #f
+  get 2
+  call 2 #f get-option
   set 1
   constant #f
   constant procedure 1 #f
@@ -746,13 +750,9 @@ constant procedure 2 #f
 set ||
 constant procedure 2 #t
   constant #f
-  get 1
-  call 1 #f null?
-  if
-    get equal?
-    continue
-  get 1
-  call 1 #f car
+  get equal?
+  get 2
+  call 2 #f get-option
   set 1
   constant #f
   constant procedure 1 #f
@@ -782,13 +782,9 @@ constant procedure 2 #f
 set memv
 constant procedure 2 #t
   constant #f
-  get 1
-  call 1 #f null?
-  if
-    get equal?
-    continue
-  get 1
-  call 1 #f car
+  get equal?
+  get 2
+  call 2 #f get-option
   set 1
   constant #f
   constant procedure 1 #f
@@ -898,13 +894,9 @@ set reduce-right
 constant procedure 1 #t
   constant #f
   constant #f
-  get 2
-  call 1 #f null?
-  if
-    constant 0
-    continue
-  get 2
-  call 1 #f car
+  constant 0
+  get 3
+  call 2 #f get-option
   set 2
   get 2
   call 1 #f null?
@@ -1146,13 +1138,9 @@ set cddddr
 constant procedure 1 #t
   constant #f
   constant #f
-  get 2
-  call 1 #f null?
-  if
-    constant 0
-    continue
-  get 2
-  call 1 #f car
+  constant 0
+  get 3
+  call 2 #f get-option
   set 2
   get 2
   call 1 #f null?
@@ -1390,13 +1378,9 @@ constant procedure 0 #f
 set ||
 constant procedure 1 #t
   constant #f
-  get 1
-  call 1 #f pair?
-  if
-    get 1
-    call 1 #f car
-    continue
   constant #f
+  get 2
+  call 2 #f get-option
   set 1
   constant #f
   constant procedure 2 #f
@@ -1945,13 +1929,9 @@ set string-copy
 constant procedure 3 #t
   constant #f
   constant #f
-  get 2
-  call 1 #f null?
-  if
-    constant 0
-    continue
-  get 2
-  call 1 #f car
+  constant 0
+  get 3
+  call 2 #f get-option
   set 2
   get 2
   call 1 #f null?
@@ -2036,13 +2016,9 @@ set string-set!
 constant procedure 2 #t
   constant #f
   constant #f
-  get 2
-  call 1 #f null?
-  if
-    constant 0
-    continue
-  get 2
-  call 1 #f car
+  constant 0
+  get 3
+  call 2 #f get-option
   set 2
   get 2
   call 1 #f null?
@@ -2221,13 +2197,9 @@ constant procedure 1 #t
   constant #f
   constant #f
   constant #f
-  get 3
-  call 1 #f null?
-  if
-    constant 10
-    continue
-  get 3
-  call 1 #f car
+  constant 10
+  get 4
+  call 2 #f get-option
   set 3
   constant procedure 1 #f
     constant 9
@@ -2397,13 +2369,9 @@ constant procedure 1 #t
   constant #f
   constant #f
   constant #f
-  get 5
-  call 1 #f null?
-  if
-    constant 10
-    continue
-  get 5
-  call 1 #f car
+  constant 10
+  get 6
+  call 2 #f get-option
   set 5
   constant procedure 1 #f
     get 0
@@ -2584,14 +2552,10 @@ constant procedure 1 #f
 set string->uninterned-symbol
 constant procedure 1 #t
   constant #f
-  get 1
-  call 1 #f pair?
-  if
-    get 1
-    call 1 #f car
-    continue
   constant procedure 1 #f
     get 0
+  get 2
+  call 2 #f get-option
   set 1
   get 2
   call 1 #f 1
@@ -2726,13 +2690,9 @@ constant procedure 3 #t
   get 4
   get 4
   get 4
-  get 4
-  call 1 #f null?
-  if
-    constant #f
-    continue
-  get 4
-  call 1 #f car
+  constant #f
+  get 5
+  call 2 #f get-option
   call 5 #f make-port
 set make-output-port
 get ||
@@ -2793,12 +2753,9 @@ constant procedure 2 #f
   get 0
 set call-with-port
 constant procedure 1 #f
-  get 0
-  call 1 #f null?
-  if
-    call 0 #f current-input-port
-  get 0
-  call 1 #f car
+  call 0 #f current-input-port
+  get 1
+  call 2 #f get-option
 set ||
 constant procedure 0 #t
   get 0
@@ -2995,12 +2952,9 @@ constant procedure 1 #t
   call 3 #f 3
 set read-bytevector!
 constant procedure 1 #f
-  get 0
-  call 1 #f null?
-  if
-    call 0 #f current-output-port
-  get 0
-  call 1 #f car
+  call 0 #f current-output-port
+  get 1
+  call 2 #f get-option
 set ||
 constant procedure 1 #t
   get 0
@@ -3107,12 +3061,9 @@ constant procedure 1 #f
   call 1 #f list->bytevector
 set get-output-bytevector
 constant procedure 1 #f
-  get 0
-  call 1 #f null?
-  if
-    call 0 #f current-input-port
-  get 0
-  call 1 #f car
+  call 0 #f current-input-port
+  get 1
+  call 2 #f get-option
 set ||
 constant procedure 0 #t
   get 0
@@ -3291,12 +3242,9 @@ constant procedure 0 #t
   call 3 #f ||
 set read-line
 constant procedure 1 #f
-  get 0
-  call 1 #f null?
-  if
-    call 0 #f current-output-port
-  get 0
-  call 1 #f car
+  call 0 #f current-output-port
+  get 1
+  call 2 #f get-option
 set ||
 constant procedure 1 #t
   get 0
@@ -4196,6 +4144,7 @@ constant list
   eqv?
   equal?
   procedure?
+  get-option
   boolean?
   not
   boolean=?
@@ -4303,13 +4252,9 @@ constant list
 call 1 #f make-symbol-table
 constant procedure 1 #t
   constant #f
-  get 1
-  call 1 #f null?
-  if
-    get 4
-    continue
-  get 1
-  call 1 #f car
+  get 4
+  get 2
+  call 2 #f get-option
   set 1
   get 2
   get 1
@@ -8633,13 +8578,9 @@ constant procedure 0 #t
   get current-input-port
   call 0 #f 0
   constant procedure 0 #f
-    get 10
-    call 1 #f null?
-    if
-      call 0 #f current-input-port
-      continue
-    get 10
-    call 1 #f car
+    call 0 #f current-input-port
+    get 11
+    call 2 #f get-option
     call 1 #f 3
   call 1 #f $$close
   constant procedure 0 #f
@@ -12495,6 +12436,7 @@ constant list
     (eqv? . eqv?)
     (equal? . equal?)
     (procedure? . procedure?)
+    (get-option . get-option)
     (boolean? . boolean?)
     (not . not)
     (boolean=? . boolean=?)
@@ -16032,17 +15974,11 @@ constant procedure 1 #f
   constant #f
 set get-environment-variable
 constant procedure 0 #t
-  get 0
-  call 1 #f null?
-  get 0
-  if
-    get 0
-    continue
+  constant #t
   get 1
-  call 1 #f car
+  call 2 #f get-option
   constant #t
   call 2 #f eq?
-  call 2 #f $$unbind
   if
     constant procedure 0 #f
       constant #f
@@ -16085,12 +16021,9 @@ constant procedure 0 #f
   call 2 #f ||
 set current-second
 constant procedure 1 #f
-  get 0
-  call 1 #f null?
-  if
-    call 0 #f current-output-port
-  get 0
-  call 1 #f car
+  call 0 #f current-output-port
+  get 1
+  call 2 #f get-option
 set ||
 constant 0
 constant 0

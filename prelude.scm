@@ -67,6 +67,7 @@
     equal?
 
     procedure?
+    get-option
 
     boolean?
     not
@@ -687,6 +688,9 @@
 
     (define procedure? (instance? procedure-type))
 
+    (define (get-option x xs)
+      (if (null? xs) x (car xs)))
+
     ;; Boolean
 
     (define boolean? (instance? boolean-type))
@@ -933,7 +937,7 @@
     (define (list . xs) xs)
 
     (define (make-list length . rest)
-      (define fill (if (null? rest) #f (car rest)))
+      (define fill (get-option #f rest))
 
       (let loop ((length length))
         (if (zero? length)
@@ -979,10 +983,7 @@
           (list-head (cdr xs) (- index 1)))))
 
     (define (member x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
+      (define eq? (get-option equal? rest))
 
       (let loop ((xs xs))
         (cond
@@ -998,10 +999,7 @@
     (define (memv x xs) (member x xs eqv?))
 
     (define (assoc x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
+      (define eq? (get-option equal? rest))
 
       (let loop ((xs xs))
         (and
@@ -1043,7 +1041,7 @@
             (f (loop (cdr xs)) (car xs))))))
 
     (define (list-copy xs . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define end (if (or (null? rest) (null? (cdr rest))) #f (cadr rest)))
 
       (let ((xs (list-tail xs start)))
@@ -1387,7 +1385,7 @@
 
   (begin
     (define (iota count . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
 
       (let loop ((count count) (x start))
@@ -1519,7 +1517,7 @@
       (make-vector* 0 '()))
 
     (define (make-vector length . rest)
-      (define fill (and (pair? rest) (car rest)))
+      (define fill (get-option #f rest))
 
       (do ((xs (empty-vector))
            (index 0 (+ index 1)))
@@ -1747,7 +1745,7 @@
       (code-points->string (apply list-copy (string->code-points xs) rest)))
 
     (define (string-copy! to at from . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define end
         (if (or (null? rest) (null? (cdr rest)))
           (string-length from)
@@ -1779,7 +1777,7 @@
       (list-set! (string->code-points xs) index (char->integer y)))
 
     (define (string-fill! xs fill . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define end
         (if (or (null? rest) (null? (cdr rest)))
           (string-length xs)
@@ -1846,7 +1844,7 @@
     ;; Number
 
     (define (number->string x . rest)
-      (define radix (if (null? rest) 10 (car rest)))
+      (define radix (get-option 10 rest))
 
       (define (format-digit x)
         (integer->char
@@ -1896,7 +1894,7 @@
               (format-point (abs x)))))))
 
     (define (string->number x . rest)
-      (define radix (if (null? rest) 10 (car rest)))
+      (define radix (get-option 10 rest))
 
       (define digit-characters
         (map
@@ -1987,7 +1985,7 @@
 
   (begin
     (define (make-parameter x . rest)
-      (define convert (if (pair? rest) (car rest) (lambda (x) x)))
+      (define convert (get-option (lambda (x) x) rest))
       (set! x (convert x))
 
       (lambda rest
@@ -2080,7 +2078,7 @@
         write
         flush
         close
-        (if (null? rest) #f (car rest))))
+        (get-option #f rest)))
 
     (define current-input-port
       (make-parameter
@@ -2127,7 +2125,7 @@
     ; Read
 
     (define (get-input-port rest)
-      (if (null? rest) (current-input-port) (car rest)))
+      (get-option (current-input-port) rest))
 
     (define (read-u8 . rest)
       (let* ((port (get-input-port rest))
@@ -2194,7 +2192,7 @@
     ; Write
 
     (define (get-output-port rest)
-      (if (null? rest) (current-output-port) (car rest)))
+      (get-option (current-output-port) rest))
 
     (define (write-u8 byte . rest)
       (let ((write (port-write (get-output-port rest))))
@@ -2266,7 +2264,7 @@
     ; Read
 
     (define (get-input-port rest)
-      (if (null? rest) (current-input-port) (car rest)))
+      (get-option (current-input-port) rest))
 
     (define (read-char . rest)
       (let* ((port (get-input-port rest))
@@ -2336,7 +2334,7 @@
     ; Write
 
     (define (get-output-port rest)
-      (if (null? rest) (current-output-port) (car rest)))
+      (get-option (current-output-port) rest))
 
     (define (write-char x . rest)
       (let ((port (get-output-port rest))
@@ -3015,7 +3013,7 @@
     (define string->symbol
       (let ((global-table (make-symbol-table ($$symbols))))
         (lambda (name . rest)
-          (define table (if (null? rest) global-table (car rest)))
+          (define table (get-option global-table rest))
 
           (cond
             ((member
@@ -6127,7 +6125,7 @@
   (import
     (scheme base)
     (only (stak char) char-whitespace? special-chars)
-    (only (stak base) boolean-or))
+    (only (stak base) boolean-or get-option))
 
   (begin
     (define (read . rest)
@@ -6312,7 +6310,7 @@
               (skip-block-comment)))))
 
       (parameterize ((current-input-port
-                       (if (null? rest) (current-input-port) (car rest))))
+                       (get-option (current-input-port) rest)))
         (read-raw)))))
 
 (define-library (scheme write)
@@ -6325,11 +6323,12 @@
   (import
     (scheme base)
     (only (stak char) special-chars)
-    (srfi 1))
+    (srfi 1)
+    (only (stak base) get-option))
 
   (begin
     (define (get-output-port rest)
-      (if (null? rest) (current-output-port) (car rest)))
+      (get-option (current-output-port) rest))
 
     (define-record-type write-context
       (make-write-context display indices referenced)
@@ -6556,7 +6555,7 @@
   (import
     (scheme base)
     (scheme lazy)
-    (only (stak base) primitive)
+    (only (stak base) get-option primitive)
     (only (stak string) code-points->string))
 
   (begin
@@ -6583,7 +6582,7 @@
           #f)))
 
     (define (emergency-exit . rest)
-      (if (or (null? rest) (eq? (car rest) #t))
+      (if (eq? (get-option #t rest) #t)
         (begin
           (set-car! (car (cddr (close (lambda () #f)))) '(0))
           ((lambda () #f)))
@@ -6714,7 +6713,8 @@
     (scheme eval)
     (scheme file)
     (scheme read)
-    (scheme repl))
+    (scheme repl)
+    (only (stak base) get-option))
 
   (begin
     (define (load path . rest)
@@ -6728,9 +6728,7 @@
                   (if (eof-object? value)
                     '()
                     (cons value (loop))))))))
-        (if (null? rest)
-          (interaction-environment)
-          (car rest))))))
+        (get-option (interaction-environment) rest)))))
 
 (define-library (scheme r5rs)
   (export
