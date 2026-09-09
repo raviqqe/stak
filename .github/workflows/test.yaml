@@ -171,10 +171,10 @@ jobs:
           - thumbv6m-none-eabi
           - thumbv7em-none-eabihf
           - wasm32v1-none
-        directory:
-          - examples/no-std-no-alloc
-          - root
-        include:
+        package:
+          - directory: examples/no-std-no-alloc
+          - directory: root
+            options: --no-default-features
           - directory: root
             options: --no-default-features --features alloc,float
     runs-on: ubuntu-latest
@@ -182,8 +182,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
       - run: rustup target add ${{ matrix.target }}
-      - run: cargo build --locked --target ${{ matrix.target }} ${{ matrix.options }}
-        working-directory: ${{ matrix.directory }}
+      - run: cargo build --locked --target ${{ matrix.target }} ${{ matrix.package.options }}
+        working-directory: ${{ matrix.package.directory }}
   wasm:
     runs-on: ubuntu-latest
     steps:
