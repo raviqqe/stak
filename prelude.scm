@@ -67,6 +67,7 @@
     equal?
 
     procedure?
+    get-option
 
     boolean?
     not
@@ -687,6 +688,12 @@
 
     (define procedure? (instance? procedure-type))
 
+    (define (get-option x xs)
+      (if (null? rest) x (car rest)))
+
+    (define (thunk x)
+      (lambda () x))
+
     ;; Boolean
 
     (define boolean? (instance? boolean-type))
@@ -933,7 +940,7 @@
     (define (list . xs) xs)
 
     (define (make-list length . rest)
-      (define fill (if (null? rest) #f (car rest)))
+      (define fill (get-option #f rest))
 
       (let loop ((length length))
         (if (zero? length)
@@ -979,10 +986,7 @@
           (list-head (cdr xs) (- index 1)))))
 
     (define (member x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
+      (define eq? (get-option equal? rest))
 
       (let loop ((xs xs))
         (cond
@@ -998,10 +1002,7 @@
     (define (memv x xs) (member x xs eqv?))
 
     (define (assoc x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
+      (define eq? (get-option equal? rest))
 
       (let loop ((xs xs))
         (and
@@ -1043,7 +1044,7 @@
             (f (loop (cdr xs)) (car xs))))))
 
     (define (list-copy xs . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define end (if (or (null? rest) (null? (cdr rest))) #f (cadr rest)))
 
       (let ((xs (list-tail xs start)))
@@ -1387,7 +1388,7 @@
 
   (begin
     (define (iota count . rest)
-      (define start (if (null? rest) 0 (car rest)))
+      (define start (get-option 0 rest))
       (define step (if (or (null? rest) (null? (cdr rest))) 1 (cadr rest)))
 
       (let loop ((count count) (x start))
