@@ -166,9 +166,11 @@ jobs:
       fail-fast: false
       matrix:
         target:
+          - aarch64-unknown-none
           - riscv32imac-unknown-none-elf
           - thumbv6m-none-eabi
           - thumbv7em-none-eabihf
+          - wasm32v1-none
         directory:
           - examples/no-std-no-alloc
           - root
