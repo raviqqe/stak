@@ -734,9 +734,9 @@ mod tests {
 
     #[test]
     fn decode_swapped_reference() {
-        // Two mutually referencing pairs. Filling each pair references the other
-        // one while it sits behind in the dictionary, exercising the
-        // move-to-front of a non-front entry.
+        // Two mutually referencing pairs. Filling each pair references the
+        // other one while it sits behind in the dictionary, exercising
+        // the move-to-front of a non-front entry.
         let (first, memory) = decode([
             // Build and memoize the first placeholder.
             3, 3, 5, 0, // Build and memoize the second placeholder.

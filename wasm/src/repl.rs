@@ -12,8 +12,8 @@ use winter_maybe_async::{maybe_async, maybe_await};
 
 cfg_select! {
     feature = "async" => {
-        // `maybe_async` does not work here because `wasm_bindgen`'s expansion happens
-        // first.
+        // `maybe_async` does not work here because `wasm_bindgen`'s expansion
+        // happens first.
         #[wasm_bindgen]
         extern "C" {
             async fn read_stdin() -> JsValue;
