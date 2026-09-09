@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(all(doc, not(doctest)), feature(doc_cfg))]
+#![no_std]
 
 pub mod device {
     //! I/O devices.

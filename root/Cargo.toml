@@ -48,7 +48,7 @@ async = [
 ]
 float = ["stak-sac/float", "stak-vm/float"]
 float62 = ["stak-sac/float", "stak-vm/float62"]
-hot-reload = ["stak-macro/hot-reload"]
+hot-reload = ["stak-macro/hot-reload", "stak-module/hot-reload"]
 libc = [
   "stak-device/libc",
   "stak-engine/libc",

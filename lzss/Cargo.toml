@@ -9,13 +9,20 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[[bin]]
+name = "stak-lzss"
+required-features = ["std"]
+
 [dependencies]
-clap = { version = "4.6.1", features = ["derive"] }
+clap = { version = "4.6.1", features = ["derive"], optional = true }
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
 quickcheck = "1.1.0"
 quickcheck_macros = "1.2.0"
+
+[features]
+std = ["dep:clap"]
 
 [lints]
 workspace = true

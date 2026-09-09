@@ -10,7 +10,10 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-hmr = "0.2.5"
+hmr = { version = "0.2.5", optional = true }
+
+[features]
+hot-reload = ["dep:hmr"]
 
 [lints]
 workspace = true
