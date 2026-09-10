@@ -11,7 +11,7 @@ categories.workspace = true
 
 [[bin]]
 name = "stak-lzss"
-required-features = ["std"]
+required-features = ["cli"]
 
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"], optional = true }
@@ -22,7 +22,7 @@ quickcheck = "1.1.0"
 quickcheck_macros = "1.2.0"
 
 [features]
-std = ["dep:clap"]
+cli = ["dep:clap"]
 
 [lints]
 workspace = true

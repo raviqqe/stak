@@ -1,4 +1,7 @@
 //! LZSS compression.
+//!
+//! The `stak-lzss` command-line tool requires the `cli` feature:
+//! `cargo install stak-lzss --features cli`.
 
 #![no_std]
 
