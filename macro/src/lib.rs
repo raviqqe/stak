@@ -3,66 +3,10 @@
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
-use quote::{ToTokens, quote};
+use quote::quote;
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
-use std::path::{MAIN_SEPARATOR_STR, Path};
-use syn::{Ident, LitStr, Token, parse::Parse, parse_macro_input};
-
-struct IncludeModuleInput {
-    path: LitStr,
-    module: Option<Ident>,
-}
-
-impl Parse for IncludeModuleInput {
-    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-        let path = input.parse()?;
-        let mut module = None;
-
-        if input.parse::<Option<Token![,]>>()?.is_some()
-            && let Some(value) = input.parse()?
-        {
-            input.parse::<Option<Token![,]>>()?;
-            module = Some(value);
-        }
-
-        Ok(Self { path, module })
-    }
-}
-
-/// Includes bytecode of a R7RS Scheme module built by the
-/// [`stak_build`](https://docs.rs/stak-build) crate.
-///
-/// See the [`stak`](https://docs.rs/stak) crate's documentation for full examples.
-#[proc_macro]
-pub fn include_module(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as IncludeModuleInput);
-
-    convert_result(include_result(&input)).into()
-}
-
-fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
-    let path = format!("{}", Path::new("src").join(input.path.value()).display());
-    let full_path = quote!(concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path));
-    let module = input
-        .module
-        .as_ref()
-        .map_or_else(|| quote!(stak::module), |module| module.to_token_stream());
-
-    Ok(cfg_select! {
-        feature = "hot-reload" => {
-            quote! {
-                {
-                    static MODULE: #module::HotReloadModule = #module::HotReloadModule::new(#full_path);
-                    #module::UniversalModule::HotReload(&MODULE)
-                }
-            }
-        }
-        _ => {
-            quote!(#module::UniversalModule::Static(#module::StaticModule::new(include_bytes!(#full_path))))
-        }
-    })
-}
+use syn::{LitStr, parse_macro_input};
 
 /// Compiles a module in R7RS Scheme into bytecode.
 ///

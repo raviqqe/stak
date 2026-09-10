@@ -1,7 +1,6 @@
 use stak_device::Device;
 use stak_file::VoidFileSystem;
-use stak_macro::include_module;
-use stak_module::Module;
+use stak_module::{Module, include_module};
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
@@ -45,14 +44,7 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
         ),
     )?;
 
-    maybe_await!(
-        vm.run_async(
-            include_module!("repl.scm", stak_module)
-                .bytecode()
-                .iter()
-                .copied()
-        )
-    )?;
+    maybe_await!(vm.run_async(include_module!("repl.scm").bytecode().iter().copied()))?;
 
     Ok(())
 }

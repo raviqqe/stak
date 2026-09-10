@@ -18,7 +18,6 @@ stak-device = { path = "../device", version = "0.12.28" }
 stak-dynamic = { path = "../dynamic", version = "0.12.28", optional = true }
 stak-engine = { path = "../engine", version = "0.12.28", optional = true }
 stak-file = { path = "../file", version = "0.12.28" }
-stak-macro = { path = "../macro", version = "0.12.28" }
 stak-module = { path = "../module", version = "0.12.28" }
 stak-process-context = { path = "../process-context", version = "0.12.28" }
 stak-r7rs = { path = "../r7rs", version = "0.12.28" }
@@ -48,7 +47,7 @@ async = [
 ]
 float = ["stak-sac/float", "stak-vm/float"]
 float62 = ["stak-sac/float", "stak-vm/float62"]
-hot-reload = ["stak-macro/hot-reload", "stak-module/hot-reload"]
+hot-reload = ["stak-module/hot-reload"]
 libc = [
   "stak-device/libc",
   "stak-engine/libc",
