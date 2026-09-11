@@ -1,4 +1,4 @@
-.main {
+.root {
   composes: textArea from "../system.module.css";
 
   --me-padding: var(--padding);

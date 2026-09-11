@@ -15,7 +15,7 @@ interface Props {
 export const CodeEditor: FunctionComponent<Props> = ({ onInput, ...props }) => (
   <Editor
     {...props}
-    class={classNames(styles.main, props.class)}
+    class={classNames(styles.root, props.class)}
     onHighlight={highlightScheme}
     onInput={(event) => {
       if (event.target instanceof HTMLTextAreaElement) {
