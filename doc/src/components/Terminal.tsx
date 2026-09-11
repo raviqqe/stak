@@ -96,7 +96,7 @@ export const Terminal: FunctionComponent<Props> = ({
   });
 
   return (
-    <div class={classNames(styles.root, editorStyles.main)}>
+    <div class={classNames(styles.root, editorStyles.root)}>
       <textarea class={editorStyles.textarea} id={id} ref={textareaRef} />
       <pre class={editorStyles.pre} ref={preRef}>
         <code class={editorStyles.code} ref={codeRef} />
