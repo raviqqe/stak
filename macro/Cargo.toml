@@ -37,7 +37,6 @@ async = [
   "stak-time/async",
   "stak-vm/async",
 ]
-hot-reload = []
 
 [lints]
 workspace = true

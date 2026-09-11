@@ -7,8 +7,7 @@ pub use repl::repl;
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::{MemoryFileSystem, VoidFileSystem};
-use stak_macro::include_module;
-use stak_module::Module;
+use stak_module::{Module, include_module};
 use stak_process_context::{MemoryProcessContext, VoidProcessContext};
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
@@ -62,12 +61,7 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
             VoidClock::new(),
         ),
     )?
-    .run(
-        include_module!("run.scm", stak_module)
-            .bytecode()
-            .iter()
-            .copied(),
-    )
+    .run(include_module!("run.scm").bytecode().iter().copied())
     .map_err(|vm_error| match str::from_utf8(&error) {
         Ok(error) if !error.is_empty() => JsError::new(error),
         Ok(_) => JsError::from(vm_error),
