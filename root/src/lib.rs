@@ -204,4 +204,4 @@ pub mod vm {
     pub use stak_vm::*;
 }
 
-pub use stak_macro::include_module;
+pub use stak_module::include_module;

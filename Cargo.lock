@@ -1453,7 +1453,6 @@ dependencies = [
  "stak-dynamic",
  "stak-engine",
  "stak-file",
- "stak-macro",
  "stak-module",
  "stak-process-context",
  "stak-r7rs",
