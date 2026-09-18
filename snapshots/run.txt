@@ -10210,6 +10210,12 @@ constant procedure 3 #f
       call 3 #f 15
       get 4
       call 1 #f cdr
+      get 2
+      constant 0
+      call 2 #f eq?
+      if
+        get 4
+        continue
       get 4
       get 3
       call 2 #f list-tail
