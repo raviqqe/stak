@@ -98,8 +98,12 @@ Feature: Read
 
     Examples:
       | bytes | output |
-      |       | A      |
       | 65    | A      |
+
+    @chibi @gauche @guile @stak
+    Examples:
+      | bytes | output |
+      |       | A      |
 
   Scenario Outline: Read a character
     Given a file named "main.scm" with:
@@ -199,10 +203,14 @@ Feature: Read
     # TODO Add false cases.
     Examples:
       | bytes           | output |
-      |                 | A      |
       | 65              | A      |
       | 227 129 130     | A      |
       | 240 159 152 132 | A      |
+
+    @chibi @gauche @guile @stak
+    Examples:
+      | bytes           | output |
+      |                 | A      |
 
   Scenario Outline: Read a string
     Given a file named "main.scm" with:
@@ -295,12 +303,16 @@ Feature: Read
 
     Examples:
       | bytes | count |
-      |       | 0     |
       | 1     | 1     |
       | 1     | 2     |
       | 1 2   | 2     |
       | 1 2 3 | 3     |
       | 1 2 3 | 4     |
+
+    @chibi @gauche @guile @stak
+    Examples:
+      | bytes | count |
+      |       | 0     |
 
   Scenario Outline: Read a byte vector without consuming extra bytes
     Given a file named "main.scm" with:
@@ -317,9 +329,13 @@ Feature: Read
 
     Examples:
       | count | output |
-      | 0     | A      |
       | 1     | AB     |
       | 2     | ABC    |
+
+    @chibi @gauche @guile @stak
+    Examples:
+      | count | output |
+      | 0     | A      |
 
   Scenario: Read a byte vector at the end of a file
     Given a file named "main.scm" with:

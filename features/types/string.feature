@@ -181,13 +181,17 @@ Feature: String
     # spell-checker: disable
     Examples:
       | to    | at | from | start | end | output |
-      | A     | 0  |      |       |     | A      |
       | ABC   | 0  | DEF  |       |     | DEF    |
-      | ABC   | 1  | DE   |       |     | ADE    |
-      | ABC   | 2  | D    |       |     | ABD    |
       | ABCDE | 1  | FGH  |       |     | AFGHE  |
       | ABCD  | 1  | EFGH | 1     |     | AFGH   |
       | ABCD  | 1  | EFGH | 1     | 3   | AFGD   |
+
+    @chibi @gauche @guile @stak
+    Examples:
+      | to  | at | from | start | end | output |
+      | A   | 0  |      |       |     | A      |
+      | ABC | 1  | DE   |       |     | ADE    |
+      | ABC | 2  | D    |       |     | ABD    |
 
   # spell-checker: enable
   Scenario Outline: Make a string

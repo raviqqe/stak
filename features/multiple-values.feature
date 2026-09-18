@@ -173,6 +173,7 @@ Feature: Multiple values
 
   Rule: `let-values`
 
+    @chibi @gauche @guile @stak
     Scenario: Define no value
       Given a file named "main.scm" with:
         """scheme

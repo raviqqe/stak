@@ -61,6 +61,7 @@ Feature: Exit
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly ""
 
+    @chibi @gauche @guile @stak
     Scenario: Exit an interpreter with a true value
       Given a file named "main.scm" with:
         """scheme

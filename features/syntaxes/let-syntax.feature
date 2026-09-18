@@ -15,6 +15,7 @@ Feature: let-syntax
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Define a local macro capturing a global value of the same name
     Given a file named "main.scm" with:
       """scheme
@@ -109,6 +110,7 @@ Feature: let-syntax
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Use a local macro as a shadowed value
     Given a file named "main.scm" with:
       """scheme
@@ -276,6 +278,7 @@ Feature: let-syntax
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Match a nested ellipsis pattern with a shadowed variable
     Given a file named "main.scm" with:
       """scheme

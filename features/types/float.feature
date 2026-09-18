@@ -291,9 +291,13 @@ Feature: Floating-point number
       | 12.7               |
       | 123.456            |
       | 1234567.89         |
+      | 0.999999999999     |
+
+    @chibi @gauche @guile @stak
+    Examples:
+      | value              |
       | 3.141592653589793  |
       | 2.718281828459045  |
-      | 0.999999999999     |
       | 0.1234567890123456 |
 
   @stak
@@ -333,9 +337,13 @@ Feature: Floating-point number
       | 12.7               |
       | 123.456            |
       | 1234567.89         |
+      | 0.999999999999     |
+
+    @chibi @gauche @guile @stak
+    Examples:
+      | value              |
       | 3.141592653589793  |
       | 2.718281828459045  |
-      | 0.999999999999     |
       | 0.1234567890123456 |
 
   Scenario Outline: Calculate a square root

@@ -74,6 +74,8 @@ jobs:
           - name: stak-tools
             host: chibi-scheme
             tags: ~@chibi-bug
+          - name: stak-tools
+            host: csi -keyword-style none -s
           # TODO Test gosh
           # - name: stak-tools
           #   host: gosh
@@ -89,6 +91,8 @@ jobs:
             tags: ~@long
           - name: chibi
             tags: ~@stak,@chibi
+          - name: chicken
+            tags: ~@stak,@chicken
           - name: gauche
             tags: ~@stak,@gauche
           - name: guile
@@ -228,6 +232,7 @@ jobs:
           - guile
           - gosh
           - chibi-scheme
+          - csi -keyword-style none -s
     runs-on: ubuntu-latest
     env:
       STAK_HOST: ${{ matrix.host }}

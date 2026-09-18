@@ -540,6 +540,7 @@ Feature: Library system
     When I successfully run `stak -l foo.scm main.scm`
     Then the stdout should contain exactly "foo"
 
+  @chibi @gauche @guile @stak
   Scenario: Import a library in a load path
     Given a file named "foo.sld" with:
       """scheme
@@ -561,6 +562,7 @@ Feature: Library system
     When I successfully run `stak -I . main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Import a library in a directory in a load path
     Given a file named "library/foo/bar.sld" with:
       """scheme
@@ -582,6 +584,7 @@ Feature: Library system
     When I successfully run `stak -I library main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Append a directory to a load path
     Given a file named "library/foo.sld" with:
       """scheme
@@ -603,6 +606,7 @@ Feature: Library system
     When I successfully run `stak -A library main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Import a library importing another library in a load path
     Given a file named "library/foo.sld" with:
       """scheme
@@ -635,6 +639,7 @@ Feature: Library system
     When I successfully run `stak -I library main.scm`
     Then the stdout should contain exactly "B"
 
+  @chibi @gauche @guile @stak
   Scenario: Include a file in a library in a load path
     Given a file named "library/foo/bar.sld" with:
       """scheme

@@ -13,6 +13,13 @@
   (scheme read)
   (only (scheme write)))
 
+; Chicken Scheme's `environment` procedure cannot expand core macros. So its
+; interaction environment is used instead with these libraries imported.
+(cond-expand
+  (chicken
+    (import (scheme cxr) (scheme file) (scheme inexact) (scheme lazy) (scheme read) (scheme repl)))
+  (else))
+
 (define frontend
   '(
     ; Instructions
@@ -640,7 +647,10 @@
            (raise #f))
           (append
            (match-ellipsis-pattern context (car pattern) (list-head expression length))
-           (match (cdr pattern) (list-tail expression length)))))
+           (match
+            (cdr pattern)
+            ; A non-list expression is allowed only with a length of zero.
+            (if (zero? length) expression (list-tail expression length))))))
 
         ((pair? expression)
          (append
@@ -2301,13 +2311,17 @@
   (define compile
     (eval
       compiler
-      (environment
-        '(scheme base)
-        '(scheme cxr)
-        '(scheme lazy)
-        '(scheme file)
-        '(scheme inexact)
-        '(scheme read))))
+      (cond-expand
+        (chicken
+          (interaction-environment))
+        (else
+          (environment
+            '(scheme base)
+            '(scheme cxr)
+            '(scheme lazy)
+            '(scheme file)
+            '(scheme inexact)
+            '(scheme read))))))
 
   (define arguments (command-line))
 

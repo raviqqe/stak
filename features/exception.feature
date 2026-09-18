@@ -76,6 +76,7 @@ Feature: Exception
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Raise an exception in a handler
     Given a file named "main.scm" with:
       """scheme
@@ -88,6 +89,7 @@ Feature: Exception
     When I run `stak main.scm`
     Then the exit status should not be 0
 
+  @chibi @gauche @guile @stak
   Scenario: Raise an exception in nested handlers
     Given a file named "main.scm" with:
       """scheme
@@ -107,6 +109,7 @@ Feature: Exception
     And the stderr should contain "foo"
     And the stdout should contain "bar"
 
+  @chibi @gauche @guile @stak
   Scenario: Raise an exception in deeply nested handlers
     Given a file named "main.scm" with:
       """scheme

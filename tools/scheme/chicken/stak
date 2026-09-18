@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -e
+
+while getopts A:I:l: option; do
+  case $option in
+  A | I)
+    options="$options -I $OPTARG"
+    ;;
+  l)
+    libraries="$libraries $OPTARG"
+    ;;
+  esac
+done
+
+shift $(expr $OPTIND - 1)
+
+main_file=$1
+shift 1
+
+cat $libraries $main_file >csi.scm
+
+csi -keyword-style none $options -s csi.scm "$@"

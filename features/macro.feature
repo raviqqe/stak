@@ -504,6 +504,7 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Use a global macro as a shadowed value
     Given a file named "main.scm" with:
       """scheme
@@ -801,6 +802,7 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @guile @stak
   Scenario: Match a nested ellipsis pattern with a shadowed variable
     Given a file named "main.scm" with:
       """scheme
