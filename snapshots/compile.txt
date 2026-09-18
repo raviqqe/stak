@@ -4191,7 +4191,6 @@ constant list
   maybe-car
   define-library
   register-library!
-  import
   append-imports
   expand-library-bodies
   resolve-environment-symbols
@@ -4225,7 +4224,10 @@ constant list
   expand-macros
   expression
   imports
+  import
   debug
+  repl
+  interaction-environment
   environment
   eval
   make-environment
@@ -8591,6 +8593,11 @@ constant list
   list
     list
       scheme
+      repl
+    (interaction-environment . interaction-environment)
+  list
+    list
+      scheme
       eval
     (environment . environment)
     (eval . eval)
@@ -12898,6 +12905,15 @@ constant procedure 0 #t
   call 1 #f $$close
   call 1 #f unwind
 set exit
+constant ()
+call 1 #f make-symbol-table
+constant ()
+call 2 #f make-environment
+constant procedure 0 #f
+  get 1
+call 1 #f $$close
+call 2 #f $$unbind
+set interaction-environment
 constant procedure 1 #f
   call 0 #f current-output-port
   get 1
@@ -22096,27 +22112,34 @@ set ||
 constant procedure 0 #f
   constant #f
   constant #f
-  get ||
+  call 0 #f interaction-environment
   constant list
-    scheme
-    base
-  constant list
-    scheme
-    cxr
-  constant list
-    scheme
-    lazy
-  constant list
-    scheme
-    file
-  constant list
-    scheme
-    inexact
-  constant list
-    scheme
-    read
-  call 6 #f environment
+    import
+    list
+      scheme
+      base
+    list
+      scheme
+      cxr
+    list
+      scheme
+      lazy
+    list
+      scheme
+      file
+    list
+      scheme
+      inexact
+    list
+      scheme
+      read
+  get 1
   call 2 #f eval
+  set 0
+  get ||
+  get 1
+  call 2 #f eval
+  call 2 #f $$unbind
   set 2
   call 0 #f command-line
   set 1
