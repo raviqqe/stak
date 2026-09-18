@@ -282,16 +282,16 @@ Feature: Floating-point number
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value              |
-      | 0.5                |
-      | 0.125              |
-      | 1.2                |
-      | 3.14               |
-      | -3.14              |
-      | 12.7               |
-      | 123.456            |
-      | 1234567.89         |
-      | 0.999999999999     |
+      | value          |
+      | 0.5            |
+      | 0.125          |
+      | 1.2            |
+      | 3.14           |
+      | -3.14          |
+      | 12.7           |
+      | 123.456        |
+      | 1234567.89     |
+      | 0.999999999999 |
 
     @chibi @gauche @guile @stak
     Examples:
@@ -328,16 +328,16 @@ Feature: Floating-point number
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value              |
-      | 0.5                |
-      | 0.125              |
-      | 1.2                |
-      | 3.14               |
-      | -3.14              |
-      | 12.7               |
-      | 123.456            |
-      | 1234567.89         |
-      | 0.999999999999     |
+      | value          |
+      | 0.5            |
+      | 0.125          |
+      | 1.2            |
+      | 3.14           |
+      | -3.14          |
+      | 12.7           |
+      | 123.456        |
+      | 1234567.89     |
+      | 0.999999999999 |
 
     @chibi @gauche @guile @stak
     Examples:

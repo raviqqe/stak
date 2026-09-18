@@ -209,8 +209,8 @@ Feature: Read
 
     @chibi @gauche @guile @stak
     Examples:
-      | bytes           | output |
-      |                 | A      |
+      | bytes | output |
+      |       | A      |
 
   Scenario Outline: Read a string
     Given a file named "main.scm" with:
