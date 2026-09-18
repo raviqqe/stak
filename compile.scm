@@ -11,14 +11,8 @@
   (only (scheme inexact))
   (scheme process-context)
   (scheme read)
+  (scheme repl)
   (only (scheme write)))
-
-; Chicken Scheme's `environment` procedure cannot expand core macros. So its
-; interaction environment is used instead with these libraries imported.
-(cond-expand
-  (chicken
-    (import (scheme cxr) (scheme file) (scheme inexact) (scheme lazy) (scheme read) (scheme repl)))
-  (else))
 
 (define frontend
   '(
@@ -2308,20 +2302,20 @@
         (loop (cdr arguments) directories)))))
 
 (define (main)
+  ; The interaction environment is used because `environment` procedures in some
+  ; implementations cannot expand core macros.
   (define compile
-    (eval
-      compiler
-      (cond-expand
-        (chicken
-          (interaction-environment))
-        (else
-          (environment
-            '(scheme base)
-            '(scheme cxr)
-            '(scheme lazy)
-            '(scheme file)
-            '(scheme inexact)
-            '(scheme read))))))
+    (let ((environment (interaction-environment)))
+      (eval
+        '(import
+          (scheme base)
+          (scheme cxr)
+          (scheme lazy)
+          (scheme file)
+          (scheme inexact)
+          (scheme read))
+        environment)
+      (eval compiler environment)))
 
   (define arguments (command-line))
 
