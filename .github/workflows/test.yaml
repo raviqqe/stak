@@ -74,9 +74,9 @@ jobs:
           - name: stak-tools
             host: chibi-scheme
             tags: ~@chibi-bug
-          # TODO Test gosh
-          # - name: stak-tools
-          #   host: gosh
+          - name: stak-tools
+            # Avoid a VM bug in Gauche.
+            host: gosh -fno-inline-locals
           - name: stak-tools
             host: guile
           - name: stak-tools
