@@ -11,7 +11,7 @@ interpreters='chibi-scheme gosh guile'
 compile() (
   case $1 in
   gosh)
-    # Avoid a VM bug in Gauche.
+    # TODO Use vanilla Gauche.
     log gosh -fno-inline-locals compile.scm
     ;;
   *)

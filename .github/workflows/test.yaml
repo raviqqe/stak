@@ -75,7 +75,7 @@ jobs:
             host: chibi-scheme
             tags: ~@chibi-bug
           - name: stak-tools
-            # Avoid a VM bug in Gauche.
+            # TODO Use vanilla Gauche.
             host: gosh -fno-inline-locals
           - name: stak-tools
             host: guile
