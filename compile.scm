@@ -219,7 +219,7 @@
        (string-copy name (+ index 1))
        name)))
 
-    (define (resolve-symbols expression)
+    (define (resolve-data-symbols expression)
      (relaxed-deep-map
       (lambda (value)
        (if (symbol? value)
@@ -861,13 +861,13 @@
           (expand-macro context (caddr expression))))
 
         (($$quote)
-         (cons '$$quote (resolve-symbols (cdr expression))))
+         (cons '$$quote (resolve-data-symbols (cdr expression))))
 
         (($$if-library)
          (expand
           (if (library-exists?
                (macro-state-library-context (macro-context-state context))
-               (resolve-symbols (cadr expression)))
+               (resolve-data-symbols (cadr expression)))
            (caddr expression)
            (cadddr expression))))
 
