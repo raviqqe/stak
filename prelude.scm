@@ -335,6 +335,7 @@
         ((_ cond-expand (feature1 :::))
           (begin
             (define (features) '(feature1 :::))
+
             (define-syntax cond-expand
               (syntax-rules (and else library not or feature1 :::)
                 ((cond-expand)
