@@ -709,6 +709,7 @@ Feature: Library system
     When I successfully run `stak -I library main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @gauche @stak
   Scenario: Include library declarations in included library declarations
     Given a file named "library/foo.sld" with:
       """scheme
