@@ -19,7 +19,7 @@ use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_file::LibcFileSystem;
 use stak_libc::Mmap;
 use stak_process_context::LibcProcessContext;
-use stak_r7rs::SmallPrimitiveSet;
+use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::LibcClock;
 use stak_vm::{Value, Vm};
 
@@ -58,7 +58,9 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
     // SAFETY: `file` is from `argv` and guaranteed to have a C string.
     let mmap = Mmap::new(unsafe { CStr::from_ptr(file as _) }).unwrap();
 
-    vm.run(mmap.iter().copied()).unwrap();
-
-    exit(0);
+    exit(match vm.run(mmap.iter().copied()) {
+        Ok(()) => 0,
+        Err(SmallError::Halt(code)) => code.into(),
+        Err(_) => 1,
+    });
 }

@@ -34,6 +34,39 @@ Feature: Exit
       When I run `stak main.scm`
       Then the exit status should not be 0
 
+    Scenario: Exit an interpreter with zero
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme process-context))
+
+        (exit 0)
+        """
+      When I successfully run `stak main.scm`
+      Then the exit status should be 0
+
+    @chibi @gauche @stak
+    Scenario: Exit an interpreter with a non-zero integer
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme process-context))
+
+        (exit 42)
+        """
+      When I run `stak main.scm`
+      Then the exit status should be 42
+      And the stderr should contain exactly ""
+
+    @chibi @gauche @stak
+    Scenario: Exit an interpreter with a non-integer value
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme process-context))
+
+        (exit 'foo)
+        """
+      When I run `stak main.scm`
+      Then the exit status should not be 0
+
     Scenario: Leave a dynamic extent
       Given a file named "main.scm" with:
         """scheme
@@ -77,6 +110,39 @@ Feature: Exit
         (import (scheme base) (scheme process-context))
 
         (emergency-exit #f)
+        """
+      When I run `stak main.scm`
+      Then the exit status should not be 0
+
+    Scenario: Exit an interpreter with zero
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme process-context))
+
+        (emergency-exit 0)
+        """
+      When I successfully run `stak main.scm`
+      Then the exit status should be 0
+
+    @chibi @gauche @stak
+    Scenario: Exit an interpreter with a non-zero integer
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme process-context))
+
+        (emergency-exit 42)
+        """
+      When I run `stak main.scm`
+      Then the exit status should be 42
+      And the stderr should contain exactly ""
+
+    @chibi @gauche @stak
+    Scenario: Exit an interpreter with a non-integer value
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme process-context))
+
+        (emergency-exit 'foo)
         """
       When I run `stak main.scm`
       Then the exit status should not be 0

@@ -148,7 +148,9 @@ impl<H: Heap, D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSe
             Primitive::DIVIDE => memory.try_operate_binary(Number::divide)?,
             Primitive::REMAINDER => memory.try_operate_binary(Number::remainder)?,
             Primitive::EXPT => memory.operate_binary(Number::power)?,
-            Primitive::HALT => return Err(Error::Halt),
+            Primitive::HALT => {
+                return Err(Error::Halt(memory.pop()?.assume_number().to_i64() as _));
+            }
             Primitive::NULL | Primitive::PAIR => {
                 maybe_await!(self.type_check.operate(memory, primitive - Primitive::NULL))?
             }
