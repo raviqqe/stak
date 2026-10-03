@@ -40,7 +40,6 @@
     cond-expand
     features
 
-    base
     library
     r7rs
     scheme
@@ -333,87 +332,72 @@
 
     (define-syntax define-features
       (syntax-rules ::: ()
-        ((_ cond-expand (literal :::) (identifier :::) (library-name :::))
+        ((_ cond-expand (feature1 :::))
           (begin
-            (define (features) '(identifier :::))
-            (define-features
-              "cond"
-              cond-expand
-              (literal ::: identifier :::)
-              (identifier ::: (library library-name) :::))))
+            (define (features) '(feature1 :::))
+            (define-syntax cond-expand
+              (syntax-rules (and else library not or feature1 :::)
+                ((cond-expand)
+                  (syntax-error "unfulfilled cond-expand"))
 
-        ((_ "cond" cond-expand (literal :::) (feature1 :::))
-          (define-syntax cond-expand
-            (syntax-rules (and else library not or literal :::)
-              ((cond-expand)
-                (syntax-error "unfulfilled cond-expand"))
+                ((cond-expand (else body ...))
+                  (relaxed-begin body ...))
 
-              ((cond-expand (else body ...))
-                (relaxed-begin body ...))
+                ((cond-expand ((and) body ...) clause ...)
+                  (relaxed-begin body ...))
 
-              ((cond-expand ((and) body ...) clause ...)
-                (relaxed-begin body ...))
+                ((cond-expand ((and requirement1 requirement2 ...) body ...) clause ...)
+                  (cond-expand
+                    (requirement1
+                      (cond-expand
+                        ((and requirement2 ...) body ...)
+                        clause
+                        ...))
+                    clause
+                    ...))
 
-              ((cond-expand ((and requirement1 requirement2 ...) body ...) clause ...)
-                (cond-expand
-                  (requirement1
-                    (cond-expand
-                      ((and requirement2 ...) body ...)
-                      clause
-                      ...))
-                  clause
-                  ...))
+                ((cond-expand ((or) body ...) clause ...)
+                  (cond-expand clause ...))
 
-              ((cond-expand ((or) body ...) clause ...)
-                (cond-expand clause ...))
+                ((cond-expand ((or requirement1 requirement2 ...) body ...) clause ...)
+                  (cond-expand
+                    (requirement1 body ...)
+                    ((or requirement2 ...) body ...)
+                    clause
+                    ...))
 
-              ((cond-expand ((or requirement1 requirement2 ...) body ...) clause ...)
-                (cond-expand
-                  (requirement1 body ...)
-                  ((or requirement2 ...) body ...)
-                  clause
-                  ...))
+                ((cond-expand ((not requirement) body ...) clause ...)
+                  (cond-expand
+                    (requirement
+                      (cond-expand
+                        clause
+                        ...))
+                    (else body ...)))
 
-              ((cond-expand ((not requirement) body ...) clause ...)
-                (cond-expand
-                  (requirement
-                    (cond-expand
-                      clause
-                      ...))
-                  (else body ...)))
+                ((cond-expand (feature1 body ...) clause ...)
+                  (relaxed-begin body ...))
+                :::
 
-              ((cond-expand (feature1 body ...) clause ...)
-                (relaxed-begin body ...))
-              :::
+                ((cond-expand ((library name) body ...) clause ...)
+                  ($$if-library
+                    name
+                    (relaxed-begin body ...)
+                    (cond-expand clause ...)))
 
-              ((cond-expand ((library name) body ...) clause ...)
-                (cond-expand clause ...))
+                ((cond-expand ((feature2 ...) body ...) clause ...)
+                  (syntax-error "invalid feature"))
 
-              ((cond-expand ((feature2 ...) body ...) clause ...)
-                (syntax-error "invalid feature"))
-
-              ((cond-expand (feature2 body ...) clause ...)
-                (cond-expand clause ...)))))))
+                ((cond-expand (feature2 body ...) clause ...)
+                  (cond-expand clause ...))))))))
 
     (define-features
       cond-expand
-      (base
-        continue
-        exception
-        read
-        write)
       (full-unicode
         ieee-float
         little-endian
         r7rs
         scheme
-        stak)
-      ((scheme base)
-        (scheme read)
-        (scheme write)
-        (stak base)
-        (stak continue)
-        (stak exception)))
+        stak))
 
     ;; Binding
 
@@ -2738,7 +2722,6 @@
     cond-expand
     features
 
-    base
     library
     r7rs
     scheme
