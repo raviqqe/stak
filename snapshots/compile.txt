@@ -3896,7 +3896,7 @@ constant list
   macro-context-set-local!
   library-exists?
   macro-state-library-context
-  resolve-symbols
+  resolve-data-symbols
   expand
   optimization-context
   optimization-context?
@@ -4136,7 +4136,6 @@ constant list
   encode-context-counts
   counts
   expression1
-  library-context
   expression2
   optimize-custom
   expression3
@@ -4147,6 +4146,7 @@ constant list
   expression6
   compile-metadata
   shake-syntax-tree
+  libraries
   macros
   optimizers
   dynamic-symbols
@@ -4203,7 +4203,7 @@ constant list
   name
   make-macro-context
   make-macro-state
-  libraries
+  library-context
   macro-context-set-global!
   make-transformer
   pair
@@ -14127,7 +14127,7 @@ constant list
   list
     define
     list
-      resolve-symbols
+      resolve-data-symbols
       expression
     list
       relaxed-deep-map
@@ -16418,7 +16418,7 @@ constant list
                 quote
                 $$quote
               list
-                resolve-symbols
+                resolve-data-symbols
                 list
                   cdr
                   expression
@@ -16437,7 +16437,7 @@ constant list
                       macro-context-state
                       context
                   list
-                    resolve-symbols
+                    resolve-data-symbols
                     list
                       cadr
                       expression
@@ -21483,7 +21483,7 @@ constant procedure 1 #f
     call 2 #f cons
     call 2 #f cons
     constant define
-    constant libraries
+    constant library-context
     constant make-library-context
     constant map-values
     constant lambda
@@ -21551,7 +21551,7 @@ constant procedure 1 #f
     constant ()
     call 2 #f cons
     constant register-library!
-    constant libraries
+    constant library-context
     constant expression
     constant ()
     call 2 #f cons
@@ -21598,7 +21598,7 @@ constant procedure 1 #f
     call 2 #f cons
     constant append
     constant expand-library-bodies
-    constant libraries
+    constant library-context
     constant map
     constant car
     constant map
@@ -21647,7 +21647,7 @@ constant procedure 1 #f
     constant let
     constant names
     constant collect-imported-names
-    constant libraries
+    constant library-context
     constant map
     constant parse-import-set
     constant imports
@@ -21738,7 +21738,7 @@ constant procedure 1 #f
     constant context
     constant make-macro-context
     constant make-macro-state
-    constant libraries
+    constant library-context
     constant quote
     constant ()
     constant ()

@@ -2076,6 +2076,7 @@
     ; Main
 
     (define (compile-program options source)
+     ; TODO Consider introducing a global context.
      (define library-context (make-library-context '() '()))
      (define expression1 (include-files "" source))
      (define-values (expression2 libraries) (expand-libraries library-context expression1))
