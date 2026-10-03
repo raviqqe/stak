@@ -715,19 +715,19 @@ Feature: Library system
       (define-library (foo)
         (export foo)
 
-        (include-library-declarations "foo/bar.scm"))
+        (include-library-declarations "bar.scm"))
       """
-    And a file named "library/foo/bar.scm" with:
+    And a file named "library/bar.scm" with:
       """scheme
       (import (scheme base))
 
       (include-library-declarations "baz.scm")
       """
-    And a file named "library/foo/baz.scm" with:
+    And a file named "library/baz.scm" with:
       """scheme
       (include "qux.scm")
       """
-    And a file named "library/foo/qux.scm" with:
+    And a file named "library/qux.scm" with:
       """scheme
       (define (foo x)
         (write-u8 x))
