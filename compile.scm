@@ -2212,7 +2212,7 @@
                old-imports
                new-imports))
 
-             (define libraries
+             (define library-context
               (make-library-context
                (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
                '()))
@@ -2220,7 +2220,7 @@
              (define (expand-libraries imports symbol-table expression)
               (case (maybe-car expression)
                ((define-library)
-                (register-library! libraries expression)
+                (register-library! library-context expression)
                 (values #f imports))
                ((import)
                 (let ((imports (append-imports imports (cdr expression))))
@@ -2229,7 +2229,7 @@
                    '$$begin
                    (append
                     (expand-library-bodies
-                     libraries
+                     library-context
                      (map car (map parse-import-set imports)))
                     (list #f)))
                   imports)))
@@ -2237,7 +2237,7 @@
                 (values
                  (resolve-environment-symbols
                   (let ((names (collect-imported-names
-                                libraries
+                                library-context
                                 (map parse-import-set imports))))
                    (lambda (name)
                     (cond
@@ -2253,7 +2253,7 @@
              (define expand-macros
               (let ((context
                      (make-macro-context
-                      (make-macro-state libraries '() '() '() '())
+                      (make-macro-state library-context '() '() '() '())
                       '())))
                (for-each
                 (lambda (pair)
