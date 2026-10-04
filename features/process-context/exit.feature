@@ -94,32 +94,20 @@ Feature: Exit
       | exit           |
       | emergency-exit |
 
-  Rule: `exit`
+  Scenario Outline: Leave a dynamic extent
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context))
 
-    Scenario: Leave a dynamic extent
-      Given a file named "main.scm" with:
-        """scheme
-        (import (scheme base) (scheme process-context))
+      (dynamic-wind
+        (lambda () (write-u8 65))
+        (lambda () (<procedure>))
+        (lambda () (write-u8 66)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
 
-        (dynamic-wind
-          (lambda () (write-u8 65))
-          (lambda () (exit))
-          (lambda () (write-u8 66)))
-        """
-      When I successfully run `stak main.scm`
-      Then the stdout should contain exactly "AB"
-
-  Rule: `emergency-exit`
-
-    Scenario: Leave a dynamic extent
-      Given a file named "main.scm" with:
-        """scheme
-        (import (scheme base) (scheme process-context))
-
-        (dynamic-wind
-          (lambda () #f)
-          (lambda () (emergency-exit))
-          (lambda () (write-u8 65)))
-        """
-      When I successfully run `stak main.scm`
-      Then the stdout should contain exactly ""
+    Examples:
+      | procedure      | output |
+      | exit           | AB     |
+      | emergency-exit | A      |
