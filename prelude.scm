@@ -1227,7 +1227,7 @@
 
     (define (error message . xs)
       (write-message message)
-      ($halt))
+      ($halt 1))
 
     ; Dummy implementation
     (define (write-message . xs)
@@ -2547,7 +2547,7 @@
                           (write-string "]"))))
                     (write-irritant exception))
                   (newline)
-                  ($halt))))))
+                  ($halt 1))))))
         (lambda (handler)
           ; Set an exception handler for runtime errors.
           (set-cdr!
@@ -6566,11 +6566,11 @@
           #f)))
 
     (define (emergency-exit . rest)
-      (if (eq? (get-option #t rest) #t)
+      (if (memq (get-option #t rest) '(#t 0))
         (begin
           (set-car! (car (cddr (close (lambda () #f)))) '(0))
           ((lambda () #f)))
-        ($halt)))
+        ($halt (if (integer? (car rest)) (car rest) 1))))
 
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))

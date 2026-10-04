@@ -12,10 +12,10 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_file::OsFileSystem;
 use stak_process_context::OsProcessContext;
-use stak_r7rs::SmallPrimitiveSet;
+use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::OsClock;
 use stak_vm::Vm;
-use std::{fs::read, path::PathBuf};
+use std::{fs::read, path::PathBuf, process::ExitCode};
 
 #[derive(clap::Parser)]
 #[command(about, version)]
@@ -28,10 +28,10 @@ struct Arguments {
     heap_size: usize,
 }
 
-fn main() -> Result<(), MainError> {
+fn main() -> Result<ExitCode, MainError> {
     let arguments = Arguments::parse();
 
-    Vm::new(
+    match Vm::new(
         vec![Default::default(); arguments.heap_size],
         SmallPrimitiveSet::new(
             StdioDevice::new(),
@@ -40,7 +40,10 @@ fn main() -> Result<(), MainError> {
             OsClock::new(),
         ),
     )?
-    .run(read(&arguments.file)?)?;
-
-    Ok(())
+    .run(read(&arguments.file)?)
+    {
+        Ok(()) => Ok(ExitCode::SUCCESS),
+        Err(SmallError::Halt(code)) => Ok(code.into()),
+        Err(error) => Err(error.into()),
+    }
 }

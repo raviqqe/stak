@@ -33,4 +33,4 @@ cat $directory/prelude.scm $libraries $script |
   grep -v '^#!.*' |
   compile >main.bc
 
-stak-interpret main.bc "$@"
+$directory/target/release_test/stak-interpret main.bc "$@"

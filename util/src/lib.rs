@@ -1,4 +1,4 @@
-//! Utilities around `libc`.
+//! Utilities for Stak Scheme.
 
 #![no_std]
 
