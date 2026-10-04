@@ -6,8 +6,19 @@ set -e
 
 cd $(dirname $0)/..
 
-# TODO Test gosh.
-interpreters='chibi-scheme guile'
+interpreters='chibi-scheme gosh guile'
+
+compile() (
+  case $1 in
+  gosh)
+    # TODO Use vanilla Gauche.
+    log gosh -fno-inline-locals compile.scm
+    ;;
+  *)
+    log $1 compile.scm
+    ;;
+  esac
+)
 
 cargo build --release
 export PATH=$PWD/target/release:$PATH
@@ -16,7 +27,7 @@ for file in $(list_scheme_files); do
   echo FILE $file
 
   for interpreter in $interpreters stak; do
-    cat prelude.scm $file | log $interpreter compile.scm >$interpreter.bc
+    cat prelude.scm $file | compile $interpreter >$interpreter.bc
   done
 
   for interpreter in $interpreters; do
