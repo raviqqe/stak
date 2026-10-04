@@ -2,7 +2,7 @@
 name = "stak-util"
 version.workspace = true
 edition.workspace = true
-description = "Stak Scheme utilities"
+description = "Utilities for Stak Scheme"
 readme.workspace = true
 repository.workspace = true
 license.workspace = true

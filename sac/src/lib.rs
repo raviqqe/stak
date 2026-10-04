@@ -53,6 +53,7 @@ macro_rules! main {
         );
     };
     ($path:expr, $heap_size:expr) => {
+        use std::process::ExitCode;
         use $crate::__private::{
             clap::{self, Parser},
             main_error::MainError,
@@ -60,7 +61,7 @@ macro_rules! main {
             stak_file::OsFileSystem,
             stak_macro::include_r7rs,
             stak_process_context::OsProcessContext,
-            stak_r7rs::SmallPrimitiveSet,
+            stak_r7rs::{SmallError, SmallPrimitiveSet},
             stak_time::OsClock,
             stak_vm::Vm,
         };
@@ -74,10 +75,10 @@ macro_rules! main {
             heap_size: usize,
         }
 
-        fn main() -> Result<(), MainError> {
+        fn main() -> Result<ExitCode, MainError> {
             let arguments = Arguments::parse();
 
-            Vm::new(
+            match Vm::new(
                 vec![Default::default(); arguments.heap_size],
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
@@ -86,9 +87,12 @@ macro_rules! main {
                     OsClock::new(),
                 ),
             )?
-            .run(include_r7rs!($path).iter().copied())?;
-
-            Ok(())
+            .run(include_r7rs!($path).iter().copied())
+            {
+                Ok(()) => Ok(ExitCode::SUCCESS),
+                Err(SmallError::Halt(code)) => Ok(code.into()),
+                Err(error) => Err(error.into()),
+            }
         }
     };
 }
@@ -117,7 +121,7 @@ macro_rules! libc_main {
             stak_file::LibcFileSystem,
             stak_macro::include_r7rs,
             stak_process_context::LibcProcessContext,
-            stak_r7rs::SmallPrimitiveSet,
+            stak_r7rs::{SmallError, SmallPrimitiveSet},
             stak_time::LibcClock,
             stak_vm::{Value, Vm},
         };
@@ -135,20 +139,24 @@ macro_rules! libc_main {
         extern "C" fn main(argc: isize, argv: *const *const i8) {
             let mut heap = Box::<[Value; $heap_size]>::new_uninit();
 
-            Vm::new(
-                unsafe { heap.assume_init_mut() },
-                SmallPrimitiveSet::new(
-                    ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
-                    LibcFileSystem::new(),
-                    unsafe { LibcProcessContext::new(argc, argv) },
-                    LibcClock::new(),
-                ),
-            )
-            .unwrap()
-            .run(include_r7rs!($path).iter().copied())
-            .unwrap();
-
-            exit(0);
+            exit(
+                match Vm::new(
+                    unsafe { heap.assume_init_mut() },
+                    SmallPrimitiveSet::new(
+                        ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
+                        LibcFileSystem::new(),
+                        unsafe { LibcProcessContext::new(argc, argv) },
+                        LibcClock::new(),
+                    ),
+                )
+                .unwrap()
+                .run(include_r7rs!($path).iter().copied())
+                {
+                    Ok(()) => 0,
+                    Err(SmallError::Halt(code)) => code.into(),
+                    Err(_) => 1,
+                },
+            );
         }
     };
 }

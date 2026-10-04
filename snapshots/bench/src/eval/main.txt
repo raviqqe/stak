@@ -1010,7 +1010,8 @@ constant procedure 1 #t
   get 1
   call 1 #f write-message
   set 0
-  call 0 #f ||
+  constant 1
+  call 1 #f ||
 set error
 constant procedure 0 #t
   constant #f
@@ -3650,7 +3651,8 @@ constant procedure 1 #f
       set 0
       call 0 #f newline
       set 0
-      call 0 #f ||
+      constant 1
+      call 1 #f ||
     call 1 #f $$close
     constant procedure 0 #f
       get 3

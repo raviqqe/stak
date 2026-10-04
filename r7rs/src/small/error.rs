@@ -12,7 +12,7 @@ pub enum Error {
     /// A file error.
     File(stak_file::PrimitiveError),
     /// A halt of a virtual machine.
-    Halt,
+    Halt(u8),
     /// A time error.
     Time(stak_time::PrimitiveError),
     /// A virtual machine error.
@@ -24,7 +24,7 @@ impl Exception for Error {
         match self {
             Self::Device(error) => error.is_critical(),
             Self::File(error) => error.is_critical(),
-            Self::Halt => true,
+            Self::Halt(_) => true,
             Self::Time(error) => error.is_critical(),
             Self::Vm(error) => error.is_critical(),
         }
@@ -38,7 +38,7 @@ impl Display for Error {
         match self {
             Self::Device(error) => write!(formatter, "{error}"),
             Self::File(error) => write!(formatter, "{error}"),
-            Self::Halt => write!(formatter, "halt"),
+            Self::Halt(code) => write!(formatter, "halt {code}"),
             Self::Time(error) => write!(formatter, "{error}"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }

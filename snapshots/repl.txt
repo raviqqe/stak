@@ -1010,7 +1010,8 @@ constant procedure 1 #t
   get 1
   call 1 #f write-message
   set 0
-  call 0 #f ||
+  constant 1
+  call 1 #f ||
 set error
 constant procedure 0 #t
   constant #f
@@ -3650,7 +3651,8 @@ constant procedure 1 #f
       set 0
       call 0 #f newline
       set 0
-      call 0 #f ||
+      constant 1
+      call 1 #f ||
     call 1 #f $$close
     constant procedure 0 #f
       get 3
@@ -15971,8 +15973,10 @@ constant procedure 0 #t
   constant #t
   get 1
   call 2 #f get-option
-  constant #t
-  call 2 #f eq?
+  constant list
+    #t
+    0
+  call 2 #f memq
   if
     constant procedure 0 #f
       constant #f
@@ -15984,7 +15988,15 @@ constant procedure 0 #t
     call 2 #f set-car!
     set 0
     constant #f
-  call 0 #f ||
+  get 0
+  call 1 #f car
+  call 1 #f integer?
+  if
+    get 0
+    call 1 #f car
+    continue
+  constant 1
+  call 1 #f ||
 set emergency-exit
 constant procedure 0 #t
   constant procedure 0 #f
