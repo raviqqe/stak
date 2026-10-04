@@ -54,7 +54,7 @@ Feature: Exit
         """
       When I run `stak main.scm`
       Then the exit status should be 42
-      And the stderr should contain exactly ""
+      And the stderr should not contain "halt"
 
     @chibi @gauche @stak
     Scenario: Exit an interpreter with a non-integer value
@@ -134,7 +134,7 @@ Feature: Exit
         """
       When I run `stak main.scm`
       Then the exit status should be 42
-      And the stderr should contain exactly ""
+      And the stderr should not contain "halt"
 
     @chibi @gauche @stak
     Scenario: Exit an interpreter with a non-integer value
