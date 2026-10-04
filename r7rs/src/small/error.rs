@@ -11,7 +11,7 @@ pub enum Error {
     Device(stak_device::PrimitiveError),
     /// A file error.
     File(stak_file::PrimitiveError),
-    /// A halt of a virtual machine with an exit code.
+    /// A halt of a virtual machine.
     Halt(u8),
     /// A time error.
     Time(stak_time::PrimitiveError),
@@ -38,7 +38,7 @@ impl Display for Error {
         match self {
             Self::Device(error) => write!(formatter, "{error}"),
             Self::File(error) => write!(formatter, "{error}"),
-            Self::Halt(code) => write!(formatter, "halt with exit code {code}"),
+            Self::Halt(code) => write!(formatter, "halt {code}"),
             Self::Time(error) => write!(formatter, "{error}"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
