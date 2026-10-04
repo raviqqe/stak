@@ -6582,7 +6582,7 @@
           #f)))
 
     (define (emergency-exit . rest)
-      (if (memv (get-option #t rest) '(#t 0))
+      (if (memq (get-option #t rest) '(#t 0))
         (begin
           (set-car! (car (cddr (close (lambda () #f)))) '(0))
           ((lambda () #f)))

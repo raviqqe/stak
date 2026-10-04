@@ -440,12 +440,6 @@ constant procedure 2 #t
   get 3
   call 1 #f 1
 set ||
-constant procedure 2 #f
-  get 1
-  get 1
-  get ||
-  call 3 #f ||
-set ||
 constant procedure 2 #t
   constant #f
   get ||

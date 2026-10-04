@@ -15982,7 +15982,7 @@ constant procedure 0 #t
   constant list
     #t
     0
-  call 2 #f memv
+  call 2 #f memq
   if
     constant procedure 0 #f
       constant #f
