@@ -3810,11 +3810,11 @@ constant list
   append-multi-map
   memv-index
   path-separator
-  include
   include-library-declarations
+  include
   include-paths
-  directory
   include-expressions
+  directory
   library?
   library-context?
   library-context-set-libraries!
@@ -6088,47 +6088,6 @@ constant procedure 1 #f
   call 2 #f with-input-from-file
 set 4
 constant procedure 2 #f
-  get 0
-  call 1 #f 18
-  constant include
-  call 2 #f eq?
-  if
-    constant begin
-    get 2
-    get 2
-    call 1 #f cdr
-    call 2 #f 6
-    call 2 #f cons
-  get 0
-  call 1 #f list?
-  if
-    get 1
-    get 1
-    call 2 #f 6
-  get 0
-call 1 #f $$close
-set 3
-constant procedure 2 #f
-  constant procedure 1 #f
-    get 0
-    call 1 #f 20
-    constant include-library-declarations
-    call 2 #f eq?
-    if
-      get 3
-      get 1
-      call 1 #f cdr
-      call 2 #f 7
-    get 3
-    get 1
-    call 2 #f 9
-    call 1 #f list
-  call 1 #f $$close
-  get 1
-  call 2 #f 29
-call 1 #f $$close
-set 2
-constant procedure 2 #f
   constant procedure 1 #f
     get 3
     get 1
@@ -6141,6 +6100,47 @@ constant procedure 2 #f
   call 1 #f $$close
   get 1
   call 2 #f 29
+call 1 #f $$close
+set 3
+constant procedure 2 #f
+  constant procedure 1 #f
+    get 0
+    call 1 #f 20
+    constant include-library-declarations
+    call 2 #f eq?
+    if
+      get 3
+      get 1
+      call 1 #f cdr
+      call 2 #f 9
+    get 3
+    get 1
+    call 2 #f 7
+    call 1 #f list
+  call 1 #f $$close
+  get 1
+  call 2 #f 29
+call 1 #f $$close
+set 2
+constant procedure 2 #f
+  get 0
+  call 1 #f 18
+  constant include
+  call 2 #f eq?
+  if
+    constant begin
+    get 2
+    get 2
+    call 1 #f cdr
+    call 2 #f 8
+    call 2 #f cons
+  get 0
+  call 1 #f list?
+  if
+    get 1
+    get 1
+    call 2 #f 6
+  get 0
 call 1 #f $$close
 set 1
 constant #f
@@ -6486,7 +6486,7 @@ constant procedure 2 #f
       get 3
       call 1 #f 46
       get 2
-      call 2 #f 44
+      call 2 #f 42
       call 2 #f 13
     call 1 #f $$close
     get 1
@@ -12473,7 +12473,7 @@ constant procedure 3 #f
     get 3
     constant ""
     get 4
-    call 2 #f 130
+    call 2 #f 128
     call 3 #f 11
   call 1 #f $$close
   constant procedure 2 #f
@@ -14256,42 +14256,33 @@ constant list
   list
     define
     list
-      include-files
+      include-paths
       directory
-      expression
+      paths
     list
-      cond
+      append-map
       list
+        lambda
         list
-          eq?
-          list
-            maybe-car
-            expression
-          list
-            quote
-            include
+          path
         list
-          cons
+          let
           list
-            quote
-            begin
-          list
-            include-paths
-            directory
             list
-              cdr
-              expression
-      list
-        list
-          list?
-          expression
-        list
-          include-expressions
-          directory
-          expression
-      list
-        else
-        expression
+              path
+              list
+                append-path
+                directory
+                path
+          list
+            include-expressions
+            list
+              path-directory
+              path
+            list
+              read-file
+              path
+      paths
   list
     define
     list
@@ -14330,33 +14321,42 @@ constant list
   list
     define
     list
-      include-paths
+      include-files
       directory
-      paths
+      expression
     list
-      append-map
+      cond
       list
-        lambda
         list
-          path
+          eq?
+          list
+            maybe-car
+            expression
+          list
+            quote
+            include
         list
-          let
+          cons
           list
-            list
-              path
-              list
-                append-path
-                directory
-                path
+            quote
+            begin
           list
-            include-expressions
+            include-paths
+            directory
             list
-              path-directory
-              path
-            list
-              read-file
-              path
-      paths
+              cdr
+              expression
+      list
+        list
+          list?
+          expression
+        list
+          include-expressions
+          directory
+          expression
+      list
+        else
+        expression
   list
     define-record-type
     library

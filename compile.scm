@@ -253,14 +253,12 @@
 
     ; Inclusion
 
-    (define (include-files directory expression)
-     (cond
-      ((eq? (maybe-car expression) 'include)
-       (cons 'begin (include-paths directory (cdr expression))))
-      ((list? expression)
-       (include-expressions directory expression))
-      (else
-       expression)))
+    (define (include-paths directory paths)
+     (append-map
+      (lambda (path)
+       (let ((path (append-path directory path)))
+        (include-expressions (path-directory path) (read-file path))))
+      paths))
 
     (define (include-expressions directory expressions)
      (append-map
@@ -270,12 +268,14 @@
         (list (include-files directory expression))))
       expressions))
 
-    (define (include-paths directory paths)
-     (append-map
-      (lambda (path)
-       (let ((path (append-path directory path)))
-        (include-expressions (path-directory path) (read-file path))))
-      paths))
+    (define (include-files directory expression)
+     (cond
+      ((eq? (maybe-car expression) 'include)
+       (cons 'begin (include-paths directory (cdr expression))))
+      ((list? expression)
+       (include-expressions directory expression))
+      (else
+       expression)))
 
     ; Library system
 
