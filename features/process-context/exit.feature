@@ -79,6 +79,7 @@ Feature: Exit
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "AB"
 
+  # TODO Use example tables instead for applicable test cases.
   Rule: `emergency-exit`
 
     Scenario: Exit an interpreter
