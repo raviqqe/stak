@@ -476,14 +476,21 @@
        (map car sets)
        (resolve-environment-symbols resolve-symbol (collect-bodies 'begin)))))
 
+    ; Global context
+
+    (define-record-type global-context
+     (make-global-context library-context)
+     global-context?
+     (library-context global-context-library-context))
+
     ; Macro system
 
     ;; Types
 
     (define-record-type macro-state
-     (make-macro-state library-context globals literals static-symbols dynamic-symbols)
+     (make-macro-state global-context globals literals static-symbols dynamic-symbols)
      macro-state?
-     (library-context macro-state-library-context)
+     (global-context macro-state-global-context)
      (globals macro-state-globals macro-state-set-globals!)
      (literals macro-state-literals macro-state-set-literals!)
      (static-symbols macro-state-static-symbols macro-state-set-static-symbols!)
@@ -865,7 +872,8 @@
         (($$if-library)
          (expand
           (if (library-exists?
-               (macro-state-library-context (macro-context-state context))
+               (global-context-library-context
+                (macro-state-global-context (macro-context-state context)))
                (resolve-data-symbols (cadr expression)))
            (caddr expression)
            (cadddr expression))))
@@ -1279,7 +1287,8 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries context expression)
-     (let* ((expressions (cdr expression))
+     (let* ((context (global-context-library-context context))
+            (expressions (cdr expression))
             (sets
              (map
               parse-import-set
@@ -1322,8 +1331,8 @@
 
     ; Macro system
 
-    (define (expand-macros library-context expression)
-     (let* ((context (make-macro-context (make-macro-state library-context '() '() '() '()) '()))
+    (define (expand-macros context expression)
+     (let* ((context (make-macro-context (make-macro-state context '() '() '() '()) '()))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -2075,11 +2084,10 @@
     ; Main
 
     (define (compile-program options source)
-     ; TODO Consider introducing a global context.
-     (define library-context (make-library-context '() '()))
+     (define context (make-global-context (make-library-context '() '())))
      (define expression1 (include-files "" source))
-     (define-values (expression2 libraries) (expand-libraries library-context expression1))
-     (define-values (expression3 macros dynamic-symbols) (expand-macros library-context expression2))
+     (define-values (expression2 libraries) (expand-libraries context expression1))
+     (define-values (expression3 macros dynamic-symbols) (expand-macros context expression2))
      (define-values (expression4 optimizers) (optimize-custom expression3))
      (define features (detect-features expression4))
      (define expression5 (shake-tree features expression4))
@@ -2253,7 +2261,7 @@
              (define expand-macros
               (let ((context
                      (make-macro-context
-                      (make-macro-state library-context '() '() '() '())
+                      (make-macro-state (make-global-context library-context) '() '() '() '())
                       '())))
                (for-each
                 (lambda (pair)
