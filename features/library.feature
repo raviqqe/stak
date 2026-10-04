@@ -659,6 +659,89 @@ Feature: Library system
     When I successfully run `stak -I library main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Include library declarations
+    Given a file named "foo.scm" with:
+      """scheme
+      (define-library (foo)
+        (include-library-declarations "bar.scm"))
+      """
+    And a file named "bar.scm" with:
+      """scheme
+      (export foo)
+
+      (import (scheme base))
+
+      (begin
+        (define (foo x)
+          (write-u8 x)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    When I successfully run `stak -l foo.scm main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Include library declarations in a library in a load path
+    Given a file named "library/foo/bar.sld" with:
+      """scheme
+      (define-library (foo bar)
+        (export bar)
+
+        (include-library-declarations "bar.scm"))
+      """
+    And a file named "library/foo/bar.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (begin
+        (define (bar x)
+          (write-u8 x)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo bar))
+
+      (bar 65)
+      """
+    When I successfully run `stak -I library main.scm`
+    Then the stdout should contain exactly "A"
+
+  @chibi @gauche @stak
+  Scenario: Include library declarations in included library declarations
+    Given a file named "library/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (include-library-declarations "bar.scm"))
+      """
+    And a file named "library/bar.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (include-library-declarations "baz.scm")
+      """
+    And a file named "library/baz.scm" with:
+      """scheme
+      (include "qux.scm")
+      """
+    And a file named "library/qux.scm" with:
+      """scheme
+      (define (foo x)
+        (write-u8 x))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    When I successfully run `stak -I library main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Fail to import a library importing itself
     Given a file named "foo.sld" with:
       """scheme

@@ -125,12 +125,6 @@
        (cons x (relaxed-map f (cdr xs))))
       (f xs)))
 
-    (define (deep-map f x)
-     (let ((x (f x)))
-      (if (list? x)
-       (map (lambda (x) (deep-map f x)) x)
-       x)))
-
     (define (relaxed-deep-map f xs)
      (if (pair? xs)
       (cons
@@ -259,24 +253,29 @@
 
     ; Inclusion
 
-    (define (include-files directory expression)
-     (deep-map
+    (define (include-paths directory paths)
+     (append-map
+      (lambda (path)
+       (let ((path (append-path directory path)))
+        (include-expressions (path-directory path) (read-file path))))
+      paths))
+
+    (define (include-expressions directory expressions)
+     (append-map
       (lambda (expression)
-       (if (and
-            (pair? expression)
-            (eq? (car expression) 'include))
-        (cons
-         'begin
-         (append-map
-          (lambda (path)
-           (let ((path (append-path directory path)))
-            (map
-             (lambda (expression)
-              (include-files (path-directory path) expression))
-             (read-file path))))
-          (cdr expression)))
-        expression))
-      expression))
+       (if (eq? (maybe-car expression) 'include-library-declarations)
+        (include-paths directory (cdr expression))
+        (list (include-files directory expression))))
+      expressions))
+
+    (define (include-files directory expression)
+     (cond
+      ((eq? (maybe-car expression) 'include)
+       (cons 'begin (include-paths directory (cdr expression))))
+      ((list? expression)
+       (include-expressions directory expression))
+      (else
+       expression)))
 
     ; Library system
 
