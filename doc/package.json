@@ -14,7 +14,7 @@
     "@monza-editor/preact": "^0.6.0",
     "@nanostores/async": "^0.1.0",
     "@nanostores/preact": "^1.1.0",
-    "@preact/signals": "^2.11.2",
+    "@preact/signals": "^2.11.3",
     "@raviqqe/stak": "^0.12.29",
     "astro": "^7.3.5",
     "classnames": "^2.5.1",
