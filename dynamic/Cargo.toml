@@ -13,7 +13,7 @@ categories.workspace = true
 any-fn = { version = "0.6.3" }
 bitvec = { version = "1.0.1", default-features = false, features = ["alloc"] }
 heapless = { version = "0.9.3", default-features = false }
-stak-vm = { path = "../vm", version = "0.12.29" }
+stak-vm = { path = "../vm", version = "0.12.30" }
 winter-maybe-async = { version = "0.13.1" }
 
 [dev-dependencies]
