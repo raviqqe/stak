@@ -14,22 +14,22 @@ name = "stak"
 required-features = ["std"]
 
 [dependencies]
-stak-device = { path = "../device", version = "0.12.29" }
-stak-dynamic = { path = "../dynamic", version = "0.12.29", optional = true }
-stak-engine = { path = "../engine", version = "0.12.29", optional = true }
-stak-file = { path = "../file", version = "0.12.29" }
-stak-module = { path = "../module", version = "0.12.29" }
-stak-process-context = { path = "../process-context", version = "0.12.29" }
-stak-r7rs = { path = "../r7rs", version = "0.12.29" }
-stak-sac = { path = "../sac", version = "0.12.29" }
-stak-time = { path = "../time", version = "0.12.29" }
-stak-vm = { path = "../vm", version = "0.12.29" }
+stak-device = { path = "../device", version = "0.12.30" }
+stak-dynamic = { path = "../dynamic", version = "0.12.30", optional = true }
+stak-engine = { path = "../engine", version = "0.12.30", optional = true }
+stak-file = { path = "../file", version = "0.12.30" }
+stak-module = { path = "../module", version = "0.12.30" }
+stak-process-context = { path = "../process-context", version = "0.12.30" }
+stak-r7rs = { path = "../r7rs", version = "0.12.30" }
+stak-sac = { path = "../sac", version = "0.12.30" }
+stak-time = { path = "../time", version = "0.12.30" }
+stak-vm = { path = "../vm", version = "0.12.30" }
 
 [dev-dependencies]
 stak-build = { path = "../build" }
 
 [build-dependencies]
-stak-build = { path = "../build", version = "0.12.29" }
+stak-build = { path = "../build", version = "0.12.30" }
 
 [features]
 default = ["float", "std"]
