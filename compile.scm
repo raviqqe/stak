@@ -277,6 +277,25 @@
       (else
        expression)))
 
+    ; Global context
+
+    (define-record-type global-context
+     (make-global-context libraries)
+     global-context?
+     (libraries global-context-libraries global-context-set-libraries!))
+
+    (define (global-context-find-library context name)
+     (cond
+      ((assoc name (global-context-libraries context)) =>
+       cdr)
+      (else
+       #f)))
+
+    (define (global-context-add-library! context name library)
+     (global-context-set-libraries!
+      context
+      (cons (cons name library) (global-context-libraries context))))
+
     ; Library system
 
     ;; Types
@@ -289,22 +308,10 @@
      (body library-body))
 
     (define-record-type library-context
-     (make-library-context libraries imported)
+     (make-library-context global-context imported)
      library-context?
-     (libraries library-context-libraries library-context-set-libraries!)
+     (global-context library-context-global-context)
      (imported library-context-imported library-context-set-imported!))
-
-    (define (library-context-find context name)
-     (cond
-      ((assoc name (library-context-libraries context)) =>
-       cdr)
-      (else
-       #f)))
-
-    (define (library-context-add! context name library)
-     (library-context-set-libraries!
-      context
-      (cons (cons name library) (library-context-libraries context))))
 
     (define (library-context-import! context name)
      (let* ((names (library-context-imported context))
@@ -388,12 +395,12 @@
 
     (define (library-exists? context name)
      (or
-      (library-context-find context name)
+      (global-context-find-library context name)
       (find-library-file name)))
 
     (define (load-library context name)
      (or
-      (library-context-find context name)
+      (global-context-find-library (library-context-global-context context) name)
       (begin
        (when (member name (loading-libraries))
         (error "circular library import" name))
@@ -410,7 +417,7 @@
             context
             (include-files (path-directory path) expression)))
           (read-file path))))
-       (library-context-find context name))
+       (global-context-find-library (library-context-global-context context) name))
       (error "unknown library" name)))
 
     (define (expand-library-bodies context names)
@@ -461,8 +468,8 @@
          (set! names (cons (cons name renamed) names))
          renamed))))
 
-     (library-context-add!
-      context
+     (global-context-add-library!
+      (library-context-global-context context)
       (cadr expression)
       (make-library
        (map-values
@@ -481,9 +488,9 @@
     ;; Types
 
     (define-record-type macro-state
-     (make-macro-state library-context globals literals static-symbols dynamic-symbols)
+     (make-macro-state global-context globals literals static-symbols dynamic-symbols)
      macro-state?
-     (library-context macro-state-library-context)
+     (global-context macro-state-global-context)
      (globals macro-state-globals macro-state-set-globals!)
      (literals macro-state-literals macro-state-set-literals!)
      (static-symbols macro-state-static-symbols macro-state-set-static-symbols!)
@@ -865,7 +872,7 @@
         (($$if-library)
          (expand
           (if (library-exists?
-               (macro-state-library-context (macro-context-state context))
+               (macro-state-global-context (macro-context-state context))
                (resolve-data-symbols (cadr expression)))
            (caddr expression)
            (cadddr expression))))
@@ -1279,7 +1286,8 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries context expression)
-     (let* ((expressions (cdr expression))
+     (let* ((context (make-library-context context '()))
+            (expressions (cdr expression))
             (sets
              (map
               parse-import-set
@@ -1318,12 +1326,12 @@
          (filter
           (lambda (pair)
            (member (car pair) (library-context-imported context)))
-          (library-context-libraries context)))))))
+          (global-context-libraries (library-context-global-context context))))))))
 
     ; Macro system
 
-    (define (expand-macros library-context expression)
-     (let* ((context (make-macro-context (make-macro-state library-context '() '() '() '()) '()))
+    (define (expand-macros context expression)
+     (let* ((context (make-macro-context (make-macro-state context '() '() '() '()) '()))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -2075,11 +2083,10 @@
     ; Main
 
     (define (compile-program options source)
-     ; TODO Consider introducing a global context.
-     (define library-context (make-library-context '() '()))
+     (define context (make-global-context '()))
      (define expression1 (include-files "" source))
-     (define-values (expression2 libraries) (expand-libraries library-context expression1))
-     (define-values (expression3 macros dynamic-symbols) (expand-macros library-context expression2))
+     (define-values (expression2 libraries) (expand-libraries context expression1))
+     (define-values (expression3 macros dynamic-symbols) (expand-macros context expression2))
      (define-values (expression4 optimizers) (optimize-custom expression3))
      (define features (detect-features expression4))
      (define expression5 (shake-tree features expression4))
@@ -2212,48 +2219,49 @@
                old-imports
                new-imports))
 
-             (define library-context
-              (make-library-context
-               (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))
-               '()))
+             (define global-context
+              (make-global-context
+               (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))))
 
-             (define (expand-libraries imports symbol-table expression)
-              (case (maybe-car expression)
-               ((define-library)
-                (register-library! library-context expression)
-                (values #f imports))
-               ((import)
-                (let ((imports (append-imports imports (cdr expression))))
-                 (values
-                  (cons
-                   '$$begin
-                   (append
-                    (expand-library-bodies
-                     library-context
-                     (map car (map parse-import-set imports)))
-                    (list #f)))
-                  imports)))
-               (else
-                (values
-                 (resolve-environment-symbols
-                  (let ((names (collect-imported-names
-                                library-context
-                                (map parse-import-set imports))))
-                   (lambda (name)
-                    (cond
-                     ((assq name names) =>
-                      cdr)
-                     (else
-                      (string->symbol (symbol->string name) symbol-table)))))
-                  expression)
-                 imports))))
+             (define expand-libraries
+              (let ((context (make-library-context global-context '())))
+               (lambda (imports symbol-table expression)
+                (case (maybe-car expression)
+                 ((define-library)
+                  (register-library! context expression)
+                  (values #f imports))
+                 ((import)
+                  (let ((imports (append-imports imports (cdr expression))))
+                   (values
+                    (cons
+                     '$$begin
+                     (append
+                      (expand-library-bodies
+                       context
+                       (map car (map parse-import-set imports)))
+                      (list #f)))
+                    imports)))
+                 (else
+                  (values
+                   (resolve-environment-symbols
+                    (let ((names (collect-imported-names
+                                  context
+                                  (map parse-import-set imports))))
+                     (lambda (name)
+                      (cond
+                       ((assq name names) =>
+                        cdr)
+                       (else
+                        (string->symbol (symbol->string name) symbol-table)))))
+                    expression)
+                   imports))))))
 
              ; Macro system
 
              (define expand-macros
               (let ((context
                      (make-macro-context
-                      (make-macro-state library-context '() '() '() '())
+                      (make-macro-state global-context '() '() '() '())
                       '())))
                (for-each
                 (lambda (pair)
