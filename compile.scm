@@ -2223,38 +2223,38 @@
               (make-global-context
                (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))))
 
-             (define library-context (make-library-context global-context '()))
-
-             (define (expand-libraries imports symbol-table expression)
-              (case (maybe-car expression)
-               ((define-library)
-                (register-library! library-context expression)
-                (values #f imports))
-               ((import)
-                (let ((imports (append-imports imports (cdr expression))))
-                 (values
-                  (cons
-                   '$$begin
-                   (append
-                    (expand-library-bodies
-                     library-context
-                     (map car (map parse-import-set imports)))
-                    (list #f)))
-                  imports)))
-               (else
-                (values
-                 (resolve-environment-symbols
-                  (let ((names (collect-imported-names
-                                library-context
-                                (map parse-import-set imports))))
-                   (lambda (name)
-                    (cond
-                     ((assq name names) =>
-                      cdr)
-                     (else
-                      (string->symbol (symbol->string name) symbol-table)))))
-                  expression)
-                 imports))))
+             (define expand-libraries
+              (let ((context (make-library-context global-context '())))
+               (lambda (imports symbol-table expression)
+                (case (maybe-car expression)
+                 ((define-library)
+                  (register-library! context expression)
+                  (values #f imports))
+                 ((import)
+                  (let ((imports (append-imports imports (cdr expression))))
+                   (values
+                    (cons
+                     '$$begin
+                     (append
+                      (expand-library-bodies
+                       context
+                       (map car (map parse-import-set imports)))
+                      (list #f)))
+                    imports)))
+                 (else
+                  (values
+                   (resolve-environment-symbols
+                    (let ((names (collect-imported-names
+                                  context
+                                  (map parse-import-set imports))))
+                     (lambda (name)
+                      (cond
+                       ((assq name names) =>
+                        cdr)
+                       (else
+                        (string->symbol (symbol->string name) symbol-table)))))
+                    expression)
+                   imports))))))
 
              ; Macro system
 
