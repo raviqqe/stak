@@ -39,7 +39,6 @@ for file in $(ls */main.scm | sort | grep $filter); do
   base=${file%.scm}
 
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,chibi-scheme $file,gosh $file,guile $file"
-  reference=
 
   if [ $(dirname $base) != eval ]; then
     scripts="$scripts,gsi $file"
@@ -50,8 +49,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
   fi
 
   if [ -r $base.py ]; then
-    reference="python3 $base.py"
-    scripts="$reference,micropython $base.py,ruby $base.rb,mruby $base.rb,lua $base.lua,$scripts"
+    scripts="python3 $base.py,micropython $base.py,ruby $base.rb,mruby $base.rb,lua $base.lua,$scripts"
   fi
 
   hyperfine \
@@ -61,7 +59,6 @@ for file in $(ls */main.scm | sort | grep $filter); do
     --export-markdown $output_directory/$(dirname $base).md \
     --export-json $output_directory/$(dirname $base).json \
     --input ../../compile.scm \
-    ${reference:+--reference "$reference"} \
     -L script "$scripts" \
     "{script}"
 done
