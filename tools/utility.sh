@@ -78,7 +78,7 @@ setup_bench() (
 
   brew install chibi-scheme gambit-scheme gauche guile lua micropython mruby ruby
   build_tr7
-  cargo install --locked hyperfine
+  cargo install --locked hyperfine@^2
 
   case $feature in
   i63)
