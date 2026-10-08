@@ -132,7 +132,6 @@
     "urandom",
     "usize",
     "uutils",
-    "valgrind",
     "varint",
     "webp",
     "zigbuild",
