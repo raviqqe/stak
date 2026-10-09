@@ -6112,7 +6112,15 @@
     (only (stak base) boolean-or get-option))
 
   (begin
+    (define comment (list 'comment))
+
     (define (read . rest)
+      (define (read-datum)
+        (let ((x (read-raw)))
+          (if (eq? x comment)
+            (read-datum)
+            x)))
+
       (define (read-raw)
         (let ((char (peek-non-whitespace-char)))
           (cond
@@ -6155,29 +6163,36 @@
                             (cdr (assoc (list->string x) special-chars))))))))
 
                 ((#\!)
-                  (skip-line-comment))
+                  (skip-line-comment)
+                  comment)
 
                 ((#\|)
-                  (skip-block-comment))
+                  (skip-block-comment)
+                  comment)
+
+                ((#\;)
+                  (read-char)
+                  (read-datum)
+                  comment)
 
                 (else
                   (list->vector (read-list)))))
 
             ((eqv? char #\')
               (read-char)
-              (list 'quote (read-raw)))
+              (list 'quote (read-datum)))
 
             ((eqv? char #\`)
               (read-char)
-              (list 'quasiquote (read-raw)))
+              (list 'quasiquote (read-datum)))
 
             ((eqv? char #\,)
               (read-char)
               (if (eqv? (peek-char) #\@)
                 (begin
                   (read-char)
-                  (list 'unquote-splicing (read-raw)))
-                (list 'unquote (read-raw))))
+                  (list 'unquote-splicing (read-datum)))
+                (list 'unquote (read-datum))))
 
             ((eqv? char #\")
               (read-string))
@@ -6201,11 +6216,18 @@
 
               (else
                 (let ((x (read-raw)))
-                  (if (and (symbol? x) (equal? (symbol->string x) "."))
-                    (let ((x (read-raw)))
-                      (read-char)
-                      x)
-                    (cons x (read-tail))))))))
+                  (cond
+                    ((eq? x comment)
+                      (read-tail))
+
+                    ((and (symbol? x) (equal? (symbol->string x) "."))
+                      (let ((x (read-datum)))
+                        (unless (null? (read-tail))
+                          (error ") expected"))
+                        x))
+
+                    (else
+                      (cons x (read-tail)))))))))
 
         (unless (eqv? (read-char) #\()
           (error "( expected"))
@@ -6295,7 +6317,7 @@
 
       (parameterize ((current-input-port
                        (get-option (current-input-port) rest)))
-        (read-raw)))))
+        (read-datum)))))
 
 (define-library (scheme write)
   (export

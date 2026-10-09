@@ -423,6 +423,60 @@ Feature: Read
       | #u8(1 2)        |
       | #u8(1 2 3)      |
 
+  @long
+  Scenario Outline: Read a value with a comment
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme read))
+
+      (write-u8 (if (equal? (read) '<value>) 65 66))
+      (write-u8 (if (eof-object? (read)) 65 66))
+      """
+    And a file named "input.txt" with:
+      """text
+      <input>
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "AA"
+
+    Examples:
+      | input             | value    |
+      | #;1 2             | 2        |
+      | #; 1 2            | 2        |
+      | #;(1 2) 3         | 3        |
+      | #;#;1 2 3         | 3        |
+      | 1 #;2             | 1        |
+      | (#;1)             | ()       |
+      | (1 #;2)           | (1)      |
+      | (1 #;2 3)         | (1 3)    |
+      | (1 . #;2 3)       | (1 . 3)  |
+      | (1 . 2 #;3)       | (1 . 2)  |
+      | #(1 #;2 3)        | #(1 3)   |
+      | #u8(1 #;2 3)      | #u8(1 3) |
+      | '#;1 2            | '2       |
+      | (1 #\| foo \|# 2) | (1 2)    |
+      | (1 #\| foo \|#)   | (1)      |
+      | #;#\| foo \|# 1 2 | 2        |
+
+  Scenario: Read a dotted list with a space before a closing parenthesis
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme read))
+
+      (write-u8 (if (equal? (read) '(1 . 2)) 65 66))
+      (write-u8 (if (eof-object? (read)) 65 66))
+      """
+    And a file named "input.txt" with:
+      """text
+      (1 . 2 )
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "AA"
+
   Scenario: Read from a port
     Given a file named "main.scm" with:
       """scheme
@@ -474,3 +528,21 @@ Feature: Read
     Then the exit status should not be 0
     And the stdout should contain exactly ""
     And the stderr should contain "expression expected"
+
+  @stak
+  Scenario: Read a dotted list with values after its tail
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme read))
+
+      (read)
+      """
+    And a file named "input.txt" with:
+      """text
+      (1 . 2 3)
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should not be 0
+    And the stdout should contain exactly ""
+    And the stderr should contain ") expected"
