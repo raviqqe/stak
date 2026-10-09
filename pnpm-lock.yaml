@@ -194,8 +194,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(nanostores@1.5.4)
       '@nanostores/preact':
-        specifier: ^1.1.0
-        version: 1.1.0(nanostores@1.5.4)(preact@10.29.8)
+        specifier: ^1.1.1
+        version: 1.1.1(nanostores@1.5.4)(preact@10.29.8)
       '@preact/signals':
         specifier: ^2.11.3
         version: 2.11.3(preact@10.29.8)
@@ -995,8 +995,8 @@ packages:
     peerDependencies:
       nanostores: ^1
 
-  '@nanostores/preact@1.1.0':
-    resolution: {integrity: sha512-oiu9z85AiZlBTKJ8YsfAs8TALpDij70LmmKuRkeF22rS9zUBhVtYDWXEvV1qUUStNNwSFdhTMkwzOYL/IsA+UA==}
+  '@nanostores/preact@1.1.1':
+    resolution: {integrity: sha512-196xgAe1/HRDfibKFw+V2hHhARthlwNquy1oXyS0jNLgX3AYdo8MAn8nTEx+lojYGpvIz7cgoFbgbpnwcwCLSA==}
     engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
       nanostores: ^1.2.0
@@ -3564,7 +3564,7 @@ snapshots:
     dependencies:
       nanostores: 1.5.4
 
-  '@nanostores/preact@1.1.0(nanostores@1.5.4)(preact@10.29.8)':
+  '@nanostores/preact@1.1.1(nanostores@1.5.4)(preact@10.29.8)':
     dependencies:
       nanostores: 1.5.4
       preact: 10.29.8(preact-render-to-string@6.7.0)
