@@ -26,6 +26,18 @@ Feature: Comment
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Skip a datum comment
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      #;(write-u8 66)
+
+      (write-u8 65)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   @chibi @gauche @stak
   Scenario: Skip a shebang
     Given a file named "main.scm" with:

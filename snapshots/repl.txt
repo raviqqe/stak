@@ -3801,6 +3801,7 @@ constant list
   ieee-float
   little-endian
   runtime
+  comment
   $$rib
   include-library-declarations
   include
@@ -8246,6 +8247,9 @@ get open-output-file
 get current-output-port
 call 2 #f ||
 set with-output-to-file
+constant comment
+call 1 #f list
+set ||
 constant procedure 0 #t
   constant #f
   constant #f
@@ -8254,6 +8258,17 @@ constant procedure 0 #t
   constant #f
   constant #f
   constant #f
+  constant #f
+  constant procedure 0 #f
+    call 0 #f 7
+    get 0
+    get ||
+    call 2 #f eq?
+    if
+      call 0 #f 9
+    get 0
+  call 1 #f $$close
+  set 8
   constant procedure 0 #f
     call 0 #f 3
     get 0
@@ -8329,11 +8344,24 @@ constant procedure 0 #t
       call 2 #f eqv?
       if
         call 0 #f 4
+        set 0
+        get ||
       get 0
       constant #\|
       call 2 #f eqv?
       if
         call 0 #f 3
+        set 0
+        get ||
+      get 0
+      constant #\;
+      call 2 #f eqv?
+      if
+        call 0 #f read-char
+        set 0
+        call 0 #f 10
+        set 0
+        get ||
       call 0 #f 8
       call 1 #f list->vector
     get 0
@@ -8343,7 +8371,7 @@ constant procedure 0 #t
       call 0 #f read-char
       set 0
       constant quote
-      call 0 #f 9
+      call 0 #f 10
       call 2 #f list
     get 0
     constant #\`
@@ -8352,7 +8380,7 @@ constant procedure 0 #t
       call 0 #f read-char
       set 0
       constant quasiquote
-      call 0 #f 9
+      call 0 #f 10
       call 2 #f list
     get 0
     constant #\,
@@ -8367,10 +8395,10 @@ constant procedure 0 #t
         call 0 #f read-char
         set 0
         constant unquote-splicing
-        call 0 #f 9
+        call 0 #f 10
         call 2 #f list
       constant unquote
-      call 0 #f 9
+      call 0 #f 10
       call 2 #f list
     get 0
     constant #\"
@@ -8416,6 +8444,11 @@ constant procedure 0 #t
         constant ()
       call 0 #f 10
       get 0
+      get ||
+      call 2 #f eq?
+      if
+        call 0 #f 3
+      get 0
       call 1 #f symbol?
       if
         get 0
@@ -8425,8 +8458,16 @@ constant procedure 0 #t
         continue
       constant #f
       if
-        call 0 #f 11
-        call 0 #f read-char
+        call 0 #f 12
+        call 0 #f 4
+        call 1 #f null?
+        constant #f
+        call 2 #f eq?
+        if
+          constant ") expected"
+          call 1 #f error
+          continue
+        constant #f
         set 0
         get 0
       get 0
@@ -8583,12 +8624,12 @@ constant procedure 0 #t
   call 0 #f 0
   constant procedure 0 #f
     call 0 #f current-input-port
-    get 11
+    get 12
     call 2 #f get-option
     call 1 #f 3
   call 1 #f $$close
   constant procedure 0 #f
-    call 0 #f 10
+    call 0 #f 11
   call 1 #f $$close
   constant procedure 0 #f
     get 3
