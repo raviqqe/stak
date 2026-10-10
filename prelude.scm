@@ -6112,7 +6112,7 @@
     (only (stak base) boolean-or get-option))
 
   (begin
-    (define comment (list 'comment))
+    (define comment (cons 0 0))
 
     (define (read . rest)
       (define (read-datum)

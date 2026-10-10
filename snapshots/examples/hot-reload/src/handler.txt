@@ -1928,7 +1928,6 @@ call 1 #f ||
 set ||
 constant list
   runtime
-  comment
   unquote-splicing
   .
   quote
@@ -1997,8 +1996,9 @@ constant procedure 1 #f
     constant #t
   constant #f
 set ||
-constant comment
-call 1 #f ||
+constant 0
+constant 0
+call 2 #f ||
 set ||
 constant procedure 0 #t
   constant #f
