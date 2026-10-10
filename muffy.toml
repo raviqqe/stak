@@ -57,6 +57,9 @@ concurrency = 64
 supply = 10
 window = "1s"
 
+[sites.github.retry]
+count = 50
+
 [sites.wikipedia]
 extend = "default"
 roots = ["https://en.wikipedia.org/wiki/"]

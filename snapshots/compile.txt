@@ -5243,6 +5243,17 @@ constant procedure 0 #t
           get 0
           call 1 #f car
         get 0
+        call 1 #f car
+        constant #\x
+        call 2 #f eqv?
+        if
+          get 0
+          call 1 #f cdr
+          call 1 #f list->string
+          constant 16
+          call 2 #f string->number
+          call 1 #f integer->char
+        get 0
         call 1 #f list->string
         get special-chars
         call 2 #f assoc

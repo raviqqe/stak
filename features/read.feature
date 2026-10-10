@@ -399,6 +399,7 @@ Feature: Read
       | x               |
       | foo             |
       | #\\A            |
+      | #\\x41          |
       | #\\newline      |
       | ""              |
       | "foo"           |

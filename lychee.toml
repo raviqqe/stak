@@ -1,0 +1,7 @@
+verbose = "info"
+no_progress = true
+accept = ["200..300", "403", "429"]
+exclude = [
+  "^https://github\\.com/raviqqe/stak/blob/",
+  "^https://www\\.gnu\\.org/software/guile/",
+]
