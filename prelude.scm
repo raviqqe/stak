@@ -6135,7 +6135,6 @@
             (cons (read-char) (read-symbol-chars)))))
 
       (define (read-string)
-        (read-char)
         (let loop ((xs '()))
           (let ((char (read-char)))
             (cond
@@ -6177,11 +6176,11 @@
 
       (define (read-datum)
         (let ((char (peek-non-whitespace-char)))
+          (read-char) ; TODO
           (cond
             ((eof-object? char)
               char)
             ((eqv? char #\()
-              (read-char)
               (read-list))
             ((eqv? char #\))
               close)
@@ -6189,7 +6188,6 @@
               (skip-line-comment)
               (read-datum))
             ((eqv? char #\#)
-              (read-char)
               (case (read-char)
                 ((#\f)
                   #f)
@@ -6227,13 +6225,10 @@
                 (else
                   (error "invalid hash expression"))))
             ((eqv? char #\')
-              (read-char)
               (list 'quote (read-datum)))
             ((eqv? char #\`)
-              (read-char)
               (list 'quasiquote (read-datum)))
             ((eqv? char #\,)
-              (read-char)
               (if (eqv? (peek-char) #\@)
                 (begin
                   (read-char)
@@ -6242,9 +6237,7 @@
             ((eqv? char #\")
               (read-string))
             (else
-              (let ((x (list->string (read-symbol-chars))))
-                (when (zero? (string-length x))
-                  (error "expression expected"))
+              (let ((x (list->string (cons char (read-symbol-chars)))))
                 (or (string->number x) (string->symbol x)))))))
 
       (parameterize ((current-input-port (get-option (current-input-port) rest)))
