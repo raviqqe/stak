@@ -6180,8 +6180,6 @@
                     (else
                       (cons x (read-tail)))))))))
 
-        (unless (eqv? (read-char) #\()
-          (error "( expected"))
         (read-tail))
 
       (define (read-datum)
@@ -6190,6 +6188,7 @@
             ((eof-object? char)
               char)
             ((eqv? char #\()
+              (read-char)
               (read-list))
             ((eqv? char #\))
               close)
@@ -6204,6 +6203,7 @@
                 ((#\t)
                   #t)
                 ((#\u)
+                  (read-char)
                   (read-char)
                   (list->bytevector (read-list)))
                 ((#\\)
@@ -6229,8 +6229,10 @@
                 ((#\;)
                   (read-datum)
                   (read-datum))
+                ((#\()
+                  (list->vector (read-list)))
                 (else
-                  (list->vector (read-list)))))
+                  (error "invalid hash expression"))))
             ((eqv? char #\')
               (read-char)
               (list 'quote (read-datum)))
