@@ -3801,7 +3801,6 @@ constant list
   ieee-float
   little-endian
   runtime
-  comment
   $$rib
   include-library-declarations
   include
@@ -8247,8 +8246,9 @@ get open-output-file
 get current-output-port
 call 2 #f ||
 set with-output-to-file
-constant comment
-call 1 #f list
+constant 0
+constant 0
+call 2 #f cons
 set ||
 constant procedure 0 #t
   constant #f

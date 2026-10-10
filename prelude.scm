@@ -974,10 +974,8 @@
         (cond
           ((null? xs)
             #f)
-
           ((eq? x (car xs))
             xs)
-
           (else
             (loop (cdr xs))))))
 
@@ -1925,13 +1923,11 @@
             (cond
               ((null? xs)
                 y)
-
               ((and
                   (not initial)
                   (eqv? (car xs) #\.))
                 (let ((x (convert-point (cdr xs))))
                   (and x (+ y x))))
-
               (else
                 (let ((x (convert-digit (car xs))))
                   (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
@@ -2447,11 +2443,9 @@
       (cond
         ((eq? from to)
           #f)
-
         ((< (point-depth from) (point-depth to))
           (travel-to-point! from (point-parent to))
           ((point-before to)))
-
         (else
           ((point-after from))
           (travel-to-point! (point-parent from) to))))
@@ -3006,7 +3000,6 @@
                 (lambda (name symbol) (equal? name (symbol->string symbol))))
               =>
               car)
-
             (else
               (let ((name (string->uninterned-symbol name)))
                 (symbol-table-set-symbols! table (cons name (symbol-table-symbols table)))
@@ -6112,7 +6105,7 @@
     (only (stak base) boolean-or get-option))
 
   (begin
-    (define comment (list 'comment))
+    (define comment (cons 0 0))
 
     (define (read . rest)
       (define (read-datum)
@@ -6126,26 +6119,21 @@
           (cond
             ((eof-object? char)
               char)
-
             ((eqv? char #\()
               (read-list))
-
             ((eqv? char #\#)
               (read-char)
               (case (peek-char)
                 ((#\f)
                   (read-char)
                   #f)
-
                 ((#\t)
                   (read-char)
                   #t)
-
                 ((#\u)
                   (read-char)
                   (read-char)
                   (list->bytevector (read-list)))
-
                 ((#\\)
                   (read-char)
                   (let ((char (peek-char)))
@@ -6155,37 +6143,28 @@
                         (cond
                           ((null? x)
                             (read-char))
-
                           ((eq? (length x) 1)
                             (car x))
-
                           (else
                             (cdr (assoc (list->string x) special-chars))))))))
-
                 ((#\!)
                   (skip-line-comment)
                   comment)
-
                 ((#\|)
                   (skip-block-comment)
                   comment)
-
                 ((#\;)
                   (read-char)
                   (read-datum)
                   comment)
-
                 (else
                   (list->vector (read-list)))))
-
             ((eqv? char #\')
               (read-char)
               (list 'quote (read-datum)))
-
             ((eqv? char #\`)
               (read-char)
               (list 'quasiquote (read-datum)))
-
             ((eqv? char #\,)
               (read-char)
               (if (eqv? (peek-char) #\@)
@@ -6193,10 +6172,8 @@
                   (read-char)
                   (list 'unquote-splicing (read-datum)))
                 (list 'unquote (read-datum))))
-
             ((eqv? char #\")
               (read-string))
-
             (else
               (let ((x (list->string (read-symbol-chars))))
                 (when (zero? (string-length x))
@@ -6209,23 +6186,19 @@
             (cond
               ((eof-object? char)
                 (error ") expected"))
-
               ((eqv? char #\))
                 (read-char)
                 '())
-
               (else
                 (let ((x (read-raw)))
                   (cond
                     ((eq? x comment)
                       (read-tail))
-
                     ((and (symbol? x) (equal? (symbol->string x) "."))
                       (let ((x (read-datum)))
                         (unless (null? (read-tail))
                           (error ") expected"))
                         x))
-
                     (else
                       (cons x (read-tail)))))))))
 
@@ -6249,10 +6222,8 @@
             (cond
               ((eof-object? char)
                 (error "closing \" expected"))
-
               ((eqv? char #\")
                 (list->string (reverse xs)))
-
               ((eqv? char #\\)
                 (let ((char (read-char)))
                   (loop
@@ -6260,17 +6231,13 @@
                       (case char
                         ((#\n)
                           #\newline)
-
                         ((#\r)
                           #\return)
-
                         ((#\t)
                           #\tab)
-
                         (else
                           char))
                       xs))))
-
               (else
                 (loop (cons char xs)))))))
 
@@ -6281,10 +6248,8 @@
               (begin
                 (read-char)
                 (peek-non-whitespace-char)))
-
             ((eqv? char #\;)
               (skip-line-comment))
-
             (else
               char))))
 
@@ -6293,10 +6258,8 @@
           (cond
             ((eof-object? char)
               char)
-
             ((eqv? char #\newline)
               (peek-non-whitespace-char))
-
             (else
               (skip-line-comment)))))
 
@@ -6305,13 +6268,11 @@
           (cond
             ((eof-object? char)
               (error "|# expected"))
-
             ((and
                 (eqv? char #\|)
                 (eqv? (peek-char) #\#))
               (read-char)
               (peek-non-whitespace-char))
-
             (else
               (skip-block-comment)))))
 
@@ -6379,14 +6340,11 @@
       (cond
         ((not x)
           (write-string "#f"))
-
         ((eq? x #t)
           (write-string "#t"))
-
         ((bytevector? x)
           (write-string "#u8")
           (write-sequence context (bytevector->list x)))
-
         ((char? x)
           (if (write-context-display context)
             (write-char x)
@@ -6397,22 +6355,16 @@
                 (if pair
                   (write-string (cdr pair))
                   (write-char x))))))
-
         ((null? x)
           (write-string "()"))
-
         ((number? x)
           (write-string (number->string x)))
-
         ((pair? x)
           (write-reference context write-list x))
-
         ((procedure? x)
           (write-string "#procedure"))
-
         ((record? x)
           (write-string "#record"))
-
         ((string? x)
           (if (write-context-display context)
             (write-string x)
@@ -6420,14 +6372,11 @@
               (write-char #\")
               (for-each write-escaped-char (string->list x))
               (write-char #\"))))
-
         ((symbol? x)
           (let ((string (symbol->string x)))
             (write-string (if (zero? (string-length string)) "||" string))))
-
         ((vector? x)
           (write-reference context write-vector x))
-
         (else
           (error "unknown type to write"))))
 
@@ -6583,7 +6532,6 @@
       (cond
         ((assoc name (get-environment-variables)) =>
           cdr)
-
         (else
           #f)))
 
@@ -7045,10 +6993,8 @@
           (cond
             ((less? value node-value)
               (node-find (node-left node) value less?))
-
             ((less? node-value value)
               (node-find (node-right node) value less?))
-
             (else
               node-value)))))
 
@@ -7086,13 +7032,11 @@
                 node
                 (node-insert! (node-left node) value less?))
               (node-balance! node))
-
             ((less? node-value value)
               (node-set-right!
                 node
                 (node-insert! (node-right node) value less?))
               (node-balance! node))
-
             (else
               node)))
         (make-node value 0 #f #f)))

@@ -189,13 +189,10 @@
      (cond
       ((pair? parameters)
        (cons (car parameters) (parameter-names (cdr parameters))))
-
       ((symbol? parameters)
        (list parameters))
-
       ((null? parameters)
        '())
-
       (else
        (error "invalid variadic parameter" parameters))))
 
@@ -591,13 +588,10 @@
          (loop
           (cdr pattern)
           variables)))
-
        ((ellipsis-pattern? pattern)
         (loop (ellipsis-pattern-element pattern) variables))
-
        ((and (symbol? pattern) (not (memq pattern excluded-patterns)))
         (cons pattern variables))
-
        (else
         variables))))
 
@@ -612,13 +606,10 @@
        =>
        (lambda (pair)
         (make-literal-pattern (car pair))))
-
       ((not (pair? pattern))
        pattern)
-
       ((eq? ellipsis (resolve-denotation context (car pattern)))
        (cadr pattern))
-
       ((and
         (pair? (cdr pattern))
         (eq? ellipsis (resolve-denotation context (cadr pattern))))
@@ -629,7 +620,6 @@
            pattern
            (find-pattern-variables '() pattern)))
          (cddr pattern))))
-
       (else
        (cons
         (compile (car pattern))
@@ -654,7 +644,6 @@
      (cond
       ((symbol? pattern)
        (list (cons pattern expression)))
-
       ((pair? pattern)
        (cond
         ((ellipsis-pattern? (car pattern))
@@ -664,25 +653,20 @@
           (append
            (match-ellipsis-pattern context (car pattern) (list-head expression length))
            (match (cdr pattern) (list-tail expression length)))))
-
         ((pair? expression)
          (append
           (match (car pattern) (car expression))
           (match (cdr pattern) (cdr expression))))
-
         (else
          (raise #f))))
-
       ((literal-pattern? pattern)
        (unless (eq?
                 (literal-pattern-denotation pattern)
                 (resolve-denotation context expression))
         (raise #f))
        '())
-
       ((equal? pattern expression)
        '())
-
       (else
        (raise #f))))
 
@@ -707,20 +691,16 @@
       ((and (symbol? template) (assq template matches)) =>
        (lambda (pair)
         (list (cdr pair))))
-
       ((pair? template)
        (list
         (apply
          append
          (fill (car template))
          (fill (cdr template)))))
-
       ((literal-pattern? template)
        (list (literal-pattern-denotation template)))
-
       ((ellipsis-pattern? template)
        (fill-ellipsis-template context matches template))
-
       (else
        (list template))))
 
@@ -796,7 +776,6 @@
                (not (assq expression (macro-context-locals context))))
          (macro-context-append-dynamic-symbol! context expression))
         value))
-
       ((pair? expression)
        (case (resolve (car expression))
         (($$define)
@@ -804,7 +783,6 @@
           (macro-context-set-global! context name name)
           (macro-context-append-static-symbol! context name)
           (expand (cons '$$set! (cdr expression)))))
-
         (($$define-syntax)
          (let ((name (cadr expression))
                (transformer (caddr expression)))
@@ -820,7 +798,6 @@
             transformer))
           (macro-context-append-static-symbol! context name)
           #f))
-
         (($$lambda)
          (let* ((parameters (cadr expression))
                 (context
@@ -838,7 +815,6 @@
            '$$lambda
            parameters
            (expand-macro context (caddr expression)))))
-
         (($$let-syntax)
          (expand-macro
           (macro-context-append
@@ -848,7 +824,6 @@
              (make-transformer context (car transformer)))
             (cadr expression)))
           (caddr expression)))
-
         (($$letrec-syntax)
          (let* ((bindings (cadr expression))
                 (context
@@ -865,10 +840,8 @@
              (make-transformer context (cadr pair))))
            bindings)
           (expand-macro context (caddr expression))))
-
         (($$quote)
          (cons '$$quote (resolve-data-symbols (cdr expression))))
-
         (($$if-library)
          (expand
           (if (library-exists?
@@ -876,17 +849,14 @@
                (resolve-data-symbols (cadr expression)))
            (caddr expression)
            (cadddr expression))))
-
         (($$syntax-error)
          (apply error (cadr expression) (cddr expression)))
-
         (else =>
          (lambda (value)
           (if (procedure? value)
            (let-values (((expression context) (value context expression)))
             (expand-macro context expression))
            (map expand expression))))))
-
       (else
        expression)))
 
@@ -1185,7 +1155,6 @@
         get-instruction
         (compilation-context-resolve context expression)
         continuation))
-
       ((let ((predicate (maybe-car expression)))
         (and
          (eq? (maybe-car predicate) '$$lambda)
@@ -1196,15 +1165,12 @@
          (map list (caddr predicate) (cdr expression))
          (cadddr predicate)
          continuation)))
-
       ((pair? expression)
        (case (car expression)
         (($$apply)
          (compile-call context (cdr expression) #t continuation))
-
         (($$begin)
          (compile-sequence context (cdr expression) continuation))
-
         (($$if)
          (compile-expression
           context
@@ -1220,7 +1186,6 @@
              (caddr expression)
              continuation)
             (compile-expression context (cadddr expression) continuation)))))
-
         (($$lambda)
          (let ((parameters (caddr expression)))
           (constant-rib
@@ -1240,19 +1205,14 @@
            (if (null? (cadr expression))
             continuation
             (call-rib (compile-arity 1 #f) '$$close continuation)))))
-
         (($$libraries)
          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
-
         (($$macros)
          (constant-rib (metadata-macros (compilation-context-metadata context)) continuation))
-
         (($$optimizers)
          (constant-rib (metadata-optimizers (compilation-context-metadata context)) continuation))
-
         (($$quote)
          (constant-rib (cadr expression) continuation))
-
         (($$set!)
          (compile-expression
           context
@@ -1263,16 +1223,12 @@
             (compilation-context-push-local context #f)
             (cadr expression))
            (compile-unspecified continuation))))
-
         (($$symbols)
          (constant-rib (metadata-symbols (compilation-context-metadata context)) continuation))
-
         (($$dynamic-symbols)
          (constant-rib (metadata-dynamic-symbols (compilation-context-metadata context)) continuation))
-
         (else
          (compile-call context expression #f continuation))))
-
       (else
        (constant-rib expression continuation))))))
 
@@ -1520,13 +1476,10 @@
      (cond
       ((symbol? expression)
        (list expression))
-
       ((vector? expression)
        (find-symbols (vector->list expression)))
-
       ((pair? expression)
        (append (find-symbols (car expression)) (find-symbols (cdr expression))))
-
       (else
        '())))
 
@@ -1535,10 +1488,8 @@
       (cond
        ((not (pair? expression))
         '())
-
        ((eq? (car expression) '$$quote)
         (find-symbols (cadr expression)))
-
        (else
         (append (find (car expression)) (find (cdr expression))))))
 
@@ -1635,12 +1586,10 @@
      (cond
       ((null? value)
        (data-rib null-type 0 (cons-rib 0 0)))
-
       ((boolean? value)
        (if value
         (data-rib boolean-type 0 (marshal '()))
         (data-rib boolean-type (marshal '()) (marshal #t))))
-
       ((symbol? value)
        (data-rib
         symbol-type
@@ -1650,31 +1599,25 @@
           (if (or (not symbols) (memq value symbols))
            (resolve-symbol-string value)
            "")))))
-
       ((char? value)
        (data-rib char-type (char->integer value) (marshal '())))
-
       ((string? value)
        (data-rib
         string-type
         (string-length value)
         (marshal (map char->integer (string->list value)))))
-
       ((pair? value)
        (cons-rib (marshal (car value)) (marshal (cdr value))))
-
       ((vector? value)
        (data-rib
         vector-type
         (vector-length value)
         (marshal (list->vector-nodes (vector->list value)))))
-
       ((bytevector? value)
        (data-rib
         bytevector-type
         (bytevector-length value)
         (marshal (list->vector-nodes (bytes->list value)))))
-
       (else
        (error "invalid type"))))
 
@@ -1706,14 +1649,12 @@
      (cond
       ((number? value)
        value)
-
       ((or data (null? value))
        (cond
         ((target-procedure? value)
          (unless (null? (rib-cdr value))
           (error "invalid environment"))
          (data-rib procedure-type (marshal (rib-car value) #f) (marshal '() #t)))
-
         ((or
           (null? value)
           (boolean? value)
@@ -1721,25 +1662,20 @@
           (string? value)
           (symbol? value))
          (marshal-unique-constant context value))
-
         ((or (bytevector? value) (pair? value) (vector? value))
          (marshal-constant context value))
-
         (else
          (error "invalid type"))))
-
       ((nop-code? value)
        (cond
         ((assq value (marshal-context-continuations context)) =>
          cdr)
-
         (else
          (let ((continuation (nop-rib (marshal (rib-cdr value) #f))))
           (marshal-context-set-continuations!
            context
            (cons (cons value continuation) (marshal-context-continuations context)))
           continuation))))
-
       (else
        (rib
         (marshal (rib-car value) (not (= (rib-tag value) if-instruction)))
@@ -1903,7 +1839,6 @@
       ((encode-context-find-count context value) =>
        (lambda (pair)
         (set-cdr! pair (+ 1 (cdr pair)))))
-
       (else
        (encode-context-set-counts!
         context
@@ -1925,17 +1860,14 @@
       (cond
        ((number? codes)
         #f)
-
        ((eq? codes (encode-context-null context))
         (count-data! codes))
-
        ((nop-code? codes)
         (let* ((codes (strip-nop-instructions codes))
                (counted (encode-context-find-count context codes)))
          (increment-count! context codes)
          (unless counted
           (count-code! codes))))
-
        (else
         ((if (= (rib-tag codes) if-instruction) count-code! count-data!)
          (rib-car codes))

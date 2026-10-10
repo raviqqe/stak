@@ -3801,7 +3801,6 @@ constant list
   ieee-float
   little-endian
   runtime
-  comment
   $$rib
   call-instruction
   constant
@@ -5155,8 +5154,9 @@ constant procedure 1 #f
   call 1 #f char->integer
   call 2 #f ||
 set digit-value
-constant comment
-call 1 #f list
+constant 0
+constant 0
+call 2 #f cons
 set ||
 constant procedure 0 #t
   constant #f
