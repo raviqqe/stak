@@ -163,6 +163,25 @@ Feature: Character
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario Outline: Write a character of a hexadecimal scalar value
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-char <value>)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value     | output |
+      | #\\x      | x      |
+      | #\\x41    | A      |
+      | #\\x61    | a      |
+      | #\\x3bb   | λ      |
+      | #\\x3BB   | λ      |
+      | #\\x1f600 | 😀     |
+
   Scenario: Write a newline character
     Given a file named "main.scm" with:
       """scheme

@@ -6145,6 +6145,8 @@
                             (read-char))
                           ((eq? (length x) 1)
                             (car x))
+                          ((eqv? (car x) #\x)
+                            (integer->char (string->number (list->string (cdr x)) 16)))
                           (else
                             (cdr (assoc (list->string x) special-chars))))))))
                 ((#\!)
