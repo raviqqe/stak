@@ -783,7 +783,6 @@
           (macro-context-set-global! context name name)
           (macro-context-append-static-symbol! context name)
           (expand (cons '$$set! (cdr expression)))))
-
         (($$define-syntax)
          (let ((name (cadr expression))
                (transformer (caddr expression)))
@@ -799,7 +798,6 @@
             transformer))
           (macro-context-append-static-symbol! context name)
           #f))
-
         (($$lambda)
          (let* ((parameters (cadr expression))
                 (context
@@ -817,7 +815,6 @@
            '$$lambda
            parameters
            (expand-macro context (caddr expression)))))
-
         (($$let-syntax)
          (expand-macro
           (macro-context-append
@@ -827,7 +824,6 @@
              (make-transformer context (car transformer)))
             (cadr expression)))
           (caddr expression)))
-
         (($$letrec-syntax)
          (let* ((bindings (cadr expression))
                 (context
@@ -844,10 +840,8 @@
              (make-transformer context (cadr pair))))
            bindings)
           (expand-macro context (caddr expression))))
-
         (($$quote)
          (cons '$$quote (resolve-data-symbols (cdr expression))))
-
         (($$if-library)
          (expand
           (if (library-exists?
@@ -855,10 +849,8 @@
                (resolve-data-symbols (cadr expression)))
            (caddr expression)
            (cadddr expression))))
-
         (($$syntax-error)
          (apply error (cadr expression) (cddr expression)))
-
         (else =>
          (lambda (value)
           (if (procedure? value)
@@ -1177,10 +1169,8 @@
        (case (car expression)
         (($$apply)
          (compile-call context (cdr expression) #t continuation))
-
         (($$begin)
          (compile-sequence context (cdr expression) continuation))
-
         (($$if)
          (compile-expression
           context
@@ -1196,7 +1186,6 @@
              (caddr expression)
              continuation)
             (compile-expression context (cadddr expression) continuation)))))
-
         (($$lambda)
          (let ((parameters (caddr expression)))
           (constant-rib
@@ -1216,19 +1205,14 @@
            (if (null? (cadr expression))
             continuation
             (call-rib (compile-arity 1 #f) '$$close continuation)))))
-
         (($$libraries)
          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
-
         (($$macros)
          (constant-rib (metadata-macros (compilation-context-metadata context)) continuation))
-
         (($$optimizers)
          (constant-rib (metadata-optimizers (compilation-context-metadata context)) continuation))
-
         (($$quote)
          (constant-rib (cadr expression) continuation))
-
         (($$set!)
          (compile-expression
           context
@@ -1239,13 +1223,10 @@
             (compilation-context-push-local context #f)
             (cadr expression))
            (compile-unspecified continuation))))
-
         (($$symbols)
          (constant-rib (metadata-symbols (compilation-context-metadata context)) continuation))
-
         (($$dynamic-symbols)
          (constant-rib (metadata-dynamic-symbols (compilation-context-metadata context)) continuation))
-
         (else
          (compile-call context expression #f continuation))))
       (else

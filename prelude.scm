@@ -6127,16 +6127,13 @@
                 ((#\f)
                   (read-char)
                   #f)
-
                 ((#\t)
                   (read-char)
                   #t)
-
                 ((#\u)
                   (read-char)
                   (read-char)
                   (list->bytevector (read-list)))
-
                 ((#\\)
                   (read-char)
                   (let ((char (peek-char)))
@@ -6150,20 +6147,16 @@
                             (car x))
                           (else
                             (cdr (assoc (list->string x) special-chars))))))))
-
                 ((#\!)
                   (skip-line-comment)
                   comment)
-
                 ((#\|)
                   (skip-block-comment)
                   comment)
-
                 ((#\;)
                   (read-char)
                   (read-datum)
                   comment)
-
                 (else
                   (list->vector (read-list)))))
             ((eqv? char #\')
@@ -6238,13 +6231,10 @@
                       (case char
                         ((#\n)
                           #\newline)
-
                         ((#\r)
                           #\return)
-
                         ((#\t)
                           #\tab)
-
                         (else
                           char))
                       xs))))
