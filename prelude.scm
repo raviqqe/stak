@@ -6277,10 +6277,8 @@
               (begin
                 (read-char)
                 (peek-non-whitespace-char)))
-
             ((eqv? char #\;)
               (skip-line-comment))
-
             (else
               char))))
 
@@ -6289,10 +6287,8 @@
           (cond
             ((eof-object? char)
               char)
-
             ((eqv? char #\newline)
               (peek-non-whitespace-char))
-
             (else
               (skip-line-comment)))))
 
@@ -6301,13 +6297,11 @@
           (cond
             ((eof-object? char)
               (error "|# expected"))
-
             ((and
                 (eqv? char #\|)
                 (eqv? (peek-char) #\#))
               (read-char)
               (peek-non-whitespace-char))
-
             (else
               (skip-block-comment)))))
 
