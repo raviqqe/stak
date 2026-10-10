@@ -6201,7 +6201,7 @@
                   (cond
                     ((eq? x comment)
                       (read-tail))
-                    ((eq? x '.)
+                    ((and (symbol? x) (equal? (symbol->string x) "."))
                       (let ((x (read-datum)))
                         (unless (null? (read-tail))
                           (error ") expected"))
