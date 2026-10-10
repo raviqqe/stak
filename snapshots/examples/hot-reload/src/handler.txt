@@ -1930,6 +1930,7 @@ constant list
   runtime
   comment
   unquote-splicing
+  .
   quote
   quasiquote
   unquote
@@ -2198,14 +2199,8 @@ constant procedure 0 #t
       if
         call 0 #f 3
       get 0
-      call 1 #f ||
-      if
-        get 0
-        call 1 #f ||
-        constant "."
-        call 2 #f ||
-        continue
-      constant #f
+      constant .
+      call 2 #f ||
       if
         call 0 #f 12
         call 0 #f 4

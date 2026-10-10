@@ -899,9 +899,6 @@ set ||
 constant 4
 set ||
 get ||
-call 1 #f ||
-set ||
-get ||
 set ||
 constant procedure 1 #f
   get ||
@@ -1585,6 +1582,7 @@ constant list
   quasiquote
   unquote-splicing
   unquote
+  .
 call 1 #f ||
 constant procedure 1 #t
   constant #f
@@ -1850,14 +1848,8 @@ constant procedure 0 #t
       if
         call 0 #f 3
       get 0
-      call 1 #f ||
-      if
-        get 0
-        call 1 #f ||
-        constant "."
-        call 2 #f ||
-        continue
-      constant #f
+      constant .
+      call 2 #f ||
       if
         call 0 #f 12
         call 0 #f 4

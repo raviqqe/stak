@@ -3802,6 +3802,7 @@ constant list
   little-endian
   runtime
   comment
+  .
   $$rib
   include-library-declarations
   include
@@ -8449,14 +8450,8 @@ constant procedure 0 #t
       if
         call 0 #f 3
       get 0
-      call 1 #f symbol?
-      if
-        get 0
-        call 1 #f symbol->string
-        constant "."
-        call 2 #f equal?
-        continue
-      constant #f
+      constant .
+      call 2 #f eq?
       if
         call 0 #f 12
         call 0 #f 4
