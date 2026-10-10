@@ -603,6 +603,34 @@ Feature: Library system
     When I successfully run `stak -A library main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario Outline: Import a library with a comment in a load path
+    Given a file named "library/foo.sld" with:
+      """scheme
+      <comment>
+
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    When I successfully run `stak -I library main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | comment                  |
+      | #\| foo \|#              |
+      | #;(define-library (bar)) |
+
   Scenario: Import a library importing another library in a load path
     Given a file named "library/foo.sld" with:
       """scheme
