@@ -6161,26 +6161,19 @@
                 (loop (cons char xs)))))))
 
       (define (read-list)
-        (define (read-tail)
-          (let ((char (peek-non-whitespace-char)))
-            (cond
-              ((eof-object? char)
-                (error ") expected"))
-              ((eqv? char #\))
-                (read-char)
-                '())
-              (else
-                (let ((x (read-datum)))
-                  (cond
-                    ((and (symbol? x) (equal? (symbol->string x) "."))
-                      (let ((x (read-datum)))
-                        (unless (null? (read-tail))
-                          (error ") expected"))
-                        x))
-                    (else
-                      (cons x (read-tail)))))))))
-
-        (read-tail))
+        (let ((x (read-datum)))
+          (cond
+            ((eof-object? x)
+              (error ") expected"))
+            ((eq? x close)
+              '())
+            ((and (symbol? x) (equal? (symbol->string x) "."))
+              (let ((x (read-datum)))
+                (unless (eq? (read-datum) close)
+                  (error ") expected"))
+                x))
+            (else
+              (cons x (read-list))))))
 
       (define (read-datum)
         (let ((char (peek-non-whitespace-char)))
