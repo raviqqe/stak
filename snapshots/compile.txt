@@ -3801,7 +3801,6 @@ constant list
   ieee-float
   little-endian
   runtime
-  .
   $$rib
   call-instruction
   constant
@@ -5358,8 +5357,14 @@ constant procedure 0 #t
       if
         call 0 #f 3
       get 0
-      constant .
-      call 2 #f eq?
+      call 1 #f symbol?
+      if
+        get 0
+        call 1 #f symbol->string
+        constant "."
+        call 2 #f equal?
+        continue
+      constant #f
       if
         call 0 #f 12
         call 0 #f 4
