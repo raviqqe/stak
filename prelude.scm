@@ -6209,23 +6209,19 @@
             (cond
               ((eof-object? char)
                 (error ") expected"))
-
               ((eqv? char #\))
                 (read-char)
                 '())
-
               (else
                 (let ((x (read-raw)))
                   (cond
                     ((eq? x comment)
                       (read-tail))
-
-                    ((and (symbol? x) (equal? (symbol->string x) "."))
+                    ((eq? x '.)
                       (let ((x (read-datum)))
                         (unless (null? (read-tail))
                           (error ") expected"))
                         x))
-
                     (else
                       (cons x (read-tail)))))))))
 
