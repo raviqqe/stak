@@ -401,6 +401,9 @@ Feature: Read
       | #\\A            |
       | #\\x41          |
       | #\\newline      |
+      | #\\(            |
+      | #\\)            |
+      | #\\;            |
       | ""              |
       | "foo"           |
       | "Hello, world!" |
@@ -416,6 +419,8 @@ Feature: Read
       | (foo bar baz)   |
       | (foo . bar)     |
       | (foo bar . baz) |
+      | (#\\( #\\))     |
+      | (#\\;)          |
       | #(foo)          |
       | #(foo bar)      |
       | #(foo bar baz)  |
