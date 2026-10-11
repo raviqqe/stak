@@ -2163,9 +2163,8 @@ constant procedure 0 #t
     constant #f
     if
       call 0 #f 2
-      call 0 #f 3
-      get ||
-      call 2 #f ||
+      call 0 #f 4
+      call 1 #f ||
       constant #f
       call 2 #f ||
       if
@@ -2181,9 +2180,21 @@ constant procedure 0 #t
   call 1 #f ||
   set 2
   constant procedure 0 #f
-    call 0 #f 5
+    constant #f
+    constant procedure 1 #f
+      get 0
+      call 1 #f ||
+      constant #f
+      call 2 #f ||
+      if
+        get 0
+      call 0 #f ||
+      call 1 #f 3
+    call 1 #f ||
+    set 1
     call 0 #f ||
-    set 0
+    call 1 #f 1
+    call 2 #f ||
     get 0
     call 1 #f ||
     if

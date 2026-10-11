@@ -4902,9 +4902,8 @@ constant procedure 0 #t
     constant #f
     if
       call 0 #f 2
-      call 0 #f 3
-      get ||
-      call 2 #f eq?
+      call 0 #f 4
+      call 1 #f null?
       constant #f
       call 2 #f eq?
       if
@@ -4920,9 +4919,21 @@ constant procedure 0 #t
   call 1 #f $$close
   set 2
   constant procedure 0 #f
-    call 0 #f 5
+    constant #f
+    constant procedure 1 #f
+      get 0
+      call 1 #f char-whitespace?
+      constant #f
+      call 2 #f eq?
+      if
+        get 0
+      call 0 #f read-char
+      call 1 #f 3
+    call 1 #f $$close
+    set 1
     call 0 #f read-char
-    set 0
+    call 1 #f 1
+    call 2 #f $$unbind
     get 0
     call 1 #f eof-object?
     if
