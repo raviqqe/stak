@@ -6240,7 +6240,8 @@
               (let ((x (list->string (cons char (read-symbol-chars)))))
                 (or (string->number x) (string->symbol x)))))))
 
-      (parameterize ((current-input-port (get-option (current-input-port) rest)))
+      (parameterize ((current-input-port
+                       (get-option (current-input-port) rest)))
         (read-datum)))))
 
 (define-library (scheme write)

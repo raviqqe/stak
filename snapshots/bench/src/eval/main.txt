@@ -4734,254 +4734,81 @@ constant procedure 0 #t
   constant #f
   constant #f
   constant #f
-  constant #f
   constant procedure 0 #f
-    call 0 #f 7
-    get 0
-    get ||
-    call 2 #f eq?
-    if
-      call 0 #f 9
-    get 0
-  call 1 #f $$close
-  set 8
-  constant procedure 0 #f
-    call 0 #f 3
-    get 0
-    call 1 #f eof-object?
-    if
+    constant #f
+    constant procedure 1 #f
       get 0
-    get 0
-    constant #\(
-    call 2 #f eqv?
-    if
-      call 0 #f 7
-    get 0
-    constant #\#
-    call 2 #f eqv?
-    if
-      call 0 #f read-char
-      set 0
-      call 0 #f peek-char
-      get 0
-      constant #\f
+      constant #\newline
       call 2 #f eqv?
+      get 0
       if
-        call 0 #f read-char
-        set 0
+        get 0
+        continue
+      get 1
+      call 1 #f eof-object?
+      call 2 #f $$unbind
+      if
         constant #f
-      get 0
-      constant #\t
-      call 2 #f eqv?
-      if
-        call 0 #f read-char
-        set 0
-        constant #t
-      get 0
-      constant #\u
-      call 2 #f eqv?
-      if
-        call 0 #f read-char
-        set 0
-        call 0 #f read-char
-        set 0
-        call 0 #f 8
-        call 1 #f list->bytevector
-      get 0
-      constant #\\
-      call 2 #f eqv?
-      if
-        call 0 #f read-char
-        set 0
-        call 0 #f peek-char
-        get 0
-        call 1 #f char-whitespace?
-        if
-          call 0 #f read-char
-        call 0 #f 8
-        get 0
-        call 1 #f null?
-        if
-          call 0 #f read-char
-        get 0
-        call 1 #f length
-        constant 1
-        call 2 #f eq?
-        if
-          get 0
-          call 1 #f car
-        get 0
-        call 1 #f car
-        constant #\x
-        call 2 #f eqv?
-        if
-          get 0
-          call 1 #f cdr
-          call 1 #f list->string
-          constant 16
-          call 2 #f string->number
-          call 1 #f integer->char
-        get 0
-        call 1 #f list->string
-        get special-chars
-        call 2 #f assoc
-        call 1 #f cdr
-      get 0
-      constant #\!
-      call 2 #f eqv?
-      if
-        call 0 #f 4
-        set 0
-        get ||
+      call 0 #f read-char
+      call 1 #f 3
+    call 1 #f $$close
+    set 1
+    call 0 #f read-char
+    call 1 #f 1
+  set 7
+  constant procedure 0 #f
+    constant #f
+    constant procedure 1 #f
       get 0
       constant #\|
       call 2 #f eqv?
       if
-        call 0 #f 3
-        set 0
-        get ||
-      get 0
-      constant #\;
-      call 2 #f eqv?
-      if
-        call 0 #f read-char
-        set 0
-        call 0 #f 10
-        set 0
-        get ||
-      call 0 #f 8
-      call 1 #f list->vector
-    get 0
-    constant #\'
-    call 2 #f eqv?
-    if
-      call 0 #f read-char
-      set 0
-      constant quote
-      call 0 #f 10
-      call 2 #f list
-    get 0
-    constant #\`
-    call 2 #f eqv?
-    if
-      call 0 #f read-char
-      set 0
-      constant quasiquote
-      call 0 #f 10
-      call 2 #f list
-    get 0
-    constant #\,
-    call 2 #f eqv?
-    if
-      call 0 #f read-char
-      set 0
-      call 0 #f peek-char
-      constant #\@
-      call 2 #f eqv?
-      if
-        call 0 #f read-char
-        set 0
-        constant unquote-splicing
-        call 0 #f 10
-        call 2 #f list
-      constant unquote
-      call 0 #f 10
-      call 2 #f list
-    get 0
-    constant #\"
-    call 2 #f eqv?
-    if
-      call 0 #f 5
-    call 0 #f 6
-    call 1 #f list->string
-    get 0
-    call 1 #f string-length
-    constant 0
-    call 2 #f eq?
-    if
-      constant "expression expected"
-      call 1 #f error
-      continue
-    constant #f
-    set 0
-    get 0
-    call 1 #f string->number
-    get 0
-    if
-      get 0
-    get 1
-    call 1 #f string->symbol
-  call 1 #f $$close
-  set 7
-  constant procedure 0 #f
-    constant #f
-    constant procedure 0 #f
-      call 0 #f 5
-      get 0
-      call 1 #f eof-object?
-      if
-        constant ") expected"
-        call 1 #f error
-      get 0
-      constant #\)
-      call 2 #f eqv?
-      if
-        call 0 #f read-char
-        set 0
-        constant ()
-      call 0 #f 10
-      get 0
-      get ||
-      call 2 #f eq?
-      if
-        call 0 #f 3
-      get 0
-      call 1 #f symbol?
-      if
-        get 0
-        call 1 #f symbol->string
-        constant "."
-        call 2 #f equal?
+        call 0 #f peek-char
+        constant #\#
+        call 2 #f eqv?
         continue
       constant #f
-      if
-        call 0 #f 12
-        call 0 #f 4
-        call 1 #f null?
-        constant #f
-        call 2 #f eq?
-        if
-          constant ") expected"
-          call 1 #f error
-          continue
-        constant #f
-        set 0
-        get 0
       get 0
-      call 0 #f 4
-      call 2 #f cons
+      if
+        get 0
+        continue
+      get 1
+      call 1 #f eof-object?
+      call 2 #f $$unbind
+      if
+        call 0 #f read-char
+      call 0 #f read-char
+      call 1 #f 3
     call 1 #f $$close
     set 1
     call 0 #f read-char
-    constant #\(
-    call 2 #f eqv?
-    constant #f
-    call 2 #f eq?
-    if
-      constant "( expected"
-      call 1 #f error
-      continue
-    constant #f
-    set 0
-    call 0 #f 0
-  call 1 #f $$close
+    call 1 #f 1
   set 6
+  constant procedure 0 #f
+    constant #f
+    constant procedure 1 #f
+      get 0
+      call 1 #f char-whitespace?
+      constant #f
+      call 2 #f eq?
+      if
+        get 0
+      call 0 #f read-char
+      set 0
+      call 0 #f peek-char
+      call 1 #f 3
+    call 1 #f $$close
+    set 1
+    call 0 #f peek-char
+    call 1 #f 1
+  set 5
   constant procedure 0 #f
     call 0 #f peek-char
     get 0
     constant list
       #\(
       #\)
+      #\;
     call 2 #f memv
     if
       constant #t
@@ -4996,13 +4823,11 @@ constant procedure 0 #t
     if
       constant ()
     call 0 #f read-char
-    call 0 #f 7
+    call 0 #f 6
     call 2 #f cons
   call 1 #f $$close
-  set 5
+  set 4
   constant procedure 0 #f
-    call 0 #f read-char
-    set 0
     constant #f
     constant procedure 1 #f
       call 0 #f read-char
@@ -5053,70 +4878,221 @@ constant procedure 0 #t
     set 1
     constant ()
     call 1 #f 1
-  set 4
-  constant procedure 0 #f
-    call 0 #f peek-char
-    get 0
-    call 1 #f char-whitespace?
-    if
-      call 0 #f read-char
-      set 0
-      call 0 #f 4
-    get 0
-    constant #\;
-    call 2 #f eqv?
-    if
-      call 0 #f 3
-    get 0
-  call 1 #f $$close
   set 3
   constant procedure 0 #f
+    call 0 #f 1
+    get 0
+    call 1 #f eof-object?
+    if
+      constant ") expected"
+      call 1 #f error
+    get 0
+    get ||
+    call 2 #f eq?
+    if
+      constant ()
+    get 0
+    call 1 #f symbol?
+    if
+      get 0
+      call 1 #f symbol->string
+      constant "."
+      call 2 #f equal?
+      continue
+    constant #f
+    if
+      call 0 #f 2
+      call 0 #f 3
+      get ||
+      call 2 #f eq?
+      constant #f
+      call 2 #f eq?
+      if
+        constant ") expected"
+        call 1 #f error
+        continue
+      constant #f
+      set 0
+      get 0
+    get 0
+    call 0 #f 4
+    call 2 #f cons
+  call 1 #f $$close
+  set 2
+  constant procedure 0 #f
+    call 0 #f 5
     call 0 #f read-char
+    set 0
     get 0
     call 1 #f eof-object?
     if
       get 0
     get 0
-    constant #\newline
+    constant #\(
     call 2 #f eqv?
     if
-      call 0 #f 4
-    call 0 #f 3
-  call 1 #f $$close
-  set 2
-  constant procedure 0 #f
-    call 0 #f read-char
+      call 0 #f 3
     get 0
-    call 1 #f eof-object?
+    constant #\)
+    call 2 #f eqv?
     if
-      constant "|# expected"
+      get ||
+    get 0
+    constant #\;
+    call 2 #f eqv?
+    if
+      call 0 #f 8
+      set 0
+      call 0 #f 2
+    get 0
+    constant #\#
+    call 2 #f eqv?
+    if
+      call 0 #f read-char
+      get 0
+      constant #\f
+      call 2 #f eqv?
+      if
+        constant #f
+      get 0
+      constant #\t
+      call 2 #f eqv?
+      if
+        constant #t
+      get 0
+      constant #\u
+      call 2 #f eqv?
+      if
+        call 0 #f read-char
+        set 0
+        call 0 #f read-char
+        set 0
+        call 0 #f 4
+        call 1 #f list->bytevector
+      get 0
+      constant #\\
+      call 2 #f eqv?
+      if
+        call 0 #f peek-char
+        get 0
+        call 1 #f char-whitespace?
+        if
+          call 0 #f read-char
+        call 0 #f 7
+        get 0
+        call 1 #f null?
+        if
+          call 0 #f read-char
+        get 0
+        call 1 #f length
+        constant 1
+        call 2 #f eq?
+        if
+          get 0
+          call 1 #f car
+        get 0
+        call 1 #f car
+        constant #\x
+        call 2 #f eqv?
+        if
+          get 0
+          call 1 #f cdr
+          call 1 #f list->string
+          constant 16
+          call 2 #f string->number
+          call 1 #f integer->char
+        get 0
+        call 1 #f list->string
+        get special-chars
+        call 2 #f assoc
+        call 1 #f cdr
+      get 0
+      constant #\!
+      call 2 #f eqv?
+      if
+        call 0 #f 9
+        set 0
+        call 0 #f 3
+      get 0
+      constant #\|
+      call 2 #f eqv?
+      if
+        call 0 #f 8
+        set 0
+        call 0 #f 3
+      get 0
+      constant #\;
+      call 2 #f eqv?
+      if
+        call 0 #f 3
+        set 0
+        call 0 #f 3
+      get 0
+      constant #\(
+      call 2 #f eqv?
+      if
+        call 0 #f 4
+        call 1 #f list->vector
+      constant "invalid hash expression"
       call 1 #f error
     get 0
-    constant #\|
+    constant #\'
+    call 2 #f eqv?
+    if
+      constant quote
+      call 0 #f 3
+      call 2 #f list
+    get 0
+    constant #\`
+    call 2 #f eqv?
+    if
+      constant quasiquote
+      call 0 #f 3
+      call 2 #f list
+    get 0
+    constant #\,
     call 2 #f eqv?
     if
       call 0 #f peek-char
-      constant #\#
+      constant #\@
       call 2 #f eqv?
-      continue
-    constant #f
+      if
+        call 0 #f read-char
+        set 0
+        constant unquote-splicing
+        call 0 #f 3
+        call 2 #f list
+      constant unquote
+      call 0 #f 3
+      call 2 #f list
+    get 0
+    constant #\"
+    call 2 #f eqv?
     if
-      call 0 #f read-char
-      set 0
       call 0 #f 4
-    call 0 #f 2
+    get 0
+    call 0 #f 6
+    call 2 #f cons
+    call 1 #f list->string
+    get 0
+    call 1 #f string->number
+    get 0
+    if
+      get 0
+    get 1
+    call 1 #f string->symbol
   call 1 #f $$close
   set 1
   get current-input-port
   call 0 #f 0
   constant procedure 0 #f
     call 0 #f current-input-port
-    get 12
+    get 11
     call 2 #f get-option
     call 1 #f 3
   call 1 #f $$close
   constant procedure 0 #f
-    call 0 #f 11
+    call 0 #f 4
   call 1 #f $$close
   constant procedure 0 #f
     get 3
