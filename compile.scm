@@ -2068,9 +2068,9 @@
        (else
         (loop (cdr arguments) directories)))))
 
-    (define (main options arguments source)
+    (define (main arguments source)
      (library-paths (parse-library-paths arguments))
-     (compile-program options source))
+     (compile-program (list (and (member "--debug" arguments) 'debug)) source))
 
     main))
 
@@ -2286,9 +2286,6 @@
     (write-string "Usage: stak-compile [-A DIRECTORY] [-I DIRECTORY] < SOURCE_FILE > BYTECODE_FILE\n")
     (exit))
 
-  (compile
-    (list (and (member "--debug" arguments) 'debug))
-    arguments
-    (incept (read-source))))
+  (compile arguments (incept (read-source))))
 
 (main)
