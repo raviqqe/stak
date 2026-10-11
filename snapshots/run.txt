@@ -12253,7 +12253,6 @@ constant list
     (stak . stak)
     (rib . rib)
     (cons . cons)
-    (close . close)
     (rib? . rib?)
     (car . car)
     (cdr . cdr)

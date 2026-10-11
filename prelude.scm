@@ -2724,7 +2724,6 @@
 
     rib
     cons
-    close
     rib?
     car
     cdr
@@ -6470,7 +6469,7 @@
   (import
     (scheme base)
     (scheme lazy)
-    (only (stak base) get-option primitive)
+    (only (stak base) close get-option primitive)
     (only (stak string) code-points->string))
 
   (begin
