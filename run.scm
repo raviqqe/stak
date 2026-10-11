@@ -31,8 +31,21 @@
       (read-char file)
       (eval (read file) environment))))
 
+(define (default-library-paths)
+  (let ((directory (get-environment-variable "XDG_DATA_HOME")))
+    (cond
+      ((and directory (not (equal? directory "")))
+        (list (string-append directory "/stak")))
+      ((get-environment-variable "HOME") =>
+        (lambda (directory)
+          (list (string-append directory "/.local/share/stak"))))
+      (else
+        '()))))
+
 (define (main)
   (define environment (interaction-environment))
+
+  (library-paths (default-library-paths))
 
   (let loop ((arguments (cdr (command-line))))
     (cond

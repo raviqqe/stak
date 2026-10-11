@@ -3,7 +3,7 @@
 set -e
 
 directory=$(dirname $0)/../../..
-options=$STAK_COMPILE_OPTIONS
+options="$STAK_COMPILE_OPTIONS -A ${XDG_DATA_HOME:-$HOME/.local/share}/stak"
 
 while getopts A:I:l: option; do
   case $option in

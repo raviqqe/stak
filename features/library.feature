@@ -615,6 +615,103 @@ Feature: Library system
     When I successfully run `stak -A library main.scm`
     Then the stdout should contain exactly "A"
 
+  @environment-variable @stak
+  Scenario: Import a library in a data directory
+    Given a file named "data/stak/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    And I set the environment variable "XDG_DATA_HOME" to "data"
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  @environment-variable @stak
+  Scenario: Import a library in a data directory in a home directory
+    Given a file named "home/.local/share/stak/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    And I set the environment variable "HOME" to "home"
+    And I set the environment variable "XDG_DATA_HOME" to ""
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+  @environment-variable @stak
+  Scenario Outline: Search a data directory between load paths
+    Given a file named "prepended/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo)
+            (write-u8 65))))
+      """
+    And a file named "data/stak/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo)
+            (write-u8 66))))
+      """
+    And a file named "appended/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo)
+            (write-u8 67))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo)
+      """
+    And I set the environment variable "XDG_DATA_HOME" to "data"
+    When I successfully run `stak <options> main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | options      | output |
+      | -I prepended | A      |
+      | -A appended  | B      |
+
   Scenario Outline: Import a library with a comment in a load path
     Given a file named "library/foo.sld" with:
       """scheme
