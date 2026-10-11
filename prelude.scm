@@ -6224,7 +6224,7 @@
                 ((#\()
                   (list->vector (read-list)))
                 (else
-                  (error "invalid hash expression"))))
+                  (error "invalid expression"))))
             ((eqv? char #\')
               (list 'quote (read-datum)))
             ((eqv? char #\`)

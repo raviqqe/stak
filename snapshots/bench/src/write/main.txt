@@ -2305,7 +2305,7 @@ constant procedure 0 #t
       if
         call 0 #f 4
         call 1 #f ||
-      constant "invalid hash expression"
+      constant "invalid expression"
       call 1 #f ||
     get 0
     constant #\'
