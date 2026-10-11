@@ -8407,7 +8407,6 @@ constant list
     (set-cdr! . set-cdr!)
     (eq? . eq?)
     (apply . apply)
-    (data-rib . data-rib)
     (eqv? . eqv?)
     (equal? . equal?)
     (procedure? . procedure?)
