@@ -2044,8 +2044,20 @@
          primitives
          (compile metadata expression7))))))
 
-    (define (main options paths source)
-     (library-paths paths)
+    (define (parse-library-paths arguments)
+     (let loop ((arguments arguments) (directories (library-paths)))
+      (cond
+       ((or (null? arguments) (null? (cdr arguments)))
+        directories)
+       ((equal? (car arguments) "-A")
+        (loop (cddr arguments) (append directories (list (cadr arguments)))))
+       ((equal? (car arguments) "-I")
+        (loop (cddr arguments) (cons (cadr arguments) directories)))
+       (else
+        (loop (cdr arguments) directories)))))
+
+    (define (main options arguments source)
+     (library-paths (parse-library-paths arguments))
      (compile-program options source))
 
     main))
@@ -2079,7 +2091,17 @@
        (set! symbol-id (+ symbol-id 1))
        (string->symbol (string-append (number->string symbol-id 32) name)))))
 
-    (define library-paths (make-parameter '()))
+    (define library-paths
+     (make-parameter
+      (let ((directory (get-environment-variable "XDG_DATA_HOME")))
+       (cond
+        ((and directory (not (equal? directory "")))
+         (list (string-append directory "/stak")))
+        ((get-environment-variable "HOME") =>
+         (lambda (directory)
+          (list (string-append directory "/.local/share/stak"))))
+        (else
+         '())))))
 
     ,@frontend
     ,@backend))
@@ -2118,10 +2140,21 @@
            (scheme lazy)
            (scheme file)
            (scheme read)
+           (only (scheme process-context) get-environment-variable)
            (only (stak base) rib string->uninterned-symbol))
 
           (begin
-           (define library-paths (make-parameter '()))
+           (define library-paths
+            (make-parameter
+             (let ((directory (get-environment-variable "XDG_DATA_HOME")))
+              (cond
+               ((and directory (not (equal? directory "")))
+                (list (string-append directory "/stak")))
+               ((get-environment-variable "HOME") =>
+                (lambda (directory)
+                 (list (string-append directory "/.local/share/stak"))))
+               (else
+                '())))))
 
            (define compile
             (let ()
@@ -2243,18 +2276,6 @@
 
 ; Main
 
-(define (parse-library-paths arguments)
-  (let loop ((arguments arguments) (directories '()))
-    (cond
-      ((or (null? arguments) (null? (cdr arguments)))
-        directories)
-      ((equal? (car arguments) "-A")
-        (loop (cddr arguments) (append directories (list (cadr arguments)))))
-      ((equal? (car arguments) "-I")
-        (loop (cddr arguments) (cons (cadr arguments) directories)))
-      (else
-        (loop (cdr arguments) directories)))))
-
 (define (main)
   (define compile
     (eval
@@ -2265,6 +2286,7 @@
         '(scheme lazy)
         '(scheme file)
         '(scheme inexact)
+        '(scheme process-context)
         '(scheme read))))
 
   (define arguments (command-line))
@@ -2278,7 +2300,7 @@
 
   (compile
     (list (and (member "--debug" arguments) 'debug))
-    (parse-library-paths arguments)
+    arguments
     (incept (read-source))))
 
 (main)

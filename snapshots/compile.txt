@@ -3812,11 +3812,11 @@ constant list
   append-multi-map
   memv-index
   path-separator
+  paths
   include-library-declarations
   include
   include-paths
   include-expressions
-  directory
   global-context?
   global-context-set-libraries!
   library?
@@ -3833,7 +3833,6 @@ constant list
   library-file-extension
   library-name->path
   append-path
-  directories
   loading-libraries
   find-library-file
   path-directory
@@ -3942,7 +3941,6 @@ constant list
   body
   arity
   compile-raw-call
-  arguments
   variadic
   procedure
   $procedure
@@ -4060,7 +4058,6 @@ constant list
   compressor-buffer
   current
   ys
-  loop
   i
   minimum-match
   back
@@ -4163,7 +4160,10 @@ constant list
   primitives
   metadata
   expression7
-  paths
+  loop
+  directories
+  parse-library-paths
+  arguments
   compile-program
   options
   source
@@ -4178,6 +4178,7 @@ constant list
   $$compiler
   export
   only
+  directory
   cons-rib
   rib-car
   rib-cdr
@@ -5527,7 +5528,134 @@ constant procedure 0 #t
   call 1 #f $$close
   call 3 #f dynamic-wind
 set read
+constant 40
+call 1 #f primitive
+set ||
+constant 300
+call 1 #f primitive
+set ||
+constant 301
+call 1 #f primitive
+set ||
+constant #f
+constant #f
+constant procedure 0 #f
+  get 2
+  if
+    get 1
+  get code-points->string
+  call 0 #f ||
+  call 2 #f map
+  set 2
+  constant #t
+  set 3
+  get 1
+call 1 #f $$close
+call 2 #f $$unbind
+call 2 #f $$unbind
+set command-line
+constant #f
+constant #f
+constant procedure 0 #f
+  get 2
+  if
+    get 1
+  constant procedure 1 #f
+    get 0
+    call 1 #f car
+    call 1 #f code-points->string
+    get 1
+    call 1 #f cdr
+    call 1 #f code-points->string
+    call 2 #f cons
+  call 0 #f ||
+  call 2 #f map
+  set 2
+  constant #t
+  set 3
+  get 1
+call 1 #f $$close
+call 2 #f $$unbind
+call 2 #f $$unbind
+set get-environment-variables
+constant procedure 1 #f
+  get 0
+  call 0 #f get-environment-variables
+  call 2 #f assoc
+  get 0
+  if
+    get 0
+    call 1 #f cdr
+  constant #f
+set get-environment-variable
+constant procedure 0 #t
+  constant #t
+  get 1
+  call 2 #f get-option
+  constant list
+    #t
+    0
+  call 2 #f memq
+  if
+    constant procedure 0 #f
+      constant #f
+    call 1 #f close
+    call 1 #f cddr
+    call 1 #f car
+    constant list
+      0
+    call 2 #f set-car!
+    set 0
+    constant #f
+  get 0
+  call 1 #f car
+  call 1 #f integer?
+  if
+    get 0
+    call 1 #f car
+    continue
+  constant 1
+  call 1 #f ||
+set emergency-exit
+constant procedure 0 #t
+  constant procedure 0 #f
+    get emergency-exit
+    get 2
+    call 2 #f apply
+  call 1 #f $$close
+  call 1 #f unwind
+set exit
+constant "XDG_DATA_HOME"
+call 1 #f get-environment-variable
+get 0
+if
+  get 0
+  constant ""
+  call 2 #f equal?
+  constant #f
+  call 2 #f eq?
+  continue
+constant #f
+if
+  get 0
+  constant "/stak"
+  call 2 #f string-append
+  call 1 #f list
+  continue
+constant "HOME"
+call 1 #f get-environment-variable
+get 0
+if
+  get 0
+  get 0
+  constant "/.local/share/stak"
+  call 2 #f string-append
+  call 1 #f list
+  call 2 #f $$unbind
+  continue
 constant ()
+call 2 #f $$unbind
+call 2 #f $$unbind
 call 1 #f make-parameter
 set library-paths
 constant #f
@@ -12835,103 +12963,6 @@ constant procedure 1 #f
   constant #f
   call 2 #f eq?
 set finite?
-constant 40
-call 1 #f primitive
-set ||
-constant 300
-call 1 #f primitive
-set ||
-constant 301
-call 1 #f primitive
-set ||
-constant #f
-constant #f
-constant procedure 0 #f
-  get 2
-  if
-    get 1
-  get code-points->string
-  call 0 #f ||
-  call 2 #f map
-  set 2
-  constant #t
-  set 3
-  get 1
-call 1 #f $$close
-call 2 #f $$unbind
-call 2 #f $$unbind
-set command-line
-constant #f
-constant #f
-constant procedure 0 #f
-  get 2
-  if
-    get 1
-  constant procedure 1 #f
-    get 0
-    call 1 #f car
-    call 1 #f code-points->string
-    get 1
-    call 1 #f cdr
-    call 1 #f code-points->string
-    call 2 #f cons
-  call 0 #f ||
-  call 2 #f map
-  set 2
-  constant #t
-  set 3
-  get 1
-call 1 #f $$close
-call 2 #f $$unbind
-call 2 #f $$unbind
-set get-environment-variables
-constant procedure 1 #f
-  get 0
-  call 0 #f get-environment-variables
-  call 2 #f assoc
-  get 0
-  if
-    get 0
-    call 1 #f cdr
-  constant #f
-set get-environment-variable
-constant procedure 0 #t
-  constant #t
-  get 1
-  call 2 #f get-option
-  constant list
-    #t
-    0
-  call 2 #f memq
-  if
-    constant procedure 0 #f
-      constant #f
-    call 1 #f close
-    call 1 #f cddr
-    call 1 #f car
-    constant list
-      0
-    call 2 #f set-car!
-    set 0
-    constant #f
-  get 0
-  call 1 #f car
-  call 1 #f integer?
-  if
-    get 0
-    call 1 #f car
-    continue
-  constant 1
-  call 1 #f ||
-set emergency-exit
-constant procedure 0 #t
-  constant procedure 0 #f
-    get emergency-exit
-    get 2
-    call 2 #f apply
-  call 1 #f $$close
-  call 1 #f unwind
-set exit
 constant procedure 1 #f
   call 0 #f current-output-port
   get 1
@@ -21095,13 +21126,91 @@ constant list
   list
     define
     list
+      parse-library-paths
+      arguments
+    list
+      let
+      loop
+      list
+        list
+          arguments
+          arguments
+        list
+          directories
+          list
+            library-paths
+      list
+        cond
+        list
+          list
+            or
+            list
+              null?
+              arguments
+            list
+              null?
+              list
+                cdr
+                arguments
+          directories
+        list
+          list
+            equal?
+            list
+              car
+              arguments
+            "-A"
+          list
+            loop
+            list
+              cddr
+              arguments
+            list
+              append
+              directories
+              list
+                list
+                list
+                  cadr
+                  arguments
+        list
+          list
+            equal?
+            list
+              car
+              arguments
+            "-I"
+          list
+            loop
+            list
+              cddr
+              arguments
+            list
+              cons
+              list
+                cadr
+                arguments
+              directories
+        list
+          else
+          list
+            loop
+            list
+              cdr
+              arguments
+            directories
+  list
+    define
+    list
       main
       options
-      paths
+      arguments
       source
     list
       library-paths
-      paths
+      list
+        parse-library-paths
+        arguments
     list
       compile-program
       options
@@ -21296,9 +21405,95 @@ call 2 #f cons
 constant define
 constant library-paths
 constant make-parameter
+constant let
+constant directory
+constant get-environment-variable
+constant "XDG_DATA_HOME"
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+constant cond
+constant and
+constant directory
+constant not
+constant equal?
+constant directory
+constant ""
+constant ()
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+constant list
+constant string-append
+constant directory
+constant "/stak"
+constant ()
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant get-environment-variable
+constant "HOME"
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant =>
+constant lambda
+constant directory
+constant ()
+call 2 #f cons
+constant list
+constant string-append
+constant directory
+constant "/.local/share/stak"
+constant ()
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+constant else
 constant quote
 constant ()
 constant ()
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+call 2 #f cons
+constant ()
+call 2 #f cons
 call 2 #f cons
 call 2 #f cons
 constant ()
@@ -21399,6 +21594,17 @@ constant procedure 1 #f
     call 2 #f cons
     call 2 #f cons
     constant only
+    constant scheme
+    constant process-context
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant get-environment-variable
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant only
     constant stak
     constant base
     constant ()
@@ -21419,13 +21625,100 @@ constant procedure 1 #f
     call 2 #f cons
     call 2 #f cons
     call 2 #f cons
+    call 2 #f cons
     constant begin
     constant define
     constant library-paths
     constant make-parameter
+    constant let
+    constant directory
+    constant get-environment-variable
+    constant "XDG_DATA_HOME"
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    constant cond
+    constant and
+    constant directory
+    constant not
+    constant equal?
+    constant directory
+    constant ""
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant list
+    constant string-append
+    constant directory
+    constant "/stak"
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant get-environment-variable
+    constant "HOME"
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant =>
+    constant lambda
+    constant directory
+    constant ()
+    call 2 #f cons
+    constant list
+    constant string-append
+    constant directory
+    constant "/.local/share/stak"
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant else
     constant quote
     constant ()
     constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    call 2 #f cons
+    constant ()
+    call 2 #f cons
     call 2 #f cons
     call 2 #f cons
     constant ()
@@ -22175,56 +22468,6 @@ constant procedure 1 #f
   call 1 #f ||
   call 2 #f cons
 set ||
-constant procedure 1 #f
-  constant #f
-  constant procedure 2 #f
-    get 1
-    call 1 #f null?
-    get 0
-    if
-      get 0
-      continue
-    get 2
-    call 1 #f cdr
-    call 1 #f null?
-    call 2 #f $$unbind
-    if
-      get 0
-    get 1
-    call 1 #f car
-    constant "-A"
-    call 2 #f equal?
-    if
-      get 1
-      call 1 #f cddr
-      get 1
-      get 3
-      call 1 #f cadr
-      call 1 #f list
-      call 2 #f append
-      call 2 #f 5
-    get 1
-    call 1 #f car
-    constant "-I"
-    call 2 #f equal?
-    if
-      get 1
-      call 1 #f cddr
-      get 2
-      call 1 #f cadr
-      get 2
-      call 2 #f cons
-      call 2 #f 5
-    get 1
-    call 1 #f cdr
-    get 1
-    call 2 #f 5
-  call 1 #f $$close
-  set 1
-  get 1
-  constant ()
-  call 2 #f 2
-set ||
 constant procedure 0 #f
   constant #f
   constant #f
@@ -22246,8 +22489,11 @@ constant procedure 0 #f
     inexact
   constant list
     scheme
+    process-context
+  constant list
+    scheme
     read
-  call 6 #f environment
+  call 7 #f environment
   call 2 #f eval
   set 2
   call 0 #f command-line
@@ -22283,7 +22529,6 @@ constant procedure 0 #f
   constant #f
   call 1 #f list
   get 1
-  call 1 #f ||
   call 0 #f ||
   call 1 #f ||
   call 3 #f 4
