@@ -6105,7 +6105,7 @@
     (only (stak base) boolean-or get-option))
 
   (begin
-    (define close (cons 0 0))
+    (define list-close (cons 0 0))
 
     (define (read . rest)
       (define (skip-line-comment)
@@ -6164,11 +6164,11 @@
           (cond
             ((eof-object? x)
               (error ") expected"))
-            ((eq? x close)
+            ((eq? x list-close)
               '())
             ((and (symbol? x) (equal? (symbol->string x) "."))
               (let ((x (read-datum)))
-                (unless (eq? (read-datum) close)
+                (unless (eq? (read-datum) list-close)
                   (error ") expected"))
                 x))
             (else
@@ -6183,7 +6183,7 @@
             ((eqv? char #\()
               (read-list))
             ((eqv? char #\))
-              close)
+              list-close)
             ((eqv? char #\;)
               (skip-line-comment)
               (read-datum))
