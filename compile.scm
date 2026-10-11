@@ -365,6 +365,18 @@
 
     (define library-file-extension ".sld")
 
+    (define library-paths
+     (make-parameter
+      (let ((directory (get-environment-variable "XDG_DATA_HOME")))
+       (cond
+        ((and directory (not (equal? directory "")))
+         (list (string-append directory "/stak")))
+        ((get-environment-variable "HOME") =>
+         (lambda (directory)
+          (list (string-append directory "/.local/share/stak"))))
+        (else
+         '())))))
+
     (define loading-libraries (make-parameter '()))
 
     (define (library-name->path name)
@@ -2091,18 +2103,6 @@
        (set! symbol-id (+ symbol-id 1))
        (string->symbol (string-append (number->string symbol-id 32) name)))))
 
-    (define library-paths
-     (make-parameter
-      (let ((directory (get-environment-variable "XDG_DATA_HOME")))
-       (cond
-        ((and directory (not (equal? directory "")))
-         (list (string-append directory "/stak")))
-        ((get-environment-variable "HOME") =>
-         (lambda (directory)
-          (list (string-append directory "/.local/share/stak"))))
-        (else
-         '())))))
-
     ,@frontend
     ,@backend))
 
@@ -2135,7 +2135,7 @@
           (export compile library-paths)
 
           (import
-           (scheme base)
+           (except (scheme base) data-rib)
            (scheme cxr)
            (scheme lazy)
            (scheme file)
@@ -2144,26 +2144,14 @@
            (only (stak base) rib string->uninterned-symbol))
 
           (begin
-           (define library-paths
-            (make-parameter
-             (let ((directory (get-environment-variable "XDG_DATA_HOME")))
-              (cond
-               ((and directory (not (equal? directory "")))
-                (list (string-append directory "/stak")))
-               ((get-environment-variable "HOME") =>
-                (lambda (directory)
-                 (list (string-append directory "/.local/share/stak"))))
-               (else
-                '())))))
+           (define cons-rib cons)
+           (define rib-car car)
+           (define rib-cdr cdr)
+
+           ,@frontend
 
            (define compile
             (let ()
-             (define cons-rib cons)
-             (define rib-car car)
-             (define rib-cdr cdr)
-
-             ,@frontend
-
              ; Disable unused functionalities.
              (define dummy
               (let ((set-nothing (lambda xs #f)))
