@@ -6109,27 +6109,16 @@
 
     (define (read . rest)
       (define (skip-line-comment)
-        (let ((char (read-char)))
-          (cond
-            ((eof-object? char)
-              char)
-            ((eqv? char #\newline)
-              (peek-non-whitespace-char))
-            (else
-              (skip-line-comment)))))
+        (do ((char (read-char) (read-char)))
+          ((or (eof-object? char) (eqv? char #\newline)))))
 
       (define (skip-block-comment)
-        (let ((char (read-char)))
-          (cond
-            ((eof-object? char)
-              (error "|# expected"))
-            ((and
-                (eqv? char #\|)
-                (eqv? (peek-char) #\#))
-              (read-char)
-              (peek-non-whitespace-char))
-            (else
-              (skip-block-comment)))))
+        (do ((char (read-char) (read-char)))
+          ((and (eqv? char #\|) (eqv? (peek-char) #\#))
+            (read-char)
+            (peek-non-whitespace-char))
+          (when (eof-object? char)
+            (error "|# expected"))))
 
       (define (peek-non-whitespace-char)
         (let ((char (peek-char)))
