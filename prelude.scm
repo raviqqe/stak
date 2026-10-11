@@ -6108,11 +6108,101 @@
     (define comment (cons 0 0))
 
     (define (read . rest)
-      (define (read-datum)
-        (let ((x (read-raw)))
-          (if (eq? x comment)
-            (read-datum)
-            x)))
+      (define (skip-line-comment)
+        (let ((char (read-char)))
+          (cond
+            ((eof-object? char)
+              char)
+            ((eqv? char #\newline)
+              (peek-non-whitespace-char))
+            (else
+              (skip-line-comment)))))
+
+      (define (skip-block-comment)
+        (let ((char (read-char)))
+          (cond
+            ((eof-object? char)
+              (error "|# expected"))
+            ((and
+                (eqv? char #\|)
+                (eqv? (peek-char) #\#))
+              (read-char)
+              (peek-non-whitespace-char))
+            (else
+              (skip-block-comment)))))
+
+      (define (peek-non-whitespace-char)
+        (let ((char (peek-char)))
+          (cond
+            ((char-whitespace? char)
+              (begin
+                (read-char)
+                (peek-non-whitespace-char)))
+            ((eqv? char #\;)
+              (skip-line-comment))
+            (else
+              char))))
+
+      (define (read-symbol-chars)
+        (let ((char (peek-char)))
+          (if (boolean-or
+               (memv char '(#\( #\)))
+               (eof-object? char)
+               (char-whitespace? char))
+            '()
+            (cons (read-char) (read-symbol-chars)))))
+
+      (define (read-string)
+        (read-char)
+        (let loop ((xs '()))
+          (let ((char (read-char)))
+            (cond
+              ((eof-object? char)
+                (error "closing \" expected"))
+              ((eqv? char #\")
+                (list->string (reverse xs)))
+              ((eqv? char #\\)
+                (let ((char (read-char)))
+                  (loop
+                    (cons
+                      (case char
+                        ((#\n)
+                          #\newline)
+                        ((#\r)
+                          #\return)
+                        ((#\t)
+                          #\tab)
+                        (else
+                          char))
+                      xs))))
+              (else
+                (loop (cons char xs)))))))
+
+      (define (read-list)
+        (define (read-tail)
+          (let ((char (peek-non-whitespace-char)))
+            (cond
+              ((eof-object? char)
+                (error ") expected"))
+              ((eqv? char #\))
+                (read-char)
+                '())
+              (else
+                (let ((x (read-raw)))
+                  (cond
+                    ((eq? x comment)
+                      (read-tail))
+                    ((and (symbol? x) (equal? (symbol->string x) "."))
+                      (let ((x (read-datum)))
+                        (unless (null? (read-tail))
+                          (error ") expected"))
+                        x))
+                    (else
+                      (cons x (read-tail)))))))))
+
+        (unless (eqv? (read-char) #\()
+          (error "( expected"))
+        (read-tail))
 
       (define (read-raw)
         (let ((char (peek-non-whitespace-char)))
@@ -6182,101 +6272,11 @@
                   (error "expression expected"))
                 (or (string->number x) (string->symbol x)))))))
 
-      (define (read-list)
-        (define (read-tail)
-          (let ((char (peek-non-whitespace-char)))
-            (cond
-              ((eof-object? char)
-                (error ") expected"))
-              ((eqv? char #\))
-                (read-char)
-                '())
-              (else
-                (let ((x (read-raw)))
-                  (cond
-                    ((eq? x comment)
-                      (read-tail))
-                    ((and (symbol? x) (equal? (symbol->string x) "."))
-                      (let ((x (read-datum)))
-                        (unless (null? (read-tail))
-                          (error ") expected"))
-                        x))
-                    (else
-                      (cons x (read-tail)))))))))
-
-        (unless (eqv? (read-char) #\()
-          (error "( expected"))
-        (read-tail))
-
-      (define (read-symbol-chars)
-        (let ((char (peek-char)))
-          (if (boolean-or
-               (memv char '(#\( #\)))
-               (eof-object? char)
-               (char-whitespace? char))
-            '()
-            (cons (read-char) (read-symbol-chars)))))
-
-      (define (read-string)
-        (read-char)
-        (let loop ((xs '()))
-          (let ((char (read-char)))
-            (cond
-              ((eof-object? char)
-                (error "closing \" expected"))
-              ((eqv? char #\")
-                (list->string (reverse xs)))
-              ((eqv? char #\\)
-                (let ((char (read-char)))
-                  (loop
-                    (cons
-                      (case char
-                        ((#\n)
-                          #\newline)
-                        ((#\r)
-                          #\return)
-                        ((#\t)
-                          #\tab)
-                        (else
-                          char))
-                      xs))))
-              (else
-                (loop (cons char xs)))))))
-
-      (define (peek-non-whitespace-char)
-        (let ((char (peek-char)))
-          (cond
-            ((char-whitespace? char)
-              (begin
-                (read-char)
-                (peek-non-whitespace-char)))
-            ((eqv? char #\;)
-              (skip-line-comment))
-            (else
-              char))))
-
-      (define (skip-line-comment)
-        (let ((char (read-char)))
-          (cond
-            ((eof-object? char)
-              char)
-            ((eqv? char #\newline)
-              (peek-non-whitespace-char))
-            (else
-              (skip-line-comment)))))
-
-      (define (skip-block-comment)
-        (let ((char (read-char)))
-          (cond
-            ((eof-object? char)
-              (error "|# expected"))
-            ((and
-                (eqv? char #\|)
-                (eqv? (peek-char) #\#))
-              (read-char)
-              (peek-non-whitespace-char))
-            (else
-              (skip-block-comment)))))
+      (define (read-datum)
+        (let ((x (read-raw)))
+          (if (eq? x comment)
+            (read-datum)
+            x)))
 
       (parameterize ((current-input-port
                        (get-option (current-input-port) rest)))
