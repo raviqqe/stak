@@ -8257,7 +8257,6 @@ constant procedure 0 #t
   constant #f
   constant #f
   constant #f
-  constant #f
   constant procedure 0 #f
     constant #f
     constant procedure 1 #f
@@ -8279,7 +8278,7 @@ constant procedure 0 #t
     set 1
     call 0 #f read-char
     call 1 #f 1
-  set 7
+  set 6
   constant procedure 0 #f
     constant #f
     constant procedure 1 #f
@@ -8306,24 +8305,6 @@ constant procedure 0 #t
     call 1 #f $$close
     set 1
     call 0 #f read-char
-    call 1 #f 1
-  set 6
-  constant procedure 0 #f
-    constant #f
-    constant procedure 1 #f
-      get 0
-      call 1 #f char-whitespace?
-      constant #f
-      call 2 #f eq?
-      if
-        get 0
-      call 0 #f read-char
-      set 0
-      call 0 #f peek-char
-      call 1 #f 3
-    call 1 #f $$close
-    set 1
-    call 0 #f peek-char
     call 1 #f 1
   set 5
   constant procedure 0 #f
@@ -8476,7 +8457,7 @@ constant procedure 0 #t
     constant #\;
     call 2 #f eqv?
     if
-      call 0 #f 8
+      call 0 #f 7
       set 0
       call 0 #f 2
     get 0
@@ -8538,14 +8519,14 @@ constant procedure 0 #t
       constant #\!
       call 2 #f eqv?
       if
-        call 0 #f 9
+        call 0 #f 8
         set 0
         call 0 #f 3
       get 0
       constant #\|
       call 2 #f eqv?
       if
-        call 0 #f 8
+        call 0 #f 7
         set 0
         call 0 #f 3
       get 0
@@ -8615,7 +8596,7 @@ constant procedure 0 #t
   call 0 #f 0
   constant procedure 0 #f
     call 0 #f current-input-port
-    get 11
+    get 10
     call 2 #f get-option
     call 1 #f 3
   call 1 #f $$close

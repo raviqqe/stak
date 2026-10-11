@@ -6119,12 +6119,6 @@
               (eof-object? char))
             (read-char))))
 
-      (define (peek-non-whitespace-char)
-        (do ((char (peek-char) (peek-char)))
-          ((not (char-whitespace? char))
-            char)
-          (read-char)))
-
       (define (read-symbol-chars)
         (let ((char (peek-char)))
           (if (boolean-or
