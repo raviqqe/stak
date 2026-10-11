@@ -6242,7 +6242,10 @@
 
       (parameterize ((current-input-port
                        (get-option (current-input-port) rest)))
-        (read-datum)))))
+        (let ((x (read-datum)))
+          (when (eq? x list-close)
+            (error "expression expected"))
+          x)))))
 
 (define-library (scheme write)
   (export
