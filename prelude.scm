@@ -6168,15 +6168,16 @@
               '())
             ((and (symbol? x) (equal? (symbol->string x) "."))
               (let ((x (read-datum)))
-                (unless (eq? (read-datum) list-close)
+                (unless (null? (read-list))
                   (error ") expected"))
                 x))
             (else
               (cons x (read-list))))))
 
       (define (read-datum)
-        (let ((char (peek-non-whitespace-char)))
-          (read-char) ; TODO
+        (let ((char (do ((char (read-char) (read-char)))
+                     ((not (char-whitespace? char))
+                       char))))
           (cond
             ((eof-object? char)
               char)
