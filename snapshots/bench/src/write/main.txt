@@ -2249,31 +2249,24 @@ constant procedure 0 #t
         get 0
         call 1 #f ||
         if
-          call 0 #f ||
+          get 0
         call 0 #f 7
         get 0
         call 1 #f ||
         if
-          call 0 #f ||
-        get 0
-        call 1 #f ||
-        constant 1
-        call 2 #f ||
-        if
-          get 0
-          call 1 #f ||
-        get 0
-        call 1 #f ||
+          get 1
+        get 1
         constant #\x
         call 2 #f ||
         if
           get 0
           call 1 #f ||
-          call 1 #f ||
           constant 16
           call 2 #f ||
           call 1 #f ||
-        get 0
+        get 1
+        get 1
+        call 2 #f ||
         call 1 #f ||
         get ||
         call 2 #f ||

@@ -4984,35 +4984,28 @@ constant procedure 0 #t
       constant #\\
       call 2 #f eqv?
       if
-        call 0 #f peek-char
+        call 0 #f read-char
         get 0
         call 1 #f char-whitespace?
         if
-          call 0 #f read-char
+          get 0
         call 0 #f 7
         get 0
         call 1 #f null?
         if
-          call 0 #f read-char
-        get 0
-        call 1 #f length
-        constant 1
-        call 2 #f eq?
-        if
-          get 0
-          call 1 #f car
-        get 0
-        call 1 #f car
+          get 1
+        get 1
         constant #\x
         call 2 #f eqv?
         if
           get 0
-          call 1 #f cdr
           call 1 #f list->string
           constant 16
           call 2 #f string->number
           call 1 #f integer->char
-        get 0
+        get 1
+        get 1
+        call 2 #f cons
         call 1 #f list->string
         get special-chars
         call 2 #f assoc
