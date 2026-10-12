@@ -3812,7 +3812,6 @@ constant list
   append-multi-map
   memv-index
   path-separator
-  paths
   include-library-declarations
   include
   include-paths
@@ -3833,6 +3832,7 @@ constant list
   library-file-extension
   library-name->path
   append-path
+  directories
   loading-libraries
   find-library-file
   path-directory
@@ -3941,6 +3941,7 @@ constant list
   body
   arity
   compile-raw-call
+  arguments
   variadic
   procedure
   $procedure
@@ -4058,6 +4059,7 @@ constant list
   compressor-buffer
   current
   ys
+  loop
   i
   minimum-match
   back
@@ -4156,19 +4158,14 @@ constant list
   dynamic-symbols
   encode
   marshal
-  options
   build-primitives
   primitives
   metadata
   expression7
-  loop
-  directories
-  parse-library-paths
+  paths
   compile-program
-  arguments
-  debug
+  options
   source
-  main
   directory
   *rib*
   tag
@@ -4239,6 +4236,7 @@ constant list
   expand-macros
   expression
   imports
+  debug
   environment
   eval
   make-environment
@@ -20667,109 +20665,18 @@ constant list
               metadata
               expression7
   list
-    define
+    lambda
     list
-      parse-library-paths
-      arguments
-      directories
-    list
-      let
-      loop
-      list
-        list
-          arguments
-          arguments
-        list
-          directories
-          directories
-      list
-        cond
-        list
-          list
-            or
-            list
-              null?
-              arguments
-            list
-              null?
-              list
-                cdr
-                arguments
-          directories
-        list
-          list
-            equal?
-            list
-              car
-              arguments
-            "-A"
-          list
-            loop
-            list
-              cddr
-              arguments
-            list
-              append
-              directories
-              list
-                list
-                list
-                  cadr
-                  arguments
-        list
-          list
-            equal?
-            list
-              car
-              arguments
-            "-I"
-          list
-            loop
-            list
-              cddr
-              arguments
-            list
-              cons
-              list
-                cadr
-                arguments
-              directories
-        list
-          else
-          list
-            loop
-            list
-              cdr
-              arguments
-            directories
-  list
-    define
-    list
-      main
-      arguments
-      default-library-paths
+      options
+      paths
       source
     list
       library-paths
-      list
-        parse-library-paths
-        arguments
-        default-library-paths
+      paths
     list
       compile-program
-      list
-        list
-        list
-          and
-          list
-            member
-            "--debug"
-            arguments
-          list
-            quote
-            debug
+      options
       source
-  main
 set ||
 constant list
   let
@@ -21054,8 +20961,13 @@ constant procedure 1 #f
     call 2 #f cons
     call 2 #f cons
     constant import
-    constant scheme
+    constant stak
     constant base
+    constant ()
+    call 2 #f cons
+    call 2 #f cons
+    constant stak
+    constant string
     constant ()
     call 2 #f cons
     call 2 #f cons
@@ -21065,6 +20977,7 @@ constant procedure 1 #f
     call 2 #f cons
     call 2 #f cons
     constant ()
+    call 2 #f cons
     call 2 #f cons
     call 2 #f cons
     call 2 #f cons
@@ -21888,6 +21801,56 @@ constant procedure 1 #f
   call 1 #f ||
   call 2 #f cons
 set ||
+constant procedure 2 #f
+  constant #f
+  constant procedure 2 #f
+    get 1
+    call 1 #f null?
+    get 0
+    if
+      get 0
+      continue
+    get 2
+    call 1 #f cdr
+    call 1 #f null?
+    call 2 #f $$unbind
+    if
+      get 0
+    get 1
+    call 1 #f car
+    constant "-A"
+    call 2 #f equal?
+    if
+      get 1
+      call 1 #f cddr
+      get 1
+      get 3
+      call 1 #f cadr
+      call 1 #f list
+      call 2 #f append
+      call 2 #f 5
+    get 1
+    call 1 #f car
+    constant "-I"
+    call 2 #f equal?
+    if
+      get 1
+      call 1 #f cddr
+      get 2
+      call 1 #f cadr
+      get 2
+      call 2 #f cons
+      call 2 #f 5
+    get 1
+    call 1 #f cdr
+    get 1
+    call 2 #f 5
+  call 1 #f $$close
+  set 1
+  get 2
+  get 2
+  call 2 #f 2
+set ||
 constant procedure 0 #f
   constant #f
   constant #f
@@ -21948,10 +21911,19 @@ constant procedure 0 #f
     continue
   constant #f
   set 0
-  get 0
-  get 3
+  constant "--debug"
+  get 1
+  call 2 #f member
+  if
+    constant debug
+    continue
+  constant #f
+  call 1 #f list
+  get 1
+  get 4
+  call 2 #f ||
   call 0 #f ||
   call 1 #f ||
   call 3 #f 4
-set main
-call 0 #f main
+set ||
+call 0 #f ||

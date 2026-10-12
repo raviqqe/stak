@@ -16877,9 +16877,6 @@ constant procedure 0 #f
   constant #f
   call 0 #f interaction-environment
   set 1
-  get default-library-paths
-  call 1 #f library-paths
-  set 0
   constant #f
   constant procedure 1 #f
     get 0
@@ -16952,6 +16949,9 @@ constant procedure 0 #f
   call 1 #f cdr
   call 1 #f 1
 set ||
+get default-library-paths
+call 1 #f library-paths
+set 0
 call 0 #f command-line
 constant "-h"
 get 1
