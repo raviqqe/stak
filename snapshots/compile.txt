@@ -20984,6 +20984,8 @@ constant procedure 1 #f
     constant begin
     constant define
     constant default-library-paths
+    constant ()
+    call 2 #f cons
     get default-library-paths
     constant ()
     call 2 #f cons

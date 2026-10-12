@@ -16542,37 +16542,33 @@ constant procedure 0 #f
   call 2 #f $$unbind
   call 1 #f cdr
 set backtrace
-constant "XDG_DATA_HOME"
-call 1 #f get-environment-variable
-get 0
-if
+constant procedure 0 #f
+  constant "XDG_DATA_HOME"
+  call 1 #f get-environment-variable
   get 0
-  constant ""
-  call 2 #f equal?
+  if
+    get 0
+    constant ""
+    call 2 #f equal?
+    constant #f
+    call 2 #f eq?
+    continue
   constant #f
-  call 2 #f eq?
-  continue
-constant #f
-if
+  if
+    get 0
+    constant "/stak"
+    call 2 #f string-append
+    call 1 #f list
+  constant "HOME"
+  call 1 #f get-environment-variable
   get 0
-  constant "/stak"
-  call 2 #f string-append
-  call 1 #f list
-  continue
-constant "HOME"
-call 1 #f get-environment-variable
-get 0
-if
-  get 0
-  get 0
-  constant "/.local/share/stak"
-  call 2 #f string-append
-  call 1 #f list
-  call 2 #f $$unbind
-  continue
-constant ()
-call 2 #f $$unbind
-call 2 #f $$unbind
+  if
+    get 0
+    get 0
+    constant "/.local/share/stak"
+    call 2 #f string-append
+    call 1 #f list
+  constant ()
 set default-library-paths
 constant 0
 constant 0
@@ -16949,7 +16945,7 @@ constant procedure 0 #f
   call 1 #f cdr
   call 1 #f 1
 set ||
-get default-library-paths
+call 0 #f default-library-paths
 call 1 #f library-paths
 set 0
 call 0 #f command-line
