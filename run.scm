@@ -35,8 +35,6 @@
 (define (main)
   (define environment (interaction-environment))
 
-  (library-paths default-library-paths)
-
   (let loop ((arguments (cdr (command-line))))
     (cond
       ((null? arguments)
@@ -56,6 +54,8 @@
       (else
         (set! command-line (lambda () arguments))
         (run environment (car arguments))))))
+
+(library-paths default-library-paths)
 
 (let ((arguments (command-line)))
   (when (or
