@@ -2135,7 +2135,7 @@
           (export compile library-paths)
 
           (import
-           (except (scheme base) data-rib)
+           (scheme base)
            (scheme cxr)
            (scheme lazy)
            (scheme file)
