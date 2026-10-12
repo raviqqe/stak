@@ -6584,7 +6584,7 @@
 ($$compiler)
 
 (define-library (scheme eval)
-  (export environment eval make-environment)
+  (export environment eval)
 
   (import (scheme base) (stak compile))
 

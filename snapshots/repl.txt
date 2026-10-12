@@ -3831,7 +3831,6 @@ constant list
   interaction-environment
   environment
   eval
-  make-environment
   compile
   library-paths
   default-library-paths
@@ -11556,7 +11555,6 @@ constant list
       eval
     (environment . environment)
     (eval . eval)
-    (make-environment . make-environment)
   list
     list
       stak
@@ -15462,7 +15460,7 @@ call 2 #f cons
 set environment
 get environment
 call 1 #f ||
-set make-environment
+set ||
 get environment
 call 1 #f ||
 set ||
@@ -15483,7 +15481,7 @@ constant procedure 0 #t
   constant ()
   call 1 #f make-symbol-table
   get 1
-  call 2 #f make-environment
+  call 2 #f ||
 set environment
 constant procedure 2 #f
   constant procedure 0 #f
