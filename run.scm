@@ -18,8 +18,8 @@
   (only (scheme write))
   (only (srfi 1))
   (only (stak backtrace))
-  (only (stak library) default-library-paths)
   (only (stak compile) library-paths)
+  (only (stak library) default-library-paths)
   (only (stak mapping)))
 
 (define (run environment path)
