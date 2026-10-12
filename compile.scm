@@ -2119,7 +2119,8 @@
            (export default-library-paths)
 
            (import
-            (scheme base)
+            (stak base)
+            (stak string)
             (scheme process-context))
 
            (begin
