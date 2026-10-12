@@ -16876,10 +16876,7 @@ constant procedure 2 #f
   set 1
   call 0 #f 0
 set ||
-constant procedure 0 #f
-  constant #f
-  call 0 #f interaction-environment
-  set 1
+constant procedure 1 #f
   constant #f
   constant procedure 1 #f
     get 0
@@ -16979,4 +16976,5 @@ if
 constant #f
 call 2 #f $$unbind
 set 0
-call 0 #f ||
+call 0 #f environment
+call 1 #f ||

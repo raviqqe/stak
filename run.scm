@@ -5,7 +5,7 @@
   (scheme char)
   (only (scheme complex))
   (only (scheme cxr))
-  (only (scheme eval) eval)
+  (scheme eval)
   (scheme file)
   (only (scheme inexact))
   (only (scheme lazy))
@@ -13,7 +13,7 @@
   (scheme process-context)
   (only (scheme r5rs))
   (scheme read)
-  (scheme repl)
+  (only (scheme repl))
   (only (scheme time))
   (only (scheme write))
   (only (srfi 1))
@@ -32,9 +32,7 @@
       (read-char file)
       (eval (read file) environment))))
 
-(define (main)
-  (define environment (interaction-environment))
-
+(define (main environment)
   (let loop ((arguments (cdr (command-line))))
     (cond
       ((null? arguments)
@@ -65,4 +63,4 @@
     (write-string "Usage: stak [-A DIRECTORY] [-I DIRECTORY] [-l LIBRARY_FILE] SCRIPT_FILE ARGUMENT...\n")
     (exit)))
 
-(main)
+(main (environment))
