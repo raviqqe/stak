@@ -55,7 +55,7 @@
         (set! command-line (lambda () arguments))
         (run environment (car arguments))))))
 
-(library-paths default-library-paths)
+(library-paths (default-library-paths))
 
 (let ((arguments (command-line)))
   (when (or

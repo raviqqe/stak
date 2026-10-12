@@ -2124,7 +2124,7 @@
             (scheme process-context))
 
            (begin
-            (define default-library-paths ,default-library-paths)))
+            (define (default-library-paths) ,default-library-paths)))
 
           (define-library (stak compile)
            (export compile library-paths)
