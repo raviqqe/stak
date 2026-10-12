@@ -3824,6 +3824,7 @@ constant list
   library-context?
   library-context-set-imported!
   imported
+  except
   prefix
   symbol-append
   set
@@ -4178,7 +4179,6 @@ constant list
   symbol-id
   $$compiler
   export
-  except
   only
   cons-rib
   rib-car
@@ -21090,15 +21090,9 @@ constant procedure 1 #f
     call 2 #f cons
     call 2 #f cons
     constant import
-    constant except
     constant scheme
     constant base
     constant ()
-    call 2 #f cons
-    call 2 #f cons
-    constant data-rib
-    constant ()
-    call 2 #f cons
     call 2 #f cons
     call 2 #f cons
     constant scheme
