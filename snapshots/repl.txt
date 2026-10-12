@@ -15602,14 +15602,11 @@ constant procedure 0 #t
   call 1 #f $$close
   call 1 #f unwind
 set exit
-constant ()
-call 1 #f make-symbol-table
-constant ()
-call 2 #f make-environment
-constant procedure 0 #f
-  get 1
-call 1 #f $$close
-call 2 #f $$unbind
+constant list
+  scheme
+  base
+call 1 #f environment
+call 1 #f ||
 set interaction-environment
 constant 400
 call 1 #f primitive

@@ -50,6 +50,17 @@ Feature: Extra functionalities
     And the stderr should contain "foo"
     And the stderr should contain "unknown"
 
+  Scenario: Use a base library in a REPL
+    Given a file named "input.scm" with:
+      """scheme
+      (define (foo x) (+ x 1))
+      (foo 41)
+      """
+    When I run `stak-repl` interactively
+    And I pipe in the file "input.scm"
+    Then the exit status should be 0
+    And the stdout should contain "42"
+
   Scenario: Import a library in a data directory in a REPL
     Given a file named "data/stak/foo.sld" with:
       """scheme
