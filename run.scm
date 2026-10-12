@@ -19,6 +19,7 @@
   (only (srfi 1))
   (only (stak backtrace))
   (only (stak compile) library-paths)
+  (only (stak library) default-library-paths)
   (only (stak mapping)))
 
 (define (run environment path)
@@ -53,6 +54,8 @@
       (else
         (set! command-line (lambda () arguments))
         (run environment (car arguments))))))
+
+(library-paths (default-library-paths))
 
 (let ((arguments (command-line)))
   (when (or

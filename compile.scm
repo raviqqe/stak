@@ -365,6 +365,8 @@
 
     (define library-file-extension ".sld")
 
+    (define library-paths (make-parameter '()))
+
     (define loading-libraries (make-parameter '()))
 
     (define (library-name->path name)
@@ -2044,11 +2046,20 @@
          primitives
          (compile metadata expression7))))))
 
-    (define (main options paths source)
+    (lambda (options paths source)
      (library-paths paths)
-     (compile-program options source))
+     (compile-program options source))))
 
-    main))
+(define default-library-paths
+  '(let ((directory (get-environment-variable "XDG_DATA_HOME")))
+    (cond
+     ((and directory (not (equal? directory "")))
+      (list (string-append directory "/stak")))
+     ((get-environment-variable "HOME") =>
+      (lambda (directory)
+       (list (string-append directory "/.local/share/stak"))))
+     (else
+      '()))))
 
 (define compiler
   `(let ()
@@ -2079,8 +2090,6 @@
        (set! symbol-id (+ symbol-id 1))
        (string->symbol (string-append (number->string symbol-id 32) name)))))
 
-    (define library-paths (make-parameter '()))
-
     ,@frontend
     ,@backend))
 
@@ -2104,137 +2113,143 @@
   (cond
     ((not (pair? expression))
       expression)
-    ((and
-        (pair? (car expression))
-        (null? (cdar expression))
-        (eq? (caar expression) '$$compiler))
-      (cons
-        `(define-library (stak compile)
-          (export compile library-paths)
+    ((equal? (car expression) '($$compiler))
+      (append
+        `((define-library (stak library)
+           (export default-library-paths)
 
-          (import
-           (scheme base)
-           (scheme cxr)
-           (scheme lazy)
-           (scheme file)
-           (scheme read)
-           (only (stak base) rib string->uninterned-symbol))
+           (import
+            (stak base)
+            (stak string)
+            (scheme process-context))
 
-          (begin
-           (define library-paths (make-parameter '()))
+           (begin
+            (define (default-library-paths) ,default-library-paths)))
 
-           (define compile
-            (let ()
-             (define cons-rib cons)
-             (define rib-car car)
-             (define rib-cdr cdr)
+          (define-library (stak compile)
+           (export compile library-paths)
 
-             ,@frontend
+           (import
+            (scheme base)
+            (scheme cxr)
+            (scheme lazy)
+            (scheme file)
+            (scheme read)
+            (only (stak base) rib string->uninterned-symbol))
 
-             ; Disable unused functionalities.
-             (define dummy
-              (let ((set-nothing (lambda xs #f)))
-               (set! nop-rib (lambda (continuation) continuation))
-               (set! macro-state-set-literals! set-nothing)
-               (set! macro-state-set-static-symbols! set-nothing)
-               (set! macro-state-set-dynamic-symbols! set-nothing)
-               (set! optimization-context-set-literals! set-nothing)))
+           (begin
+            (define cons-rib cons)
+            (define rib-car car)
+            (define rib-cdr cdr)
 
-             ; Library system
+            ,@frontend
 
-             (define (append-imports old-imports new-imports)
-              (fold-left
-               (lambda (name names)
-                (if (member name names)
-                 names
-                 (cons name names)))
-               old-imports
-               new-imports))
+            (define compile
+             (let ()
+              ; Disable unused functionalities.
+              (define dummy
+               (let ((set-nothing (lambda xs #f)))
+                (set! nop-rib (lambda (continuation) continuation))
+                (set! macro-state-set-literals! set-nothing)
+                (set! macro-state-set-static-symbols! set-nothing)
+                (set! macro-state-set-dynamic-symbols! set-nothing)
+                (set! optimization-context-set-literals! set-nothing)))
 
-             (define global-context
-              (make-global-context
-               (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))))
+              ; Library system
 
-             (define expand-libraries
-              (let ((context (make-library-context global-context '())))
-               (lambda (imports symbol-table expression)
-                (case (maybe-car expression)
-                 ((define-library)
-                  (register-library! context expression)
-                  (values #f imports))
-                 ((import)
-                  (let ((imports (append-imports imports (cdr expression))))
+              (define (append-imports old-imports new-imports)
+               (fold-left
+                (lambda (name names)
+                 (if (member name names)
+                  names
+                  (cons name names)))
+                old-imports
+                new-imports))
+
+              (define global-context
+               (make-global-context
+                (map-values (lambda (exports) (make-library exports '() '())) ($$libraries))))
+
+              (define expand-libraries
+               (let ((context (make-library-context global-context '())))
+                (lambda (imports symbol-table expression)
+                 (case (maybe-car expression)
+                  ((define-library)
+                   (register-library! context expression)
+                   (values #f imports))
+                  ((import)
+                   (let ((imports (append-imports imports (cdr expression))))
+                    (values
+                     (cons
+                      '$$begin
+                      (append
+                       (expand-library-bodies
+                        context
+                        (map car (map parse-import-set imports)))
+                       (list #f)))
+                     imports)))
+                  (else
                    (values
-                    (cons
-                     '$$begin
-                     (append
-                      (expand-library-bodies
-                       context
-                       (map car (map parse-import-set imports)))
-                      (list #f)))
-                    imports)))
-                 (else
-                  (values
-                   (resolve-environment-symbols
-                    (let ((names (collect-imported-names
-                                  context
-                                  (map parse-import-set imports))))
-                     (lambda (name)
-                      (cond
-                       ((assq name names) =>
-                        cdr)
-                       (else
-                        (string->symbol (symbol->string name) symbol-table)))))
-                    expression)
-                   imports))))))
+                    (resolve-environment-symbols
+                     (let ((names (collect-imported-names
+                                   context
+                                   (map parse-import-set imports))))
+                      (lambda (name)
+                       (cond
+                        ((assq name names) =>
+                         cdr)
+                        (else
+                         (string->symbol (symbol->string name) symbol-table)))))
+                     expression)
+                    imports))))))
 
-             ; Macro system
+              ; Macro system
 
-             (define expand-macros
-              (let ((context
-                     (make-macro-context
-                      (make-macro-state global-context '() '() '() '())
-                      '())))
-               (for-each
-                (lambda (pair)
-                 (macro-context-set-global!
-                  context
-                  (car pair)
-                  (make-transformer context (cdr pair))))
-                ($$macros))
-               (lambda (expression)
-                (expand-macro context expression))))
+              (define expand-macros
+               (let ((context
+                      (make-macro-context
+                       (make-macro-state global-context '() '() '() '())
+                       '())))
+                (for-each
+                 (lambda (pair)
+                  (macro-context-set-global!
+                   context
+                   (car pair)
+                   (make-transformer context (cdr pair))))
+                 ($$macros))
+                (lambda (expression)
+                 (expand-macro context expression))))
 
-             ; Optimization
+              ; Optimization
 
-             (define optimize
-              (let ((context
-                     (make-optimization-context
-                      (map-values make-optimizer ($$optimizers))
-                      '())))
-               (lambda (expression)
-                (optimize-begin (optimize-custom-expression context expression)))))
+              (define optimize
+               (let ((context
+                      (make-optimization-context
+                       (map-values make-optimizer ($$optimizers))
+                       '())))
+                (lambda (expression)
+                 (optimize-begin (optimize-custom-expression context expression)))))
 
-             ; Compilation
+              ; Compilation
 
-             (define (compile expression)
-              (compile-expression (make-compilation-context '() #f) expression '()))
+              (define (compile expression)
+               (compile-expression (make-compilation-context '() #f) expression '()))
 
-             (lambda (imports symbol-table expression)
-              (let-values (((expression imports)
-                            (expand-libraries
-                             imports
-                             symbol-table
-                             (include-files "" expression))))
-               (values
-                (make-procedure
-                 (compile-arity 0 #f)
-                 (compile
-                  (analyze-free-variables
-                   (optimize
-                    (expand-macros expression))))
-                 '())
-                imports)))))))
+              (lambda (imports symbol-table expression)
+               (let-values (((expression imports)
+                             (expand-libraries
+                              imports
+                              symbol-table
+                              (include-files "" expression))))
+                (values
+                 (make-procedure
+                  (compile-arity 0 #f)
+                  (compile
+                   (analyze-free-variables
+                    (optimize
+                     (expand-macros expression))))
+                  '())
+                 imports))))))))
         (cdr expression)))
     (else
       (cons
@@ -2243,8 +2258,8 @@
 
 ; Main
 
-(define (parse-library-paths arguments)
-  (let loop ((arguments arguments) (directories '()))
+(define (parse-library-paths arguments directories)
+  (let loop ((arguments arguments) (directories directories))
     (cond
       ((or (null? arguments) (null? (cdr arguments)))
         directories)
@@ -2256,6 +2271,11 @@
         (loop (cdr arguments) directories)))))
 
 (define (main)
+  (define library-paths
+    (eval
+      default-library-paths
+      (environment '(scheme base) '(scheme process-context))))
+
   (define compile
     (eval
       compiler
@@ -2278,7 +2298,7 @@
 
   (compile
     (list (and (member "--debug" arguments) 'debug))
-    (parse-library-paths arguments)
+    (parse-library-paths arguments library-paths)
     (incept (read-source))))
 
 (main)

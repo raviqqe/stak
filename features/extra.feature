@@ -49,3 +49,25 @@ Feature: Extra functionalities
     Then the exit status should be 1
     And the stderr should contain "foo"
     And the stderr should contain "unknown"
+
+  Scenario: Import a library in a data directory in a REPL
+    Given a file named "data/stak/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define foo 42)))
+      """
+    And a file named "input.scm" with:
+      """scheme
+      (import (foo))
+      foo
+      """
+    And I set the environment variable "XDG_DATA_HOME" to "data"
+    When I run `stak-repl` interactively
+    And I pipe in the file "input.scm"
+    Then the exit status should be 0
+    And the stdout should contain "42"
