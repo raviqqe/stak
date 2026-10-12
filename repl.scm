@@ -14,6 +14,8 @@
   (scheme write)
   (only (srfi 1))
   (only (stak backtrace))
+  (only (stak compile) library-paths)
+  (only (stak library) default-library-paths)
   (only (stak mapping)))
 
 (define (write-value value)
@@ -48,6 +50,8 @@
         (guard (error (else error))
           (eval expression (interaction-environment)))))
     (newline)))
+
+(library-paths (default-library-paths))
 
 (let ((arguments (command-line)))
   (when (or

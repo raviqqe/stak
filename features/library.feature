@@ -668,6 +668,33 @@ Feature: Library system
     Then the stdout should contain exactly "A"
 
   @environment-variable @stak
+  Scenario: Import a library in a load path without a data directory
+    Given a file named "library/foo.sld" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (foo))
+
+      (foo 65)
+      """
+    When I run the following script:
+      """sh
+      unset HOME XDG_DATA_HOME
+      stak -A library main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
+
+  @environment-variable @stak
   Scenario Outline: Search a data directory between load paths
     Given a file named "prepended/foo.sld" with:
       """scheme

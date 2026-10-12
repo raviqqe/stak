@@ -3834,6 +3834,7 @@ constant list
   make-environment
   compile
   library-paths
+  default-library-paths
   time
   current-jiffy
   current-second
@@ -11564,6 +11565,11 @@ constant list
     (library-paths . library-paths)
   list
     list
+      stak
+      library
+    (default-library-paths . default-library-paths)
+  list
+    list
       scheme
       time
     (current-jiffy . current-jiffy)
@@ -16153,6 +16159,34 @@ constant procedure 0 #f
   call 2 #f $$unbind
   call 1 #f cdr
 set backtrace
+constant procedure 0 #f
+  constant "XDG_DATA_HOME"
+  call 1 #f get-environment-variable
+  get 0
+  if
+    get 0
+    constant ""
+    call 2 #f equal?
+    constant #f
+    call 2 #f eq?
+    continue
+  constant #f
+  if
+    get 0
+    constant "/stak"
+    call 2 #f string-append
+    call 1 #f list
+  constant "HOME"
+  call 1 #f get-environment-variable
+  get 0
+  if
+    get 0
+    get 0
+    constant "/.local/share/stak"
+    call 2 #f string-append
+    call 1 #f list
+  constant ()
+set default-library-paths
 constant 0
 constant 0
 call 2 #f cons
@@ -16524,6 +16558,9 @@ constant procedure 0 #f
   call 0 #f ||
   call 1 #f 1
 set ||
+call 0 #f default-library-paths
+call 1 #f library-paths
+set 0
 call 0 #f command-line
 constant "-h"
 get 1
