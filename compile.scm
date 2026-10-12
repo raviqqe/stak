@@ -2126,10 +2126,7 @@
   (cond
     ((not (pair? expression))
       expression)
-    ((and
-        (pair? (car expression))
-        (null? (cdar expression))
-        (eq? (caar expression) '$$compiler))
+    ((equal? (car expression) '($$compiler))
       (cons
         `(define-library (stak compile)
           (export compile library-paths)

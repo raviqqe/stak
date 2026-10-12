@@ -21061,20 +21061,9 @@ constant procedure 1 #f
     get 0
   get 0
   call 1 #f car
-  call 1 #f pair?
-  if
-    get 0
-    call 1 #f cdar
-    call 1 #f null?
-    if
-      get 0
-      call 1 #f caar
-      constant $$compiler
-      call 2 #f eq?
-      continue
-    constant #f
-    continue
-  constant #f
+  constant list
+    $$compiler
+  call 2 #f equal?
   if
     constant define-library
     constant stak
