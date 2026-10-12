@@ -478,17 +478,22 @@ Feature: Library system
     When I successfully run `stak -l foo.scm main.scm`
     Then the stdout should contain exactly "BA"
 
-  Scenario: Do not modify a built-in library environment
+  Scenario Outline: Do not modify a built-in library environment
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (define close #f)
+      (define <name> #f)
 
-      (write-u8 (call/cc (lambda (continue) (continue 65))))
+      <expression>
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+    Examples:
+      | name     | expression                                             |
+      | close    | (write-u8 (call/cc (lambda (continue) (continue 65)))) |
+      | data-rib | (write-u8 (vector-ref (vector 65) 0))                  |
 
   @chibi @gauche @stak
   Scenario: Modify a library environment

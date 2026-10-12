@@ -2733,7 +2733,6 @@
     eq?
 
     apply
-    data-rib
 
     eqv?
     equal?
