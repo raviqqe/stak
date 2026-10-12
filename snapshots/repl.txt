@@ -15602,11 +15602,23 @@ constant procedure 0 #t
   call 1 #f $$close
   call 1 #f unwind
 set exit
-constant list
-  scheme
-  base
-call 1 #f environment
-call 1 #f ||
+constant #f
+constant #f
+constant procedure 0 #f
+  get 2
+  if
+    get 1
+  constant list
+    scheme
+    base
+  call 1 #f environment
+  set 2
+  constant #t
+  set 3
+  get 1
+call 1 #f $$close
+call 2 #f $$unbind
+call 2 #f $$unbind
 set interaction-environment
 constant 400
 call 1 #f primitive
