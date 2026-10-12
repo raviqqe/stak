@@ -2046,23 +2046,9 @@
          primitives
          (compile metadata expression7))))))
 
-    (define (parse-library-paths arguments directories)
-     (let loop ((arguments arguments) (directories directories))
-      (cond
-       ((or (null? arguments) (null? (cdr arguments)))
-        directories)
-       ((equal? (car arguments) "-A")
-        (loop (cddr arguments) (append directories (list (cadr arguments)))))
-       ((equal? (car arguments) "-I")
-        (loop (cddr arguments) (cons (cadr arguments) directories)))
-       (else
-        (loop (cdr arguments) directories)))))
-
-    (define (main arguments default-library-paths source)
-     (library-paths (parse-library-paths arguments default-library-paths))
-     (compile-program (list (and (member "--debug" arguments) 'debug)) source))
-
-    main))
+    (lambda (options paths source)
+     (library-paths paths)
+     (compile-program options source))))
 
 (define default-library-paths
   '(let ((directory (get-environment-variable "XDG_DATA_HOME")))
@@ -2271,6 +2257,18 @@
 
 ; Main
 
+(define (parse-library-paths arguments directories)
+  (let loop ((arguments arguments) (directories directories))
+    (cond
+      ((or (null? arguments) (null? (cdr arguments)))
+        directories)
+      ((equal? (car arguments) "-A")
+        (loop (cddr arguments) (append directories (list (cadr arguments)))))
+      ((equal? (car arguments) "-I")
+        (loop (cddr arguments) (cons (cadr arguments) directories)))
+      (else
+        (loop (cdr arguments) directories)))))
+
 (define (main)
   (define library-paths
     (eval
@@ -2297,6 +2295,9 @@
     (write-string "Usage: stak-compile [-A DIRECTORY] [-I DIRECTORY] < SOURCE_FILE > BYTECODE_FILE\n")
     (exit))
 
-  (compile arguments library-paths (incept (read-source))))
+  (compile
+    (list (and (member "--debug" arguments) 'debug))
+    (parse-library-paths arguments library-paths)
+    (incept (read-source))))
 
 (main)
