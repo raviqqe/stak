@@ -8619,103 +8619,6 @@ constant procedure 0 #t
   call 1 #f $$close
   call 3 #f dynamic-wind
 set read
-constant 40
-call 1 #f primitive
-set ||
-constant 300
-call 1 #f primitive
-set ||
-constant 301
-call 1 #f primitive
-set ||
-constant #f
-constant #f
-constant procedure 0 #f
-  get 2
-  if
-    get 1
-  get code-points->string
-  call 0 #f ||
-  call 2 #f map
-  set 2
-  constant #t
-  set 3
-  get 1
-call 1 #f $$close
-call 2 #f $$unbind
-call 2 #f $$unbind
-set command-line
-constant #f
-constant #f
-constant procedure 0 #f
-  get 2
-  if
-    get 1
-  constant procedure 1 #f
-    get 0
-    call 1 #f car
-    call 1 #f code-points->string
-    get 1
-    call 1 #f cdr
-    call 1 #f code-points->string
-    call 2 #f cons
-  call 0 #f ||
-  call 2 #f map
-  set 2
-  constant #t
-  set 3
-  get 1
-call 1 #f $$close
-call 2 #f $$unbind
-call 2 #f $$unbind
-set get-environment-variables
-constant procedure 1 #f
-  get 0
-  call 0 #f get-environment-variables
-  call 2 #f assoc
-  get 0
-  if
-    get 0
-    call 1 #f cdr
-  constant #f
-set get-environment-variable
-constant procedure 0 #t
-  constant #t
-  get 1
-  call 2 #f get-option
-  constant list
-    #t
-    0
-  call 2 #f memq
-  if
-    constant procedure 0 #f
-      constant #f
-    call 1 #f close
-    call 1 #f cddr
-    call 1 #f car
-    constant list
-      0
-    call 2 #f set-car!
-    set 0
-    constant #f
-  get 0
-  call 1 #f car
-  call 1 #f integer?
-  if
-    get 0
-    call 1 #f car
-    continue
-  constant 1
-  call 1 #f ||
-set emergency-exit
-constant procedure 0 #t
-  constant procedure 0 #f
-    get emergency-exit
-    get 2
-    call 2 #f apply
-  call 1 #f $$close
-  call 1 #f unwind
-set exit
 get cons
 set ||
 get car
@@ -9483,37 +9386,7 @@ constant procedure 2 #f
 set ||
 constant ".sld"
 set ||
-constant "XDG_DATA_HOME"
-call 1 #f get-environment-variable
-get 0
-if
-  get 0
-  constant ""
-  call 2 #f equal?
-  constant #f
-  call 2 #f eq?
-  continue
-constant #f
-if
-  get 0
-  constant "/stak"
-  call 2 #f string-append
-  call 1 #f list
-  continue
-constant "HOME"
-call 1 #f get-environment-variable
-get 0
-if
-  get 0
-  get 0
-  constant "/.local/share/stak"
-  call 2 #f string-append
-  call 1 #f list
-  call 2 #f $$unbind
-  continue
 constant ()
-call 2 #f $$unbind
-call 2 #f $$unbind
 call 1 #f make-parameter
 set library-paths
 constant ()
@@ -15626,6 +15499,103 @@ constant procedure 2 #f
   call 1 #f $$close
   call 2 #f call-with-values
 set eval
+constant 40
+call 1 #f primitive
+set ||
+constant 300
+call 1 #f primitive
+set ||
+constant 301
+call 1 #f primitive
+set ||
+constant #f
+constant #f
+constant procedure 0 #f
+  get 2
+  if
+    get 1
+  get code-points->string
+  call 0 #f ||
+  call 2 #f map
+  set 2
+  constant #t
+  set 3
+  get 1
+call 1 #f $$close
+call 2 #f $$unbind
+call 2 #f $$unbind
+set command-line
+constant #f
+constant #f
+constant procedure 0 #f
+  get 2
+  if
+    get 1
+  constant procedure 1 #f
+    get 0
+    call 1 #f car
+    call 1 #f code-points->string
+    get 1
+    call 1 #f cdr
+    call 1 #f code-points->string
+    call 2 #f cons
+  call 0 #f ||
+  call 2 #f map
+  set 2
+  constant #t
+  set 3
+  get 1
+call 1 #f $$close
+call 2 #f $$unbind
+call 2 #f $$unbind
+set get-environment-variables
+constant procedure 1 #f
+  get 0
+  call 0 #f get-environment-variables
+  call 2 #f assoc
+  get 0
+  if
+    get 0
+    call 1 #f cdr
+  constant #f
+set get-environment-variable
+constant procedure 0 #t
+  constant #t
+  get 1
+  call 2 #f get-option
+  constant list
+    #t
+    0
+  call 2 #f memq
+  if
+    constant procedure 0 #f
+      constant #f
+    call 1 #f close
+    call 1 #f cddr
+    call 1 #f car
+    constant list
+      0
+    call 2 #f set-car!
+    set 0
+    constant #f
+  get 0
+  call 1 #f car
+  call 1 #f integer?
+  if
+    get 0
+    call 1 #f car
+    continue
+  constant 1
+  call 1 #f ||
+set emergency-exit
+constant procedure 0 #t
+  constant procedure 0 #f
+    get emergency-exit
+    get 2
+    call 2 #f apply
+  call 1 #f $$close
+  call 1 #f unwind
+set exit
 constant ()
 call 1 #f make-symbol-table
 constant ()
