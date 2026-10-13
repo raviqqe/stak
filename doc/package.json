@@ -8,15 +8,15 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/preact": "^6.0.5",
+    "@astrojs/preact": "^6.0.6",
     "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/starlight": "^0.42.5",
+    "@astrojs/starlight": "^0.42.6",
     "@monza-editor/preact": "^0.6.0",
     "@nanostores/async": "^0.1.0",
     "@nanostores/preact": "^1.1.1",
     "@preact/signals": "^2.11.3",
     "@raviqqe/stak": "^0.12.29",
-    "astro": "^7.3.5",
+    "astro": "^7.3.8",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.52.0",
     "lucide-preact": "^1.52.0",
