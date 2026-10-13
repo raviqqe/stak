@@ -3827,6 +3827,7 @@ constant list
   mapping-insert!
   mapping->list
   list->mapping
+  load
   repl
   interaction-environment
   environment
@@ -11547,6 +11548,11 @@ constant list
   list
     list
       scheme
+      load
+    (load . load)
+  list
+    list
+      scheme
       repl
     (interaction-environment . interaction-environment)
   list
@@ -15503,6 +15509,48 @@ constant procedure 2 #f
   call 1 #f $$close
   call 2 #f call-with-values
 set eval
+constant #f
+constant #f
+constant procedure 0 #f
+  get 2
+  if
+    get 1
+  constant list
+    scheme
+    base
+  call 1 #f environment
+  set 2
+  constant #t
+  set 3
+  get 1
+call 1 #f $$close
+call 2 #f $$unbind
+call 2 #f $$unbind
+set interaction-environment
+constant procedure 1 #t
+  constant begin
+  get 2
+  constant procedure 0 #f
+    constant #f
+    constant procedure 0 #f
+      call 0 #f read
+      get 0
+      call 1 #f eof-object?
+      if
+        constant ()
+      get 0
+      call 0 #f 3
+      call 2 #f cons
+    call 1 #f $$close
+    set 1
+    call 0 #f 0
+  call 2 #f with-input-from-file
+  call 2 #f cons
+  call 0 #f interaction-environment
+  get 2
+  call 2 #f get-option
+  call 2 #f eval
+set load
 constant 40
 call 1 #f primitive
 set ||
@@ -15600,24 +15648,6 @@ constant procedure 0 #t
   call 1 #f $$close
   call 1 #f unwind
 set exit
-constant #f
-constant #f
-constant procedure 0 #f
-  get 2
-  if
-    get 1
-  constant list
-    scheme
-    base
-  call 1 #f environment
-  set 2
-  constant #t
-  set 3
-  get 1
-call 1 #f $$close
-call 2 #f $$unbind
-call 2 #f $$unbind
-set interaction-environment
 constant 400
 call 1 #f primitive
 set current-jiffy

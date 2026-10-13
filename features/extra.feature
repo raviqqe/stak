@@ -61,6 +61,22 @@ Feature: Extra functionalities
     Then the exit status should be 0
     And the stdout should contain "42"
 
+  Scenario: Load a file in a REPL
+    Given a file named "foo.scm" with:
+      """scheme
+      (define (foo x) (+ x 1))
+      """
+    And a file named "input.scm" with:
+      """scheme
+      (import (scheme load))
+      (load "./foo.scm")
+      (foo 41)
+      """
+    When I run `stak-repl` interactively
+    And I pipe in the file "input.scm"
+    Then the exit status should be 0
+    And the stdout should contain "42"
+
   Scenario: Import a library in a data directory in a REPL
     Given a file named "data/stak/foo.sld" with:
       """scheme
