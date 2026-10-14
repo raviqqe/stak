@@ -6584,7 +6584,7 @@
 ($$compiler)
 
 (define-library (scheme eval)
-  (export environment eval make-environment)
+  (export environment eval)
 
   (import (scheme base) (stak compile))
 
@@ -6610,12 +6610,13 @@
 (define-library (scheme repl)
   (export interaction-environment)
 
-  (import (scheme base) (scheme eval))
+  (import
+    (scheme base)
+    (scheme lazy)
+    (scheme eval))
 
   (begin
-    (define interaction-environment
-      (let ((environment (make-environment (make-symbol-table '()) '())))
-        (lambda () environment)))))
+    (define interaction-environment (delay (environment '(scheme base))))))
 
 (define-library (scheme load)
   (export load)

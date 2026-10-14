@@ -1,6 +1,6 @@
-@chibi @gauche @stak
 Feature: Load
 
+  @chibi @gauche @stak
   Scenario: Load a file
     Given a file named "main.scm" with:
       """scheme
@@ -15,6 +15,22 @@ Feature: Load
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "foo"
 
+  @gauche @stak
+  Scenario: Load a file in an interaction environment
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme load))
+
+      (load "./foo.scm")
+      """
+    And a file named "foo.scm" with:
+      """scheme
+      (write-string "foo")
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "foo"
+
+  @chibi @gauche @stak
   Scenario: Load two files
     Given a file named "main.scm" with:
       """scheme
@@ -34,6 +50,7 @@ Feature: Load
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "foobar"
 
+  @chibi @gauche @stak
   Scenario: Load a file in a loaded file
     Given a file named "main.scm" with:
       """scheme
