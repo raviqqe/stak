@@ -6,7 +6,18 @@ set -e
 
 cd $(dirname $0)/..
 
-interpreters='chibi-scheme gosh guile'
+list_interpreters() (
+  for interpreter in chibi-scheme gosh guile; do
+    case $interpreter:$1 in
+    chibi-scheme:examples/embedded-script/src/fight.scm)
+      # TODO Fix a segmentation fault of Chibi Scheme.
+      ;;
+    *)
+      echo $interpreter
+      ;;
+    esac
+  done
+)
 
 compile() (
   case $1 in
@@ -26,11 +37,11 @@ export PATH=$PWD/target/release:$PATH
 for file in $(list_scheme_files); do
   echo FILE $file
 
-  for interpreter in $interpreters stak; do
+  for interpreter in $(list_interpreters $file) stak; do
     cat prelude.scm $file | compile $interpreter >$interpreter.bc
   done
 
-  for interpreter in $interpreters; do
+  for interpreter in $(list_interpreters $file); do
     log diff stak.bc $interpreter.bc
   done
 done
