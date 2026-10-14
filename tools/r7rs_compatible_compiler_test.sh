@@ -10,7 +10,8 @@ list_interpreters() (
   for interpreter in chibi-scheme gosh guile; do
     case $interpreter:$1 in
     chibi-scheme:examples/embedded-script/src/fight.scm)
-      # TODO Fix a segmentation fault of Chibi Scheme.
+      # TODO Remove this when a Chibi Scheme release includes the fix.
+      # https://github.com/ashinn/chibi-scheme/pull/1188
       ;;
     *)
       echo $interpreter
