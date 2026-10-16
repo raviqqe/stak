@@ -361,7 +361,7 @@ Feature: Exception
     Then the stdout should contain exactly "A"
 
   @extra
-  Rule: Extra functionalities
+  Rule: Error context
 
     Background:
       Given I run the following script:
