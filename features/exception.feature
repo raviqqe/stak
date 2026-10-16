@@ -359,3 +359,55 @@ Feature: Exception
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  @extra
+  Rule: Error context
+
+    Background:
+      Given I run the following script:
+        """sh
+        cp $STAK_ROOT/prelude.scm .
+        """
+      And the exit status should be 0
+
+    Scenario: Dump a stack trace on an error
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (stak backtrace))
+
+        (define (foo)
+          (error "foo")
+          #f)
+
+        (define (bar)
+          (foo)
+          #f)
+
+        (define (baz)
+          (bar)
+          #f)
+
+        (let ()
+          (baz)
+          #f)
+        """
+      When I run `stak main.scm`
+      Then the exit status should be 1
+      And the stderr should contain "foo"
+      And the stderr should contain "[error foo bar baz eval #f]"
+
+    Scenario: Show an unknown irritant of an error
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (error "foo" 42)
+        """
+      When I run the following script:
+        """sh
+        cat prelude.scm main.scm | stak-compile > main.bc
+        """
+      And I run `stak-interpret main.bc`
+      Then the exit status should be 1
+      And the stderr should contain "foo"
+      And the stderr should contain "unknown"
