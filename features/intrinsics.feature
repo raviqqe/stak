@@ -1,6 +1,6 @@
+@stak
 Feature: Intrinsics
 
-  @stak
   Scenario: Get a tag of a pair with a non-cons `cdr`
     Given a file named "main.scm" with:
       """scheme
@@ -11,7 +11,6 @@ Feature: Intrinsics
     When I successfully run `stak main.scm`
     Then the exit status should be 0
 
-  @stak
   Scenario: Preserve a tag when a `cdr` is set
     Given a file named "main.scm" with:
       """scheme
