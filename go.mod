@@ -24,7 +24,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-runewidth v0.0.28 // indirect
-	github.com/raviqqe/aruba-go v0.1.10 // indirect
+	github.com/raviqqe/aruba-go v0.2.0 // indirect
 	github.com/raviqqe/gherkin-format v0.1.3 // indirect
 	github.com/raviqqe/gherkin2markdown v0.1.0 // indirect
 	github.com/samber/lo v1.53.0 // indirect

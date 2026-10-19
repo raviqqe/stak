@@ -51,14 +51,14 @@ Feature: Write
       (write <value>)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<output>"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value | output |
-      | #\\a  | #\\\\a |
-      | #\\A  | #\\\\A |
-      | #\\(  | #\\\\( |
-      | #\\#  | #\\\\# |
+      | value |
+      | #\\a  |
+      | #\\A  |
+      | #\\(  |
+      | #\\#  |
 
   @gauche @stak
   Scenario Outline: Write an escaped special character
@@ -69,19 +69,19 @@ Feature: Write
       (write <value>)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<output>"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value        | output         |
-      | #\\alarm     | #\\\\alarm     |
-      | #\\backspace | #\\\\backspace |
-      | #\\delete    | #\\\\delete    |
-      | #\\escape    | #\\\\escape    |
-      | #\\newline   | #\\\\newline   |
-      | #\\null      | #\\\\null      |
-      | #\\return    | #\\\\return    |
-      | #\\space     | #\\\\space     |
-      | #\\tab       | #\\\\tab       |
+      | value        |
+      | #\\alarm     |
+      | #\\backspace |
+      | #\\delete    |
+      | #\\escape    |
+      | #\\newline   |
+      | #\\null      |
+      | #\\return    |
+      | #\\space     |
+      | #\\tab       |
 
   Scenario: Write a string
     Given a file named "main.scm" with:
@@ -101,13 +101,16 @@ Feature: Write
       (write-string "<value>")
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<value>"
+    Then the stdout should contain exactly:
+      """
+      <output>
+      """
 
     Examples:
-      | value |
-      | \\n   |
-      | \\t   |
-      | \\"   |
+      | value | output |
+      | a\\nb | a\nb   |
+      | a\\tb | a	b     |
+      | a\\"b | a"b    |
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
@@ -196,17 +199,17 @@ Feature: Write
       (write "<value>")
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "\"<output>\""
+    Then the stdout should contain exactly "\"<value>\""
 
     Examples:
-      | value         | output          |
-      |               |                 |
-      | foo           | foo             |
-      | Hello, world! | Hello, world!   |
-      | \\n           | \\\\n           |
-      | \\t           | \\\\t           |
-      | \\r           | \\\\r           |
-      | \\n\\t\\r     | \\\\n\\\\t\\\\r |
+      | value         |
+      |               |
+      | foo           |
+      | Hello, world! |
+      | \\n           |
+      | \\t           |
+      | \\r           |
+      | \\n\\t\\r     |
 
   Scenario: Write a symbol
     Given a file named "main.scm" with:
@@ -310,19 +313,19 @@ Feature: Write
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value          | output           |
-      | (#\\a)         | (#\\\\a)         |
-      | (#\\space)     | (#\\\\space)     |
-      | ("foo")        | (\\"foo\\")      |
-      | ((#\\a))       | ((#\\\\a))       |
-      | ((#\\space))   | ((#\\\\space))   |
-      | (("foo"))      | ((\\"foo\\"))    |
-      | #(#\\a)        | #(#\\\\a)        |
-      | #(#\\space)    | #(#\\\\space)    |
-      | #("foo")       | #(\\"foo\\")     |
-      | #(#(#\\a))     | #(#(#\\\\a))     |
-      | #(#(#\\space)) | #(#(#\\\\space)) |
-      | #(#("foo"))    | #(#(\\"foo\\"))  |
+      | value          | output          |
+      | (#\\a)         | (#\\a)          |
+      | (#\\space)     | (#\\space)      |
+      | ("foo")        | (\\"foo\\")     |
+      | ((#\\a))       | ((#\\a))        |
+      | ((#\\space))   | ((#\\space))    |
+      | (("foo"))      | ((\\"foo\\"))   |
+      | #(#\\a)        | #(#\\a)         |
+      | #(#\\space)    | #(#\\space)     |
+      | #("foo")       | #(\\"foo\\")    |
+      | #(#(#\\a))     | #(#(#\\a))      |
+      | #(#(#\\space)) | #(#(#\\space))  |
+      | #(#("foo"))    | #(#(\\"foo\\")) |
 
   @gauche @guile @stak
   Scenario Outline: Display a value
