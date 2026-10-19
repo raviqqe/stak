@@ -93,19 +93,24 @@ Feature: Write
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
-  Scenario: Write special characters in a string
+  Scenario Outline: Write a special character in a string
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (write-string "a\nb\tc\"d")
+      (write-string "<value>")
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly:
       """
-      a
-      b	c"d
+      <output>
       """
+
+    Examples:
+      | value | output |
+      | a\\nb | a\nb   |
+      | a\\tb | a	b     |
+      | a\\"b | a"b    |
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
