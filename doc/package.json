@@ -16,7 +16,7 @@
     "@nanostores/preact": "^1.1.1",
     "@preact/signals": "^2.11.3",
     "@raviqqe/stak": "^0.12.33",
-    "astro": "^7.4.0",
+    "astro": "^7.4.1",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.52.0",
     "lucide-preact": "^1.59.0",
@@ -27,7 +27,7 @@
     "vite-plugin-wasm": "^3.6.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.11",
     "@types/node": "^26.6.5",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3"
