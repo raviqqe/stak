@@ -191,8 +191,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0(preact-render-to-string@6.8.1)
       '@nanostores/async':
-        specifier: ^0.1.0
-        version: 0.1.0(nanostores@1.5.5)
+        specifier: ^0.1.1
+        version: 0.1.1(nanostores@1.5.5)
       '@nanostores/preact':
         specifier: ^1.1.1
         version: 1.1.1(nanostores@1.5.5)(preact@10.29.8)
@@ -997,8 +997,8 @@ packages:
   '@monza-editor/preact@0.6.0':
     resolution: {integrity: sha512-ZEb0+U2LdqERpYtY1Rcq7SFVexX3x7Yvqcu5T74d6Vjt+gjBUcpY9Tmz+eR050zG6hPeupJO7dq9DAV7U5Lpwg==}
 
-  '@nanostores/async@0.1.0':
-    resolution: {integrity: sha512-sFz5p7L+O7EXkAah65wAIxFs8UW/fHCnqmA5IMXW+ocGqiBY+GvTXyUvGu48qjEaqI886sQSImctmu9L2m5jzw==}
+  '@nanostores/async@0.1.1':
+    resolution: {integrity: sha512-eXGcuE/iG4S0op/sj/0oNORta9N7Gbh93YUUwkeR16it9vkEWTW4Ss62ZHIm0pzQPB/Zqm4l25MBa/xkIfKXiQ==}
     engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
       nanostores: ^1
@@ -3631,7 +3631,7 @@ snapshots:
     transitivePeerDependencies:
       - preact-render-to-string
 
-  '@nanostores/async@0.1.0(nanostores@1.5.5)':
+  '@nanostores/async@0.1.1(nanostores@1.5.5)':
     dependencies:
       nanostores: 1.5.5
 
