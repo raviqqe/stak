@@ -10,7 +10,7 @@
   "dependencies": {
     "@astrojs/preact": "^6.1.1",
     "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/starlight": "^0.42.6",
+    "@astrojs/starlight": "^0.42.7",
     "@monza-editor/preact": "^0.6.0",
     "@nanostores/async": "^0.1.1",
     "@nanostores/preact": "^1.1.1",
