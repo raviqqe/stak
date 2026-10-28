@@ -69,7 +69,10 @@ Feature: Write
       (write <value>)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<value>"
+    Then the stdout should contain exactly:
+      """
+      <value>
+      """
 
     Examples:
       | value        |
@@ -199,7 +202,10 @@ Feature: Write
       (write "<value>")
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "\"<value>\""
+    Then the stdout should contain exactly:
+      """
+      "<value>"
+      """
 
     Examples:
       | value         |
