@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
-    "@raviqqe/biome-config": "^2.0.27",
+    "@raviqqe/biome-config": "^2.0.28",
     "tombi": "^1.9.6"
   },
   "engines": {
