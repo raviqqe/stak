@@ -14,9 +14,9 @@ export const DemoOutput: FunctionComponent = () => {
       <Field>
         <Label for="output">Output</Label>
         <pre class={styles.output} id="output">
-          {output.state === "ready" ? output.value : null}
+          {output.status === "ready" ? output.value : null}
         </pre>
-        {output.state === "failed" && output.error instanceof Error && (
+        {output.status === "failed" && output.error instanceof Error && (
           <ErrorMessage>{output.error.message}</ErrorMessage>
         )}
       </Field>
