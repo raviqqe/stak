@@ -16,7 +16,7 @@
     "@nanostores/preact": "^1.1.1",
     "@preact/signals": "^2.11.3",
     "@raviqqe/stak": "^0.12.33",
-    "astro": "^7.4.2",
+    "astro": "^7.4.4",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.53.0",
     "lucide-preact": "^1.62.0",
