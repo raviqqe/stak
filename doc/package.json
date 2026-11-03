@@ -18,7 +18,7 @@
     "@raviqqe/stak": "^0.12.33",
     "astro": "^7.4.4",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.53.0",
+    "es-toolkit": "^1.53.1",
     "lucide-preact": "^1.62.0",
     "monza-editor": "^0.6.0",
     "nanostores": "^1.5.5",
