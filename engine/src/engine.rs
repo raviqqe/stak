@@ -3,7 +3,7 @@ use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
 use stak_util::block_on;
-use stak_vm::{Error, Heap, Vm};
+use stak_vm::{Heap, Vm};
 use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A scripting engine.
@@ -13,7 +13,7 @@ pub struct Engine<'a, 'b, H: Heap> {
 
 impl<'a, 'b, H: Heap> Engine<'a, 'b, H> {
     /// Creates a scripting engine.
-    pub fn new(heap: H, functions: &'a mut [(&'a str, AnyFn<'b>)]) -> Result<Self, Error> {
+    pub fn new(heap: H, functions: &'a mut [(&'a str, AnyFn<'b>)]) -> Result<Self, EngineError> {
         Ok(Self {
             vm: Vm::new(heap, EnginePrimitiveSet::new(functions))?,
         })
