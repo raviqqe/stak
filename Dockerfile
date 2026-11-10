@@ -19,4 +19,5 @@ FROM scratch
 
 ENV PATH=
 COPY --from=build /app /app
+USER 65532:65532
 ENTRYPOINT ["/app"]
