@@ -200,8 +200,8 @@ importers:
         specifier: ^2.11.4
         version: 2.11.4(preact@11.2.0)
       '@raviqqe/stak':
-        specifier: ^0.12.33
-        version: 0.12.33
+        specifier: ^0.12.34
+        version: 0.12.34
       astro:
         specifier: ^7.4.5
         version: 7.4.5(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)
@@ -1106,8 +1106,8 @@ packages:
     peerDependencies:
       '@biomejs/biome': ^2.6.3
 
-  '@raviqqe/stak@0.12.33':
-    resolution: {integrity: sha512-YtxhrJUl6APXAuDrOZE2rlPI/G6qhVgBUnj7tayGaI+2iqtKwBfm/5mQeI3ZT/jC6mv5MSF8oRP1Krp9SndRgg==}
+  '@raviqqe/stak@0.12.34':
+    resolution: {integrity: sha512-MA7pWR3DvmhePC7IupZfPbdolWbYHHfoTTDDTmygJ+yM8noYr7JFYCFMLDnpmsmFcWrnQ4xgUADmDpBjXUqSTQ==}
 
   '@rolldown/binding-android-arm-eabi@1.2.13':
     resolution: {integrity: sha512-Vu/NICrgdRvUOeaJZIyB2FP63s6fO/4ud5l8dXmxDx9yDyn+mN0y+gsvsVviSli+T361Aqo0h46EuMoobrwawA==}
@@ -3851,7 +3851,7 @@ snapshots:
     dependencies:
       '@biomejs/biome': 2.6.6
 
-  '@raviqqe/stak@0.12.33': {}
+  '@raviqqe/stak@0.12.34': {}
 
   '@rolldown/binding-android-arm-eabi@1.2.13':
     optional: true

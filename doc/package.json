@@ -15,7 +15,7 @@
     "@nanostores/async": "^0.1.1",
     "@nanostores/preact": "^1.1.1",
     "@preact/signals": "^2.11.4",
-    "@raviqqe/stak": "^0.12.33",
+    "@raviqqe/stak": "^0.12.34",
     "astro": "^7.4.5",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.53.2",
