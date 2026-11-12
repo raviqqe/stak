@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
-      - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
+      - uses: rust-lang/crates-io-auth-action@v1.0.6
         id: auth
         if: github.ref == 'refs/heads/main'
       - run: tools/ci/release.sh ${{ github.ref != 'refs/heads/main' && '--dry-run' || '' }}
@@ -29,11 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-node
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
+      - uses: $/.github/actions/setup-node
       - run: tools/wasm_build.sh
-      - uses: raviqqe/pnpm-publish@b9431a6e362ae9769b351acca4a2f697cb4eea6f # v1.0.2
+      - uses: raviqqe/pnpm-publish@v1.0.2
         with:
           directory: wasm/pkg
           release: ${{ github.ref == 'refs/heads/main' }}
@@ -42,15 +42,15 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
       - run: brew install zig
       - run: cargo install --locked cargo-zigbuild
       - id: version
         run: echo version=v$(cargo run --bin stak -- --version | grep -o '[0-9.]*') > ${{ github.output }}
-      - uses: raviqqe/goreleaser-action@2ec1f4c6dd2c754f5f9c7779e8de095c0cf64e62 # v1.0.2
+      - uses: raviqqe/goreleaser-action@v1.0.2
         with:
           version: ${{ steps.version.outputs.version }}
           snapshot: ${{ github.ref != 'refs/heads/main' }}
@@ -77,12 +77,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
-      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
-      - uses: docker/setup-buildx-action@594f3bf4285d9ea8dc53c9a0c9c4092420091003 # v4.4.0
-      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+      - uses: docker/setup-qemu-action@v4.4.0
+      - uses: docker/setup-buildx-action@v4.4.0
+      - uses: docker/login-action@v4.8.0
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
@@ -93,7 +93,7 @@ jobs:
             echo repository=${{ vars.DOCKER_USER || 'test' }}/${{ matrix.image.binary }}
             echo version=$(git tag --points-at | sed s/^v//)
           ) >> ${{ github.output }}
-      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+      - uses: docker/build-push-action@v7.4.0
         with:
           build-args: |
             BINARY=${{ matrix.image.binary }}
@@ -106,7 +106,7 @@ jobs:
             ${{ steps.metadata.outputs.repository }}:latest
             ${{ steps.metadata.outputs.version && format('{0}:{1}', steps.metadata.outputs.repository, steps.metadata.outputs.version) || '' }}
       # spell-checker: disable-next-line
-      - uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
+      - uses: peter-evans/dockerhub-description@v5.0.0
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
