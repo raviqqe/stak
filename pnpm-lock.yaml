@@ -197,8 +197,8 @@ importers:
         specifier: ^0.42.8
         version: 0.42.8(astro@7.4.5(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(supports-color@7.2.0)(typescript@6.0.3)
       '@monza-editor/preact':
-        specifier: ^0.6.0
-        version: 0.6.0(preact-render-to-string@6.8.1)
+        specifier: ^0.6.1
+        version: 0.6.1(preact-render-to-string@6.8.1)
       '@nanostores/async':
         specifier: ^0.1.1
         version: 0.1.1(nanostores@1.5.5)
@@ -1008,8 +1008,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@monza-editor/preact@0.6.0':
-    resolution: {integrity: sha512-ZEb0+U2LdqERpYtY1Rcq7SFVexX3x7Yvqcu5T74d6Vjt+gjBUcpY9Tmz+eR050zG6hPeupJO7dq9DAV7U5Lpwg==}
+  '@monza-editor/preact@0.6.1':
+    resolution: {integrity: sha512-0SgFEAMUFlR00OGfpjHkKsoLeOTtOvA2pU+D1M2w+qZ/EvbOgx3AhAkEUQcXWc0aURwgu1fC4Uvgb6ZnZTd9Vg==}
 
   '@nanostores/async@0.1.1':
     resolution: {integrity: sha512-eXGcuE/iG4S0op/sj/0oNORta9N7Gbh93YUUwkeR16it9vkEWTW4Ss62ZHIm0pzQPB/Zqm4l25MBa/xkIfKXiQ==}
@@ -2434,14 +2434,6 @@ packages:
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
 
-  preact@10.29.8:
-    resolution: {integrity: sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q==}
-    peerDependencies:
-      preact-render-to-string: '>=5'
-    peerDependenciesMeta:
-      preact-render-to-string:
-        optional: true
-
   preact@11.2.0:
     resolution: {integrity: sha512-/HfHI/7N84e6GrWBJ3J280z3mLaRJiDcSvj/A+y/4AbLnND/1UlGHe1sR6oYuTGwId0nP7dqDU9OnLxMPZ7xBg==}
     peerDependencies:
@@ -3752,10 +3744,10 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@monza-editor/preact@0.6.0(preact-render-to-string@6.8.1)':
+  '@monza-editor/preact@0.6.1(preact-render-to-string@6.8.1)':
     dependencies:
       monza-editor: 0.6.1
-      preact: 10.29.8(preact-render-to-string@6.8.1)
+      preact: 11.2.0(preact-render-to-string@6.8.1)
     transitivePeerDependencies:
       - preact-render-to-string
 
@@ -5184,10 +5176,6 @@ snapshots:
   preact-render-to-string@6.8.1(preact@11.2.0):
     dependencies:
       preact: 11.2.0(preact-render-to-string@6.8.1)
-
-  preact@10.29.8(preact-render-to-string@6.8.1):
-    optionalDependencies:
-      preact-render-to-string: 6.8.1(preact@11.2.0)
 
   preact@11.2.0(preact-render-to-string@6.8.1):
     optionalDependencies:
