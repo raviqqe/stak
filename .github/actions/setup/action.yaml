@@ -5,11 +5,11 @@ outputs: {}
 runs:
   using: composite
   steps:
-    - uses: raviqqe/cargo-cache@4c7db86c0f73cc94a5608ad8b09e7a8e136fd259 # v1.0.4
-    - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+    - uses: raviqqe/cargo-cache@v1.0.4
+    - uses: actions/setup-go@v7.0.0
       with:
         go-version: stable
-    - uses: raviqqe/enable-homebrew@98e3adf041d4f3c53ef592fe72a92ca692f22944 # v1.0.6
+    - uses: raviqqe/enable-homebrew@v1.0.6
     - run: brew update
       shell: bash
     - run: tools/ci/setup.sh
