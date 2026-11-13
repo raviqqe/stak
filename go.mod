@@ -24,11 +24,11 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-runewidth v0.0.28 // indirect
-	github.com/raviqqe/aruba-go v0.2.0 // indirect
+	github.com/raviqqe/aruba-go v0.2.1 // indirect
 	github.com/raviqqe/gherkin-format v0.1.3 // indirect
 	github.com/raviqqe/gherkin2markdown v0.1.0 // indirect
 	github.com/samber/lo v1.53.0 // indirect
-	github.com/spf13/pflag v1.0.10 // indirect
+	github.com/spf13/pflag v1.1.0 // indirect
 	github.com/willf/pad v0.0.0-20200313202418-172aa767f2a4 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/text v0.28.0 // indirect
