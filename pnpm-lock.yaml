@@ -224,8 +224,8 @@ importers:
         specifier: ^1.70.0
         version: 1.70.0(preact@11.2.0)
       monza-editor:
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       nanostores:
         specifier: ^1.5.5
         version: 1.5.5
@@ -2307,8 +2307,8 @@ packages:
   micromark@4.0.2:
     resolution: {integrity: sha512-zpe98Q6kvavpCr1NPVSCMebCKfD7CA2NqZ+rykeNhONIJBpc1tFKt9hucLGwha3jNTNI8lHpctWJWoimVF4PfA==}
 
-  monza-editor@0.6.0:
-    resolution: {integrity: sha512-vDkB0RuXOa4O0A7Id0CqqswOpJ6OECB1Sdyr0QT37L3BeU98DUnWiL+riE1zHmpIbBU+4jihVY2oB8wBIM7clQ==}
+  monza-editor@0.6.1:
+    resolution: {integrity: sha512-AbeoE00nzbob96ETgaKd2iKLE5BccKII0puNYSx9N6rXrBikywaKgoUw/TGZIl6liLZFprFNmoL0VnI/bokWrg==}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -3754,7 +3754,7 @@ snapshots:
 
   '@monza-editor/preact@0.6.0(preact-render-to-string@6.8.1)':
     dependencies:
-      monza-editor: 0.6.0
+      monza-editor: 0.6.1
       preact: 10.29.8(preact-render-to-string@6.8.1)
     transitivePeerDependencies:
       - preact-render-to-string
@@ -5063,7 +5063,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  monza-editor@0.6.0: {}
+  monza-editor@0.6.1: {}
 
   mrmime@2.0.1: {}
 
