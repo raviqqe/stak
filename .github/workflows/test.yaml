@@ -26,8 +26,8 @@ jobs:
           - --features async
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: cargo build --locked ${{ matrix.options }}
         working-directory: ${{ matrix.directory }}
       - run: cargo test --no-run --locked ${{ matrix.options }}
@@ -50,16 +50,16 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-26' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-26.04-arm
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: tools/coverage.sh
-      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+      - uses: codecov/codecov-action@v7.1.1
         with:
           fail_ci_if_error: true
           files: lcov.info
@@ -100,9 +100,9 @@ jobs:
       STAK_HOST: ${{ matrix.interpreter.host }}
       STAK_COMPILE_OPTIONS: ${{ matrix.interpreter.compile_options }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-scheme
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
+      - uses: $/.github/actions/setup-scheme
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
@@ -111,8 +111,8 @@ jobs:
   extra_integration_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: tools/extra_integration_test.sh
   self_host_integration_test:
     strategy:
@@ -132,8 +132,8 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-26' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
@@ -141,14 +141,14 @@ jobs:
   self_host_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: tools/self_host_test.sh
   minimal:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: cargo build
         working-directory: cmd/minimal
       - run: cargo build --release
@@ -179,17 +179,17 @@ jobs:
             options: --no-default-features --features alloc,float
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: rustup target add ${{ matrix.target }}
       - run: cargo build --locked --target ${{ matrix.target }} ${{ matrix.crate.options }}
         working-directory: ${{ matrix.crate.directory }}
   wasm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-node
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
+      - uses: $/.github/actions/setup-node
       - run: tools/wasm_build.sh
       - run: tools/wasm_test.sh
       # Test no changes in the lock file and ignored artifacts.
@@ -197,27 +197,27 @@ jobs:
   decode:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: tools/decode_test.sh
   r7rs_compatible_compiler:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-scheme
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
+      - uses: $/.github/actions/setup-scheme
       - run: tools/r7rs_compatible_compiler_test.sh
   r7rs_compatible_library:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: stak tools/r7rs-compatible-library-test.scm prelude.scm tools/r7rs
   profile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
       - run: tools/profile_test.sh
   unicode:
     strategy:
@@ -232,9 +232,9 @@ jobs:
     env:
       STAK_HOST: ${{ matrix.host }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/setup
-      - uses: ./.github/actions/setup-scheme
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup
+      - uses: $/.github/actions/setup-scheme
       - run: tools/unicode_test.sh
   test:
     needs:
