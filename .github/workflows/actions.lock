@@ -24,7 +24,7 @@ workflows:
         - 'pnpm/action-setup@v6.1.1'
         - 'raviqqe/cargo-cache@v1.0.4'
         - 'raviqqe/enable-homebrew@v1.0.6'
-        - 'raviqqe/muffy@v0.5.8'
+        - 'raviqqe/muffy@v0.5.9'
     '.github/workflows/lint.yaml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-go@v7.0.0'
@@ -64,14 +64,14 @@ dependencies:
         commit: 'sha1-27d5ce7f107fe9357f9df03efb73ab90386fccae'
         owner_id: 44036562
         repo_id: 215566462
-    'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9':
-        ref: 'v6.1.0'
-        commit: 'sha1-55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
-        owner_id: 44036562
-        repo_id: 215566462
     'actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7':
         ref: 'v5.0.4'
         commit: 'sha1-668228422ae6a00e4ad889ee87cd7109ec5666a7'
+        owner_id: 44036562
+        repo_id: 215566462
+    'actions/cache@v6.1.0':
+        ref: 'v6.1.0'
+        commit: 'sha1-55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
         owner_id: 44036562
         repo_id: 215566462
     'actions/checkout@v7.0.1':
@@ -228,13 +228,13 @@ dependencies:
         repo_id: 918199623
         uses:
             - 'goreleaser/goreleaser-action@e24998b8b67b290c2fa8b7c14fcfa7de2c5c9b8c'
-    'raviqqe/muffy@v0.5.8':
-        ref: 'v0.5.8'
-        commit: 'sha1-75137197b0bc03a227e8638e30bd170607cd3bc5'
+    'raviqqe/muffy@v0.5.9':
+        ref: 'v0.5.9'
+        commit: 'sha1-de958736cb9a72a6274a6e9e269f2536b2a7611d'
         owner_id: 9584358
         repo_id: 972941557
         uses:
-            - 'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
+            - 'actions/cache@v6.1.0'
     'raviqqe/pnpm-publish@v1.0.2':
         ref: 'v1.0.2'
         commit: 'sha1-b9431a6e362ae9769b351acca4a2f697cb4eea6f'
