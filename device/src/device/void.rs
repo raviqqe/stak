@@ -1,4 +1,4 @@
-use crate::{BufferError, Device};
+use crate::Device;
 use winter_maybe_async::maybe_async;
 
 /// A void device where all I/O operations succeed with no side effect.
@@ -13,7 +13,7 @@ impl VoidDevice {
 }
 
 impl Device for VoidDevice {
-    type Error = BufferError;
+    type Error = !;
 
     #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {

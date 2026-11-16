@@ -1,5 +1,4 @@
 use crate::Clock;
-use core::convert::Infallible;
 
 /// A void clock stopped a fixed time.
 #[derive(Debug, Default)]
@@ -13,7 +12,7 @@ impl VoidClock {
 }
 
 impl Clock for VoidClock {
-    type Error = Infallible;
+    type Error = !;
 
     fn current_jiffy(&self) -> Result<u64, Self::Error> {
         Ok(Default::default())

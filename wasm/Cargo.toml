@@ -9,9 +9,6 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
-[package.metadata.cargo-machete]
-ignored = ["wasm-bindgen-futures"]
-
 [lib]
 crate-type = ["cdylib", "rlib"]
 
@@ -26,7 +23,7 @@ stak-r7rs = { path = "../r7rs", version = "0.12.34" }
 stak-time = { path = "../time", version = "0.12.34" }
 stak-vm = { path = "../vm", version = "0.12.34", features = ["float"] }
 wasm-bindgen = "0.2.97"
-wasm-bindgen-futures = "0.4.50"
+wasm-bindgen-futures = { version = "0.4.50", optional = true }
 winter-maybe-async = "0.13.1"
 
 [dev-dependencies]
@@ -39,6 +36,7 @@ stak-build = { path = "../build", version = "0.12.34" }
 
 [features]
 async = [
+  "dep:wasm-bindgen-futures",
   "stak-build/async",
   "stak-compiler/async",
   "stak-device/async",
