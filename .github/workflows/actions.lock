@@ -48,7 +48,7 @@ workflows:
         - 'raviqqe/cargo-cache@v1.0.4'
         - 'raviqqe/enable-homebrew@v1.0.6'
         - 'raviqqe/goreleaser-action@v1.0.2'
-        - 'raviqqe/pnpm-publish@v1.0.2'
+        - 'raviqqe/pnpm-publish@v1.1.1'
         - 'rust-lang/crates-io-auth-action@v1.0.6'
     '.github/workflows/test.yaml':
         - 'actions/checkout@v7.0.1'
@@ -235,9 +235,9 @@ dependencies:
         repo_id: 972941557
         uses:
             - 'actions/cache@v6.1.0'
-    'raviqqe/pnpm-publish@v1.0.2':
-        ref: 'v1.0.2'
-        commit: 'sha1-b9431a6e362ae9769b351acca4a2f697cb4eea6f'
+    'raviqqe/pnpm-publish@v1.1.1':
+        ref: 'v1.1.1'
+        commit: 'sha1-262762b20f7cc628f275252c0dbe73f3919c0f16'
         owner_id: 9584358
         repo_id: 1043452112
     'rust-lang/crates-io-auth-action@v1.0.6':
