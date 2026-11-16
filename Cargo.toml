@@ -39,6 +39,10 @@ license = "MIT"
 keywords = ["interpreter", "language", "scheme"]
 categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 
+[workspace.lints.cargo]
+unused_dependencies = "deny"
+unused_workspace_dependencies = "deny"
+
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
 cargo = "deny"
