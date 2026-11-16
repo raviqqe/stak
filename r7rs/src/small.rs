@@ -45,12 +45,12 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     }
 
     /// Returns a reference to a device.
-    pub fn device(&self) -> &D {
+    pub const fn device(&self) -> &D {
         self.device.device()
     }
 
     /// Returns a mutable reference to a device.
-    pub fn device_mut(&mut self) -> &mut D {
+    pub const fn device_mut(&mut self) -> &mut D {
         self.device.device_mut()
     }
 

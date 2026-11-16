@@ -30,3 +30,6 @@ async = [
   "stak-vm/async",
   "winter-maybe-async/async",
 ]
+
+[lints]
+workspace = true
