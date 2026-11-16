@@ -1,5 +1,4 @@
 use super::Clock;
-use core::convert::Infallible;
 use rustix::time::{ClockId, clock_gettime};
 
 const NANOSECONDS_PER_SECOND: u64 = 1_000_000_000;
@@ -16,7 +15,7 @@ impl LibcClock {
 }
 
 impl Clock for LibcClock {
-    type Error = Infallible;
+    type Error = !;
 
     fn current_jiffy(&self) -> Result<u64, Self::Error> {
         let time = clock_gettime(ClockId::Realtime);

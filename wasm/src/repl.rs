@@ -5,7 +5,6 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
-use std::io;
 use wasm_bindgen::prelude::*;
 use winter_maybe_async::{maybe_async, maybe_await};
 
@@ -52,7 +51,7 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
 struct JsDevice {}
 
 impl Device for JsDevice {
-    type Error = io::Error;
+    type Error = !;
 
     #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {

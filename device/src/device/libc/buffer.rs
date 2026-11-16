@@ -35,7 +35,7 @@ impl<'a> Buffer<'a> {
 }
 
 impl Read for Buffer<'_> {
-    type Error = BufferError;
+    type Error = !;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         Ok(self.read_raw())
