@@ -6,7 +6,7 @@ workflows:
     '.github/workflows/bench.yaml':
         - 'actions/checkout@v7.0.1'
         - 'actions/download-artifact@v8.0.2'
-        - 'actions/setup-go@v7.0.0'
+        - 'actions/setup-go@v7.1.0'
         - 'actions/setup-python@v7.1.0'
         - 'actions/upload-artifact@v7.0.2'
         - 'codspeedhq/action@v5.6.3'
@@ -18,7 +18,7 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'actions/configure-pages@v6.0.0'
         - 'actions/deploy-pages@v5.0.1'
-        - 'actions/setup-go@v7.0.0'
+        - 'actions/setup-go@v7.1.0'
         - 'actions/setup-node@v7.1.0'
         - 'actions/upload-pages-artifact@v5.0.0'
         - 'pnpm/action-setup@v6.1.1'
@@ -27,7 +27,7 @@ workflows:
         - 'raviqqe/muffy@v0.5.9'
     '.github/workflows/lint.yaml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-go@v7.0.0'
+        - 'actions/setup-go@v7.1.0'
         - 'actions/setup-node@v7.1.0'
         - 'lycheeverse/lychee-action@v2.9.0'
         - 'pnpm/action-setup@v6.1.1'
@@ -36,7 +36,7 @@ workflows:
         - 'streetsidesoftware/cspell-action@v9.2.0'
     '.github/workflows/release.yaml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-go@v7.0.0'
+        - 'actions/setup-go@v7.1.0'
         - 'actions/setup-node@v7.1.0'
         - 'docker/build-push-action@v7.4.0'
         - 'docker/login-action@v4.8.0'
@@ -51,7 +51,7 @@ workflows:
         - 'rust-lang/crates-io-auth-action@v1.0.6'
     '.github/workflows/test.yaml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-go@v7.0.0'
+        - 'actions/setup-go@v7.1.0'
         - 'actions/setup-node@v7.1.0'
         - 'codecov/codecov-action@v7.1.1'
         - 'pnpm/action-setup@v6.1.1'
@@ -103,9 +103,9 @@ dependencies:
         commit: 'sha1-ed597411d8f924073f98dfc5c65a23a2325f34cd'
         owner_id: 44036562
         repo_id: 205262760
-    'actions/setup-go@v7.0.0':
-        ref: 'v7.0.0'
-        commit: 'sha1-b7ad1dad31e06c5925ef5d2fc7ad053ef454303e'
+    'actions/setup-go@v7.1.0':
+        ref: 'v7.1.0'
+        commit: 'sha1-d8cbb8045d7f43706b9177cceb36c1f91a6644d5'
         owner_id: 44036562
         repo_id: 192624594
     'actions/setup-node@v7.1.0':
