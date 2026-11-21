@@ -74,6 +74,9 @@ jobs:
             directory: cmd/minimal
           - binary: mstak-interpret
             directory: cmd/minimal
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || '' }}
     steps:
@@ -87,12 +90,22 @@ jobs:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
         if: ${{ github.ref == 'refs/heads/main' }}
+      - uses: docker/login-action@v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: version
+        run: echo version=$(git tag --points-at | sed s/^v//) > ${{ github.output }}
       - id: metadata
-        run: |
-          (
-            echo repository=${{ vars.DOCKER_USER || 'test' }}/${{ matrix.image.binary }}
-            echo version=$(git tag --points-at | sed s/^v//)
-          ) >> ${{ github.output }}
+        uses: docker/metadata-action@v6.2.0
+        with:
+          images: |
+            ${{ vars.DOCKER_USER || 'test' }}/${{ matrix.image.binary }}
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.image.binary }}
+          tags: |
+            type=raw,value=${{ steps.version.outputs.version }}
+            type=raw,value=latest
       - uses: docker/build-push-action@v7.4.0
         with:
           build-args: |
@@ -102,15 +115,14 @@ jobs:
             linux/amd64
             ${{ github.ref == 'refs/heads/main' && 'linux/arm64/v8' || '' }}
           push: ${{ github.ref == 'refs/heads/main' }}
-          tags: |
-            ${{ steps.metadata.outputs.repository }}:latest
-            ${{ steps.metadata.outputs.version && format('{0}:{1}', steps.metadata.outputs.repository, steps.metadata.outputs.version) || '' }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
       # spell-checker: disable-next-line
       - uses: peter-evans/dockerhub-description@v5.0.0
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
-          repository: ${{ steps.metadata.outputs.repository }}
+          repository: ${{ vars.DOCKER_USER }}/${{ matrix.image.binary }}
           short-description: The miniature, embeddable R7RS Scheme implementation
         if: github.ref == 'refs/heads/main'
   release:
