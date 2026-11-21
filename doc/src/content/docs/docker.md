@@ -17,6 +17,8 @@ installing it on your local machine.
 
 We provide several Docker images for Stak Scheme and its utilities.
 The images are hosted on [Docker Hub](https://hub.docker.com/) as listed below.
+They are also hosted on [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+under the same names prefixed with `ghcr.io/`, such as `ghcr.io/raviqqe/stak`.
 
 | Image name  | Link                                                                                                                                             | Description         |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
