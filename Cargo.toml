@@ -83,6 +83,7 @@ debug-assertions = false
 overflow-checks = false
 
 [profile.release]
+strip = true
 lto = true
 panic = "abort"
 codegen-units = 1
@@ -95,6 +96,7 @@ overflow-checks = false
 [profile.release_test]
 inherits = "release"
 debug = "line-tables-only"
+strip = false
 debug-assertions = true
 overflow-checks = true
 
