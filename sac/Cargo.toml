@@ -10,7 +10,6 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-clap = { version = "4.6.1", features = ["derive"], optional = true }
 dlmalloc = { version = "0.2.14", features = ["global"], optional = true }
 main_error = { version = "0.1.2", optional = true }
 origin = {
@@ -45,7 +44,6 @@ libc = [
   "stak-time/libc",
 ]
 std = [
-  "dep:clap",
   "dep:main_error",
   "stak-device/std",
   "stak-file/std",

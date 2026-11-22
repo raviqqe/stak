@@ -7,12 +7,13 @@
 #[doc(hidden)]
 pub extern crate alloc;
 
+mod options;
+
 #[doc(hidden)]
 pub mod __private {
+    pub use crate::options::Options;
     #[cfg(feature = "libc")]
     pub use alloc;
-    #[cfg(feature = "std")]
-    pub use clap;
     #[cfg(feature = "libc")]
     pub use dlmalloc;
     #[cfg(feature = "std")]
@@ -53,9 +54,13 @@ macro_rules! main {
         );
     };
     ($path:expr, $heap_size:expr) => {
-        use std::process::ExitCode;
+        use std::{
+            env::args,
+            io::{Write, stdout},
+            process::ExitCode,
+        };
         use $crate::__private::{
-            clap::{self, Parser},
+            Options,
             main_error::MainError,
             stak_device::StdioDevice,
             stak_file::OsFileSystem,
@@ -66,20 +71,22 @@ macro_rules! main {
             stak_vm::Vm,
         };
 
-        #[derive(clap::Parser)]
-        #[command(disable_help_flag = true, ignore_errors = true, version)]
-        struct Arguments {
-            #[arg()]
-            arguments: Vec<String>,
-            #[arg(short = 's', long, default_value_t = $heap_size)]
-            heap_size: usize,
-        }
-
         fn main() -> Result<ExitCode, MainError> {
-            let arguments = Arguments::parse();
+            let options = Options::parse(&args().collect::<Vec<_>>());
+
+            if options.version() {
+                writeln!(
+                    stdout(),
+                    "{} {}",
+                    env!("CARGO_PKG_NAME"),
+                    env!("CARGO_PKG_VERSION")
+                )?;
+
+                return Ok(ExitCode::SUCCESS);
+            }
 
             match Vm::new(
-                vec![Default::default(); arguments.heap_size],
+                vec![Default::default(); options.heap_size().unwrap_or($heap_size)],
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
                     OsFileSystem::new(),
