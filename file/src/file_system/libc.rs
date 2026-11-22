@@ -4,7 +4,7 @@ use heapless::{CString, index_map::FnvIndexMap};
 use rustix::{
     fd::{AsFd, BorrowedFd, OwnedFd},
     fs::{self, Access, Mode, OFlags},
-    io::{self, Errno},
+    io,
 };
 use stak_vm::{Heap, Memory, Value};
 
@@ -95,12 +95,7 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
-        match fs::access(path, Access::EXISTS) {
-            Ok(()) => Ok(true),
-            // spell-checker: disable-next-line
-            Err(number) if number == Errno::NOENT => Ok(false),
-            Err(_) => Err(FileError::Exists),
-        }
+        Ok(fs::access(path, Access::EXISTS).is_ok())
     }
 
     fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error> {
@@ -202,5 +197,15 @@ mod tests {
         let file_system = LibcFileSystem::new();
 
         assert!(file_system.exists(&decode_c_str(&path)).unwrap());
+        assert!(
+            !file_system
+                .exists(&decode_c_str(&directory.path().join("bar")))
+                .unwrap()
+        );
+        assert!(
+            !file_system
+                .exists(&decode_c_str(&path.join("bar")))
+                .unwrap()
+        );
     }
 }

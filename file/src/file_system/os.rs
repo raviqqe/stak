@@ -182,5 +182,7 @@ mod tests {
         let file_system = OsFileSystem::new();
 
         assert!(file_system.exists(&path).unwrap());
+        assert!(!file_system.exists(&directory.path().join("bar")).unwrap());
+        assert!(!file_system.exists(&path.join("bar")).unwrap());
     }
 }
