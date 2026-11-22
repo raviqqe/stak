@@ -1,9 +1,13 @@
 //! Devices based on libc.
 
 mod buffer;
+mod buffered_reader;
 mod device;
 mod error;
+mod line_writer;
 mod read;
+mod sink;
+mod source;
 mod stdio;
 mod write;
 

@@ -1,9 +1,14 @@
-use super::{Read, Write, error::LibcError};
+use super::{
+    Read, Write, buffered_reader::BufferedReader, error::LibcError, line_writer::LineWriter,
+};
 use rustix::{
     fd::BorrowedFd,
-    io,
+    io::{self, retry_on_intr},
     stdio::{stderr, stdin, stdout},
 };
+
+const INPUT_BUFFER_SIZE: usize = 1 << 13;
+const OUTPUT_BUFFER_SIZE: usize = 1 << 10;
 
 macro_rules! fd {
     ($fd:ident) => {
@@ -15,14 +20,24 @@ macro_rules! fd {
     };
 }
 
-/// A stdin.
-#[derive(Debug, Default)]
-pub struct Stdin {}
+/// A buffered stdin.
+#[derive(Debug)]
+pub struct Stdin {
+    reader: BufferedReader<BorrowedFd<'static>, INPUT_BUFFER_SIZE>,
+}
 
 impl Stdin {
     /// Creates a stdin.
     pub const fn new() -> Self {
-        Self {}
+        Self {
+            reader: BufferedReader::new(fd!(stdin)),
+        }
+    }
+}
+
+impl Default for Stdin {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -30,26 +45,30 @@ impl Read for Stdin {
     type Error = LibcError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        let mut bytes = [0];
-
-        Ok(
-            if io::read(fd!(stdin), &mut bytes).map_err(|_| LibcError::Stdin)? == 1 {
-                Some(bytes[0])
-            } else {
-                None
-            },
-        )
+        self.reader.read().map_err(|_| LibcError::Stdin)
     }
 }
 
-/// A stdout.
-#[derive(Debug, Default)]
-pub struct Stdout {}
+/// A line-buffered stdout.
+///
+/// Buffered bytes are written out when it is dropped.
+#[derive(Debug)]
+pub struct Stdout {
+    writer: LineWriter<BorrowedFd<'static>, OUTPUT_BUFFER_SIZE>,
+}
 
 impl Stdout {
     /// Creates a stdout.
     pub const fn new() -> Self {
-        Self {}
+        Self {
+            writer: LineWriter::new(fd!(stdout)),
+        }
+    }
+}
+
+impl Default for Stdout {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -57,7 +76,7 @@ impl Write for Stdout {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(fd!(stdout), byte, LibcError::Stdout)
+        self.writer.write(byte).map_err(|_| LibcError::Stdout)
     }
 }
 
@@ -76,15 +95,11 @@ impl Write for Stderr {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(fd!(stderr), byte, LibcError::Stderr)
-    }
-}
-
-fn write(fd: BorrowedFd, byte: u8, error: LibcError) -> Result<(), LibcError> {
-    if io::write(fd, &[byte]).map_err(|_| error)? == 1 {
-        Ok(())
-    } else {
-        Err(error)
+        if retry_on_intr(|| io::write(fd!(stderr), &[byte])) == Ok(1) {
+            Ok(())
+        } else {
+            Err(LibcError::Stderr)
+        }
     }
 }
 

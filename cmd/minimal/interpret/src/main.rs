@@ -58,9 +58,13 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
     // SAFETY: `file` is from `argv` and guaranteed to have a C string.
     let mmap = Mmap::new(unsafe { CStr::from_ptr(file as _) }).unwrap();
 
-    exit(match vm.run(mmap.iter().copied()) {
+    let code = match vm.run(mmap.iter().copied()) {
         Ok(()) => 0,
         Err(SmallError::Halt(code)) => code.into(),
         Err(_) => 1,
-    });
+    };
+
+    // Drop the virtual machine before an exit to flush standard output.
+    drop(vm);
+    exit(code);
 }

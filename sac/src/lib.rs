@@ -139,24 +139,25 @@ macro_rules! libc_main {
         extern "C" fn main(argc: isize, argv: *const *const i8) {
             let mut heap = Box::<[Value; $heap_size]>::new_uninit();
 
-            exit(
-                match Vm::new(
-                    unsafe { heap.assume_init_mut() },
-                    SmallPrimitiveSet::new(
-                        ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
-                        LibcFileSystem::new(),
-                        unsafe { LibcProcessContext::new(argc, argv) },
-                        LibcClock::new(),
-                    ),
-                )
-                .unwrap()
-                .run(include_r7rs!($path).iter().copied())
-                {
-                    Ok(()) => 0,
-                    Err(SmallError::Halt(code)) => code.into(),
-                    Err(_) => 1,
-                },
-            );
+            // Drop the virtual machine before an exit to flush standard output.
+            let code = match Vm::new(
+                unsafe { heap.assume_init_mut() },
+                SmallPrimitiveSet::new(
+                    ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
+                    LibcFileSystem::new(),
+                    unsafe { LibcProcessContext::new(argc, argv) },
+                    LibcClock::new(),
+                ),
+            )
+            .unwrap()
+            .run(include_r7rs!($path).iter().copied())
+            {
+                Ok(()) => 0,
+                Err(SmallError::Halt(code)) => code.into(),
+                Err(_) => 1,
+            };
+
+            exit(code);
         }
     };
 }
