@@ -32,6 +32,12 @@ The content of the `hello.scm` would look like:
 (write-string "Hello, world!\n")
 ```
 
+On Unix, you can also install the interpreter as a smaller executable based on libc instead of the `std` library in Rust by running the following command.
+
+```sh
+cargo install stak --no-default-features --features float,libc
+```
+
 ### Development tools
 
 To install development tools of Stak Scheme, run the following command in your terminal:
