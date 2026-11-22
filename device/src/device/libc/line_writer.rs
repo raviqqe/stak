@@ -143,6 +143,20 @@ mod tests {
     }
 
     #[test]
+    fn write_newline_to_full_buffer() {
+        let sink = FakeSink::new(&[]);
+        let mut writer = LineWriter::<3, _>::new(&sink);
+
+        write_bytes(&mut writer, b"foo");
+
+        assert_eq!(sink.bytes(), b"");
+
+        write_bytes(&mut writer, b"\n");
+
+        assert_eq!(sink.bytes(), b"foo\n");
+    }
+
+    #[test]
     fn write_line_to_full_buffer() {
         let sink = FakeSink::new(&[]);
         let mut writer = LineWriter::<4, _>::new(&sink);
