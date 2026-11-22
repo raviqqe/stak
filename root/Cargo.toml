@@ -11,7 +11,7 @@ categories.workspace = true
 
 [[bin]]
 name = "stak"
-required-features = ["std"]
+required-features = ["cli"]
 
 [dependencies]
 stak-device = { path = "../device", version = "0.12.35" }
@@ -45,12 +45,14 @@ async = [
   "stak-time/async",
   "stak-vm/async",
 ]
+cli = []
 float = ["stak-sac/float", "stak-vm/float"]
 float62 = ["stak-sac/float", "stak-vm/float62"]
 hot-reload = ["stak-module/hot-reload"]
 libc = [
+  "cli",
   "stak-device/libc",
-  "stak-engine/libc",
+  "stak-engine?/libc",
   "stak-file/libc",
   "stak-process-context/libc",
   "stak-sac/libc",
@@ -58,6 +60,7 @@ libc = [
 ]
 std = [
   "alloc",
+  "cli",
   "stak-device/std",
   "stak-engine/std",
   "stak-file/std",
