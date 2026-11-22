@@ -157,9 +157,10 @@ Feature: File
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | path    | output |
-      | foo.txt | A      |
-      | bar.txt | B      |
+      | path            | output |
+      | foo.txt         | A      |
+      | bar.txt         | B      |
+      | foo.txt/bar.txt | B      |
 
   Scenario: Flush a file
     Given a file named "main.scm" with:
