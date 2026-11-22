@@ -25,6 +25,7 @@ shift $(expr $OPTIND - 1)
 cd $(dirname $0)/..
 
 cargo build --profile release_test --features $features
+cargo build --profile release_test --target-dir target/libc -p stak --no-default-features --features float,libc
 (
   cd cmd/minimal
   cargo build --release
