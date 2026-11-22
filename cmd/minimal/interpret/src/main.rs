@@ -48,7 +48,8 @@ extern "C" fn main(argc: isize, argv: *const *const i8) {
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
-            // SAFETY: `argc` and `argv` are provided by operating systems.
+            // SAFETY: `argc` and `argv` are provided by operating systems, and
+            // environment variables are never modified.
             unsafe { LibcProcessContext::new(argc - 1, argv.add(1)) },
             LibcClock::new(),
         ),

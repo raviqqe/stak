@@ -51,15 +51,15 @@ impl ProcessContext for LibcProcessContext {
 /// # Safety
 ///
 /// The `environment` argument should be null or a null-terminated array of C
-/// strings. It should not be modified while the environment variables are
-/// alive.
+/// strings. It should not be modified while the decoded environment variables
+/// are alive.
 unsafe fn decode_environment<'a>(
     environment: *const *const c_char,
 ) -> impl Iterator<Item = (&'a str, &'a str)> {
     (0..)
         .map_while(move |index| {
             // SAFETY: The environment is null or a null-terminated array. The
-            // fused iterator never reads entries after its terminator.
+            // fused iterator never reads entries after the terminator.
             unsafe { environment.add(index).as_ref() }.filter(|entry| !entry.is_null())
         })
         .fuse()
