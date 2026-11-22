@@ -1,4 +1,3 @@
-@environment-variable
 Feature: Environment variables
 
   Scenario: Get an environment variable
