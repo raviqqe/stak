@@ -184,5 +184,10 @@ mod tests {
         assert!(file_system.exists(&path).unwrap());
         assert!(!file_system.exists(&directory.path().join("bar")).unwrap());
         assert!(!file_system.exists(&path.join("bar")).unwrap());
+        assert!(
+            !file_system
+                .exists(&directory.path().join("a".repeat(256)))
+                .unwrap()
+        );
     }
 }

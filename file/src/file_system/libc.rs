@@ -207,5 +207,10 @@ mod tests {
                 .exists(&decode_c_str(&path.join("bar")))
                 .unwrap()
         );
+        assert!(
+            !file_system
+                .exists(&decode_c_str(&directory.path().join("a".repeat(256))))
+                .unwrap()
+        );
     }
 }
