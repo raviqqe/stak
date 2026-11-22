@@ -1,5 +1,5 @@
 /// Command line options.
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug)]
 pub struct Options {
     version: bool,
     heap_size: Option<usize>,
@@ -8,8 +8,8 @@ pub struct Options {
 impl Options {
     /// Parses command line arguments.
     ///
-    /// Options are the arguments between a command name and the first `--`
-    /// argument. Unknown and invalid ones are ignored.
+    /// Only the arguments between a command name and the first `--` argument
+    /// are parsed as options. Unknown and invalid options are ignored.
     pub fn parse(arguments: &[impl AsRef<str>]) -> Self {
         let arguments = arguments
             .get(1..)
@@ -191,6 +191,15 @@ mod tests {
         }
 
         #[test]
+        fn ignore_unknown_option() {
+            assert_eq!(Options::parse(&["stak", "-S", "42"]).heap_size(), None);
+            assert_eq!(
+                Options::parse(&["stak", "--heap-sizes=42"]).heap_size(),
+                None
+            );
+        }
+
+        #[test]
         fn ignore_missing_value() {
             assert_eq!(Options::parse(&["stak", "-s"]).heap_size(), None);
             assert_eq!(Options::parse(&["stak", "--heap-size"]).heap_size(), None);
@@ -202,6 +211,10 @@ mod tests {
             assert_eq!(Options::parse(&["stak", "-s", "foo"]).heap_size(), None);
             assert_eq!(Options::parse(&["stak", "-s", "-1"]).heap_size(), None);
             assert_eq!(Options::parse(&["stak", "-s", "4.2"]).heap_size(), None);
+            assert_eq!(
+                Options::parse(&["stak", "-s", "18446744073709551616"]).heap_size(),
+                None
+            );
             assert_eq!(
                 Options::parse(&["stak", "--heap-size=foo"]).heap_size(),
                 None
