@@ -49,7 +49,6 @@ Feature: Command line
         | stak         | -V        |
         | stak         | --version |
         | stak-compile | --version |
-        | stak-decode  | --version |
         | stak-repl    | --version |
 
     Scenario Outline: Set a heap size
