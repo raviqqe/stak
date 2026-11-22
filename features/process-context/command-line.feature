@@ -36,3 +36,49 @@ Feature: Command line
       | cadr      | foo    |
       | caddr     | bar    |
       | cadddr    | baz    |
+
+  @extra
+  Rule: Options
+
+    Scenario Outline: Show a version
+      When I successfully run `<command> <option>`
+      Then the stdout should contain "<command> "
+
+      Examples:
+        | command      | option    |
+        | stak         | -V        |
+        | stak         | --version |
+        | stak-compile | --version |
+        | stak-decode  | --version |
+        | stak-repl    | --version |
+
+    Scenario Outline: Set a heap size
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+        """
+      When I run `stak main.scm <option>`
+      Then the exit status should be 1
+      And the stderr should contain "out of memory"
+
+      Examples:
+        | option        |
+        | -s 0          |
+        | --heap-size 0 |
+        | --heap-size=0 |
+
+    Scenario Outline: Pass an option to a script
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme cxr) (scheme process-context))
+
+        (write-string (caddr (command-line)))
+        """
+      When I successfully run `stak main.scm -- <option>`
+      Then the stdout should contain exactly "<option>"
+
+      Examples:
+        | option        |
+        | -V            |
+        | --version     |
+        | --heap-size=0 |

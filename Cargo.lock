@@ -1707,7 +1707,6 @@ dependencies = [
 name = "stak-sac"
 version = "0.12.34"
 dependencies = [
- "clap",
  "dlmalloc",
  "main_error",
  "origin",
