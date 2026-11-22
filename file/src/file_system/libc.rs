@@ -35,7 +35,7 @@ impl LibcFileSystem {
 
 impl FileSystem for LibcFileSystem {
     type Path = CStr;
-    type PathBuf = CString<{ PATH_SIZE + 1 }>;
+    type PathBuf = CString<PATH_SIZE>;
     type Error = FileError;
 
     fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
@@ -104,8 +104,7 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error> {
-        let mut path =
-            decode_path::<{ PATH_SIZE + 1 }, _>(memory, list).ok_or(FileError::PathDecode)?;
+        let mut path = decode_path::<PATH_SIZE, _>(memory, list).ok_or(FileError::PathDecode)?;
 
         path.push(0).map_err(|_| FileError::PathDecode)?;
 
@@ -223,7 +222,7 @@ mod tests {
     #[test]
     fn decode_longest_path() {
         let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
-        let path = "a".repeat(PATH_SIZE);
+        let path = "a".repeat(PATH_SIZE - 1);
         let list = memory.build_raw_string(&path).unwrap();
 
         assert_eq!(
@@ -237,7 +236,7 @@ mod tests {
     #[test]
     fn decode_too_long_path() {
         let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
-        let list = memory.build_raw_string(&"a".repeat(PATH_SIZE + 1)).unwrap();
+        let list = memory.build_raw_string(&"a".repeat(PATH_SIZE)).unwrap();
 
         assert_eq!(
             LibcFileSystem::decode_path(&memory, list.into()),
