@@ -65,10 +65,14 @@ unsafe fn decode_environment<'a>(
         .fuse()
         .filter_map(|&entry| {
             // SAFETY: Entries in the environment are C strings.
-            unsafe { CStr::from_ptr(entry) }
-                .to_str()
-                .ok()?
-                .split_once('=')
+            unsafe { CStr::from_ptr(entry) }.to_str().ok()
+        })
+        .filter_map(|entry| {
+            // Names are never empty and can start with equal signs.
+            entry
+                .match_indices('=')
+                .find(|&(index, _)| index > 0)
+                .map(|(index, _)| (&entry[..index], &entry[index + 1..]))
         })
 }
 
@@ -145,6 +149,16 @@ mod tests {
         }
 
         #[test]
+        fn decode_name_with_equal_sign() {
+            assert_eq!(decode(&[c"=FOO=bar"]), [("=FOO", "bar")]);
+        }
+
+        #[test]
+        fn decode_name_of_equal_sign() {
+            assert_eq!(decode(&[c"==bar"]), [("=", "bar")]);
+        }
+
+        #[test]
         fn decode_unicode() {
             assert_eq!(decode(&[c"あ=阿😄"]), [("あ", "阿😄")]);
         }
@@ -153,6 +167,14 @@ mod tests {
         fn skip_entry_without_equal_sign() {
             assert_eq!(
                 decode(&[c"FOO=bar", c"", c"BAZ", c"qux=quux"]),
+                [("FOO", "bar"), ("qux", "quux")]
+            );
+        }
+
+        #[test]
+        fn skip_entry_with_only_leading_equal_sign() {
+            assert_eq!(
+                decode(&[c"FOO=bar", c"=", c"=BAZ", c"qux=quux"]),
                 [("FOO", "bar"), ("qux", "quux")]
             );
         }
