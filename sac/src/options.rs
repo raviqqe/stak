@@ -21,15 +21,12 @@ impl Options {
         Self {
             version: arguments
                 .iter()
-                .any(|argument| matches!(argument.as_ref(), "-V" | "--version")),
+                .any(|argument| argument.as_ref() == "--version"),
             heap_size: arguments
-                .iter()
-                .enumerate()
+                .array_windows()
                 .rev()
-                .find_map(|(index, argument)| match argument.as_ref() {
-                    "-s" | "--heap-size" => arguments.get(index + 1)?.as_ref().parse().ok(),
-                    argument => argument.strip_prefix("--heap-size=")?.parse().ok(),
-                }),
+                .filter(|[option, _]| matches!(option.as_ref(), "-s" | "--heap-size"))
+                .find_map(|[_, value]| value.as_ref().parse().ok()),
         }
     }
 
@@ -84,12 +81,7 @@ mod tests {
         use super::*;
 
         #[test]
-        fn parse_short_option() {
-            assert!(Options::parse(&["stak", "-V"]).version());
-        }
-
-        #[test]
-        fn parse_long_option() {
+        fn parse_option() {
             assert!(Options::parse(&["stak", "--version"]).version());
         }
 
@@ -110,7 +102,7 @@ mod tests {
 
         #[test]
         fn ignore_unknown_option() {
-            assert!(!Options::parse(&["stak", "-v"]).version());
+            assert!(!Options::parse(&["stak", "-V"]).version());
             assert!(!Options::parse(&["stak", "--versions"]).version());
         }
 
@@ -142,14 +134,6 @@ mod tests {
         }
 
         #[test]
-        fn parse_long_option_with_equal_sign() {
-            assert_eq!(
-                Options::parse(&["stak", "--heap-size=42"]).heap_size(),
-                Some(42)
-            );
-        }
-
-        #[test]
         fn parse_option_after_argument() {
             assert_eq!(
                 Options::parse(&["stak", "foo.scm", "-s", "42"]).heap_size(),
@@ -176,16 +160,15 @@ mod tests {
         #[test]
         fn parse_last_option() {
             assert_eq!(
-                Options::parse(&["stak", "-s", "1", "--heap-size=2", "--heap-size", "3"])
-                    .heap_size(),
-                Some(3)
+                Options::parse(&["stak", "-s", "1", "--heap-size", "2"]).heap_size(),
+                Some(2)
             );
         }
 
         #[test]
         fn parse_option_before_invalid_options() {
             assert_eq!(
-                Options::parse(&["stak", "-s", "42", "--heap-size=foo", "-s"]).heap_size(),
+                Options::parse(&["stak", "-s", "42", "--heap-size", "foo", "-s"]).heap_size(),
                 Some(42)
             );
         }
@@ -194,7 +177,7 @@ mod tests {
         fn ignore_unknown_option() {
             assert_eq!(Options::parse(&["stak", "-S", "42"]).heap_size(), None);
             assert_eq!(
-                Options::parse(&["stak", "--heap-sizes=42"]).heap_size(),
+                Options::parse(&["stak", "--heap-sizes", "42"]).heap_size(),
                 None
             );
         }
@@ -203,7 +186,6 @@ mod tests {
         fn ignore_missing_value() {
             assert_eq!(Options::parse(&["stak", "-s"]).heap_size(), None);
             assert_eq!(Options::parse(&["stak", "--heap-size"]).heap_size(), None);
-            assert_eq!(Options::parse(&["stak", "--heap-size="]).heap_size(), None);
         }
 
         #[test]
@@ -215,16 +197,16 @@ mod tests {
                 Options::parse(&["stak", "-s", "18446744073709551616"]).heap_size(),
                 None
             );
-            assert_eq!(
-                Options::parse(&["stak", "--heap-size=foo"]).heap_size(),
-                None
-            );
         }
 
         #[test]
-        fn ignore_short_option_with_attached_value() {
+        fn ignore_option_with_attached_value() {
             assert_eq!(Options::parse(&["stak", "-s42"]).heap_size(), None);
             assert_eq!(Options::parse(&["stak", "-s=42"]).heap_size(), None);
+            assert_eq!(
+                Options::parse(&["stak", "--heap-size=42"]).heap_size(),
+                None
+            );
         }
 
         #[test]

@@ -41,15 +41,14 @@ Feature: Command line
   Rule: Options
 
     Scenario Outline: Show a version
-      When I successfully run `<command> <option>`
+      When I successfully run `<command> --version`
       Then the stdout should contain "<command> "
 
       Examples:
-        | command      | option    |
-        | stak         | -V        |
-        | stak         | --version |
-        | stak-compile | --version |
-        | stak-repl    | --version |
+        | command      |
+        | stak         |
+        | stak-compile |
+        | stak-repl    |
 
     Scenario Outline: Set a heap size
       Given a file named "main.scm" with:
@@ -64,20 +63,13 @@ Feature: Command line
         | option        |
         | -s 0          |
         | --heap-size 0 |
-        | --heap-size=0 |
 
-    Scenario Outline: Pass an option to a script
+    Scenario: Pass an option to a script
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme cxr) (scheme process-context))
 
         (write-string (caddr (command-line)))
         """
-      When I successfully run `stak main.scm -- <option>`
-      Then the stdout should contain exactly "<option>"
-
-      Examples:
-        | option        |
-        | -V            |
-        | --version     |
-        | --heap-size=0 |
+      When I successfully run `stak main.scm -- --version`
+      Then the stdout should contain exactly "--version"
