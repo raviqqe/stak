@@ -1,16 +1,14 @@
 use super::sink::Sink;
 use rustix::io::{self, Errno, retry_on_intr};
 
-/// A writer that buffers bytes and writes them into a sink line by line.
 #[derive(Debug)]
-pub struct LineWriter<S: Sink, const N: usize> {
+pub struct LineWriter<const N: usize, S: Sink> {
     sink: S,
     buffer: [u8; N],
     length: usize,
 }
 
-impl<S: Sink, const N: usize> LineWriter<S, N> {
-    /// Creates a writer.
+impl<const N: usize, S: Sink> LineWriter<N, S> {
     pub const fn new(sink: S) -> Self {
         Self {
             sink,
@@ -19,7 +17,6 @@ impl<S: Sink, const N: usize> LineWriter<S, N> {
         }
     }
 
-    /// Writes a byte.
     pub fn write(&mut self, byte: u8) -> io::Result<()> {
         if self.length == N {
             self.flush()?;
@@ -47,7 +44,7 @@ impl<S: Sink, const N: usize> LineWriter<S, N> {
     }
 }
 
-impl<S: Sink, const N: usize> Drop for LineWriter<S, N> {
+impl<const N: usize, S: Sink> Drop for LineWriter<N, S> {
     fn drop(&mut self) {
         let _ = self.flush();
     }
@@ -91,7 +88,7 @@ mod tests {
         }
     }
 
-    fn write_bytes<const N: usize>(writer: &mut LineWriter<&FakeSink, N>, bytes: &[u8]) {
+    fn write_bytes<const N: usize>(writer: &mut LineWriter<N, &FakeSink>, bytes: &[u8]) {
         for &byte in bytes {
             writer.write(byte).unwrap();
         }
@@ -100,7 +97,7 @@ mod tests {
     #[test]
     fn write() {
         let sink = FakeSink::new(&[]);
-        let mut writer = LineWriter::<_, 4>::new(&sink);
+        let mut writer = LineWriter::<4, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo");
 
@@ -110,7 +107,7 @@ mod tests {
     #[test]
     fn write_line() {
         let sink = FakeSink::new(&[]);
-        let mut writer = LineWriter::<_, 8>::new(&sink);
+        let mut writer = LineWriter::<8, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo\nbar");
 
@@ -120,7 +117,7 @@ mod tests {
     #[test]
     fn write_lines() {
         let sink = FakeSink::new(&[]);
-        let mut writer = LineWriter::<_, 8>::new(&sink);
+        let mut writer = LineWriter::<8, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo\n\nbar\nbaz");
 
@@ -130,7 +127,7 @@ mod tests {
     #[test]
     fn write_to_full_buffer() {
         let sink = FakeSink::new(&[]);
-        let mut writer = LineWriter::<_, 3>::new(&sink);
+        let mut writer = LineWriter::<3, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo");
 
@@ -148,7 +145,7 @@ mod tests {
     #[test]
     fn write_line_to_full_buffer() {
         let sink = FakeSink::new(&[]);
-        let mut writer = LineWriter::<_, 4>::new(&sink);
+        let mut writer = LineWriter::<4, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo\nbar");
 
@@ -162,7 +159,7 @@ mod tests {
     #[test]
     fn flush_on_drop() {
         let sink = FakeSink::new(&[]);
-        let mut writer = LineWriter::<_, 8>::new(&sink);
+        let mut writer = LineWriter::<8, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo\nbar");
         drop(writer);
@@ -173,7 +170,7 @@ mod tests {
     #[test]
     fn write_short() {
         let sink = FakeSink::new(&[Ok(1), Ok(2), Ok(1)]);
-        let mut writer = LineWriter::<_, 8>::new(&sink);
+        let mut writer = LineWriter::<8, _>::new(&sink);
 
         write_bytes(&mut writer, b"foobar\n");
 
@@ -183,7 +180,7 @@ mod tests {
     #[test]
     fn write_interrupted() {
         let sink = FakeSink::new(&[Err(Errno::INTR), Ok(2), Err(Errno::INTR)]);
-        let mut writer = LineWriter::<_, 4>::new(&sink);
+        let mut writer = LineWriter::<4, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo\n");
 
@@ -193,7 +190,7 @@ mod tests {
     #[test]
     fn write_zero() {
         let sink = FakeSink::new(&[Ok(2), Ok(0)]);
-        let mut writer = LineWriter::<_, 4>::new(&sink);
+        let mut writer = LineWriter::<4, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo");
 
@@ -208,7 +205,7 @@ mod tests {
     #[test]
     fn fail_to_write() {
         let sink = FakeSink::new(&[Ok(2), Err(Errno::AGAIN)]);
-        let mut writer = LineWriter::<_, 8>::new(&sink);
+        let mut writer = LineWriter::<8, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo");
 
@@ -223,7 +220,7 @@ mod tests {
     #[test]
     fn fail_to_write_to_full_buffer() {
         let sink = FakeSink::new(&[Err(Errno::AGAIN)]);
-        let mut writer = LineWriter::<_, 3>::new(&sink);
+        let mut writer = LineWriter::<3, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo");
 
@@ -242,7 +239,7 @@ mod tests {
     #[test]
     fn ignore_error_on_drop() {
         let sink = FakeSink::new(&[Ok(1), Err(Errno::IO)]);
-        let mut writer = LineWriter::<_, 4>::new(&sink);
+        let mut writer = LineWriter::<4, _>::new(&sink);
 
         write_bytes(&mut writer, b"foo");
         drop(writer);

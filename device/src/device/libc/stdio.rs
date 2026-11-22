@@ -7,8 +7,8 @@ use rustix::{
     stdio::{stderr, stdin, stdout},
 };
 
-const INPUT_BUFFER_SIZE: usize = 1 << 13;
-const OUTPUT_BUFFER_SIZE: usize = 1 << 10;
+const STDIN_BUFFER_SIZE: usize = 1 << 13;
+const STDOUT_BUFFER_SIZE: usize = 1 << 10;
 
 macro_rules! fd {
     ($fd:ident) => {
@@ -23,7 +23,7 @@ macro_rules! fd {
 /// A buffered stdin.
 #[derive(Debug)]
 pub struct Stdin {
-    reader: BufferedReader<BorrowedFd<'static>, INPUT_BUFFER_SIZE>,
+    reader: BufferedReader<STDIN_BUFFER_SIZE, BorrowedFd<'static>>,
 }
 
 impl Stdin {
@@ -35,12 +35,6 @@ impl Stdin {
     }
 }
 
-impl Default for Stdin {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl Read for Stdin {
     type Error = LibcError;
 
@@ -49,12 +43,18 @@ impl Read for Stdin {
     }
 }
 
+impl Default for Stdin {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// A line-buffered stdout.
 ///
 /// Buffered bytes are written out when it is dropped.
 #[derive(Debug)]
 pub struct Stdout {
-    writer: LineWriter<BorrowedFd<'static>, OUTPUT_BUFFER_SIZE>,
+    writer: LineWriter<STDOUT_BUFFER_SIZE, BorrowedFd<'static>>,
 }
 
 impl Stdout {
@@ -66,17 +66,17 @@ impl Stdout {
     }
 }
 
-impl Default for Stdout {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl Write for Stdout {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
         self.writer.write(byte).map_err(|_| LibcError::Stdout)
+    }
+}
+
+impl Default for Stdout {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

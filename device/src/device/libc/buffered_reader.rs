@@ -1,17 +1,15 @@
 use super::source::Source;
 use rustix::io::{self, retry_on_intr};
 
-/// A reader that buffers bytes from a source.
 #[derive(Debug)]
-pub struct BufferedReader<S: Source, const N: usize> {
+pub struct BufferedReader<const N: usize, S: Source> {
     source: S,
     buffer: [u8; N],
     index: usize,
     length: usize,
 }
 
-impl<S: Source, const N: usize> BufferedReader<S, N> {
-    /// Creates a reader.
+impl<const N: usize, S: Source> BufferedReader<N, S> {
     pub const fn new(source: S) -> Self {
         Self {
             source,
@@ -21,7 +19,6 @@ impl<S: Source, const N: usize> BufferedReader<S, N> {
         }
     }
 
-    /// Reads a byte.
     pub fn read(&mut self) -> io::Result<Option<u8>> {
         if self.index == self.length {
             self.length = retry_on_intr(|| self.source.read(&mut self.buffer))?;
@@ -70,7 +67,7 @@ mod tests {
 
     #[test]
     fn read() {
-        let mut reader = BufferedReader::<_, 4>::new(FakeSource::new(&[Ok(&[1, 2, 3])]));
+        let mut reader = BufferedReader::<4, _>::new(FakeSource::new(&[Ok(&[1, 2, 3])]));
 
         assert_eq!(reader.read(), Ok(Some(1)));
         assert_eq!(reader.read(), Ok(Some(2)));
@@ -82,7 +79,7 @@ mod tests {
     #[test]
     fn read_many() {
         let mut reader =
-            BufferedReader::<_, 2>::new(FakeSource::new(&[Ok(&[1, 2]), Ok(&[3]), Ok(&[4, 5])]));
+            BufferedReader::<2, _>::new(FakeSource::new(&[Ok(&[1, 2]), Ok(&[3]), Ok(&[4, 5])]));
 
         assert_eq!(reader.read(), Ok(Some(1)));
         assert_eq!(reader.read(), Ok(Some(2)));
@@ -95,7 +92,7 @@ mod tests {
     #[test]
     fn read_after_end() {
         let mut reader =
-            BufferedReader::<_, 4>::new(FakeSource::new(&[Ok(&[1]), Ok(&[]), Ok(&[2])]));
+            BufferedReader::<4, _>::new(FakeSource::new(&[Ok(&[1]), Ok(&[]), Ok(&[2])]));
 
         assert_eq!(reader.read(), Ok(Some(1)));
         assert_eq!(reader.read(), Ok(None));
@@ -105,7 +102,7 @@ mod tests {
 
     #[test]
     fn read_interrupted() {
-        let mut reader = BufferedReader::<_, 4>::new(FakeSource::new(&[
+        let mut reader = BufferedReader::<4, _>::new(FakeSource::new(&[
             Err(Errno::INTR),
             Err(Errno::INTR),
             Ok(&[1]),
@@ -118,7 +115,7 @@ mod tests {
     #[test]
     fn fail_to_read() {
         let mut reader =
-            BufferedReader::<_, 4>::new(FakeSource::new(&[Ok(&[1, 2]), Err(Errno::IO), Ok(&[3])]));
+            BufferedReader::<4, _>::new(FakeSource::new(&[Ok(&[1, 2]), Err(Errno::IO), Ok(&[3])]));
 
         assert_eq!(reader.read(), Ok(Some(1)));
         assert_eq!(reader.read(), Ok(Some(2)));

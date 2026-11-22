@@ -139,7 +139,8 @@ macro_rules! libc_main {
         extern "C" fn main(argc: isize, argv: *const *const i8) {
             let mut heap = Box::<[Value; $heap_size]>::new_uninit();
 
-            // Drop the virtual machine before an exit to flush standard output.
+            // Drop the virtual machine at the end of the statement to flush standard
+            // output before an exit.
             let code = match Vm::new(
                 unsafe { heap.assume_init_mut() },
                 SmallPrimitiveSet::new(
