@@ -8,7 +8,7 @@ use rustix::{
 };
 use stak_vm::{Heap, Memory, Value};
 
-const PATH_SIZE: usize = 128;
+const PATH_SIZE: usize = 256;
 const DEFAULT_FILE_CAPACITY: usize = 32;
 
 /// A file system based on the libc API.
@@ -113,6 +113,8 @@ mod tests {
     use alloc::ffi::CString;
     use std::{fs, path::Path};
 
+    const HEAP_SIZE: usize = 1 << 11;
+
     fn decode_c_str(path: &Path) -> CString {
         CString::new(path.as_os_str().as_encoded_bytes()).unwrap()
     }
@@ -211,6 +213,44 @@ mod tests {
             !file_system
                 .exists(&decode_c_str(&directory.path().join("a".repeat(256))))
                 .unwrap()
+        );
+    }
+
+    #[test]
+    fn decode_path() {
+        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
+        let list = memory.build_raw_string("foo").unwrap();
+
+        assert_eq!(
+            LibcFileSystem::decode_path(&memory, list.into())
+                .unwrap()
+                .to_str(),
+            Ok("foo")
+        );
+    }
+
+    #[test]
+    fn decode_longest_path() {
+        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
+        let path = "a".repeat(PATH_SIZE - 1);
+        let list = memory.build_raw_string(&path).unwrap();
+
+        assert_eq!(
+            LibcFileSystem::decode_path(&memory, list.into())
+                .unwrap()
+                .to_str(),
+            Ok(path.as_str())
+        );
+    }
+
+    #[test]
+    fn decode_too_long_path() {
+        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
+        let list = memory.build_raw_string(&"a".repeat(PATH_SIZE)).unwrap();
+
+        assert_eq!(
+            LibcFileSystem::decode_path(&memory, list.into()),
+            Err(FileError::PathDecode)
         );
     }
 }
