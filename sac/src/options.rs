@@ -7,9 +7,6 @@ pub struct Options {
 
 impl Options {
     /// Parses command line arguments.
-    ///
-    /// Only the arguments between a command name and the first `--` argument
-    /// are parsed as options. Unknown and invalid options are ignored.
     pub fn parse(arguments: &[impl AsRef<str>]) -> Self {
         let arguments = arguments
             .get(1..)
