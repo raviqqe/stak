@@ -68,7 +68,7 @@ unsafe fn decode_environment<'a>(
             unsafe { CStr::from_ptr(entry) }.to_str().ok()
         })
         .filter_map(|entry| {
-            // Names are never empty and can start with equal signs.
+            // Names are never empty and can start with an equal sign.
             entry
                 .match_indices('=')
                 .find(|&(index, _)| index > 0)
