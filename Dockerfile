@@ -13,7 +13,6 @@ WORKDIR /src/$DIRECTORY
 # in different workspaces automatically.
 RUN cargo build $([ $DIRECTORY = . ] && echo --locked) --release --bin $BINARY --target $(uname -m)-unknown-linux-musl
 RUN cp target/*-unknown-linux-musl/release/$BINARY /app
-RUN strip /app
 
 FROM scratch
 
