@@ -22,12 +22,14 @@ impl Options {
             version: arguments
                 .iter()
                 .any(|argument| matches!(argument.as_ref(), "-V" | "--version")),
-            heap_size: arguments.iter().enumerate().find_map(|(index, argument)| {
-                match argument.as_ref() {
+            heap_size: arguments
+                .iter()
+                .enumerate()
+                .rev()
+                .find_map(|(index, argument)| match argument.as_ref() {
                     "-s" | "--heap-size" => arguments.get(index + 1)?.as_ref().parse().ok(),
                     argument => argument.strip_prefix("--heap-size=")?.parse().ok(),
-                }
-            }),
+                }),
         }
     }
 
@@ -172,18 +174,18 @@ mod tests {
         }
 
         #[test]
-        fn parse_first_option() {
+        fn parse_last_option() {
             assert_eq!(
                 Options::parse(&["stak", "-s", "1", "--heap-size=2", "--heap-size", "3"])
                     .heap_size(),
-                Some(1)
+                Some(3)
             );
         }
 
         #[test]
-        fn parse_option_after_invalid_options() {
+        fn parse_option_before_invalid_options() {
             assert_eq!(
-                Options::parse(&["stak", "--heap-size=foo", "-s", "-s", "42"]).heap_size(),
+                Options::parse(&["stak", "-s", "42", "--heap-size=foo", "-s"]).heap_size(),
                 Some(42)
             );
         }
