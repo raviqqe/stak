@@ -7,10 +7,14 @@
 #[doc(hidden)]
 pub extern crate alloc;
 
+#[cfg(feature = "libc")]
+mod format_writer;
 mod options;
 
 #[doc(hidden)]
 pub mod __private {
+    #[cfg(feature = "libc")]
+    pub use crate::format_writer::FormatWriter;
     pub use crate::options::Options;
     #[cfg(feature = "libc")]
     pub use alloc;
@@ -120,8 +124,10 @@ macro_rules! libc_main {
         );
     };
     ($path:expr, $heap_size:expr) => {
+        use core::{ffi::CStr, fmt::Write, slice};
         use $crate::__private::{
-            alloc::boxed::Box,
+            FormatWriter, Options,
+            alloc::{boxed::Box, vec::Vec},
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
@@ -144,24 +150,60 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
-            let mut heap = Box::<[Value; $heap_size]>::new_uninit();
+            // Leak arguments to keep deallocation out of a binary.
+            let options = Options::parse(
+                // SAFETY: Operating systems guarantee `argv` to have the length of
+                // `argc`.
+                unsafe { slice::from_raw_parts(argv, argc as _) }
+                    .iter()
+                    .map(|&argument| {
+                        // SAFETY: Operating systems guarantee elements in `argv` to be
+                        // C strings.
+                        unsafe { CStr::from_ptr(argument as _) }
+                            .to_str()
+                            .unwrap_or_default()
+                    })
+                    .collect::<Vec<_>>()
+                    .leak(),
+            );
+
+            if options.version() {
+                let _ = writeln!(
+                    FormatWriter::new(Stdout::new()),
+                    "{} {}",
+                    env!("CARGO_PKG_NAME"),
+                    env!("CARGO_PKG_VERSION")
+                );
+
+                exit(0);
+            }
+
+            let mut heap =
+                Box::<[Value]>::new_uninit_slice(options.heap_size().unwrap_or($heap_size));
 
             exit(
                 match Vm::new(
+                    // SAFETY: `Value`s are scalar values.
                     unsafe { heap.assume_init_mut() },
                     SmallPrimitiveSet::new(
                         ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                         LibcFileSystem::new(),
+                        // SAFETY: `argc` and `argv` are provided by operating systems,
+                        // and environment variables are never modified.
                         unsafe { LibcProcessContext::new(argc, argv) },
                         LibcClock::new(),
                     ),
                 )
-                .unwrap()
-                .run(include_r7rs!($path).iter().copied())
+                .map_err(SmallError::from)
+                .and_then(|mut vm| vm.run(include_r7rs!($path).iter().copied()))
                 {
                     Ok(()) => 0,
                     Err(SmallError::Halt(code)) => code.into(),
-                    Err(_) => 1,
+                    Err(error) => {
+                        let _ = writeln!(FormatWriter::new(Stderr::new()), "Error: {error}");
+
+                        1
+                    }
                 },
             );
         }
