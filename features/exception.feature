@@ -411,3 +411,21 @@ Feature: Exception
       Then the exit status should be 1
       And the stderr should contain "foo"
       And the stderr should contain "unknown"
+
+  @extra
+  Rule: Critical errors
+
+    Scenario: Run out of memory
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-u8 65)
+
+        (let loop ((xs '()))
+          (loop (cons xs xs)))
+        """
+      When I run `stak main.scm`
+      Then the exit status should be 1
+      And the stdout should contain exactly "A"
+      And the stderr should contain "Error: out of memory"
