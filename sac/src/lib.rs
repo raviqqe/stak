@@ -7,14 +7,10 @@
 #[doc(hidden)]
 pub extern crate alloc;
 
-#[cfg(feature = "libc")]
-mod format_writer;
 mod options;
 
 #[doc(hidden)]
 pub mod __private {
-    #[cfg(feature = "libc")]
-    pub use crate::format_writer::FormatWriter;
     pub use crate::options::Options;
     #[cfg(feature = "libc")]
     pub use alloc;
@@ -126,7 +122,7 @@ macro_rules! libc_main {
     ($path:expr, $heap_size:expr) => {
         use core::{ffi::CStr, fmt::Write, slice};
         use $crate::__private::{
-            FormatWriter, Options,
+            Options,
             alloc::{boxed::Box, vec::Vec},
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
@@ -175,7 +171,7 @@ macro_rules! libc_main {
 
             if options.version() {
                 let _ = writeln!(
-                    FormatWriter::new(Stdout::new()),
+                    Stdout::new(),
                     "{} {}",
                     env!("CARGO_PKG_NAME"),
                     env!("CARGO_PKG_VERSION")
@@ -206,7 +202,7 @@ macro_rules! libc_main {
                     Ok(()) => 0,
                     Err(SmallError::Halt(code)) => code.into(),
                     Err(error) => {
-                        let _ = writeln!(FormatWriter::new(Stderr::new()), "Error: {error}");
+                        let _ = writeln!(Stderr::new(), "Error: {error}");
 
                         1
                     }
