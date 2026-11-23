@@ -101,8 +101,7 @@ fn write(fd: BorrowedFd, byte: u8, error: LibcError) -> Result<(), LibcError> {
     }
 }
 
-// TODO Implement `core::io::Write` instead of `core::fmt::Write` when it is
-// stabilized.
+// TODO Implement `core::io::Write` instead when it is stabilized.
 fn write_string(writer: &mut impl Write, string: &str) -> fmt::Result {
     string
         .bytes()
@@ -113,6 +112,7 @@ fn write_string(writer: &mut impl Write, string: &str) -> fmt::Result {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::libc::BufferMut;
     use core::fmt::Write as _;
 
     #[test]
@@ -133,5 +133,34 @@ mod tests {
     #[test]
     fn write_string_to_stderr() {
         write!(Stderr::new(), "foo").unwrap();
+    }
+
+    #[test]
+    fn write_string_to_buffer() {
+        let mut buffer = [0; 3];
+
+        write_string(&mut BufferMut::new(&mut buffer), "foo").unwrap();
+
+        assert_eq!(&buffer, b"foo");
+    }
+
+    #[test]
+    fn write_multi_byte_characters_to_buffer() {
+        let mut buffer = [0; 6];
+
+        write_string(&mut BufferMut::new(&mut buffer), "λ🙂").unwrap();
+
+        assert_eq!(&buffer, "λ🙂".as_bytes());
+    }
+
+    #[test]
+    fn write_too_long_string_to_buffer() {
+        let mut buffer = [0; 2];
+
+        assert_eq!(
+            write_string(&mut BufferMut::new(&mut buffer), "foo"),
+            Err(fmt::Error)
+        );
+        assert_eq!(&buffer, b"fo");
     }
 }
