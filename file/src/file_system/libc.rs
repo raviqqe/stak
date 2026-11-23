@@ -64,7 +64,7 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        self.files.remove(&descriptor);
+        self.files.swap_remove(&descriptor);
 
         Ok(())
     }
