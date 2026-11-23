@@ -42,7 +42,7 @@ impl Options {
     pub unsafe fn parse_c(argc: isize, argv: *const *const i8) -> Self {
         // Leak arguments to keep deallocation out of a binary.
         Self::parse(
-            // SAFETY: Operating systems guarantee `argv` to have the length of
+            // SAFETY: Operating systems guarantee the length of `argv` to be
             // `argc`.
             unsafe { slice::from_raw_parts(argv, argc as _) }
                 .iter()
