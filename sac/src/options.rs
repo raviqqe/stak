@@ -1,3 +1,8 @@
+#[cfg(feature = "libc")]
+use alloc::vec::Vec;
+#[cfg(feature = "libc")]
+use core::{ffi::CStr, slice};
+
 /// Command line options.
 #[derive(Debug)]
 pub struct Options {
@@ -25,6 +30,32 @@ impl Options {
                 .filter(|[option, _]| matches!(option.as_ref(), "-s" | "--heap-size"))
                 .find_map(|[_, value]| value.as_ref().parse().ok()),
         }
+    }
+
+    /// Parses command line arguments in C.
+    ///
+    /// # Safety
+    ///
+    /// The `argc` and `argv` arguments should be the ones passed down as
+    /// arguments to the `main` function in C.
+    #[cfg(feature = "libc")]
+    pub unsafe fn parse_c(argc: isize, argv: *const *const i8) -> Self {
+        // Leak arguments to keep deallocation out of a binary.
+        Self::parse(
+            // SAFETY: Operating systems guarantee `argv` to have the length of
+            // `argc`.
+            unsafe { slice::from_raw_parts(argv, argc as _) }
+                .iter()
+                .map(|&argument| {
+                    // SAFETY: Operating systems guarantee elements in `argv` to
+                    // be C strings.
+                    unsafe { CStr::from_ptr(argument as _) }
+                        .to_str()
+                        .unwrap_or_default()
+                })
+                .collect::<Vec<_>>()
+                .leak(),
+        )
     }
 
     /// Returns `true` if a version is requested.
@@ -225,6 +256,52 @@ mod tests {
         #[test]
         fn ignore_command_name() {
             assert_eq!(Options::parse(&["-s", "42"]).heap_size(), None);
+        }
+    }
+
+    #[cfg(feature = "libc")]
+    mod parse_c {
+        use super::*;
+
+        fn parse(arguments: &[&CStr]) -> Options {
+            let arguments = arguments
+                .iter()
+                .map(|argument| argument.as_ptr().cast())
+                .collect::<Vec<_>>();
+
+            // SAFETY: The arguments are an array of C strings.
+            unsafe { Options::parse_c(arguments.len() as _, arguments.as_ptr()) }
+        }
+
+        #[test]
+        fn parse_nothing() {
+            let options = parse(&[]);
+
+            assert!(!options.version());
+            assert_eq!(options.heap_size(), None);
+        }
+
+        #[test]
+        fn parse_version() {
+            assert!(parse(&[c"stak", c"--version"]).version());
+        }
+
+        #[test]
+        fn parse_heap_size() {
+            assert_eq!(parse(&[c"stak", c"-s", c"42"]).heap_size(), Some(42));
+        }
+
+        #[test]
+        fn parse_options_after_invalid_utf8() {
+            let options = parse(&[c"stak", c"\xff", c"--version", c"-s", c"42"]);
+
+            assert!(options.version());
+            assert_eq!(options.heap_size(), Some(42));
+        }
+
+        #[test]
+        fn parse_option_after_invalid_utf8_command_name() {
+            assert!(parse(&[c"\xff", c"--version"]).version());
         }
     }
 }

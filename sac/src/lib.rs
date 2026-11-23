@@ -120,10 +120,10 @@ macro_rules! libc_main {
         );
     };
     ($path:expr, $heap_size:expr) => {
-        use core::{ffi::CStr, fmt::Write, slice};
+        use core::fmt::Write;
         use $crate::__private::{
             Options,
-            alloc::{boxed::Box, vec::Vec},
+            alloc::boxed::Box,
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
@@ -146,22 +146,8 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
-            // Leak arguments to keep deallocation out of a binary.
-            let options = Options::parse(
-                // SAFETY: Operating systems guarantee `argv` to have the length of
-                // `argc`.
-                unsafe { slice::from_raw_parts(argv, argc as _) }
-                    .iter()
-                    .map(|&argument| {
-                        // SAFETY: Operating systems guarantee elements in `argv` to be
-                        // C strings.
-                        unsafe { CStr::from_ptr(argument as _) }
-                            .to_str()
-                            .unwrap_or_default()
-                    })
-                    .collect::<Vec<_>>()
-                    .leak(),
-            );
+            // SAFETY: `argc` and `argv` are provided by operating systems.
+            let options = unsafe { Options::parse_c(argc, argv) };
 
             if options.version() {
                 let _ = writeln!(
