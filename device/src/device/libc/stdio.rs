@@ -154,7 +154,7 @@ mod tests {
     }
 
     #[test]
-    fn fail_to_write_string_to_buffer() {
+    fn write_too_long_string_to_buffer() {
         let mut buffer = [0; 2];
 
         assert_eq!(
