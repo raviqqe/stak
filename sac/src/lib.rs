@@ -4,16 +4,17 @@
 #![no_std]
 
 #[cfg(feature = "libc")]
-#[doc(hidden)]
-pub extern crate alloc;
+extern crate alloc;
 
 mod options;
+#[cfg(feature = "libc")]
+mod run;
 
 #[doc(hidden)]
 pub mod __private {
     pub use crate::options::Options;
     #[cfg(feature = "libc")]
-    pub use alloc;
+    pub use crate::run::run;
     #[cfg(feature = "libc")]
     pub use dlmalloc;
     #[cfg(feature = "std")]
@@ -72,7 +73,7 @@ macro_rules! main {
         };
 
         fn main() -> Result<ExitCode, MainError> {
-            let options = Options::parse(&args().collect::<Vec<_>>());
+            let options = Options::parse(args());
 
             if options.version() {
                 writeln!(
@@ -120,17 +121,15 @@ macro_rules! libc_main {
         );
     };
     ($path:expr, $heap_size:expr) => {
+        use core::fmt::Write;
         use $crate::__private::{
-            alloc::boxed::Box,
+            Options,
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
-            stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
-            stak_file::LibcFileSystem,
+            run,
+            stak_device::libc::{Stderr, Stdout},
             stak_macro::include_r7rs,
-            stak_process_context::LibcProcessContext,
-            stak_r7rs::{SmallError, SmallPrimitiveSet},
-            stak_time::LibcClock,
-            stak_vm::{Value, Vm},
+            stak_r7rs::SmallError,
         };
 
         #[global_allocator]
@@ -144,24 +143,38 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
-            let mut heap = Box::<[Value; $heap_size]>::new_uninit();
+            // SAFETY: `argc` and `argv` are provided by operating systems.
+            let options = unsafe { Options::parse_c(argc, argv) };
+
+            if options.version() {
+                let _ = writeln!(
+                    Stdout::new(),
+                    "{} {}",
+                    env!("CARGO_PKG_NAME"),
+                    env!("CARGO_PKG_VERSION")
+                );
+
+                exit(0);
+            }
 
             exit(
-                match Vm::new(
-                    unsafe { heap.assume_init_mut() },
-                    SmallPrimitiveSet::new(
-                        ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
-                        LibcFileSystem::new(),
-                        unsafe { LibcProcessContext::new(argc, argv) },
-                        LibcClock::new(),
-                    ),
-                )
-                .unwrap()
-                .run(include_r7rs!($path).iter().copied())
-                {
+                // SAFETY: `argc` and `argv` are provided by operating systems, and
+                // environment variables are never modified.
+                match unsafe {
+                    run(
+                        include_r7rs!($path),
+                        options.heap_size().unwrap_or($heap_size),
+                        argc,
+                        argv,
+                    )
+                } {
                     Ok(()) => 0,
                     Err(SmallError::Halt(code)) => code.into(),
-                    Err(_) => 1,
+                    Err(error) => {
+                        let _ = writeln!(Stderr::new(), "Error: {error}");
+
+                        1
+                    }
                 },
             );
         }

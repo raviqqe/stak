@@ -109,11 +109,17 @@ jobs:
           -f ${{ join(matrix.interpreter.features, ',') }},
           -t '${{ matrix.interpreter.tags || '~@none' }}'
   extra_integration_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        interpreter:
+          - stak
+          - mstak
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: $/.github/actions/setup
-      - run: tools/extra_integration_test.sh
+      - run: tools/extra_integration_test.sh -i ${{ matrix.interpreter }}
   self_host_integration_test:
     strategy:
       fail-fast: false

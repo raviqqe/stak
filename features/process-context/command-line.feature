@@ -57,7 +57,7 @@ Feature: Command line
         """
       When I run `stak main.scm <option>`
       Then the exit status should be 1
-      And the stderr should contain "out of memory"
+      And the stderr should contain "Error: out of memory"
 
       Examples:
         | option        |
