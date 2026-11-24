@@ -19,7 +19,8 @@ pub unsafe fn run(
     argc: isize,
     argv: *const *const i8,
 ) -> Result<(), SmallError> {
-    let mut heap = Box::<[Value]>::new_uninit_slice(heap_size);
+    // Leak a heap to keep deallocation out of a binary.
+    let heap = Box::leak(Box::<[Value]>::new_uninit_slice(heap_size));
 
     Vm::new(
         // SAFETY: `Value`s are scalar values.
