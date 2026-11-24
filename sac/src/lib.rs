@@ -141,8 +141,6 @@ macro_rules! libc_main {
             exit(1)
         }
 
-        // The precompiled compiler built-ins refer to the personality routine
-        // for unwinding, which is never called because panics abort.
         #[cfg(not(test))]
         #[unsafe(no_mangle)]
         extern "C" fn rust_eh_personality() {}
