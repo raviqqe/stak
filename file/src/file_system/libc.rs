@@ -4,11 +4,11 @@ use heapless::{CString, index_map::FnvIndexMap};
 use rustix::{
     fd::{AsFd, BorrowedFd, OwnedFd},
     fs::{self, Access, Mode, OFlags},
-    io::{self, Errno},
+    io,
 };
 use stak_vm::{Heap, Memory, Value};
 
-const PATH_SIZE: usize = 128;
+const PATH_SIZE: usize = 256;
 const DEFAULT_FILE_CAPACITY: usize = 32;
 
 /// A file system based on the libc API.
@@ -64,7 +64,7 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        self.files.remove(&descriptor);
+        self.files.swap_remove(&descriptor);
 
         Ok(())
     }
@@ -95,12 +95,7 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
-        match fs::access(path, Access::EXISTS) {
-            Ok(()) => Ok(true),
-            // spell-checker: disable-next-line
-            Err(number) if number == Errno::NOENT => Ok(false),
-            Err(_) => Err(FileError::Exists),
-        }
+        Ok(fs::access(path, Access::EXISTS).is_ok())
     }
 
     fn decode_path<H: Heap>(memory: &Memory<H>, list: Value) -> Result<Self::PathBuf, Self::Error> {
@@ -117,6 +112,8 @@ mod tests {
     use super::*;
     use alloc::ffi::CString;
     use std::{fs, path::Path};
+
+    const HEAP_SIZE: usize = 1 << 11;
 
     fn decode_c_str(path: &Path) -> CString {
         CString::new(path.as_os_str().as_encoded_bytes()).unwrap()
@@ -202,5 +199,58 @@ mod tests {
         let file_system = LibcFileSystem::new();
 
         assert!(file_system.exists(&decode_c_str(&path)).unwrap());
+        assert!(
+            !file_system
+                .exists(&decode_c_str(&directory.path().join("bar")))
+                .unwrap()
+        );
+        assert!(
+            !file_system
+                .exists(&decode_c_str(&path.join("bar")))
+                .unwrap()
+        );
+        assert!(
+            !file_system
+                .exists(&decode_c_str(&directory.path().join("a".repeat(256))))
+                .unwrap()
+        );
+    }
+
+    #[test]
+    fn decode_path() {
+        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
+        let list = memory.build_raw_string("foo").unwrap();
+
+        assert_eq!(
+            LibcFileSystem::decode_path(&memory, list.into())
+                .unwrap()
+                .to_str(),
+            Ok("foo")
+        );
+    }
+
+    #[test]
+    fn decode_longest_path() {
+        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
+        let path = "a".repeat(PATH_SIZE - 1);
+        let list = memory.build_raw_string(&path).unwrap();
+
+        assert_eq!(
+            LibcFileSystem::decode_path(&memory, list.into())
+                .unwrap()
+                .to_str(),
+            Ok(path.as_str())
+        );
+    }
+
+    #[test]
+    fn decode_too_long_path() {
+        let mut memory = Memory::new([Default::default(); HEAP_SIZE]).unwrap();
+        let list = memory.build_raw_string(&"a".repeat(PATH_SIZE)).unwrap();
+
+        assert_eq!(
+            LibcFileSystem::decode_path(&memory, list.into()),
+            Err(FileError::PathDecode)
+        );
     }
 }

@@ -31,7 +31,7 @@ members = [
 exclude = ["cmd/minimal"]
 
 [workspace.package]
-version = "0.12.34"
+version = "0.12.35"
 edition = "2024"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
@@ -83,9 +83,14 @@ debug-assertions = false
 overflow-checks = false
 
 [profile.release]
+strip = true
 lto = true
 panic = "abort"
 codegen-units = 1
+
+# Stripping symbols removes the target features section that `wasm-bindgen` and `wasm-opt` need.
+[profile.release.package.stak-wasm]
+strip = "debuginfo"
 
 [profile.release.build-override]
 opt-level = 3
@@ -95,6 +100,7 @@ overflow-checks = false
 [profile.release_test]
 inherits = "release"
 debug = "line-tables-only"
+strip = false
 debug-assertions = true
 overflow-checks = true
 

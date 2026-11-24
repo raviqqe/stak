@@ -38,6 +38,7 @@
     "coreutils",
     "cppflags",
     "ctypes",
+    "debuginfo",
     "deque",
     "dlmalloc",
     "doctest",

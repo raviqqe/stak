@@ -620,7 +620,7 @@ Feature: Library system
     When I successfully run `stak -A library main.scm`
     Then the stdout should contain exactly "A"
 
-  @environment-variable @stak
+  @stak
   Scenario: Import a library in a data directory
     Given a file named "data/stak/foo.sld" with:
       """scheme
@@ -643,7 +643,7 @@ Feature: Library system
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  @environment-variable @stak
+  @stak
   Scenario: Import a library in a data directory in a home directory
     Given a file named "home/.local/share/stak/foo.sld" with:
       """scheme
@@ -667,7 +667,7 @@ Feature: Library system
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  @environment-variable @stak
+  @stak
   Scenario: Import a library in a load path without a data directory
     Given a file named "library/foo.sld" with:
       """scheme
@@ -694,7 +694,7 @@ Feature: Library system
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @environment-variable @stak
+  @stak
   Scenario Outline: Search a data directory between load paths
     Given a file named "prepended/foo.sld" with:
       """scheme

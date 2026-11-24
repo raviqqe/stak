@@ -1,6 +1,7 @@
 use core::error::Error;
 
 /// A trait that writes a byte.
+// TODO Replace this trait with `core::io::Write` when it is stabilized.
 pub trait Write {
     /// An error.
     type Error: Error;
