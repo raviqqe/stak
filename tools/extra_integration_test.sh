@@ -2,6 +2,8 @@
 
 set -ex
 
+. $(dirname $0)/utility.sh
+
 interpreter=stak
 
 while getopts i: option; do
@@ -16,12 +18,7 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/..
 
-cargo build --profile release_test
-cargo build --profile release_test --target-dir target/libc -p stak --no-default-features --features float,libc
-(
-  cd cmd/minimal
-  cargo build --release
-)
+prepare_integration_test
 
 export PATH=$PWD/tools/scheme/$interpreter:$PWD/target/release_test:$PATH
 export STAK_ROOT=$PWD
