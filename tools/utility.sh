@@ -71,7 +71,7 @@ log_versions() (
   done
 )
 
-setup_bench() (
+prepare_bench() (
   [ $# -le 1 ]
 
   feature=$1
