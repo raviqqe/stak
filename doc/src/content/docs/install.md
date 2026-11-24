@@ -32,6 +32,12 @@ The content of the `hello.scm` would look like:
 (write-string "Hello, world!\n")
 ```
 
+To install the interpreter as a smaller executable based on libc on Unix, run the following command in your terminal.
+
+```sh
+cargo install stak --no-default-features --features float,libc
+```
+
 ### Development tools
 
 To install development tools of Stak Scheme, run the following command in your terminal:

@@ -2,6 +2,8 @@
 
 set -ex
 
+. $(dirname $0)/utility.sh
+
 features=,
 interpreter=stak
 tags=~@extra
@@ -24,11 +26,7 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/..
 
-cargo build --profile release_test --features $features
-(
-  cd cmd/minimal
-  cargo build --release
-)
+prepare_integration_test --features $features
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 

@@ -141,6 +141,10 @@ macro_rules! libc_main {
             exit(1)
         }
 
+        #[cfg(not(test))]
+        #[unsafe(no_mangle)]
+        extern "C" fn rust_eh_personality() {}
+
         #[cfg_attr(not(test), unsafe(no_mangle))]
         extern "C" fn main(argc: isize, argv: *const *const i8) {
             // SAFETY: `argc` and `argv` are provided by operating systems.
