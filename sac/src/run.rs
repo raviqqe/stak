@@ -20,11 +20,9 @@ pub unsafe fn run(
     argv: *const *const i8,
 ) -> Result<(), SmallError> {
     // Leak a heap to keep deallocation out of a binary.
-    let heap = Box::leak(Box::<[Value]>::new_uninit_slice(heap_size));
-
     Vm::new(
         // SAFETY: `Value`s are scalar values.
-        unsafe { heap.assume_init_mut() },
+        unsafe { Box::leak(Box::<[Value]>::new_uninit_slice(heap_size)).assume_init_mut() },
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
