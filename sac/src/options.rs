@@ -1,6 +1,4 @@
 #[cfg(feature = "libc")]
-use alloc::vec::Vec;
-#[cfg(feature = "libc")]
 use core::{ffi::CStr, slice};
 
 /// Command line options.
@@ -12,24 +10,28 @@ pub struct Options {
 
 impl Options {
     /// Parses command line arguments.
-    pub fn parse(arguments: &[impl AsRef<str>]) -> Self {
-        let arguments = arguments
-            .get(1..)
-            .unwrap_or_default()
-            .split(|argument| argument.as_ref() == "--")
-            .next()
-            .unwrap_or_default();
+    pub fn parse(arguments: impl IntoIterator<Item = impl AsRef<str>>) -> Self {
+        let mut version = false;
+        let mut heap_size = None;
+        let mut heap_size_option = false;
 
-        Self {
-            version: arguments
-                .iter()
-                .any(|argument| argument.as_ref() == "--version"),
-            heap_size: arguments
-                .array_windows()
-                .rev()
-                .filter(|[option, _]| matches!(option.as_ref(), "-s" | "--heap-size"))
-                .find_map(|[_, value]| value.as_ref().parse().ok()),
+        let mut arguments = arguments.into_iter();
+        arguments.next();
+
+        for argument in arguments {
+            let argument = argument.as_ref();
+
+            if argument == "--" {
+                break;
+            } else if heap_size_option && let Ok(size) = argument.parse() {
+                heap_size = Some(size);
+            }
+
+            version |= argument == "--version";
+            heap_size_option = matches!(argument, "-s" | "--heap-size");
         }
+
+        Self { version, heap_size }
     }
 
     /// Parses command line arguments in C.
@@ -40,7 +42,6 @@ impl Options {
     /// arguments to the `main` function in C.
     #[cfg(feature = "libc")]
     pub unsafe fn parse_c(argc: isize, argv: *const *const i8) -> Self {
-        // Leak arguments to keep deallocation out of a binary.
         Self::parse(
             // SAFETY: Operating systems guarantee the length of `argv` to be
             // `argc`.
@@ -52,9 +53,7 @@ impl Options {
                     unsafe { CStr::from_ptr(argument as _) }
                         .to_str()
                         .unwrap_or_default()
-                })
-                .collect::<Vec<_>>()
-                .leak(),
+                }),
         )
     }
 
@@ -75,7 +74,7 @@ mod tests {
 
     #[test]
     fn parse_nothing() {
-        let options = Options::parse(&[""; 0]);
+        let options = Options::parse([""; 0]);
 
         assert!(!options.version());
         assert_eq!(options.heap_size(), None);
@@ -83,7 +82,7 @@ mod tests {
 
     #[test]
     fn parse_command_name() {
-        let options = Options::parse(&["stak"]);
+        let options = Options::parse(["stak"]);
 
         assert!(!options.version());
         assert_eq!(options.heap_size(), None);
@@ -91,7 +90,7 @@ mod tests {
 
     #[test]
     fn parse_arguments() {
-        let options = Options::parse(&["stak", "foo.scm", "bar"]);
+        let options = Options::parse(["stak", "foo.scm", "bar"]);
 
         assert!(!options.version());
         assert_eq!(options.heap_size(), None);
@@ -99,7 +98,7 @@ mod tests {
 
     #[test]
     fn parse_options() {
-        let options = Options::parse(&["stak", "--version", "--heap-size", "42"]);
+        let options = Options::parse(["stak", "--version", "--heap-size", "42"]);
 
         assert!(options.version());
         assert_eq!(options.heap_size(), Some(42));
@@ -110,38 +109,43 @@ mod tests {
 
         #[test]
         fn parse_option() {
-            assert!(Options::parse(&["stak", "--version"]).version());
+            assert!(Options::parse(["stak", "--version"]).version());
         }
 
         #[test]
         fn parse_option_after_argument() {
-            assert!(Options::parse(&["stak", "foo.scm", "--version"]).version());
+            assert!(Options::parse(["stak", "foo.scm", "--version"]).version());
         }
 
         #[test]
         fn parse_option_after_unknown_option() {
-            assert!(Options::parse(&["stak", "--foo", "--version"]).version());
+            assert!(Options::parse(["stak", "--foo", "--version"]).version());
+        }
+
+        #[test]
+        fn parse_option_after_heap_size_option() {
+            assert!(Options::parse(["stak", "-s", "--version"]).version());
         }
 
         #[test]
         fn parse_option_before_delimiter() {
-            assert!(Options::parse(&["stak", "--version", "--"]).version());
+            assert!(Options::parse(["stak", "--version", "--"]).version());
         }
 
         #[test]
         fn ignore_unknown_option() {
-            assert!(!Options::parse(&["stak", "-V"]).version());
-            assert!(!Options::parse(&["stak", "--versions"]).version());
+            assert!(!Options::parse(["stak", "-V"]).version());
+            assert!(!Options::parse(["stak", "--versions"]).version());
         }
 
         #[test]
         fn ignore_option_after_delimiter() {
-            assert!(!Options::parse(&["stak", "--", "--version"]).version());
+            assert!(!Options::parse(["stak", "--", "--version"]).version());
         }
 
         #[test]
         fn ignore_command_name() {
-            assert!(!Options::parse(&["--version"]).version());
+            assert!(!Options::parse(["--version"]).version());
         }
     }
 
@@ -150,13 +154,13 @@ mod tests {
 
         #[test]
         fn parse_short_option() {
-            assert_eq!(Options::parse(&["stak", "-s", "42"]).heap_size(), Some(42));
+            assert_eq!(Options::parse(["stak", "-s", "42"]).heap_size(), Some(42));
         }
 
         #[test]
         fn parse_long_option() {
             assert_eq!(
-                Options::parse(&["stak", "--heap-size", "42"]).heap_size(),
+                Options::parse(["stak", "--heap-size", "42"]).heap_size(),
                 Some(42)
             );
         }
@@ -164,7 +168,7 @@ mod tests {
         #[test]
         fn parse_option_after_argument() {
             assert_eq!(
-                Options::parse(&["stak", "foo.scm", "-s", "42"]).heap_size(),
+                Options::parse(["stak", "foo.scm", "-s", "42"]).heap_size(),
                 Some(42)
             );
         }
@@ -172,7 +176,23 @@ mod tests {
         #[test]
         fn parse_option_after_unknown_option() {
             assert_eq!(
-                Options::parse(&["stak", "--foo", "-s", "42"]).heap_size(),
+                Options::parse(["stak", "--foo", "-s", "42"]).heap_size(),
+                Some(42)
+            );
+        }
+
+        #[test]
+        fn parse_option_after_missing_value() {
+            assert_eq!(
+                Options::parse(["stak", "-s", "-s", "42"]).heap_size(),
+                Some(42)
+            );
+        }
+
+        #[test]
+        fn parse_option_before_argument() {
+            assert_eq!(
+                Options::parse(["stak", "-s", "42", "43"]).heap_size(),
                 Some(42)
             );
         }
@@ -180,7 +200,7 @@ mod tests {
         #[test]
         fn parse_option_before_delimiter() {
             assert_eq!(
-                Options::parse(&["stak", "-s", "42", "--"]).heap_size(),
+                Options::parse(["stak", "-s", "42", "--"]).heap_size(),
                 Some(42)
             );
         }
@@ -188,7 +208,7 @@ mod tests {
         #[test]
         fn parse_last_option() {
             assert_eq!(
-                Options::parse(&["stak", "-s", "1", "--heap-size", "2"]).heap_size(),
+                Options::parse(["stak", "-s", "1", "--heap-size", "2"]).heap_size(),
                 Some(2)
             );
         }
@@ -196,72 +216,64 @@ mod tests {
         #[test]
         fn parse_option_before_invalid_options() {
             assert_eq!(
-                Options::parse(&["stak", "-s", "42", "--heap-size", "foo", "-s"]).heap_size(),
+                Options::parse(["stak", "-s", "42", "--heap-size", "foo", "-s"]).heap_size(),
                 Some(42)
             );
         }
 
         #[test]
         fn ignore_unknown_option() {
-            assert_eq!(Options::parse(&["stak", "-S", "42"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "-S", "42"]).heap_size(), None);
             assert_eq!(
-                Options::parse(&["stak", "--heap-sizes", "42"]).heap_size(),
+                Options::parse(["stak", "--heap-sizes", "42"]).heap_size(),
                 None
             );
         }
 
         #[test]
         fn ignore_missing_value() {
-            assert_eq!(Options::parse(&["stak", "-s"]).heap_size(), None);
-            assert_eq!(Options::parse(&["stak", "--heap-size"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "-s"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "--heap-size"]).heap_size(), None);
         }
 
         #[test]
         fn ignore_invalid_value() {
-            assert_eq!(Options::parse(&["stak", "-s", "foo"]).heap_size(), None);
-            assert_eq!(Options::parse(&["stak", "-s", "-1"]).heap_size(), None);
-            assert_eq!(Options::parse(&["stak", "-s", "4.2"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "-s", "foo"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "-s", "-1"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "-s", "4.2"]).heap_size(), None);
             assert_eq!(
-                Options::parse(&["stak", "-s", "18446744073709551616"]).heap_size(),
+                Options::parse(["stak", "-s", "18446744073709551616"]).heap_size(),
                 None
             );
         }
 
         #[test]
         fn ignore_option_with_attached_value() {
-            assert_eq!(Options::parse(&["stak", "-s42"]).heap_size(), None);
-            assert_eq!(Options::parse(&["stak", "-s=42"]).heap_size(), None);
-            assert_eq!(
-                Options::parse(&["stak", "--heap-size=42"]).heap_size(),
-                None
-            );
+            assert_eq!(Options::parse(["stak", "-s42"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "-s=42"]).heap_size(), None);
+            assert_eq!(Options::parse(["stak", "--heap-size=42"]).heap_size(), None);
         }
 
         #[test]
         fn ignore_option_after_delimiter() {
-            assert_eq!(
-                Options::parse(&["stak", "--", "-s", "42"]).heap_size(),
-                None
-            );
+            assert_eq!(Options::parse(["stak", "--", "-s", "42"]).heap_size(), None);
         }
 
         #[test]
         fn ignore_value_after_delimiter() {
-            assert_eq!(
-                Options::parse(&["stak", "-s", "--", "42"]).heap_size(),
-                None
-            );
+            assert_eq!(Options::parse(["stak", "-s", "--", "42"]).heap_size(), None);
         }
 
         #[test]
         fn ignore_command_name() {
-            assert_eq!(Options::parse(&["-s", "42"]).heap_size(), None);
+            assert_eq!(Options::parse(["-s", "42"]).heap_size(), None);
         }
     }
 
     #[cfg(feature = "libc")]
     mod parse_c {
         use super::*;
+        use alloc::vec::Vec;
 
         fn parse(arguments: &[&CStr]) -> Options {
             let arguments = arguments

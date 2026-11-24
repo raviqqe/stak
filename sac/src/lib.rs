@@ -76,7 +76,7 @@ macro_rules! main {
         };
 
         fn main() -> Result<ExitCode, MainError> {
-            let options = Options::parse(&args().collect::<Vec<_>>());
+            let options = Options::parse(args());
 
             if options.version() {
                 writeln!(
