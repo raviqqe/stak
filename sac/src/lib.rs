@@ -127,7 +127,7 @@ macro_rules! libc_main {
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
             run,
-            stak_device::libc::{Stderr, Stdout},
+            stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_macro::include_r7rs,
             stak_r7rs::SmallError,
         };
@@ -157,26 +157,31 @@ macro_rules! libc_main {
                 exit(0);
             }
 
-            exit(
-                // SAFETY: `argc` and `argv` are provided by operating systems, and
-                // environment variables are never modified.
-                match unsafe {
-                    run(
-                        include_r7rs!($path),
-                        options.heap_size().unwrap_or($heap_size),
-                        argc,
-                        argv,
-                    )
-                } {
-                    Ok(()) => 0,
-                    Err(SmallError::Halt(code)) => code.into(),
-                    Err(error) => {
-                        let _ = writeln!(Stderr::new(), "Error: {error}");
+            let mut device = ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new());
+            // SAFETY: `argc` and `argv` are provided by operating systems, and
+            // environment variables are never modified.
+            let code = match unsafe {
+                run(
+                    include_r7rs!($path),
+                    options.heap_size().unwrap_or($heap_size),
+                    &mut device,
+                    argc,
+                    argv,
+                )
+            } {
+                Ok(()) => 0,
+                Err(SmallError::Halt(code)) => code.into(),
+                Err(error) => {
+                    let _ = writeln!(Stderr::new(), "Error: {error}");
 
-                        1
-                    }
-                },
-            );
+                    1
+                }
+            };
+
+            // Drop the device to flush standard output because an exit runs no
+            // destructors.
+            drop(device);
+            exit(code);
         }
     };
 }

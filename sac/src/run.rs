@@ -6,7 +6,7 @@ use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::LibcClock;
 use stak_vm::{Value, Vm};
 
-/// Runs bytecode on a virtual machine.
+/// Runs bytecode on a virtual machine with a device.
 ///
 /// # Safety
 ///
@@ -16,6 +16,7 @@ use stak_vm::{Value, Vm};
 pub unsafe fn run(
     bytecode: &[u8],
     heap_size: usize,
+    device: &mut ReadWriteDevice<Stdin, Stdout, Stderr>,
     argc: isize,
     argv: *const *const i8,
 ) -> Result<(), SmallError> {
@@ -24,7 +25,7 @@ pub unsafe fn run(
         // SAFETY: `Value`s are scalar values.
         unsafe { Box::leak(Box::<[Value]>::new_uninit_slice(heap_size)).assume_init_mut() },
         SmallPrimitiveSet::new(
-            ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
+            device,
             LibcFileSystem::new(),
             // SAFETY: `argc` and `argv` are provided by operating systems, and
             // environment variables are never modified.
@@ -46,7 +47,15 @@ mod tests {
     fn run_bytecode(bytecode: &[u8], heap_size: usize) -> Result<(), SmallError> {
         // SAFETY: No argument is read, and no test modifies environment
         // variables.
-        unsafe { run(bytecode, heap_size, 0, dangling()) }
+        unsafe {
+            run(
+                bytecode,
+                heap_size,
+                &mut ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
+                0,
+                dangling(),
+            )
+        }
     }
 
     #[test]
