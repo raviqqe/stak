@@ -4,8 +4,7 @@
 #![no_std]
 
 #[cfg(feature = "libc")]
-#[doc(hidden)]
-pub extern crate alloc;
+extern crate alloc;
 
 mod options;
 #[cfg(feature = "libc")]
@@ -16,8 +15,6 @@ pub mod __private {
     pub use crate::options::Options;
     #[cfg(feature = "libc")]
     pub use crate::run::run;
-    #[cfg(feature = "libc")]
-    pub use alloc;
     #[cfg(feature = "libc")]
     pub use dlmalloc;
     #[cfg(feature = "std")]
@@ -76,7 +73,7 @@ macro_rules! main {
         };
 
         fn main() -> Result<ExitCode, MainError> {
-            let options = Options::parse(&args().collect::<Vec<_>>());
+            let options = Options::parse(args());
 
             if options.version() {
                 writeln!(

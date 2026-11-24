@@ -19,11 +19,10 @@ pub unsafe fn run(
     argc: isize,
     argv: *const *const i8,
 ) -> Result<(), SmallError> {
-    let mut heap = Box::<[Value]>::new_uninit_slice(heap_size);
-
+    // Leak a heap to keep deallocation out of a binary.
     Vm::new(
         // SAFETY: `Value`s are scalar values.
-        unsafe { heap.assume_init_mut() },
+        unsafe { Box::leak(Box::<[Value]>::new_uninit_slice(heap_size)).assume_init_mut() },
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
@@ -42,41 +41,35 @@ mod tests {
     use core::ptr::dangling;
     use stak_configuration::DEFAULT_HEAP_SIZE;
     use stak_macro::compile_r7rs;
+    use stak_vm::Error;
+
+    fn run_bytecode(bytecode: &[u8], heap_size: usize) -> Result<(), SmallError> {
+        // SAFETY: No argument is read, and no test modifies environment
+        // variables.
+        unsafe { run(bytecode, heap_size, 0, dangling()) }
+    }
 
     #[test]
     fn run_nothing() {
-        assert_eq!(
-            // SAFETY: No argument is read, and no test modifies environment
-            // variables.
-            unsafe { run(compile_r7rs!(""), DEFAULT_HEAP_SIZE, 0, dangling()) },
-            Ok(())
-        );
+        assert_eq!(run_bytecode(compile_r7rs!(""), DEFAULT_HEAP_SIZE), Ok(()));
     }
 
     #[test]
     fn exit_with_code() {
         assert_eq!(
-            // SAFETY: No argument is read, and no test modifies environment
-            // variables.
-            unsafe {
-                run(
-                    compile_r7rs!("(import (scheme process-context)) (exit 42)"),
-                    DEFAULT_HEAP_SIZE,
-                    0,
-                    dangling(),
-                )
-            },
+            run_bytecode(
+                compile_r7rs!("(import (scheme process-context)) (exit 42)"),
+                DEFAULT_HEAP_SIZE
+            ),
             Err(SmallError::Halt(42))
         );
     }
 
     #[test]
-    fn fail_with_no_heap() {
-        assert!(matches!(
-            // SAFETY: No argument is read, and no test modifies environment
-            // variables.
-            unsafe { run(compile_r7rs!(""), 0, 0, dangling()) },
-            Err(SmallError::Vm(_))
-        ));
+    fn run_without_heap() {
+        assert_eq!(
+            run_bytecode(compile_r7rs!(""), 0),
+            Err(SmallError::Vm(Error::OutOfMemory))
+        );
     }
 }
