@@ -8,10 +8,14 @@
 pub extern crate alloc;
 
 mod options;
+#[cfg(feature = "libc")]
+mod run;
 
 #[doc(hidden)]
 pub mod __private {
     pub use crate::options::Options;
+    #[cfg(feature = "libc")]
+    pub use crate::run::run;
     #[cfg(feature = "libc")]
     pub use alloc;
     #[cfg(feature = "libc")]
@@ -123,16 +127,12 @@ macro_rules! libc_main {
         use core::fmt::Write;
         use $crate::__private::{
             Options,
-            alloc::boxed::Box,
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
-            stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
-            stak_file::LibcFileSystem,
+            run,
+            stak_device::libc::{Stderr, Stdout},
             stak_macro::include_r7rs,
-            stak_process_context::LibcProcessContext,
-            stak_r7rs::{SmallError, SmallPrimitiveSet},
-            stak_time::LibcClock,
-            stak_vm::{Value, Vm},
+            stak_r7rs::SmallError,
         };
 
         #[global_allocator]
@@ -166,25 +166,17 @@ macro_rules! libc_main {
                 exit(0);
             }
 
-            let mut heap =
-                Box::<[Value]>::new_uninit_slice(options.heap_size().unwrap_or($heap_size));
-
             exit(
-                match Vm::new(
-                    // SAFETY: `Value`s are scalar values.
-                    unsafe { heap.assume_init_mut() },
-                    SmallPrimitiveSet::new(
-                        ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
-                        LibcFileSystem::new(),
-                        // SAFETY: `argc` and `argv` are provided by operating systems,
-                        // and environment variables are never modified.
-                        unsafe { LibcProcessContext::new(argc, argv) },
-                        LibcClock::new(),
-                    ),
-                )
-                .map_err(SmallError::from)
-                .and_then(|mut vm| vm.run(include_r7rs!($path).iter().copied()))
-                {
+                // SAFETY: `argc` and `argv` are provided by operating systems, and
+                // environment variables are never modified.
+                match unsafe {
+                    run(
+                        include_r7rs!($path),
+                        options.heap_size().unwrap_or($heap_size),
+                        argc,
+                        argv,
+                    )
+                } {
                     Ok(()) => 0,
                     Err(SmallError::Halt(code)) => code.into(),
                     Err(error) => {
