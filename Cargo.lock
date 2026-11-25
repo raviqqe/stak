@@ -1579,10 +1579,13 @@ dependencies = [
 name = "stak-interpret"
 version = "0.12.35"
 dependencies = [
+ "dlmalloc",
  "main_error",
+ "origin",
  "stak-configuration",
  "stak-device",
  "stak-file",
+ "stak-libc",
  "stak-process-context",
  "stak-r7rs",
  "stak-time",

@@ -1,3 +1,6 @@
+#[cfg(any(not(feature = "std"), test))]
+use core::{ffi::CStr, slice};
+
 #[derive(Debug)]
 pub struct Options {
     version: bool,
@@ -32,6 +35,29 @@ impl Options {
             heap_size,
             file_index,
         }
+    }
+
+    /// Parses command line arguments in C.
+    ///
+    /// # Safety
+    ///
+    /// The `argc` and `argv` arguments should be the ones passed down as
+    /// arguments to the `main` function in C.
+    #[cfg(any(not(feature = "std"), test))]
+    pub unsafe fn parse_c(argc: isize, argv: *const *const i8) -> Self {
+        Self::parse(
+            // SAFETY: Operating systems guarantee the length of `argv` to be
+            // `argc`.
+            unsafe { slice::from_raw_parts(argv, argc as _) }
+                .iter()
+                .map(|&argument| {
+                    // SAFETY: Operating systems guarantee elements in `argv` to
+                    // be C strings.
+                    unsafe { CStr::from_ptr(argument as _) }
+                        .to_str()
+                        .unwrap_or_default()
+                }),
+        )
     }
 
     pub const fn version(&self) -> bool {
@@ -364,6 +390,72 @@ mod tests {
         #[test]
         fn ignore_command_name() {
             assert_eq!(Options::parse(["foo.bc"]).file_index(), None);
+        }
+    }
+
+    mod parse_c {
+        use super::*;
+
+        fn parse<const N: usize>(arguments: [&CStr; N]) -> Options {
+            let arguments = arguments.map(|argument| argument.as_ptr().cast());
+
+            // SAFETY: The arguments are an array of C strings.
+            unsafe { Options::parse_c(N as _, arguments.as_ptr()) }
+        }
+
+        #[test]
+        fn parse_nothing() {
+            let options = parse([]);
+
+            assert!(!options.version());
+            assert_eq!(options.heap_size(), None);
+            assert_eq!(options.file_index(), None);
+        }
+
+        #[test]
+        fn parse_version() {
+            assert!(parse([c"stak-interpret", c"--version"]).version());
+        }
+
+        #[test]
+        fn parse_heap_size() {
+            assert_eq!(
+                parse([c"stak-interpret", c"-s", c"42"]).heap_size(),
+                Some(42)
+            );
+        }
+
+        #[test]
+        fn parse_file() {
+            assert_eq!(parse([c"stak-interpret", c"foo.bc"]).file_index(), Some(1));
+        }
+
+        #[test]
+        fn parse_invalid_utf8_file() {
+            assert_eq!(parse([c"stak-interpret", c"\xff"]).file_index(), Some(1));
+        }
+
+        #[test]
+        fn parse_options_before_invalid_utf8_file() {
+            let options = parse([c"stak-interpret", c"--version", c"-s", c"42", c"\xff"]);
+
+            assert!(options.version());
+            assert_eq!(options.heap_size(), Some(42));
+            assert_eq!(options.file_index(), Some(4));
+        }
+
+        #[test]
+        fn parse_option_after_invalid_utf8_command_name() {
+            assert!(parse([c"\xff", c"--version"]).version());
+        }
+
+        #[test]
+        fn ignore_options_after_invalid_utf8_file() {
+            let options = parse([c"stak-interpret", c"\xff", c"--version", c"-s", c"42"]);
+
+            assert!(!options.version());
+            assert_eq!(options.heap_size(), None);
+            assert_eq!(options.file_index(), Some(1));
         }
     }
 }
