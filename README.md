@@ -29,6 +29,12 @@ cargo install stak
 cargo install stak-repl
 ```
 
+To install the interpreter as a smaller executable based on libc on Unix, run:
+
+```sh
+cargo install stak --no-default-features --features float,libc
+```
+
 To install [the minimal interpreter](https://crates.io/crates/mstak), run:
 
 ```sh

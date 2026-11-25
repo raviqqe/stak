@@ -26,7 +26,7 @@ cd $(dirname $0)/..
 
 . tools/utility.sh
 
-setup_bench $feature
+prepare_bench $feature
 
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 

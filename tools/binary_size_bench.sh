@@ -52,6 +52,9 @@ build_stak() (
 
   build . stak
   build cmd/minimal mstak
+
+  cargo build --release --target-dir target/libc -p stak --no-default-features --features float,libc $options
+  cp target/libc/$target/release/stak tmp/stak-libc
 )
 
 cd $(dirname $0)/..
@@ -68,7 +71,7 @@ build_chibi
 build_tr7
 build_stak $target
 
-binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i"
+binaries="cmd/minimal/target/$target/release/mstak target/$target/release/stak tmp/stak-libc tmp/chibi-scheme/chibi-scheme-static tmp/tr7/tr7i"
 
 strip $binaries
 
