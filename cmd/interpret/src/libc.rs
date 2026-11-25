@@ -42,11 +42,13 @@ pub extern "C" fn main(argc: isize, argv: *const *const i8) {
         exit(0);
     }
 
-    let Some(index) = options.file_index() else {
+    if options.file().is_none() {
         let _ = writeln!(Stderr::new(), "Error: bytecode file missing");
 
         exit(1);
-    };
+    }
+
+    let index = options.last_index();
 
     exit(
         // SAFETY: `argc` and `argv` are provided by operating systems, the

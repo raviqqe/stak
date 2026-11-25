@@ -28,18 +28,18 @@ pub fn main() -> Result<ExitCode, MainError> {
         return Ok(ExitCode::SUCCESS);
     }
 
-    let index = options.file_index().ok_or("bytecode file missing")?;
+    let file = options.file().ok_or("bytecode file missing")?;
 
     match Vm::new(
         vec![Default::default(); options.heap_size().unwrap_or(DEFAULT_HEAP_SIZE)],
         SmallPrimitiveSet::new(
             StdioDevice::new(),
             OsFileSystem::new(),
-            OsProcessContext::new().with_argument_skip(index),
+            OsProcessContext::new().with_argument_skip(options.last_index()),
             OsClock::new(),
         ),
     )?
-    .run(read(args().nth(index).unwrap_or_default())?)
+    .run(read(file)?)
     {
         Ok(()) => Ok(ExitCode::SUCCESS),
         Err(SmallError::Halt(code)) => Ok(code.into()),
