@@ -9,15 +9,18 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[[bin]]
+name = "stak-decode"
+required-features = ["cli"]
+
 [dependencies]
-stak-sac = {
-  path = "../../sac",
-  version = "0.12.35",
-  features = [
-    "float",
-    "std",
-  ]
-}
+stak-sac = { path = "../../sac", version = "0.12.35", features = ["float"] }
+
+[features]
+default = ["std"]
+cli = []
+libc = ["cli", "stak-sac/libc"]
+std = ["cli", "stak-sac/std"]
 
 [lints]
 workspace = true
