@@ -43,9 +43,7 @@ fn main() -> Result<ExitCode, MainError> {
         return Ok(ExitCode::SUCCESS);
     }
 
-    let Some(index) = options.file_index() else {
-        return Err("bytecode file missing".into());
-    };
+    let index = options.file_index().ok_or("bytecode file missing")?;
 
     match Vm::new(
         vec![Default::default(); options.heap_size().unwrap_or(DEFAULT_HEAP_SIZE)],
