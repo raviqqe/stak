@@ -429,3 +429,25 @@ Feature: Exception
       Then the exit status should be 1
       And the stdout should contain exactly "A"
       And the stderr should contain "Error: out of memory"
+
+    Scenario: Run out of memory with buffered output
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-string "foo\nbar")
+
+        (let loop ((xs '()))
+          (loop (cons xs xs)))
+        """
+      When I run the following script:
+        """sh
+        stak main.scm 2>&1
+        """
+      Then the exit status should be 1
+      And the stdout should contain exactly:
+        """
+        foo
+        Error: out of memory
+        bar
+        """
