@@ -27,6 +27,12 @@ jobs:
         include:
           - directory: root
             options: --release --no-default-features --features float,libc
+          - directory: cmd/compile
+            options: --release --no-default-features --features float,libc
+          - directory: cmd/decode
+            options: --release --no-default-features --features libc
+          - directory: cmd/repl
+            options: --release --no-default-features --features float,libc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
