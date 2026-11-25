@@ -13,7 +13,7 @@ use stak_vm::{Value, Vm};
 /// The `argc` and `argv` arguments should be the ones passed down as
 /// arguments to the `main` function in C. Environment variables should not
 /// be modified while the virtual machine runs.
-pub unsafe fn libc_run(
+pub unsafe fn run_libc(
     bytecode: &[u8],
     heap_size: usize,
     argc: isize,
@@ -46,7 +46,7 @@ mod tests {
     fn run_bytecode(bytecode: &[u8], heap_size: usize) -> Result<(), SmallError> {
         // SAFETY: No argument is read, and no test modifies environment
         // variables.
-        unsafe { libc_run(bytecode, heap_size, 0, dangling()) }
+        unsafe { run_libc(bytecode, heap_size, 0, dangling()) }
     }
 
     #[test]

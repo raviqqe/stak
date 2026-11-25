@@ -12,10 +12,10 @@ mod run;
 #[doc(hidden)]
 pub mod __private {
     pub use crate::options::Options;
-    #[cfg(feature = "libc")]
-    pub use crate::run::libc_run;
     #[cfg(feature = "std")]
     pub use crate::run::run;
+    #[cfg(feature = "libc")]
+    pub use crate::run::run_libc;
     #[cfg(feature = "libc")]
     pub use dlmalloc;
     #[cfg(feature = "std")]
@@ -107,8 +107,8 @@ macro_rules! libc_main {
         use $crate::__private::{
             Options,
             dlmalloc::GlobalDlmalloc,
-            libc_run,
             origin::program::exit,
+            run_libc,
             stak_device::libc::{Stderr, Stdout},
             stak_macro::include_r7rs,
             stak_r7rs::SmallError,
@@ -147,7 +147,7 @@ macro_rules! libc_main {
                 // SAFETY: `argc` and `argv` are provided by operating systems, and
                 // environment variables are never modified.
                 match unsafe {
-                    libc_run(
+                    run_libc(
                         include_r7rs!($path),
                         options.heap_size().unwrap_or($heap_size),
                         argc,

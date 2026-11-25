@@ -4,6 +4,6 @@ mod libc;
 mod os;
 
 #[cfg(feature = "libc")]
-pub use libc::libc_run;
+pub use libc::run_libc;
 #[cfg(feature = "std")]
 pub use os::run;
