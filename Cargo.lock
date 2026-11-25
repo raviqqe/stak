@@ -1579,7 +1579,6 @@ dependencies = [
 name = "stak-interpret"
 version = "0.12.35"
 dependencies = [
- "clap",
  "main_error",
  "stak-configuration",
  "stak-device",
