@@ -182,8 +182,7 @@ macro_rules! libc_main {
                 }
             };
 
-            // Drop the device to flush standard output because an exit runs no
-            // destructors.
+            // Drop the device before an exit to flush standard output.
             drop(device);
             exit(code);
         }

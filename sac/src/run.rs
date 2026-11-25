@@ -6,7 +6,7 @@ use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::LibcClock;
 use stak_vm::{Value, Vm};
 
-/// Runs bytecode on a virtual machine with a device.
+/// Runs bytecode on a virtual machine.
 ///
 /// # Safety
 ///
