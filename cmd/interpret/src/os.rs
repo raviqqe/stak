@@ -8,19 +8,14 @@ use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::OsClock;
 use stak_vm::Vm;
 use std::{
-    env::args_os,
+    env::args,
     fs::read,
     io::{Write, stdout},
     process::ExitCode,
 };
 
 pub fn main() -> Result<ExitCode, MainError> {
-    let arguments = args_os().collect::<Vec<_>>();
-    let options = Options::parse(
-        arguments
-            .iter()
-            .map(|argument| argument.to_str().unwrap_or_default()),
-    );
+    let options = Options::parse(args());
 
     if options.version() {
         writeln!(
@@ -44,7 +39,7 @@ pub fn main() -> Result<ExitCode, MainError> {
             OsClock::new(),
         ),
     )?
-    .run(read(&arguments[index])?)
+    .run(read(args().nth(index).unwrap_or_default())?)
     {
         Ok(()) => Ok(ExitCode::SUCCESS),
         Err(SmallError::Halt(code)) => Ok(code.into()),
