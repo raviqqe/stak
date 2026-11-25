@@ -104,7 +104,7 @@ prepare_bench() (
 
 prepare_integration_test() (
   cargo build --profile release_test "$@"
-  cargo build --profile release_test --target-dir target/libc -p stak --no-default-features --features float,libc
+  cargo build --profile release_test --target-dir target/libc -p stak -p stak-compile -p stak-repl --no-default-features --features float,libc
 
   cd cmd/minimal
   cargo build --release

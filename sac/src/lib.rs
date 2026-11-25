@@ -166,3 +166,12 @@ macro_rules! libc_main {
         }
     };
 }
+
+#[cfg(all(feature = "libc", not(feature = "std")))]
+pub use libc_main as main;
+
+// The `libc` crate links the C library on musl only as a dependency of `std`.
+// The dynamic kind places it after the compiler built-ins, which need it.
+#[cfg(all(feature = "libc", not(feature = "std"), target_env = "musl"))]
+#[link(name = "c", kind = "dylib")]
+unsafe extern "C" {}
