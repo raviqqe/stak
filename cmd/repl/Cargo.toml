@@ -9,12 +9,19 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[[bin]]
+name = "stak-repl"
+required-features = ["cli"]
+
 [dependencies]
-stak-sac = { path = "../../sac", version = "0.12.35", features = ["std"] }
+stak-sac = { path = "../../sac", version = "0.12.35" }
 
 [features]
-default = ["float"]
+default = ["float", "std"]
+cli = []
 float = ["stak-sac/float"]
+libc = ["cli", "stak-sac/libc"]
+std = ["cli", "stak-sac/std"]
 
 [lints]
 workspace = true
