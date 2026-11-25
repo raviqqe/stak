@@ -192,14 +192,6 @@ mod tests {
         }
 
         #[test]
-        fn parse_option_after_version_option() {
-            assert_eq!(
-                Options::parse(["stak-interpret", "--version", "-s", "42"]).heap_size(),
-                Some(42)
-            );
-        }
-
-        #[test]
         fn parse_option_after_missing_value() {
             assert_eq!(
                 Options::parse(["stak-interpret", "-s", "-s", "42"]).heap_size(),
@@ -286,14 +278,6 @@ mod tests {
         }
 
         #[test]
-        fn ignore_option_after_delimiter() {
-            assert_eq!(
-                Options::parse(["stak-interpret", "--", "-s", "42"]).heap_size(),
-                None
-            );
-        }
-
-        #[test]
         fn ignore_command_name() {
             assert_eq!(Options::parse(["-s", "42"]).heap_size(), None);
         }
@@ -335,14 +319,6 @@ mod tests {
         }
 
         #[test]
-        fn parse_file_before_options() {
-            assert_eq!(
-                Options::parse(["stak-interpret", "foo.bc", "--version", "-s", "42"]).file_index(),
-                Some(1)
-            );
-        }
-
-        #[test]
         fn parse_first_file() {
             assert_eq!(
                 Options::parse(["stak-interpret", "foo.bc", "bar.bc"]).file_index(),
@@ -364,9 +340,41 @@ mod tests {
         }
 
         #[test]
+        fn parse_number_as_file_after_version_option() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--version", "42"]).file_index(),
+                Some(2)
+            );
+        }
+
+        #[test]
+        fn parse_number_as_file_after_heap_size_option() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "42", "43"]).file_index(),
+                Some(3)
+            );
+        }
+
+        #[test]
+        fn parse_number_as_file_after_missing_value() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "--version", "42"]).file_index(),
+                Some(3)
+            );
+        }
+
+        #[test]
         fn parse_unknown_option_as_file() {
             assert_eq!(
                 Options::parse(["stak-interpret", "--foo", "bar.bc"]).file_index(),
+                Some(1)
+            );
+        }
+
+        #[test]
+        fn parse_option_with_attached_value_as_file() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--heap-size=42", "foo.bc"]).file_index(),
                 Some(1)
             );
         }

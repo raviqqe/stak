@@ -135,3 +135,8 @@ Feature: Command line
       When I run `stak-interpret`
       Then the exit status should be 1
       And the stderr should contain "Error: bytecode file missing"
+
+    Scenario: Interpret a nonexistent bytecode file
+      When I run `stak-interpret foo.bc`
+      Then the exit status should be 1
+      And the stderr should contain "Error: "
