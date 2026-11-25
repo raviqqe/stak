@@ -6,7 +6,9 @@
 //! stak-interpret foo.bc
 //! ```
 
-use clap::Parser;
+mod options;
+
+use self::options::Options;
 use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
@@ -15,32 +17,39 @@ use stak_process_context::OsProcessContext;
 use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::OsClock;
 use stak_vm::Vm;
-use std::{fs::read, path::PathBuf, process::ExitCode};
-
-#[derive(clap::Parser)]
-#[command(about, version)]
-struct Arguments {
-    #[arg(required(true))]
-    file: PathBuf,
-    #[arg()]
-    arguments: Vec<String>,
-    #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
-    heap_size: usize,
-}
+use std::{
+    env::args,
+    fs::read,
+    io::{Write, stdout},
+    process::ExitCode,
+};
 
 fn main() -> Result<ExitCode, MainError> {
-    let arguments = Arguments::parse();
+    let options = Options::parse(args());
+
+    if options.version() {
+        writeln!(
+            stdout(),
+            "{} {}",
+            env!("CARGO_PKG_NAME"),
+            env!("CARGO_PKG_VERSION")
+        )?;
+
+        return Ok(ExitCode::SUCCESS);
+    }
+
+    let file = options.file().ok_or("bytecode file missing")?;
 
     match Vm::new(
-        vec![Default::default(); arguments.heap_size],
+        vec![Default::default(); options.heap_size().unwrap_or(DEFAULT_HEAP_SIZE)],
         SmallPrimitiveSet::new(
             StdioDevice::new(),
             OsFileSystem::new(),
-            OsProcessContext::new().with_argument_skip(1),
+            OsProcessContext::new().with_argument_skip(options.last_index()),
             OsClock::new(),
         ),
     )?
-    .run(read(&arguments.file)?)
+    .run(read(file)?)
     {
         Ok(()) => Ok(ExitCode::SUCCESS),
         Err(SmallError::Halt(code)) => Ok(code.into()),
