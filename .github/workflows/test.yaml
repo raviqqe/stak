@@ -27,6 +27,8 @@ jobs:
         include:
           - directory: root
             options: --release --no-default-features --features float,libc
+          - directory: cmd/interpret
+            options: --release --no-default-features --features float,libc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -135,6 +137,7 @@ jobs:
           - name: stak
           - name: stak-libc
           - name: stak-tools
+          - name: stak-libc-tools
           - name: mstak
             tags: ~@float
           - name: mstak-tools
