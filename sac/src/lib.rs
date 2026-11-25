@@ -185,7 +185,6 @@ macro_rules! libc_main {
     };
 }
 
-/// Defines a `main` function that runs a given source file.
 #[cfg(all(feature = "libc", not(feature = "std")))]
 pub use libc_main as main;
 
