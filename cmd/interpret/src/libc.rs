@@ -74,8 +74,8 @@ pub extern "C" fn main(argc: isize, argv: *const *const i8) {
 ///
 /// # Safety
 ///
-/// The `argc` and `argv` arguments should be the part of the ones passed down
-/// as arguments to the `main` function in C that starts with a path of a
+/// The `argc` and `argv` arguments should be the ones passed down as
+/// arguments to the `main` function in C without the ones before a path of a
 /// bytecode file. Environment variables should not be modified while the
 /// virtual machine runs.
 unsafe fn run(heap_size: usize, argc: isize, argv: *const *const i8) -> Result<(), SmallError> {
