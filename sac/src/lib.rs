@@ -3,18 +3,19 @@
 #![cfg_attr(all(doc, not(doctest)), feature(doc_cfg))]
 #![no_std]
 
-#[cfg(feature = "libc")]
+#[cfg(any(feature = "libc", feature = "std"))]
 extern crate alloc;
 
 mod options;
-#[cfg(feature = "libc")]
 mod run;
 
 #[doc(hidden)]
 pub mod __private {
     pub use crate::options::Options;
-    #[cfg(feature = "libc")]
+    #[cfg(feature = "std")]
     pub use crate::run::run;
+    #[cfg(feature = "libc")]
+    pub use crate::run::run_libc;
     #[cfg(feature = "libc")]
     pub use dlmalloc;
     #[cfg(feature = "std")]
@@ -23,12 +24,8 @@ pub mod __private {
     pub use origin;
     pub use stak_configuration;
     pub use stak_device;
-    pub use stak_file;
     pub use stak_macro;
-    pub use stak_process_context;
     pub use stak_r7rs;
-    pub use stak_time;
-    pub use stak_vm;
 }
 
 /// Defines a `main` function that runs a given source file.
@@ -61,15 +58,7 @@ macro_rules! main {
             process::ExitCode,
         };
         use $crate::__private::{
-            Options,
-            main_error::MainError,
-            stak_device::StdioDevice,
-            stak_file::OsFileSystem,
-            stak_macro::include_r7rs,
-            stak_process_context::OsProcessContext,
-            stak_r7rs::{SmallError, SmallPrimitiveSet},
-            stak_time::OsClock,
-            stak_vm::Vm,
+            Options, main_error::MainError, run, stak_macro::include_r7rs, stak_r7rs::SmallError,
         };
 
         fn main() -> Result<ExitCode, MainError> {
@@ -86,17 +75,10 @@ macro_rules! main {
                 return Ok(ExitCode::SUCCESS);
             }
 
-            match Vm::new(
-                vec![Default::default(); options.heap_size().unwrap_or($heap_size)],
-                SmallPrimitiveSet::new(
-                    StdioDevice::new(),
-                    OsFileSystem::new(),
-                    OsProcessContext::new(),
-                    OsClock::new(),
-                ),
-            )?
-            .run(include_r7rs!($path).iter().copied())
-            {
+            match run(
+                include_r7rs!($path),
+                options.heap_size().unwrap_or($heap_size),
+            ) {
                 Ok(()) => Ok(ExitCode::SUCCESS),
                 Err(SmallError::Halt(code)) => Ok(code.into()),
                 Err(error) => Err(error.into()),
@@ -126,7 +108,7 @@ macro_rules! libc_main {
             Options,
             dlmalloc::GlobalDlmalloc,
             origin::program::exit,
-            run,
+            run_libc,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_macro::include_r7rs,
             stak_r7rs::SmallError,
@@ -165,7 +147,7 @@ macro_rules! libc_main {
             // SAFETY: `argc` and `argv` are provided by operating systems, and
             // environment variables are never modified.
             let code = match unsafe {
-                run(
+                run_libc(
                     include_r7rs!($path),
                     options.heap_size().unwrap_or($heap_size),
                     &mut device,
