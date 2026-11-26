@@ -49,6 +49,7 @@ pub extern "C" fn main(argc: isize, argv: *const *const i8) {
     }
 
     let index = options.last_index();
+
     let mut device = ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new());
     // SAFETY: `argc` and `argv` are provided by operating systems, the
     // index of the bytecode file is in their range, and environment

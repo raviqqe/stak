@@ -415,6 +415,13 @@ Feature: Exception
   @extra
   Rule: Critical errors
 
+    Background:
+      Given I run the following script:
+        """sh
+        cp $STAK_ROOT/prelude.scm .
+        """
+      And the exit status should be 0
+
     Scenario: Run out of memory
       Given a file named "main.scm" with:
         """scheme
@@ -464,7 +471,6 @@ Feature: Exception
         """
       And I run the following script:
         """sh
-        cp $STAK_ROOT/prelude.scm .
         cat prelude.scm main.scm | stak-compile > main.bc
         """
       When I run the following script:
