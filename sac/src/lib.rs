@@ -28,6 +28,15 @@ pub mod __private {
     pub use stak_r7rs;
 }
 
+// The `libc` crate links the C library on musl only as a dependency of `std`.
+// The dynamic kind places it after the compiler built-ins, which need it.
+#[cfg(all(feature = "libc", not(feature = "std"), target_env = "musl"))]
+#[link(name = "c", kind = "dylib")]
+unsafe extern "C" {}
+
+#[cfg(all(feature = "libc", not(feature = "std")))]
+pub use libc_main as main;
+
 /// Defines a `main` function that runs a given source file.
 ///
 /// The R7RS standard libraries are based on [the `std` crate](https://doc.rust-lang.org/std/).
@@ -166,12 +175,3 @@ macro_rules! libc_main {
         }
     };
 }
-
-#[cfg(all(feature = "libc", not(feature = "std")))]
-pub use libc_main as main;
-
-// The `libc` crate links the C library on musl only as a dependency of `std`.
-// The dynamic kind places it after the compiler built-ins, which need it.
-#[cfg(all(feature = "libc", not(feature = "std"), target_env = "musl"))]
-#[link(name = "c", kind = "dylib")]
-unsafe extern "C" {}
