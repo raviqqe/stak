@@ -28,72 +28,78 @@ pub mod __private {
     pub use stak_r7rs;
 }
 
-// The `libc` crate links the C library on musl only as a dependency of `std`.
-// The dynamic kind places it after the compiler built-ins, which need it.
-#[cfg(all(feature = "libc", not(feature = "std"), target_env = "musl"))]
-#[link(name = "c", kind = "dylib")]
-unsafe extern "C" {}
+cfg_select! {
+    feature = "std" => {
+        /// Defines a `main` function that runs a given source file.
+        ///
+        /// The R7RS standard libraries are based on [the `std` crate](https://doc.rust-lang.org/std/).
+        ///
+        /// The given source file is compiled into bytecode and bundled into a
+        /// resulting binary.
+        ///
+        /// # Examples
+        ///
+        /// ```rust
+        /// use stak::sac::main;
+        ///
+        /// main!("main.scm");
+        /// ```
+        #[macro_export]
+        macro_rules! main {
+            ($path:expr) => {
+                $crate::main!(
+                    $path,
+                    $crate::__private::stak_configuration::DEFAULT_HEAP_SIZE
+                );
+            };
+            ($path:expr, $heap_size:expr) => {
+                use std::{
+                    env::args,
+                    io::{Write, stdout},
+                    process::ExitCode,
+                };
+                use $crate::__private::{
+                    Options, main_error::MainError, run, stak_macro::include_r7rs,
+                    stak_r7rs::SmallError,
+                };
 
-#[cfg(all(feature = "libc", not(feature = "std")))]
-pub use libc_main as main;
+                fn main() -> Result<ExitCode, MainError> {
+                    let options = Options::parse(args());
 
-/// Defines a `main` function that runs a given source file.
-///
-/// The R7RS standard libraries are based on [the `std` crate](https://doc.rust-lang.org/std/).
-///
-/// The given source file is compiled into bytecode and bundled into a
-/// resulting binary.
-///
-/// # Examples
-///
-/// ```rust
-/// use stak::sac::main;
-///
-/// main!("main.scm");
-/// ```
-#[cfg(feature = "std")]
-#[macro_export]
-macro_rules! main {
-    ($path:expr) => {
-        $crate::main!(
-            $path,
-            $crate::__private::stak_configuration::DEFAULT_HEAP_SIZE
-        );
-    };
-    ($path:expr, $heap_size:expr) => {
-        use std::{
-            env::args,
-            io::{Write, stdout},
-            process::ExitCode,
-        };
-        use $crate::__private::{
-            Options, main_error::MainError, run, stak_macro::include_r7rs, stak_r7rs::SmallError,
-        };
+                    if options.version() {
+                        writeln!(
+                            stdout(),
+                            "{} {}",
+                            env!("CARGO_PKG_NAME"),
+                            env!("CARGO_PKG_VERSION")
+                        )?;
 
-        fn main() -> Result<ExitCode, MainError> {
-            let options = Options::parse(args());
+                        return Ok(ExitCode::SUCCESS);
+                    }
 
-            if options.version() {
-                writeln!(
-                    stdout(),
-                    "{} {}",
-                    env!("CARGO_PKG_NAME"),
-                    env!("CARGO_PKG_VERSION")
-                )?;
-
-                return Ok(ExitCode::SUCCESS);
-            }
-
-            match run(
-                include_r7rs!($path),
-                options.heap_size().unwrap_or($heap_size),
-            ) {
-                Ok(()) => Ok(ExitCode::SUCCESS),
-                Err(SmallError::Halt(code)) => Ok(code.into()),
-                Err(error) => Err(error.into()),
-            }
+                    match run(
+                        include_r7rs!($path),
+                        options.heap_size().unwrap_or($heap_size),
+                    ) {
+                        Ok(()) => Ok(ExitCode::SUCCESS),
+                        Err(SmallError::Halt(code)) => Ok(code.into()),
+                        Err(error) => Err(error.into()),
+                    }
+                }
+            };
         }
-    };
+    }
+    feature = "libc" => {
+        // The `libc` crate links the C library on musl only as a dependency of
+        // `std`. The dynamic kind places it after the compiler built-ins, which
+        // need it.
+        #[cfg(target_env = "musl")]
+        #[link(name = "c", kind = "dylib")]
+        unsafe extern "C" {}
+
+        pub use libc_main as main;
+    }
+    _ => {}
 }
 
 /// Defines a `main` function that runs a given source file.
