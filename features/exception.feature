@@ -451,3 +451,30 @@ Feature: Exception
         Error: out of memory
         bar
         """
+
+    Scenario: Run out of memory with buffered output for bytecode
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-string "foo\nbar")
+
+        (let loop ((xs '()))
+          (loop (cons xs xs)))
+        """
+      And I run the following script:
+        """sh
+        cp $STAK_ROOT/prelude.scm .
+        cat prelude.scm main.scm | stak-compile > main.bc
+        """
+      When I run the following script:
+        """sh
+        stak-interpret main.bc 2>&1
+        """
+      Then the exit status should be 1
+      And the stdout should contain exactly:
+        """
+        foo
+        Error: out of memory
+        bar
+        """
