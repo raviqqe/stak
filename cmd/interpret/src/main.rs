@@ -6,44 +6,27 @@
 //! stak-interpret foo.bc
 //! ```
 
-use clap::Parser;
-use main_error::MainError;
-use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::StdioDevice;
-use stak_file::OsFileSystem;
-use stak_process_context::OsProcessContext;
-use stak_r7rs::{SmallError, SmallPrimitiveSet};
-use stak_time::OsClock;
-use stak_vm::Vm;
-use std::{fs::read, path::PathBuf, process::ExitCode};
+#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(all(not(feature = "std"), not(test)), no_main)]
 
-#[derive(clap::Parser)]
-#[command(about, version)]
-struct Arguments {
-    #[arg(required(true))]
-    file: PathBuf,
-    #[arg()]
-    arguments: Vec<String>,
-    #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
-    heap_size: usize,
-}
+#[cfg(not(feature = "std"))]
+extern crate alloc;
 
-fn main() -> Result<ExitCode, MainError> {
-    let arguments = Arguments::parse();
+mod options;
 
-    match Vm::new(
-        vec![Default::default(); arguments.heap_size],
-        SmallPrimitiveSet::new(
-            StdioDevice::new(),
-            OsFileSystem::new(),
-            OsProcessContext::new().with_argument_skip(1),
-            OsClock::new(),
-        ),
-    )?
-    .run(read(&arguments.file)?)
-    {
-        Ok(()) => Ok(ExitCode::SUCCESS),
-        Err(SmallError::Halt(code)) => Ok(code.into()),
-        Err(error) => Err(error.into()),
+// Dependencies of the libc backend are unused when both backends are enabled.
+#[cfg(all(feature = "libc", feature = "std"))]
+use {dlmalloc as _, origin as _, stak_libc as _};
+
+cfg_select! {
+    feature = "std" => {
+        mod os;
+
+        use os::main;
+    }
+    _ => {
+        mod libc;
+
+        use libc::main;
     }
 }
