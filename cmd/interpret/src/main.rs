@@ -14,6 +14,10 @@ extern crate alloc;
 
 mod options;
 
+// Dependencies of the libc backend are unused when both backends are enabled.
+#[cfg(all(feature = "libc", feature = "std"))]
+use {dlmalloc as _, origin as _, stak_libc as _};
+
 cfg_select! {
     feature = "std" => {
         mod os;
@@ -26,7 +30,3 @@ cfg_select! {
         use libc::main;
     }
 }
-
-// Dependencies of the libc backend are unused when both backends are enabled.
-#[cfg(all(feature = "libc", feature = "std"))]
-use {dlmalloc as _, origin as _, stak_libc as _};
