@@ -20,7 +20,7 @@ cd $(dirname $0)/..
 
 prepare_integration_test
 
-export PATH=$PWD/tools/scheme/$interpreter:$PWD/target/release_test:$PATH
+export PATH=$PWD/tools/scheme/$interpreter:$PWD/${STAK_TARGET_DIRECTORY:-target}/release_test:$PATH
 export STAK_ROOT=$PWD
 
 go tool agoa -t @extra "$@"

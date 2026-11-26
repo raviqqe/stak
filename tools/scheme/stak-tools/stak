@@ -3,6 +3,7 @@
 set -e
 
 directory=$(dirname $0)/../../..
+target_directory=$directory/${STAK_TARGET_DIRECTORY:-target}
 options=$STAK_COMPILE_OPTIONS
 
 while getopts A:I:l: option; do
@@ -25,7 +26,7 @@ compile() (
   if [ -n "$STAK_HOST" ]; then
     $STAK_HOST $directory/compile.scm $options
   else
-    $directory/target/release_test/stak-compile $options
+    $target_directory/release_test/stak-compile $options
   fi
 )
 
@@ -33,4 +34,4 @@ cat $directory/prelude.scm $libraries $script |
   grep -v '^#!.*' |
   compile >main.bc
 
-${STAK_INTERPRET:-$directory/target/release_test/stak-interpret} main.bc "$@"
+$target_directory/release_test/stak-interpret main.bc "$@"
