@@ -124,14 +124,17 @@ jobs:
       fail-fast: false
       matrix:
         interpreter:
-          - stak
-          - stak-libc
-          - mstak
+          - name: stak
+          - name: stak
+            target_directory: target/libc
+          - name: mstak
     runs-on: ubuntu-latest
+    env:
+      STAK_TARGET_DIRECTORY: ${{ matrix.interpreter.target_directory }}
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: $/.github/actions/setup
-      - run: tools/extra_integration_test.sh -i ${{ matrix.interpreter }}
+      - run: tools/extra_integration_test.sh -i ${{ matrix.interpreter.name }}
   self_host_integration_test:
     strategy:
       fail-fast: false
@@ -141,9 +144,11 @@ jobs:
           - macos-26
         interpreter:
           - name: stak
-          - name: stak-libc
+          - name: stak
+            target_directory: target/libc
           - name: stak-tools
-          - name: stak-libc-tools
+          - name: stak-tools
+            target_directory: target/libc
           - name: mstak
             tags: ~@float
           - name: mstak-tools
@@ -151,6 +156,8 @@ jobs:
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-26' }}
     runs-on: ${{ matrix.os }}
+    env:
+      STAK_TARGET_DIRECTORY: ${{ matrix.interpreter.target_directory }}
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: $/.github/actions/setup
