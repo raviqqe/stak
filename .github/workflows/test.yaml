@@ -31,6 +31,8 @@ jobs:
             options: --release --no-default-features --features float,libc
           - directory: cmd/decode
             options: --release --no-default-features --features libc
+          - directory: cmd/interpret
+            options: --release --no-default-features --features float,libc
           - directory: cmd/repl
             options: --release --no-default-features --features float,libc
     runs-on: ubuntu-latest
@@ -141,6 +143,7 @@ jobs:
           - name: stak
           - name: stak-libc
           - name: stak-tools
+          - name: stak-libc-tools
           - name: mstak
             tags: ~@float
           - name: mstak-tools
