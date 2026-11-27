@@ -74,7 +74,7 @@ cfg_select! {
                 };
 
                 fn main() -> Result<ExitCode, MainError> {
-                    let options = Options::parse(args());
+                    let options = Options::parse(args())?;
 
                     if options.version() {
                         writeln!(
@@ -138,7 +138,11 @@ cfg_select! {
                 #[cfg_attr(not(test), unsafe(no_mangle))]
                 extern "C" fn main(argc: isize, argv: *const *const i8) {
                     // SAFETY: `argc` and `argv` are provided by operating systems.
-                    let options = unsafe { Options::parse_c(argc, argv) };
+                    let options = unsafe { Options::parse_c(argc, argv) }.unwrap_or_else(|error| {
+                        let _ = writeln!(Stderr::new(), "Error: {error}");
+
+                        exit(1)
+                    });
 
                     if options.version() {
                         let _ = writeln!(
