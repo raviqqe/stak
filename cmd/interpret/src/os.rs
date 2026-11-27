@@ -35,7 +35,7 @@ pub fn main() -> Result<ExitCode, MainError> {
         SmallPrimitiveSet::new(
             StdioDevice::new(),
             OsFileSystem::new(),
-            OsProcessContext::new().with_argument_skip(options.last_index()),
+            OsProcessContext::new().with_argument_skip(0..options.last_index()),
             OsClock::new(),
         ),
     )?
