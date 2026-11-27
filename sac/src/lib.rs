@@ -90,6 +90,7 @@ cfg_select! {
                     match run(
                         include_r7rs!($path),
                         options.heap_size().unwrap_or($heap_size),
+                        options.argument_index(),
                     ) {
                         Ok(()) => Ok(ExitCode::SUCCESS),
                         Err(SmallError::Halt(code)) => Ok(code.into()),
@@ -162,6 +163,7 @@ cfg_select! {
                             run_libc(
                                 include_r7rs!($path),
                                 options.heap_size().unwrap_or($heap_size),
+                                options.argument_index(),
                                 argc,
                                 argv,
                             )
