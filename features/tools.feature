@@ -51,6 +51,17 @@ Feature: Tools
       | -s 0          |
       | --heap-size 0 |
 
+  Scenario Outline: Set an invalid heap size for bytecode
+    When I run `stak-interpret <option>`
+    Then the exit status should be 1
+    And the stderr should contain "Error: invalid heap size"
+
+    Examples:
+      | option                  |
+      | -s                      |
+      | -s foo                  |
+      | -s 18446744073709551616 |
+
   Scenario: Pass an option to a script
     Given a file named "main.scm" with:
       """scheme
