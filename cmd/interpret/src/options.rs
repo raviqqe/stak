@@ -17,6 +17,7 @@ impl<T: AsRef<str>> Options<T> {
         let mut version = false;
         let mut heap_size = None;
         let mut heap_size_option = false;
+        let mut delimiter = false;
         let mut file = None;
         let mut last_index = 0;
 
@@ -26,6 +27,11 @@ impl<T: AsRef<str>> Options<T> {
 
             if heap_size_option {
                 heap_size = Some(string.parse().map_err(|_| OptionError::HeapSize)?);
+            } else if delimiter {
+                file = Some(argument);
+                break;
+            } else if string == "--" {
+                delimiter = true;
             } else if string == "--version" {
                 version = true;
             } else if !matches!(string, "-s" | "--heap-size") {
@@ -167,6 +173,15 @@ mod tests {
         }
 
         #[test]
+        fn parse_option_before_delimiter() {
+            assert!(
+                Options::parse(["stak-interpret", "--version", "--"])
+                    .unwrap()
+                    .version()
+            );
+        }
+
+        #[test]
         fn parse_repeated_option() {
             assert!(
                 Options::parse(["stak-interpret", "--version", "--version"])
@@ -252,6 +267,16 @@ mod tests {
         }
 
         #[test]
+        fn parse_option_before_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "42", "--"])
+                    .unwrap()
+                    .heap_size(),
+                Some(42)
+            );
+        }
+
+        #[test]
         fn parse_last_option() {
             assert_eq!(
                 Options::parse(["stak-interpret", "-s", "1", "--heap-size", "2"])
@@ -320,6 +345,16 @@ mod tests {
         }
 
         #[test]
+        fn ignore_option_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--", "-s", "42"])
+                    .unwrap()
+                    .heap_size(),
+                None
+            );
+        }
+
+        #[test]
         fn ignore_command_name() {
             assert_eq!(Options::parse(["-s", "42"]).unwrap().heap_size(), None);
         }
@@ -368,6 +403,14 @@ mod tests {
             );
             assert_eq!(
                 Options::parse(["stak-interpret", "-s", "-s", "42"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+        }
+
+        #[test]
+        fn reject_delimiter_as_value() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "--", "foo.bc"]).unwrap_err(),
                 OptionError::HeapSize
             );
         }
@@ -487,9 +530,39 @@ mod tests {
         }
 
         #[test]
-        fn parse_delimiter_as_file() {
+        fn parse_file_after_delimiter() {
             assert_eq!(
                 Options::parse(["stak-interpret", "--", "foo.bc"])
+                    .unwrap()
+                    .file(),
+                Some("foo.bc")
+            );
+        }
+
+        #[test]
+        fn parse_file_before_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "foo.bc", "--", "bar.bc"])
+                    .unwrap()
+                    .file(),
+                Some("foo.bc")
+            );
+        }
+
+        #[test]
+        fn parse_option_as_file_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--", "--version"])
+                    .unwrap()
+                    .file(),
+                Some("--version")
+            );
+        }
+
+        #[test]
+        fn parse_delimiter_as_file_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--", "--"])
                     .unwrap()
                     .file(),
                 Some("--")
@@ -502,6 +575,14 @@ mod tests {
                 Options::parse(["stak-interpret", "--version", "-s", "42"])
                     .unwrap()
                     .file(),
+                None
+            );
+        }
+
+        #[test]
+        fn ignore_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--"]).unwrap().file(),
                 None
             );
         }
@@ -532,6 +613,16 @@ mod tests {
                     .unwrap()
                     .last_index(),
                 4
+            );
+        }
+
+        #[test]
+        fn parse_file_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--", "foo.bc"])
+                    .unwrap()
+                    .last_index(),
+                2
             );
         }
 
@@ -593,6 +684,16 @@ mod tests {
         #[test]
         fn parse_invalid_utf8_file() {
             assert_eq!(parse([c"stak-interpret", c"\xff"]).unwrap().last_index(), 1);
+        }
+
+        #[test]
+        fn parse_invalid_utf8_file_after_delimiter() {
+            assert_eq!(
+                parse([c"stak-interpret", c"--", c"\xff"])
+                    .unwrap()
+                    .last_index(),
+                2
+            );
         }
 
         #[test]

@@ -103,6 +103,23 @@ Feature: Tools
       ("main.bc" "foo")
       """
 
+  Scenario: Strip a delimiter from a command line of bytecode
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context) (scheme write))
+
+      (write (command-line))
+      """
+    And I run the following script:
+      """sh
+      cat prelude.scm main.scm | stak-compile > main.bc
+      """
+    When I successfully run `stak-interpret -- main.bc foo`
+    Then the stdout should contain exactly:
+      """
+      ("main.bc" "foo")
+      """
+
   Scenario: Interpret no bytecode file
     When I run `stak-interpret`
     Then the exit status should be 1
