@@ -99,6 +99,19 @@ Feature: Tools
       ("main.scm" "foo")
       """
 
+  Scenario: Strip a delimiter from a command line of a script
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context) (scheme write))
+
+      (write (command-line))
+      """
+    When I successfully run `stak -- main.scm foo`
+    Then the stdout should contain exactly:
+      """
+      ("main.scm" "foo")
+      """
+
   Scenario: Strip options from a command line of bytecode
     Given a file named "main.scm" with:
       """scheme
