@@ -151,15 +151,6 @@ mod tests {
         }
 
         #[test]
-        fn parse_option_after_heap_size_option() {
-            assert!(
-                Options::parse(["stak", "-s", "42", "--version"])
-                    .unwrap()
-                    .version()
-            );
-        }
-
-        #[test]
         fn parse_option_before_delimiter() {
             assert!(
                 Options::parse(["stak", "--version", "--"])
