@@ -33,10 +33,16 @@ Feature: Tools
       | -s 0          |
       | --heap-size 0 |
 
-  Scenario: Set an invalid heap size
-    When I run `stak -s foo`
+  Scenario Outline: Set an invalid heap size
+    When I run `stak <option>`
     Then the exit status should be 1
     And the stderr should contain "Error: invalid heap size"
+
+    Examples:
+      | option                  |
+      | -s                      |
+      | -s foo                  |
+      | -s 18446744073709551616 |
 
   Scenario Outline: Set a heap size for bytecode
     Given a file named "main.scm" with:
