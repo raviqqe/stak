@@ -406,6 +406,11 @@ mod tests {
         }
 
         #[test]
+        fn parse_no_argument_after_delimiter() {
+            assert_eq!(Options::parse(["stak", "--"]).unwrap().argument_index(), 2);
+        }
+
+        #[test]
         fn parse_argument_after_delimiter() {
             assert_eq!(
                 Options::parse(["stak", "--", "foo.scm"])
@@ -418,20 +423,15 @@ mod tests {
         #[test]
         fn parse_argument_after_options_and_delimiter() {
             assert_eq!(
-                Options::parse(["stak", "-s", "42", "--", "foo.scm"])
+                Options::parse(["stak", "--version", "-s", "42", "--", "foo.scm"])
                     .unwrap()
                     .argument_index(),
-                4
+                5
             );
         }
 
         #[test]
-        fn parse_no_argument_after_delimiter() {
-            assert_eq!(Options::parse(["stak", "--"]).unwrap().argument_index(), 2);
-        }
-
-        #[test]
-        fn parse_unknown_option() {
+        fn parse_unknown_option_as_argument() {
             assert_eq!(
                 Options::parse(["stak", "--foo", "bar"])
                     .unwrap()
@@ -446,12 +446,12 @@ mod tests {
         }
 
         #[test]
-        fn parse_number() {
+        fn parse_number_as_argument() {
             assert_eq!(Options::parse(["stak", "42"]).unwrap().argument_index(), 1);
         }
 
         #[test]
-        fn parse_number_after_heap_size_option() {
+        fn parse_number_as_argument_after_heap_size_option() {
             assert_eq!(
                 Options::parse(["stak", "-s", "42", "43"])
                     .unwrap()
