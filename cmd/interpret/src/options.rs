@@ -1,5 +1,8 @@
+mod error;
+
 #[cfg(any(not(feature = "std"), test))]
 use core::{ffi::CStr, slice};
+use error::OptionError;
 
 #[derive(Debug)]
 pub struct Options<T> {
@@ -10,10 +13,11 @@ pub struct Options<T> {
 }
 
 impl<T: AsRef<str>> Options<T> {
-    pub fn parse(arguments: impl IntoIterator<Item = T>) -> Self {
+    pub fn parse(arguments: impl IntoIterator<Item = T>) -> Result<Self, OptionError> {
         let mut version = false;
         let mut heap_size = None;
         let mut heap_size_option = false;
+        let mut delimiter = false;
         let mut file = None;
         let mut last_index = 0;
 
@@ -21,8 +25,13 @@ impl<T: AsRef<str>> Options<T> {
             let string = argument.as_ref();
             last_index = index;
 
-            if heap_size_option && let Ok(size) = string.parse() {
-                heap_size = Some(size);
+            if heap_size_option {
+                heap_size = Some(string.parse().map_err(|_| OptionError::HeapSize)?);
+            } else if delimiter {
+                file = Some(argument);
+                break;
+            } else if string == "--" {
+                delimiter = true;
             } else if string == "--version" {
                 version = true;
             } else if !matches!(string, "-s" | "--heap-size") {
@@ -33,12 +42,16 @@ impl<T: AsRef<str>> Options<T> {
             heap_size_option = matches!(string, "-s" | "--heap-size");
         }
 
-        Self {
+        if heap_size_option {
+            return Err(OptionError::HeapSize);
+        }
+
+        Ok(Self {
             version,
             heap_size,
             file,
             last_index,
-        }
+        })
     }
 
     pub const fn version(&self) -> bool {
@@ -66,7 +79,7 @@ impl Options<&'static str> {
     ///
     /// The `argc` and `argv` arguments should be the ones passed down as
     /// arguments to the `main` function in C.
-    pub unsafe fn parse_c(argc: isize, argv: *const *const i8) -> Self {
+    pub unsafe fn parse_c(argc: isize, argv: *const *const i8) -> Result<Self, OptionError> {
         Self::parse(
             // SAFETY: Operating systems guarantee the length of `argv` to be
             // `argc`.
@@ -91,7 +104,7 @@ mod tests {
 
     #[test]
     fn parse_nothing() {
-        let options = Options::parse([""; 0]);
+        let options = Options::parse([""; 0]).unwrap();
 
         assert!(!options.version());
         assert_eq!(options.heap_size(), None);
@@ -101,7 +114,7 @@ mod tests {
 
     #[test]
     fn parse_command_name() {
-        let options = Options::parse(["stak-interpret"]);
+        let options = Options::parse(["stak-interpret"]).unwrap();
 
         assert!(!options.version());
         assert_eq!(options.heap_size(), None);
@@ -111,7 +124,7 @@ mod tests {
 
     #[test]
     fn parse_arguments() {
-        let options = Options::parse(["stak-interpret", "foo.bc", "bar"]);
+        let options = Options::parse(["stak-interpret", "foo.bc", "bar"]).unwrap();
 
         assert!(!options.version());
         assert_eq!(options.heap_size(), None);
@@ -122,7 +135,7 @@ mod tests {
     #[test]
     fn parse_options() {
         let options =
-            Options::parse(["stak-interpret", "--version", "--heap-size", "42", "foo.bc"]);
+            Options::parse(["stak-interpret", "--version", "--heap-size", "42", "foo.bc"]).unwrap();
 
         assert!(options.version());
         assert_eq!(options.heap_size(), Some(42));
@@ -132,7 +145,7 @@ mod tests {
 
     #[test]
     fn parse_owned_arguments() {
-        let options = Options::parse(["stak-interpret", "foo.bc"].map(String::from));
+        let options = Options::parse(["stak-interpret", "foo.bc"].map(String::from)).unwrap();
 
         assert_eq!(options.file(), Some("foo.bc"));
         assert_eq!(options.last_index(), 1);
@@ -143,48 +156,80 @@ mod tests {
 
         #[test]
         fn parse_option() {
-            assert!(Options::parse(["stak-interpret", "--version"]).version());
+            assert!(
+                Options::parse(["stak-interpret", "--version"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
         fn parse_option_before_file() {
-            assert!(Options::parse(["stak-interpret", "--version", "foo.bc"]).version());
+            assert!(
+                Options::parse(["stak-interpret", "--version", "foo.bc"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
-        fn parse_option_after_heap_size_option() {
-            assert!(Options::parse(["stak-interpret", "-s", "--version"]).version());
+        fn parse_option_before_delimiter() {
+            assert!(
+                Options::parse(["stak-interpret", "--version", "--"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
         fn parse_repeated_option() {
-            assert!(Options::parse(["stak-interpret", "--version", "--version"]).version());
+            assert!(
+                Options::parse(["stak-interpret", "--version", "--version"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
         fn ignore_unknown_option() {
-            assert!(!Options::parse(["stak-interpret", "-V"]).version());
-            assert!(!Options::parse(["stak-interpret", "--versions"]).version());
+            assert!(!Options::parse(["stak-interpret", "-V"]).unwrap().version());
+            assert!(
+                !Options::parse(["stak-interpret", "--versions"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
         fn ignore_option_after_file() {
-            assert!(!Options::parse(["stak-interpret", "foo.bc", "--version"]).version());
+            assert!(
+                !Options::parse(["stak-interpret", "foo.bc", "--version"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
         fn ignore_option_after_unknown_option() {
-            assert!(!Options::parse(["stak-interpret", "--foo", "--version"]).version());
+            assert!(
+                !Options::parse(["stak-interpret", "--foo", "--version"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
         fn ignore_option_after_delimiter() {
-            assert!(!Options::parse(["stak-interpret", "--", "--version"]).version());
+            assert!(
+                !Options::parse(["stak-interpret", "--", "--version"])
+                    .unwrap()
+                    .version()
+            );
         }
 
         #[test]
         fn ignore_command_name() {
-            assert!(!Options::parse(["--version"]).version());
+            assert!(!Options::parse(["--version"]).unwrap().version());
         }
     }
 
@@ -194,7 +239,9 @@ mod tests {
         #[test]
         fn parse_short_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-s", "42"]).heap_size(),
+                Options::parse(["stak-interpret", "-s", "42"])
+                    .unwrap()
+                    .heap_size(),
                 Some(42)
             );
         }
@@ -202,7 +249,9 @@ mod tests {
         #[test]
         fn parse_long_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--heap-size", "42"]).heap_size(),
+                Options::parse(["stak-interpret", "--heap-size", "42"])
+                    .unwrap()
+                    .heap_size(),
                 Some(42)
             );
         }
@@ -210,15 +259,19 @@ mod tests {
         #[test]
         fn parse_option_before_file() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-s", "42", "foo.bc"]).heap_size(),
+                Options::parse(["stak-interpret", "-s", "42", "foo.bc"])
+                    .unwrap()
+                    .heap_size(),
                 Some(42)
             );
         }
 
         #[test]
-        fn parse_option_after_missing_value() {
+        fn parse_option_before_delimiter() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-s", "-s", "42"]).heap_size(),
+                Options::parse(["stak-interpret", "-s", "42", "--"])
+                    .unwrap()
+                    .heap_size(),
                 Some(42)
             );
         }
@@ -226,69 +279,47 @@ mod tests {
         #[test]
         fn parse_last_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-s", "1", "--heap-size", "2"]).heap_size(),
+                Options::parse(["stak-interpret", "-s", "1", "--heap-size", "2"])
+                    .unwrap()
+                    .heap_size(),
                 Some(2)
-            );
-        }
-
-        #[test]
-        fn parse_option_before_invalid_option() {
-            assert_eq!(
-                Options::parse(["stak-interpret", "-s", "42", "--heap-size", "foo"]).heap_size(),
-                Some(42)
             );
         }
 
         #[test]
         fn ignore_unknown_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-S", "42"]).heap_size(),
+                Options::parse(["stak-interpret", "-S", "42"])
+                    .unwrap()
+                    .heap_size(),
                 None
             );
             assert_eq!(
-                Options::parse(["stak-interpret", "--heap-sizes", "42"]).heap_size(),
-                None
-            );
-        }
-
-        #[test]
-        fn ignore_missing_value() {
-            assert_eq!(Options::parse(["stak-interpret", "-s"]).heap_size(), None);
-            assert_eq!(
-                Options::parse(["stak-interpret", "--heap-size"]).heap_size(),
-                None
-            );
-        }
-
-        #[test]
-        fn ignore_invalid_value() {
-            assert_eq!(
-                Options::parse(["stak-interpret", "-s", "foo"]).heap_size(),
-                None
-            );
-            assert_eq!(
-                Options::parse(["stak-interpret", "-s", "-1"]).heap_size(),
-                None
-            );
-            assert_eq!(
-                Options::parse(["stak-interpret", "-s", "4.2"]).heap_size(),
-                None
-            );
-            assert_eq!(
-                Options::parse(["stak-interpret", "-s", "18446744073709551616"]).heap_size(),
+                Options::parse(["stak-interpret", "--heap-sizes", "42"])
+                    .unwrap()
+                    .heap_size(),
                 None
             );
         }
 
         #[test]
         fn ignore_option_with_attached_value() {
-            assert_eq!(Options::parse(["stak-interpret", "-s42"]).heap_size(), None);
             assert_eq!(
-                Options::parse(["stak-interpret", "-s=42"]).heap_size(),
+                Options::parse(["stak-interpret", "-s42"])
+                    .unwrap()
+                    .heap_size(),
                 None
             );
             assert_eq!(
-                Options::parse(["stak-interpret", "--heap-size=42"]).heap_size(),
+                Options::parse(["stak-interpret", "-s=42"])
+                    .unwrap()
+                    .heap_size(),
+                None
+            );
+            assert_eq!(
+                Options::parse(["stak-interpret", "--heap-size=42"])
+                    .unwrap()
+                    .heap_size(),
                 None
             );
         }
@@ -296,14 +327,108 @@ mod tests {
         #[test]
         fn ignore_option_after_file() {
             assert_eq!(
-                Options::parse(["stak-interpret", "foo.bc", "-s", "42"]).heap_size(),
+                Options::parse(["stak-interpret", "foo.bc", "-s", "42"])
+                    .unwrap()
+                    .heap_size(),
+                None
+            );
+        }
+
+        #[test]
+        fn ignore_missing_value_after_file() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "foo.bc", "-s"])
+                    .unwrap()
+                    .heap_size(),
+                None
+            );
+        }
+
+        #[test]
+        fn ignore_option_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--", "-s", "42"])
+                    .unwrap()
+                    .heap_size(),
                 None
             );
         }
 
         #[test]
         fn ignore_command_name() {
-            assert_eq!(Options::parse(["-s", "42"]).heap_size(), None);
+            assert_eq!(Options::parse(["-s", "42"]).unwrap().heap_size(), None);
+        }
+
+        #[test]
+        fn reject_missing_value() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak-interpret", "--heap-size"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+        }
+
+        #[test]
+        fn reject_invalid_value() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "foo"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "-1"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "4.2"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "18446744073709551616"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", ""]).unwrap_err(),
+                OptionError::HeapSize
+            );
+        }
+
+        #[test]
+        fn reject_option_as_value() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "--version", "42"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "-s", "42"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+        }
+
+        #[test]
+        fn reject_delimiter_as_value() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "--", "42"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+        }
+
+        #[test]
+        fn reject_missing_value_after_version_option() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--version", "-s"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+        }
+
+        #[test]
+        fn reject_invalid_value_after_option() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "-s", "42", "--heap-size", "foo"]).unwrap_err(),
+                OptionError::HeapSize
+            );
         }
     }
 
@@ -313,7 +438,7 @@ mod tests {
         #[test]
         fn parse_file() {
             assert_eq!(
-                Options::parse(["stak-interpret", "foo.bc"]).file(),
+                Options::parse(["stak-interpret", "foo.bc"]).unwrap().file(),
                 Some("foo.bc")
             );
         }
@@ -321,7 +446,9 @@ mod tests {
         #[test]
         fn parse_file_after_version_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--version", "foo.bc"]).file(),
+                Options::parse(["stak-interpret", "--version", "foo.bc"])
+                    .unwrap()
+                    .file(),
                 Some("foo.bc")
             );
         }
@@ -329,15 +456,9 @@ mod tests {
         #[test]
         fn parse_file_after_heap_size_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-s", "42", "foo.bc"]).file(),
-                Some("foo.bc")
-            );
-        }
-
-        #[test]
-        fn parse_file_after_missing_value() {
-            assert_eq!(
-                Options::parse(["stak-interpret", "-s", "foo.bc"]).file(),
+                Options::parse(["stak-interpret", "-s", "42", "foo.bc"])
+                    .unwrap()
+                    .file(),
                 Some("foo.bc")
             );
         }
@@ -345,25 +466,35 @@ mod tests {
         #[test]
         fn parse_first_file() {
             assert_eq!(
-                Options::parse(["stak-interpret", "foo.bc", "bar.bc"]).file(),
+                Options::parse(["stak-interpret", "foo.bc", "bar.bc"])
+                    .unwrap()
+                    .file(),
                 Some("foo.bc")
             );
         }
 
         #[test]
         fn parse_empty_file() {
-            assert_eq!(Options::parse(["stak-interpret", ""]).file(), Some(""));
+            assert_eq!(
+                Options::parse(["stak-interpret", ""]).unwrap().file(),
+                Some("")
+            );
         }
 
         #[test]
         fn parse_number_as_file() {
-            assert_eq!(Options::parse(["stak-interpret", "42"]).file(), Some("42"));
+            assert_eq!(
+                Options::parse(["stak-interpret", "42"]).unwrap().file(),
+                Some("42")
+            );
         }
 
         #[test]
         fn parse_number_as_file_after_version_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--version", "42"]).file(),
+                Options::parse(["stak-interpret", "--version", "42"])
+                    .unwrap()
+                    .file(),
                 Some("42")
             );
         }
@@ -371,23 +502,19 @@ mod tests {
         #[test]
         fn parse_number_as_file_after_heap_size_option() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-s", "42", "43"]).file(),
+                Options::parse(["stak-interpret", "-s", "42", "43"])
+                    .unwrap()
+                    .file(),
                 Some("43")
-            );
-        }
-
-        #[test]
-        fn parse_number_as_file_after_missing_value() {
-            assert_eq!(
-                Options::parse(["stak-interpret", "-s", "--version", "42"]).file(),
-                Some("42")
             );
         }
 
         #[test]
         fn parse_unknown_option_as_file() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--foo", "bar.bc"]).file(),
+                Options::parse(["stak-interpret", "--foo", "bar.bc"])
+                    .unwrap()
+                    .file(),
                 Some("--foo")
             );
         }
@@ -395,15 +522,49 @@ mod tests {
         #[test]
         fn parse_option_with_attached_value_as_file() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--heap-size=42", "foo.bc"]).file(),
+                Options::parse(["stak-interpret", "--heap-size=42", "foo.bc"])
+                    .unwrap()
+                    .file(),
                 Some("--heap-size=42")
             );
         }
 
         #[test]
-        fn parse_delimiter_as_file() {
+        fn parse_file_after_delimiter() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--", "foo.bc"]).file(),
+                Options::parse(["stak-interpret", "--", "foo.bc"])
+                    .unwrap()
+                    .file(),
+                Some("foo.bc")
+            );
+        }
+
+        #[test]
+        fn parse_file_before_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "foo.bc", "--", "bar.bc"])
+                    .unwrap()
+                    .file(),
+                Some("foo.bc")
+            );
+        }
+
+        #[test]
+        fn parse_option_as_file_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--", "--version"])
+                    .unwrap()
+                    .file(),
+                Some("--version")
+            );
+        }
+
+        #[test]
+        fn parse_delimiter_as_file_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--", "--"])
+                    .unwrap()
+                    .file(),
                 Some("--")
             );
         }
@@ -411,14 +572,24 @@ mod tests {
         #[test]
         fn ignore_options() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--version", "-s", "42"]).file(),
+                Options::parse(["stak-interpret", "--version", "-s", "42"])
+                    .unwrap()
+                    .file(),
+                None
+            );
+        }
+
+        #[test]
+        fn ignore_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--"]).unwrap().file(),
                 None
             );
         }
 
         #[test]
         fn ignore_command_name() {
-            assert_eq!(Options::parse(["foo.bc"]).file(), None);
+            assert_eq!(Options::parse(["foo.bc"]).unwrap().file(), None);
         }
     }
 
@@ -427,21 +598,40 @@ mod tests {
 
         #[test]
         fn parse_file() {
-            assert_eq!(Options::parse(["stak-interpret", "foo.bc"]).last_index(), 1);
+            assert_eq!(
+                Options::parse(["stak-interpret", "foo.bc"])
+                    .unwrap()
+                    .last_index(),
+                1
+            );
         }
 
         #[test]
         fn parse_file_after_options() {
             assert_eq!(
-                Options::parse(["stak-interpret", "--version", "-s", "42", "foo.bc"]).last_index(),
+                Options::parse(["stak-interpret", "--version", "-s", "42", "foo.bc"])
+                    .unwrap()
+                    .last_index(),
                 4
+            );
+        }
+
+        #[test]
+        fn parse_file_after_options_and_delimiter() {
+            assert_eq!(
+                Options::parse(["stak-interpret", "--version", "-s", "42", "--", "foo.bc"])
+                    .unwrap()
+                    .last_index(),
+                5
             );
         }
 
         #[test]
         fn ignore_arguments_after_file() {
             assert_eq!(
-                Options::parse(["stak-interpret", "foo.bc", "bar", "baz"]).last_index(),
+                Options::parse(["stak-interpret", "foo.bc", "bar", "baz"])
+                    .unwrap()
+                    .last_index(),
                 1
             );
         }
@@ -450,7 +640,9 @@ mod tests {
     mod parse_c {
         use super::*;
 
-        fn parse<const N: usize>(arguments: [&CStr; N]) -> Options<&'static str> {
+        fn parse<const N: usize>(
+            arguments: [&CStr; N],
+        ) -> Result<Options<&'static str>, OptionError> {
             let arguments = arguments.map(|argument| argument.as_ptr().cast());
 
             // SAFETY: The arguments are an array of C strings.
@@ -459,7 +651,7 @@ mod tests {
 
         #[test]
         fn parse_nothing() {
-            let options = parse([]);
+            let options = parse([]).unwrap();
 
             assert!(!options.version());
             assert_eq!(options.heap_size(), None);
@@ -468,30 +660,35 @@ mod tests {
 
         #[test]
         fn parse_version() {
-            assert!(parse([c"stak-interpret", c"--version"]).version());
+            assert!(parse([c"stak-interpret", c"--version"]).unwrap().version());
         }
 
         #[test]
         fn parse_heap_size() {
             assert_eq!(
-                parse([c"stak-interpret", c"-s", c"42"]).heap_size(),
+                parse([c"stak-interpret", c"-s", c"42"])
+                    .unwrap()
+                    .heap_size(),
                 Some(42)
             );
         }
 
         #[test]
         fn parse_file() {
-            assert_eq!(parse([c"stak-interpret", c"foo.bc"]).file(), Some("foo.bc"));
+            assert_eq!(
+                parse([c"stak-interpret", c"foo.bc"]).unwrap().file(),
+                Some("foo.bc")
+            );
         }
 
         #[test]
         fn parse_invalid_utf8_file() {
-            assert_eq!(parse([c"stak-interpret", c"\xff"]).last_index(), 1);
+            assert_eq!(parse([c"stak-interpret", c"\xff"]).unwrap().last_index(), 1);
         }
 
         #[test]
         fn parse_options_before_invalid_utf8_file() {
-            let options = parse([c"stak-interpret", c"--version", c"-s", c"42", c"\xff"]);
+            let options = parse([c"stak-interpret", c"--version", c"-s", c"42", c"\xff"]).unwrap();
 
             assert!(options.version());
             assert_eq!(options.heap_size(), Some(42));
@@ -500,16 +697,24 @@ mod tests {
 
         #[test]
         fn parse_option_after_invalid_utf8_command_name() {
-            assert!(parse([c"\xff", c"--version"]).version());
+            assert!(parse([c"\xff", c"--version"]).unwrap().version());
         }
 
         #[test]
         fn ignore_options_after_invalid_utf8_file() {
-            let options = parse([c"stak-interpret", c"\xff", c"--version", c"-s", c"42"]);
+            let options = parse([c"stak-interpret", c"\xff", c"--version", c"-s", c"42"]).unwrap();
 
             assert!(!options.version());
             assert_eq!(options.heap_size(), None);
             assert_eq!(options.last_index(), 1);
+        }
+
+        #[test]
+        fn reject_invalid_utf8_heap_size() {
+            assert_eq!(
+                parse([c"stak-interpret", c"-s", c"\xff"]).unwrap_err(),
+                OptionError::HeapSize
+            );
         }
     }
 }

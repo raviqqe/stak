@@ -51,6 +51,17 @@ Feature: Tools
       | -s 0          |
       | --heap-size 0 |
 
+  Scenario Outline: Set an invalid heap size for bytecode
+    When I run `stak-interpret <option>`
+    Then the exit status should be 1
+    And the stderr should contain "Error: invalid heap size"
+
+    Examples:
+      | option                  |
+      | -s                      |
+      | -s foo                  |
+      | -s 18446744073709551616 |
+
   Scenario: Pass an option to a script
     Given a file named "main.scm" with:
       """scheme
@@ -87,6 +98,23 @@ Feature: Tools
       cat prelude.scm main.scm | stak-compile > main.bc
       """
     When I successfully run `stak-interpret -s 1000000 main.bc foo`
+    Then the stdout should contain exactly:
+      """
+      ("main.bc" "foo")
+      """
+
+  Scenario: Strip a delimiter from a command line of bytecode
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context) (scheme write))
+
+      (write (command-line))
+      """
+    And I run the following script:
+      """sh
+      cat prelude.scm main.scm | stak-compile > main.bc
+      """
+    When I successfully run `stak-interpret -- main.bc foo`
     Then the stdout should contain exactly:
       """
       ("main.bc" "foo")

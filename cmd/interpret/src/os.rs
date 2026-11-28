@@ -15,7 +15,7 @@ use std::{
 };
 
 pub fn main() -> Result<ExitCode, MainError> {
-    let options = Options::parse(args());
+    let options = Options::parse(args())?;
 
     if options.version() {
         writeln!(
