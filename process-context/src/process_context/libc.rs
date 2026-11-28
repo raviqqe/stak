@@ -1,6 +1,7 @@
 use crate::ProcessContext;
 use core::{
     ffi::{CStr, c_char},
+    ops::Range,
     slice,
 };
 
@@ -12,6 +13,7 @@ unsafe extern "C" {
 #[derive(Debug)]
 pub struct LibcProcessContext {
     arguments: &'static [*const i8],
+    argument_skip: Range<usize>,
 }
 
 impl LibcProcessContext {
@@ -24,18 +26,35 @@ impl LibcProcessContext {
     /// be modified while the process context is alive.
     pub const unsafe fn new(argc: isize, argv: *const *const i8) -> Self {
         Self {
-            // SAFETY: Operating systems guarantee the length of `argv` to be `argc`.
+            // SAFETY: Operating systems guarantee the length of `argv` to be
+            // `argc`.
             arguments: unsafe { slice::from_raw_parts(argv, argc as _) },
+            argument_skip: 0..0,
+        }
+    }
+
+    /// Sets a range of arguments to skip.
+    pub const fn with_argument_skip(self, skip: Range<usize>) -> Self {
+        Self {
+            argument_skip: skip,
+            ..self
         }
     }
 }
 
 impl ProcessContext for LibcProcessContext {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
-        self.arguments.iter().rev().map(|&argument| {
-            // SAFETY: Operating systems guarantee elements in `argv` to be C strings.
-            unsafe { CStr::from_ptr(argument as _) }.to_str().unwrap()
-        })
+        let end = self.argument_skip.end.min(self.arguments.len());
+
+        self.arguments[..self.argument_skip.start.min(end)]
+            .iter()
+            .chain(&self.arguments[end..])
+            .rev()
+            .map(|&argument| {
+                // SAFETY: Operating systems guarantee elements in `argv` to be
+                // C strings.
+                unsafe { CStr::from_ptr(argument as _) }.to_str().unwrap()
+            })
     }
 
     fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
@@ -79,9 +98,24 @@ unsafe fn decode_environment<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use alloc::vec::Vec;
+    use alloc::{string::String, vec::Vec};
     use core::ptr::{dangling, null};
     use std::env::vars_os;
+
+    #[test]
+    fn command_line_rev() {
+        let arguments = [c"foo", c"bar"].map(|argument| argument.as_ptr().cast());
+
+        assert_eq!(
+            // SAFETY: The arguments are an array of C strings that outlives the
+            // process context, and no test modifies environment variables.
+            unsafe { LibcProcessContext::new(arguments.len() as _, arguments.as_ptr()) }
+                .command_line_rev()
+                .into_iter()
+                .collect::<Vec<_>>(),
+            ["bar", "foo"]
+        );
+    }
 
     #[test]
     fn environment_variables() {
@@ -98,6 +132,74 @@ mod tests {
                 .filter_map(|(key, value)| Some((key.to_str()?, value.to_str()?)))
                 .collect::<Vec<_>>()
         );
+    }
+
+    mod with_argument_skip {
+        use super::*;
+
+        fn skip(range: Range<usize>) -> Vec<String> {
+            let arguments =
+                [c"foo", c"bar", c"baz", c"qux"].map(|argument| argument.as_ptr().cast());
+
+            // SAFETY: The arguments are an array of C strings that outlives the
+            // process context, and no test modifies environment variables.
+            unsafe { LibcProcessContext::new(arguments.len() as _, arguments.as_ptr()) }
+                .with_argument_skip(range)
+                .command_line_rev()
+                .into_iter()
+                .map(Into::into)
+                .collect()
+        }
+
+        #[test]
+        fn skip_first_arguments() {
+            assert_eq!(skip(0..2), ["qux", "baz"]);
+        }
+
+        #[test]
+        fn skip_middle_arguments() {
+            assert_eq!(skip(1..3), ["qux", "foo"]);
+        }
+
+        #[test]
+        fn skip_last_arguments() {
+            assert_eq!(skip(2..4), ["bar", "foo"]);
+        }
+
+        #[test]
+        fn skip_empty_range() {
+            assert_eq!(skip(2..2), ["qux", "baz", "bar", "foo"]);
+        }
+
+        #[test]
+        #[expect(clippy::reversed_empty_ranges)]
+        fn skip_inverted_range() {
+            assert_eq!(skip(3..1), ["qux", "baz", "bar", "foo"]);
+        }
+
+        #[test]
+        fn skip_range_across_end() {
+            assert_eq!(skip(2..6), ["bar", "foo"]);
+        }
+
+        #[test]
+        fn skip_range_after_end() {
+            assert_eq!(skip(5..7), ["qux", "baz", "bar", "foo"]);
+        }
+
+        #[test]
+        fn skip_range_without_arguments() {
+            assert_eq!(
+                // SAFETY: No argument is read, and no test modifies environment
+                // variables.
+                unsafe { LibcProcessContext::new(0, dangling()) }
+                    .with_argument_skip(0..1)
+                    .command_line_rev()
+                    .into_iter()
+                    .next(),
+                None
+            );
+        }
     }
 
     mod decode_environment {
