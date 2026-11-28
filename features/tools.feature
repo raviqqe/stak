@@ -24,7 +24,7 @@ Feature: Tools
       """scheme
       (import (scheme base))
       """
-    When I run `stak main.scm <option>`
+    When I run `stak <option> main.scm`
     Then the exit status should be 1
     And the stderr should contain "Error: out of memory"
 
@@ -32,6 +32,17 @@ Feature: Tools
       | option        |
       | -s 0          |
       | --heap-size 0 |
+
+  Scenario Outline: Set an invalid heap size
+    When I run `stak <option>`
+    Then the exit status should be 1
+    And the stderr should contain "Error: invalid heap size"
+
+    Examples:
+      | option                  |
+      | -s                      |
+      | -s foo                  |
+      | -s 18446744073709551616 |
 
   Scenario Outline: Set a heap size for bytecode
     Given a file named "main.scm" with:
@@ -54,11 +65,11 @@ Feature: Tools
   Scenario: Pass an option to a script
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme cxr) (scheme process-context))
+      (import (scheme base) (scheme process-context))
 
-      (write-string (caddr (command-line)))
+      (write-string (cadr (command-line)))
       """
-    When I successfully run `stak main.scm -- --version`
+    When I successfully run `stak main.scm --version`
     Then the stdout should contain exactly "--version"
 
   Scenario: Pass an option to bytecode
@@ -74,6 +85,32 @@ Feature: Tools
       """
     When I successfully run `stak-interpret main.bc --version`
     Then the stdout should contain exactly "--version"
+
+  Scenario: Strip options from a command line of a script
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context) (scheme write))
+
+      (write (command-line))
+      """
+    When I successfully run `stak -s 1000000 main.scm foo`
+    Then the stdout should contain exactly:
+      """
+      ("main.scm" "foo")
+      """
+
+  Scenario: Strip a delimiter from a command line of a script
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context) (scheme write))
+
+      (write (command-line))
+      """
+    When I successfully run `stak -- main.scm foo`
+    Then the stdout should contain exactly:
+      """
+      ("main.scm" "foo")
+      """
 
   Scenario: Strip options from a command line of bytecode
     Given a file named "main.scm" with:

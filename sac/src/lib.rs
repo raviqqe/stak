@@ -74,7 +74,7 @@ cfg_select! {
                 };
 
                 fn main() -> Result<ExitCode, MainError> {
-                    let options = Options::parse(args());
+                    let options = Options::parse(args())?;
 
                     if options.version() {
                         writeln!(
@@ -90,6 +90,7 @@ cfg_select! {
                     match run(
                         include_r7rs!($path),
                         options.heap_size().unwrap_or($heap_size),
+                        options.argument_index(),
                     ) {
                         Ok(()) => Ok(ExitCode::SUCCESS),
                         Err(SmallError::Halt(code)) => Ok(code.into()),
@@ -138,7 +139,11 @@ cfg_select! {
                 #[cfg_attr(not(test), unsafe(no_mangle))]
                 extern "C" fn main(argc: isize, argv: *const *const i8) {
                     // SAFETY: `argc` and `argv` are provided by operating systems.
-                    let options = unsafe { Options::parse_c(argc, argv) };
+                    let options = unsafe { Options::parse_c(argc, argv) }.unwrap_or_else(|error| {
+                        let _ = writeln!(Stderr::new(), "Error: {error}");
+
+                        exit(1)
+                    });
 
                     if options.version() {
                         let _ = writeln!(
@@ -158,6 +163,7 @@ cfg_select! {
                             run_libc(
                                 include_r7rs!($path),
                                 options.heap_size().unwrap_or($heap_size),
+                                options.argument_index(),
                                 argc,
                                 argv,
                             )

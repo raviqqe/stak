@@ -7,13 +7,13 @@ use stak_time::OsClock;
 use stak_vm::Vm;
 
 /// Runs bytecode on a virtual machine.
-pub fn run(bytecode: &[u8], heap_size: usize) -> Result<(), SmallError> {
+pub fn run(bytecode: &[u8], heap_size: usize, argument_index: usize) -> Result<(), SmallError> {
     Vm::new(
         vec![Default::default(); heap_size],
         SmallPrimitiveSet::new(
             StdioDevice::new(),
             OsFileSystem::new(),
-            OsProcessContext::new(),
+            OsProcessContext::new().with_argument_skip(1..argument_index),
             OsClock::new(),
         ),
     )?
@@ -29,7 +29,7 @@ mod tests {
 
     #[test]
     fn run_nothing() {
-        assert_eq!(run(compile_r7rs!(""), DEFAULT_HEAP_SIZE), Ok(()));
+        assert_eq!(run(compile_r7rs!(""), DEFAULT_HEAP_SIZE, 1), Ok(()));
     }
 
     #[test]
@@ -37,7 +37,8 @@ mod tests {
         assert_eq!(
             run(
                 compile_r7rs!("(import (scheme process-context)) (exit 42)"),
-                DEFAULT_HEAP_SIZE
+                DEFAULT_HEAP_SIZE,
+                1
             ),
             Err(SmallError::Halt(42))
         );
@@ -46,7 +47,7 @@ mod tests {
     #[test]
     fn run_without_heap() {
         assert_eq!(
-            run(compile_r7rs!(""), 0),
+            run(compile_r7rs!(""), 0, 1),
             Err(SmallError::Vm(Error::OutOfMemory))
         );
     }

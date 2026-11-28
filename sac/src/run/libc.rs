@@ -16,6 +16,7 @@ use stak_vm::{Value, Vm};
 pub unsafe fn run_libc(
     bytecode: &[u8],
     heap_size: usize,
+    argument_index: usize,
     argc: isize,
     argv: *const *const i8,
 ) -> Result<(), SmallError> {
@@ -28,7 +29,7 @@ pub unsafe fn run_libc(
             LibcFileSystem::new(),
             // SAFETY: `argc` and `argv` are provided by operating systems, and
             // environment variables are never modified.
-            unsafe { LibcProcessContext::new(argc, argv) },
+            unsafe { LibcProcessContext::new(argc, argv) }.with_argument_skip(1..argument_index),
             LibcClock::new(),
         ),
     )?
@@ -46,7 +47,7 @@ mod tests {
     fn run_bytecode(bytecode: &[u8], heap_size: usize) -> Result<(), SmallError> {
         // SAFETY: No argument is read, and no test modifies environment
         // variables.
-        unsafe { run_libc(bytecode, heap_size, 0, dangling()) }
+        unsafe { run_libc(bytecode, heap_size, 1, 0, dangling()) }
     }
 
     #[test]
