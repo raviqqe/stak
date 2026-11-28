@@ -415,6 +415,13 @@ Feature: Exception
   @extra
   Rule: Critical errors
 
+    Background:
+      Given I run the following script:
+        """sh
+        cp $STAK_ROOT/prelude.scm .
+        """
+      And the exit status should be 0
+
     Scenario: Run out of memory
       Given a file named "main.scm" with:
         """scheme
@@ -429,3 +436,51 @@ Feature: Exception
       Then the exit status should be 1
       And the stdout should contain exactly "A"
       And the stderr should contain "Error: out of memory"
+
+    Scenario: Run out of memory with buffered output
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-string "foo\nbar")
+
+        (let loop ((xs '()))
+          (loop (cons xs xs)))
+        """
+      When I run the following script:
+        """sh
+        stak main.scm 2>&1
+        """
+      Then the exit status should be 1
+      And the stdout should contain exactly:
+        """
+        foo
+        Error: out of memory
+        bar
+        """
+
+    Scenario: Run out of memory with buffered output for bytecode
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (write-string "foo\nbar")
+
+        (let loop ((xs '()))
+          (loop (cons xs xs)))
+        """
+      And I run the following script:
+        """sh
+        cat prelude.scm main.scm | stak-compile > main.bc
+        """
+      When I run the following script:
+        """sh
+        stak-interpret main.bc 2>&1
+        """
+      Then the exit status should be 1
+      And the stdout should contain exactly:
+        """
+        foo
+        Error: out of memory
+        bar
+        """

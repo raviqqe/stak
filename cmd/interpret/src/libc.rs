@@ -50,26 +50,30 @@ pub extern "C" fn main(argc: isize, argv: *const *const i8) {
 
     let index = options.last_index();
 
-    exit(
-        // SAFETY: `argc` and `argv` are provided by operating systems, the
-        // index of the bytecode file is in their range, and environment
-        // variables are never modified.
-        match unsafe {
-            run(
-                options.heap_size().unwrap_or(DEFAULT_HEAP_SIZE),
-                argc - index as isize,
-                argv.add(index),
-            )
-        } {
-            Ok(()) => 0,
-            Err(SmallError::Halt(code)) => code.into(),
-            Err(error) => {
-                let _ = writeln!(Stderr::new(), "Error: {error}");
+    let mut device = ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new());
+    // SAFETY: `argc` and `argv` are provided by operating systems, the
+    // index of the bytecode file is in their range, and environment
+    // variables are never modified.
+    let code = match unsafe {
+        run(
+            options.heap_size().unwrap_or(DEFAULT_HEAP_SIZE),
+            &mut device,
+            argc - index as isize,
+            argv.add(index),
+        )
+    } {
+        Ok(()) => 0,
+        Err(SmallError::Halt(code)) => code.into(),
+        Err(error) => {
+            let _ = writeln!(Stderr::new(), "Error: {error}");
 
-                1
-            }
-        },
-    );
+            1
+        }
+    };
+
+    // Drop the device before an exit to flush standard output.
+    drop(device);
+    exit(code);
 }
 
 /// Runs a bytecode file on a virtual machine.
@@ -80,13 +84,18 @@ pub extern "C" fn main(argc: isize, argv: *const *const i8) {
 /// arguments to the `main` function in C without the ones before a path of a
 /// bytecode file. Environment variables should not be modified while the
 /// virtual machine runs.
-unsafe fn run(heap_size: usize, argc: isize, argv: *const *const i8) -> Result<(), SmallError> {
+unsafe fn run(
+    heap_size: usize,
+    device: &mut ReadWriteDevice<Stdin, Stdout, Stderr>,
+    argc: isize,
+    argv: *const *const i8,
+) -> Result<(), SmallError> {
     // Leak a heap to keep deallocation out of a binary.
     Vm::new(
         // SAFETY: `Value`s are scalar values.
         unsafe { Box::leak(Box::<[Value]>::new_uninit_slice(heap_size)).assume_init_mut() },
         SmallPrimitiveSet::new(
-            ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
+            device,
             LibcFileSystem::new(),
             // SAFETY: `argc` and `argv` are provided by operating systems, and
             // environment variables are never modified.

@@ -117,7 +117,7 @@ cfg_select! {
                     dlmalloc::GlobalDlmalloc,
                     origin::program::exit,
                     run_libc,
-                    stak_device::libc::{Stderr, Stdout},
+                    stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
                     stak_macro::include_r7rs,
                     stak_r7rs::SmallError,
                 };
@@ -151,26 +151,31 @@ cfg_select! {
                         exit(0);
                     }
 
-                    exit(
-                        // SAFETY: `argc` and `argv` are provided by operating systems, and
-                        // environment variables are never modified.
-                        match unsafe {
-                            run_libc(
-                                include_r7rs!($path),
-                                options.heap_size().unwrap_or($heap_size),
-                                argc,
-                                argv,
-                            )
-                        } {
-                            Ok(()) => 0,
-                            Err(SmallError::Halt(code)) => code.into(),
-                            Err(error) => {
-                                let _ = writeln!(Stderr::new(), "Error: {error}");
+                    let mut device =
+                        ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new());
+                    // SAFETY: `argc` and `argv` are provided by operating systems, and
+                    // environment variables are never modified.
+                    let code = match unsafe {
+                        run_libc(
+                            include_r7rs!($path),
+                            options.heap_size().unwrap_or($heap_size),
+                            &mut device,
+                            argc,
+                            argv,
+                        )
+                    } {
+                        Ok(()) => 0,
+                        Err(SmallError::Halt(code)) => code.into(),
+                        Err(error) => {
+                            let _ = writeln!(Stderr::new(), "Error: {error}");
 
-                                1
-                            }
-                        },
-                    );
+                            1
+                        }
+                    };
+
+                    // Drop the device before an exit to flush standard output.
+                    drop(device);
+                    exit(code);
                 }
             };
         }
