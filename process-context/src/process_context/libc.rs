@@ -109,7 +109,7 @@ mod tests {
         assert_eq!(
             // SAFETY: The arguments are an array of C strings that outlives the
             // process context, and no test modifies environment variables.
-            unsafe { LibcProcessContext::new(2, arguments.as_ptr()) }
+            unsafe { LibcProcessContext::new(arguments.len() as _, arguments.as_ptr()) }
                 .command_line_rev()
                 .into_iter()
                 .collect::<Vec<_>>(),
@@ -137,14 +137,14 @@ mod tests {
     mod with_argument_skip {
         use super::*;
 
-        fn command_line_rev(skip: Range<usize>) -> Vec<String> {
+        fn skip(range: Range<usize>) -> Vec<String> {
             let arguments =
                 [c"foo", c"bar", c"baz", c"qux"].map(|argument| argument.as_ptr().cast());
 
             // SAFETY: The arguments are an array of C strings that outlives the
             // process context, and no test modifies environment variables.
-            unsafe { LibcProcessContext::new(4, arguments.as_ptr()) }
-                .with_argument_skip(skip)
+            unsafe { LibcProcessContext::new(arguments.len() as _, arguments.as_ptr()) }
+                .with_argument_skip(range)
                 .command_line_rev()
                 .into_iter()
                 .map(Into::into)
@@ -153,38 +153,38 @@ mod tests {
 
         #[test]
         fn skip_first_arguments() {
-            assert_eq!(command_line_rev(0..2), ["qux", "baz"]);
+            assert_eq!(skip(0..2), ["qux", "baz"]);
         }
 
         #[test]
         fn skip_middle_arguments() {
-            assert_eq!(command_line_rev(1..3), ["qux", "foo"]);
+            assert_eq!(skip(1..3), ["qux", "foo"]);
         }
 
         #[test]
         fn skip_last_arguments() {
-            assert_eq!(command_line_rev(2..4), ["bar", "foo"]);
+            assert_eq!(skip(2..4), ["bar", "foo"]);
         }
 
         #[test]
         fn skip_empty_range() {
-            assert_eq!(command_line_rev(2..2), ["qux", "baz", "bar", "foo"]);
+            assert_eq!(skip(2..2), ["qux", "baz", "bar", "foo"]);
         }
 
         #[test]
         #[expect(clippy::reversed_empty_ranges)]
         fn skip_inverted_range() {
-            assert_eq!(command_line_rev(3..1), ["qux", "baz", "bar", "foo"]);
+            assert_eq!(skip(3..1), ["qux", "baz", "bar", "foo"]);
         }
 
         #[test]
         fn skip_range_across_end() {
-            assert_eq!(command_line_rev(2..6), ["bar", "foo"]);
+            assert_eq!(skip(2..6), ["bar", "foo"]);
         }
 
         #[test]
         fn skip_range_after_end() {
-            assert_eq!(command_line_rev(5..7), ["qux", "baz", "bar", "foo"]);
+            assert_eq!(skip(5..7), ["qux", "baz", "bar", "foo"]);
         }
 
         #[test]
