@@ -367,7 +367,7 @@ mod tests {
         #[test]
         fn reject_option_as_value() {
             assert_eq!(
-                Options::parse(["stak", "-s", "--version"]).unwrap_err(),
+                Options::parse(["stak", "-s", "--version", "42"]).unwrap_err(),
                 OptionError::HeapSize
             );
             assert_eq!(
