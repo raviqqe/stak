@@ -398,7 +398,7 @@ mod tests {
         #[test]
         fn reject_option_as_value() {
             assert_eq!(
-                Options::parse(["stak-interpret", "-s", "--version"]).unwrap_err(),
+                Options::parse(["stak-interpret", "-s", "--version", "42"]).unwrap_err(),
                 OptionError::HeapSize
             );
             assert_eq!(
@@ -617,7 +617,7 @@ mod tests {
         }
 
         #[test]
-        fn parse_file_after_delimiter() {
+        fn parse_file_after_options_and_delimiter() {
             assert_eq!(
                 Options::parse(["stak-interpret", "--version", "-s", "42", "--", "foo.bc"])
                     .unwrap()
