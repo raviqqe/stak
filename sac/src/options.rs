@@ -1,8 +1,8 @@
 mod error;
 
-pub use self::error::OptionError;
 #[cfg(feature = "libc")]
 use core::{ffi::CStr, slice};
+use error::OptionError;
 
 /// Command line options.
 #[derive(Debug)]
@@ -28,12 +28,14 @@ impl Options {
             if heap_size_option {
                 heap_size = Some(argument.parse().map_err(|_| OptionError::HeapSize)?);
                 heap_size_option = false;
+            } else if argument == "--" {
+                argument_index += 1;
+                break;
             } else if argument == "--version" {
                 version = true;
             } else if matches!(argument, "-s" | "--heap-size") {
                 heap_size_option = true;
             } else {
-                argument_index += (argument == "--") as usize;
                 break;
             }
 
@@ -41,14 +43,14 @@ impl Options {
         }
 
         if heap_size_option {
-            Err(OptionError::HeapSize)
-        } else {
-            Ok(Self {
-                version,
-                heap_size,
-                argument_index,
-            })
+            return Err(OptionError::HeapSize);
         }
+
+        Ok(Self {
+            version,
+            heap_size,
+            argument_index,
+        })
     }
 
     /// Parses command line arguments in C.
@@ -302,9 +304,9 @@ mod tests {
         }
 
         #[test]
-        fn ignore_option_after_delimiter() {
+        fn ignore_missing_value_after_argument() {
             assert_eq!(
-                Options::parse(["stak", "--", "-s", "42"])
+                Options::parse(["stak", "foo.scm", "-s"])
                     .unwrap()
                     .heap_size(),
                 None
@@ -312,9 +314,9 @@ mod tests {
         }
 
         #[test]
-        fn ignore_missing_value_after_argument() {
+        fn ignore_option_after_delimiter() {
             assert_eq!(
-                Options::parse(["stak", "foo.scm", "-s"])
+                Options::parse(["stak", "--", "-s", "42"])
                     .unwrap()
                     .heap_size(),
                 None
@@ -340,12 +342,26 @@ mod tests {
 
         #[test]
         fn reject_invalid_value() {
-            for value in ["", "foo", "-1", "4.2", "18446744073709551616"] {
-                assert_eq!(
-                    Options::parse(["stak", "-s", value]).unwrap_err(),
-                    OptionError::HeapSize
-                );
-            }
+            assert_eq!(
+                Options::parse(["stak", "-s", "foo"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak", "-s", "-1"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak", "-s", "4.2"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak", "-s", "18446744073709551616"]).unwrap_err(),
+                OptionError::HeapSize
+            );
+            assert_eq!(
+                Options::parse(["stak", "-s", ""]).unwrap_err(),
+                OptionError::HeapSize
+            );
         }
 
         #[test]
@@ -369,17 +385,17 @@ mod tests {
         }
 
         #[test]
-        fn reject_invalid_value_after_valid_option() {
+        fn reject_missing_value_after_version_option() {
             assert_eq!(
-                Options::parse(["stak", "-s", "42", "--heap-size", "foo"]).unwrap_err(),
+                Options::parse(["stak", "--version", "-s"]).unwrap_err(),
                 OptionError::HeapSize
             );
         }
 
         #[test]
-        fn reject_missing_value_after_version_option() {
+        fn reject_invalid_value_after_option() {
             assert_eq!(
-                Options::parse(["stak", "--version", "-s"]).unwrap_err(),
+                Options::parse(["stak", "-s", "42", "--heap-size", "foo"]).unwrap_err(),
                 OptionError::HeapSize
             );
         }
@@ -424,26 +440,6 @@ mod tests {
         }
 
         #[test]
-        fn parse_delimiter_after_delimiter() {
-            assert_eq!(
-                Options::parse(["stak", "--", "--"])
-                    .unwrap()
-                    .argument_index(),
-                2
-            );
-        }
-
-        #[test]
-        fn parse_delimiter_after_argument() {
-            assert_eq!(
-                Options::parse(["stak", "foo.scm", "--"])
-                    .unwrap()
-                    .argument_index(),
-                1
-            );
-        }
-
-        #[test]
         fn parse_unknown_option() {
             assert_eq!(
                 Options::parse(["stak", "--foo", "bar"])
@@ -470,6 +466,26 @@ mod tests {
                     .unwrap()
                     .argument_index(),
                 3
+            );
+        }
+
+        #[test]
+        fn ignore_delimiter_after_argument() {
+            assert_eq!(
+                Options::parse(["stak", "foo.scm", "--"])
+                    .unwrap()
+                    .argument_index(),
+                1
+            );
+        }
+
+        #[test]
+        fn ignore_delimiter_after_delimiter() {
+            assert_eq!(
+                Options::parse(["stak", "--", "--"])
+                    .unwrap()
+                    .argument_index(),
+                2
             );
         }
 
@@ -549,7 +565,7 @@ mod tests {
         }
 
         #[test]
-        fn reject_invalid_utf8_value() {
+        fn reject_invalid_utf8_heap_size() {
             assert_eq!(
                 parse([c"stak", c"-s", c"\xff"]).unwrap_err(),
                 OptionError::HeapSize
